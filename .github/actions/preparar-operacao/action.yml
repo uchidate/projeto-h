@@ -31,8 +31,14 @@ runs:
       env:
         MASCARAS: ${{ inputs.mascaras }}
       run: |
+        # Sem mascaras, qualquer passo seguinte pode imprimir nome, dominio ou IP
+        # num log publico: melhor parar aqui.
+        if [ -z "${MASCARAS//[[:space:]]/}" ]; then
+          echo "::error::IDENTIDADE_MASCARAS vazio; abortando antes de montar a operacao"
+          exit 1
+        fi
         while IFS= read -r termo; do
-          [ -n "$termo" ] && echo "::add-mask::$termo"
+          if [ -n "$termo" ]; then echo "::add-mask::$termo"; fi
         done <<< "$MASCARAS"
 
     - name: Baixar repositorio de operacao
