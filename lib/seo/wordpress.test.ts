@@ -8,6 +8,21 @@ const BASE = {
 }
 
 describe('buildWordPressMetadata', () => {
+    it('declara og:locale:alternate com as outras versoes do hreflang', () => {
+        const meta = buildWordPressMetadata({
+            ...BASE,
+            ogLocale: 'en_US',
+            languages: { 'pt-BR': 'https://example.com/artists/jimin', en: 'https://example.com/en/artists/jimin', 'x-default': 'https://example.com/artists/jimin' },
+        })
+        expect((meta.openGraph as { locale?: string }).locale).toBe('en_US')
+        expect((meta.openGraph as { alternateLocale?: string[] }).alternateLocale).toEqual(['pt_BR'])
+    })
+
+    it('sem hreflang, nao declara og:locale:alternate', () => {
+        const meta = buildWordPressMetadata(BASE)
+        expect((meta.openGraph as { alternateLocale?: string[] }).alternateLocale).toBeUndefined()
+    })
+
     it('usa title/description/url do frontend quando não há seo do WP', () => {
         const meta = buildWordPressMetadata(BASE)
         expect(meta.title).toBe('Jimin — Perfil')

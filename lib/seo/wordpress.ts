@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import type { WPYoast } from '@/lib/wordpress/types'
 import { baseOG, baseTwitter } from '@/lib/constants/site'
 import { titleAlreadyIncludesSiteName } from '@/lib/seo/titles'
+import { LOCALE_META } from '@/lib/i18n/config'
 
 type WordPressMetadataInput = {
     title: string
@@ -44,6 +45,15 @@ export function buildWordPressMetadata({
                 ? { url: image.src, alt: image.alt || resolvedTitle }
                 : undefined
 
+    // `og:locale:alternate`: as outras versoes da pagina para redes sociais,
+    // derivadas do mesmo hreflang (Facebook/LinkedIn usam para servir o idioma certo).
+    const localeAtual = ogLocale ?? LOCALE_META.pt.ogLocale
+    const alternateLocale = languages
+        ? Object.keys(languages)
+            .map((lang) => Object.values(LOCALE_META).find((meta) => meta.htmlLang === lang)?.ogLocale)
+            .filter((og): og is string => Boolean(og) && og !== localeAtual)
+        : []
+
     const robots = seo?.robots
         ? Object.entries(seo.robots).map(([k, v]) => (v ? k : null)).filter(Boolean)
         : undefined
@@ -64,6 +74,7 @@ export function buildWordPressMetadata({
         openGraph: {
             ...baseOG(canonical),
             ...(ogLocale ? { locale: ogLocale } : {}),
+            ...(alternateLocale.length > 0 ? { alternateLocale } : {}),
             title: seo?.og_title || resolvedTitle,
             description: seo?.og_description || resolvedDescription,
             ...(article
