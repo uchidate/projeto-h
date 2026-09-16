@@ -13,6 +13,13 @@ export default defineConfig({
         // entre versões do Vitest do que environmentMatchGlobs, que não aplicou
         // corretamente na 4.1.9). Lógica pura (.test.ts) fica em 'node', mais rápido.
         setupFiles: ['./vitest.setup.ts'],
+        // Avisos que o cliente do WordPress emite ao simular falhas do CMS em
+        // teste (503 com retentativa, JSON invalido, sitemap com backoff): sao o
+        // comportamento verificado, nao problema. So a IMPRESSAO some; spies que
+        // conferem a chamada continuam vendo, e em producao nada muda.
+        onConsoleLog(log) {
+            if (/^(WordPress API (error|unavailable|returned invalid JSON)|\[sitemap\] )/.test(log)) return false
+        },
         include: ['**/*.test.ts', '**/*.test.tsx'],
         // ops/** (ops/dashboard, ops/news-pipeline) is a separate Next.js app with
         // its own test runner (node:test via `npm test` inside ops/dashboard, not
