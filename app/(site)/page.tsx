@@ -1,3 +1,6 @@
+import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
+import { fetchCatalog } from '@/components/features/LocalizedCatalog'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getPosts, getCategories } from '@/lib/wordpress/posts'
@@ -20,12 +23,32 @@ import { IS_BUILD } from '@/lib/wordpress/config'
 // toa, e limitava a 60 s qualquer cache de borda que venha a ser ligado.
 export const revalidate = 600
 
-export const metadata: Metadata = {
-    title: { absolute: `${SITE_NAME} — K-Pop, K-Drama e Cultura Coreana` },
-    description: 'Dramas, filmes, artistas e grupos coreanos — tudo em português. O seu portal Hallyu no Brasil.',
-    alternates: { canonical: SITE_URL },
-    openGraph: baseOG(SITE_URL),
-    twitter: baseTwitter(),
+export async function generateMetadata(): Promise<Metadata> {
+    // Home em outro idioma so entra no hreflang se tiver ficha publicada: a
+    // versao vazia e noindex e nao deve ser apontada. Tambem e o que faz o
+    // seletor PT/EN do cabecalho aparecer aqui.
+    const outros = ACTIVE_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
+    const comConteudo = (await Promise.all(outros.map(async (locale) => {
+        const totais = await Promise.all((['groups', 'artists', 'productions'] as const).map((kind) => fetchCatalog(kind, locale, 1)))
+        return totais.some((r) => r.total > 0) ? locale : null
+    }))).filter((locale): locale is Locale => locale !== null)
+
+    return {
+        title: { absolute: `${SITE_NAME} — K-Pop, K-Drama e Cultura Coreana` },
+        description: 'Dramas, filmes, artistas e grupos coreanos — tudo em português. O seu portal Hallyu no Brasil.',
+        alternates: {
+            canonical: SITE_URL,
+            ...(comConteudo.length > 0 ? {
+                languages: {
+                    [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/`,
+                    ...Object.fromEntries(comConteudo.map((locale) => [LOCALE_META[locale].htmlLang, `${SITE_URL}${href('home', undefined, locale)}`])),
+                    'x-default': `${SITE_URL}/`,
+                },
+            } : {}),
+        },
+        openGraph: baseOG(SITE_URL),
+        twitter: baseTwitter(),
+    }
 }
 
 export default async function HomePage() {

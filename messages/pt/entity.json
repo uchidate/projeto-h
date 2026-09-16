@@ -64,5 +64,18 @@
     "madeWith": "Feito com ♥ para o fandom",
     "home": "{site} — página inicial",
     "footerNav": "Links do rodapé"
+  },
+  "home": {
+    "title": "__SITE__ em outros idiomas",
+    "description": "Perfis de artistas, grupos e produções coreanas traduzidos e revisados.",
+    "eyebrow": "Catálogo traduzido",
+    "intro": "Perfis selecionados, traduzidos e revisados por nossa equipe editorial.",
+    "seeAll": "Ver todos ({count})",
+    "ptLink": "Ver o catálogo completo em português",
+    "sections": {
+      "artists": "Artistas",
+      "groups": "Grupos",
+      "productions": "Dramas e filmes"
+    }
   }
 }

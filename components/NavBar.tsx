@@ -15,11 +15,12 @@ import { BrandDot } from '@/components/ui/BrandDot'
 import { QuickSearchMount } from '@/components/features/QuickSearchMount'
 import { UserMenu } from '@/components/ui/UserMenu'
 import { NotificationBell } from '@/components/ui/NotificationBell'
+import { SeletorIdioma } from '@/components/i18n/SeletorIdioma'
 import { SITE_NAME } from '@/lib/constants/site'
 import type { SiteLink } from '@/lib/wordpress/site-settings'
 
 
-function AnimatedLogoLink({ subtitles }: { subtitles: string[] }) {
+function AnimatedLogoLink({ subtitles, homeHref }: { subtitles: string[]; homeHref: string }) {
     const [si, setSi] = useState(0)
     const [text, setText] = useState(subtitles[0] ?? '')
     const [deleting, setDeleting] = useState(false)
@@ -46,7 +47,7 @@ function AnimatedLogoLink({ subtitles }: { subtitles: string[] }) {
     }, [text, deleting, si, subtitles])
 
     return (
-        <Link href="/" className="flex items-end gap-5">
+        <Link href={homeHref} className="flex items-end gap-5">
             <div className="mb-1 shrink-0 text-foreground">
                 <BrandMark size={72} />
             </div>
@@ -89,7 +90,10 @@ const NavBar = ({
     const t = useTranslations('client')
     // A Loja e as rotas do menu do WordPress só existem em português; fora dele
     // o cabeçalho não oferece o que levaria a uma página em outro idioma.
-    const isDefaultLocale = useLocale() === DEFAULT_LOCALE
+    const locale = useLocale()
+    const isDefaultLocale = locale === DEFAULT_LOCALE
+    // O logo leva a home do idioma da pagina: em /en, a /en, nao ao portugues.
+    const homeHref = isDefaultLocale ? '/' : `/${locale}`
     const [editionDate, setEditionDate] = useState('')
 
     /* A Loja saiu da lista de navegação e virou botão próprio no cabeçalho:
@@ -210,7 +214,7 @@ const NavBar = ({
                     <div className="flex h-[52px] items-center justify-between border-b border-border px-3">
                         <div className="flex items-center gap-2">
                             <MobileMenu links={contentLinks} />
-                            <Link href="/" className="flex items-center gap-2 text-foreground" aria-label={`${SITE_NAME} — página inicial`}>
+                            <Link href={homeHref} className="flex items-center gap-2 text-foreground" aria-label={t('nav.home', { site: SITE_NAME })}>
                                 <BrandMark size={32} />
                                 <span className="text-[20px] font-black tracking-[-0.035em]">
                                     {SITE_NAME}<BrandDot />
@@ -240,6 +244,7 @@ const NavBar = ({
                                     <ShoppingBag className="h-[18px] w-[18px]" />
                                 </Link>
                             )}
+                            <SeletorIdioma />
                             <ThemeToggle />
                             <NotificationBell />
                             <UserMenu />
@@ -279,7 +284,7 @@ const NavBar = ({
 
                     {/* Logo + botões */}
                     <div className="flex h-[112px] items-end justify-between border-b-2 border-foreground px-10 pb-5">
-                        <AnimatedLogoLink subtitles={logoSubtitles} />
+                        <AnimatedLogoLink subtitles={logoSubtitles} homeHref={homeHref} />
                         <div className="flex items-center gap-2 pb-2">
                             <button
                                 type="button"
@@ -307,6 +312,7 @@ const NavBar = ({
                                     {t('nav.shop')}
                                 </Link>
                             )}
+                            <SeletorIdioma />
                             <ThemeToggle />
                             <NotificationBell />
                             <UserMenu />

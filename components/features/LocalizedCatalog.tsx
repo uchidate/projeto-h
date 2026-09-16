@@ -31,7 +31,7 @@ const DETAIL_ROUTE = { artists: 'artist', groups: 'group', productions: 'product
 
 type Entity = WPArtist | WPGroup | WPProduction
 
-async function fetchCatalog(kind: CatalogKind, locale: Locale, page: number) {
+export async function fetchCatalog(kind: CatalogKind, locale: Locale, page: number) {
     const query = { page, perPage: PER_PAGE, locale, orderby: 'title' as const, order: 'asc' as const }
     const result: { items: Entity[]; total: number; totalPages: number } =
         kind === 'artists' ? await getArtists(query)
@@ -103,13 +103,8 @@ export async function buildCatalogMetadata(kind: CatalogKind, locale: Locale, pa
     }
 }
 
-export async function LocalizedCatalog({ kind, locale, pageParam }: { kind: CatalogKind; locale: Locale; pageParam?: string }) {
-    const page = parsePage(pageParam)
-    const [t, { items, total, totalPages }] = await Promise.all([
-        getTranslations({ locale, namespace: 'entity.catalog' }),
-        fetchCatalog(kind, locale, page),
-    ])
-    if (total > 0 && page > totalPages) notFound()
+/** Grade de fichas: a mesma no catalogo e na home em outro idioma. */
+export function EntityGrid({ items, kind, locale, limite }: { items: Entity[]; kind: CatalogKind; locale: Locale; limite?: number }) {
     const labels = labelsFor(locale)
 
     const subtitle = (item: Entity): string | undefined => {
@@ -119,7 +114,39 @@ export async function LocalizedCatalog({ kind, locale, pageParam }: { kind: Cata
         const type = typeof acf.type === 'string' ? labels.productionType(acf.type === 'drama' ? 'dramaDisplay' : acf.type) : undefined
         return [type, acf.year].filter(Boolean).join(' · ')
     }
+    return (
+                <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+            {(limite ? items.slice(0, limite) : items).map((item) => {
+                const name = stripHtml(item.title.rendered)
+                const image = getWPImage(undefined, item.featured_image_url, name)
+                const detail = (href as (r: string, p: unknown, l: Locale) => string)(DETAIL_ROUTE[kind], { slug: item.slug }, locale)
+                const meta = subtitle(item)
+                return (
+                    <li key={item.id}>
+                        <Link href={detail} className="group block">
+                            <div className={`relative overflow-hidden bg-surface ${kind === 'productions' ? 'aspect-2/3' : 'aspect-3/4'}`}>
+                                {image && (
+                                    <Image src={image.src} alt={image.alt || name} fill sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 16vw"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                                )}
+                            </div>
+                            <p className="mt-2 text-[14px] font-bold leading-tight transition-colors group-hover:text-accent">{name}</p>
+                            {meta && <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted">{meta}</p>}
+                        </Link>
+                    </li>
+                )
+            })}
+        </ul>
+    )
+}
 
+export async function LocalizedCatalog({ kind, locale, pageParam }: { kind: CatalogKind; locale: Locale; pageParam?: string }) {
+    const page = parsePage(pageParam)
+    const [t, { items, total, totalPages }] = await Promise.all([
+        getTranslations({ locale, namespace: 'entity.catalog' }),
+        fetchCatalog(kind, locale, page),
+    ])
+    if (total > 0 && page > totalPages) notFound()
     return (
         <div className="page-wrap py-10 sm:py-14">
             <header className="mb-8 border-b border-border pb-6">
@@ -136,28 +163,7 @@ export async function LocalizedCatalog({ kind, locale, pageParam }: { kind: Cata
                     </Link>
                 </p>
             ) : (
-                <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-                    {items.map((item) => {
-                        const name = stripHtml(item.title.rendered)
-                        const image = getWPImage(undefined, item.featured_image_url, name)
-                        const detail = (href as (r: string, p: unknown, l: Locale) => string)(DETAIL_ROUTE[kind], { slug: item.slug }, locale)
-                        const meta = subtitle(item)
-                        return (
-                            <li key={item.id}>
-                                <Link href={detail} className="group block">
-                                    <div className={`relative overflow-hidden bg-surface ${kind === 'productions' ? 'aspect-2/3' : 'aspect-3/4'}`}>
-                                        {image && (
-                                            <Image src={image.src} alt={image.alt || name} fill sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 16vw"
-                                                className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
-                                        )}
-                                    </div>
-                                    <p className="mt-2 text-[14px] font-bold leading-tight transition-colors group-hover:text-accent">{name}</p>
-                                    {meta && <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted">{meta}</p>}
-                                </Link>
-                            </li>
-                        )
-                    })}
-                </ul>
+                <EntityGrid items={items} kind={kind} locale={locale} />
             )}
 
             {totalPages > 1 && (

@@ -152,12 +152,22 @@ async function fetchPages(): Promise<SitemapEntry[]> {
 
 export async function getLocalizedSitemapEntries(shard: LocalizedShard, locale: Locale): Promise<SitemapEntry[]> {
     const items = await fetchCollection(shard, locale)
-    if (items.length === 0) return []
+    // A home do idioma entra no primeiro shard do idioma, para nao repetir a
+    // mesma URL em varios sitemaps — mesmo que esse shard nao tenha fichas.
+    const ehPrimeiro = shard === LOCALIZED_SHARDS[0]
+    const idiomaTemFichas = items.length > 0 || (ehPrimeiro && (await Promise.all(
+        LOCALIZED_SHARDS.slice(1).map((outro) => fetchCollection(outro, locale)),
+    )).some((lista) => lista.length > 0))
+    const home = ehPrimeiro && idiomaTemFichas
+        ? [{ loc: `${SITE_URL}/${locale}`, alternates: { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/`, [LOCALE_META[locale].htmlLang]: `${SITE_URL}/${locale}`, 'x-default': `${SITE_URL}/` } }]
+        : []
+    if (items.length === 0) return home
     // A listagem do idioma só existe (e só é indexável) quando há fichas.
     const collection = COLLECTIONS[shard]!
     const pt = `${SITE_URL}/${collection.publicBase}`
     const listing = `${SITE_URL}/${locale}/${collection.publicBase}`
     return [
+        ...home,
         { loc: listing, alternates: { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: pt, [LOCALE_META[locale].htmlLang]: listing, 'x-default': pt } },
         ...items,
     ]

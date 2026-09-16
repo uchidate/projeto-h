@@ -64,5 +64,18 @@
     "madeWith": "Made with ♥ for the fandom",
     "home": "{site} — home",
     "footerNav": "Footer links"
+  },
+  "home": {
+    "title": "__SITE__ in English",
+    "description": "K-Pop artist and group profiles and Korean drama guides, translated and reviewed.",
+    "eyebrow": "English edition",
+    "intro": "Hand-picked profiles, translated and reviewed by our editorial team. New ones are added regularly.",
+    "seeAll": "See all ({count})",
+    "ptLink": "Browse the full catalog in Portuguese",
+    "sections": {
+      "artists": "Artists",
+      "groups": "Groups",
+      "productions": "Dramas and films"
+    }
   }
 }

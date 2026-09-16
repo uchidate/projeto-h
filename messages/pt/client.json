@@ -162,6 +162,8 @@
     "closeMenu": "Fechar menu",
     "mainNav": "Navegação principal",
     "browse": "Navegar",
-    "about": "Sobre o {site}"
+    "about": "Sobre o {site}",
+    "language": "Idioma",
+    "home": "{site} — página inicial"
   }
 }
