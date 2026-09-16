@@ -82,6 +82,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         madeWith: layout.madeWith,
         home: layout.home.replace('{site}', SITE_NAME),
         nav: layout.footerNav,
+        homeHref: isDefaultLocale ? '/' : `/${locale}`,
     }
     const footerColumns = locale === DEFAULT_LOCALE
         ? siteSettings.footerColumns

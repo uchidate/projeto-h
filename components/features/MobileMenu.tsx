@@ -36,7 +36,8 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
     const pathname = usePathname()
     const t = useTranslations('client')
     // Destaques e "sobre" apontam para rotas que só existem em português.
-    const isDefaultLocale = useLocale() === DEFAULT_LOCALE
+    const locale = useLocale()
+    const isDefaultLocale = locale === DEFAULT_LOCALE
 
     useEffect(() => { setMounted(true) }, [])
     // Fecha ao navegar
@@ -69,7 +70,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
 
                 {/* Header */}
                 <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-4">
-                    <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5 text-foreground">
+                    <Link href={isDefaultLocale ? '/' : `/${locale}`} onClick={() => setOpen(false)} className="flex items-center gap-2.5 text-foreground">
                         <BrandMark size={28} />
                         <span className="text-[18px] font-black tracking-[-0.035em]">
                             {SITE_NAME}<BrandDot />

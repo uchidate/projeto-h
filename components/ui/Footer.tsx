@@ -13,7 +13,7 @@ export type FooterLabels = {
     nav: string
 }
 
-export default function Footer({ columns, tagline, labels }: { columns: FooterColumn[]; tagline: string; labels: FooterLabels }) {
+export default function Footer({ columns, tagline, labels }: { columns: FooterColumn[]; tagline: string; labels: FooterLabels & { homeHref?: string } }) {
     const year = new Date().getFullYear()
 
     return (
@@ -21,7 +21,7 @@ export default function Footer({ columns, tagline, labels }: { columns: FooterCo
             <div className="page-wrap py-10 sm:py-14">
                 <div className="grid gap-6 pb-9 lg:grid-cols-[minmax(0,1.5fr)_minmax(260px,0.5fr)] lg:items-end lg:gap-12">
                     <Link
-                        href="/"
+                        href={labels.homeHref ?? "/"}
                         className="min-w-0 wrap-anywhere font-sans text-[clamp(3rem,8vw,7.5rem)] font-black leading-[0.78] tracking-[-0.075em] text-featured-fg transition-colors hover:text-accent"
                         aria-label={labels.home}
                     >
