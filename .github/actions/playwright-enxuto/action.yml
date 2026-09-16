@@ -1,0 +1,33 @@
+name: Playwright enxuto
+description: >-
+  Instala so o @playwright/test (versao do lockfile) e o navegador headless
+  minimo, com cache. Para jobs que so rodam a fumaca.
+
+# Antes: `npm ci` do projeto inteiro (~30s) + Chromium completo (~26s) em cada
+# fumaca. A fumaca so importa @playwright/test: instalar a arvore toda nao
+# adiantava nada. O pacote vai para .pw/ e node_modules aponta para la — o
+# script em .operacao/scripts resolve o import subindo ate a raiz do job.
+
+runs:
+  using: composite
+  steps:
+    - name: Versao do Playwright no lockfile
+      id: versao
+      shell: bash
+      run: echo "v=$(node -p "require('./package-lock.json').packages['node_modules/@playwright/test'].version")" >> "$GITHUB_OUTPUT"
+
+    - name: Cache do navegador
+      uses: actions/cache@v6
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-shell-${{ runner.os }}-${{ steps.versao.outputs.v }}
+
+    - name: Instalar @playwright/test e navegador
+      shell: bash
+      run: |
+        set -euo pipefail
+        npm install --prefix .pw --no-audit --no-fund --ignore-scripts "@playwright/test@${{ steps.versao.outputs.v }}" >/dev/null
+        [ -e node_modules ] || ln -s .pw/node_modules node_modules
+        echo "/.pw" >> .git/info/exclude
+        echo "/node_modules" >> .git/info/exclude
+        npx --prefix .pw playwright install --with-deps --only-shell chromium

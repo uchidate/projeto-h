@@ -53,31 +53,9 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-      # npm na versao do `packageManager` do package.json: o setup-node traz o npm
-      # que acompanha o Node (11), e lock gerado por npm diferente diverge.
-      - name: npm do packageManager
-        run: npm install -g "$(node -p "require('./package.json').packageManager")"
 
-      - name: Instalar dependencias
-        run: npm ci --ignore-scripts
-
-      # Navegador do Playwright, em cache pela versao do lockfile — mesmo padrao
-      # do staging.yml. Sem isto, `install --with-deps` baixa o Chromium inteiro
-      # a cada execucao.
-      - name: Cache do navegador
-        id: cache-navegador
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-noble-${{ hashFiles('package-lock.json') }}
-
-      - name: Instalar navegador
-        run: |
-          if [ "${{ steps.cache-navegador.outputs.cache-hit }}" = "true" ]; then
-            npx playwright install-deps chromium
-          else
-            npx playwright install --with-deps chromium
-          fi
+      - name: Playwright
+        uses: ./.github/actions/playwright-enxuto
 
       - name: Fumaça
         # Identifica esta execucao como automacao NOSSA, para a regra de excecao
