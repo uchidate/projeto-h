@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "scope": "hybe",
+  "review_status": "approved",
+  "sources": [
+    "https://hybecorp.com/en/company/info/",
+    "https://hybecorp.com/en/company/business/",
+    "https://hybecorp.com/en/newsroom/press/?id=33312",
+    "https://hybecorp.com/en/newsroom/press/?id=25486",
+    "https://hybecorp.com/en/newsroom/press/?id=25435",
+    "https://hybecorp.com/en/newsroom/press/?id=16950",
+    "https://hybecorp.com/en/newsroom/press/?id=33624",
+    "https://www.billboard.com/pro/bts-big-hit-entertainment-ipo-stock-market-debut-share-price/",
+    "https://www.billboard.com/pro/bts-love-yourself-tear-first-k-pop-album-no-1-billboard-200/",
+    "https://www.aljazeera.com/economy/2020/9/28/big-hit-ipo-proves-dynamite-as-bts-manager-priced-at-top-of-range"
+  ],
+  "organizations": [
+    {
+      "slug": "hybe",
+      "organization_kind": "conglomerate",
+      "founded_year": 2005,
+      "current_name_since": 2021,
+      "fields": {
+        "organization_kind": "conglomerate",
+        "founded_year": 2005,
+        "current_name_since": 2021,
+        "ceo": "Jason Jaesang Lee",
+        "leadership_updated_at": "2026-07-18",
+        "chair": "Bang Si-hyuk",
+        "founder": "Bang Si-hyuk",
+        "headquarters": "Seul, Coreia do Sul",
+        "region": "global",
+        "story_intro": "A HYBE começou pequena e com outro nome: Big Hit Entertainment, produtora fundada em 2005 por Bang Si-hyuk. O êxito global do BTS financiou uma reinvenção completa — sistema multilabel, plataforma própria de fãs, capital aberto e uma marca nova em 2021. Em 2026, com missão e identidade renovadas e o BTS de volta ao topo das paradas, a empresa se define como uma plataforma global de entretenimento e lifestyle baseada em música e tecnologia.",
+        "business_pillars": [
+          {
+            "title": "Música",
+            "description": "Sistema multi-label com operações na Coreia do Sul, Estados Unidos, Japão e América Latina.",
+            "source_url": "https://hybecorp.com/en/company/business/",
+            "visual_url": "https://example.com/wp-content/uploads/2026/09/bts-arirang-2026.jpg",
+            "visual_alt": "BTS em retrato oficial do álbum ARIRANG, divulgado pela BIGHIT MUSIC em 2026",
+            "visual_caption": "BTS no retrato oficial de ARIRANG (2026): o catálogo da label fundadora segue sendo a vitrine da escala do sistema multilabel.",
+            "visual_credit": "Imagem oficial · BIGHIT MUSIC",
+            "visual_source_url": "https://hybecorp.com/en/newsroom/press/?id=25486",
+            "quote_text": "Com um sistema multilabel e uma estratégia multi-home, multi-genre, apresentamos um espectro diverso de música enquanto moldamos um futuro sustentável para a indústria musical.",
+            "quote_author": "HYBE",
+            "quote_context": "Página institucional de negócios · tradução do inglês",
+            "quote_source_url": "https://hybecorp.com/en/company/business/"
+          },
+          {
+            "title": "Plataforma",
+            "description": "A Weverse conecta comunidades, conteúdo, transmissões e comércio em torno de artistas e fandoms.",
+            "source_url": "https://hybecorp.com/en/company/business/",
+            "visual_url": "https://example.com/wp-content/uploads/2026/09/weverse-superfan-platform.png",
+            "visual_alt": "Arte oficial do Weverse com o aplicativo em um smartphone e o slogan Global Superfan Platform",
+            "visual_caption": "O Weverse fechou 2025 com 12 milhões de usuários ativos mensais; mais de 85% do tráfego vem de fora da Coreia.",
+            "visual_credit": "Imagem oficial · Weverse Company",
+            "visual_source_url": "https://hybecorp.com/en/newsroom/press/?id=25435",
+            "quote_text": "O Weverse foi construído para redefinir como artistas e fãs se conectam em um ambiente global e digital-first.",
+            "quote_author": "Joon Choi",
+            "quote_context": "Presidente do Weverse, sobre a lista da Fast Company · tradução do inglês",
+            "quote_source_url": "https://hybecorp.com/en/newsroom/press/?id=25435"
+          },
+          {
+            "title": "Tecnologia",
+            "description": "A estratégia HYBE 2.0 inclui games, pesquisa e desenvolvimento de novas experiências de entretenimento.",
+            "source_url": "https://hybecorp.com/en/company/info/",
+            "visual_url": "https://example.com/wp-content/uploads/2026/09/bang-si-hyuk-lucian-grainge-2026.jpg",
+            "visual_alt": "Bang Si-hyuk e Lucian Grainge conversam em um town hall da HYBE, diante do wordmark e da nova visão da empresa",
+            "visual_caption": "Town hall com Bang Si-hyuk e Lucian Grainge (UMG) em junho de 2026, sob a nova visão da empresa: música e tecnologia no centro.",
+            "visual_credit": "Imagem oficial · HYBE",
+            "visual_source_url": "https://hybecorp.com/en/newsroom/press/?id=33624",
+            "quote_text": "Música e fãs continuam no centro e como prioridade máxima, mas a nova visão incorpora a tecnologia necessária para expandir as fronteiras da experiência dos fãs.",
+            "quote_author": "HYBE",
+            "quote_context": "Comunicado sobre a nova missão e visão · tradução do inglês",
+            "quote_source_url": "https://hybecorp.com/en/newsroom/press/?id=33312"
+          }
+        ],
+        "story_chapters": [
+          { "period": "2005—2012", "title": "Big Hit, a aposta pessoal de Bang Si-hyuk", "description": "A empresa que viria a ser a HYBE nasceu em 2005 como Big Hit Entertainment, produtora independente fundada por Bang Si-hyuk em Seul. Nos primeiros anos, operou longe do centro do mercado — até concentrar seus recursos na formação de um único grupo.", "source_url": "https://www.aljazeera.com/economy/2020/9/28/big-hit-ipo-proves-dynamite-as-bts-manager-priced-at-top-of-range" },
+          { "period": "2013—2018", "title": "BTS muda a escala da empresa", "description": "O BTS estreou em junho de 2013 e, cinco anos depois, levou Love Yourself: Tear ao topo da Billboard 200 — o primeiro álbum de K-pop a alcançar o nº 1 da parada americana. A produtora independente tornou-se protagonista global.", "source_url": "https://www.billboard.com/pro/bts-love-yourself-tear-first-k-pop-album-no-1-billboard-200/", "entity_slug": "bts" },
+          { "period": "2019—2020", "title": "Plataforma própria, novas labels e IPO", "description": "Em 2019, a empresa lançou o Weverse e incorporou a Source Music; em 2020 vieram Pledis e KOZ. Em outubro de 2020, a estreia na bolsa coreana dobrou o preço da ação no primeiro pregão e financiou o ciclo seguinte de expansão.", "source_url": "https://www.billboard.com/pro/bts-big-hit-entertainment-ipo-stock-market-debut-share-price/", "visual_url": "https://example.com/wp-content/uploads/2026/09/weverse-superfan-platform.png", "visual_alt": "Arte oficial do Weverse com o aplicativo em um smartphone", "visual_credit": "Imagem oficial · Weverse Company", "visual_source_url": "https://hybecorp.com/en/newsroom/press/?id=25435" },
+          { "period": "2021", "title": "A produtora vira plataforma: nasce a HYBE", "description": "Em março de 2021, a Big Hit adotou o nome HYBE e reorganizou a estrutura em torno de labels e soluções. Semanas depois, anunciou a aquisição da Ithaca Holdings, de Scooter Braun, colocando artistas como Justin Bieber e Ariana Grande sob o mesmo guarda-chuva; em novembro, criou a ADOR.", "source_url": "https://hybecorp.com/en/newsroom/press/?id=16950" },
+          { "period": "2024—2026", "title": "HYBE 2.0 e um novo ciclo com o BTS no topo", "description": "A estratégia HYBE 2.0, de agosto de 2024, reorganizou o negócio em música, plataforma e tecnologia. Em maio de 2026, a empresa apresentou missão, visão e identidade novas — o lema histórico We believe in Music seguiu com as labels de música — semanas depois de ARIRANG, do BTS, estrear no topo simultâneo da Hot 100 e da Billboard 200.", "source_url": "https://hybecorp.com/en/newsroom/press/?id=33312", "entity_slug": "bts", "visual_url": "https://example.com/wp-content/uploads/2026/09/bts-arirang-2026.jpg", "visual_alt": "BTS em retrato oficial do álbum ARIRANG", "visual_credit": "Imagem oficial · BIGHIT MUSIC", "visual_source_url": "https://hybecorp.com/en/newsroom/press/?id=25486" }
+        ],
+        "key_metrics": [
+          { "value": "₩698,3 bi", "label": "receita no 1º trimestre de 2026", "context": "Melhor primeiro trimestre da história da empresa, puxado pelo retorno do BTS com ARIRANG.", "as_of": "2026-04-29", "source_url": "https://hybecorp.com/en/newsroom/press/?id=25705" },
+          { "value": "₩2,65 tri", "label": "receita total em 2025", "context": "Recorde anual; o lucro operacional caiu 72,9% no mesmo período, com custos de reestruturação.", "as_of": "2026-02-12", "source_url": "https://en.yna.co.kr/view/AEN20260212011051320" },
+          { "value": "12 milhões", "label": "usuários ativos mensais no Weverse", "context": "Marca atingida em 2025; mais de 85% do tráfego da plataforma vem de fora da Coreia do Sul.", "as_of": "2026-03-26", "source_url": "https://hybecorp.com/en/newsroom/press/?id=25435" },
+          { "value": "15", "label": "labels de música no site oficial", "context": "Da BIGHIT MUSIC à ZARPAZO, entre Coreia do Sul, Japão, Estados Unidos e América Latina.", "as_of": "2026-07-19", "source_url": "https://hybecorp.com/en/company/business/" },
+          { "value": "641 mil", "label": "cópias equivalentes de ARIRANG na estreia", "context": "Maior estreia de 2026 nos EUA e sétimo nº 1 do BTS na Billboard 200.", "as_of": "2026-04-02", "source_url": "https://hybecorp.com/en/newsroom/press/?id=25486" },
+          { "value": "₩963 bi", "label": "levantados no IPO de 2020", "context": "Na estreia na KOSPI, a ação dobrou sobre o preço de oferta — o maior IPO sul-coreano em três anos.", "as_of": "2020-10-15", "source_url": "https://www.billboard.com/pro/bts-big-hit-entertainment-ipo-stock-market-debut-share-price/" }
+        ],
+        "current_developments": [
+          {
+            "date": "2026-06-17",
+            "title": "Bang Si-hyuk e o CEO da UMG dividem o palco",
+            "description": "Em um town hall interno, o presidente Bang Si-hyuk recebeu Lucian Grainge, CEO da Universal Music Group, para discutir liderança e o futuro da indústria — incluindo o papel da inteligência artificial.",
+            "source_url": "https://hybecorp.com/en/newsroom/press/?id=33624"
+          },
+          {
+            "date": "2026-05-13",
+            "title": "Nova identidade reforça música e tecnologia",
+            "description": "A HYBE atualizou sua identidade corporativa e passou a definir sua visão como uma plataforma global de lifestyle de entretenimento baseada em música e tecnologia.",
+            "source_url": "https://www.yna.co.kr/amp/view/AKR20260513044200005"
+          },
+          {
+            "date": "2026-05-08",
+            "title": "ABD amplia o sistema de labels",
+            "description": "A nova label foi criada com foco na produção de girl groups e planeja apresentar seu primeiro projeto no segundo semestre de 2026.",
+            "source_url": "https://en.yna.co.kr/view/AEN20260508003200315"
+          },
+          {
+            "date": "2026-04-02",
+            "title": "ARIRANG estreia no topo duplo da Billboard",
+            "description": "O quinto álbum de estúdio do BTS abriu em nº 1 simultâneo na Hot 100 (com SWIM) e na Billboard 200 — feito inédito para um artista sul-coreano.",
+            "source_url": "https://hybecorp.com/en/newsroom/press/?id=25486"
+          }
+        ],
+        "featured_videos": [
+          { "title": "BTS — Dynamite", "url": "https://www.youtube.com/watch?v=gdZLi9oWNZg", "badge": "BIGHIT MUSIC · escala global", "context": "O alcance mundial do BTS foi o motor da transformação da antiga Big Hit em um conglomerado de música, plataforma e tecnologia." },
+          { "title": "SEVENTEEN — Super", "url": "https://www.youtube.com/watch?v=-GQg25oP0S4", "badge": "PLEDIS · sistema multilabel", "context": "O SEVENTEEN ajuda a visualizar como labels com identidade própria operam dentro da estrutura controladora da HYBE." },
+          { "title": "ILLIT — Magnetic", "url": "https://www.youtube.com/watch?v=Vk5-c_v4gMU", "badge": "BELIFT LAB · nova geração", "context": "A ILLIT representa uma das frentes coreanas do sistema multilabel e a renovação do catálogo na quinta geração." },
+          { "title": "KATSEYE — Gameboy", "url": "https://www.youtube.com/watch?v=-bC4iak3kxg", "badge": "HYBE x GEFFEN · estratégia global", "context": "O projeto KATSEYE mostra a estratégia de desenvolver artistas locais para mercados globais em parceria com uma gravadora dos Estados Unidos." }
+        ]
+      },
+      "relationships": []
+    },
+    { "slug": "bighit-music", "organization_kind": "label", "fields": { "organization_kind": "label", "founded_year": 2021, "region": "Coreia do Sul", "business_pillars": [{ "title": "Música que marca uma era", "description": "A label define sua proposta pela criação de música capaz de representar seu tempo e alcançar fãs em escala global.", "source_url": "https://ibighit.com/eng/about.html" }, { "title": "Catálogo concentrado", "description": "Lee Hyun, BTS, TOMORROW X TOGETHER e CORTIS formam o elenco oficial apresentado pela BIGHIT MUSIC.", "source_url": "https://ibighit.com/eng/about.html" }], "featured_videos": [{ "title": "BTS — Dynamite", "url": "https://www.youtube.com/watch?v=gdZLi9oWNZg", "badge": "BIGHIT MUSIC · alcance global", "context": "Um ponto de entrada visual para entender a escala alcançada pelo catálogo da label." }] }, "relationships": [{ "target_slug": "hybe", "relation_type": "label_of", "status": "current", "from_year": 2021, "is_primary": true }] },
+    { "slug": "belift-lab", "organization_kind": "label", "fields": { "organization_kind": "label", "region": "Coreia do Sul", "business_pillars": [{ "title": "Artistas e fãs", "description": "A BELIFT LAB apresenta a relação saudável com artistas como base para oferecer melhores experiências aos fãs.", "source_url": "https://beliftlab.com/about/index" }, { "title": "IP além da música", "description": "A expansão do IP dos artistas é tratada como caminho para criar valor em entretenimento além dos lançamentos musicais.", "source_url": "https://beliftlab.com/about/index" }], "featured_videos": [{ "title": "ILLIT — Magnetic", "url": "https://www.youtube.com/watch?v=Vk5-c_v4gMU", "badge": "BELIFT LAB · nova geração", "context": "A estreia da ILLIT ajuda a visualizar a construção pop e a renovação de catálogo da label." }] }, "relationships": [{ "target_slug": "hybe", "relation_type": "label_of", "status": "current", "from_year": 2018 }] },
+    { "slug": "source-music", "organization_kind": "label", "fields": { "organization_kind": "label", "region": "Coreia do Sul", "business_pillars": [{ "title": "Especialista em girl groups", "description": "A Source Music se apresenta oficialmente como uma label especializada no desenvolvimento de girl groups.", "source_url": "https://www.sourcemusic.com/about/" }, { "title": "Fonte e razão", "description": "Sua identidade parte da ideia de que música com origem e propósito claros pode criar conexão emocional.", "source_url": "https://www.sourcemusic.com/about/" }], "featured_videos": [{ "title": "LE SSERAFIM — EASY", "url": "https://www.youtube.com/watch?v=bNKXxwOQYB8", "badge": "SOURCE MUSIC · identidade atual", "context": "O videoclipe conecta a especialização da label em girl groups à linguagem visual de seu catálogo atual." }] }, "relationships": [{ "target_slug": "hybe", "relation_type": "label_of", "status": "current", "from_year": 2019 }] },
+    { "slug": "pledis-entertainment", "organization_kind": "label", "fields": { "organization_kind": "label", "region": "Coreia do Sul", "business_pillars": [{ "title": "Formação de artistas", "description": "O nome Pledis remete às Plêiades e sua filosofia declarada é desenvolver talentos para que se tornem estrelas de destaque.", "source_url": "https://pledis.co.kr/company/" }, { "title": "Planejamento e repertório", "description": "A empresa combina planejamento, conceitos e experiência acumulada para ampliar o espectro da cultura popular.", "source_url": "https://pledis.co.kr/company/" }], "featured_videos": [{ "title": "SEVENTEEN — Super", "url": "https://www.youtube.com/watch?v=-GQg25oP0S4", "badge": "PLEDIS · escala e performance", "context": "A produção evidencia a força performática do catálogo consolidado da Pledis." }, { "title": "TWS — Plot Twist", "url": "https://www.youtube.com/watch?v=hVAc1Vf2ITU", "badge": "PLEDIS · renovação do catálogo", "context": "O TWS mostra como a label traduz sua experiência de formação para uma nova geração." }] }, "relationships": [{ "target_slug": "hybe", "relation_type": "label_of", "status": "current", "from_year": 2020 }] },
+    { "slug": "koz-entertainment", "organization_kind": "label", "fields": { "organization_kind": "label", "region": "Coreia do Sul", "business_pillars": [{ "title": "Originalidade", "description": "A KOZ posiciona sua produção em torno de tendências contemporâneas interpretadas com identidade própria.", "source_url": "https://hybecorp.com/en/company/business/" }, { "title": "Experimento criativo", "description": "A label combina personalidades distintas e experimentação para propor novas leituras do pop.", "source_url": "https://hybecorp.com/en/company/business/" }], "featured_videos": [{ "title": "BOYNEXTDOOR — Earth, Wind & Fire", "url": "https://www.youtube.com/watch?v=u9nP3qXQA4o", "badge": "KOZ · personalidade em primeiro plano", "context": "A energia do grupo traduz a proposta da KOZ de combinar individualidade, tendência e experimento pop." }] }, "relationships": [{ "target_slug": "hybe", "relation_type": "label_of", "status": "current", "from_year": 2020 }] },
+    { "slug": "ador", "organization_kind": "label", "fields": { "organization_kind": "label", "founded_year": 2021, "region": "Coreia do Sul", "business_pillars": [{ "title": "Novos gostos", "description": "Criada em novembro de 2021, a ADOR declara buscar projetos que apresentem novos gostos ao mercado.", "source_url": "https://hybecorp.com/en/company/business/" }, { "title": "Desafio ao padrão", "description": "A proposta institucional enfatiza desafios e formatos de negócio diferentes dentro do sistema multilabel.", "source_url": "https://hybecorp.com/en/company/business/" }], "featured_videos": [{ "title": "NewJeans — Super Shy", "url": "https://www.youtube.com/watch?v=ArmDp-zijuc", "badge": "ADOR · novo gosto pop", "context": "A faixa ajuda a visualizar a linguagem reconhecível associada ao primeiro projeto da label." }] }, "relationships": [{ "target_slug": "hybe", "relation_type": "label_of", "status": "current", "from_year": 2021 }] },
+    { "slug": "abd", "title": "ABD", "organization_kind": "label", "fields": { "organization_kind": "label", "founded_year": 2026, "region": "Coreia do Sul", "business_pillars": [{ "title": "Nova frente de girl groups", "description": "Anunciada em 2026, a ABD foi criada para desenvolver uma nova geração de girl groups dentro do sistema HYBE.", "source_url": "https://en.yna.co.kr/view/AEN20260508003200315" }, { "title": "Catálogo em formação", "description": "A label ainda está em fase inicial; o perfil será ampliado conforme projetos e artistas forem apresentados oficialmente.", "source_url": "https://en.yna.co.kr/view/AEN20260508003200315" }] }, "relationships": [{ "target_slug": "hybe", "relation_type": "label_of", "status": "current", "from_year": 2026 }] },
+    { "slug": "hybe-x-geffen-records", "title": "HYBE x Geffen Records", "organization_kind": "joint_venture", "fields": { "organization_kind": "joint_venture", "founded_year": 2021, "region": "Estados Unidos", "business_pillars": [{ "title": "Desenvolvimento global", "description": "A parceria combina descoberta, treinamento e produção para criar artistas nos Estados Unidos com alcance internacional.", "source_url": "https://hybecorp.com/en/company/business/" }, { "title": "Do projeto ao catálogo", "description": "KATSEYE surgiu do The Debut: Dream Academy e estreou em junho de 2024 como primeiro grupo da joint venture.", "source_url": "https://hybecorp.com/en/company/business/" }], "featured_videos": [{ "title": "KATSEYE — Gameboy", "url": "https://www.youtube.com/watch?v=-bC4iak3kxg", "badge": "HYBE x GEFFEN · estratégia global", "context": "O grupo materializa a proposta de desenvolver um projeto baseado nos Estados Unidos para uma audiência global." }] }, "relationships": [{ "target_slug": "hybe", "relation_type": "joint_venture_with", "status": "current", "from_year": 2021 }] }
+  ],
+  "affiliations": [
+    { "entity_type": "group", "entity_slug": "bts", "agency_slug": "bighit-music", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "txt", "agency_slug": "bighit-music", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "cortis", "agency_slug": "bighit-music", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "enhypen", "agency_slug": "belift-lab", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "illit", "agency_slug": "belift-lab", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "le-sserafim", "agency_slug": "source-music", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "gfriend", "agency_slug": "source-music", "relation_type": "management", "status": "former", "from_year": 2015, "to_year": 2021, "is_primary": false },
+    { "entity_type": "group", "entity_slug": "seventeen", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "tws", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "boynextdoor", "agency_slug": "koz-entertainment", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "newjeans", "agency_slug": "ador", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "group", "entity_slug": "fromis-9", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "former", "from_year": 2021, "to_year": 2024, "is_primary": false },
+    { "entity_type": "group", "entity_slug": "orange-caramel", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "former", "from_year": 2010, "to_year": 2016, "is_primary": false },
+    { "entity_type": "group", "entity_slug": "nuest", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "former", "from_year": 2012, "to_year": 2022, "is_primary": false },
+    { "entity_type": "group", "entity_slug": "after-school", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "former", "from_year": 2009, "to_year": 2023, "is_primary": false },
+    { "entity_type": "group", "entity_slug": "pristin", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "former", "from_year": 2017, "to_year": 2019, "is_primary": false },
+    { "entity_type": "group", "entity_slug": "katseye", "agency_slug": "hybe-x-geffen-records", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "artist", "entity_slug": "zico", "agency_slug": "koz-entertainment", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "artist", "entity_slug": "minhyun", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "current", "is_primary": true },
+    { "entity_type": "artist", "entity_slug": "baekho", "agency_slug": "pledis-entertainment", "relation_type": "management", "status": "current", "is_primary": true }
+  ]
+}

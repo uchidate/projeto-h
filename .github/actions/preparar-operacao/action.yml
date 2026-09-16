@@ -1,0 +1,63 @@
+name: Preparar operacao
+description: >-
+  Mascara nos logs os termos que identificam o site, baixa o repositorio
+  privado de operacao e expoe scripts, plugins e dados nos caminhos de sempre.
+
+# Por que existe: este repositorio e publico e so tem o app. Scripts de deploy,
+# plugins do WordPress e dados editoriais vivem num repositorio privado. Os logs
+# do Actions de repositorio publico tambem sao publicos, entao a mascara vem
+# ANTES de qualquer passo que possa imprimir nome, dominio ou IP.
+#
+# Os scripts fazem `cd "$(dirname "$0")/.."` e esperam `scripts/`, `wordpress/`
+# etc. na raiz: os links simbolicos preservam isso sem mudar nenhum script. O
+# `git archive HEAD` do build continua pegando so o app.
+
+inputs:
+  mascaras:
+    description: Termos a mascarar nos logs, um por linha
+    required: true
+  repositorio:
+    description: Repositorio privado de operacao (owner/nome)
+    required: true
+  chave:
+    description: Chave SSH somente leitura do repositorio de operacao
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Mascarar identidade nos logs
+      shell: bash
+      env:
+        MASCARAS: ${{ inputs.mascaras }}
+      run: |
+        while IFS= read -r termo; do
+          [ -n "$termo" ] && echo "::add-mask::$termo"
+        done <<< "$MASCARAS"
+
+    - name: Baixar repositorio de operacao
+      uses: actions/checkout@v7
+      with:
+        repository: ${{ inputs.repositorio }}
+        ssh-key: ${{ inputs.chave }}
+        path: .operacao
+        persist-credentials: false
+
+    - name: Expor scripts, plugins e dados
+      shell: bash
+      run: |
+        set -euo pipefail
+        # O deploy exige working tree limpo (a imagem sai do HEAD). Links e a
+        # copia da operacao sao locais do job: ficam fora do git so aqui, via
+        # .git/info/exclude, sem mexer no .gitignore versionado.
+        echo "/.operacao/" >> .git/info/exclude
+        for item in scripts wordpress wp-plugins ops skills docs infra config; do
+          if [ -e ".operacao/$item" ] && [ ! -e "$item" ]; then
+            ln -s ".operacao/$item" "$item"
+          fi
+          echo "/$item" >> .git/info/exclude
+        done
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "::error::working tree sujo apos montar a operacao"; git status --porcelain | head; exit 1
+        fi
+        echo "operacao montada: $(ls -d scripts wordpress ops 2>/dev/null | tr '\n' ' ')"

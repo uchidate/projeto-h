@@ -1,0 +1,72 @@
+# Atualizacao automatica de dependencias.
+#
+# Existe porque o Next.js ficou com duas CVEs criticas e tres altas (SSRF, DoS)
+# sem ninguem saber — a descoberta veio de uma varredura manual com Trivy em
+# 2026-09-09, nao de nenhum processo. Depender de alguem lembrar de checar e
+# depender de sorte.
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    # Agrupado por tipo de atualizacao, nao um PR por pacote. Vinte PRs por
+    # semana nao sao revisados — sao fechados em massa, e ai o mecanismo inteiro
+    # perde a funcao.
+    groups:
+      producao-menor:
+        dependency-type: production
+        update-types: [minor, patch]
+      desenvolvimento:
+        dependency-type: development
+        update-types: [minor, patch]
+    # Major fica de fora do agrupamento de proposito: exige leitura de
+    # changelog e merece PR proprio.
+    # Majors bloqueados por dependencia de terceiros, sem nada a migrar do
+    # nosso lado. Reabrir cada PR a cada semana so gera ruido fechado sem
+    # leitura. Tirar a entrada quando a condicao abaixo mudar.
+    ignore:
+      # TypeScript 7: o typescript-eslint (via eslint-config-next) aceita
+      # typescript <6.1 e o lint quebra com "does not support TS 7.0"
+      # (typescript-eslint#10940). O tsc 7 compila o projeto sem erro — PR #71.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+      # ESLint 10: eslint-plugin-react 7.37.5 (via eslint-config-next) aceita
+      # eslint <=9.7 e usa context.getFilename, removido no 10 — PR #73.
+      - dependency-name: eslint
+        update-types: ['version-update:semver-major']
+      # conventional-changelog-conventionalcommits 10: exige
+      # conventional-changelog-writer@9, e o @semantic-release/release-notes-
+      # generator 14.1.1 (ultimo) ainda usa o antigo — a geracao de notas quebra
+      # e o release falha. Testado chamando os plugins com o .releaserc — PR #74.
+      - dependency-name: conventional-changelog-conventionalcommits
+        update-types: ['version-update:semver-major']
+    labels: [dependencias]
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+
+  # As Actions tambem envelhecem, e uma action desatualizada no pipeline de
+  # deploy e superficie de supply chain.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels: [dependencias, ci]
+    commit-message:
+      prefix: 'ci(deps)'
+
+  # A imagem base do Dockerfile carrega as CVEs de sistema — foi assim que a
+  # imagem do WordPress acumulou 69 criticas sem ninguem notar.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    labels: [dependencias, docker]
+    commit-message:
+      prefix: 'chore(docker)'

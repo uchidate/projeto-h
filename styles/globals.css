@@ -1,0 +1,2440 @@
+@import '../tokens.css' layer(base);
+
+@import 'tailwindcss';
+
+@config '../tailwind.config.ts';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    /* Valor literal do Tailwind 3 (gray-200). O bloco gerado pelo
+       @tailwindcss/upgrade usava var(--color-gray-200, currentcolor), mas o
+       Tailwind 4 so emite a variavel de cor que alguma classe usa: ela ficava
+       indefinida, a borda caia em currentcolor e todo contorno sem cor
+       explicita virava a cor do texto (pilula do grupo rosa, divisorias
+       apagadas). Medido por captura antes x depois em 2026-09-14. */
+    border-color: #e5e7eb;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility glass-nav {
+  background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: all 0.3s;
+}
+
+@utility glass-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  transition: all 0.5s;
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
+}
+
+@utility glass-card-hover {
+  @apply hover:-translate-y-1;
+}
+
+@utility home-border-pop {
+  border-width: 1.5px;
+}
+
+@utility text-display {
+  /* ── Typography scale ── */
+  @apply text-3xl lg:text-4xl font-black tracking-tight;
+}
+
+@utility text-title {
+  @apply text-xl lg:text-2xl font-black;
+}
+
+@utility text-subtitle {
+  @apply text-base lg:text-lg font-bold;
+}
+
+@utility text-body {
+  @apply text-sm leading-relaxed;
+}
+
+@utility text-small {
+  @apply text-xs leading-snug;
+}
+
+@utility touch-target {
+  /* Padrões de páginas longas: aplicáveis a qualquer tipo de entidade. */
+  min-height: var(--tap-target-min);
+}
+
+@utility profile-stack {
+  & > * + * {
+    margin-top: var(--profile-section-gap);
+  }
+}
+
+@utility group-profile-stack {
+  /* Hallmark Specimen: grupos seguem o mesmo ritmo ponderado dos perfis de
+     artista. A hierarquia vem do respiro — não de uma margem idêntica entre
+     todos os módulos. */
+  & > [data-profile-entry='interstitial'] {
+    padding-block: var(--profile-section-block-compact);
+  }
+
+  & > [data-profile-weight='spine'] {
+    padding-block: var(--profile-section-spine);
+  }
+
+  & > [data-profile-weight='pillar'] {
+    padding-block: var(--profile-section-block);
+  }
+
+  & > [data-profile-weight='reference'] {
+    padding-block: var(--profile-section-block-compact);
+  }
+}
+
+@utility profile-content-measure {
+  max-width: var(--content-measure);
+}
+
+@utility profile-measure {
+  @media (min-width: 1024px) {
+    max-width: var(--profile-section-measure);
+  }
+}
+
+@utility profile-prose {
+  /* Medida de SEÇÃO (grades, painéis, rails) — distinta de --content-measure,
+     que é medida de leitura para prosa. Só a partir de lg, igual ao
+     lg:max-w-[1120px] que substitui: abaixo disso a seção ocupa a largura toda. */
+  max-width: var(--content-measure);
+  color: var(--color-fg);
+
+  & :where(p, li) {
+    font-size: 1rem;
+    line-height: 1.82;
+    letter-spacing: -0.003em;
+    hyphens: none;
+    overflow-wrap: normal;
+  }
+
+  @media (min-width: 640px) {
+    & :where(p, li) {
+      font-size: 1.03125rem;
+      line-height: 1.86;
+    }
+  }
+
+  & h2 {
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  & h3 {
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  & h4 {
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  & :where(p:first-child) {
+    margin-top: 0;
+  }
+
+  & :where(p + p) {
+    margin-top: 1.25em;
+  }
+}
+
+@utility profile-kicker {
+  font-family:
+    var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+  font-size: 0.625rem;
+  font-weight: 900;
+  line-height: 1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+@utility profile-panel {
+  /* Voz editorial: o bloco é delimitado por fio de cabeça e respiro, não por
+     moldura fechada. A moldura anterior (borda em volta + gradiente + inset)
+     produzia card-in-card sempre que continha células com borda própria. */
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+}
+
+@utility profile-fact-card {
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 72%, var(--color-surface));
+  padding: 0.875rem;
+
+  @media (min-width: 640px) {
+    padding: 1rem;
+  }
+}
+
+@utility profile-chip {
+  display: inline-flex;
+  min-height: 1.75rem;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--color-border) 68%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 78%, var(--color-surface));
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1rem;
+  color: var(--color-fg-subtle);
+}
+
+@utility text-label {
+  @apply text-[11px] font-semibold tracking-wide;
+}
+
+@utility text-caption {
+  @apply text-[10px] font-black uppercase tracking-widest;
+}
+
+@utility text-micro {
+  @apply text-[9px] font-medium;
+}
+
+@utility btn-primary {
+  background-color: var(--color-fg);
+  color: var(--color-bg);
+  @apply relative overflow-hidden px-5 py-2.5 text-sm md:px-8 md:py-3.5 md:text-base font-black tracking-wide rounded-full transition-[background-color,color,border-color,opacity,transform] duration-300 active:scale-95 hover:-translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none;
+  &:hover {
+    background-color: var(--color-accent);
+    color: #ffffff;
+  }
+}
+
+@utility btn-secondary {
+  background-color: var(--color-surface);
+  color: var(--color-fg);
+  border: 1px solid var(--color-border);
+  @apply px-5 py-2.5 text-sm md:px-8 md:py-3.5 md:text-base font-bold tracking-wide rounded-full transition-[background-color,color,border-color,opacity,transform,box-shadow] duration-300 active:scale-95 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50;
+  &:hover {
+    border-color: var(--color-border-strong);
+    background-color: var(--color-surface-hover);
+  }
+}
+
+@utility ticker-link {
+  /* Ticker links */
+  color: var(--color-ticker-fg);
+  border-right: 1px solid var(--color-ticker-divider);
+  &:hover {
+    color: var(--color-ticker-fg-hover);
+  }
+}
+
+@utility cta-secondary {
+  /* Botão secundário dentro de painéis featured (fundo sempre escuro) */
+  background-color: var(--color-featured-border);
+  border: 1px solid var(--color-featured-border);
+  color: var(--color-featured-fg);
+  &:hover {
+    background-color: rgba(245, 245, 245, 0.14);
+    border-color: rgba(245, 245, 245, 0.2);
+  }
+}
+
+@utility link-hover {
+  @apply transition-[color,text-decoration-color,text-underline-offset] duration-200 hover:underline hover:underline-offset-4;
+  color: var(--color-accent);
+}
+
+@utility hero-gradient {
+  background: linear-gradient(
+    to top,
+    var(--color-overlay) 0%,
+    transparent 100%
+  );
+}
+
+@utility card-hover {
+  @apply transition-[border-color,background-color,box-shadow,transform] duration-500 hover:scale-[1.02] hover:-translate-y-1 cursor-pointer;
+}
+
+@utility input-embutido {
+  /* Reset para inputs inline (dentro de wrappers customizados com border própria)
+   *
+   * A classe NAO pode se chamar `border-0`, que e nome de utility do Tailwind.
+   * Quando um seletor dentro de uma camada usa o nome de uma utility, o Tailwind
+   * gera as permutacoes de variante dela por cima deste seletor e o resultado sai
+   * malformado. O que ele produzia:
+   *
+   *   .last\:border-0:last-childinput[type="text"], ...
+   *
+   * `:last-childinput` nao e pseudo-classe valida, entao a regra inteira era
+   * descartada pelo navegador — e com ela o `last:border-0`, usado de verdade em
+   * app/(site)/agencies/[slug]/page.tsx e components/productions/ProductionSidebar.tsx:
+   * a borda do ultimo item dessas listas nunca foi removida.
+   *
+   * O webpack aceitava calado. Quem apontou foi o parser de CSS do Turbopack, no
+   * upgrade para o Next 16 — o bug e anterior a ele.
+   */
+  &input[type='text'] {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    background-color: transparent;
+  }
+  & input[type='search'] {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    background-color: transparent;
+  }
+}
+
+@layer base {
+  /* ── Light theme (default) ── */
+  :root {
+    color-scheme: light;
+    --color-bg:           #f9f9fb;
+    --color-surface:      #f2f2f6;
+    --color-surface-hover:#e9e9ef;
+    --color-border:       #dddde6;
+    --color-border-strong:#c4c4d0;
+    --color-home-frame:   #111111;
+    --color-fg:           #0d0d10;
+    --color-fg-subtle:    #2d2d38;
+    --color-muted:        #5a5a6e;
+    --color-accent:       #ff246e;
+    --color-accent-soft:  rgba(255, 36, 110, 0.10);
+    --color-accent-strong:#e91562;
+    /* Variante escurecida do accent — só para texto branco pequeno/bold sobre
+       fundo colorido (badges tipo "Ativo"/"Em alta"). accent/accent-strong não
+       passam WCAG AA (4.5:1) nesse tamanho de fonte (achado via axe-core em
+       2026-07-06); esta cor é ~5.8:1, sem alterar a cor de marca usada em
+       botões/links maiores, onde o contraste já é adequado. */
+    --color-accent-a11y:  #c61153;
+    --color-cyan:         #b14cff;
+    --color-violet:       var(--color-accent);
+    --color-gold:         #ff6bb0;
+    --color-ink-panel:    #120f15;
+    --color-surface-editorial: #fff0f6;
+    --color-surface-media:     var(--color-surface);
+    --color-surface-tint:      #f6f0ff;
+    --color-shimmer:      rgba(0, 0, 0, 0.04);
+    --color-overlay:      rgba(0, 0, 0, 0.45);
+    --color-skeleton:     #e4e4ec;
+    /* Featured panels: sempre alto contraste independente do tema */
+    --color-featured-bg:     #0c0c0c;
+    --color-featured-fg:     #f5f5f5;
+    --color-featured-muted:  rgba(245, 245, 245, 0.55);
+    --color-featured-border: rgba(245, 245, 245, 0.12);
+    /* Ticker de notícias */
+    --color-ticker-bg:       #0c0c0c;
+    --color-ticker-fg:       rgba(255, 255, 255, 0.65);
+    --color-ticker-fg-hover: rgba(255, 255, 255, 0.95);
+    --color-ticker-divider:  rgba(255, 255, 255, 0.08);
+    /* Navbar translucida */
+    --color-navbar-scrolled: rgba(249, 249, 251, 0.88);
+    /* Alturas fixas para cálculo de offsets sticky */
+    --ticker-h: 40px;
+    --nav-h: 52px;
+    --bottom-nav-h: 62px;
+    /* Mobile: barra principal de 52px + faixa de navegação de 40px e borda.
+       Deve coincidir com a altura renderizada antes da hidratação; usar só
+       --nav-h aqui deslocava todo o <main> em ~41px quando o ResizeObserver
+       corrigia a variável (CLS 0,105 no baseline Lighthouse de 2026-07-15). */
+    --site-header-h: 93px;
+    --reading-bar-h: 42px;
+    --site-sticky-top: calc(var(--adsense-anchor-top-offset, 0px) + var(--site-header-h));
+    --section-bar-h: 52px;
+    /* Offset para scroll-mt em páginas com ReadingBar */
+    --anchor-nav-h: 40px;
+    --scroll-anchor-offset: calc(var(--site-header-h) + var(--reading-bar-h) + var(--anchor-nav-h) + 12px);
+    /* Primitivos de layout reutilizáveis em páginas de entidade. Mantêm os
+       mesmos critérios de toque, leitura e densidade em grupo/artista/produção. */
+    --tap-target-min: 2.75rem;
+    --content-measure: 68ch;
+  --profile-section-measure: 1120px;
+    --profile-section-gap: 2.5rem;
+    /* Ritmo em três pesos: a página tem ~24 seções e, com respiro idêntico em
+       todas, nenhuma se destaca — o leitor não distingue a espinha editorial
+       dos blocos de consulta. Espinha respira, pilar é o padrão, referência
+       comprime. */
+    --profile-section-spine: 3rem;
+    --profile-section-block: 2rem;
+    --profile-section-block-compact: 1.25rem;
+    --entity-hero-min-h: 25rem;
+    --entity-hero-h: min(72svh, 34rem);
+    --entity-hero-max-h: 34rem;
+    /* Kicker de categoria na home (HomeKicker/lib/home/catStyle.ts) — texto
+       sobre fundo translúcido da própria cor (~12.5% alpha) sobre --color-bg.
+       Valores calculados pra 4.5:1 (WCAG AA) contra esse fundo especificamente
+       neste tema; achado via axe-core em 2026-07-06 (paleta original falhava
+       em 9 das 10 categorias, pior caso 1.87:1 em "reality-shows"). */
+    --home-cat-k-drama:        #bf1973;
+    --home-cat-k-pop:          #7c3aed;
+    --home-cat-k-film:         #026ca3;
+    --home-cat-cultura:        #107535;
+    --home-cat-grupos:         #985304;
+    --home-cat-k-beauty:       #bc2266;
+    --home-cat-artistas:       #066e87;
+    --home-cat-noticias-k-pop: #477209;
+    --home-cat-reality-shows:  #8e5c06;
+    --home-cat-webtoons:       #754dcf;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --site-header-h: 196px;
+      --section-bar-h: 44px;
+      --profile-section-gap: 3rem;
+      --profile-section-spine: 6rem;
+      --profile-section-block: 3.5rem;
+      --profile-section-block-compact: 1.75rem;
+      --entity-hero-min-h: 30rem;
+      --entity-hero-h: 60vh;
+      --entity-hero-max-h: 37.5rem;
+    }
+  }
+
+  /* ── Dark theme ── */
+  .dark {
+    color-scheme: dark;
+    --color-bg:           #0d0b0f;
+    --color-surface:      #1b1720;
+    --color-surface-hover:#241f2c;
+    --color-border:       #3a3244;
+    --color-border-strong:#504758;
+    --color-home-frame:   #f1eef3;
+    --color-fg:           #f0f0f4;
+    --color-fg-subtle:    #c8c8d4;
+    --color-muted:        #9898a8;
+    --color-accent:       #ff367d;
+    --color-accent-soft:  rgba(255, 54, 125, 0.18);
+    --color-accent-strong:#ff4b8d;
+    --color-accent-a11y:  #bf3869;
+    --color-cyan:         #c084fc;
+    --color-violet:       var(--color-accent);
+    --color-gold:         #ff7fbd;
+    --color-ink-panel:    #0b0910;
+    --color-surface-editorial: #2e1a24;
+    --color-surface-media:     var(--color-surface);
+    --color-surface-tint:      #251a30;
+    --color-shimmer:      rgba(255, 255, 255, 0.05);
+    --color-overlay:      rgba(0, 0, 0, 0.65);
+    --color-skeleton:     #2e2838;
+    /* Featured panels: ligeiramente mais claro que o fundo dark */
+    --color-featured-bg:     #1a1a1a;
+    --color-featured-fg:     #f0f0f0;
+    --color-featured-muted:  rgba(240, 240, 240, 0.60);
+    --color-featured-border: rgba(240, 240, 240, 0.12);
+    /* Ticker de notícias */
+    --color-ticker-bg:       #121212;
+    --color-ticker-fg:       rgba(210, 210, 210, 0.75);
+    --color-ticker-fg-hover: #f0f0f0;
+    --color-ticker-divider:  rgba(255, 255, 255, 0.07);
+    /* Navbar translucida */
+    --color-navbar-scrolled: rgba(13, 11, 15, 0.88);
+    /* Kicker de categoria na home — variantes clareadas pro tema escuro (ver
+       comentário no :root; mesmo cálculo de contraste, fundo --color-bg escuro). */
+    --home-cat-k-drama:        #eb3095;
+    --home-cat-k-pop:          #9b69f1;
+    --home-cat-k-film:         #118bca;
+    --home-cat-cultura:        #16a34a;
+    --home-cat-grupos:         #d97706;
+    --home-cat-k-beauty:       #e14a8d;
+    --home-cat-artistas:       #0891b2;
+    --home-cat-noticias-k-pop: #65a30d;
+    --home-cat-reality-shows:  #f59e0b;
+    --home-cat-webtoons:       #9469f7;
+  }
+}
+
+@layer utilities {
+  html {
+    /* `clip` evita overflow lateral sem criar o containing block que quebrava
+     o posicionamento full-screen dos vignettes com `hidden`. */
+    overflow-x: clip;
+  }
+
+  body {
+    color: var(--color-fg);
+    background-color: var(--color-bg);
+    min-height: 100vh;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /*
+ * Contenção global de overflow.
+ *
+ * 1. max-width: 100% em mídia: imagem/vídeo/iframe nunca ultrapassam
+ *    o container, qualquer que seja seu tamanho intrínseco.
+ *
+ * 2. min-width: 0 universal com :where() (especificidade 0 — qualquer
+ *    classe Tailwind sobrescreve): corrige o padrão CSS de min-width: auto
+ *    em flex/grid que permite itens expandirem além do pai.
+ */
+  :where(img, video, iframe, embed, object) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  :where(*) {
+    min-width: 0;
+  }
+
+  /* Focus states for accessibility */
+  *:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Remove default outline but keep focus-visible */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+@layer components {
+  /* Input focus states */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  textarea,
+  select {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.15s ease;
+  }
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="password"]::placeholder,
+  input[type="search"]::placeholder,
+  textarea::placeholder {
+    color: var(--color-muted);
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="search"]:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  animation: gradient 3s linear infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.5s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(to right,
+      transparent 0%,
+      var(--color-shimmer) 50%,
+      transparent 100%);
+  background-size: 1000px 100%;
+}
+
+/* Mobile menu slide-in animations */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+body:has(#mobile-menu-toggle:checked) {
+  overflow: hidden;
+}
+
+/* Skeleton Loader */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skeleton {
+  background-color: var(--color-skeleton);
+  @apply animate-pulse rounded-sm;
+}
+
+.skeleton-text {
+  background-color: var(--color-skeleton);
+  @apply h-4 rounded-sm animate-pulse;
+}
+
+.skeleton-card {
+  background-color: var(--color-skeleton);
+  border: 1px solid var(--color-border);
+  @apply aspect-2/3 rounded-xl animate-pulse;
+}
+
+/* Ripple Effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.6);
+  width: 20px;
+  height: 20px;
+  animation: ripple 0.6s ease-out;
+  pointer-events: none;
+}
+
+/* Smooth transitions for interactive elements */
+button, a, input, select, textarea {
+  @apply transition-colors duration-200;
+}
+
+/* Focus ring improvements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent);
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Skeleton loaders — cor via variável, sem hardcode */
+.skeleton,
+.skeleton-text,
+.skeleton-card {
+  background-color: var(--color-skeleton);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl;
+}
+
+
+/* AdSense — colapsar slots não preenchidos sem deixar espaço vazio */
+ins.adsbygoogle[data-ad-status^="unfill"] {
+  display: none !important;
+}
+
+/* ── Conteúdo editorial vindo do WordPress ─────────────────────────────── */
+
+/* Contém overflow horizontal de qualquer bloco Gutenberg ou embed */
+.wp-article-content {
+  overflow-x: clip;
+}
+
+/* No desktop, a coluna editorial acompanha a largura da capa. O corpo ganha
+   um pouco mais de tamanho e entrelinha para preservar o ritmo de leitura na
+   medida mais larga; tablet e mobile mantêm a composição anterior. */
+@media (min-width: 1280px) {
+  .oc-article-reading-column .prose {
+    max-width: none;
+  }
+
+  .oc-article-reading-column .prose p {
+    font-size: 1.125rem;
+    line-height: 1.55;
+  }
+}
+
+/* Ancora de scroll: compensar header fixo */
+.wp-article-content h2,
+.wp-article-content h3,
+.wp-article-content h4 {
+  scroll-margin-top: calc(var(--site-header-h, 64px) + 1.5rem);
+}
+
+/* Tipografia editorial — parágrafos */
+.wp-article-content .prose p {
+  font-size: 1.0625rem;
+  line-height: 1.45;
+  color: var(--color-fg);
+  margin-bottom: 1.1rem;
+}
+
+/* Justificado só onde a coluna é larga — em ~390px justify abre "rios"
+   de espaço entre palavras (flagrado em print no perfil de grupo). */
+@media (min-width: 640px) {
+  .prose p {
+    text-align: justify;
+    hyphens: auto;
+  }
+  .wp-article-content .prose p {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Spotify embed inline no artigo */
+.wp-article-content .oc-spotify-embed {
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.wp-article-content .oc-spotify-embed iframe {
+  display: block;
+  border-radius: 12px;
+}
+
+/* YouTube embed inline no artigo — wrapper 16:9 responsivo */
+.wp-article-content .oc-youtube-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.wp-article-content .oc-youtube-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Parágrafo lead (primeiro do artigo) — convida à leitura */
+.wp-article-content .oc-article-lead {
+  font-size: 1.175rem;
+  font-weight: 500;
+  line-height: 1.8;
+  color: var(--color-fg);
+  text-align: left;
+  hyphens: none;
+  padding-top: 0.25rem;
+  padding-bottom: 0.5rem;
+  border-top: 2px solid var(--color-accent);
+  margin-bottom: 1.5rem !important;
+}
+
+/* Letra capitular — ativa quando o editor liga "Drop Cap" no bloco de parágrafo do Gutenberg */
+.wp-article-content .has-drop-cap:not(.oc-article-lead)::first-letter,
+.wp-article-content .oc-article-lead.has-drop-cap::first-letter {
+  float: left;
+  padding: 0.04em 0.12em 0 0;
+  font-size: 3.3em;
+  line-height: 0.82;
+  font-weight: 900;
+  color: var(--color-accent);
+}
+
+/* Realce editorial inline — <mark class="oc-hl"> acompanha a cor de destaque do artigo */
+.wp-article-content mark.oc-hl {
+  background: linear-gradient(transparent 60%, color-mix(in srgb, var(--color-accent) 32%, transparent) 60%);
+  color: inherit;
+  font-weight: 700;
+  padding: 0 1px;
+}
+
+/* Termo em destaque colorido — mesmo padrão usado em perfis de artista/grupo (strong.oc-name) */
+.wp-article-content strong.oc-name {
+  color: var(--color-accent);
+  font-weight: 800;
+}
+
+/* Links de prosa: sublinhado animado em vez de underline estático */
+.wp-article-content .prose a,
+.wp-article-content p a,
+.wp-article-content li a {
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration: none;
+  background-image: linear-gradient(var(--color-accent), var(--color-accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 0.25s ease;
+}
+.wp-article-content .prose a:hover,
+.wp-article-content p a:hover,
+.wp-article-content li a:hover {
+  background-size: 100% 2px;
+}
+
+/* Capa do artigo — leve zoom ao passar o mouse (imagem estática ganha vida) */
+.oc-hero-media { overflow: hidden; }
+.oc-hero-media img {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+@media (hover: hover) {
+  .oc-hero-media:hover img { transform: scale(1.035); }
+}
+
+/* Rota/itinerário em chips conectados por seta — <ul class="oc-route"><li>Cidade</li>...</ul>
+   !important necessário: a regra genérica .wp-article-content ul força
+   flex-direction:column pra listas comuns e teria a mesma prioridade aqui. */
+.wp-article-content ul.oc-route {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+.wp-article-content ul.oc-route li {
+  display: flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-fg);
+  white-space: nowrap;
+}
+.wp-article-content ul.oc-route li::before {
+  content: none !important;
+}
+.wp-article-content ul.oc-route li.is-current {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.wp-article-content ul.oc-route li:not(:last-child)::after {
+  content: '→';
+  margin-left: 0.35rem;
+  color: var(--color-muted);
+  font-weight: 400;
+}
+@media (max-width: 480px) {
+  .wp-article-content ul.oc-route { gap: 0.35rem; }
+  .wp-article-content ul.oc-route li { font-size: 0.72rem; padding: 0.25rem 0.55rem; }
+}
+
+/* Barra de proporção pra estatística de impacto — <div class="oc-stat-bar" style="--pct:100%"><span>rótulo</span></div> */
+.wp-article-content .oc-stat-bar {
+  margin: 0.85rem 0;
+}
+.wp-article-content .oc-stat-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.wp-article-content .oc-stat-bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+.wp-article-content .oc-stat-bar-fill {
+  height: 100%;
+  width: var(--pct, 0%);
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+@supports (animation-timeline: view()) {
+  .wp-article-content .oc-stat-bar-fill {
+    width: 0%;
+    animation: oc-stat-fill 1s ease-out both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 30%;
+  }
+  @keyframes oc-stat-fill {
+    to { width: var(--pct, 0%); }
+  }
+}
+
+/* Contador "faltam N dias" — data-oc-countdown fica vazio até o BlogDaysUntil hidratar */
+.wp-article-content [data-oc-countdown] {
+  display: inline-block;
+  font-weight: 800;
+  color: var(--color-accent);
+  visibility: hidden;
+}
+.wp-article-content [data-oc-countdown].is-ready {
+  visibility: visible;
+}
+
+/* Selo de domínio na lista de fontes consultadas — <span class="oc-source-domain">site.com</span> */
+.wp-article-content .oc-source-domain {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+/* Termo técnico com tooltip nativo — <abbr title="..."> sem custo de JS */
+.wp-article-content abbr[title] {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+/* Separador editorial — desenha da esquerda pra direita ao entrar na viewport */
+.wp-article-content .wp-block-separator {
+  border: none;
+  border-top: 2px solid var(--color-accent);
+  margin: 2.5rem auto;
+  width: 64px;
+}
+@supports (animation-timeline: view()) {
+  .wp-article-content .wp-block-separator {
+    transform-origin: left;
+    animation: oc-separator-draw 0.6s ease-out both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 20%;
+  }
+  @keyframes oc-separator-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+}
+
+/* Entrada suave dos títulos ao rolar — scroll-driven, sem JavaScript.
+   Navegadores sem suporte a animation-timeline simplesmente não animam (progressive enhancement). */
+@supports (animation-timeline: view()) {
+  .wp-article-content h2,
+  .wp-article-content h3 {
+    animation: oc-heading-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 25%;
+  }
+  @keyframes oc-heading-reveal {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (min-width: 640px) {
+  .wp-article-content .oc-article-lead {
+    font-size: 1.35rem;
+    text-align: justify;
+    hyphens: auto;
+  }
+}
+
+/* H2 — separador sutil */
+.wp-article-content h2 {
+  margin-top: 2.75rem;
+  margin-bottom: 0.85rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0;
+  border-top: 2px solid var(--color-accent);
+  border-bottom: none;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  color: var(--color-fg);
+}
+
+@media (min-width: 640px) {
+  .wp-article-content h2 {
+    font-size: 1.55rem;
+  }
+}
+
+/* H3 */
+.wp-article-content h3 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.65rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--color-accent);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+  color: var(--color-fg);
+}
+
+/* Listas — bullet circular accent */
+.wp-article-content ul {
+  margin: 1.25rem 0;
+  padding-left: 0.25rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wp-article-content ul li {
+  position: relative;
+  display: block;
+  padding-left: 1.4rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-fg);
+}
+
+.wp-article-content ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+
+/* OL — contador numerado */
+.wp-article-content ol {
+  margin: 1.25rem 0;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: oc-ol;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wp-article-content ol li {
+  position: relative;
+  display: block;
+  padding-left: 2rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-fg);
+  counter-increment: oc-ol;
+}
+
+.wp-article-content ol li::before {
+  content: counter(oc-ol) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-accent);
+  line-height: 1.75;
+  min-width: 1.5rem;
+}
+
+/* Blockquote editorial */
+.wp-article-content blockquote {
+  margin: 2rem 0;
+  border-left: 4px solid var(--color-accent);
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 1.25rem 1.4rem;
+  background: color-mix(in srgb, var(--color-accent) 5%, var(--color-surface));
+  font-style: normal;
+  text-align: left;
+}
+
+.wp-article-content blockquote p {
+  margin: 0;
+  font-size: clamp(1.1rem, 1vw + 0.9rem, 1.5rem);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--color-fg);
+}
+
+.wp-article-content blockquote p::before {
+  content: '\201C';
+  color: var(--color-accent);
+  font-size: 1.5em;
+  line-height: 0;
+  vertical-align: -0.3em;
+  margin-right: 0.1em;
+  font-style: normal;
+}
+
+/* Blocos customizados Gutenberg (__bloco__/*) vivem dentro do .prose mas
+   têm estilos próprios. Resetamos aqui a interferência do prose em seus
+   elementos internos para evitar conflito de font-size e margin. */
+.wp-article-content [class^="__bloco__-"] p,
+.wp-article-content [class*=" __bloco__-"] p,
+.wp-article-content [class^="__bloco__-"] li,
+.wp-article-content [class*=" __bloco__-"] li,
+.wp-article-content [class^="__bloco__-"] ul,
+.wp-article-content [class*=" __bloco__-"] ul,
+.wp-article-content [class^="__bloco__-"] ol,
+.wp-article-content [class*=" __bloco__-"] ol,
+.wp-article-content [class^="__bloco__-"] dt,
+.wp-article-content [class*=" __bloco__-"] dt,
+.wp-article-content [class^="__bloco__-"] dd,
+.wp-article-content [class*=" __bloco__-"] dd {
+  font-size: inherit;
+  line-height: inherit;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* wp-block wrapper que o Gutenberg envolve cada bloco */
+.wp-article-content .wp-block-__bloco__-spoiler,
+.wp-article-content .wp-block-__bloco__-rating,
+.wp-article-content .wp-block-__bloco__-ficha-drama,
+.wp-article-content .wp-block-__bloco__-lyrics,
+.wp-article-content .wp-block-__bloco__-callout,
+.wp-article-content .wp-block-__bloco__-alert,
+.wp-article-content .wp-block-__bloco__-highlight,
+.wp-article-content .wp-block-__bloco__-pros-cons,
+.wp-article-content .wp-block-__bloco__-marker-list,
+.wp-article-content .wp-block-__bloco__-timeline {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.wp-article-content .oc-article-lead {
+  font-size: 1.075rem;
+  font-weight: 600;
+  line-height: 1.75;
+  color: var(--color-fg);
+}
+
+.wp-article-content .oc-related-content-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.wp-article-content .oc-related-content-group .oc-related-content {
+  margin: 0;
+  flex: 1 1 min(100%, 22rem);
+}
+
+.wp-article-content .oc-related-content {
+  display: flex;
+  width: min(100%, 30rem);
+  max-width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-accent);
+  padding: 0.85rem 1rem;
+  background: var(--color-surface);
+  box-shadow: 0 10px 28px rgb(15 23 42 / 0.06);
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.wp-article-content .oc-related-content::before {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent);
+  content: "↗";
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.wp-article-content .oc-related-content > span {
+  flex-shrink: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.wp-article-content .oc-related-content a {
+  min-width: 0;
+  font-weight: 800;
+  color: var(--color-fg);
+  text-decoration: none;
+}
+
+.wp-article-content .oc-related-content a:hover {
+  color: var(--color-accent);
+}
+
+.wp-article-content .oc-related-content--preview {
+  display: block;
+  width: min(100%, 41rem);
+  border-left-width: 1px;
+  border-color: color-mix(in srgb, var(--color-border) 92%, var(--color-accent));
+  border-radius: 0.9rem;
+  padding: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-surface) 70%, var(--color-bg));
+  box-shadow: none;
+}
+
+.wp-article-content .oc-related-content--preview::before {
+  display: none;
+}
+
+.wp-article-content .oc-related-content__link {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 0;
+  min-height: 6.25rem;
+  color: inherit;
+}
+
+.wp-article-content .oc-related-content__image {
+  position: relative;
+  display: block;
+  min-height: 6.25rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+}
+
+.wp-article-content .oc-related-content__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.wp-article-content .oc-related-content__image--empty::before {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--color-accent);
+  border-radius: 999px;
+  content: "";
+  transform: translate(-50%, -50%);
+  opacity: 0.55;
+}
+
+.wp-article-content .oc-related-content__body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.16rem;
+  padding: 0.82rem 1rem 0.75rem 1rem;
+}
+
+.wp-article-content .oc-related-content__body strong {
+  color: var(--color-fg);
+  font-size: 0.98rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.wp-article-content .oc-related-content__eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.wp-article-content .oc-related-content__meta {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+.wp-article-content .oc-related-content__cta {
+  margin-top: 0.72rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--color-fg);
+}
+
+.wp-article-content .oc-related-content--preview:hover .oc-related-content__body strong {
+  color: var(--color-accent);
+}
+
+.wp-article-content .oc-editorial-highlight {
+  margin: 2rem 0;
+  border-left: 4px solid var(--color-accent);
+  padding: 1.2rem 1.4rem;
+  background: var(--color-surface-editorial);
+  font-size: 1.12rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--color-fg);
+}
+
+.wp-article-content .oc-editorial-highlight.is-info {
+  border-left-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.dark .wp-article-content .oc-editorial-highlight.is-info {
+  background: #172033;
+}
+
+.wp-article-content .oc-editorial-highlight.is-attention {
+  border-left-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.dark .wp-article-content .oc-editorial-highlight.is-attention {
+  background: #302510;
+}
+
+.wp-article-content .oc-stats {
+  margin: 1.75rem 0;
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-accent);
+  overflow: hidden;
+}
+
+.wp-article-content .oc-stats::before {
+  content: none;
+}
+
+.wp-article-content .oc-stats dl {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.wp-article-content .oc-stats dl > div {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.625rem 1rem;
+  background: var(--color-surface);
+}
+
+.wp-article-content .oc-stats dl > div:nth-child(even) {
+  background: var(--color-background);
+}
+
+.wp-article-content .oc-stats dt {
+  margin: 0;
+  flex-shrink: 0;
+  width: 33%;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.wp-article-content .oc-stats dd {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-fg);
+}
+
+.wp-article-content figure,
+.wp-article-content .wp-block-image,
+.wp-article-content .oc-article-media {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2.15rem auto;
+  width: 100%;
+}
+
+.wp-article-content figure img,
+.wp-article-content .wp-block-image img,
+.wp-article-content .prose > p > img,
+.wp-article-content .oc-article-media img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: min(72vh, 640px);
+  margin: 0 auto;
+  border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+  border-radius: 0.85rem;
+  background: var(--color-surface);
+  box-shadow: 0 16px 36px rgb(15 23 42 / 0.08);
+  object-fit: contain;
+}
+
+.wp-article-content .oc-article-media--portrait {
+  width: min(100%, 30rem);
+}
+
+.wp-article-content .oc-article-media--portrait img {
+  max-height: min(78vh, 720px);
+  border-radius: 1rem;
+}
+
+@media (max-width: 639px) {
+  .wp-article-content figure img,
+  .wp-article-content .wp-block-image img,
+  .wp-article-content .prose > p > img,
+  .wp-article-content .oc-article-media img {
+    max-height: 240px;
+  }
+}
+
+.wp-article-content .oc-article-media--square {
+  width: min(100%, 38rem);
+}
+
+.wp-article-content .oc-article-media--landscape {
+  width: 100%;
+}
+
+.wp-article-content figure.alignwide img,
+.wp-article-content .wp-block-image.alignwide img,
+.wp-article-content figure.size-full img,
+.wp-article-content .wp-block-image.size-full img,
+.wp-article-content .oc-article-media--landscape img {
+  width: 100%;
+  max-height: min(72vh, 680px);
+  object-fit: cover;
+}
+
+.wp-article-content figcaption,
+.wp-article-content .wp-element-caption {
+  width: min(100%, 42rem);
+  margin: 0.6rem auto 0;
+  padding: 0.4rem 0.75rem;
+  border-left: 2px solid var(--color-accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.55;
+  text-align: left;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.wp-article-content figure + figure,
+.wp-article-content .wp-block-image + .wp-block-image {
+  margin-top: -0.35rem;
+}
+
+/* Elementos que podem ultrapassar a largura do container */
+.wp-article-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.wp-article-content iframe {
+  max-width: 100%;
+}
+
+/* Imagens soltas (fora de figure/p isolado) — garantia extra */
+.wp-article-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Callout blocks (__bloco__-callout) ── */
+.wp-article-content .__bloco__-callout {
+  margin: 1.75rem 0;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-surface-editorial);
+  padding: 1.25rem 1.5rem;
+}
+
+.wp-article-content .__bloco__-callout__content {
+  margin: 0;
+  line-height: 1.8;
+  color: var(--color-fg);
+}
+
+.wp-article-content .__bloco__-callout__content p {
+  margin: 0;
+}
+
+.wp-article-content .__bloco__-callout__content > p + p {
+  margin-top: 0.9rem;
+}
+
+/* ── Aside "Você sabia?" blocks — exclui asides com class (ex: AdSlot) ── */
+.wp-article-content aside:not([class]) {
+  position: relative;
+  margin: 2rem 0;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-surface);
+  padding: 1.25rem 1.5rem 1.25rem 3.25rem;
+}
+
+.wp-article-content aside:not([class])::before {
+  content: "✦";
+  position: absolute;
+  left: 1rem;
+  top: 1.2rem;
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.wp-article-content aside:not([class]) p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  color: var(--color-fg-subtle);
+}
+
+.wp-article-content aside:not([class]) p + p {
+  margin-top: 0.75rem;
+}
+
+.wp-article-content aside:not([class]) p strong:first-child {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* ── Highlight — pull quote editorial ── */
+.wp-article-content .__bloco__-highlight {
+  margin: 2rem 0;
+  border-left: 4px solid var(--color-accent);
+  padding: 1.2rem 1.6rem;
+  background: var(--color-surface-editorial);
+}
+
+.wp-article-content .__bloco__-highlight__text {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.55;
+  color: var(--color-fg);
+  font-style: normal;
+}
+
+.wp-article-content .__bloco__-highlight__attribution {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+/* ── Alert — dica / info / aviso / spoiler ── */
+.wp-article-content .__bloco__-alert {
+  margin: 1.75rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0.7rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 5%, var(--color-bg)), var(--color-bg));
+}
+
+.wp-article-content .__bloco__-alert__title {
+  margin: 0 0 0.4rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 900;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.wp-article-content .__bloco__-alert__body {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--color-fg);
+}
+
+.wp-article-content .__bloco__-alert__body p { margin: 0; }
+.wp-article-content .__bloco__-alert__body p + p { margin-top: 0.5rem; }
+
+.wp-article-content .__bloco__-alert--tip,
+.wp-article-content .__bloco__-alert--info,
+.wp-article-content .__bloco__-alert--warning,
+.wp-article-content .__bloco__-alert--spoiler {
+  border-left-color: var(--color-accent);
+}
+
+/* ── Marker List — linha do tempo editorial ── */
+.wp-article-content .__bloco__-marker-list {
+  margin: 1.75rem 0;
+}
+
+.wp-article-content .__bloco__-marker-list__list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  margin: 0;
+  padding: 0 0 0 1.5rem;
+  list-style: none;
+}
+
+.wp-article-content .__bloco__-marker-list__list::before {
+  position: absolute;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  left: 0.38rem;
+  width: 1px;
+  background: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+  content: "";
+}
+
+.wp-article-content .__bloco__-marker-list__list li {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding-left: 0.7rem;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.wp-article-content .__bloco__-marker-list__list li::before {
+  position: absolute;
+  top: 0.4rem;
+  left: -1.42rem;
+  width: 0.64rem;
+  height: 0.64rem;
+  border: 2px solid var(--color-bg);
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 55%, transparent);
+  content: "";
+}
+
+/* ── Spotify embed ── */
+.wp-article-content .__bloco__-spotify {
+  margin: 1.75rem 0;
+  overflow: hidden;
+}
+
+.wp-article-content .__bloco__-spotify iframe {
+  display: block;
+  border: 0;
+  border-radius: 12px;
+  width: 100%;
+}
+
+/* ── Prós e Contras ── */
+.wp-article-content .__bloco__-pros-cons {
+  margin: 2rem 0;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.wp-article-content .__bloco__-pros-cons__title {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.wp-article-content .__bloco__-pros-cons__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.wp-article-content .__bloco__-pros,
+.wp-article-content .__bloco__-cons {
+  padding: 1rem 1.25rem;
+}
+
+.wp-article-content .__bloco__-pros {
+  border-right: 1px solid var(--color-border);
+}
+
+.wp-article-content .__bloco__-pros__label,
+.wp-article-content .__bloco__-cons__label {
+  margin: 0 0 0.65rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.wp-article-content .__bloco__-pros__label { color: #16a34a; }
+.wp-article-content .__bloco__-cons__label { color: #dc2626; }
+
+.wp-article-content .__bloco__-pros__list,
+.wp-article-content .__bloco__-cons__list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.wp-article-content .__bloco__-pros__list li,
+.wp-article-content .__bloco__-cons__list li {
+  margin: 0.35rem 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-fg-subtle);
+}
+
+@media (max-width: 639px) {
+  .wp-article-content .__bloco__-pros-cons__grid {
+    grid-template-columns: 1fr;
+  }
+  .wp-article-content .__bloco__-pros {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+.wp-article-content table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  margin: 1.75rem 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.wp-article-content table thead {
+  background: var(--color-surface);
+}
+.wp-article-content table th {
+  padding: 0.65rem 0.9rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+.wp-article-content table td {
+  padding: 0.65rem 0.9rem;
+  color: var(--color-fg);
+  border-bottom: 1px solid var(--color-border);
+}
+.wp-article-content table tr:last-child td {
+  border-bottom: none;
+}
+.wp-article-content table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+}
+
+@media (max-width: 639px) {
+  .wp-article-content .oc-stats dl {
+    grid-template-columns: 1fr;
+  }
+
+  .wp-article-content .oc-stats dl > div + div {
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
+  }
+
+  .wp-article-content .oc-related-content {
+    width: 100%;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.8rem;
+  }
+
+  .wp-article-content .oc-related-content > span {
+    display: block;
+  }
+
+  .wp-article-content .oc-related-content a {
+    display: block;
+  }
+
+  .wp-article-content .oc-related-content--preview {
+    border-radius: 0;
+  }
+
+  .wp-article-content .oc-related-content__link {
+    display: grid;
+    grid-template-columns: 3.75rem minmax(0, 1fr);
+    min-height: 3.75rem;
+  }
+
+  .wp-article-content .oc-related-content__image {
+    min-height: 3.75rem;
+  }
+
+  .wp-article-content .oc-related-content__body {
+    padding: 0.5rem 0.75rem;
+    gap: 0.08rem;
+  }
+
+  .wp-article-content .oc-related-content__body strong {
+    font-size: 0.82rem;
+  }
+
+  .wp-article-content .oc-related-content__meta {
+    font-size: 0.6rem;
+  }
+
+  .wp-article-content .oc-related-content__cta {
+    margin-top: 0.25rem;
+    font-size: 0.62rem;
+  }
+}
+
+/* Contentor padrão do site — alinhado com o NavBar (max-w-[1440px] + px-10) */
+.page-wrap {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;    /* px-4 mobile */
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .page-wrap {
+    padding-left: 1.5rem;  /* sm:px-6 */
+    padding-right: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .page-wrap {
+    padding-left: 2.5rem;  /* lg:px-10 */
+    padding-right: 2.5rem;
+  }
+}
+
+/* ── NavBar ─────────────────────────────────────────────────────────────── */
+.navbar-dark-strip {
+    background: #0a0a0a;
+}
+.navbar-ticker {
+    background: #0a0a0a;
+    height: 40px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-link-active   { color: #ff246e; }
+.nav-link-inactive { color: rgba(255, 255, 255, 0.70); }
+.nav-link-inactive-mobile { color: rgba(255, 255, 255, 0.65); }
+
+.nav-link-underline { position: relative; }
+.nav-link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px; width: 100%;
+    background-color: #ff246e;
+    transform-origin: left;
+    transition: transform 200ms ease;
+}
+.nav-link-underline.is-active  { color: #ff246e; }
+.nav-link-underline.is-active::after  { transform: scaleX(1); }
+.nav-link-underline.is-inactive::after { transform: scaleX(0); }
+.nav-links-fade { background: linear-gradient(to right, transparent, #0a0a0a 55%); }
+
+/* ── AdSense ────────────────────────────────────────────────────────────── */
+/* Reservas anti-CLS por formato. `auto` costuma chegar quadrado em celulares
+   (382–390px medidos em Chromium/Firefox/WebKit), mas volta a 250px em telas
+   maiores para não criar vazio excessivo em tablet/desktop. */
+.ad-reserve {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    width: 100%;
+    background: var(--color-surface);
+}
+.ad-reserve[data-ad-state="loading"]::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset-block: 0;
+    left: -55%;
+    width: 55%;
+    background: linear-gradient(
+        105deg,
+        transparent 18%,
+        color-mix(in srgb, var(--color-foreground) 5%, transparent) 50%,
+        transparent 82%
+    );
+    will-change: transform;
+    /* Se o leilão travar ou houver bloqueador, não mantém uma camada em
+       composição para sempre. O slot segue apto a receber o criativo. */
+    animation: ad-reserve-loading 1.8s ease-in-out 6;
+}
+.ad-reserve > ins.adsbygoogle {
+    position: relative;
+    z-index: 1;
+}
+@keyframes ad-reserve-loading {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(282%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ad-reserve[data-ad-state="loading"]::before {
+        animation: none;
+        will-change: auto;
+    }
+}
+.ad-reserve-auto { min-height: 250px; }
+.ad-reserve-rectangle { min-height: 250px; }
+.ad-reserve-horizontal { min-height: 100px; }
+.ad-reserve-vertical { min-height: 600px; }
+.ad-reserve-fluid { min-height: 100px; }
+.ad-reserve-autorelaxed { min-height: 280px; }
+@media (max-width: 639px) {
+    .ad-reserve-auto { min-height: min(100vw, 400px); }
+}
+
+/* Classes legadas ainda usadas por conteúdo editorial antigo. */
+.ad-slot          { min-height: 90px;  width: 100%; display: flex; align-items: center; justify-content: center; }
+.ad-slot-rect     { min-height: 250px; width: 100%; display: flex; align-items: center; justify-content: center; }
+.ad-wrap          { margin: 2rem auto; max-width: 728px; }
+.ad-wrap-wide     { margin: 2rem auto; max-width: 970px; }
+ins.adsbygoogle[data-ad-status^="unfill"] { display: none !important; }
+.ad-sticky-bottom {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    padding: 4px max(8px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    display: flex; justify-content: center;
+}
+
+/* Spacer que compensa o nav fixed.
+ *
+ * A altura vem de --site-header-h, que e CONSTANTE de proposito. Ate 2026-09-10
+ * ela ia a zero quando o nav se escondia ao rolar; como este elemento vive no
+ * fluxo, ele colapsava de 164px para nada e a pagina inteira saltava. Medido:
+ * CLS de 23,3 numa sessao com rolagem, contra 0,07 depois da correcao. */
+.navbar-spacer {
+    flex-shrink: 0;
+    height: var(--site-header-h, 164px);
+}
+
+/* Acompanha o cabecalho quando ele se esconde ao rolar.
+ *
+ * Para barras fixas ou grudadas logo abaixo do nav: sem isto elas ficam
+ * ancoradas na altura do cabecalho visivel e sobra um vazio acima quando ele
+ * some — foi o que aconteceu com os filtros no celular.
+ *
+ * Usa `transform`, NAO a propriedade `translate`. No Tailwind v4 os
+ * utilitarios `translate-*` escrevem a propriedade `translate` — a mesma. Com
+ * as duas no elemento, esta regra vencia e apagava o `-translate-x-1/2` das
+ * barras centralizadas com `left-1/2`: no desktop elas nasciam deslocadas meia
+ * tela para a direita (abas da producao, tags do artigo; 2026-09-15).
+ * `transform` e `translate` compoem de forma independente.
+ *
+ * E transform e nao `top` porque animar `top` recalcula layout a cada quadro,
+ * e cada quadro entra no CLS. Transform roda no compositor e nao desloca nada. */
+.segue-header {
+    transform: translateY(var(--site-header-offset, 0px));
+    transition: transform 200ms;
+}
+@media (prefers-reduced-motion: reduce) {
+    .segue-header { transition: none; }
+}
+
+/* ── Blocos: Spoiler, Rating, Ficha Drama ──────────────────────────────── */
+.wp-article-content .__bloco__-spoiler {
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    margin: 1.75rem 0;
+    overflow: hidden;
+}
+.wp-article-content .__bloco__-spoiler__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+    background: var(--color-surface, #fafafa);
+    list-style: none;
+    -webkit-user-select: none;
+    user-select: none;
+    color: var(--color-fg);
+}
+.wp-article-content .__bloco__-spoiler__toggle::-webkit-details-marker { display: none; }
+.wp-article-content .__bloco__-spoiler[open] .__bloco__-spoiler__toggle {
+    border-bottom: 1px solid var(--color-border);
+}
+.wp-article-content .__bloco__-spoiler__content {
+    padding: 1.25rem 1.5rem;
+}
+
+.wp-article-content .__bloco__-timeline {
+    margin: 1.75rem 0;
+}
+.wp-article-content .__bloco__-timeline__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-left: 2px solid var(--color-border);
+}
+.wp-article-content .__bloco__-timeline__item {
+    position: relative;
+    padding: 0 0 1.25rem 1.5rem;
+}
+.wp-article-content .__bloco__-timeline__item:last-child {
+    padding-bottom: 0;
+}
+.wp-article-content .__bloco__-timeline__item::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0.35rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-fg);
+}
+.wp-article-content .__bloco__-timeline__date {
+    display: block;
+    font-weight: 700;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    color: var(--color-fg);
+}
+.wp-article-content .__bloco__-timeline__text {
+    display: block;
+    line-height: 1.6;
+    color: var(--color-fg);
+}
+
+.wp-article-content .__bloco__-rating {
+    border: 1px solid var(--color-border);
+    padding: 1.5rem;
+    margin: 1.75rem 0;
+    background: var(--color-surface, #fafafa);
+}
+.wp-article-content .__bloco__-rating__eyebrow {
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-muted);
+    margin: 0 0 0.75rem;
+}
+.wp-article-content .__bloco__-rating__body {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+.wp-article-content .__bloco__-rating__score {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-accent);
+}
+.wp-article-content .__bloco__-rating__max {
+    font-size: 1rem;
+    color: var(--color-muted);
+    font-weight: 700;
+}
+.wp-article-content .__bloco__-rating__label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    margin: 0 0 0 auto;
+}
+.wp-article-content .__bloco__-rating__bar {
+    height: 6px;
+    background: var(--color-border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+.wp-article-content .__bloco__-rating__fill {
+    height: 100%;
+    background: var(--color-accent);
+    border-radius: 3px;
+}
+.wp-article-content .__bloco__-rating__context {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    margin: 0;
+}
+
+.wp-article-content .__bloco__-ficha {
+    border: 1px solid var(--color-border);
+    padding: 1.5rem;
+    margin: 1.75rem 0;
+    background: var(--color-surface, #fafafa);
+}
+.wp-article-content .__bloco__-ficha__label {
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-muted);
+    margin: 0 0 1rem;
+}
+.wp-article-content .__bloco__-ficha__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.625rem 1.5rem;
+    margin: 0;
+}
+.wp-article-content .__bloco__-ficha__grid > div { display: contents; }
+.wp-article-content .__bloco__-ficha__grid dt {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.wp-article-content .__bloco__-ficha__grid dd {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-fg);
+    margin: 0;
+}
+@media (max-width: 480px) {
+    .wp-article-content .__bloco__-ficha__grid { grid-template-columns: 1fr; }
+}
+
+.wp-article-content .__bloco__-lyrics {
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border);
+    border-radius: 0.9rem;
+    overflow: hidden;
+    background: var(--color-surface, #fafafa);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--color-fg) 4%, transparent);
+}
+/* Blocos consecutivos (estrofe, refrão, ponte...) devem ler como uma única
+   letra contínua, não como cartões isolados sem relação entre si. */
+.wp-article-content .__bloco__-lyrics + .__bloco__-lyrics {
+    margin-top: 0.6rem;
+}
+.wp-article-content .__bloco__-lyrics__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface));
+    font-family: var(--font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+}
+.wp-article-content .__bloco__-lyrics__title::before {
+    content: "♪";
+    font-family: initial;
+    font-size: 0.95rem;
+    letter-spacing: normal;
+    text-transform: none;
+}
+.wp-article-content .__bloco__-lyrics__columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.wp-article-content .__bloco__-lyrics__column { min-width: 0; padding: 1.1rem 1.25rem; }
+.wp-article-content .__bloco__-lyrics__column + .__bloco__-lyrics__column { border-left: 1px solid var(--color-border); }
+.wp-article-content .__bloco__-lyrics__label,
+.wp-article-content .__bloco__-lyrics__column > pre.__bloco__-lyrics__original::before,
+.wp-article-content .__bloco__-lyrics__column > p.__bloco__-lyrics__translation::before {
+    display: block;
+    margin-bottom: 0.6rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+/* O bloco salvo (save() em blocks.js) nunca gravou o rótulo "Original"/
+   "Tradução" no HTML publicado — só o editor do wp-admin mostrava. Corrigido
+   via CSS (::before) em vez de mexer no bloco: conserta retroativamente todo
+   conteúdo já publicado, sem precisar tocar em nenhuma letra existente. */
+.wp-article-content .__bloco__-lyrics__column > pre.__bloco__-lyrics__original::before { content: "Original"; }
+.wp-article-content .__bloco__-lyrics__column > p.__bloco__-lyrics__translation::before { content: "Tradução"; }
+.wp-article-content .__bloco__-lyrics pre {
+    margin: 0;
+    padding: 0;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    background: none;
+    border: 0;
+    color: var(--color-fg);
+    font: inherit;
+    font-style: italic;
+    line-height: 1.85;
+}
+.wp-article-content .__bloco__-lyrics__romanization { margin-top: 1.1rem !important; color: var(--color-muted) !important; font-style: italic !important; }
+.wp-article-content .__bloco__-lyrics__romanization::before { content: "Romanização"; }
+.wp-article-content .__bloco__-lyrics__translation { margin: 0; line-height: 1.85; color: var(--color-fg); }
+@media (max-width: 640px) {
+    .wp-article-content .__bloco__-lyrics__columns { grid-template-columns: 1fr; }
+    .wp-article-content .__bloco__-lyrics__column + .__bloco__-lyrics__column { border-left: 0; border-top: 1px solid var(--color-border); }
+}
+
+/* ── Blocos ricos dos artigos do pipeline (Etapa 1 "matéria montada") ────── */
+.wp-article-content .oc-facts-box {
+  margin: 2rem 0;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-accent);
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: color-mix(in srgb, var(--color-accent) 4%, var(--color-surface));
+}
+.wp-article-content .oc-facts-box-title {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.wp-article-content .oc-facts-box ul { margin: 0; padding-left: 1.1rem; }
+.wp-article-content .oc-facts-box li { margin: 0.3rem 0; font-size: 0.95rem; line-height: 1.5; }
+
+.wp-article-content .oc-embed {
+  margin: 1.5rem 0 2rem;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.wp-article-content .oc-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+.wp-article-content .oc-artist-card {
+  margin: 2.5rem 0 1.5rem;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface);
+}
+.wp-article-content .oc-artist-card-eyebrow {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.wp-article-content .oc-artist-card-name { margin: 0; font-size: 1.25rem; font-weight: 800; }
+.wp-article-content .oc-artist-card-meta { margin: 0.35rem 0 0.75rem; font-size: 0.85rem; color: var(--color-muted); display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.wp-article-content .oc-artist-card-dot { opacity: 0.5; }
+.wp-article-content .oc-artist-card-link { font-size: 0.9rem; font-weight: 700; color: var(--color-accent); text-decoration: none; }
+.wp-article-content .oc-artist-card-link:hover { text-decoration: underline; }
+
+/*
+ * Bloco abaixo da dobra que o navegador pode deixar de renderizar enquanto
+ * estiver longe da tela.
+ *
+ * Medido em 2026-09-13 na home, mobile 412px: 913 elementos dentro de <main>,
+ * e a partir do bloco de longreads (topo em ~2.500px, a tela mostra 915px) nada
+ * aparece no carregamento. Todos eles pagavam estilo e layout mesmo assim.
+ *
+ * `content-visibility: auto` mantém o HTML inteiro — busca na página, âncoras,
+ * leitores de tela e o Google continuam vendo tudo — e só adia o trabalho de
+ * renderização. `contain-intrinsic-size: auto 800px` reserva altura enquanto o
+ * bloco não foi renderizado; o `auto` faz o navegador lembrar a altura real
+ * depois da primeira vez, então a rolagem não pula ao voltar.
+ */
+.cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
+}
+
+/*
+ * Compatibilidade do space-y dentro de .prose (Tailwind 3 -> 4).
+ *
+ * No 3 o seletor era `.space-y-N > :not([hidden]) ~ :not([hidden])` e vencia as
+ * margens do plugin de tipografia; no 4 virou `:where(...)`, de especificidade
+ * zero, e as margens do .prose passaram a valer — as listas das paginas
+ * institucionais (about, ethics, corrections, editorial-standards) abriram
+ * 56 px no celular. Medido pelo CSS calculado nos dois builds: no 3 o segundo
+ * item tinha margin-top 8px e margin-bottom 0. Estas regras reproduzem isso so
+ * onde prose e space-y convivem; fora do prose o comportamento do 4 e igual.
+ */
+.prose.space-y-4 > :not([hidden]) ~ :not([hidden]),
+.prose .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; margin-bottom: 0; }
+.prose .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; margin-bottom: 0; }
+.prose .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; margin-bottom: 0; }

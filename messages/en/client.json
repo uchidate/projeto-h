@@ -1,0 +1,167 @@
+{
+  "readingBar": {
+    "jumpToSection": "Jump to section",
+    "shared": "Link copied",
+    "share": "Share page",
+    "back": "Back to {label}"
+  },
+  "common": {
+    "close": "Close",
+    "dossier": "Dossier",
+    "swipe": "Swipe →",
+    "syncFailed": "Couldn't sync right now.",
+    "signInToSync": "Sign in to sync"
+  },
+  "filmography": {
+    "type": {
+      "drama": "Series",
+      "movie": "Film",
+      "special": "Special",
+      "variety": "Variety"
+    },
+    "inCatalog": "In catalog",
+    "worksCount": "{count, plural, one {# title} other {# titles}}",
+    "latest": "Latest",
+    "focus": "Focus",
+    "average": "Average",
+    "title": "Works and appearances",
+    "intro": "A map of the catalog linked on __SITE__, ordered from the most recent work to the earliest records. On premium profiles, this section is the way into specific productions.",
+    "year": "Year",
+    "titleCol": "Title",
+    "typeCol": "Type",
+    "rating": "Rating",
+    "showLess": "Show less ↑",
+    "showAll": "See all {count} works ↓"
+  },
+  "report": {
+    "category": {
+      "foto_errada": "Wrong photo",
+      "membro_errado": "Wrong member or link",
+      "dado_incorreto": "Incorrect data",
+      "outro": "Other"
+    },
+    "buttonLabel": "Report an error on this page",
+    "buttonTitle": "Report an error",
+    "dialogLabel": "Report an error",
+    "sent": "Report sent, thank you!",
+    "willReview": "We'll review this information.",
+    "whatsWrong": "What's wrong?",
+    "details": "Details (optional)",
+    "placeholder": "Describe what needs to be fixed...",
+    "error": "Couldn't send. Please try again shortly.",
+    "submit": "Send report"
+  },
+  "trophy": {
+    "live": "Live",
+    "royal": "Royalty",
+    "record": "Record",
+    "title": "Hall of Fame",
+    "count": "{count, plural, one {# achievement} other {# achievements}}"
+  },
+  "mv": {
+    "title": "Key MVs",
+    "eyebrow": "Videos",
+    "count": "{count, plural, one {# video} other {# videos}}",
+    "featured": "Featured"
+  },
+  "prose": {
+    "continueReading": "Keep reading"
+  },
+  "production": {
+    "addedFav": "Added to favorites.",
+    "removedFav": "Removed from favorites.",
+    "savedFavLocal": "Favorite saved on this device.",
+    "removedFavLocal": "Removed from local favorites.",
+    "addedWant": "Added to Want to watch.",
+    "removedWant": "Removed from Want to watch.",
+    "savedWantLocal": "Saved to local Want to watch.",
+    "removedLocal": "Removed from local list.",
+    "markedWant": "Marked as Want to watch.",
+    "markedWatching": "Marked as Watching.",
+    "markedWatched": "Marked as Watched.",
+    "statusRemoved": "Status removed.",
+    "removeFav": "Remove from favorites",
+    "addFav": "Add to favorites",
+    "removeList": "Remove from list",
+    "addList": "Add to list",
+    "inList": "In list",
+    "want": "Want to watch",
+    "watching": "Watching",
+    "watched": "Watched",
+    "seeInList": "See in my list"
+  },
+  "spotify": {
+    "open": "Open in Spotify",
+    "onSpotify": "{name} on Spotify",
+    "listen": "Listen on Spotify",
+    "listenTrack": "Listen to \"{track}\" on Spotify"
+  },
+  "vote": {
+    "question": "Who do you vote for in {group}?",
+    "voted": "You voted for {name}",
+    "vote": "Vote",
+    "thanks": "Thanks for voting!",
+    "favorite": "{name} is the fandom favorite on this device",
+    "total": "{count, plural, one {# vote} other {# votes}} · local result per device",
+    "onePerDevice": "One vote per device"
+  },
+  "discography": {
+    "all": "All",
+    "albums": "Albums",
+    "title": "Discography",
+    "grid": "Grid",
+    "list": "List",
+    "less": "↑ less",
+    "more": "{count, plural, one {↓ # more track} other {↓ # more tracks}}"
+  },
+  "member": {
+    "role": {
+      "singer": "Singer",
+      "actor": "Actor",
+      "rapper": "Rapper",
+      "dancer": "Dancer",
+      "model": "Model",
+      "host": "Host",
+      "composer": "Composer"
+    },
+    "ageAtDeath": "Died at {age}",
+    "age": "{age} years old"
+  },
+  "eras": {
+    "title": "Era gallery"
+  },
+  "share": {
+    "label": "Share",
+    "on": "Share on {network}",
+    "copy": "Copy link",
+    "copied": "Link copied!"
+  },
+  "anniversary": {
+    "today": "{years} years since debut — today!",
+    "inDays": "{years} years since debut in {days, plural, one {# day} other {# days}}"
+  },
+  "follow": {
+    "follow": "Follow",
+    "following": "Following",
+    "signedOut": "Sign in so you don't lose it"
+  },
+  "profile": {
+    "erasOf": "{name}'s eras, one by one"
+  },
+  "ads": {
+    "label": "Advertisement",
+    "close": "Close ad"
+  },
+  "nav": {
+    "searchPlaceholder": "Search artists, groups, productions...",
+    "shop": "Shop",
+    "search": "Search",
+    "openSearch": "Open search",
+    "menu": "Navigation menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "mainNav": "Main navigation",
+    "browse": "Browse",
+    "about": "About {site}"
+  }
+}

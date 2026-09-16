@@ -1,0 +1,23 @@
+#!/bin/bash
+# Avisa quando imagens novas entram em public/images.
+#
+# Por que existe: public/images é staging para upload ao WordPress
+# (script de upload de imagens, no repositorio de operacao), nao destino. Arquivo commitado ali vive no
+# historico do git para sempre e e assado na imagem Docker. Foi assim que a pasta
+# acumulou 767 MB de imagens ja enviadas ao WP e nao referenciadas por nada.
+#
+# Avisa, nao bloqueia: os manifestos de agencia ainda em migracao legitimamente
+# precisam de imagem local, e hook que barra trabalho correto ensina --no-verify.
+novas=$(git diff --cached --name-only --diff-filter=A -- 'public/images/**' | wc -l | tr -d ' ')
+if [ "$novas" != "0" ]; then
+peso=$(git diff --cached --name-only --diff-filter=A -- 'public/images/**' \
+       | xargs -I{} sh -c 'wc -c < "{}" 2>/dev/null' | awk '{s+=$1} END {printf "%.1f", s/1048576}')
+echo "· $novas imagem(ns) nova(s) em public/images (${peso} MB) entrando no historico do git."
+echo "  Se ja subiram para o WordPress, apague o staging antes do commit:"
+git diff --cached --name-only --diff-filter=A -- 'public/images/**' | sed 's|/[^/]*$||' | sort -u | sed 's/^/    rm -rf /'
+echo "  Fluxo: script de upload de imagens <slug> --confirm  →  URL no manifesto  →  rm -rf"
+fi
+
+# Lint apenas nos arquivos staged. Depois do aviso de imagens de proposito: o
+# aviso e informativo (exit 0) e deve aparecer mesmo que o lint venha a falhar.
+npx --no-install lint-staged

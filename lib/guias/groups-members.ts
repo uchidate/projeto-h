@@ -1,0 +1,363 @@
+import { SITE_NAME } from '@/lib/constants/site'
+import type { ArchiveHub } from './types'
+
+export const groupsMembersHubs: ArchiveHub[] = [
+    {
+        slug: 'integrantes-do-bts',
+        kind: 'artists',
+        filter: { groupSlug: 'bts' },
+        title: 'Integrantes do BTS',
+        shortTitle: 'BTS',
+        description: 'Conheça os integrantes do BTS com perfis, carreira solo, músicas, vídeos e curiosidades em português.',
+        intro: [
+            'BTS é o grupo de K-Pop mais conhecido no mundo, com sete integrantes que também constroem carreiras solo expressivas na música, atuação e entretenimento.',
+            `Este guia reúne os perfis dos membros cadastrados na ${SITE_NAME} para que fãs e novos descobridores possam navegar por cada trajetória individual com facilidade.`,
+        ],
+        keywords: ['integrantes do bts', 'membros bts', 'bts kpop', 'rm jin suga jhope jimin v jungkook', 'bangtan boys'],
+        whatYouWillFind: 'Neste guia você encontra perfis dos sete integrantes do BTS — RM, Jin, Suga, J-Hope, Jimin, V e Jungkook — com discografia solo, vídeos, colaborações, curiosidades e links relacionados.',
+        faq: [
+            { question: 'Quem são os integrantes do BTS?', answer: `BTS tem sete integrantes: RM, Jin, Suga, J-Hope, Jimin, V e Jungkook. Todos têm perfis na ${SITE_NAME} com discografia, vídeos e carreira individual.` },
+            { question: 'Os membros do BTS têm carreira solo?', answer: 'Sim. Todos lançaram projetos solo: RM com "Indigo", Jin com "The Astronaut", Suga com sua identidade Agust D, J-Hope com "Jack in the Box", Jimin com "FACE", V com "Layover" e Jungkook com "GOLDEN".' },
+            { question: 'BTS ainda está ativo?', answer: 'BTS pausou atividades coletivas enquanto os membros cumprem o serviço militar obrigatório. Os membros vão se formando gradualmente a partir de 2024–2025, com retorno previsto do grupo para 2025/2026.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-blackpink',
+        kind: 'artists',
+        filter: { groupSlug: 'blackpink' },
+        title: 'Integrantes do BLACKPINK',
+        shortTitle: 'BLACKPINK',
+        description: 'Explore as integrantes do BLACKPINK com perfis, carreira solo, músicas, vídeos e fatos em português.',
+        intro: [
+            'BLACKPINK é um dos grupos de K-Pop mais reconhecidos globalmente, com integrantes que também construíram carreiras solo fortes.',
+            'Este guia conecta as páginas individuais das integrantes para quem quer acompanhar música, moda, atuação e presença internacional.',
+        ],
+        keywords: ['integrantes do blackpink', 'membros blackpink', 'blackpink kpop', 'jennie lisa jisoo rosé'],
+        whatYouWillFind: 'Aqui você encontra perfis individuais de cada integrante do BLACKPINK, com links para discografia, vídeos, doramas, campanhas de moda e conexões com outros artistas.',
+        faq: [
+            { question: 'As integrantes do BLACKPINK têm carreira solo?', answer: 'Sim. Rosé lançou o álbum "rosie" (2024), Jennie tem extensa carreira solo com "Solo" e "You & Me", Lisa se estabeleceu globalmente com "LALISA" e "MONEY", e Jisoo estreou como atriz em "Snowdrop".' },
+            { question: 'O BLACKPINK ainda está ativo?', answer: 'Sim. BLACKPINK completou seus contratos individuais com a YG Entertainment e renovou. O grupo continua ativo com atividades coletivas e individuais das integrantes.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-twice',
+        kind: 'artists',
+        filter: { groupSlug: 'twice' },
+        title: 'Integrantes do TWICE',
+        shortTitle: 'TWICE',
+        description: 'Conheça as integrantes do TWICE com perfis em português, carreira, músicas, grupos relacionados e curiosidades.',
+        intro: [
+            'TWICE é um dos girl groups mais importantes da terceira geração, com forte presença no K-Pop, no J-Pop e em turnês globais.',
+            `Este guia reúne as integrantes públicas na ${SITE_NAME} para facilitar a navegação por perfis, carreira individual e conteúdos relacionados.`,
+        ],
+        keywords: ['integrantes do twice', 'membros twice', 'twice kpop', 'nayeon jihyo momo sana'],
+        faq: [
+            { question: 'Quem são as integrantes do TWICE?', answer: `Este guia reúne as integrantes do TWICE cadastradas e públicas na ${SITE_NAME}, com links para perfis individuais.` },
+        ],
+    },
+    {
+        slug: 'integrantes-do-aespa',
+        kind: 'artists',
+        filter: { groupSlug: 'aespa' },
+        title: 'Integrantes do aespa',
+        shortTitle: 'aespa',
+        description: 'Explore as integrantes do aespa com perfis, carreira, músicas, vídeos e curiosidades em português.',
+        intro: [
+            'aespa combina K-Pop, identidade visual futurista e performances que marcaram a quarta geração.',
+            `Neste guia, você encontra links diretos para as integrantes e pode navegar por perfis relacionados dentro do catálogo da ${SITE_NAME}.`,
+        ],
+        keywords: ['integrantes do aespa', 'membros aespa', 'aespa kpop', 'karina winter giselle ningning'],
+        faq: [
+            { question: 'O guia inclui todas as integrantes do aespa?', answer: `O guia lista as integrantes do aespa que estão cadastradas e públicas na ${SITE_NAME}.` },
+        ],
+    },
+    {
+        slug: 'integrantes-do-ive',
+        kind: 'artists',
+        filter: { groupSlug: 'ive' },
+        title: 'Integrantes do IVE',
+        shortTitle: 'IVE',
+        description: 'Conheça as integrantes do IVE com perfis em português, posições, carreira, músicas e curiosidades sobre o grupo.',
+        intro: [
+            'IVE se tornou um dos nomes centrais da nova geração do K-Pop, reunindo integrantes com forte presença em música, moda, performance e cultura pop.',
+            `Este guia organiza as páginas das integrantes para facilitar a navegação por perfis, carreira e conexões dentro da ${SITE_NAME}.`,
+        ],
+        keywords: ['integrantes do ive', 'membros ive', 'ive kpop', 'wonyoung yujin rei'],
+        faq: [
+            { question: 'Quem são as integrantes do IVE?', answer: `O IVE é um grupo feminino de K-Pop. Este guia reúne as integrantes cadastradas na ${SITE_NAME} com links para perfis individuais.` },
+        ],
+    },
+    {
+        slug: 'integrantes-do-newjeans',
+        kind: 'artists',
+        filter: { groupSlug: 'newjeans' },
+        title: 'Integrantes do NewJeans',
+        shortTitle: 'NewJeans',
+        description: 'Veja as integrantes do NewJeans com perfis em português, carreira, músicas, conceitos e curiosidades.',
+        intro: [
+            'NewJeans marcou a nova geração com estética própria, sonoridade pop e alto impacto cultural.',
+            `Este guia organiza as integrantes cadastradas na ${SITE_NAME} para facilitar descoberta e navegação.`,
+        ],
+        keywords: ['integrantes do newjeans', 'membros newjeans', 'newjeans kpop'],
+        faq: [
+            { question: 'O guia lista todas as integrantes do NewJeans?', answer: `Ele lista as integrantes cadastradas e públicas na ${SITE_NAME}.` },
+        ],
+    },
+    {
+        slug: 'integrantes-do-le-sserafim',
+        kind: 'artists',
+        filter: { groupSlug: 'le-sserafim' },
+        title: 'Integrantes do LE SSERAFIM',
+        shortTitle: 'LE SSERAFIM',
+        description: 'Conheça as integrantes do LE SSERAFIM com perfis, carreira, músicas, vídeos e conexões no K-Pop.',
+        intro: [
+            'LE SSERAFIM combina performance, narrativa visual e presença global entre os grupos femininos mais comentados da nova geração.',
+            `Este guia reúne as integrantes públicas na ${SITE_NAME} e facilita a navegação por perfis e conteúdos relacionados.`,
+        ],
+        keywords: ['integrantes do le sserafim', 'membros le sserafim', 'lesserafim kpop'],
+        faq: [
+            { question: 'O guia inclui atividades individuais?', answer: 'Quando disponíveis, as atividades individuais aparecem nos perfis das integrantes.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-stray-kids',
+        kind: 'artists',
+        filter: { groupSlug: 'stray-kids' },
+        title: 'Integrantes do Stray Kids',
+        shortTitle: 'Stray Kids',
+        description: 'Explore os integrantes do Stray Kids com perfis em português, carreira, músicas, vídeos e curiosidades sobre o grupo.',
+        intro: [
+            'Stray Kids é um dos grupos masculinos de maior impacto da quarta geração, reconhecido pela produção própria, sonoridade intensa e fanbase global chamada STAY.',
+            `Este guia organiza os membros cadastrados na ${SITE_NAME} para facilitar a navegação por perfis, atividades individuais e conteúdos relacionados.`,
+        ],
+        keywords: ['integrantes do stray kids', 'membros stray kids', 'straykids kpop', 'bang chan felix hyunjin'],
+        faq: [
+            { question: 'Quem são os integrantes do Stray Kids?', answer: 'Stray Kids é formado por Bang Chan, Lee Know, Changbin, Hyunjin, Han, Felix, Seungmin e I.N.' },
+            { question: 'O Stray Kids produz as próprias músicas?', answer: 'Sim. A sub-unit 3RACHA — formada por Bang Chan, Changbin e Han — é responsável por grande parte da produção musical do grupo.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-exo',
+        kind: 'artists',
+        filter: { groupSlug: 'exo' },
+        title: 'Integrantes do EXO',
+        shortTitle: 'EXO',
+        description: 'Conheça os integrantes do EXO com perfis em português, carreira, músicas, sub-unidades e curiosidades.',
+        intro: [
+            'EXO é um dos grupos mais premiados da história do K-Pop, com um impacto enorme sobre toda a terceira geração e uma base de fãs global chamada EXO-L.',
+            `Este guia reúne os membros cadastrados na ${SITE_NAME} para navegar por perfis, sub-unidades e atividades individuais.`,
+        ],
+        keywords: ['integrantes do exo', 'membros exo', 'exo kpop', 'exo-l baekhyun kai sehun chanyeol'],
+        faq: [
+            { question: 'Quem são os integrantes do EXO?', answer: 'A formação atual inclui Xiumin, Suho, Lay, Baekhyun, Chen, Chanyeol, D.O., Kai e Sehun.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-seventeen',
+        kind: 'artists',
+        filter: { groupSlug: 'seventeen' },
+        title: 'Integrantes do SEVENTEEN',
+        shortTitle: 'SEVENTEEN',
+        description: 'Conheça os integrantes do SEVENTEEN com perfis, carreira, músicas, unidades e curiosidades em português.',
+        intro: [
+            'SEVENTEEN é um dos maiores grupos de boy band da quarta geração, com treze integrantes divididos em três unidades: vocal, hip-hop e performance.',
+            `Este guia organiza os membros cadastrados na ${SITE_NAME} para facilitar a navegação por perfis, histórico e atividades individuais.`,
+        ],
+        keywords: ['integrantes do seventeen', 'membros seventeen', 'seventeen kpop', 'svt carats'],
+        faq: [
+            { question: 'Quantos integrantes tem o SEVENTEEN?', answer: 'SEVENTEEN tem 13 integrantes: S.Coups, Jeonghan, Joshua, Jun, Hoshi, Wonwoo, Woozi, DK, Mingyu, The8, Seungkwan, Vernon e Dino.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-txt',
+        kind: 'artists',
+        filter: { groupSlug: 'txt' },
+        title: 'Integrantes do TXT',
+        shortTitle: 'TXT',
+        description: 'Explore os integrantes do TXT (TOMORROW X TOGETHER) com perfis, carreira, músicas e curiosidades em português.',
+        intro: [
+            'TXT, abreviação de TOMORROW X TOGETHER, é o segundo grupo masculino da HYBE (Big Hit), famoso por conceitos narrativos profundos e uma sonoridade que mistura pop alternativo com K-Pop.',
+            `Este guia organiza os membros cadastrados na ${SITE_NAME} para facilitar a descoberta de perfis, discografia e atividades individuais.`,
+        ],
+        keywords: ['integrantes do txt', 'membros tomorrow x together', 'txt kpop', 'yeonjun soobin beomgyu taehyun huening kai'],
+        faq: [
+            { question: 'Quem são os integrantes do TXT?', answer: 'TXT é formado por Yeonjun, Soobin, Beomgyu, Taehyun e HueningKai, todos sob a HYBE Entertainment.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-ateez',
+        kind: 'artists',
+        filter: { groupSlug: 'ateez' },
+        title: 'Integrantes do ATEEZ',
+        shortTitle: 'ATEEZ',
+        description: 'Explore os integrantes do ATEEZ com perfis em português, carreira, músicas, performances e curiosidades.',
+        intro: [
+            'ATEEZ ganhou reconhecimento internacional por performances intensas, narrativas visuais elaboradas e uma base de fãs chamada ATINY que cresce globalmente.',
+            `Este guia organiza os membros cadastrados na ${SITE_NAME} para navegar por perfis e conteúdos relacionados.`,
+        ],
+        keywords: ['integrantes do ateez', 'membros ateez', 'ateez kpop', 'atiny hongjoong mingi'],
+        faq: [
+            { question: 'Quem são os integrantes do ATEEZ?', answer: 'ATEEZ é formado por Hongjoong, Seonghwa, Yunho, Yeosang, San, Mingi, Wooyoung e Jongho.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-girls-generation',
+        kind: 'artists',
+        filter: { groupSlug: 'girls-generation' },
+        title: 'Integrantes do Girls\' Generation',
+        shortTitle: 'Girls\' Generation',
+        description: 'Conheça as integrantes do Girls\' Generation (SNSD) com perfis, carreira, músicas e curiosidades em português.',
+        intro: [
+            'Girls\' Generation, também conhecido como SNSD, é um dos grupos mais icônicos da segunda geração do K-Pop.',
+            `Este guia organiza as integrantes públicas na ${SITE_NAME}, facilitando a navegação por perfis, carreiras individuais e contexto histórico do grupo.`,
+        ],
+        keywords: ['integrantes do girls generation', 'membros snsd', 'girls generation kpop', 'snsd taeyeon yoona', 'soshi'],
+        faq: [
+            { question: 'Girls\' Generation ainda está ativa?', answer: 'Girls\' Generation celebrou seu 15º aniversário em 2022 com o álbum "Forever 1". As integrantes também mantêm carreiras solo ativas.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-bigbang',
+        kind: 'artists',
+        filter: { groupSlug: 'bigbang' },
+        title: 'Integrantes do BIGBANG',
+        shortTitle: 'BIGBANG',
+        description: 'Explore os integrantes do BIGBANG com perfis em português, carreira solo, músicas e história do grupo.',
+        intro: [
+            'BIGBANG é considerado um dos grupos mais influentes do K-Pop, tendo definido o som e o estilo de toda uma era da música coreana.',
+            `Este guia organiza os membros cadastrados na ${SITE_NAME} para quem quer explorar as trajetórias individuais de G-Dragon, T.O.P, Taeyang, Daesung e Seungri.`,
+        ],
+        keywords: ['integrantes do bigbang', 'membros bigbang', 'bigbang kpop', 'gdragon taeyang top daesung'],
+        faq: [
+            { question: 'Quem são os integrantes do BIGBANG?', answer: 'BIGBANG é formado por G-Dragon, T.O.P, Taeyang e Daesung (Seungri se desligou do grupo em 2019).' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-nct',
+        kind: 'artists',
+        filter: { groupSlug: 'nct' },
+        title: 'Integrantes do NCT',
+        shortTitle: 'NCT',
+        description: 'Conheça os integrantes do NCT com perfis em português, sub-unidades, carreira, músicas e curiosidades.',
+        intro: [
+            'NCT é um grupo sem número fixo de integrantes, dividido em várias sub-unidades como NCT 127, NCT Dream, WayV e NCT U.',
+            `Este guia organiza os membros cadastrados na ${SITE_NAME} para facilitar a navegação por perfis e as diferentes unidades do grupo.`,
+        ],
+        keywords: ['integrantes do nct', 'membros nct', 'nct kpop', 'nct 127 nct dream wayv'],
+        faq: [
+            { question: 'O que é o sistema de sub-unidades do NCT?', answer: 'NCT opera com unidades rotatórias — NCT 127 (base em Seul), NCT Dream (membros mais jovens), WayV (unidade chinesa) e NCT U (formação especial variável).' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-got7',
+        kind: 'artists',
+        filter: { groupSlug: 'got7' },
+        title: 'Integrantes do GOT7',
+        shortTitle: 'GOT7',
+        description: 'Explore os integrantes do GOT7 com perfis em português, carreira, músicas, vídeos e curiosidades.',
+        intro: [
+            'GOT7 construiu uma base de fãs global leal com sua mistura de pop, hip-hop e R&B.',
+            `Este guia organiza os membros cadastrados na ${SITE_NAME} para quem quer explorar perfis, discografia e conexões do grupo.`,
+        ],
+        keywords: ['integrantes do got7', 'membros got7', 'got7 kpop', 'mark jay b jackson jinyoung youngjae bambam yugyeom'],
+        faq: [
+            { question: 'O GOT7 voltou a atuar juntos?', answer: 'Sim. Após saírem da JYP Entertainment, os sete integrantes se reagruparam como grupo independente em 2022.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-mamamoo',
+        kind: 'artists',
+        filter: { groupSlug: 'mamamoo' },
+        title: 'Integrantes do MAMAMOO',
+        shortTitle: 'MAMAMOO',
+        description: 'Conheça as integrantes do MAMAMOO com perfis em português, carreira, músicas e curiosidades sobre o grupo.',
+        intro: [
+            'MAMAMOO é conhecido por vocais excepcionais, personalidade forte e uma abordagem musical que foge dos padrões comuns do K-Pop.',
+            `Este guia reúne as integrantes cadastradas na ${SITE_NAME} para navegar por perfis, carreira individual e conteúdos relacionados.`,
+        ],
+        keywords: ['integrantes do mamamoo', 'membros mamamoo', 'mamamoo kpop', 'solar moonbyul wheein hwasa'],
+        faq: [
+            { question: 'Quem são as integrantes do MAMAMOO?', answer: 'MAMAMOO é formado por Solar, Moonbyul, Wheein e Hwasa, todas com projetos solo expressivos.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-itzy',
+        kind: 'artists',
+        filter: { groupSlug: 'itzy' },
+        title: 'Integrantes do ITZY',
+        shortTitle: 'ITZY',
+        description: 'Conheça as integrantes do ITZY com perfis, carreira, músicas, vídeos e curiosidades em português.',
+        intro: [
+            'ITZY se destacou na quarta geração com mensagens de autoconfiança, coreografias energéticas e um conceito "ser você mesmo" que conquistou fãs globalmente.',
+            `Este guia reúne as integrantes cadastradas na ${SITE_NAME} para navegar por perfis e conteúdos relacionados.`,
+        ],
+        keywords: ['integrantes do itzy', 'membros itzy', 'itzy kpop', 'yeji lia ryujin chaeryeong yuna'],
+        faq: [
+            { question: 'Quem são as integrantes do ITZY?', answer: 'ITZY é formado por Yeji, Lia, Ryujin, Chaeryeong e Yuna, todas sob a JYP Entertainment.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-g-i-dle',
+        kind: 'artists',
+        filter: { groupSlug: 'i-dle' },
+        title: 'Integrantes do (G)I-DLE',
+        shortTitle: '(G)I-DLE',
+        description: 'Explore as integrantes do (G)I-DLE com perfis, carreira, músicas produzidas pelo grupo e curiosidades em português.',
+        intro: [
+            '(G)I-DLE chama atenção pela autoprodução musical e por um conceito poderoso e versátil.',
+            `Este guia organiza as integrantes cadastradas na ${SITE_NAME} para facilitar a descoberta de perfis e conteúdos relacionados.`,
+        ],
+        keywords: ['integrantes do gidle', 'membros g i dle', 'gidle kpop', 'soyeon minnie miyeon yuqi shuhua'],
+        faq: [
+            { question: 'Quem são as integrantes do (G)I-DLE?', answer: 'Após a saída de Soojin, (G)I-DLE é formado por Miyeon, Minnie, Soyeon, Yuqi e Shuhua, sob a Cube Entertainment.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-enhypen',
+        kind: 'artists',
+        filter: { groupSlug: 'enhypen' },
+        title: 'Integrantes do ENHYPEN',
+        shortTitle: 'ENHYPEN',
+        description: 'Conheça os integrantes do ENHYPEN com perfis em português, carreira, músicas e curiosidades sobre o grupo.',
+        intro: [
+            'ENHYPEN foi formado pelo reality "I-Land" em 2020 e rapidamente conquistou uma posição central entre os grupos masculinos da quarta geração.',
+            `Este guia reúne os integrantes cadastrados na ${SITE_NAME} para facilitar a navegação por perfis e conteúdos relacionados.`,
+        ],
+        keywords: ['integrantes do enhypen', 'membros enhypen', 'enhypen kpop', 'i-land grupo'],
+        faq: [
+            { question: 'Quantos integrantes tem o ENHYPEN?', answer: 'O ENHYPEN é composto por 7 integrantes: Jungwon, Heeseung, Jay, Jake, Sunghoon, Sunoo e Ni-ki.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-shinee',
+        kind: 'artists',
+        filter: { groupSlug: 'shinee' },
+        title: 'Integrantes do SHINee',
+        shortTitle: 'SHINee',
+        description: 'Conheça os integrantes do SHINee com perfis em português, carreira, músicas, vídeos e curiosidades sobre o grupo.',
+        intro: [
+            'SHINee é um grupo icônico da segunda geração do K-Pop, reconhecido por vocais excepcionais, performances inovadoras e uma discografia que influenciou toda uma geração de artistas.',
+            `Este guia reúne os integrantes públicos na ${SITE_NAME} para que fãs e novos descobridores possam explorar perfis, histórico e conexões do grupo.`,
+        ],
+        keywords: ['integrantes do shinee', 'membros shinee', 'shinee kpop', 'onew key minho taemin'],
+        faq: [
+            { question: 'Quem são os integrantes do SHINee?', answer: 'SHINee é formado por Onew, Key, Minho e Taemin (quatro membros ativos). Jonghyun, um dos fundadores do grupo, faleceu em 2017.' },
+        ],
+    },
+    {
+        slug: 'integrantes-do-red-velvet',
+        kind: 'artists',
+        filter: { groupSlug: 'red-velvet' },
+        title: 'Integrantes do Red Velvet',
+        shortTitle: 'Red Velvet',
+        description: 'Explore as integrantes do Red Velvet com perfis em português, carreira, músicas, conceitos e curiosidades.',
+        intro: [
+            'Red Velvet é um dos grupos mais versáteis do K-Pop, alternando entre o conceito "Red" (pop energético) e "Velvet" (R&B suave), com uma discografia que impressiona por qualidade e variedade.',
+            `Este guia reúne as integrantes cadastradas na ${SITE_NAME} para quem quer descobrir perfis, carreira individual e músicas relacionadas ao grupo.`,
+        ],
+        keywords: ['integrantes do red velvet', 'membros red velvet', 'red velvet kpop', 'irene seulgi wendy joy yeri'],
+        faq: [
+            { question: 'Quem são as integrantes do Red Velvet?', answer: 'Red Velvet é formado por Irene, Seulgi, Wendy, Joy e Yeri, todas sob a SM Entertainment.' },
+        ],
+    },
+]

@@ -1,0 +1,47 @@
+{
+  "role": {
+    "singer": "Cantor(a)",
+    "actor": "Ator/Atriz",
+    "dancer": "Dançarino(a)",
+    "rapper": "Rapper",
+    "model": "Modelo",
+    "host": "Apresentador(a)",
+    "composer": "Compositor(a)",
+    "idol": "Idol",
+    "producer": "Produtor(a)",
+    "mc": "MC"
+  },
+  "groupType": {
+    "girl_group": "Girl Group",
+    "boy_group": "Boy Group",
+    "co_ed": "Grupo misto",
+    "solo": "Artista solo"
+  },
+  "generation": "{n}ª geração",
+  "productionType": {
+    "drama": "Dorama",
+    "movie": "Filme",
+    "special": "Especial",
+    "variety": "Variety Show",
+    "dramaDisplay": "Série"
+  },
+  "productionStatus": {
+    "airing": "Em exibição",
+    "completed": "Concluído",
+    "upcoming": "Em breve"
+  },
+  "age": "{age} anos",
+  "officialSite": "Site Oficial",
+  "fact": {
+    "debut": "Estreia",
+    "birth": "Nascimento",
+    "death": "Falecimento",
+    "height": "Altura",
+    "zodiac": "Signo"
+  },
+  "groupStatus": {
+    "disbandedIn": "encerrado · {year}",
+    "active": "ativo",
+    "disbanded": "encerrado"
+  }
+}

@@ -1,0 +1,111 @@
+name: ✅ Quality
+
+# Roda automaticamente, ao contrario dos demais workflows (todos
+# workflow_dispatch/schedule): o arsenal de qualidade do projeto so vale se
+# disparar sozinho. Em ubuntu-latest de proposito — nao ocupa o self-hosted,
+# que e usado pelos deploys.
+# Só em pull_request. O gatilho em push/main foi removido de propósito: todo
+# merge vem de um PR que já rodou este mesmo workflow, então revalidar a main
+# depois do merge dobrava o consumo de minutos sem acrescentar informação
+# (repositório privado — Actions é cota paga).
+#
+on:
+  pull_request:
+    paths-ignore:
+      # docs/** e **/*.md NAO entram mais aqui (2026-09-16): o ruleset de
+      # `main` exige este check ("🔍 Lint, tipos e testes") em TODO merge,
+      # sem excecao para PR so de docs. Sem o Quality disparar, o check nunca
+      # reporta, e um PR so-de-docs fica permanentemente sem merge possivel —
+      # nem --admin contorna, por falta de bypass actor no ruleset. Foram
+      # tres PRs presos assim na mesma sessao (#109, #114, #115), todos
+      # tocando so docs/DEPLOY-NO-SERVIDOR.md.
+      #
+      # notas/** continua ignorado: nenhum dos tres casos reais tocou ali, e
+      # e caminho de alta frequencia (nota de decisao quase diaria) — nao
+      # vale pagar ~3min de CI por PR para resolver um problema que ainda nao
+      # aconteceu. Se um PR so-de-notas travar do mesmo jeito, tirar
+      # notas/** daqui tambem, na hora.
+      - 'notas/**'
+      - '.github/ISSUE_TEMPLATE/**'
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: 🔍 Lint, tipos e testes
+    # ubuntu-latest: de volta as maquinas do GitHub em 2026-09-16. Runner de CI
+    # no servidor disputava CPU com o site, e no Mac dependia de a maquina
+    # estar ligada. Ver notas/decisoes/2026-09-16-cota-gratuita-do-actions.md.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+      # npm na versao do `packageManager` do package.json: o setup-node traz o npm
+      # que acompanha o Node (11), e lock gerado por npm diferente diverge.
+      - name: npm do packageManager
+        run: npm install -g "$(node -p "require('./package.json').packageManager")"
+      # A checagem "lockfile valido em Linux" fica no job Segredos.
+      # `npm install` e nao `npm ci`: o lock e gerado no macOS e omite deps
+      # opcionais de plataforma (@emnapi/runtime), o que faz `npm ci` falhar no
+      # runner Linux. Mesmo caminho que o deploy.yml ja usa.
+      - run: npm install --prefer-offline --no-audit
+      # Passos separados de proposito: `quality:quick` encadeia com && e para no
+      # primeiro erro, escondendo os demais. Aqui cada falha aparece isolada no
+      # resumo do PR.
+      - name: Lint
+        run: npm run lint
+      - name: Type-check
+        run: npm run type-check
+      - name: Testes
+        run: npm test
+
+  secrets:
+    name: 🔐 Segredos
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # A action le os commits do PR pela API; sem isto retorna 403
+    # "Resource not accessible by integration".
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # gitleaks varre o historico do diff
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: npm do packageManager
+        run: npm install -g "$(node -p "require('./package.json').packageManager")"
+      # O `npm install` do job de testes e tolerante de proposito, e por isso NAO
+      # pega lockfile gerado no macOS sem as deps opcionais de Linux (@emnapi/*).
+      # Esse defeito so estourava no `npm ci` do staging, depois de esperar a
+      # fila — aconteceu duas vezes (1b3eb41 e o #47). `npm ci --dry-run` valida
+      # o lock sem instalar nada: verificado em 2026-09-13 que falha com EUSAGE
+      # no lock quebrado do #47 e passa no lock correto.
+      - name: Lockfile valido em Linux
+        run: |
+          if ! npm ci --dry-run --ignore-scripts --no-audit --no-fund > "$RUNNER_TEMP/lockfile.log" 2>&1; then
+            grep -E "Missing:|EUSAGE|npm error" "$RUNNER_TEMP/lockfile.log" | head -10
+            echo "::error::package-lock.json nao instala em Linux. Regere dentro do Linux: docker run --rm -v \$PWD:/app -w /app node:24 npm install --package-lock-only"
+            exit 1
+          fi
+      # Runner persistente: a action baixa o binario sempre para
+      # /tmp/gitleaks.tmp e aborta se o arquivo da execucao anterior ainda
+      # estiver la ("Destination file path /tmp/gitleaks.tmp already exists").
+      - name: Limpar download anterior do gitleaks
+        run: rm -f /tmp/gitleaks.tmp
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # No runner proprio a pasta de trabalho fica em /tmp, fora do $HOME, e
+          # o upload do relatorio SARIF quebra com "rootDirectory /root is not a
+          # parent directory" — depois de a varredura ja ter passado. O
+          # relatorio nunca foi consumido: o resultado que importa e o exit code.
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: false

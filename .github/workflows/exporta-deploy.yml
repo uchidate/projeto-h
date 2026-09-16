@@ -1,0 +1,63 @@
+# Saúde do deploy (DORA) para o Prometheus.
+#
+# Roda depois de cada deploy de produção e uma vez por dia. O gatilho por
+# conclusão mantém o número fresco logo após o evento que interessa; o diário
+# garante que a série não congele em semana sem deploy.
+name: 📦 Exporta saúde do deploy
+
+on:
+  workflow_run:
+    workflows: ["🚀 Producao"]
+    types: [completed]
+  schedule:
+    - cron: '40 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: exporta-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  coletar:
+    name: Coletar e publicar
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - name: Coletar
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DESTINO_PROM: ${{ runner.temp }}/deploy.prom
+        run: |
+          set -euo pipefail
+          python3 scripts/exporta-deploy.py
+          linhas=$(grep -cv '^#' "$DESTINO_PROM" || echo 0)
+          # Mesmo motivo do exportador de SEO: publicar arquivo truncado zera
+          # as séries, e zero é indistinguível de "nunca mais deployamos".
+          [ "$linhas" -ge 5 ] || { echo "❌ só $linhas métricas — não publico"; exit 1; }
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Publicar
+        env:
+          ORIGEM: ${{ runner.temp }}/deploy.prom
+        run: |
+          set -euo pipefail
+          scp -q "$ORIGEM" oc:/tmp/deploy.prom.novo
+          ssh oc "install -m 0644 /tmp/deploy.prom.novo /var/lib/node-exporter-textfile/deploy.prom && rm -f /tmp/deploy.prom.novo"

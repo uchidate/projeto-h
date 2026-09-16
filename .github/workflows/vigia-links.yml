@@ -1,0 +1,225 @@
+name: 🔗 Vigia de links
+
+# Procura paginas em 404 no site publicado, uma vez por semana.
+#
+# Existe porque link quebrado nao avisa. Nao ha erro no log, nao ha alerta, e o
+# visitante que cai num 404 raramente reclama — ele so vai embora. Quando o 404
+# esta numa URL que o Google indexou, o efeito e pior: ele interpreta como
+# pagina removida e desindexa.
+#
+# Semanal, e nao diario, de proposito: sao 8.751 URLs contra producao. Link
+# quebrado nao e incidente que exige resposta em horas, e varredura diaria de
+# oito mil paginas e trafego que nao se paga.
+on:
+  schedule:
+    # Segunda, 07:20 UTC = 04:20 em Brasilia. Madrugada de proposito: a
+    # varredura obriga o Next a gerar milhares de paginas, e o melhor momento
+    # para isso e quando quase ninguem esta no site.
+    - cron: '20 7 * * 1'
+  workflow_dispatch:
+    inputs:
+      amostra:
+        description: 'Limitar a N URLs (vazio = todas as 8.751)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: vigia-links
+  cancel-in-progress: false
+
+jobs:
+  verificar:
+    name: Paginas em 404
+    runs-on: ubuntu-latest
+    # A varredura completa leva ~55min: 3 simultaneas com pausa de 150ms.
+    #
+    # Ela era mais rapida com 8 simultaneas, e por isso derrubou o site. A
+    # maioria das 8.751 paginas nunca foi renderizada, entao rastrear tudo nao e
+    # ler paginas prontas — e mandar o Next construir 8.751 paginas consultando
+    # o WordPress. Em 2026-09-11 isso produziu 1.487 respostas 5xx em paginas
+    # que respondiam 200 minutos depois.
+    #
+    # Uma hora por semana, de madrugada, e barato. Degradar o site para os
+    # visitantes nao e.
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # Sem npm ci: o script usa so o fetch nativo do Node. Instalar 300 pacotes
+      # para rodar um arquivo que nao importa nenhum deles e minuto jogado fora
+      # toda semana.
+      - name: Varrer
+        id: varredura
+        # Identifica esta execucao como automacao NOSSA, para a regra de excecao
+        # da Cloudflare. Com o Bot Fight Mode ligado, Chromium headless e o caso
+        # mais classico de deteccao: sem excecao a verificacao falharia por
+        # bloqueio, e o sintoma pareceria defeito do site. Ausente = identico ao
+        # comportamento anterior.
+        env:
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: |
+          node scripts/verifica-links.mjs \
+            ${{ github.event.inputs.amostra && format('--amostra {0}', github.event.inputs.amostra) || '' }} \
+            --json /tmp/links.json | tee /tmp/links.log
+
+      # ── Publicar como metrica, nao so como issue ──────────────────────────
+      #
+      # A issue avisa QUE quebrou; a metrica mostra a TENDENCIA. Sem ela nao da
+      # para responder "estamos acumulando link morto ou limpando?", que e a
+      # pergunta que decide se vale investir em revisao do acervo.
+      #
+      # `if: always()` porque o passo anterior sai 1 quando ha 404 — que e
+      # justamente quando estes numeros mais importam.
+      - name: Publicar metricas de saude do acervo
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          [ -s /tmp/links.json ] || { echo "sem relatorio; nada a publicar"; exit 0; }
+          python3 - <<'PYEOF' > /tmp/acervo.prom
+          import json, time
+          d = json.load(open('/tmp/links.json'))
+          total = int(d.get('total') or 0)
+          quebradas = len(d.get('quebradas') or [])
+          erros = len(d.get('erros') or [])
+          print('# HELP acervo_paginas_verificadas Paginas internas varridas na ultima checagem semanal.')
+          print('# TYPE acervo_paginas_verificadas gauge')
+          print(f'acervo_paginas_verificadas {total}')
+          print('# HELP acervo_paginas_quebradas Paginas internas em 404 na ultima checagem.')
+          print('# TYPE acervo_paginas_quebradas gauge')
+          print(f'acervo_paginas_quebradas {quebradas}')
+          print('# HELP acervo_paginas_com_erro Paginas com 5xx ou sem resposta. Costuma ser transitorio.')
+          print('# TYPE acervo_paginas_com_erro gauge')
+          print(f'acervo_paginas_com_erro {erros}')
+          print('# HELP acervo_saude_percent Percentual de paginas internas que respondem.')
+          print('# TYPE acervo_saude_percent gauge')
+          print(f'acervo_saude_percent {(total - quebradas - erros) / total * 100 if total else 0}')
+          print('# HELP acervo_verificacao_timestamp_seconds Quando a varredura rodou. Idade alta = o vigia parou.')
+          print('# TYPE acervo_verificacao_timestamp_seconds gauge')
+          print(f'acervo_verificacao_timestamp_seconds {int(time.time())}')
+          PYEOF
+          cat /tmp/acervo.prom
+
+      - name: Conectar ao servidor
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Enviar ao textfile collector
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          [ -s /tmp/acervo.prom ] || exit 0
+          scp -q /tmp/acervo.prom oc:/tmp/acervo.prom.novo
+          ssh oc "install -m 0644 /tmp/acervo.prom.novo /var/lib/node-exporter-textfile/acervo.prom && rm -f /tmp/acervo.prom.novo"
+
+      - name: Guardar o relatorio
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: relatorio-links
+          path: |
+            /tmp/links.json
+            /tmp/links.log
+          retention-days: 30
+
+      - name: Abrir issue com as paginas quebradas
+        if: failure()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs')
+            let dados = { quebradas: [] }
+            try {
+              dados = JSON.parse(fs.readFileSync('/tmp/links.json', 'utf8'))
+            } catch {
+              // Sem JSON a varredura morreu antes de terminar; a issue ainda
+              // vale, so que apontando para o log.
+            }
+
+            const linhas = dados.quebradas.slice(0, 50).map((q) => {
+              const origem = q.origem
+                ? `linkado em \`${q.origem.replace(dados.base || '', '')}\``
+                : 'listado no sitemap'
+              return `- \`${q.url.replace(dados.base || '', '')}\` — ${origem}`
+            })
+
+            const titulo = '🔗 Paginas em 404 no site'
+            const corpo = [
+              `A varredura semanal encontrou **${dados.quebradas.length} pagina(s) em 404**.`,
+              '',
+              ...linhas,
+              dados.quebradas.length > 50 ? `\n_...e mais ${dados.quebradas.length - 50}. Relatorio completo nos artefatos da execucao._` : '',
+              '',
+              '## Como ler',
+              '',
+              '- **listado no sitemap** — o Google ja esta batendo nessa URL. Prioridade alta: 404 em URL indexada vira desindexacao.',
+              '- **linkado em** — um link dentro do conteudo aponta para pagina que nao existe. Corrija o link ou crie a pagina.',
+              '',
+              'Paginas em 5xx NAO entram aqui: desde 2026-09-10 uma falha do WordPress devolve 500, nao 404, justamente para nao se confundir com pagina removida.',
+              '',
+              `Execucao: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'Reproduzir: `node scripts/verifica-links.mjs --amostra 200`',
+            ].join('\n')
+
+            // Comenta na issue existente em vez de abrir uma nova por semana:
+            // pilha de issues identicas treina a ignorar o repositorio.
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'links',
+            })
+            const existente = abertas.data.find((i) => i.title === titulo)
+            if (existente) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existente.number,
+                body: `Varredura de ${new Date().toISOString().slice(0, 10)}:\n\n${corpo}`,
+              })
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: titulo, body: corpo, labels: ['links'],
+              })
+            }
+
+      - name: Fechar a issue quando limpar
+        if: success()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const titulo = '🔗 Paginas em 404 no site'
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'links',
+            })
+            for (const i of abertas.data.filter((x) => x.title === titulo)) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: i.number,
+                body: '✅ Nenhuma pagina em 404 na ultima varredura. Fechando.',
+              })
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: i.number, state: 'closed',
+              })
+            }

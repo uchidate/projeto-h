@@ -1,0 +1,113 @@
+.git
+.gitignore
+.next
+node_modules
+npm-debug.log*
+.env
+.env.local
+.env.*.local
+README.md
+Dockerfile
+.dockerignore
+
+# ── O que o `next build` nao le ─────────────────────────────────────────────
+#
+# O contexto vem de `git archive HEAD` (scripts/lib/artefato.sh), entao so
+# arquivos versionados chegam aqui — mas versionado nao quer dizer necessario.
+# Medido em 2026-09-12, o contexto tinha 28MB descomprimidos, dos quais ~23MB
+# nenhum passo do build abre:
+#
+#   audit-2026-06-22.json          13.5MB  dump de auditoria de junho, orfao
+#   ops/manifests                   5.0MB  dados de operacao
+#   e2e/*-snapshots                 2.9MB  referencias visuais do Playwright
+#   ops/news-pipeline               1.3MB  pipeline editorial (Python)
+#
+# Duas economias, nao uma. A obvia e o `COPY . .`: menos bytes para o daemon
+# empacotar e menos camada para escrever. A menos obvia importa mais — o
+# tsconfig inclui `**/*.ts`, e o `next build` faz type-check (so o ESLint esta
+# desligado). Tudo em e2e/ e tests/ entrava no programa do tsc a cada build,
+# sem nunca virar uma linha da imagem.
+#
+# O criterio para entrar nesta lista e um so: nenhum import a partir de app/,
+# components/, lib/, config/, hooks/, middleware.ts ou instrumentation*.ts
+# alcanca o caminho. Verificado por grep antes de cada inclusao.
+#
+# Nao mexe na promocao de artefato: o endereco por conteudo e a ARVORE GIT do
+# commit, calculada pelo git e indiferente ao que o docker ignora.
+
+# Apps e dados de operacao — deploy proprio, fora desta imagem.
+ops/
+
+# PHP do WordPress — vai por scp no deploy, nunca pela imagem.
+#
+# A excecao nao e cosmetica: lib/blog/articleBlockCatalog.ts importa
+# `../../wordpress/assets/article-block-catalog.json`, e o catalogo de blocos
+# entra no bundle. Excluir wordpress/ inteiro quebrou o build com
+# "Module not found" em app/(site)/blog/[slug]/page.tsx — foi assim que a
+# dependencia apareceu, porque o grep por `@/wordpress/` nao pega caminho
+# relativo. Por isso a lista acima foi validada RODANDO o build num contexto
+# podado, nao lendo imports.
+wordpress/**
+!wordpress/assets/**
+wp-plugins/
+
+# Testes e relatorios. Os gates rodam no CI, nao dentro do build.
+e2e/
+tests/
+test-results/
+coverage/
+.lighthouseci/
+playwright.config.ts
+
+# Documentacao, notas e instrucoes de agente.
+docs/
+notas/
+skills/
+.agents/
+.claude/
+.continue/
+.drafts/
+.hallmark/
+.obsidian/
+graphify-out/
+CHANGELOG.md
+AGENTS.md
+CLAUDE.md
+
+# Auditoria pontual de junho/2026 — versionada por acidente, sem leitor.
+audit-2026-06-22.json
+
+# Configuracao de CI e hooks de commit.
+.github/
+.husky/
+
+# ── Ruido local: nao chega pelo deploy, chega pelo `docker build` a mao ──────
+#
+# O contexto do deploy vem de `git archive`, entao nada daqui o alcanca. Um
+# `docker build .` rodado na maquina, porem, usa o diretorio de trabalho — e aí
+# tudo isto entra na camada do builder.
+#
+# O item que motiva a lista e o primeiro: .gsc-credentials.json e a credencial
+# do Search Console. Nao esta versionada (certo), mas sem esta linha um build
+# local a gravaria dentro da imagem, onde `docker history` a le. Credencial em
+# camada de imagem nao se apaga — se reconstroi.
+.gsc-credentials.json
+*.pem
+*.key
+
+# Caches e estado de ferramenta, reconstruiveis por definicao.
+tsconfig.tsbuildinfo
+.pytest_cache/
+.vitest/
+.lycheecache
+.vscode/
+.idea/
+draft_eval_history.db
+
+# Orquestracao e roteamento — descrevem como a imagem RODA, nao entram nela.
+docker-compose.yml
+Makefile
+infra/
+
+# Arquivo vazio criado por engano num commit antigo (45b303e).
+There

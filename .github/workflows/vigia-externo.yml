@@ -1,0 +1,150 @@
+name: 🛰️ Vigia externo
+
+# Dead man's switch do site.
+#
+# Existe porque TODO o monitoramento roda na maquina monitorada: Prometheus,
+# Alertmanager, ntfy, uptime-kuma e blackbox estao no mesmo servidor. Isso
+# detecta bem falha parcial — foi o que fez a noite de 08/09 inteira — mas na
+# falha TOTAL o sistema fica em silencio, porque quem avisaria caiu junto.
+#
+# Em ubuntu-latest de proposito, pelo mesmo motivo do watchdog.yml: o vigia
+# precisa sobreviver ao que vigia. Aqui ele e externo de verdade — outra rede,
+# outro provedor, outra falha possivel.
+#
+# O alerta e uma issue do GitHub, nao o ntfy: o ntfy mora no servidor e estaria
+# fora justamente no cenario que este workflow existe para detectar. Issue gera
+# notificacao por e-mail, que independe da infraestrutura.
+on:
+  schedule:
+    # A cada 30 minutos. Mais frequente consumiria minutos de runner hospedado
+    # sem ganho proporcional: o agendamento do GitHub ja atrasa sob carga,
+    # entao 15 minutos no cron nao viram 15 minutos de deteccao real.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  verificar:
+    name: 🌐 O site responde de fora?
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Sondar producao
+        id: sonda
+        # O cabecalho isenta este vigia das regras de WAF da Cloudflare. Sem
+        # ele, a regra "Desafio - datacenter" desafiaria esta sonda: runner
+        # hospedado do GitHub sai de ASN da Azure (8075), que esta na lista.
+        # curl nao executa JavaScript, entao o desafio viraria 403 — e este
+        # workflow abriria issue de "site fora do ar" a cada 30 minutos, com o
+        # site no ar. Exatamente o alerta falso que o RUNBOOK previne.
+        #
+        # Isentar nao reduz a fidelidade da sonda: o leitor real vem de rede
+        # residencial e tambem nao e desafiado. Sem a isencao, o vigia mediria
+        # a nossa propria regra, e nao o site.
+        env:
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: |
+          set -uo pipefail
+          ALVOS=(
+            "${{ vars.SITE_URL }}/|200"
+            "${{ vars.SITE_URL }}/api/health|200"
+          )
+          FALHAS=""
+          for entrada in "${ALVOS[@]}"; do
+            url="${entrada%%|*}"; esperado="${entrada##*|}"
+            # Tres tentativas espacadas: uma falha isolada e ruido de rede, e
+            # abrir issue por soluco treina a ignorar o alerta.
+            ok=0
+            for tentativa in 1 2 3; do
+              codigo=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
+                -H "${{ vars.SONDA_HEADER }}: ${SONDA_TOKEN:-}" "$url" || echo 000)
+              if [ "$codigo" = "$esperado" ]; then ok=1; break; fi
+              echo "tentativa $tentativa em $url -> $codigo"
+              sleep 20
+            done
+            [ "$ok" = "1" ] || FALHAS="${FALHAS}- \`${url}\` respondeu \`${codigo}\` (esperado ${esperado})%0A"
+          done
+          echo "falhas=$FALHAS" >> "$GITHUB_OUTPUT"
+          if [ -n "$FALHAS" ]; then echo "resultado=falha" >> "$GITHUB_OUTPUT"; else echo "resultado=ok" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Abrir ou fechar a issue
+        uses: actions/github-script@v9
+        # Os valores chegam por `env`, e nao interpolados dentro do script.
+        #
+        # Interpolado, o texto da falha era colado CRU no meio de um template
+        # literal — e ele contem crase, porque a mensagem formata a URL como
+        # `codigo`. A crase fechava o literal e o script morria com
+        # "SyntaxError: Unexpected identifier 'https'".
+        #
+        # O defeito so aparecia quando havia falha de verdade: no caminho feliz
+        # a string e vazia e o literal fecha certo. Ou seja, este dead man's
+        # switch nunca teria aberto a issue que ele existe para abrir — ficaria
+        # em silencio exatamente no cenario que motivou o workflow. Descoberto
+        # em 2026-09-12, quando uma regra nova de WAF causou a primeira falha
+        # real da sonda.
+        env:
+          RESULTADO: ${{ steps.sonda.outputs.resultado }}
+          FALHAS: ${{ steps.sonda.outputs.falhas }}
+        with:
+          script: |
+            const resultado = process.env.RESULTADO
+            const falhas = (process.env.FALHAS || '').split('%0A').filter(Boolean)
+            const titulo = '🛰️ Site fora do ar (detectado de fora)'
+
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'vigia-externo',
+            })
+            const existente = abertas.data.find(i => i.title === titulo)
+
+            if (resultado === 'ok') {
+              // Fecha sozinho quando normaliza: issue que so abre vira ruido e
+              // deixa de ser lida — mesma logica do watchdog.yml.
+              if (existente) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: existente.number,
+                  body: `✅ Site respondendo normalmente de novo. Fechando.\n\n_Verificado em ${new Date().toISOString()}_`,
+                })
+                await github.rest.issues.update({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: existente.number, state: 'closed',
+                })
+              }
+              core.info('Site respondendo normalmente.')
+              return
+            }
+
+            const corpo = [
+              'A sondagem externa nao conseguiu falar com a producao apos tres tentativas.',
+              '',
+              ...falhas,
+              '',
+              '**Este alerta chega por e-mail de proposito.** O ntfy, o Prometheus e o',
+              'uptime-kuma rodam no mesmo servidor que esta sendo verificado — no cenario',
+              'que este workflow existe para detectar, todos eles estao fora.',
+              '',
+              'Ordem de investigacao:',
+              '',
+              '1. `ssh oc uptime` — o servidor responde?',
+              '2. `ssh oc "docker ps | wc -l"` — os containers subiram?',
+              '3. `ssh oc "docker logs coolify-proxy --tail 50"` — o proxy esta roteando?',
+              '4. Painel da Hostinger, se o SSH nao responder.',
+              '',
+              `_Verificado em ${new Date().toISOString()}_`,
+            ].join('\n')
+
+            if (existente) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existente.number, body: corpo,
+              })
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: titulo, body: corpo, labels: ['vigia-externo'],
+              })
+            }
+            core.setFailed('Producao inacessivel de fora')

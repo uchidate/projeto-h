@@ -1,0 +1,47 @@
+{
+  "role": {
+    "singer": "Singer",
+    "actor": "Actor",
+    "dancer": "Dancer",
+    "rapper": "Rapper",
+    "model": "Model",
+    "host": "Host",
+    "composer": "Composer",
+    "idol": "Idol",
+    "producer": "Producer",
+    "mc": "MC"
+  },
+  "groupType": {
+    "girl_group": "Girl group",
+    "boy_group": "Boy group",
+    "co_ed": "Co-ed group",
+    "solo": "Solo artist"
+  },
+  "generation": "{n, selectordinal, one {#st} two {#nd} few {#rd} other {#th}} generation",
+  "productionType": {
+    "drama": "Drama",
+    "movie": "Film",
+    "special": "Special",
+    "variety": "Variety show",
+    "dramaDisplay": "Series"
+  },
+  "productionStatus": {
+    "airing": "Airing",
+    "completed": "Completed",
+    "upcoming": "Upcoming"
+  },
+  "age": "{age} years old",
+  "officialSite": "Official site",
+  "fact": {
+    "debut": "Debut",
+    "birth": "Born",
+    "death": "Died",
+    "height": "Height",
+    "zodiac": "Zodiac"
+  },
+  "groupStatus": {
+    "disbandedIn": "disbanded · {year}",
+    "active": "active",
+    "disbanded": "disbanded"
+  }
+}

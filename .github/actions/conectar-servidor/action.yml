@@ -1,0 +1,136 @@
+name: Conectar ao servidor
+description: >-
+  Configura o alias SSH `oc` usado pelos scripts de manutencao, a partir dos
+  segredos DEPLOY_HOST/DEPLOY_USER/DEPLOY_SSH_KEY.
+
+inputs:
+  host:
+    description: Endereco do servidor
+    required: true
+  usuario:
+    description: Usuario SSH
+    required: true
+  chave:
+    description: Chave privada SSH
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Configurar SSH
+      shell: bash
+      env:
+        SSH_HOST: ${{ inputs.host }}
+        SSH_USER: ${{ inputs.usuario }}
+        SSH_KEY: ${{ inputs.chave }}
+      run: |
+        set -euo pipefail
+        install -d -m 700 ~/.ssh
+        # A chave vem por variavel de ambiente, nunca como argumento: argumento
+        # aparece em `ps` e pode vazar no log do runner.
+        printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+        chmod 600 ~/.ssh/id_deploy
+        # StrictHostKeyChecking=accept-new e nao `no`: aceita a chave na
+        # primeira conexao e passa a exigi-la depois, entao uma troca de chave
+        # no meio do caminho ainda falha alto.
+        escrever_config() {
+          cat > ~/.ssh/config <<CFG
+        Host oc
+          HostName $1
+          User $SSH_USER
+          IdentityFile ~/.ssh/id_deploy
+          IdentitiesOnly yes
+          StrictHostKeyChecking accept-new
+          ConnectTimeout 30
+        CFG
+          chmod 600 ~/.ssh/config
+        }
+
+        # Comeca pelo endereco publico: e o comportamento que sempre funcionou,
+        # e em ubuntu-latest e o unico possivel.
+        escrever_config "$SSH_HOST"
+
+        # ── Por que insistir aqui ────────────────────────────────────────────
+        #
+        # O runner roda NA MESMA MAQUINA que ele acessa por SSH: a conexao sai
+        # para o IP publico do proprio servidor. Quando um build pesado esta em
+        # curso, o handshake compete por CPU e rede com ele.
+        #
+        # Em 2026-09-12 isso falhou duas vezes em uma hora com "Connection
+        # timed out", e a segunda bloqueou o deploy de producao da correcao de
+        # um incidente. Nas duas, conectar manualmente segundos depois
+        # funcionava — nao ha nada quebrado para consertar, so uma janela ruim.
+        #
+        # Uma tentativa unica transforma soluco de rede em deploy perdido. E a
+        # mesma licao que o backup ja tinha aprendido ("uma tentativa so
+        # transformava soluco em noite inteira sem backup"); o CI nao tinha.
+        #
+        # Espera crescente, nao fixa: se a causa e carga, insistir de imediato
+        # chega no mesmo momento ruim.
+        conectado=0
+        for tentativa in 1 2 3 4; do
+          if ssh -o BatchMode=yes oc 'echo "conexao ok: $(hostname)"'; then
+            [ "$tentativa" -gt 1 ] && echo "(conectou na tentativa $tentativa)"
+            conectado=1
+            break
+          fi
+          if [ "$tentativa" -lt 4 ]; then
+            espera=$(( tentativa * 15 ))
+            echo "⏳ SSH falhou na tentativa $tentativa; nova tentativa em ${espera}s"
+            sleep "$espera"
+          fi
+        done
+        if [ "$conectado" != "1" ]; then
+          echo "❌ SSH falhou nas 4 tentativas — o servidor esta inacessivel."
+          echo "   Nao e soluco: verifique o servidor antes de reexecutar."
+          exit 1
+        fi
+
+        # ── Atalho pela rede local, quando o runner esta no proprio servidor ──
+        #
+        # Em runner self-hosted a conexao acima sai para o IP PUBLICO da propria
+        # maquina: o pacote atravessa proxy e firewall para voltar ao ponto de
+        # partida. Sob build isso competia por CPU e rede e falhou duas vezes em
+        # uma hora em 2026-09-12 — a segunda bloqueando o deploy de correcao de
+        # um incidente. O gateway da bridge do Docker alcanca o mesmo sshd sem
+        # sair da maquina.
+        #
+        # NAO usar 127.0.0.1: dentro do container isso e o proprio container.
+        #
+        # Este bloco VERIFICA em vez de presumir, por tres motivos:
+        #   1. RUNNER_ENVIRONMENT nao e confiavel aqui (veio vazio no teste);
+        #   2. em ubuntu-latest o gateway existe mas nao e o nosso servidor;
+        #   3. a rede do container ja mudou uma vez sem ninguem notar.
+        #
+        # O criterio e identidade, nao alcancabilidade: so troca se a maquina do
+        # outro lado do gateway tiver o MESMO hostname da do endereco publico.
+        # Falhando qualquer etapa, fica no publico — o caminho que ja funcionava.
+        gateway_local() {
+          local hex
+          hex=$(awk '$2 == "00000000" { print $3; exit }' /proc/net/route 2>/dev/null) || return 1
+          [ -n "$hex" ] && [ ${#hex} -eq 8 ] || return 1
+          printf '%d.%d.%d.%d' "0x${hex:6:2}" "0x${hex:4:2}" "0x${hex:2:2}" "0x${hex:0:2}"
+        }
+
+        HOST_PUBLICO=$(ssh -o BatchMode=yes oc hostname 2>/dev/null || true)
+        GW=$(gateway_local || true)
+
+        if [ -n "$GW" ] && [ -n "$HOST_PUBLICO" ]; then
+          # -i explicito e obrigatorio: o `IdentityFile` do ~/.ssh/config vale
+          # so para o Host "oc". Conectando pelo IP cru do gateway, sem -i o
+          # ssh nao tem credencial nenhuma — falha muda (BatchMode engole o
+          # erro), $HOST_GW fica vazio, e o bloco conclui "nao e este servidor"
+          # mesmo quando e. Foi o que aconteceu no primeiro deploy real:
+          # confirmado manualmente que com -i a identidade bate.
+          HOST_GW=$(ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new \
+                        -o ConnectTimeout=5 -i ~/.ssh/id_deploy -o IdentitiesOnly=yes \
+                        "$SSH_USER@$GW" hostname 2>/dev/null || true)
+          if [ "$HOST_GW" = "$HOST_PUBLICO" ]; then
+            escrever_config "$GW"
+            echo "🔀 mesma maquina: alias oc apontado para o gateway $GW (era $SSH_HOST)"
+          else
+            echo "ℹ️  gateway $GW nao e este servidor — seguindo pelo endereco publico"
+          fi
+        else
+          echo "ℹ️  sem gateway utilizavel — seguindo pelo endereco publico"
+        fi

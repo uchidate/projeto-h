@@ -1,0 +1,59 @@
+name: Update Trending Scores
+
+# Roda em ubuntu-latest, nao no runner self-hosted.
+#
+# Em 2026-09-09 o socket do Docker foi removido do runner por seguranca: ele
+# rodava como root com acesso de escrita a API do Docker, o que equivale a root
+# no host. A analise da epoca olhou apenas os arquivos de workflow e concluiu
+# que nenhum ativo usava Docker — mas nao olhou os SCRIPTS que eles chamam, e
+# este usa `docker cp` e `docker exec`. O workflow quebrou no dia seguinte.
+#
+# A correcao mantem a melhoria de seguranca em vez de desfaze-la: o runner
+# segue sem acesso ao Docker, e a operacao privilegiada passa por SSH, com
+# chave dedicada e runner efemero. O script ja tinha esse modo pronto.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Toda segunda-feira às 06:00 UTC
+  workflow_dispatch:       # Permite trigger manual
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # Sem teto, um travamento prenderia o runner o dia inteiro sem alerta — o
+    # mesmo caso que o streaming-scores ja documenta.
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Update trending scores
+        env:
+          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
+        run: node scripts/update-trending-scores.mjs --confirm
+
+      - name: Trigger ISR revalidation
+        env:
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+        run: |
+          curl -s -X POST \
+            "${{ vars.SITE_URL }}/api/revalidate?secret=${REVALIDATE_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d '{"type":"production"}' \
+            -w "Revalidation: %{http_code}\n"

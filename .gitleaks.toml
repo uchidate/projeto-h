@@ -1,0 +1,11 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Artefatos locais ignorados pelo Git; o gate versionado não deve inspecioná-los"
+paths = [
+  '''(^|/)\.next/''',
+  '''(^|/)\.lighthouseci/''',
+  '''(^|/)\.env\.local$''',
+  '''(^|/)\.gsc-credentials\.json$''',
+]

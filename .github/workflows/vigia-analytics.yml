@@ -1,0 +1,193 @@
+name: 📊 Vigia da analitica
+
+# Verifica todo dia, num navegador real, se a medicao de audiencia ainda
+# funciona em producao.
+#
+# Existe porque analitica quebra em silencio. Nao ha erro no log, nao ha alerta,
+# nao ha pagina fora do ar — os relatorios apenas emagrecem, e a descoberta vem
+# semanas depois, por alguem estranhando o grafico. Em 2026-09-10 foi assim que
+# se levantou a duvida sobre o GA, e a resposta exigiu abrir um navegador e
+# olhar o trafego de rede, porque ler o codigo nao prova coleta.
+#
+# Roda contra PRODUCAO de proposito: e o unico ambiente cuja quebra importa, e
+# a causa costuma estar em configuracao (WordPress, rewrite, CSP, consentimento)
+# que nao existe em outro lugar.
+on:
+  schedule:
+    # 09:15 UTC = 06:15 em Brasilia. Depois do pico noturno e antes do dia
+    # comecar, entao uma quebra aparece no inicio do expediente.
+    - cron: '15 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: vigia-analytics
+  cancel-in-progress: false
+
+jobs:
+  verificar:
+    name: Medicao de audiencia
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      # npm na versao do `packageManager` do package.json: o setup-node traz o npm
+      # que acompanha o Node (11), e lock gerado por npm diferente diverge.
+      - name: npm do packageManager
+        run: npm install -g "$(node -p "require('./package.json').packageManager")"
+
+      # Cache do node_modules inteiro, nao so do cache do npm.
+      #
+      # O `cache: npm` do setup-node guarda ~/.npm, o que evita o download mas
+      # nao a instalacao: o `npm ci` continuava levando 28s porque apaga e
+      # reconstroi node_modules do zero. Guardando a arvore ja montada, o passo
+      # cai para poucos segundos quando o lockfile nao mudou.
+      #
+      # A chave inclui a versao do Node porque modulos nativos sao compilados
+      # para ela — restaurar uma arvore de outra versao quebra em runtime, e o
+      # erro apareceria longe daqui.
+      - name: Cache do node_modules
+        id: cache-modulos
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: modulos-node24-noble-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependencias
+        if: steps.cache-modulos.outputs.cache-hit != 'true'
+        run: npm ci
+
+      # Baixar o Chromium leva ~1min todo dia. A chave usa a versao do
+      # Playwright do lockfile: navegador de uma versao com biblioteca de outra
+      # falha de formas obscuras, entao a chave tem que amarrar as duas.
+      - name: Cache do navegador
+        id: cache-navegador
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-noble-${{ hashFiles('package-lock.json') }}
+
+      # --with-deps sempre, mesmo com cache: as bibliotecas de sistema ficam
+      # fora de ~/.cache e nao vem no cache. Com o navegador ja em disco este
+      # passo so instala os pacotes do sistema, que e rapido.
+      - name: Instalar navegador
+        run: |
+          if [ "${{ steps.cache-navegador.outputs.cache-hit }}" = "true" ]; then
+            npx playwright install-deps chromium
+          else
+            npx playwright install --with-deps chromium
+          fi
+
+      # Duas verificacoes distintas, e ambas sao necessarias.
+      #
+      # A primeira prova que as tags disparam para o visitante que NAO consente,
+      # que e a maioria. A segunda prova que aceitar o banner realmente concede:
+      # com Consent Mode v2 avancado os hits saem mesmo negados, entao "chegam
+      # hits" nao prova que o consentimento funciona. Se o botao parar de
+      # disparar o update, o GA4 fica preso em dado modelado para sempre, sem
+      # erro visivel em lugar nenhum.
+      - name: Tags disparam em producao
+        id: tags
+        env:
+          # Isenta o IP do runner do desafio da borda (RUNBOOK-bot-fight-mode.md).
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/diagnostico-analytics.mjs
+
+      - name: Aceitar o banner concede consentimento
+        id: consentimento
+        env:
+          # Isenta o IP do runner do desafio da borda (RUNBOOK-bot-fight-mode.md).
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/testa-fluxo-consentimento.mjs
+
+      - name: Abrir issue se a medicao quebrou
+        if: failure()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const titulo = '📊 Medicao de audiencia quebrada em producao'
+            const corpo = [
+              'O vigia diario encontrou falha na medicao de audiencia.',
+              '',
+              `Execucao: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '## O que verificar',
+              '',
+              '1. `googleTag` nas configuracoes do WordPress — a tag vem de la, nao do codigo.',
+              '2. O rewrite de `/stats` no `next.config.mjs`, que serve o Umami em primeira parte.',
+              '3. A CSP: um `script-src` novo pode barrar o gtag sem erro visivel na pagina.',
+              '4. O botao do banner de consentimento, se a falha foi no segundo passo.',
+              '',
+              'Reproduzir localmente:',
+              '',
+              '```bash',
+              'node scripts/diagnostico-analytics.mjs',
+              'node scripts/testa-fluxo-consentimento.mjs',
+              '```',
+            ].join('\n')
+
+            // Reabre/comenta a issue existente em vez de criar uma nova a cada
+            // dia: uma pilha de issues identicas treina a ignorar o repositorio.
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'analitica',
+            })
+            const existente = abertas.data.find((i) => i.title === titulo)
+            if (existente) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existente.number,
+                body: `Ainda falhando em ${new Date().toISOString()}.\n\n${corpo}`,
+              })
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: titulo,
+                body: corpo,
+                labels: ['analitica'],
+              })
+            }
+
+      - name: Fechar a issue quando voltar
+        if: success()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const titulo = '📊 Medicao de audiencia quebrada em producao'
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'analitica',
+            })
+            for (const i of abertas.data.filter((x) => x.title === titulo)) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: i.number,
+                body: '✅ A medicao voltou a funcionar. Fechando.',
+              })
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: i.number,
+                state: 'closed',
+              })
+            }

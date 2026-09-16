@@ -1,0 +1,87 @@
+# Coleta do Search Console para o Prometheus.
+#
+# ── Por que aqui e não no servidor ──────────────────────────────────────────
+#
+# Os outros exportadores rodam no servidor porque leem dado local. Este precisa
+# de uma credencial de conta de serviço do Google, e copiá-la para o servidor
+# criaria uma TERCEIRA cópia de um segredo que hoje vive em dois lugares
+# controlados. Rodando aqui, o servidor nunca vê a credencial — recebe só os
+# números já calculados.
+#
+# ── Por que uma vez por dia ─────────────────────────────────────────────────
+#
+# O Search Console tem 2 a 3 dias de atraso e consolida uma vez por dia. Coletar
+# de hora em hora gastaria cota da API para reescrever o mesmo número.
+name: 📈 Exporta SEO
+
+on:
+  schedule:
+    # 06:20 UTC = 03:20 BRT. Depois da consolidação do Google e longe da janela
+    # do backup, que já disputa rede e CPU do servidor.
+    - cron: '20 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: exporta-seo
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  coletar:
+    name: Coletar e publicar
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install --quiet google-auth google-api-python-client
+
+      - name: Coletar do Search Console
+        env:
+          GSC_CREDENTIALS_JSON: ${{ secrets.GSC_CREDENTIALS_JSON }}
+          DESTINO_PROM: ${{ runner.temp }}/seo.prom
+        run: |
+          set -euo pipefail
+          python3 scripts/exporta-seo.py
+          # Falhar aqui em vez de publicar arquivo vazio: um .prom truncado
+          # zera as séries no Prometheus, e zero é indistinguível de "o SEO
+          # despencou" num gráfico.
+          linhas=$(grep -cv '^#' "$DESTINO_PROM" || echo 0)
+          if [ "$linhas" -lt 10 ]; then
+            echo "❌ apenas $linhas métricas — coleta incompleta, não vou publicar"
+            exit 1
+          fi
+          echo "✅ $linhas métricas coletadas"
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Publicar no textfile collector
+        env:
+          ORIGEM: ${{ runner.temp }}/seo.prom
+        run: |
+          set -euo pipefail
+          # Escrita atômica no destino: o node-exporter lê esse diretório a cada
+          # scrape, e um arquivo pela metade vira erro de parse que derruba
+          # TODAS as métricas do node-exporter, não só estas.
+          scp -q "$ORIGEM" oc:/tmp/seo.prom.novo
+          ssh oc "install -m 0644 /tmp/seo.prom.novo /var/lib/node-exporter-textfile/seo.prom \
+                  && rm -f /tmp/seo.prom.novo \
+                  && grep -c '^seo_' /var/lib/node-exporter-textfile/seo.prom"

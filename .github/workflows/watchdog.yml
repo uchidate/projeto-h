@@ -1,0 +1,120 @@
+name: 🐕 Watchdog
+
+# Existe porque falha de workflow agendado nao avisa ninguem: streaming-scores,
+# trending-scores e validate-wp-data falharam de 27/07 a 06/09/2026 — seis
+# semanas com os rankings do site congelados — e so foi descoberto por acaso,
+# ao investigar outra coisa. O runner self-hosted tinha caido.
+#
+# Em ubuntu-latest de proposito: se rodasse no self-hosted, o vigia morreria
+# junto com o que ele deveria vigiar.
+on:
+  schedule:
+    - cron: '30 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  verificar:
+    name: 🔎 Workflows agendados estao rodando?
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checar ultima execucao bem-sucedida
+        uses: actions/github-script@v9
+        with:
+          script: |
+            // Workflow => quantos dias sem sucesso sao aceitaveis.
+            //
+            // O limite tem que acompanhar a PERIODICIDADE de cada um. Ate
+            // 2026-09-09 os tres usavam 2 dias, mas trending-scores e
+            // validate-wp-data rodam as segundas: a partir de toda quarta o
+            // watchdog abria issue por definicao, acusando falha onde havia
+            // apenas a espera normal. Alerta que dispara sozinho ensina a
+            // ignorar o canal.
+            //
+            // Folga de 1 dia sobre a periodicidade real, para um atraso
+            // pontual do agendador do GitHub nao virar issue.
+            const limites = {
+              'streaming-scores.yml': 2,   // diario   (0 5 * * *)
+              'trending-scores.yml': 8,    // semanal  (0 6 * * 1)
+              'validate-wp-data.yml': 8,   // semanal  (43 6 * * 1)
+            }
+            const agora = Date.now()
+            const problemas = []
+
+            for (const [arquivo, diasLimite] of Object.entries(limites)) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: arquivo,
+                status: 'success',
+                per_page: 1,
+              })
+              const ultimo = runs.data.workflow_runs[0]
+              if (!ultimo) {
+                problemas.push(`- \`${arquivo}\`: **nenhuma execucao bem-sucedida registrada**`)
+                continue
+              }
+              const dias = (agora - new Date(ultimo.created_at)) / 86400000
+              if (dias > diasLimite) {
+                problemas.push(`- \`${arquivo}\`: ultimo sucesso ha **${dias.toFixed(1)} dias** (limite: ${diasLimite})`)
+              }
+            }
+
+            const titulo = '🐕 Workflow agendado parou de rodar'
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'watchdog',
+            })
+            const existente = abertas.data.find(i => i.title === titulo)
+
+            if (problemas.length === 0) {
+              // Fecha sozinho quando normaliza: issue que so abre vira ruido e
+              // deixa de ser lida.
+              if (existente) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: existente.number,
+                  body: '✅ Todos os workflows agendados voltaram a rodar. Fechando.',
+                })
+                await github.rest.issues.update({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: existente.number, state: 'closed',
+                })
+              }
+              core.info('Todos os workflows agendados em dia.')
+              return
+            }
+
+            const corpo = [
+              'Um ou mais workflows agendados nao rodam com sucesso ha mais tempo que o esperado.',
+              '',
+              ...problemas,
+              '',
+              'Duas causas possiveis, e a diferenca importa:',
+              '',
+              '1. **O workflow nao esta rodando** — runner self-hosted offline.',
+              '   Verificar o container do runner de deploy no servidor.',
+              '2. **O workflow roda e falha de proposito** — encontrou um problema real',
+              '   e esta reportando. Abrir o log antes de culpar a infraestrutura:',
+              '   foi o caso do validate-wp-data, que acusava 106 guias fora do sitemap',
+              '   havia 63 dias.',
+              '',
+              `_Verificado em ${new Date().toISOString()}_`,
+            ].join('\n')
+
+            if (existente) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existente.number, body: corpo,
+              })
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: titulo, body: corpo, labels: ['watchdog'],
+              })
+            }
+            core.setFailed(`${problemas.length} workflow(s) agendado(s) parado(s)`)

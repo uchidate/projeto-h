@@ -1,0 +1,31 @@
+name: 🔎 Validar Dados do WP
+
+on:
+  schedule:
+    - cron: '43 6 * * 1'  # Toda segunda às 06:43 UTC
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      # npm na versao do `packageManager` do package.json: o setup-node traz o npm
+      # que acompanha o Node (11), e lock gerado por npm diferente diverge.
+      - name: npm do packageManager
+        run: npm install -g "$(node -p "require('./package.json').packageManager")"
+      - run: npm install
+      - name: Validar integridade de dados do WP
+        env:
+          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
+        run: npx tsx scripts/validate-wp-data.mjs

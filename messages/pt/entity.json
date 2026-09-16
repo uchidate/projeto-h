@@ -1,0 +1,68 @@
+{
+  "breadcrumb": {
+    "artists": "Artistas",
+    "groups": "Grupos",
+    "productions": "Produções"
+  },
+  "artist": {
+    "metaTitle": "{name} — Perfil, carreira e curiosidades",
+    "metaDescription": "Perfil completo de {name} — biografia, carreira e curiosidades."
+  },
+  "group": {
+    "metaTitle": "{name} — Grupo K-Pop",
+    "metaDescription": "Tudo sobre o grupo {name} — integrantes, estreia, fandom e mais.",
+    "metaDescriptionHangul": "Tudo sobre o grupo {name} ({hangul}) — integrantes, estreia, fandom e mais."
+  },
+  "production": {
+    "metaTitle": "{title} — {type}",
+    "type": {
+      "movie": "Filme coreano",
+      "variety": "Variety show coreano",
+      "drama": "Dorama coreano"
+    }
+  },
+  "switcher": {
+    "availableIn": "Também disponível em",
+    "prompt": "Esta página está disponível em português.",
+    "open": "Ler em português",
+    "dismiss": "Dispensar",
+    "name": "Português"
+  },
+  "catalog": {
+    "artists": {
+      "title": "Artistas K-Pop",
+      "description": "Perfis de artistas K-Pop em português."
+    },
+    "groups": {
+      "title": "Grupos K-Pop",
+      "description": "Perfis de grupos K-Pop em português."
+    },
+    "productions": {
+      "title": "Doramas e filmes coreanos",
+      "description": "Fichas de doramas e filmes coreanos em português."
+    },
+    "count": "{count, plural, one {# perfil} other {# perfis}}",
+    "empty": "Ainda não há perfis publicados neste idioma.",
+    "emptyLink": "Ver o catálogo completo em português",
+    "previous": "← Anterior",
+    "next": "Próxima →",
+    "pageOf": "Página {page} de {total}"
+  },
+  "footer": {
+    "catalog": "Catálogo"
+  },
+  "layout": {
+    "tagline": "K-Drama, K-Pop e cultura coreana em português.",
+    "logoSubtitles": [
+      "k-pop · k-drama · cultura coreana, em português",
+      "artistas · grupos · produções",
+      "tendências · notícias · guias"
+    ],
+    "rights": "Todos os direitos reservados.",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "madeWith": "Feito com ♥ para o fandom",
+    "home": "{site} — página inicial",
+    "footerNav": "Links do rodapé"
+  }
+}

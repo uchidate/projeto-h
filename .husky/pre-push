@@ -1,0 +1,42 @@
+#!/bin/bash
+# Roda type-check e a suíte Python do pipeline antes de cada push.
+# Falha bloqueia o push.
+# Sem node_modules não há type-check possível, e falhar aqui bloquearia push
+# legítimo por dependência ausente em vez de por erro de código. Acontece em
+# git worktree, que não copia arquivos ignorados — reproduzido ao vivo em
+# 15/08/2026. Hook que barra trabalho correto é hook que ensina a usar
+# --no-verify, e aí ele deixa de existir na prática.
+if [ ! -d node_modules ]; then
+  echo "· node_modules ausente (worktree?) — checagens locais puladas"
+  exit 0
+fi
+
+echo "⏳ type-check..."
+npm run type-check --silent
+if [ $? -ne 0 ]; then
+  echo "❌ type-check falhou — push bloqueado. Corrija os erros e tente novamente."
+  exit 1
+fi
+echo "✅ type-check ok"
+
+# A suíte inteira roda em ~0,05s, então não há razão para deixá-la de fora:
+# inclui test_guardrail_regressions, que protege contra guardrail apagando
+# texto legítimo — falha silenciosa (o save-draft.py imprime "OK" mesmo assim)
+# e por isso a que mais precisa de gatilho automático.
+# O script `pipeline:test` só existe nos branches que já o trazem. O hook vive
+# em .git/hooks e vale para TODO branch — sem esta checagem ele bloqueava o
+# push de qualquer trabalho feito em `main` com um erro de "script não
+# encontrado", que não tem nada a ver com a qualidade do que está sendo
+# enviado. Reproduzido ao vivo em 15/08/2026, com outra sessão trabalhando em
+# main enquanto o script existia só no branch de pipeline.
+if node -e "process.exit(require('./package.json').scripts['pipeline:test'] ? 0 : 1)" 2>/dev/null; then
+  echo "⏳ testes do pipeline..."
+  npm run pipeline:test --silent
+  if [ $? -ne 0 ]; then
+    echo "❌ testes do pipeline falharam — push bloqueado."
+    exit 1
+  fi
+  echo "✅ testes do pipeline ok"
+else
+  echo "· pipeline:test não existe neste branch — pulado"
+fi

@@ -1,0 +1,68 @@
+{
+  "breadcrumb": {
+    "artists": "Artists",
+    "groups": "Groups",
+    "productions": "Productions"
+  },
+  "artist": {
+    "metaTitle": "{name} — Profile, career and trivia",
+    "metaDescription": "Full profile of {name} — biography, career and trivia."
+  },
+  "group": {
+    "metaTitle": "{name} — K-Pop group",
+    "metaDescription": "Everything about {name} — members, debut, fandom and more.",
+    "metaDescriptionHangul": "Everything about {name} ({hangul}) — members, debut, fandom and more."
+  },
+  "production": {
+    "metaTitle": "{title} — {type}",
+    "type": {
+      "movie": "Korean film",
+      "variety": "Korean variety show",
+      "drama": "Korean drama"
+    }
+  },
+  "switcher": {
+    "availableIn": "Also available in",
+    "prompt": "This page is available in English.",
+    "open": "Read in English",
+    "dismiss": "Dismiss",
+    "name": "English"
+  },
+  "catalog": {
+    "artists": {
+      "title": "K-Pop artists",
+      "description": "K-Pop artist profiles in English: careers, groups, dramas and more."
+    },
+    "groups": {
+      "title": "K-Pop groups",
+      "description": "K-Pop group profiles in English: members, debut, fandom and more."
+    },
+    "productions": {
+      "title": "Korean dramas and films",
+      "description": "Korean drama and film guides in English: synopsis, cast and where to watch."
+    },
+    "count": "{count, plural, one {# profile} other {# profiles}}",
+    "empty": "No profiles have been published in this language yet.",
+    "emptyLink": "See the full catalog in Portuguese",
+    "previous": "← Previous",
+    "next": "Next →",
+    "pageOf": "Page {page} of {total}"
+  },
+  "footer": {
+    "catalog": "Catalog"
+  },
+  "layout": {
+    "tagline": "K-Drama, K-Pop and Korean culture in English.",
+    "logoSubtitles": [
+      "k-pop · k-drama · Korean culture, in English",
+      "artists · groups · productions",
+      "trends · news · guides"
+    ],
+    "rights": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "madeWith": "Made with ♥ for the fandom",
+    "home": "{site} — home",
+    "footerNav": "Footer links"
+  }
+}

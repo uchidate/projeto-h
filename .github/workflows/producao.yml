@@ -1,0 +1,237 @@
+name: 🚀 Producao
+
+# Deploy de producao no GitHub Actions.
+#
+# Ate 2026-09-10 producao so subia da maquina do desenvolvedor, exigindo a
+# chave SSH e o 1Password destravado. Nesta sessao isso bloqueou um deploy: com
+# a pessoa longe do computador, nao havia caminho para publicar. Nao havia
+# tampouco registro de quem publicou o que e quando.
+#
+# E o motivo mais forte: se staging sobe por um caminho e producao por outro, o
+# staging nao testa o deploy — que foi exatamente o que quebrou tres vezes em
+# 2026-09-09.
+#
+# Nenhum segredo da aplicacao vive aqui. O deploy-manual.sh tenta o 1Password e,
+# quando ele nao responde (como neste runner, onde `op` nem existe), le os
+# valores do proprio container em producao via SSH. Os segredos nunca saem do
+# servidor.
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'notas/**'
+      - 'docs/**'
+  workflow_dispatch:
+
+# cancel-in-progress FALSE, ao contrario do staging.
+#
+# Cancelar um deploy de producao no meio pode deixar o container candidato de
+# pe sem promocao, ou o anterior parado sem substituto. O blue/green do
+# deploy-production.sh e seguro contra falha, nao contra ser morto no meio.
+concurrency:
+  group: producao
+  cancel-in-progress: false
+
+permissions:
+  # contents: criar a tag e a release.
+  contents: write
+  # issues e pull-requests: o @semantic-release/github comenta nos itens
+  # incluidos na release avisando em qual versao a mudanca saiu. Sem estas duas,
+  # a release e criada normalmente e o passo seguinte morre com "Resource not
+  # accessible by integration" — foi o que aconteceu na v1.78.0, com o deploy ja
+  # concluido e saudavel.
+  issues: write
+  pull-requests: write
+  # actions: read — o deploy consulta se o quality.yml ja passou para o conteudo
+  # deste commit, em vez de reexecutar a suite (172s de repeticao por deploy).
+  #
+  # Sao TRES chamadas, e cada uma depende de uma permissao ja declarada acima:
+  #   /commits/{sha}/pulls          -> pull-requests (descobre o PR de origem)
+  #   /actions/workflows/.../runs   -> actions: read (execucao verde)
+  #   /commits/{head}               -> contents     (arvore, para comparar)
+  #
+  # Faltando qualquer uma, a resposta e 403, a funcao devolve falso e os gates
+  # rodam sempre: a otimizacao simplesmente nao acontece. Foi assim que a
+  # primeira versao passou dias sem economizar nada — por isso o script agora
+  # DIZ no log por que decidiu rodar.
+  actions: read
+
+jobs:
+  publicar:
+    name: Publicar producao
+    # No runner proprio, e nao em ubuntu-latest: o job praticamente nao
+    # trabalha, ele ESPERA. O deploy e `ssh oc bash scripts/deploy-manual.sh`, e
+    # quase todo o tempo de parede e o `docker build` rodando no servidor. Em
+    # setembro isso custou ~580 min de cota (86 execucoes, mediana 5,8 min) para
+    # um runner que so olhava a barra de progresso do nosso proprio servidor.
+    #
+    # Era assim ate 2026-07-11 (commit 9fe1c0a, "move all deploy jobs to the
+    # self-hosted runner"), pelo mesmo motivo: cota. Voltou para ubuntu-latest
+    # na reconstrucao do pipeline, nao por uma decisao contraria.
+    #
+    # Custo conhecido: existe UMA replica de runner, entao producao e staging
+    # passam a serializar entre si.
+    runs-on: [self-hosted, deploy]
+    timeout-minutes: 40
+    steps:
+      # fetch-depth: 0 porque o semantic-release precisa do historico inteiro
+      # de tags para calcular a proxima versao.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # npm na versao do `packageManager` do package.json: o setup-node traz o npm
+      # que acompanha o Node (11), e lock gerado por npm diferente diverge.
+      - name: npm do packageManager
+        run: npm install -g "$(node -p "require('./package.json').packageManager")"
+
+      # Cache do node_modules inteiro, nao so do cache do npm.
+      #
+      # O `cache: npm` do setup-node guarda ~/.npm, o que evita o download mas
+      # nao a instalacao: o `npm ci` continuava levando 28s porque apaga e
+      # reconstroi node_modules do zero. Guardando a arvore ja montada, o passo
+      # cai para poucos segundos quando o lockfile nao mudou.
+      #
+      # A chave inclui a versao do Node porque modulos nativos sao compilados
+      # para ela — restaurar uma arvore de outra versao quebra em runtime, e o
+      # erro apareceria longe daqui.
+      - name: Cache do node_modules
+        id: cache-modulos
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: modulos-node24-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependencias
+        if: steps.cache-modulos.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      # O MESMO script que roda na maquina do desenvolvedor. Um caminho de
+      # deploy exercitado dos dois lados nao diverge em silencio.
+      #
+      # GITHUB_TOKEN e nao um PAT: o push de versao do semantic-release feito
+      # com GITHUB_TOKEN nao redispara workflows, o que evita o laco infinito
+      # de deploy -> commit de versao na main -> deploy.
+      # O staging ja construiu a imagem deste commit? Se sim, o deploy pula o
+      # build inteiro — que e 86% do tempo de execucao (228s de 264s medidos em
+      # 2026-09-10) — e producao passa a rodar exatamente os bytes que o staging
+      # validou, em vez de um artefato novo e nao testado.
+      #
+      # Isso so acontece se o SHA for preservado ao integrar na main. Merge
+      # commit, squash e rebase criam SHA novo e forcam rebuild. Para
+      # aproveitar: `git checkout main && git merge --ff-only <branch>`.
+      - name: Verificar reaproveitamento da imagem
+        id: imagem
+        run: |
+          if ssh -o BatchMode=yes oc "docker image inspect ${{ vars.IMAGE_REPO }}:${GITHUB_SHA} >/dev/null 2>&1"; then
+            echo "reuso=sim" >> "$GITHUB_OUTPUT"
+            echo "♻️  imagem deste commit ja existe: o build sera pulado"
+          else
+            echo "reuso=nao" >> "$GITHUB_OUTPUT"
+            echo "🔨 imagem ausente: build completo (~3min)"
+            echo "    o SHA mudou na integracao com a main, entao o artefato"
+            echo "    validado no staging nao pode ser promovido."
+          fi
+
+      - name: Deploy de producao
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # deploy-traefik.sh valida o caminho público do Site Kit; o header
+          # autenticado atravessa a exceção WAF para runners do GitHub.
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: bash scripts/deploy-manual.sh
+
+      - name: Resumo
+        if: always()
+        run: |
+          {
+            echo "### Producao"
+            echo ""
+            echo "- commit: \`${GITHUB_SHA}\`"
+            echo "- url: ${{ vars.SITE_URL }}"
+            if [ "${{ steps.imagem.outputs.reuso }}" = "sim" ]; then
+              echo "- artefato: promovido do staging (build pulado)"
+            else
+              echo "- artefato: construido agora — o SHA mudou na integracao"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  fumaca:
+    name: Fumaça em produção
+    needs: publicar
+    # ubuntu-latest, e nao o runner proprio: o de deploy roda Ubuntu 20.04 Focal,
+    # que o Playwright nao suporta. Ver o comentario longo em staging.yml.
+    #
+    # `needs: publicar` sem `if: always()` preserva o comportamento anterior
+    # dos `if: success()`: se o deploy falhar, a fumaca nao roda.
+    #
+    # No staging a fumaca e portao; aqui e alarme — nem toda mudanca passa
+    # pelo staging (branches do Dependabot nao publicam ambiente), entao um
+    # bump de dependencia pode chegar a producao sem verificacao de produto.
+    # O blue/green ja promoveu quando isto roda: falhar aqui nao impede o
+    # deploy, avisa em um minuto. Rollback e `docker` no servidor, nao um novo
+    # ciclo de CI.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      # Sem `cache: npm`: runner de CI e o Mac, com ~/.npm persistente.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Cache do node_modules
+        id: cache-modulos
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: modulos-node24-noble-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependencias
+        if: steps.cache-modulos.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Cache do navegador
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-noble-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar navegador
+        run: npx playwright install --with-deps chromium
+
+      - name: Fumaça em produção
+        # Identifica esta execucao como automacao NOSSA, para a regra de
+        # excecao da Cloudflare. Com o Bot Fight Mode ligado, Chromium
+        # headless e o caso mais classico de deteccao: sem excecao a
+        # verificacao falharia por bloqueio, e o sintoma pareceria defeito do
+        # site.
+        env:
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/fumaca.mjs ${{ vars.SITE_URL }}

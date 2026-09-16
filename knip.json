@@ -1,0 +1,26 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "project": [
+        "**/*.{js,cjs,mjs,ts,tsx,css}"
+      ],
+      "ignoreDependencies": [
+        "@semantic-release/commit-analyzer",
+        "@semantic-release/github",
+        "@semantic-release/npm",
+        "conventional-changelog-conventionalcommits",
+        "dotenv",
+        "sharp"
+      ],
+      "ignoreBinaries": [
+        "actionlint",
+        "gitleaks",
+        "graphify",
+        "hadolint",
+        "k6",
+        "lychee"
+      ]
+    }
+  }
+}

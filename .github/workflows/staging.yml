@@ -1,0 +1,216 @@
+name: 🧪 Staging
+
+# Todo push que nao seja na main vai para o staging, automaticamente.
+#
+# Por que automatico e nao sob demanda: o staging anterior morreu exatamente
+# por depender de acao humana. Ele era mantido pelo deploy.yml; quando o deploy
+# virou script manual em 2026-07-11, ninguem mais o atualizava e ele apodreceu
+# ate virar alerta vermelho permanente, descoberto so em 2026-09-09. Ambiente
+# que depende de alguem lembrar de atualizar nao sobrevive.
+on:
+  push:
+    branches-ignore:
+      - main
+      # Branch do Dependabot nao publica staging.
+      #
+      # Existe UM staging. Um bump de dependencia tomaria o ambiente de quem
+      # esta trabalhando, e o Dependabot abre varias branches por semana. Alem
+      # disso o valor seria baixo: o que um bump precisa e dos gates, e esses o
+      # quality.yml ja aplica no pull request.
+      #
+      # Em 2026-09-10 um bump de @vitest/coverage-v8 para 5.0.0 — que exige
+      # vitest 5 enquanto o projeto esta no 4 — derrubou o deploy de staging
+      # com conflito de peer dependency, ruido que nao dizia nada sobre o
+      # ambiente.
+      - 'dependabot/**'
+    paths-ignore:
+      - '**.md'
+      - 'notas/**'
+      - 'docs/**'
+
+# Grupo GLOBAL, nao por branch: existe UM staging. Duas branches publicando ao
+# mesmo tempo disputariam o mesmo container e o resultado seria indeterminado.
+# cancel-in-progress porque o ultimo push e o que interessa.
+concurrency:
+  # Grupo global, sem a chave por ref: existe UM staging, e dois branches
+  # promovendo ao mesmo tempo disputariam o mesmo container. Serializar e
+  # correto.
+  #
+  # O que estava errado era CANCELAR em vez de enfileirar. Duas consequencias,
+  # as duas observadas em 2026-09-11:
+  #
+  # 1. `promover-staging.sh` nao tem trap de limpeza. Cancelar no meio da
+  #    promocao pode deixar container e router orfaos.
+  # 2. Execucao cancelada aparece como `fail` no pull request. Num intervalo de
+  #    uma hora, quatro execucoes pareciam quebradas; ao checar uma por uma,
+  #    tres eram cancelamentos causados pelos proprios pushes seguintes e so
+  #    uma era falha de verdade. Sinal que mente sobre si mesmo custa mais caro
+  #    que a espera que ele economiza.
+  #
+  # Enfileirar custa tempo e nao mente. A producao ja usa `false` por isto.
+  group: staging
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    name: Publicar staging
+    # No runner proprio pelo motivo ja anotado na linha 122: "o deploy leva
+    # ~345s e quase tudo e espera por `docker build` no servidor". Era o maior
+    # consumidor de cota do projeto — ~1021 min em setembro, 175 execucoes de
+    # mediana 6,2 min — gastos esperando o nosso proprio servidor.
+    #
+    # No runner proprio essa espera nao custa cota, e o build fica na mesma
+    # maquina que publica.
+    #
+    # Custo conhecido: uma replica so, entao staging e producao serializam.
+    runs-on: [self-hosted, deploy]
+    timeout-minutes: 25
+    steps:
+      # fetch-tags porque o NEXT_PUBLIC_APP_VERSION vem de `git describe`; sem
+      # as tags o deploy cairia no package.json, que nao e mais versionado.
+      - uses: actions/checkout@v7
+        with:
+          fetch-tags: true
+          fetch-depth: 0
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # npm na versao do `packageManager` do package.json: o setup-node traz o npm
+      # que acompanha o Node (11), e lock gerado por npm diferente diverge.
+      - name: npm do packageManager
+        run: npm install -g "$(node -p "require('./package.json').packageManager")"
+
+      # Cache do node_modules inteiro, nao so do cache do npm.
+      #
+      # O `cache: npm` do setup-node guarda ~/.npm, o que evita o download mas
+      # nao a instalacao: o `npm ci` continuava levando 28s porque apaga e
+      # reconstroi node_modules do zero. Guardando a arvore ja montada, o passo
+      # cai para poucos segundos quando o lockfile nao mudou.
+      #
+      # A chave inclui a versao do Node porque modulos nativos sao compilados
+      # para ela — restaurar uma arvore de outra versao quebra em runtime, e o
+      # erro apareceria longe daqui.
+      - name: Cache do node_modules
+        id: cache-modulos
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: modulos-node24-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependencias
+        if: steps.cache-modulos.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      # O MESMO script que roda na maquina do desenvolvedor. Um caminho de
+      # deploy exercitado dos dois lados nao diverge em silencio — que e como
+      # um staging deixa de representar producao.
+      - name: Deploy do staging
+        env:
+          # O health público é isento do Basic Auth, mas o runner hospedado
+          # ainda vem de ASN de datacenter e precisa atravessar a regra WAF.
+          # O script transmite o cabeçalho só na sonda, sem expor o segredo.
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        # --skip-gates: lint e tipos ja rodam no workflow Quality, que e o que
+        # protege o merge. Aqui eles repetiam o mesmo trabalho em todo push de
+        # branch — 52s por run (medido em 2026-09-13), no workflow que mais roda.
+        # Localmente, `bash scripts/deploy-staging.sh` segue rodando os gates.
+        run: bash scripts/deploy-staging.sh --skip-gates
+
+      - name: Resumo
+        if: always()
+        run: |
+          {
+            echo "### Staging"
+            echo ""
+            echo "- commit: \`${GITHUB_SHA}\`"
+            echo "- branch: \`${GITHUB_REF_NAME}\`"
+            echo "- url: ${{ vars.STAGING_URL }}"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  fumaca:
+    name: Fumaça no staging
+    needs: publicar
+    # ubuntu-latest, e nao o runner proprio.
+    #
+    # O runner self-hosted (myoung34/github-runner) roda Ubuntu 20.04 Focal —
+    # confirmado com `cat /etc/os-release` dentro do container, nao suposicao.
+    # O Playwright 1.63 nao suporta mais chromium nesse SO: nem
+    # `install-deps`, nem `install`, nem `install --with-deps` conseguem, e a
+    # falha e dura ("ERROR: Playwright does not support chromium on
+    # ubuntu20.04-x64"), sem flag que contorne.
+    #
+    # Tentativas anteriores nesta mesma tarde, na ordem: (1) so instalar
+    # quando cache-hit=false — falhava porque cache-hit as vezes restaura
+    # binario de OS diferente sem avisar; (2) sempre `install --with-deps` —
+    # bateu direto no bloqueio de OS, que nunca tinha aparecido antes porque
+    # cache-hit=true evitava chegar ao download de verdade.
+    #
+    # A fumaca so precisa de HTTPS publico: nao precisa estar no servidor, nem
+    # no self-hosted. Um job separado em SO suportado elimina a classe de
+    # problema, ao custo de um checkout+npm ci extras — pequeno, e cai fora do
+    # runner que estamos protegendo de carga.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      # Sem `cache: npm`: runner de CI e o Mac, com ~/.npm persistente.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Cache do node_modules
+        id: cache-modulos
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: modulos-node24-noble-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependencias
+        if: steps.cache-modulos.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Cache do navegador
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-noble-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar navegador
+        run: npx playwright install --with-deps chromium
+
+      # O portao que faltava entre "os testes passaram" e "o site funciona".
+      #
+      # Os 1.359 testes unitarios nao pegaram, em dois dias: CLS de 23 com a
+      # pagina saltando a cada rolagem, filtros do celular flutuando soltos e
+      # links de conteudo para paginas inexistentes. Nenhum desses defeitos e
+      # de logica — aparecem so com navegador real, viewport real e pagina
+      # realmente servida.
+      - name: Fumaça no staging
+        env:
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+          STAGING_USER: ci
+          STAGING_PASS: ${{ secrets.STAGING_CI_PASS }}
+        run: node scripts/fumaca.mjs ${{ vars.STAGING_URL }}

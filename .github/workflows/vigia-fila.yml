@@ -1,0 +1,98 @@
+# Vigia de execução presa em fila.
+#
+# ── Por que existe ──────────────────────────────────────────────────────────
+#
+# Em setembro/2026, 5 execuções do streaming-scores.yml ficaram 24h em
+# `queued` e foram canceladas em silêncio pelo próprio GitHub — sem alerta,
+# sem log de erro, sem ninguém notar. O score de streaming dos artistas
+# simplesmente não atualizou nesses dias. Um job preso em fila não aparece
+# como falha: aparece como nada, e nada não dispara notificação nenhuma.
+#
+# Este workflow faz a pergunta que ninguém estava fazendo: existe alguma
+# execução esperando runner há mais tempo do que deveria?
+#
+# ── Por que 20 minutos ───────────────────────────────────────────────────────
+#
+# staging e producao serializam no mesmo runner de propósito (ver
+# docs/DEPLOY-NO-SERVIDOR.md, princípio 4) — um atrás do outro em fila é
+# normal, não incidente. 20 minutos é maior que qualquer deploy sozinho
+# (~5min medido) e menor que duas filas legítimas empilhadas, então cobre o
+# caso real (streaming-scores, que não deveria esperar por nada) sem alarme
+# falso na fila normal de staging/producao.
+#
+# ── Por que ubuntu-latest, não o runner próprio ──────────────────────────────
+#
+# O vigia não pode rodar no mesmo runner que ele está checando: se o runner
+# em si estiver travado, o vigia nunca dispararia. Mesmo motivo por que os
+# outros vigias ficam fora do que vigiam.
+name: ⏳ Vigia de fila
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: vigia-fila
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  verificar:
+    name: Verificar execuções presas em fila
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Buscar execuções em fila há mais de 20min
+        id: fila
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PRESAS=$(gh api "/repos/${{ github.repository }}/actions/runs?status=queued&per_page=100" \
+            -q '.workflow_runs[]
+                | select((now - (.created_at | fromdateiso8601)) > 1200)
+                | "- \(.name) (\(((now - (.created_at | fromdateiso8601)) / 60) | floor)min): \(.html_url)"')
+          {
+            echo 'presas<<FIM'
+            echo "$PRESAS"
+            echo 'FIM'
+          } >> "$GITHUB_OUTPUT"
+          if [ -n "$PRESAS" ]; then
+            echo "encontradas execuções presas:"
+            echo "$PRESAS"
+          else
+            echo "nenhuma execução presa em fila"
+          fi
+
+      # Pelo SERVIDOR, nao por segredo no GitHub — mesmo motivo do
+      # vigia-producao.yml: NTFY_URL/USER/PASS nao existem como secrets do
+      # repositorio, e o servidor ja tem o canal configurado e em uso pelos
+      # timers, com a senha em arquivo.
+      - name: Conectar ao servidor
+        if: steps.fila.outputs.presas != ''
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Avisar no ntfy
+        if: steps.fila.outputs.presas != ''
+        env:
+          PRESAS: ${{ steps.fila.outputs.presas }}
+        run: |
+          set -euo pipefail
+          ssh oc "set -euo pipefail
+            . ${{ vars.CONFIG_AVISOS }}
+            [ -n \"\${NTFY_URL:-}\" ] && [ -r \"\${NTFY_PASS_FILE:-/nao-existe}\" ] || {
+              echo 'canal ntfy nao configurado no servidor'; exit 0; }
+            curl -sS --max-time 15 -u \"\$NTFY_USER:\$(cat \"\$NTFY_PASS_FILE\")\" \
+              -H 'Title: Execucao presa em fila ha mais de 20min' \
+              -H 'Priority: high' \
+              -H 'Tags: hourglass' \
+              -d $(printf '%q' "$PRESAS") \
+              \"\$NTFY_URL\" >/dev/null && echo 'aviso enviado'"

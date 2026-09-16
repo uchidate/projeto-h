@@ -1,0 +1,27 @@
+/* Hallmark · macrostructure: Catalogue · tone: editorial · anchor hue: rosa da marca
+ * Hallmark · pre-emit critique: P4 H5 E5 S5 R5 V5
+ */
+:root {
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-inter);
+  --color-paper: var(--color-bg);
+  --color-ink: var(--color-fg);
+  --color-ink-muted: var(--color-muted);
+  --color-rule: var(--color-border);
+  --color-brand: var(--color-accent);
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --text-display: clamp(2rem, 4vw, 4rem);
+  --text-body: 1rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --rule-hairline: 1px;
+  --radius-control: 0.25rem;
+}

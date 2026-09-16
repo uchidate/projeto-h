@@ -1,0 +1,23 @@
+{
+  "$comment": "Glossário de tradução PT→EN do site. Usado por quem traduz e pelo agente revisor-traducao (scripts/i18n-review). Nomes próprios seguem a grafia canônica da ficha; títulos de produção usam o nome internacional oficial (TMDB) quando existir.",
+  "keep": [
+    "K-Pop", "K-Drama", "idol", "maknae", "visual", "center", "comeback", "daesang", "bonsang", "sageuk",
+    "fandom", "lightstick", "trainee", "survival show", "variety show", "chaebol", "sunbae", "hoobae"
+  ],
+  "terms": [
+    { "pt": "dorama", "en": "K-drama", "note": "“dorama” é uso brasileiro; em inglês o termo é K-drama (ou drama)." },
+    { "pt": "novela diária", "en": "daily drama" },
+    { "pt": "novela de fim de semana", "en": "weekend drama" },
+    { "pt": "audiência", "en": "viewership ratings", "note": "Para percentuais Nielsen/TNmS: “ratings”." },
+    { "pt": "estreia", "en": "debut", "note": "Carreira. Para produção que estreia na TV: “premiere”." },
+    { "pt": "grupo misto", "en": "co-ed group" },
+    { "pt": "integrante", "en": "member" },
+    { "pt": "ex-integrante", "en": "former member" },
+    { "pt": "agência", "en": "agency", "note": "Em contexto de gravadora: “label”." },
+    { "pt": "prêmio de revelação", "en": "Best New Actor/Actress", "note": "Usar o nome oficial em inglês da categoria quando houver." },
+    { "pt": "programa de variedades", "en": "variety show" },
+    { "pt": "geração", "en": "generation", "note": "“3ª geração” → “third generation” no texto corrido." },
+    { "pt": "emissora", "en": "network" },
+    { "pt": "Coreia do Sul", "en": "South Korea" }
+  ]
+}

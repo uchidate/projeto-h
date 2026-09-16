@@ -1,0 +1,6 @@
+#!/bin/sh
+# Delegacao: o husky assume core.hooksPath, o que desativaria os hooks que outras
+# ferramentas instalam em .git/hooks (aqui, o graphify). Chamamos o hook original
+# explicitamente para que ele continue funcionando e continue atualizavel por elas.
+[ -x "$(git rev-parse --git-common-dir)/hooks/post-checkout" ] && "$(git rev-parse --git-common-dir)/hooks/post-checkout" "$@"
+exit 0

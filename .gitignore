@@ -1,0 +1,110 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+build/
+
+# Env files
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.production.local
+.env.staging.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+.continue/
+*.swp
+*.swo
+
+# Rascunhos do modelo local (Continue)
+.drafts/
+
+# Credentials (Google Search Console, etc)
+.gsc-credentials.json
+google-drive-tokens.json
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+scripts/import-quiz-from-khub.mjs
+
+# Testes
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+coverage/
+.lighthouseci/
+.lycheecache
+
+# Saida de reporter do vitest (.vitest/json/output.json). Estado de ferramenta,
+# reconstruivel rodando a suite — mesmo caso do draft_eval_history.db abaixo,
+# que virou commit por nao estar listado aqui.
+.vitest/
+
+# Local dev/tuning history for the evals/ harness — not pipeline state,
+# not meant to be shared/versioned.
+#
+# Sem curinga o padrao cobria UM caminho, e uma copia vazia de 0 byte foi
+# versionada na raiz do repositorio em 66703a0 — o script tinha rodado de
+# outro diretorio. Ignorar o arquivo por NOME, em qualquer nivel, e o que
+# impede a proxima.
+draft_eval_history.db
+
+# The real news.db lives in ~/.openclaw/news-pipeline/ — an accidental
+# relative-path DB connection from an ad-hoc script created an empty one
+# here once; ignored so it can't be mistaken for real state or committed.
+ops/news-pipeline/news.db
+ops/news-pipeline/news.db-wal
+ops/news-pipeline/news.db-shm
+ops/news-pipeline/*.log
+
+# Runtime state for pipeline-toggle.sh (which crons it turned off, so `on`
+# only re-enables those) — local machine state, not meant to be versioned.
+ops/news-pipeline/.pipeline-toggle-state
+.obsidian/
+
+# Obsidian vault (root = this repo). notas/decisoes/ and notas/Index.md ARE
+# versioned on purpose — they're real project documentation (the "why"
+# behind changes), same status as docs/*.md. Daily notes are personal/
+# ephemeral working notes, not meant to be shared.
+notas/diario/
+scripts/.gsc-check-state.json
+skills/hallmark/
+skills-lock.json
+
+# Índice de busca semântica: derivado do acervo, reconstruível
+ops/news-pipeline/rag.db*
+ops/news-pipeline/__pycache__/
+
+# Grafo estrutural do Graphify: gerado por AST, determinístico e reconstruível
+# em ~1 minuto sem custo de LLM. Versionar os 9 MB faria churn a cada commit
+# para um artefato que cada máquina refaz sozinha.
+graphify-out/
+
+# Docker MCP Toolkit (local)
+.mcp.json
+
+# Relatório JSON do vitest (gerado a cada `vitest run`)
+.vitest/
+
+# Ambiente local e de producao: nunca versionar (repositorio publico)
+.env.production
+.env.local.docker
+.env*.local

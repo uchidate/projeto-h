@@ -1,0 +1,126 @@
+# Fumaça periódica contra produção.
+#
+# ── Por que existe ──────────────────────────────────────────────────────────
+#
+# A suíte de fumaça só rodava no momento do deploy. Mas nem todo defeito nasce
+# de um deploy: em 2026-09-11 a prioridade do roteador do Next dependia do
+# MINUTO DO RELÓGIO, e as imagens do site quebraram sem ninguém ter publicado
+# nada. Três horas na primeira ocorrência.
+#
+# O blackbox do Prometheus já vigia produção, mas ele vê status HTTP da home.
+# Uma página que responde 200 com todas as imagens quebradas passa por ele
+# inteira — foi exatamente o que aconteceu.
+#
+# Esta execução horária faz a mesma pergunta que um visitante faria: a home
+# carrega, as rotas respondem, as barras não ficam flutuando, e a mídia do
+# WordPress ainda é servida pelo WordPress.
+#
+# ── Por que não de 5 em 5 minutos ───────────────────────────────────────────
+#
+# Cada execução sobe um Chromium e navega o site de verdade; é caro para o
+# runner e gera tráfego real contra produção. De hora em hora, o pior caso é
+# uma hora de defeito em vez de três — e o alerta do Prometheus continua
+# cobrindo a queda dura, que é o que precisa de minutos, não de horas.
+name: 👁️ Vigia de produção
+
+on:
+  schedule:
+    # 07 para não cair no minuto cheio junto com todo o resto do mundo.
+    - cron: '7 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: vigia-producao
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  fumaca:
+    name: Fumaça em produção
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      # npm na versao do `packageManager` do package.json: o setup-node traz o npm
+      # que acompanha o Node (11), e lock gerado por npm diferente diverge.
+      - name: npm do packageManager
+        run: npm install -g "$(node -p "require('./package.json').packageManager")"
+
+      - name: Instalar dependencias
+        run: npm ci --ignore-scripts
+
+      # Navegador do Playwright, em cache pela versao do lockfile — mesmo padrao
+      # do staging.yml. Sem isto, `install --with-deps` baixa o Chromium inteiro
+      # a cada execucao.
+      - name: Cache do navegador
+        id: cache-navegador
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-noble-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar navegador
+        run: |
+          if [ "${{ steps.cache-navegador.outputs.cache-hit }}" = "true" ]; then
+            npx playwright install-deps chromium
+          else
+            npx playwright install --with-deps chromium
+          fi
+
+      - name: Fumaça
+        # Identifica esta execucao como automacao NOSSA, para a regra de excecao
+        # da Cloudflare. Com o Bot Fight Mode ligado, Chromium headless e o caso
+        # mais classico de deteccao: sem excecao a verificacao falharia por
+        # bloqueio, e o sintoma pareceria defeito do site. Ausente = identico ao
+        # comportamento anterior.
+        env:
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/fumaca.mjs ${{ vars.SITE_URL }}
+
+      # ── Aviso ────────────────────────────────────────────────────────────
+      #
+      # Pelo SERVIDOR, nao por segredo no GitHub. A primeira versao deste passo
+      # lia NTFY_URL/NTFY_USER/NTFY_PASS de `secrets` — e nao existe nenhum
+      # deles no repositorio, entao o aviso nunca sairia. Seria mais uma
+      # protecao que parece existir e nao existe, que e o defeito que este
+      # projeto passou 2026-09-11 inteiro removendo.
+      #
+      # O servidor ja tem o canal configurado e em uso pelos timers, com a
+      # senha em arquivo. Mandar por la reaproveita um caminho testado e evita
+      # uma copia a mais da credencial.
+      - name: Conectar ao servidor
+        if: failure()
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Avisar no ntfy
+        if: failure()
+        env:
+          URL_DA_EXECUCAO: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          ssh oc "set -euo pipefail
+            . ${{ vars.CONFIG_AVISOS }}
+            [ -n \"\${NTFY_URL:-}\" ] && [ -r \"\${NTFY_PASS_FILE:-/nao-existe}\" ] || {
+              echo 'canal ntfy nao configurado no servidor'; exit 0; }
+            curl -sS --max-time 15 -u \"\$NTFY_USER:\$(cat \"\$NTFY_PASS_FILE\")\" \
+              -H 'Title: Fumaca de producao falhou' \
+              -H 'Priority: high' \
+              -H 'Tags: rotating_light' \
+              -d 'A verificacao horaria de producao reprovou. Ver: $URL_DA_EXECUCAO' \
+              \"\$NTFY_URL\" >/dev/null && echo 'aviso enviado'"

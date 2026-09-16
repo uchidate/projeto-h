@@ -1,0 +1,167 @@
+{
+  "readingBar": {
+    "jumpToSection": "Ir para seção",
+    "shared": "Link compartilhado",
+    "share": "Compartilhar página",
+    "back": "Voltar para {label}"
+  },
+  "common": {
+    "close": "Fechar",
+    "dossier": "Dossiê",
+    "swipe": "Deslize →",
+    "syncFailed": "Não foi possível sincronizar agora.",
+    "signInToSync": "Entrar para sincronizar"
+  },
+  "filmography": {
+    "type": {
+      "drama": "Série",
+      "movie": "Filme",
+      "special": "Especial",
+      "variety": "Variedades"
+    },
+    "inCatalog": "No catálogo",
+    "worksCount": "{count, plural, one {# obra} other {# obras}}",
+    "latest": "Mais recente",
+    "focus": "Foco",
+    "average": "Média",
+    "title": "Obras e participações",
+    "intro": "Um mapa do catálogo conectado no __SITE__, organizado do trabalho mais recente aos primeiros registros. Em perfis premium, esta seção funciona como ponto de saída para produções específicas.",
+    "year": "Ano",
+    "titleCol": "Título",
+    "typeCol": "Tipo",
+    "rating": "Avaliação",
+    "showLess": "Mostrar menos ↑",
+    "showAll": "Ver todos os {count} trabalhos ↓"
+  },
+  "report": {
+    "category": {
+      "foto_errada": "Foto errada",
+      "membro_errado": "Membro ou vínculo errado",
+      "dado_incorreto": "Dado incorreto",
+      "outro": "Outro"
+    },
+    "buttonLabel": "Reportar erro nesta página",
+    "buttonTitle": "Reportar erro",
+    "dialogLabel": "Reportar erro",
+    "sent": "Report enviado, obrigado!",
+    "willReview": "Vamos revisar essa informação.",
+    "whatsWrong": "O que está errado?",
+    "details": "Detalhes (opcional)",
+    "placeholder": "Descreva o que precisa ser corrigido...",
+    "error": "Não foi possível enviar. Tente novamente em instantes.",
+    "submit": "Enviar report"
+  },
+  "trophy": {
+    "live": "Ao Vivo",
+    "royal": "Realeza",
+    "record": "Recorde",
+    "title": "Hall da Fama",
+    "count": "{count, plural, one {# conquista} other {# conquistas}}"
+  },
+  "mv": {
+    "title": "MVs Principais",
+    "eyebrow": "Vídeos",
+    "count": "{count, plural, one {# vídeo} other {# vídeos}}",
+    "featured": "Em destaque"
+  },
+  "prose": {
+    "continueReading": "Continuar lendo"
+  },
+  "production": {
+    "addedFav": "Adicionado aos favoritos.",
+    "removedFav": "Removido dos favoritos.",
+    "savedFavLocal": "Favorito salvo neste dispositivo.",
+    "removedFavLocal": "Removido dos favoritos locais.",
+    "addedWant": "Adicionado à lista Quero ver.",
+    "removedWant": "Removido da lista Quero ver.",
+    "savedWantLocal": "Salvo na lista local Quero ver.",
+    "removedLocal": "Removido da lista local.",
+    "markedWant": "Marcado como Quero ver.",
+    "markedWatching": "Marcado como Assistindo.",
+    "markedWatched": "Marcado como Assistido.",
+    "statusRemoved": "Status removido.",
+    "removeFav": "Remover dos favoritos",
+    "addFav": "Adicionar aos favoritos",
+    "removeList": "Remover da lista",
+    "addList": "Adicionar à lista",
+    "inList": "Na lista",
+    "want": "Quero ver",
+    "watching": "Assistindo",
+    "watched": "Assistido",
+    "seeInList": "Ver na minha lista"
+  },
+  "spotify": {
+    "open": "Abrir no Spotify",
+    "onSpotify": "{name} no Spotify",
+    "listen": "Ouvir no Spotify",
+    "listenTrack": "Ouvir \"{track}\" no Spotify"
+  },
+  "vote": {
+    "question": "Em quem você vota no {group}?",
+    "voted": "Você votou em {name}",
+    "vote": "Votar",
+    "thanks": "Obrigado pelo voto!",
+    "favorite": "{name} é o favorito do fandom neste dispositivo",
+    "total": "{count, plural, one {# voto} other {# votos}} · resultado local por dispositivo",
+    "onePerDevice": "Um voto por dispositivo"
+  },
+  "discography": {
+    "all": "Todos",
+    "albums": "Álbuns",
+    "title": "Discografia",
+    "grid": "Grade",
+    "list": "Lista",
+    "less": "↑ menos",
+    "more": "{count, plural, one {↓ # faixa a mais} other {↓ # faixas a mais}}"
+  },
+  "member": {
+    "role": {
+      "singer": "Cantor(a)",
+      "actor": "Ator/Atriz",
+      "rapper": "Rapper",
+      "dancer": "Dançarino(a)",
+      "model": "Modelo",
+      "host": "Apresentador(a)",
+      "composer": "Compositor(a)"
+    },
+    "ageAtDeath": "{age} anos ao morrer",
+    "age": "{age} anos"
+  },
+  "eras": {
+    "title": "Galeria de eras"
+  },
+  "share": {
+    "label": "Compartilhar",
+    "on": "Compartilhar no {network}",
+    "copy": "Copiar link",
+    "copied": "Link copiado!"
+  },
+  "anniversary": {
+    "today": "{years} anos de estreia — hoje!",
+    "inDays": "{years} anos de estreia em {days, plural, one {# dia} other {# dias}}"
+  },
+  "follow": {
+    "follow": "Seguir",
+    "following": "Seguindo",
+    "signedOut": "Entre para não perder"
+  },
+  "profile": {
+    "erasOf": "As eras de {name}, era por era"
+  },
+  "ads": {
+    "label": "Publicidade",
+    "close": "Fechar anúncio"
+  },
+  "nav": {
+    "searchPlaceholder": "Buscar artistas, grupos, produções...",
+    "shop": "Loja",
+    "search": "Buscar",
+    "openSearch": "Abrir busca",
+    "menu": "Menu de navegação",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "mainNav": "Navegação principal",
+    "browse": "Navegar",
+    "about": "Sobre o {site}"
+  }
+}
