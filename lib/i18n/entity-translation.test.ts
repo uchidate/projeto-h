@@ -72,6 +72,23 @@ describe('localizeEntity', () => {
         expect(en.acf.story_chapters[0].image_url).toBe('https://img/1.jpg')
     })
 
+    it('traduz a analise editorial do grupo tambem no campo de topo que a ficha le', () => {
+        const grupo = {
+            title: { rendered: 'Grupo' },
+            editorial_analysis: 'Analise em portugues',
+            acf: { editorial_analysis: 'Analise em portugues' },
+            translations: { en: { acf: { editorial_analysis: 'Analysis in English' } } },
+        }
+        const en = localizeEntity(grupo, 'en', 'group')
+        expect(en.editorial_analysis).toBe('Analysis in English')
+        expect(en.acf.editorial_analysis).toBe('Analysis in English')
+        // sem traducao do campo, o topo segue o portugues
+        const semCampo = localizeEntity({ ...grupo, translations: { en: { acf: {} } } }, 'en', 'group')
+        expect(semCampo.editorial_analysis).toBe('Analise em portugues')
+        // artista nao ganha campo de topo que nao tinha
+        expect('editorial_analysis' in localizeEntity(artist, 'en', 'artist')).toBe(false)
+    })
+
     it('keeps the source when a translated string is blank', () => {
         expect(mergeText('PT', '   ')).toBe('PT')
         expect(mergeText(3, 'x')).toBe(3)

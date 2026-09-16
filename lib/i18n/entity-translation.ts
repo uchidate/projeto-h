@@ -85,5 +85,26 @@ export function localizeEntity<T extends TranslatableEntity>(entity: T, locale: 
             rank_math_description: tr.seo_description?.trim() || undefined,
         },
         acf: entity.acf ? (mergeText(entity.acf, pickTranslatable(tr.acf, TRANSLATABLE_ACF[type])) as T['acf']) : entity.acf,
+        ...espelhosDeTopo(entity, tr, type),
     }
+}
+
+/**
+ * Campos que o REST expoe tambem no nivel de cima da ficha, fora de `acf`.
+ * A ficha de grupo le `group.editorial_analysis` (nao `acf.editorial_analysis`):
+ * so traduzir o acf deixava a analise inteira em portugues na pagina em ingles.
+ */
+const ESPELHOS_DE_TOPO: Partial<Record<TranslatableType, readonly string[]>> = {
+    group: ['editorial_analysis'],
+}
+
+function espelhosDeTopo(entity: TranslatableEntity, tr: EntityTranslation, type: TranslatableType): Record<string, unknown> {
+    const campos = ESPELHOS_DE_TOPO[type] ?? []
+    const base = entity as unknown as Record<string, unknown>
+    const traduzidos = pickTranslatable(tr.acf, TRANSLATABLE_ACF[type]) as Record<string, unknown> | undefined
+    return Object.fromEntries(
+        campos
+            .filter((campo) => typeof base[campo] === 'string')
+            .map((campo) => [campo, mergeText(base[campo], traduzidos?.[campo])]),
+    )
 }
