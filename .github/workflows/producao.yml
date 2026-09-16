@@ -59,8 +59,32 @@ permissions:
   actions: read
 
 jobs:
+  # Lint, tipos e testes no GitHub, antes do deploy. Com o repositorio publico o
+  # Actions nao tem cota, e o servidor deixa de disputar CPU com o site rodando
+  # os mesmos gates (antes: minutos no passo [1/6] a cada push direto na main).
+  gates:
+    name: Gates (lint, tipos, testes)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: npm do packageManager
+        run: npm install -g "$(node -p "require('./package.json').packageManager")"
+      - run: npm install --prefer-offline --no-audit
+      - name: Lint
+        run: npm run lint
+      - name: Type-check
+        run: npm run type-check
+      - name: Testes
+        run: npm test
+
   publicar:
     name: Publicar producao
+    needs: gates
     # No runner proprio, e nao em ubuntu-latest: o job praticamente nao
     # trabalha, ele ESPERA. O deploy e `ssh oc bash scripts/deploy-manual.sh`, e
     # quase todo o tempo de parede e o `docker build` rodando no servidor. Em
@@ -158,7 +182,8 @@ jobs:
           # deploy-traefik.sh valida o caminho público do Site Kit; o header
           # autenticado atravessa a exceção WAF para runners do GitHub.
           SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
-        run: bash scripts/deploy-manual.sh
+        # --skip-gates: o job `gates` ja rodou lint, tipos e testes no GitHub.
+        run: bash scripts/deploy-manual.sh --skip-gates
 
       - name: Resumo
         if: always()
