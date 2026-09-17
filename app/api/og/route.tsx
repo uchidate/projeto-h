@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
                             display: 'flex',
                         }}
                     >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        {/* eslint-disable-next-line @next/next/no-img-element -- imagem OG é renderizada pelo Satori, que só entende <img>; next/image não existe fora do DOM do navegador */}
                         <img
                             src={imagemEmbutida}
                             alt=""
@@ -132,7 +132,7 @@ export async function GET(req: NextRequest) {
                             padding: isAgency ? 48 : 0,
                         }}
                     >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        {/* eslint-disable-next-line @next/next/no-img-element -- imagem OG é renderizada pelo Satori, que só entende <img>; next/image não existe fora do DOM do navegador */}
                         <img
                             src={imagemEmbutida}
                             alt=""
