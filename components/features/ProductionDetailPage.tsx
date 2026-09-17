@@ -19,7 +19,7 @@ import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ReadingBar } from '@/components/ui/ReadingBar'
 import { ProductionSidebar } from '@/components/productions/ProductionSidebar'
 import { ProductionActions } from '@/components/productions/ProductionActions'
-import Image from 'next/image'
+import Image, { getImageProps } from 'next/image'
 
 import type { ArchiveHub } from '@/lib/guias/types'
 import { EntityFAQ, type EntityFAQItem } from '@/components/seo/EntityFAQ'
@@ -103,13 +103,19 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
 
             {/* ── HERO ── */}
             <section className="relative flex min-h-[620px] overflow-hidden bg-[#09080c] lg:min-h-[680px] max-w-[1440px] mx-auto">
-                {image && (
-                    <Image src={image.src} alt={t('production.posterAltShort', { title })} fill priority
-                        className="object-cover object-top sm:hidden" sizes="100vw" />
-                )}
-                {backdropUrl && (
-                    <Image src={backdropUrl} alt={t('production.coverAlt', { title })} fill priority
-                        className={`${image ? 'hidden sm:block' : 'block'} object-cover object-center`} sizes="100vw" />
+                {/* Pôster no celular, backdrop a partir de sm. Com <picture> o navegador
+                    baixa só a imagem da tela atual; dois <Image priority> com
+                    `hidden` pré-carregavam as duas, e no celular o backdrop do TMDB
+                    disputava banda com a imagem do LCP. */}
+                {image && backdropUrl ? (
+                    <HeroArtDirection
+                        poster={image.src}
+                        backdrop={backdropUrl}
+                        alt={t('production.posterAltShort', { title })}
+                    />
+                ) : (image || backdropUrl) && (
+                    <Image src={(image?.src ?? backdropUrl)!} alt={image ? t('production.posterAltShort', { title }) : t('production.coverAlt', { title })} fill priority
+                        className={`object-cover ${image ? 'object-top' : 'object-center'}`} sizes="100vw" />
                 )}
                 <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-black/10 sm:from-[#09080c] sm:via-black/45" />
                 <div className="absolute inset-0 hidden bg-linear-to-r from-black/70 via-black/15 to-transparent sm:block" />
@@ -154,7 +160,7 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
                         </div>
                         {image && (
                             <div className="relative hidden aspect-2/3 w-40 shrink-0 overflow-hidden border border-white/20 bg-surface shadow-2xl sm:block lg:w-48">
-                                <Image src={image.src} alt={t('production.posterAlt', { title })} fill priority className="object-cover" sizes="192px" />
+                                <Image src={image.src} alt={t('production.posterAlt', { title })} fill className="object-cover" sizes="192px" />
                             </div>
                         )}
                     </div>
@@ -325,5 +331,17 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
                 )}
             </div>
         </>
+    )
+}
+
+function HeroArtDirection({ poster, backdrop, alt }: { poster: string; backdrop: string; alt: string }) {
+    const comum = { alt, fill: true, sizes: '100vw' } as const
+    const { props: { srcSet: desktop } } = getImageProps({ ...comum, src: backdrop })
+    const { props: mobile } = getImageProps({ ...comum, src: poster, fetchPriority: 'high', loading: 'eager' })
+    return (
+        <picture>
+            <source media="(min-width: 640px)" srcSet={desktop} sizes="100vw" />
+            <img {...mobile} alt={alt} className="object-cover object-top sm:object-center" />
+        </picture>
     )
 }
