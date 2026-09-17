@@ -88,25 +88,25 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
         if (searchVal === (search ?? '')) return
         if (searchRef.current) clearTimeout(searchRef.current)
         searchRef.current = setTimeout(() => router.push(buildUrl(searchVal, sortVal, roleVal, affiliationVal)), 400)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- debounce da busca: só o texto digitado dispara. Incluir os outros filtros faria cada troca de filtro esperar 400ms de novo
     }, [searchVal])
 
     useEffect(() => {
         if (sortVal === sortBy) return
         router.push(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- navega só quando a ordenação muda; os demais filtros entram na URL como valor atual, não como gatilho
     }, [sortVal])
 
     useEffect(() => {
         if (roleVal === (role ?? '')) return
         router.push(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- navega só quando o papel muda; os demais filtros entram na URL como valor atual, não como gatilho
     }, [roleVal])
 
     useEffect(() => {
         if (affiliationVal === (affiliation ?? '')) return
         router.push(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- navega só quando a afiliação muda; os demais filtros entram na URL como valor atual, não como gatilho
     }, [affiliationVal])
 
     const clear = () => { setSearchVal(''); setSortVal('trending'); setRoleVal(''); setAffiliationVal('') }

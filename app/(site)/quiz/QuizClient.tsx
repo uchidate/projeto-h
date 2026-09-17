@@ -702,7 +702,7 @@ function QuizScreen({ questions, difficulty, onFinish }: {
         if (timeLeft <= 0) { handleAnswer(null, cfg.time); return }
         const t = setTimeout(() => setTimeLeft(v => v - 1), 1000)
         return () => clearTimeout(t)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- só o tique do relógio reinicia o timer; incluir handleAnswer/cfg recriaria o setTimeout a cada render e o cronômetro correria mais rápido
     }, [timeLeft, revealed])
 
     // Auto-advance após revelar
@@ -724,7 +724,7 @@ function QuizScreen({ questions, difficulty, onFinish }: {
             }
         }, 2500)
         return clearAutoAdvance
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- o avanço automático começa quando a resposta é revelada; incluir as funções de navegação reiniciaria a contagem a cada render
     }, [revealed])
 
     // Keyboard shortcuts
@@ -741,7 +741,7 @@ function QuizScreen({ questions, difficulty, onFinish }: {
         }
         window.addEventListener('keydown', handler)
         return () => window.removeEventListener('keydown', handler)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- o atalho só precisa reagir à pergunta atual e ao estado revelado; handleAnswer/handleNext mudam a cada render e recriariam o listener sem necessidade
     }, [revealed, q])
 
     function clearAutoAdvance() {

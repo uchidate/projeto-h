@@ -84,7 +84,7 @@ export default async function DashboardPage() {
 
     const daysSinceJoin = stats.joinDate
         // This is a request-time Server Component calculation, not client render state.
-        // eslint-disable-next-line react-hooks/purity
+        // eslint-disable-next-line react-hooks/purity -- Server Component: o cálculo acontece uma vez por requisição, não em render de cliente
         ? Math.max(0, Math.floor((Date.now() - new Date(stats.joinDate).getTime()) / 86400000))
         : null
 

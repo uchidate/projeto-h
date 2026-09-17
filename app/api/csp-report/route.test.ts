@@ -19,7 +19,7 @@ const requisicao = (corpo: unknown, tipo = 'application/csp-report') =>
         method: 'POST',
         headers: { 'content-type': tipo },
         body: JSON.stringify(corpo),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- o teste monta corpo inválido de propósito, que é o caso que a rota precisa recusar
     }) as any
 
 let avisos: string[]
@@ -64,7 +64,7 @@ describe('endpoint de relatório CSP', () => {
         const r = await POST(new Request('https://exemplo/api/csp-report', {
             method: 'POST',
             body: 'nao e json',
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- o teste monta corpo inválido de propósito, que é o caso que a rota precisa recusar
         }) as any)
         expect(r.status).toBe(204)
     })

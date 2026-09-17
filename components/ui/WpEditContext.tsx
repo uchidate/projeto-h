@@ -46,7 +46,7 @@ export function WpEditSetter({ postId, postType }: { postId: number; postType: s
     useEffect(() => {
         setEdit(postId, postType)
         return () => clearEdit()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- só o post identifica o contexto; setEdit/clearEdit vêm do provider e incluí-los reexecutaria o efeito a cada render dele
     }, [postId, postType])
 
     return null

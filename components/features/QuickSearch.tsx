@@ -77,7 +77,7 @@ export function QuickSearch() {
 
     useEffect(() => {
         if (!isLoading && query.trim().length >= 2) trackSearch(query.trim(), results.length)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- registra a busca uma vez, quando o carregamento termina; incluir query/results mandaria um evento por tecla digitada
     }, [isLoading])
 
     if (!isOpen) return null

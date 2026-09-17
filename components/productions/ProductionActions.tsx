@@ -57,7 +57,8 @@ export function ProductionActions({ productionId, mode = 'all', variant = 'defau
             setLocalProductionStatus(localWatch.has(productionId) ? 'want' : '')
             setReady(true)
         }
-    }, [status, session, localFav.ready, productionId]) // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recarrega o estado quando a sessão ou a produção mudam; localWatch/localFav são objetos novos a cada render e reexecutariam o efeito em laço
+    }, [status, session, localFav.ready, productionId])
 
     function handleFav() {
         startTransition(async () => {
