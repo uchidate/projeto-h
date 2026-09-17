@@ -64,6 +64,9 @@ jobs:
   # os mesmos gates (antes: minutos no passo [1/6] a cada push direto na main).
   gates:
     name: Gates (lint, tipos, testes)
+    # Evita gate duplicado no fluxo normal: no push/main aproveitamos o Quality
+    # que ja validou o PR; gates completos ficam para disparo manual excepcional.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -97,7 +100,12 @@ jobs:
     #
     # Custo conhecido: existe UMA replica de runner, entao producao e staging
     # passam a serializar entre si.
-    runs-on: [self-hosted, deploy]
+    # Permite separar filas por label sem quebrar o padrao atual.
+    # Exemplo de variavel: ["self-hosted","deploy","producao"]
+    runs-on: ${{ fromJSON(vars.PRODUCAO_RUNNERS_JSON || '["self-hosted","deploy"]') }}
+    # Se gates foi pulado (push/main), publica direto.
+    # Se gates rodou (workflow_dispatch), exige sucesso.
+    if: ${{ always() && (github.event_name != 'workflow_dispatch' || needs.gates.result == 'success') }}
     timeout-minutes: 40
     steps:
       # fetch-depth: 0 porque o semantic-release precisa do historico inteiro
@@ -111,6 +119,14 @@ jobs:
           mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
           repositorio: ${{ vars.OPS_REPOSITORY }}
           chave: ${{ secrets.OPS_DEPLOY_KEY }}
+      - name: Exigir historico linear na main
+        if: github.event_name == 'push'
+        run: |
+          pais="$(git show -s --format=%P HEAD | wc -w | tr -d ' ')"
+          if [ "$pais" -ne 1 ]; then
+            echo "::error::Commit de merge detectado na main. Para preservar SHA entre staging e producao, integre com merge --ff-only."
+            exit 1
+          fi
 
       - uses: actions/setup-node@v7
         with:
@@ -179,6 +195,9 @@ jobs:
       - name: Deploy de producao
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_BUILDKIT: '1'
+          COMPOSE_DOCKER_CLI_BUILD: '1'
+          BUILDKIT_PROGRESS: plain
           # deploy-traefik.sh valida o caminho público do Site Kit; o header
           # autenticado atravessa a exceção WAF para runners do GitHub.
           SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
