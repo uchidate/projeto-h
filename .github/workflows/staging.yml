@@ -72,6 +72,9 @@ concurrency:
   #    que a espera que ele economiza.
   #
   # Enfileirar custa tempo e nao mente. A producao ja usa `false` por isto.
+  #
+  # Pushes em rajada nao precisam de espera fixa: o GitHub mantem so UMA
+  # execucao pendente por grupo e descarta a anterior quando chega outra.
   group: staging
   cancel-in-progress: false
 
@@ -80,41 +83,8 @@ permissions:
   actions: read
 
 jobs:
-  debounce:
-    name: Debounce da branch
-    runs-on: ubuntu-latest
-    timeout-minutes: 6
-    outputs:
-      publicar: ${{ steps.sha.outputs.publicar }}
-    steps:
-      - name: Janela curta de debounce
-        run: sleep 180
-      - name: Verificar commit mais recente da branch
-        id: sha
-        env:
-          REPO: ${{ github.repository }}
-          BRANCH: ${{ github.ref_name }}
-          SHA_ATUAL: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-          remoto="$(git ls-remote --heads "https://github.com/${REPO}.git" "refs/heads/${BRANCH}" | awk '{print $1}')"
-          if [ -z "$remoto" ]; then
-            echo "publicar=sim" >> "$GITHUB_OUTPUT"
-            echo "⚠️ não foi possível ler o head remoto da branch; segue deploy por segurança"
-            exit 0
-          fi
-          if [ "$remoto" = "$SHA_ATUAL" ]; then
-            echo "publicar=sim" >> "$GITHUB_OUTPUT"
-            echo "✅ este push ainda é o head da branch"
-          else
-            echo "publicar=nao" >> "$GITHUB_OUTPUT"
-            echo "⏭️ push mais novo detectado ($remoto); pulando deploy deste commit"
-          fi
-
   publicar:
     name: Publicar staging
-    needs: debounce
-    if: needs.debounce.outputs.publicar == 'sim'
     # No runner proprio pelo motivo ja anotado na linha 122: "o deploy leva
     # ~345s e quase tudo e espera por `docker build` no servidor". Era o maior
     # consumidor de cota do projeto — ~1021 min em setembro, 175 execucoes de
@@ -179,13 +149,6 @@ jobs:
           usuario: ${{ secrets.DEPLOY_USER }}
           chave: ${{ secrets.DEPLOY_SSH_KEY }}
 
-      - name: Aquecer cache remoto de imagem
-        env:
-          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
-        run: |
-          set -euo pipefail
-          ssh oc "docker pull ${IMAGE_REPO}:buildcache >/dev/null 2>&1 || true"
-
       # O MESMO script que roda na maquina do desenvolvedor. Um caminho de
       # deploy exercitado dos dois lados nao diverge em silencio — que e como
       # um staging deixa de representar producao.
@@ -209,17 +172,6 @@ jobs:
           bash scripts/deploy-staging.sh --skip-gates
           fim="$(date +%s)"
           echo "duracao_segundos=$((fim-inicio))" >> "$GITHUB_OUTPUT"
-
-      - name: Atualizar cache remoto de build
-        if: always()
-        env:
-          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
-        run: |
-          set -euo pipefail
-          ssh oc "if docker image inspect ${IMAGE_REPO}:${GITHUB_SHA} >/dev/null 2>&1; then \
-                    docker tag ${IMAGE_REPO}:${GITHUB_SHA} ${IMAGE_REPO}:buildcache && \
-                    docker push ${IMAGE_REPO}:buildcache >/dev/null 2>&1 || true; \
-                  fi"
 
       - name: Coletar métricas do job
         if: always()

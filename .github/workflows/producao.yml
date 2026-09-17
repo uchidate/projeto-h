@@ -220,13 +220,24 @@ jobs:
           SHA_ORIGEM: ${{ steps.origem.outputs.sha }}
         run: |
           set -euo pipefail
-          if ssh oc "docker image inspect ${IMAGE_REPO}:${SHA_ORIGEM} >/dev/null 2>&1 || docker pull ${IMAGE_REPO}:${SHA_ORIGEM} >/dev/null 2>&1"; then
-            ssh oc "docker tag ${IMAGE_REPO}:${SHA_ORIGEM} ${IMAGE_REPO}:${GITHUB_SHA} && docker push ${IMAGE_REPO}:${GITHUB_SHA} >/dev/null 2>&1 || true"
+          # So promove se o conteudo for identico: squash/rebase criam SHA novo,
+          # mas a imagem do PR so vale se a arvore da main for a mesma. Se a
+          # main tiver outro commit junto, reaproveitar publicaria codigo errado.
+          git fetch -q --depth=1 origin "$SHA_ORIGEM" || true
+          arvore_origem="$(git rev-parse -q --verify "${SHA_ORIGEM}^{tree}" || true)"
+          arvore_main="$(git rev-parse HEAD^{tree})"
+          if [ "$arvore_origem" != "$arvore_main" ]; then
+            echo "resultado=arvore-diferente" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  arvore da main difere da origem; segue build normal"
+            exit 0
+          fi
+          if ssh oc "docker image inspect ${IMAGE_REPO}:${SHA_ORIGEM} >/dev/null 2>&1"; then
+            ssh oc "docker tag ${IMAGE_REPO}:${SHA_ORIGEM} ${IMAGE_REPO}:${GITHUB_SHA}"
             echo "resultado=promovido" >> "$GITHUB_OUTPUT"
             echo "♻️  artefato promovido de ${SHA_ORIGEM} para ${GITHUB_SHA}"
           else
             echo "resultado=nao-encontrado" >> "$GITHUB_OUTPUT"
-            echo "ℹ️  imagem da origem não encontrada; segue rebuild normal"
+            echo "ℹ️  imagem da origem não encontrada; segue build normal"
           fi
 
       - name: Reavaliar reaproveitamento da imagem
@@ -237,14 +248,6 @@ jobs:
           else
             echo "reuso=nao" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Aquecer cache remoto de imagem
-        if: steps.imagem_final.outputs.reuso != 'sim'
-        env:
-          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
-        run: |
-          set -euo pipefail
-          ssh oc "docker pull ${IMAGE_REPO}:buildcache >/dev/null 2>&1 || true"
 
       - name: Deploy de producao
         id: deploy
@@ -263,17 +266,6 @@ jobs:
           bash scripts/deploy-manual.sh --skip-gates
           fim="$(date +%s)"
           echo "duracao_segundos=$((fim-inicio))" >> "$GITHUB_OUTPUT"
-
-      - name: Atualizar cache remoto de build
-        if: always()
-        env:
-          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
-        run: |
-          set -euo pipefail
-          ssh oc "if docker image inspect ${IMAGE_REPO}:${GITHUB_SHA} >/dev/null 2>&1; then \
-                    docker tag ${IMAGE_REPO}:${GITHUB_SHA} ${IMAGE_REPO}:buildcache && \
-                    docker push ${IMAGE_REPO}:buildcache >/dev/null 2>&1 || true; \
-                  fi"
 
       - name: Coletar métricas do job
         if: always()
