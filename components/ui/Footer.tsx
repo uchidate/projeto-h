@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { Rss } from 'lucide-react'
 import { SITE_NAME } from '@/lib/constants/site'
-import type { FooterColumn } from '@/lib/wordpress/site-settings'
+import type { FooterColumn, SiteLink } from '@/lib/wordpress/site-settings'
 
 export type FooterLabels = {
     rights: string
@@ -11,9 +11,10 @@ export type FooterLabels = {
     madeWith: string
     home: string
     nav: string
+    mostSearched?: string
 }
 
-export default function Footer({ columns, tagline, labels }: { columns: FooterColumn[]; tagline: string; labels: FooterLabels & { homeHref?: string } }) {
+export default function Footer({ columns, tagline, labels, mostSearched = [] }: { columns: FooterColumn[]; tagline: string; labels: FooterLabels & { homeHref?: string }; mostSearched?: SiteLink[] }) {
     const year = new Date().getFullYear()
 
     return (
@@ -51,6 +52,24 @@ export default function Footer({ columns, tagline, labels }: { columns: FooterCo
                         </div>
                     ))}
                 </nav>
+
+                {/* Links para fichas que o Google já mostra perto da página 1. Presentes em
+                    todas as páginas, reforçam a relevância interna delas; a lista é
+                    atualizada pela coleta diária do Search Console. */}
+                {mostSearched.length > 0 && labels.mostSearched && (
+                    <nav aria-label={labels.mostSearched} className="border-b border-featured-border py-6">
+                        <p className="mb-3 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-featured-muted">{labels.mostSearched}</p>
+                        <ul className="flex flex-wrap gap-x-4 gap-y-2">
+                            {mostSearched.map(link => (
+                                <li key={link.href}>
+                                    <Link href={link.href} className="text-[13px] leading-tight text-featured-muted transition-colors hover:text-featured-fg">
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                )}
 
                 <div className="flex flex-col items-start justify-between gap-3 pt-6 sm:flex-row sm:items-center">
                     <p className="font-mono text-[10px] text-featured-muted sm:text-[11px]">

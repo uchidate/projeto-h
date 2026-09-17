@@ -85,3 +85,19 @@ jobs:
           ssh oc "install -m 0644 /tmp/seo.prom.novo /var/lib/node-exporter-textfile/seo.prom \
                   && rm -f /tmp/seo.prom.novo \
                   && grep -c '^seo_' /var/lib/node-exporter-textfile/seo.prom"
+
+      # Lista "Mais buscados" do rodapé. Falha aqui não invalida as métricas
+      # acima: a lista anterior continua no ar.
+      - name: Atualizar mais buscados
+        continue-on-error: true
+        env:
+          GSC_CREDENTIALS_JSON: ${{ secrets.GSC_CREDENTIALS_JSON }}
+          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          LISTA: ${{ runner.temp }}/mais-buscados.json
+        run: |
+          set -euo pipefail
+          python3 scripts/mais-buscados.py "$LISTA"
+          ssh oc 'docker exec -i wordpress-ondacoreana wp --allow-root option update oc_mais_buscados --format=json' < "$LISTA"
+          curl -sS -o /dev/null -w "revalidacao: %{http_code}\n" -X POST \
+            "${{ vars.SITE_URL }}/api/revalidate?secret=${REVALIDATE_SECRET}&tag=site-settings"
