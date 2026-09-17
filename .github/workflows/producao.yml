@@ -102,7 +102,7 @@ jobs:
     # passam a serializar entre si.
     # Permite separar filas por label sem quebrar o padrao atual.
     # Exemplo de variavel: ["self-hosted","deploy","producao"]
-    runs-on: ${{ fromJSON(vars.PRODUCAO_RUNNERS_JSON || '["self-hosted","deploy"]') }}
+    runs-on: ${{ fromJSON(vars.PRODUCAO_RUNNERS_JSON || '["self-hosted","deploy","producao"]') }}
     # Se gates foi pulado (push/main), publica direto.
     # Se gates rodou (workflow_dispatch), exige sucesso.
     if: ${{ always() && (github.event_name != 'workflow_dispatch' || needs.gates.result == 'success') }}
@@ -165,6 +165,26 @@ jobs:
           usuario: ${{ secrets.DEPLOY_USER }}
           chave: ${{ secrets.DEPLOY_SSH_KEY }}
 
+      - name: Resolver SHA de origem (PR head)
+        if: github.event_name == 'push'
+        id: origem
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const pulls = await github.request('GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+            })
+            const pr = pulls.data.find((p) => p.merged_at) || pulls.data[0]
+            if (!pr?.head?.sha) {
+              core.setOutput('sha', '')
+              core.info('commit sem PR associado; segue fluxo normal')
+              return
+            }
+            core.setOutput('sha', pr.head.sha)
+            core.info(`PR #${pr.number}: SHA de origem ${pr.head.sha}`)
+
       # O MESMO script que roda na maquina do desenvolvedor. Um caminho de
       # deploy exercitado dos dois lados nao diverge em silencio.
       #
@@ -192,7 +212,42 @@ jobs:
             echo "    validado no staging nao pode ser promovido."
           fi
 
+      - name: Promover artefato imutável do commit de origem
+        if: steps.imagem.outputs.reuso != 'sim' && steps.origem.outputs.sha != ''
+        id: promover
+        env:
+          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+          SHA_ORIGEM: ${{ steps.origem.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if ssh oc "docker image inspect ${IMAGE_REPO}:${SHA_ORIGEM} >/dev/null 2>&1 || docker pull ${IMAGE_REPO}:${SHA_ORIGEM} >/dev/null 2>&1"; then
+            ssh oc "docker tag ${IMAGE_REPO}:${SHA_ORIGEM} ${IMAGE_REPO}:${GITHUB_SHA} && docker push ${IMAGE_REPO}:${GITHUB_SHA} >/dev/null 2>&1 || true"
+            echo "resultado=promovido" >> "$GITHUB_OUTPUT"
+            echo "♻️  artefato promovido de ${SHA_ORIGEM} para ${GITHUB_SHA}"
+          else
+            echo "resultado=nao-encontrado" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  imagem da origem não encontrada; segue rebuild normal"
+          fi
+
+      - name: Reavaliar reaproveitamento da imagem
+        id: imagem_final
+        run: |
+          if ssh -o BatchMode=yes oc "docker image inspect ${{ vars.IMAGE_REPO }}:${GITHUB_SHA} >/dev/null 2>&1"; then
+            echo "reuso=sim" >> "$GITHUB_OUTPUT"
+          else
+            echo "reuso=nao" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Aquecer cache remoto de imagem
+        if: steps.imagem_final.outputs.reuso != 'sim'
+        env:
+          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+        run: |
+          set -euo pipefail
+          ssh oc "docker pull ${IMAGE_REPO}:buildcache >/dev/null 2>&1 || true"
+
       - name: Deploy de producao
+        id: deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_BUILDKIT: '1'
@@ -202,19 +257,73 @@ jobs:
           # autenticado atravessa a exceção WAF para runners do GitHub.
           SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
         # --skip-gates: o job `gates` ja rodou lint, tipos e testes no GitHub.
-        run: bash scripts/deploy-manual.sh --skip-gates
+        run: |
+          set -euo pipefail
+          inicio="$(date +%s)"
+          bash scripts/deploy-manual.sh --skip-gates
+          fim="$(date +%s)"
+          echo "duracao_segundos=$((fim-inicio))" >> "$GITHUB_OUTPUT"
+
+      - name: Atualizar cache remoto de build
+        if: always()
+        env:
+          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+        run: |
+          set -euo pipefail
+          ssh oc "if docker image inspect ${IMAGE_REPO}:${GITHUB_SHA} >/dev/null 2>&1; then \
+                    docker tag ${IMAGE_REPO}:${GITHUB_SHA} ${IMAGE_REPO}:buildcache && \
+                    docker push ${IMAGE_REPO}:buildcache >/dev/null 2>&1 || true; \
+                  fi"
+
+      - name: Coletar métricas do job
+        if: always()
+        id: metricas
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const run = await github.rest.actions.getWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            })
+            const jobs = await github.rest.actions.listJobsForWorkflowRunAttempt({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+              attempt_number: context.runAttempt,
+              per_page: 100,
+            })
+            const job = jobs.data.jobs.find((j) => j.name === 'Publicar producao')
+            let fila = 0
+            let total = 0
+            if (job?.started_at) {
+              fila = Math.max(0, Math.floor((new Date(job.started_at) - new Date(run.data.created_at)) / 1000))
+              total = Math.max(0, Math.floor((Date.now() - new Date(job.started_at)) / 1000))
+            }
+            core.setOutput('fila_segundos', String(fila))
+            core.setOutput('total_segundos', String(total))
 
       - name: Resumo
         if: always()
         run: |
+          if [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
+            tempo_build=0
+          else
+            tempo_build="${{ steps.deploy.outputs.duracao_segundos || '0' }}"
+          fi
           {
             echo "### Producao"
             echo ""
             echo "- commit: \`${GITHUB_SHA}\`"
             echo "- url: ${{ vars.SITE_URL }}"
-            if [ "${{ steps.imagem.outputs.reuso }}" = "sim" ]; then
+            echo "- fila: \`${{ steps.metricas.outputs.fila_segundos || '0' }}s\`"
+            echo "- tempo total: \`${{ steps.metricas.outputs.total_segundos || '0' }}s\`"
+            echo "- tempo build (aprox.): \`${tempo_build}s\`"
+            if [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
+              echo "- taxa de reaproveitamento: \`100%\`"
               echo "- artefato: promovido do staging (build pulado)"
             else
+              echo "- taxa de reaproveitamento: \`0%\`"
               echo "- artefato: construido agora — o SHA mudou na integracao"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
