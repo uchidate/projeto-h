@@ -35,7 +35,11 @@ E2E_BASE_URL=https://www.example.com npx playwright test   # contra produção
 
 ## CI
 
-`e2e-smoke.yml` roda esse spec contra produção depois de todo deploy bem-sucedido
-(não bloqueante) e diariamente via cron. `deploy.yml` roda só os unit tests
-(`vitest`) como gate bloqueante antes do build Docker — E2E contra prod ao vivo
-não deve travar deploy por instabilidade de rede.
+A fumaça contra produção hoje é `vigia-producao.yml` (de hora em hora, via
+`scripts/fumaca.mjs`), e ela avisa em vez de bloquear. O gate bloqueante antes
+do build são lint, tipos e testes, em `quality.yml` no pull request e no job
+`gates` de `producao.yml` — verificação contra produção ao vivo não deve travar
+deploy por instabilidade de rede.
+
+Os nomes antigos (`e2e-smoke.yml`, `deploy.yml`) não existem mais desde a
+reconstrução do pipeline; este parágrafo ficou desatualizado até 2026-09-17.
