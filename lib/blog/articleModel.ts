@@ -49,7 +49,11 @@ export function buildArticleModel(source: WPArticleBlock[]): ArticleModel {
         const block = blocks[index]
         consumed += block.textLength
         sinceLast += block.textLength
-        if (adBreakAfter.size >= 2 || index < 2 || !ARTICLE_BLOCKS.get(block.name)?.adBoundary) continue
+        // Até 3 quebras: `article_body` preenche ~51% e `article_post_suggestion`
+        // ~80% em sessões do Brasil (Umami, 28 dias até 2026-09-17). Artigo longo
+        // passava milhares de caracteres sem anúncio depois da segunda quebra.
+        // O espaçamento mínimo de 1.200 caracteres continua valendo.
+        if (adBreakAfter.size >= 3 || index < 2 || !ARTICLE_BLOCKS.get(block.name)?.adBoundary) continue
         if (sinceLast < 1200 || total - consumed < 600 || blocks[index + 1]?.name === 'core/heading') continue
         adBreakAfter.add(block.id)
         sinceLast = 0

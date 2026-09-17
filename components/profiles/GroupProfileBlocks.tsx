@@ -161,6 +161,10 @@ export function buildGroupProfileEntries({
         ...(ADSENSE.slots.inline && storyChapters.length < 5
             ? [{ key: 'inline-ad', interstitial: <AdSlotInline slot={ADSENSE.slots.inline} analyticsPlacement="group_profile_mid" /> }]
             : []),
+        // Mesmo ponto do `artist_reference_top` (52% de preenchimento): começo do
+        // material de consulta, onde o perfil de grupo não tinha nenhum anúncio
+        // até o fim da página.
+        ...(ADSENSE.slots.leaderboard ? [{ key: 'reference-leaderboard', interstitial: <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="group_reference_top" /> }] : []),
         { id: 'numeros', nav: t('blocks.nav.numbers'), present: hasStats, layout: 'self', weight: 'reference', numbered: false, render: () => <section id="numeros" className={anchorClass}><GroupSectionHeading id="numeros-titulo" eyebrow={t('blocks.metrics')} title={t('blocks.groupNumbersTitle')} accent={accent} /><GroupStatsNumbers stats={group.stats!} accent={accent} /></section> },
         { id: 'discografia', nav: t('blocks.nav.albums'), present: discography.length > 0, layout: 'self', weight: 'reference', numbered: false, render: () => <section id="discografia" className={anchorClass}><GroupDiscography albums={discography} accent={accent} /></section> },
         { id: 'videos', nav: t('blocks.nav.videos'), present: videoList.length > 0, layout: 'self', weight: 'reference', numbered: false, render: () => <section id="videos" className={anchorClass}><GroupMVPlayer videos={videoList} accent={accent} /></section> },
@@ -169,6 +173,9 @@ export function buildGroupProfileEntries({
         { id: 'identidade', nav: t('blocks.nav.identity'), present: hasColor, layout: 'self', weight: 'reference', numbered: false, render: () => <section id="identidade" className={anchorClass}><GroupSectionHeading id="identidade-titulo" eyebrow={t('blocks.identity')} title={t('blocks.groupColorTitle')} accent={accent} /><GroupColorIdentity officialColor={acf.color!} groupName={name} fanClubName={acf.fandom_name} /></section> },
         { id: 'redes', nav: t('blocks.nav.channels'), present: socialEntries.length > 0, layout: 'self', weight: 'reference', numbered: false, render: () => <section id="redes" className={anchorClass}><GroupSocialPresence entries={socialEntries} accent={accent} groupName={name} /></section> },
         { id: 'votacao', nav: t('blocks.nav.fans'), present: members.length > 1, layout: 'self', weight: 'reference', numbered: false, render: () => <GroupMemberVote members={members.map(toMemberSummary)} accent={accent} groupName={name} groupSlug={group.slug} /> },
+        // Leitor decidindo o próximo grupo: equivalente ao `artist_discovery`,
+        // que preenche 71%.
+        ...(ADSENSE.slots.inline && relatedGroups.length > 0 ? [{ key: 'discovery-ad', interstitial: <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="group_discovery" /> }] : []),
         { id: 'relacionados', nav: t('blocks.nav.next'), present: relatedGroups.length > 0, layout: 'self', numbered: false, render: () => <section id="relacionados" className={anchorClass}><GroupRelatedGroups groups={relatedGroups} accent={accent} agencyName={agencyName} /></section> },
         { id: 'artigos', nav: t('blocks.nav.articles'), present: relatedPosts.length > 0, layout: 'self', numbered: false, render: () => <section id="artigos" className={anchorClass}><GroupPosts posts={relatedPosts} name={name} accent={accent} /></section> },
         { id: 'faq', nav: t('blocks.nav.essentials'), present: faqItems.length > 0, layout: 'self', weight: 'reference', numbered: false, render: () => <EntityFAQ items={faqItems} className={anchorClass} eyebrow={t('faqDefaults.eyebrow')} title={t('blocks.essentialsTitle', { name })} /> },

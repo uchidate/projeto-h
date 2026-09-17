@@ -13,7 +13,7 @@ describe('buildArticleModel', () => {
         ]
         const model = buildArticleModel(source)
         expect(model.headings).toEqual([{ id: 'datas-confirmadas', text: 'Datas confirmadas', level: 2 }])
-        expect(model.adBreakAfter.size).toBeLessThanOrEqual(2)
+        expect(model.adBreakAfter.size).toBeLessThanOrEqual(3)
         expect(model.blocks[0].id).toBe('block-1')
     })
 
