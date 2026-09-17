@@ -26,8 +26,8 @@ export default defineConfig({
         // vitest) — without this, vitest swept up its *.test.ts files too and
         // failed the whole root CI run with "No test suite found in file" on every
         // commit that touched ops/dashboard, since node:test's `test()` isn't a
-        // vitest suite. Broke deploy.yml's "Type Check + Unit Tests" job on every
-        // push for a while before this was caught.
+        // vitest suite. Quebrou o job de tipos e testes do CI (hoje quality.yml)
+        // em todo push, por um tempo, antes de ser percebido.
         exclude: ['node_modules', '.next', 'e2e/**', '.operacao/**', 'scripts/**', 'wordpress/**', 'wp-plugins/**', 'ops/**', 'skills/**', 'docs/**', 'infra/**', 'config/**'],
         coverage: {
             provider: 'v8',

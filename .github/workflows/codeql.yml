@@ -1,0 +1,56 @@
+# Análise estática de segurança do GitHub (CodeQL).
+#
+# Por que existe: a consulta de alertas de Code Scanning respondia "no analysis
+# found" — o repositório tinha a aba, e nenhuma análise por trás. Segurança que
+# parece existir e não existe é o defeito que este projeto já removeu em outros
+# lugares.
+#
+# Gratuito em repositório público, e roda no runner do GitHub: não disputa CPU
+# com o site.
+name: 🛡️ CodeQL
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.mjs'
+      - '**.js'
+      - '.github/workflows/codeql.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.mjs'
+      - '**.js'
+  schedule:
+    # Semanal: o acervo de regras do CodeQL muda sem o código mudar, e
+    # segunda de manhã casa com a janela dos outros semanais.
+    - cron: '50 6 * * 1'
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analisar:
+    name: Analisar JavaScript e TypeScript
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          # security-and-quality traz também regras de qualidade; aqui interessa
+          # o conjunto de segurança, para o alerta continuar significando risco.
+          queries: security-extended
+      - uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:javascript-typescript

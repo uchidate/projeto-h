@@ -6,8 +6,8 @@ export const dynamic = 'force-dynamic'
 // Checa se o WordPress responde de verdade, não só se o Next.js está de pé.
 // Motivo: em 2026-07-04 o WP ficou 500 (Redis fora do ar) enquanto esse
 // endpoint continuava respondendo {ok:true} sempre — o deploy nunca teria
-// detectado o problema. Timeout curto pra não travar o health check do
-// deploy.yml caso o WP esteja só lento.
+// detectado o problema. Timeout curto pra não travar a verificação de saúde
+// que o deploy faz (scripts/deploy-manual.sh) caso o WP esteja só lento.
 type WordPressHealth = {
     ok: boolean
     latencyMs: number
