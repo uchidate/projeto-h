@@ -5,6 +5,9 @@ interface Props {
     analyticsPlacement: string
 }
 
+/** A coluna lateral existe a partir de xl (1280px); abaixo disso o bloco tem largura 0. */
+const SO_NA_COLUNA_LATERAL = '(min-width: 1280px)'
+
 /**
  * Contrato único para anúncios nas colunas laterais de perfis.
  *
@@ -22,6 +25,7 @@ export function ProfileSidebarAd({ analyticsPlacement }: Props) {
                 slot={ADSENSE.slots.inline}
                 layout="sidebar"
                 analyticsPlacement={analyticsPlacement}
+                mediaQuery={SO_NA_COLUNA_LATERAL}
             />
         </div>
     )
