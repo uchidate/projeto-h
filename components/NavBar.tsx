@@ -312,7 +312,6 @@ const NavBar = ({
                                     {t('nav.shop')}
                                 </Link>
                             )}
-                            <SeletorIdioma />
                             <ThemeToggle />
                             <NotificationBell />
                             <UserMenu />
@@ -333,6 +332,9 @@ const NavBar = ({
                                 </Link>
                             ))}
                         </div>
+                        {/* A linha do logo some ao rolar; esta faixa fica. O seletor
+                            repete aqui para continuar ao alcance depois de rolar. */}
+                        <SeletorIdioma tom="escuro" className="ml-4 shrink-0" />
                     </div>
                 </div>
 
