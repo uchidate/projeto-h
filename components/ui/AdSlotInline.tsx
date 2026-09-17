@@ -17,13 +17,22 @@ interface Props {
     emptyTimeoutMs?: number
     /** Papel editorial; centraliza formato, largura, prioridade e expansão responsiva. */
     layout?: AdLayout
+    /**
+     * Só monta e pede anúncio quando a viewport casa com a media query.
+     *
+     * Necessário quando o bloco ao redor é escondido por CSS (`hidden xl:flex`,
+     * `xl:hidden`): medido em 2026-09-17, cada largura de tela tinha um slot
+     * pedindo anúncio dentro de container de largura 0 — leilão gasto em algo
+     * que ninguém vê, e anúncio oculto é risco de política do AdSense.
+     */
+    mediaQuery?: string
 }
 
 /**
  * Slot de anúncio para inserir DENTRO do conteúdo do artigo.
  * Uso em BlogPostPage, ArtistBiography e ProductionDetailPage.
  */
-export function AdSlotInline({ slot, format, eager, analyticsPlacement, emptyTimeoutMs, layout = 'content' }: Props) {
+export function AdSlotInline({ slot, format, eager, analyticsPlacement, emptyTimeoutMs, layout = 'content', mediaQuery }: Props) {
     const ads = useAds()
     const t = useTranslations('client')
     const [collapsed, setCollapsed] = useState(false)
@@ -49,6 +58,7 @@ export function AdSlotInline({ slot, format, eager, analyticsPlacement, emptyTim
                 analyticsPlacement={analyticsPlacement}
                 emptyTimeoutMs={emptyTimeoutMs}
                 fullWidthResponsive={policy.fullWidthResponsive}
+                mediaQuery={mediaQuery}
                 onStatusChange={status => {
                     if (status === 'unfilled' || status === 'timeout') setCollapsed(true)
                 }}

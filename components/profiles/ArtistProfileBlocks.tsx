@@ -155,6 +155,20 @@ export function buildArtistProfileEntries({
         { id: 'essencia', nav: t('blocks.nav.reading'), present: hasEssencia, render: label => <ArtistEssencia eyebrow={label} accent={accent} {...essencia} /> },
         { id: 'filmografia', nav: t('blocks.nav.works'), present: productions.length > 0, render: label => <ArtistFilmography productions={productions} label={label} accent={accent} /> },
         { id: 'grupos', nav: t('blocks.nav.groups'), present: groups.length > 0, render: label => <ArtistGroups groups={groups} artistName={name} label={label} accent={accent} /> },
+        // Entre a filmografia e a música, no meio de fichas longas.
+        //
+        // Medido em 2026-09-17: numa ficha de 16.000px no celular, o primeiro
+        // anúncio ficava aos 12% e o seguinte só aos 47% — um terço da página
+        // rolada sem nada. Este slot entra nesse vazio, e só em ficha que
+        // realmente é longa (tem trajetória e filmografia).
+        ...(ADSENSE.slots.inline && hasStoryChapters && productions.length > 0 ? [{
+            key: 'meio-ficha',
+            interstitial: (
+                <div className="page-wrap">
+                    <AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="artist_mid_scroll" />
+                </div>
+            ),
+        }] : []),
         // Clipes, álbuns e Spotify eram três seções consecutivas, cada uma com seu
         // próprio cabeçalho "Dossiê", somando ~1.870px de rolagem para dizer a
         // mesma coisa: a música. Viram um bloco só, com três âncoras de navegação

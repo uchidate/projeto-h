@@ -300,6 +300,17 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
                     <ProductionRelated related={related} genres={genres} />
                 </div>
 
+                {/* Ponto de descoberta: quem chega aqui está decidindo o que assistir
+                    a seguir. É o equivalente ao `artist_discovery`, que preenche 71%
+                    (Umami, sessões do Brasil, 28 dias até 2026-09-17). Também cobre o
+                    vazio medido no celular, onde a metade final da ficha não tinha
+                    anúncio nenhum. */}
+                {ADSENSE.slots.inline && related.length > 0 && (
+                    <div className="mt-12 mx-auto">
+                        <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="production_discovery" />
+                    </div>
+                )}
+
                 <EntityFAQ
                     items={faqItems}
                     className="mt-12 scroll-mt-(--scroll-anchor-offset,134px) mx-auto"

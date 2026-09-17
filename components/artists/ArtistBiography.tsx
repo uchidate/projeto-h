@@ -76,6 +76,10 @@ export function ArtistBiography({ name, label, contentBefore, contentAfter, fact
                                 <AdSlotInline
                                     slot={ADSENSE.slots.inline}
                                     analyticsPlacement="artist_bio_mobile"
+                                    // Espelha o `xl:hidden` do bloco: acima de 1280px quem
+                                    // serve é o slot da coluna lateral, e pedir os dois
+                                    // deixaria um deles oculto.
+                                    mediaQuery="(max-width: 1279px)"
                                 />
                             </div>
                         )}
