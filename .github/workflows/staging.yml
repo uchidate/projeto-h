@@ -23,10 +23,34 @@ on:
       # com conflito de peer dependency, ruido que nao dizia nada sobre o
       # ambiente.
       - 'dependabot/**'
-    paths-ignore:
-      - '**.md'
-      - 'notas/**'
-      - 'docs/**'
+    # Publica staging so quando muda algo que afeta runtime/deploy.
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'hooks/**'
+      - 'public/**'
+      - 'styles/**'
+      - 'messages/**'
+      - 'wordpress/assets/**'
+      - '.github/actions/**'
+      - '.github/workflows/staging.yml'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'next.config.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.nvmrc'
+      - 'tsconfig.json'
+      - 'tailwind.config.ts'
+      - 'postcss.config.js'
+      - 'proxy.ts'
+      - 'tokens.css'
+      - 'global.d.ts'
+      - 'instrumentation.ts'
+      - 'instrumentation-client.ts'
+      - 'sentry.edge.config.ts'
+      - 'sentry.server.config.ts'
 
 # Grupo GLOBAL, nao por branch: existe UM staging. Duas branches publicando ao
 # mesmo tempo disputariam o mesmo container e o resultado seria indeterminado.
@@ -63,7 +87,9 @@ jobs:
     # maquina que publica.
     #
     # Custo conhecido: uma replica so, entao staging e producao serializam.
-    runs-on: [self-hosted, deploy]
+    # Permite separar filas por label sem quebrar o padrao atual.
+    # Exemplo de variavel: ["self-hosted","deploy","staging"]
+    runs-on: ${{ fromJSON(vars.STAGING_RUNNERS_JSON || '["self-hosted","deploy"]') }}
     timeout-minutes: 25
     steps:
       # fetch-tags porque o NEXT_PUBLIC_APP_VERSION vem de `git describe`; sem
@@ -121,6 +147,9 @@ jobs:
       # um staging deixa de representar producao.
       - name: Deploy do staging
         env:
+          DOCKER_BUILDKIT: '1'
+          COMPOSE_DOCKER_CLI_BUILD: '1'
+          BUILDKIT_PROGRESS: plain
           # O health público é isento do Basic Auth, mas o runner hospedado
           # ainda vem de ASN de datacenter e precisa atravessar a regra WAF.
           # O script transmite o cabeçalho só na sonda, sem expor o segredo.
