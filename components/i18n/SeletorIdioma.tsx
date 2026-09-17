@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
+import { Globe } from 'lucide-react'
 import { LOCALE_META, type Locale } from '@/lib/i18n/config'
 
 type Versao = { locale: string; sigla: string; href: string }
@@ -15,7 +16,7 @@ type Versao = { locale: string; sigla: string; href: string }
  * Google); o seletor le essas tags depois da navegacao. Sem alternativa, nao
  * aparece — nunca leva a uma pagina inexistente.
  */
-export function SeletorIdioma({ className = '' }: { className?: string }) {
+export function SeletorIdioma({ className = '', tom = 'claro' }: { className?: string; tom?: 'claro' | 'escuro' }) {
     const pathname = usePathname()
     const locale = useLocale() as Locale
     const t = useTranslations('client')
@@ -44,12 +45,23 @@ export function SeletorIdioma({ className = '' }: { className?: string }) {
 
     if (versoes.length < 2) return null
 
+    const escuro = tom === 'escuro'
     return (
-        <nav aria-label={t('nav.language')} className={`flex items-center border border-border font-mono text-[11px] font-black ${className}`}>
+        <nav
+            aria-label={t('nav.language')}
+            className={`flex h-9 items-stretch border text-[12px] font-black uppercase tracking-[0.06em] ${escuro ? 'border-white/25' : 'border-border'} ${className}`}
+        >
+            <span aria-hidden="true" className={`flex items-center px-2 ${escuro ? 'text-white/60' : 'text-muted'}`}>
+                <Globe className="h-4 w-4" />
+            </span>
             {versoes.map((versao) => {
                 const atual = versao.locale === locale
                 return atual ? (
-                    <span key={versao.locale} aria-current="page" className="bg-foreground px-2 py-1.5 text-background">
+                    <span
+                        key={versao.locale}
+                        aria-current="page"
+                        className={`flex items-center px-2.5 ${escuro ? 'bg-white text-black' : 'bg-foreground text-background'}`}
+                    >
                         {versao.sigla}
                     </span>
                 ) : (
@@ -58,7 +70,7 @@ export function SeletorIdioma({ className = '' }: { className?: string }) {
                         href={versao.href}
                         hrefLang={LOCALE_META[versao.locale as Locale].htmlLang}
                         lang={LOCALE_META[versao.locale as Locale].htmlLang}
-                        className="px-2 py-1.5 text-muted transition-colors hover:bg-surface hover:text-foreground"
+                        className={`flex items-center px-2.5 transition-colors ${escuro ? 'text-white/80 hover:bg-white/10 hover:text-white' : 'text-foreground hover:bg-surface'}`}
                     >
                         {versao.sigla}
                     </a>
