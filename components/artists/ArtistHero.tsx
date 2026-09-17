@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
+import Image, { getImageProps } from 'next/image'
 import Link from 'next/link'
 import { Music } from 'lucide-react'
 import { BrandDot } from '@/components/ui/BrandDot'
@@ -90,9 +90,19 @@ export function ArtistHero({ artist, name, artistUrl, image, roleLabels, groups,
         <div className="grid grid-cols-1 py-4 sm:grid-cols-[200px_minmax(0,1fr)] sm:gap-7 sm:py-0 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-9">
                 <div className="hidden sm:block relative aspect-3/4 w-full max-w-[200px] lg:max-w-[320px] mx-auto lg:mx-0 overflow-hidden"
                     style={{ background: 'repeating-linear-gradient(135deg, #f0f0f0 0 12px, #e8e8e8 12px 24px)' }}>
+                    {/* Sem `priority`: ele geraria um <link rel=preload> que o celular
+                            também baixa, embora este bloco só apareça a partir de sm — duas
+                            versões da mesma foto disputando banda com a imagem do LCP.
+                        fetchPriority alta mantém a prioridade no desktop, onde ela é o LCP. */}
                     {image && (
-                        <Image src={image.src} alt={image.alt || name} fill priority
-                            sizes="(max-width: 640px) 248px, (max-width: 1024px) 400px, 320px"
+                        // eslint-disable-next-line @next/next/no-img-element -- props geradas pelo next/image (getImageProps)
+                        <img
+                            {...getImageProps({
+                                src: image.src, alt: image.alt || name, fill: true,
+                                sizes: '(max-width: 640px) 248px, (max-width: 1024px) 400px, 320px',
+                                fetchPriority: 'high', loading: 'eager',
+                            }).props}
+                            alt={image.alt || name}
                             className="object-cover object-top" />
                     )}
                     <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(120% 100% at 100% 100%, ${toRgba(accent, 0.22)} 0%, transparent 65%)` }} />
