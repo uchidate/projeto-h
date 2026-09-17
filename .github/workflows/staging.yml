@@ -75,9 +75,46 @@ concurrency:
   group: staging
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
+  debounce:
+    name: Debounce da branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    outputs:
+      publicar: ${{ steps.sha.outputs.publicar }}
+    steps:
+      - name: Janela curta de debounce
+        run: sleep 180
+      - name: Verificar commit mais recente da branch
+        id: sha
+        env:
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          SHA_ATUAL: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          remoto="$(git ls-remote --heads "https://github.com/${REPO}.git" "refs/heads/${BRANCH}" | awk '{print $1}')"
+          if [ -z "$remoto" ]; then
+            echo "publicar=sim" >> "$GITHUB_OUTPUT"
+            echo "⚠️ não foi possível ler o head remoto da branch; segue deploy por segurança"
+            exit 0
+          fi
+          if [ "$remoto" = "$SHA_ATUAL" ]; then
+            echo "publicar=sim" >> "$GITHUB_OUTPUT"
+            echo "✅ este push ainda é o head da branch"
+          else
+            echo "publicar=nao" >> "$GITHUB_OUTPUT"
+            echo "⏭️ push mais novo detectado ($remoto); pulando deploy deste commit"
+          fi
+
   publicar:
     name: Publicar staging
+    needs: debounce
+    if: needs.debounce.outputs.publicar == 'sim'
     # No runner proprio pelo motivo ja anotado na linha 122: "o deploy leva
     # ~345s e quase tudo e espera por `docker build` no servidor". Era o maior
     # consumidor de cota do projeto — ~1021 min em setembro, 175 execucoes de
@@ -89,7 +126,7 @@ jobs:
     # Custo conhecido: uma replica so, entao staging e producao serializam.
     # Permite separar filas por label sem quebrar o padrao atual.
     # Exemplo de variavel: ["self-hosted","deploy","staging"]
-    runs-on: ${{ fromJSON(vars.STAGING_RUNNERS_JSON || '["self-hosted","deploy"]') }}
+    runs-on: ${{ fromJSON(vars.STAGING_RUNNERS_JSON || '["self-hosted","deploy","staging"]') }}
     timeout-minutes: 25
     steps:
       # fetch-tags porque o NEXT_PUBLIC_APP_VERSION vem de `git describe`; sem
@@ -142,10 +179,18 @@ jobs:
           usuario: ${{ secrets.DEPLOY_USER }}
           chave: ${{ secrets.DEPLOY_SSH_KEY }}
 
+      - name: Aquecer cache remoto de imagem
+        env:
+          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+        run: |
+          set -euo pipefail
+          ssh oc "docker pull ${IMAGE_REPO}:buildcache >/dev/null 2>&1 || true"
+
       # O MESMO script que roda na maquina do desenvolvedor. Um caminho de
       # deploy exercitado dos dois lados nao diverge em silencio — que e como
       # um staging deixa de representar producao.
       - name: Deploy do staging
+        id: deploy
         env:
           DOCKER_BUILDKIT: '1'
           COMPOSE_DOCKER_CLI_BUILD: '1'
@@ -158,7 +203,51 @@ jobs:
         # protege o merge. Aqui eles repetiam o mesmo trabalho em todo push de
         # branch — 52s por run (medido em 2026-09-13), no workflow que mais roda.
         # Localmente, `bash scripts/deploy-staging.sh` segue rodando os gates.
-        run: bash scripts/deploy-staging.sh --skip-gates
+        run: |
+          set -euo pipefail
+          inicio="$(date +%s)"
+          bash scripts/deploy-staging.sh --skip-gates
+          fim="$(date +%s)"
+          echo "duracao_segundos=$((fim-inicio))" >> "$GITHUB_OUTPUT"
+
+      - name: Atualizar cache remoto de build
+        if: always()
+        env:
+          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+        run: |
+          set -euo pipefail
+          ssh oc "if docker image inspect ${IMAGE_REPO}:${GITHUB_SHA} >/dev/null 2>&1; then \
+                    docker tag ${IMAGE_REPO}:${GITHUB_SHA} ${IMAGE_REPO}:buildcache && \
+                    docker push ${IMAGE_REPO}:buildcache >/dev/null 2>&1 || true; \
+                  fi"
+
+      - name: Coletar métricas do job
+        if: always()
+        id: metricas
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const run = await github.rest.actions.getWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            })
+            const jobs = await github.rest.actions.listJobsForWorkflowRunAttempt({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+              attempt_number: context.runAttempt,
+              per_page: 100,
+            })
+            const job = jobs.data.jobs.find((j) => j.name === 'Publicar staging')
+            let fila = 0
+            let total = 0
+            if (job?.started_at) {
+              fila = Math.max(0, Math.floor((new Date(job.started_at) - new Date(run.data.created_at)) / 1000))
+              total = Math.max(0, Math.floor((Date.now() - new Date(job.started_at)) / 1000))
+            }
+            core.setOutput('fila_segundos', String(fila))
+            core.setOutput('total_segundos', String(total))
 
       - name: Resumo
         if: always()
@@ -169,6 +258,10 @@ jobs:
             echo "- commit: \`${GITHUB_SHA}\`"
             echo "- branch: \`${GITHUB_REF_NAME}\`"
             echo "- url: ${{ vars.STAGING_URL }}"
+            echo "- fila: \`${{ steps.metricas.outputs.fila_segundos || '0' }}s\`"
+            echo "- tempo total: \`${{ steps.metricas.outputs.total_segundos || '0' }}s\`"
+            echo "- tempo build (aprox.): \`${{ steps.deploy.outputs.duracao_segundos || '0' }}s\`"
+            echo "- taxa de reaproveitamento: \`n/a no staging\`"
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
