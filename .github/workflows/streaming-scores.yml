@@ -55,8 +55,11 @@ jobs:
       - name: Trigger ISR revalidation (artists)
         env:
           REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          # Exceção de WAF da Cloudflare para automação nossa; sem ela o POST leva 403.
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
         run: |
           curl -s -X POST \
+            -H "${{ vars.SONDA_HEADER }}: ${SONDA_TOKEN}" \
             "${{ vars.SITE_URL }}/api/revalidate?secret=${REVALIDATE_SECRET}" \
             -H "Content-Type: application/json" \
             -d '{"type":"artist"}' \

@@ -94,10 +94,13 @@ jobs:
           GSC_CREDENTIALS_JSON: ${{ secrets.GSC_CREDENTIALS_JSON }}
           WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
           REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          # Exceção de WAF da Cloudflare para automação nossa; sem ela o POST leva 403.
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
           LISTA: ${{ runner.temp }}/mais-buscados.json
         run: |
           set -euo pipefail
           python3 scripts/mais-buscados.py "$LISTA"
           ssh oc 'docker exec -i wordpress-ondacoreana wp --allow-root option update oc_mais_buscados --format=json' < "$LISTA"
           curl -sS -o /dev/null -w "revalidacao: %{http_code}\n" -X POST \
+            -H "${{ vars.SONDA_HEADER }}: ${SONDA_TOKEN}" \
             "${{ vars.SITE_URL }}/api/revalidate?secret=${REVALIDATE_SECRET}&tag=site-settings"
