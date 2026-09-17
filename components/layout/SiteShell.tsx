@@ -82,6 +82,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         madeWith: layout.madeWith,
         home: layout.home.replace('{site}', SITE_NAME),
         nav: layout.footerNav,
+        // Só no português: a lista aponta para fichas em PT.
+        mostSearched: isDefaultLocale ? 'Mais buscados' : undefined,
         homeHref: isDefaultLocale ? '/' : `/${locale}`,
     }
     const footerColumns = locale === DEFAULT_LOCALE
@@ -183,7 +185,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
 
                     {/* Rodapé */}
                     <footer>
-                        <Footer columns={footerColumns} tagline={tagline} labels={footerLabels} />
+                        <Footer columns={footerColumns} tagline={tagline} labels={footerLabels} mostSearched={isDefaultLocale ? siteSettings.maisBuscados : []} />
                     </footer>
                 </div>
 

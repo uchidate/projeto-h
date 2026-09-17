@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { getSiteSettings, DEFAULT_SITE_SETTINGS } from './site-settings'
+import { getSiteSettings, DEFAULT_SITE_SETTINGS, sanitizeMaisBuscados } from './site-settings'
 
 describe('getSiteSettings', () => {
     let fetchMock: ReturnType<typeof vi.fn>
@@ -101,5 +101,25 @@ describe('getSiteSettings', () => {
         fetchMock.mockResolvedValue({ ok: true, json: async () => ({ googleTag: 'GT-XXXX' }) })
         const result = await getSiteSettings()
         expect(result.googleTag).toBe('GT-XXXX')
+    })
+})
+
+describe('sanitizeMaisBuscados', () => {
+    it('aceita só fichas internas com rótulo e limita a 12', () => {
+        const validos = Array.from({ length: 15 }, (_, i) => ({ label: `Artista ${i}`, href: `/artists/a-${i}` }))
+        const lista = sanitizeMaisBuscados([
+            { label: 'Externo', href: 'https://exemplo.com/x' },
+            { label: '', href: '/groups/ive' },
+            { label: 'Blog', href: '/blog/post' },
+            { label: 'Script', href: '/artists/x"onmouseover' },
+            ...validos,
+        ])
+        expect(lista).toHaveLength(12)
+        expect(lista[0]).toEqual({ label: 'Artista 0', href: '/artists/a-0' })
+    })
+
+    it('devolve lista vazia para valor que não é array', () => {
+        expect(sanitizeMaisBuscados(undefined)).toEqual([])
+        expect(sanitizeMaisBuscados({ label: 'x' })).toEqual([])
     })
 })

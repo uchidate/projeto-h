@@ -23,6 +23,8 @@ export type SiteSettings = {
     cultureGuides: BestOfList[]
     blogCategories: BlogCategory[]
     googleTag: string | null
+    /** Fichas com muita impressão perto da página 1 do Google, geradas pela coleta diária do Search Console. */
+    maisBuscados: SiteLink[]
 }
 
 export type HomeHub = {
@@ -154,6 +156,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     },
     blogCategories: [],
     googleTag: null,
+    maisBuscados: [],
     bestOfLists: [
         { label: 'Melhores K-Dramas', href: '/melhores-dramas', emoji: '🏆' },
         { label: 'K-Dramas de Romance', href: '/melhores-dramas/romance', emoji: '💕' },
@@ -174,6 +177,21 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
         { label: 'Fandoms de k-pop', href: '/blog/fandoms-kpop-light-sticks-fan-chants-fansigns', emoji: '💡' },
         { label: 'Han, Jeong e Aegyo', href: '/blog/han-conceito-coreano-tristeza-k-drama', emoji: '🧡' },
     ],
+}
+
+const MAIS_BUSCADOS_HREF = /^\/(artists|groups|productions)\/[a-z0-9-]+$/
+const MAIS_BUSCADOS_MAX = 12
+
+/** Só links internos de ficha, com rótulo: a lista vem de coleta automática e vai para todas as páginas. */
+export function sanitizeMaisBuscados(raw: unknown): SiteLink[] {
+    if (!Array.isArray(raw)) return []
+    return raw
+        .filter((item): item is SiteLink =>
+            !!item && typeof item === 'object'
+            && typeof (item as SiteLink).label === 'string' && (item as SiteLink).label.trim() !== ''
+            && typeof (item as SiteLink).href === 'string' && MAIS_BUSCADOS_HREF.test((item as SiteLink).href))
+        .map(item => ({ label: item.label.trim().slice(0, 60), href: item.href }))
+        .slice(0, MAIS_BUSCADOS_MAX)
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -208,6 +226,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
             cultureGuides: data.cultureGuides?.length ? data.cultureGuides : DEFAULT_SITE_SETTINGS.cultureGuides,
             blogCategories: data.blogCategories ?? [],
             googleTag: data.googleTag ?? null,
+            maisBuscados: sanitizeMaisBuscados(data.maisBuscados),
         }
     } catch {
         return DEFAULT_SITE_SETTINGS
