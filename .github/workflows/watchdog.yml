@@ -44,6 +44,7 @@ jobs:
             }
             const agora = Date.now()
             const problemas = []
+            const repo = await github.rest.repos.get({ owner: context.repo.owner, repo: context.repo.repo })
 
             for (const [arquivo, diasLimite] of Object.entries(limites)) {
               const runs = await github.rest.actions.listWorkflowRuns({
@@ -55,6 +56,16 @@ jobs:
               })
               const ultimo = runs.data.workflow_runs[0]
               if (!ultimo) {
+                // Repositorio recem-criado ainda nao viveu a primeira janela do
+                // agendamento: em 2026-09-17 os dois semanais foram acusados no dia
+                // seguinte a migracao, quando a segunda-feira nem tinha chegado.
+                // Alerta que dispara pela idade do repositorio, e nao por defeito,
+                // e o tipo que ensina a ignorar o canal.
+                const idadeDias = (agora - new Date(repo.data.created_at)) / 86400000
+                if (idadeDias <= diasLimite) {
+                  core.info(`${arquivo}: sem execucao ainda, mas o repositorio tem ${idadeDias.toFixed(1)} dias (limite ${diasLimite}) — dentro da carencia`)
+                  continue
+                }
                 problemas.push(`- \`${arquivo}\`: **nenhuma execucao bem-sucedida registrada**`)
                 continue
               }

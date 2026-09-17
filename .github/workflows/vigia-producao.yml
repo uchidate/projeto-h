@@ -57,7 +57,21 @@ jobs:
       - name: Playwright
         uses: ./.github/actions/playwright-enxuto
 
+      # Duas tentativas antes de avisar. Em 2026-09-17 a vigia reprovou por um
+      # erro de hidratação do React que não se reproduziu em 15 carregamentos
+      # seguidos nem coincidiu com deploy: alerta por falha isolada gasta a
+      # atenção que o alerta de verdade vai precisar. Só a segunda falha, do
+      # mesmo defeito, vira aviso.
+      - name: Fumaça (1ª tentativa)
+        id: fumaca1
+        continue-on-error: true
+        env:
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/fumaca.mjs ${{ vars.SITE_URL }}
+
       - name: Fumaça
+        id: fumaca
+        if: steps.fumaca1.outcome == 'failure'
         # Identifica esta execucao como automacao NOSSA, para a regra de excecao
         # da Cloudflare. Com o Bot Fight Mode ligado, Chromium headless e o caso
         # mais classico de deteccao: sem excecao a verificacao falharia por
@@ -65,7 +79,21 @@ jobs:
         # comportamento anterior.
         env:
           SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
-        run: node scripts/fumaca.mjs ${{ vars.SITE_URL }}
+        # Guarda quais verificações reprovaram: o aviso dizia só que "reprovou",
+        # e quem recebe tinha de abrir a execução para saber se era imagem
+        # quebrada, rota fora do ar ou orçamento de performance.
+        run: |
+          set -o pipefail
+          # `|| codigo=$?` porque o shell do passo roda com -e: sem isso o job
+          # morreria aqui e o resumo das falhas nunca seria gravado.
+          codigo=0
+          node scripts/fumaca.mjs ${{ vars.SITE_URL }} 2>&1 | tee /tmp/fumaca.log || codigo=$?
+          {
+            echo 'falhas<<FIM'
+            grep -A5 'verificação(ões) falharam' /tmp/fumaca.log | grep '^   -' | sed 's/^   - //' | head -4 || true
+            echo FIM
+          } >> "$GITHUB_OUTPUT"
+          exit $codigo
 
       # ── Aviso ────────────────────────────────────────────────────────────
       #
@@ -100,5 +128,5 @@ jobs:
               -H 'Title: Fumaca de producao falhou' \
               -H 'Priority: high' \
               -H 'Tags: rotating_light' \
-              -d 'A verificacao horaria de producao reprovou. Ver: $URL_DA_EXECUCAO' \
+              -d \"\$(printf 'Reprovou: %s\\nVer: %s' '${{ steps.fumaca.outputs.falhas || 'ver log' }}' '$URL_DA_EXECUCAO')\" \
               \"\$NTFY_URL\" >/dev/null && echo 'aviso enviado'"
