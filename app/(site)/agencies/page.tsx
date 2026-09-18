@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,6 +11,8 @@ import { getWPImage, stripHtml } from '@/lib/utils'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { agencyMark, optionalAccent, type CSSVariableProperties } from '@/lib/agencies/presentation'
 import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import type { WPArtist, WPGroup } from '@/lib/wordpress/types'
 
 export const revalidate = 3600
@@ -262,6 +265,10 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                             </section>
                         )}
 
+                        {ADSENSE.slots.inline && big4.length > 0 && rest.length > 0 && (
+                            <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="agencies_feed" />
+                        )}
+
                         {rest.length > 0 && (
                             <section>
                                 {big4.length > 0 && type !== 'mid' && (
@@ -291,17 +298,35 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                                         </div>
                                     </div>
                                 )}
-                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                                    {rest.map(agency => (
-                                        <AgencyCard
-                                            key={agency.id}
-                                            agency={agency}
-                                            agencyGroups={groupsByAgency.get(agency.id) ?? []}
-                                            agencyArtists={artistsByAgency.get(agency.id) ?? []}
-                                            featured={false}
-                                        />
-                                    ))}
-                                </div>
+                                {/* Grade cortada em duas, com anúncio entre elas.
+                                    Medido em 2026-09-17: esta página tem 23.000px de rolagem
+                                    no celular e não tinha anúncio nenhum. Cortar a grade (em
+                                    vez de inserir no meio dela) evita fileira pela metade. */}
+                                {(() => {
+                                    const CORTE = 12
+                                    const temAnuncio = !!ADSENSE.slots.inline && rest.length > CORTE
+                                    const blocos = temAnuncio ? [rest.slice(0, CORTE), rest.slice(CORTE)] : [rest]
+                                    return blocos.map((bloco, indice) => (
+                                        <Fragment key={`subsidiarias-${indice}`}>
+                                            {indice > 0 && (
+                                                <div className="my-6">
+                                                    <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="agencies_grid" />
+                                                </div>
+                                            )}
+                                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                                                {bloco.map(agency => (
+                                                    <AgencyCard
+                                                        key={agency.id}
+                                                        agency={agency}
+                                                        agencyGroups={groupsByAgency.get(agency.id) ?? []}
+                                                        agencyArtists={artistsByAgency.get(agency.id) ?? []}
+                                                        featured={false}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </Fragment>
+                                    ))
+                                })()}
                             </section>
                         )}
 

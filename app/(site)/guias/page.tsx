@@ -1,4 +1,7 @@
+import { Fragment } from 'react'
 import type { Metadata } from 'next'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import Link from 'next/link'
 import { ALL_HUBS } from '@/lib/guias'
 import { PageBreadcrumb } from '@/components/ui/PageBreadcrumb'
@@ -101,11 +104,17 @@ export default async function GuiasPage({ searchParams }: Props) {
                     </div>
                 </header>
 
-                {visibleKinds.map((k) => {
+                {visibleKinds.map((k, indiceSecao) => {
                     const hubs = ALL_HUBS.filter(h => h.kind === k)
                     if (!hubs.length) return null
                     return (
-                        <section key={k}>
+                        <Fragment key={k}>
+                        {/* Entre seções: a página tem ~14.700px de rolagem no celular e
+                            não tinha anúncio nenhum (medido em 2026-09-17). */}
+                        {indiceSecao > 0 && ADSENSE.slots.inline && (
+                            <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="guias_lista" />
+                        )}
+                        <section>
                             <SectionTitleBar
                                 eyebrow={KIND_EYEBROW[k]}
                                 title={KIND_LABELS[k]}
@@ -134,6 +143,7 @@ export default async function GuiasPage({ searchParams }: Props) {
                                 ))}
                             </ul>
                         </section>
+                        </Fragment>
                     )
                 })}
             </div>

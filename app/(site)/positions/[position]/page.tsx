@@ -1,4 +1,7 @@
+import { Fragment } from 'react'
 import { SITE_NAME } from '@/lib/constants/site'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -70,10 +73,17 @@ export default async function PositionDetailPage({ params }: { params: Params })
             </p>
 
             <div className="mt-6 divide-y divide-border border-t border-border">
-                {rows.map(({ group, members }) => {
+                {rows.map(({ group, members }, indice) => {
                     const groupName = stripHtml(group.title.rendered)
                     return (
-                        <div key={group.id} className="flex flex-wrap items-center gap-3 py-3">
+                        <Fragment key={group.id}>
+                        {/* A cada 8 grupos: lista longa que não tinha anúncio nenhum até 2026-09-17. */}
+                        {indice > 0 && indice % 8 === 0 && ADSENSE.slots.inline && (
+                            <div className="py-6">
+                                <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="posicao_lista" />
+                            </div>
+                        )}
+                        <div className="flex flex-wrap items-center gap-3 py-3">
                             <Link href={`/groups/${group.slug}`} className="min-w-28 shrink-0 font-bold text-foreground hover:text-accent">
                                 {groupName}
                             </Link>
@@ -98,6 +108,7 @@ export default async function PositionDetailPage({ params }: { params: Params })
                                 })}
                             </div>
                         </div>
+                        </Fragment>
                     )
                 })}
             </div>

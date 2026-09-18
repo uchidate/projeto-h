@@ -1,4 +1,6 @@
 import { SITE_NAME } from '@/lib/constants/site'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
@@ -192,6 +194,13 @@ export default async function FoodPage({ params }: { params: Params }) {
                             className="wp-article-content"
                             dangerouslySetInnerHTML={{ __html: food.content.rendered }}
                         />
+                    )}
+
+                    {/* Página sem anúncio nenhum até 2026-09-17 (inventário de todas as rotas no celular). */}
+                    {ADSENSE.slots.inline && (
+                        <div className="mt-10">
+                            <AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="comida_ficha" />
+                        </div>
                     )}
 
                     {/* Dramas que mencionam este prato */}

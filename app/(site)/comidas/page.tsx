@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -246,6 +248,13 @@ export default async function ComidasPage({ searchParams }: { searchParams: Sear
                                 )
                             })}
                         </div>
+
+                        {/* Página sem anúncio nenhum até 2026-09-17 (inventário de todas as rotas no celular). */}
+                        {foods.length > 0 && ADSENSE.slots.inline && (
+                            <div className="mt-10">
+                                <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="comidas_lista" />
+                            </div>
+                        )}
 
                         {/* Paginação */}
                         {totalPages > 1 && (
