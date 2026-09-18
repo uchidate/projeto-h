@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { juntarSameAs, urlWikipedia } from '@/lib/seo/entidade'
 import { useLocale, useTranslations } from 'next-intl'
 import { href } from '@/lib/i18n/routes'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
@@ -136,7 +137,11 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                     image: image?.src,
                     foundingDate: year ? `${year}` : undefined,
                     genre: 'K-Pop',
-                    sameAs: socialEntries.map(s => s.href).concat(acf.website ? [acf.website] : []),
+                    sameAs: juntarSameAs(
+                        [urlWikipedia((acf as { wikipedia_title?: string }).wikipedia_title, group.content?.rendered)],
+                        socialEntries.map(s => s.href),
+                        acf.website ? [acf.website] : [],
+                    ),
                     member: activeMembers.length > 0 ? activeMembers.map(member => {
                         const positions = memberPositions[member.slug] ?? []
                         return {
