@@ -90,6 +90,45 @@ export function isInterstitial(entry: ProfileEntry): entry is ProfileInterstitia
     return 'interstitial' in entry
 }
 
+/** Interstitials de anúncio seguem a convenção de chave dos registros de perfil. */
+const CHAVE_DE_ANUNCIO = /(^|-)ad$|leaderboard|meio-ficha|densidade-/
+
+/**
+ * Garante que nunca passem `maxSemAnuncio` seções visíveis seguidas sem anúncio.
+ *
+ * Medido em 2026-09-17, no celular: a ficha de artista tinha 1 anúncio a cada
+ * ~3.300px e a de grupo, 1 a cada ~4.800px — longos trechos de rolagem sem
+ * monetização em páginas de 14.000 a 16.000px. Os anúncios posicionados à mão
+ * continuam onde estão; esta regra só preenche os vazios entre eles.
+ *
+ * Conta seções PRESENTES (bloco sem dado não aparece na tela e não conta). O
+ * anúncio entra sempre ANTES de uma seção, então nunca fica solto no fim.
+ */
+export function adensarAnuncios(
+    entries: readonly ProfileEntry[],
+    criarAnuncio: (indice: number) => ReactNode,
+    maxSemAnuncio = 3,
+): ProfileEntry[] {
+    const saida: ProfileEntry[] = []
+    let semAnuncio = 0
+    let inseridos = 0
+    entries.forEach(entry => {
+        if (isInterstitial(entry)) {
+            if (CHAVE_DE_ANUNCIO.test(entry.key)) semAnuncio = 0
+            saida.push(entry)
+            return
+        }
+        if (entry.present && semAnuncio >= maxSemAnuncio) {
+            saida.push({ key: `densidade-${inseridos}`, interstitial: criarAnuncio(inseridos) })
+            inseridos++
+            semAnuncio = 0
+        }
+        saida.push(entry)
+        if (entry.present) semAnuncio++
+    })
+    return saida
+}
+
 /**
  * Falha cedo para erros de composição que, sem validação, gerariam âncoras
  * ambíguas, nós React instáveis ou itens duplicados na ReadingBar.

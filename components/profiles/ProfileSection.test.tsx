@@ -6,6 +6,7 @@ import {
     validateProfileEntries,
     type ProfileEntry,
 } from './ProfileSection'
+import { adensarAnuncios } from './ProfileSection'
 
 function block(overrides: Partial<Extract<ProfileEntry, { id: string }>> = {}): Extract<ProfileEntry, { id: string }> {
     return {
@@ -120,5 +121,29 @@ describe('validateProfileEntries', () => {
         expect(() => validateProfileEntries([block({ id: ' ' })])).toThrow('Profile block id cannot be empty')
         expect(() => validateProfileEntries([block({ nav: ' ' })])).toThrow('Profile block nav cannot be empty')
         expect(() => validateProfileEntries([{ key: ' ', interstitial: null }])).toThrow('Profile interstitial key cannot be empty')
+    })
+})
+
+
+describe('adensarAnuncios', () => {
+    const bloco = (id: string, present = true) => ({ id, nav: id, present, render: () => null })
+    const chaves = (entries: ReturnType<typeof adensarAnuncios>) =>
+        entries.map(e => ('interstitial' in e ? `[${e.key}]` : e.id))
+
+    it('insere anúncio depois de 3 seções visíveis seguidas', () => {
+        const saida = adensarAnuncios(['a', 'b', 'c', 'd', 'e'].map(id => bloco(id)), () => 'ad')
+        expect(chaves(saida)).toEqual(['a', 'b', 'c', '[densidade-0]', 'd', 'e'])
+    })
+
+    it('respeita o anúncio posto à mão e reinicia a contagem', () => {
+        const saida = adensarAnuncios([bloco('a'), bloco('b'), { key: 'inline-ad', interstitial: 'x' }, bloco('c'), bloco('d'), bloco('e')], () => 'ad')
+        expect(chaves(saida)).toEqual(['a', 'b', '[inline-ad]', 'c', 'd', 'e'])
+    })
+
+    it('não conta seção ausente e não insere depois da última visível', () => {
+        const saida = adensarAnuncios([bloco('a'), bloco('x', false), bloco('b'), bloco('c'), bloco('d')], () => 'ad')
+        expect(chaves(saida)).toEqual(['a', 'x', 'b', 'c', '[densidade-0]', 'd'])
+        const curta = adensarAnuncios([bloco('a'), bloco('b'), bloco('c')], () => 'ad')
+        expect(chaves(curta)).toEqual(['a', 'b', 'c'])
     })
 })
