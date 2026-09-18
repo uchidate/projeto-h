@@ -2,7 +2,7 @@ import type { WPAgency, WPArtist, WPGroup, WPPost, WPProduction } from '@/lib/wo
 import type { ArtistProfileModel } from '@/lib/profiles/artistProfile'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import type { EntityFAQItem } from '@/components/seo/EntityFAQ'
-import type { ProfileEntry } from './ProfileSection'
+import { adensarAnuncios, type ProfileEntry } from './ProfileSection'
 import type { useTranslations } from 'next-intl'
 import { ADSENSE } from '@/lib/config/ads'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
@@ -64,7 +64,7 @@ export function buildArtistProfileEntries({
     // mesma regra dos grupos, evita puxar conteúdo sensível para o destaque visual.
     const spotlightChapter = storyChapters.find(chapter => chapter.quote_text && chapter.quote_author)
 
-    return [
+    return adensarAnuncios([
         // Abertura: o momento cinematográfico é o primeiro "uau" visual da página —
         // decide se quem chega fica. Vem antes de qualquer parágrafo de texto. A citação
         // de capa entra no mesmo bloco (quando os dois existem) em vez de abrir uma
@@ -241,5 +241,7 @@ export function buildArtistProfileEntries({
             id: 'faq', numbered: false, nav: t('blocks.nav.essentials'), present: faqItems.length > 0,
             render: () => <EntityFAQ items={faqItems} unwrapped eyebrow={t('faqDefaults.eyebrow')} title={t('blocks.essentialsTitle', { name })} />,
         },
-    ]
+    ], indice => ADSENSE.slots.inline
+        ? <div className="page-wrap"><AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="artist_densidade" key={indice} /></div>
+        : null)
 }

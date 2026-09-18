@@ -4,7 +4,7 @@ import type { WPAgency, WPArtist, WPGroup, WPPost } from '@/lib/wordpress/types'
 import type { GroupProfileModel } from '@/lib/profiles/groupProfile'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import type { EntityFAQItem } from '@/components/seo/EntityFAQ'
-import type { ProfileEntry } from './ProfileSection'
+import { adensarAnuncios, type ProfileEntry } from './ProfileSection'
 import { formatDate, getWPImage, getYear, slugify, stripHtml } from '@/lib/utils'
 import { highlightProse } from '@/lib/profiles/highlightProse'
 import { labelsFor } from '@/lib/i18n/labels'
@@ -88,7 +88,7 @@ export function buildGroupProfileEntries({
     // abre a leitura com a origem da história, não com o ponto mais "citável".
     const spotlightChapter = storyChapters.find(chapter => chapter.quote_text && chapter.quote_author)
 
-    return [
+    return adensarAnuncios([
         ...(spotlightChapter ? [{
             key: 'pull-quote', interstitial: <GroupPullQuote
                 quote={spotlightChapter.quote_text!}
@@ -179,5 +179,7 @@ export function buildGroupProfileEntries({
         { id: 'relacionados', nav: t('blocks.nav.next'), present: relatedGroups.length > 0, layout: 'self', numbered: false, render: () => <section id="relacionados" className={anchorClass}><GroupRelatedGroups groups={relatedGroups} accent={accent} agencyName={agencyName} /></section> },
         { id: 'artigos', nav: t('blocks.nav.articles'), present: relatedPosts.length > 0, layout: 'self', numbered: false, render: () => <section id="artigos" className={anchorClass}><GroupPosts posts={relatedPosts} name={name} accent={accent} /></section> },
         { id: 'faq', nav: t('blocks.nav.essentials'), present: faqItems.length > 0, layout: 'self', weight: 'reference', numbered: false, render: () => <EntityFAQ items={faqItems} className={anchorClass} eyebrow={t('faqDefaults.eyebrow')} title={t('blocks.essentialsTitle', { name })} /> },
-    ]
+    ], indice => ADSENSE.slots.inline
+        ? <div className="page-wrap"><AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="group_densidade" key={indice} /></div>
+        : null)
 }
