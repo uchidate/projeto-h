@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import Link from 'next/link'
 import { getTrendingArtists, getStreamingArtists } from '@/lib/wordpress/artists'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
@@ -43,6 +45,14 @@ export default async function TrendingPage() {
                         ))}
                     </div>
                 </section>
+            )}
+
+            {/* Entre o primeiro e o segundo bloco: a página tem ~5.500px de rolagem
+                no celular e não tinha anúncio nenhum (medido em 2026-09-17). */}
+            {ADSENSE.slots.inline && streamingArtists.length > 0 && (
+                <div className="mt-10">
+                    <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="trending_feed" />
+                </div>
             )}
 
             {trendingGroups.length > 0 && (

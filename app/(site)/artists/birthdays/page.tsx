@@ -1,4 +1,7 @@
+import { Fragment } from 'react'
 import type { Metadata } from 'next'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Cake } from 'lucide-react'
@@ -148,11 +151,16 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                     </div>
                 ) : (
                     <div className="space-y-8">
-                        {Array.from(byDay.entries()).map(([day, dayArtists]) => {
+                        {Array.from(byDay.entries()).map(([day, dayArtists], indice) => {
                             const isCurrentMonth = currentMonth === (now.getMonth() + 1)
                             const isToday = isCurrentMonth && day === now.getUTCDate()
                             return (
-                                <div key={day}>
+                                <Fragment key={day}>
+                                {/* A cada 4 dias: ~9.000px de rolagem no celular sem anúncio nenhum até 2026-09-17. */}
+                                {indice > 0 && indice % 4 === 0 && ADSENSE.slots.inline && (
+                                    <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="aniversariantes" />
+                                )}
+                                <div>
                                     <div className="flex items-center gap-3 mb-4">
                                         <span className={`font-black text-[32px] leading-none tabular-nums w-12 text-right ${isToday ? 'text-accent' : 'text-muted/30'}`}>
                                             {day}
@@ -192,6 +200,7 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                                         ))}
                                     </div>
                                 </div>
+                                </Fragment>
                             )
                         })}
                     </div>

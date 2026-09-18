@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import Link from 'next/link'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
@@ -55,6 +57,12 @@ export default async function CulturaCoreana101Page() {
                     </p>
                 </header>
 
+                {/* Página sem anúncio nenhum até 2026-09-17 (inventário de todas as rotas no celular). */}
+                {guides.length > 0 && ADSENSE.slots.inline && (
+                    <div className="mb-10">
+                        <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="cultura_101" />
+                    </div>
+                )}
                 {guides.length === 0 ? (
                     <p className="text-[14px] text-muted">Em breve, novos guias por aqui.</p>
                 ) : (
