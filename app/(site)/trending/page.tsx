@@ -49,7 +49,7 @@ export default async function TrendingPage() {
 
             {/* Entre o primeiro e o segundo bloco: a página tem ~5.500px de rolagem
                 no celular e não tinha anúncio nenhum (medido em 2026-09-17). */}
-            {ADSENSE.slots.inline && streamingArtists.length > 0 && (
+            {ADSENSE.slots.inline && (streamingArtists.length > 0 || trendingGroups.length > 0 || trendingArtists.length > 0) && (
                 <div className="mt-10">
                     <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="trending_feed" />
                 </div>

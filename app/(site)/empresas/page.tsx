@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { AdSlotInline } from '@/components/ui/AdSlotInline'
+import { ADSENSE } from '@/lib/config/ads'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getCompanies, COMPANY_INDUSTRY_LABELS, COMPANY_INDUSTRY_EMOJI } from '@/lib/wordpress/companies'
@@ -138,6 +140,13 @@ export default async function EmpresasPage({ searchParams }: { searchParams: Sea
                                 )
                             })}
                         </div>
+
+                        {/* ~8.300px de rolagem no celular e nenhum anúncio até 2026-09-18. */}
+                        {companies.length > 0 && ADSENSE.slots.inline && (
+                            <div className="mt-10">
+                                <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="empresas_lista" />
+                            </div>
+                        )}
 
                         {totalPages > 1 && (
                             <div className="flex items-center gap-3 mt-10 pt-6 border-t border-border">

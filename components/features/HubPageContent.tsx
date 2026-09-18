@@ -1,4 +1,5 @@
 'use client'
+import { Fragment } from 'react'
 import { SITE_NAME } from '@/lib/constants/site'
 
 import { htmlLang } from '@/lib/i18n/format'
@@ -317,10 +318,15 @@ export function HubPageContent({
                     {displayCount === 0 ? (
                         <EmptyState description="Nenhum resultado encontrado." layout="compact" className="border border-border bg-surface" />
                     ) : (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                            {hub.kind === 'productions' && productions?.map(p => <ProductionCard key={p.id} production={p} />)}
-                            {hub.kind === 'artists' && artists?.map(a => <ArtistCard key={a.id} artist={a} />)}
-                            {hub.kind === 'groups' && groups?.map(g => (
+                        (() => {
+                        // Cards montados numa lista só, e a grade cortada a cada 12 com um
+                        // anúncio entre os pedaços. Medido em 2026-09-18: guias têm ~11.000px
+                        // de rolagem no celular e só um anúncio, no topo. Cortar a grade (em
+                        // vez de inserir no meio) evita fileira pela metade.
+                        const cards = [
+                            ...(hub.kind === 'productions' ? (productions ?? []).map(p => <ProductionCard key={p.id} production={p} />) : []),
+                            ...(hub.kind === 'artists' ? (artists ?? []).map(a => <ArtistCard key={a.id} artist={a} />) : []),
+                            ...(hub.kind === 'groups' ? (groups ?? []).map(g => (
                                 <Link key={g.id} href={`/groups/${g.slug}`} className="group block">
                                     <div className="relative aspect-4/5 overflow-hidden bg-surface">
                                         {g.featured_image_url ? (
@@ -333,8 +339,24 @@ export function HubPageContent({
                                         <h3 className="truncate text-[13px] font-bold text-foreground group-hover:text-accent transition-colors">{g.title.rendered}</h3>
                                     </div>
                                 </Link>
-                            ))}
-                        </div>
+                            )) : []),
+                        ]
+                        const PEDACO = 12
+                        const pedacos: typeof cards[] = []
+                        for (let i = 0; i < cards.length; i += PEDACO) pedacos.push(cards.slice(i, i + PEDACO))
+                        return pedacos.map((pedaco, indice) => (
+                            <Fragment key={`pedaco-${indice}`}>
+                                {indice > 0 && ADSENSE.slots.inline && (
+                                    <div className="my-6">
+                                        <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="hub_grid" />
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                                    {pedaco}
+                                </div>
+                            </Fragment>
+                        ))
+                        })()
                     )}
 
                     {totalPages > 1 && (
