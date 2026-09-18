@@ -77,8 +77,10 @@ export default async function PositionDetailPage({ params }: { params: Params })
                     const groupName = stripHtml(group.title.rendered)
                     return (
                         <Fragment key={group.id}>
-                        {/* A cada 8 grupos: lista longa que não tinha anúncio nenhum até 2026-09-17. */}
-                        {indice > 0 && indice % 8 === 0 && ADSENSE.slots.inline && (
+                        {/* A cada 20 grupos, no máximo 3. A primeira versão (a cada 8) deu
+                            10 anúncios em 7,9 telas — as linhas desta lista são curtas, e
+                            contar itens não mede rolagem. Medido em 2026-09-18. */}
+                        {indice > 0 && indice % 20 === 0 && indice <= 60 && ADSENSE.slots.inline && (
                             <div className="py-6">
                                 <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="posicao_lista" />
                             </div>

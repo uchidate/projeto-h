@@ -303,9 +303,12 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                                     no celular e não tinha anúncio nenhum. Cortar a grade (em
                                     vez de inserir no meio dela) evita fileira pela metade. */}
                                 {(() => {
+                                    // A cada 12 subsidiárias, não só uma vez: com um corte só,
+                                    // a página ficou com 2 anúncios em 27 telas de rolagem.
                                     const CORTE = 12
-                                    const temAnuncio = !!ADSENSE.slots.inline && rest.length > CORTE
-                                    const blocos = temAnuncio ? [rest.slice(0, CORTE), rest.slice(CORTE)] : [rest]
+                                    const blocos: typeof rest[] = []
+                                    if (ADSENSE.slots.inline) for (let i = 0; i < rest.length; i += CORTE) blocos.push(rest.slice(i, i + CORTE))
+                                    else blocos.push(rest)
                                     return blocos.map((bloco, indice) => (
                                         <Fragment key={`subsidiarias-${indice}`}>
                                             {indice > 0 && (

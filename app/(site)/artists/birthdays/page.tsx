@@ -156,8 +156,9 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                             const isToday = isCurrentMonth && day === now.getUTCDate()
                             return (
                                 <Fragment key={day}>
-                                {/* A cada 4 dias: ~9.000px de rolagem no celular sem anúncio nenhum até 2026-09-17. */}
-                                {indice > 0 && indice % 4 === 0 && ADSENSE.slots.inline && (
+                                {/* A cada 6 dias: ~9.000px de rolagem no celular sem anúncio nenhum até 2026-09-17.
+                                    De 4 em 4 deu 6 anúncios (um a cada 1.500px), denso para uma lista de fotos. */}
+                                {indice > 0 && indice % 6 === 0 && ADSENSE.slots.inline && (
                                     <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="aniversariantes" />
                                 )}
                                 <div>
