@@ -5,6 +5,7 @@ import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import type { WPArtist, WPProduction, WPGroup, WPPost, WPAgency } from '@/lib/wordpress/types'
 import type { ArchiveHub } from '@/lib/guias/types'
 import { getWPImage, stripHtml, formatDate } from '@/lib/utils'
+import { alturaSchema, generoSchema, juntarSameAs, urlWikipedia } from '@/lib/seo/entidade'
 import { SITE_URL } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { ScrollToTop } from '@/components/ui/ScrollToTop'
@@ -151,7 +152,12 @@ export function ArtistDetailPage({
                 memberOf: groups.length > 0
                     ? groups.map(g => ({ '@type': 'MusicGroup', name: stripHtml(g.title.rendered), url: `${SITE_URL}${href('group', { slug: g.slug }, locale)}` }))
                     : undefined,
-                sameAs: socialEntries.map(s => s.url),
+                // Wikipedia primeiro: é a referência que o Google usa para
+                // desambiguar a pessoa no Knowledge Graph (ver lib/seo/entidade.ts).
+                sameAs: juntarSameAs([urlWikipedia(acf.wikipedia_title, artist.content.rendered)], socialEntries.map(s => s.url)),
+                gender: generoSchema(acf.gender),
+                height: alturaSchema(acf.height),
+                affiliation: agencyName ? { '@type': 'Organization', name: agencyName } : undefined,
                 description: stripHtml(artist.content.rendered).slice(0, 200) || undefined,
             }} />
             <ProfileProseStyles scope="artist-bio" accent={accent} />
