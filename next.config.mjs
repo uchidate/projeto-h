@@ -167,6 +167,13 @@ const nextConfig = {
             // onde estava o dossiê. O dossiê foi movido para a canônica e a
             // duplicata virou draft, com _oc_duplicata_de registrado.
             { source: '/artists/yoona-2', destination: '/artists/yoona', permanent: true },
+            // Jungwoo (NCT) tinha duas fichas com a mesma data de nascimento:
+            // `jungwoo` (créditos, foto, NCT DOJAEJUNG) e `jungwoo-nct` (dossiê).
+            // O dossiê e o grupo NCT foram para a canônica; a duplicata vira draft.
+            { source: '/artists/jungwoo-nct', destination: '/artists/jungwoo', permanent: true },
+            // Lee Ji-hoon (1979): `lee-ji-hoon-2159482` duplicava `lee-ji-hoon`,
+            // mesma data de nascimento; o único crédito foi movido.
+            { source: '/artists/lee-ji-hoon-2159482', destination: '/artists/lee-ji-hoon', permanent: true },
             // Park Min-young tinha duas fichas: `park-min-young` (id 712, com data de
             // nascimento, imagem e bio propria) e `park-min-young-2` (id 11256), um stub
             // com a bio generica automatica. A duplicata virou draft, com _oc_duplicata_de.
