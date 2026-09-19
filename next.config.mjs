@@ -223,6 +223,40 @@ const nextConfig = {
             // Já existia como in-between-seasons: o dedup por tmdb_id do importador
             // evitou criar duplicata, e o caso vira redirect em vez de página nova.
             { source: '/productions/in-between', destination: '/productions/in-between-seasons', permanent: true },
+            // Fichas de produção cujo slug era o escape do título coreano ou japonês
+            // (/productions/%eb%8b%ac...): endereço ilegível, sem título em português e
+            // sem os 5 pontos de keywordInPermalink no Rank Math. O título internacional
+            // veio do TMDB (mesma fonte do catálogo) e virou título, chave e slug em
+            // 2026-09-19. Sem estes redirects, o que já estava indexado vira 404.
+            { source: '/productions/%eb%82%a8%ea%b2%a8%ec%84%9c-%eb%ad%90%ed%95%98%ea%b2%8c', destination: '/productions/table-tales', permanent: true },
+            { source: '/productions/%ec%9d%b4%ed%98%bc%ec%88%99%eb%a0%a4%ec%ba%a0%ed%94%84', destination: '/productions/divorce-re-boot-camp', permanent: true },
+            { source: '/productions/%eb%82%b4%ea%b0%80-%eb%84%88%eb%a5%bc-%ec%9b%90%ed%95%b4%ec%84%9c', destination: '/productions/because-i-want-you', permanent: true },
+            { source: '/productions/beyond-live-stray-kids-world-tour%e3%80%88dominate-celebrate%e3%80%89', destination: '/productions/stray-kids-world-tour-dominate-celebrate', permanent: true },
+            { source: '/productions/%ec%b0%a8%eb%a6%b0%ea%b1%b4-%ec%97%86%ec%a7%80%eb%a7%8c', destination: '/productions/no-prepare', permanent: true },
+            { source: '/productions/begins-%e2%89%a0-youth', destination: '/productions/begins-%e2%89%a0-youth', permanent: true },
+            { source: '/productions/%e5%89%a3', destination: '/productions/ken', permanent: true },
+            { source: '/productions/mal%c2%b7mo%c2%b7e-the-secret-mission', destination: '/productions/mal%c2%b7mo%c2%b7e-the-secret-mission', permanent: true },
+            { source: '/productions/sbs-%ec%9d%b8%ea%b8%b0%ea%b0%80%ec%9a%94', destination: '/productions/inkigayo', permanent: true },
+            { source: '/productions/%ec%9e%8a%ed%98%80%ec%a7%84-%ed%99%a9%eb%85%80%eb%8a%94-%ed%8f%89%ed%99%94%eb%a1%ad%ea%b2%8c-%ec%82%b4%ea%b3%a0-%ec%8b%b6%ec%96%b4', destination: '/productions/the-forgotten-princess-just-wants-peace', permanent: true },
+            { source: '/productions/%ec%95%84%ec%9d%b4%eb%8f%8c-%eb%af%bc%ec%9b%90%ec%8b%a4-%ed%97%88%ec%8b%a4%ec%9e%a5', destination: '/productions/idol-complaint-manager-hur', permanent: true },
+            { source: '/productions/%e5%8b%87%e7%ab%8b%e5%bf%8d%e8%80%85', destination: '/productions/dragon-the-young-master', permanent: true },
+            { source: '/productions/%ec%99%84%eb%93%9d%ec%9d%b4', destination: '/productions/punch', permanent: true },
+            { source: '/productions/%ec%a0%84%ec%84%a4%ec%9d%98-%ea%b3%a0%ed%96%a5', destination: '/productions/korean-ghost-stories', permanent: true },
+            { source: '/productions/%eb%82%b4-%eb%82%a8%ec%9e%90%ec%b9%9c%ea%b5%ac%eb%8a%94-%ec%a1%b0%ea%b0%81%eb%82%a8', destination: '/productions/my-boyfriend-is-a-sculpture', permanent: true },
+            { source: '/productions/%e3%81%82%e3%82%8b%e5%84%aa%e3%81%97%e3%81%8d%e6%ae%ba%e4%ba%ba%e8%80%85%e3%81%ae%e8%a8%98%e9%8c%b2', destination: '/productions/a-record-of-sweet-murder', permanent: true },
+            { source: '/productions/%ec%97%90%ec%8a%a4%ed%8c%8c-%eb%a7%88%ec%9d%b4-%ed%8d%bc%ec%8a%a4%ed%8a%b8-%ed%8e%98%ec%9d%b4%ec%a7%80', destination: '/productions/aespa-my-first-page', permanent: true },
+            { source: '/productions/%e5%a4%a7%e9%ad%94%e7%a5%9e%e6%80%92%e3%82%8b', destination: '/productions/return-of-giant-majin', permanent: true },
+            { source: '/productions/meus-84-m%c2%b2', destination: '/productions/meus-84-m%c2%b2', permanent: true },
+            { source: '/productions/%e3%83%81%e3%83%a3%e3%83%b3%e3%82%aa%e3%82%af%e3%81%ae%e6%89%8b%e7%b4%99', destination: '/productions/chang-oks-letter', permanent: true },
+            { source: '/productions/%ec%89%90%ec%96%b4%ed%95%98%ec%9a%b0%ec%8a%a4', destination: '/productions/share-house', permanent: true },
+            // Estas duas colidiram com slug já existente (way-back-home e alive são de
+            // outras fichas) e receberam o ano no slug.
+            { source: '/productions/%ec%a7%91%ec%9c%bc%eb%a1%9c-%ea%b0%80%eb%8a%94-%ea%b8%b8', destination: '/productions/way-back-home-2013', permanent: true },
+            { source: '/productions/%ec%82%b0%eb%8b%a4', destination: '/productions/alive-2015', permanent: true },
+            // Slug que não batia com a palavra-chave da própria ficha: kim-ju-hun contra
+            // "kim joo-hun", e yoonchae-katseye contra "yoonchae jeung".
+            { source: '/artists/kim-ju-hun', destination: '/artists/kim-joo-hun', permanent: true },
+            { source: '/artists/yoonchae-katseye', destination: '/artists/yoonchae-jeung', permanent: true },
         ]
     },
     async headers() {
