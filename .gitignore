@@ -108,3 +108,5 @@ graphify-out/
 .env.production
 .env.local.docker
 .env*.local
+.claude/settings.local.json
+.claude/*.bak*
