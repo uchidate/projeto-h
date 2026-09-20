@@ -44,13 +44,22 @@ export const groupsCategoriesHubs: ArchiveHub[] = [
         shortTitle: '4ª Geração K-Pop',
         description: 'Os grupos da 4ª geração do K-Pop, com estreia entre 2018 e 2022: Stray Kids, ATEEZ, TXT, ENHYPEN, aespa, ITZY, IVE, NewJeans e LE SSERAFIM.',
         intro: [
-            'A 4ª geração do K-Pop começou por volta de 2018-2019 e trouxe grupos com foco em identidade própria, lore narrativo, conexão direta com fãs via Weverse e YouTube, e uma base internacional mais sólida que nunca.',
-            'ATEEZ, Stray Kids, ENHYPEN, aespa, IVE, NewJeans e Le Sserafim são alguns dos nomes que definem essa geração.',
+            'A 4ª geração do K-Pop começou por volta de 2018-2019 e não é apenas uma marcação temporal — é uma mudança de mentalidade. Enquanto a 3ª geração quebrou barreiras para o K-Pop chegar ao mundo, a 4ª já nasceu dentro desse mundo globalizado: não estava tentando convencer o Ocidente de que K-Pop era válido, chegou assumindo que sim.',
+            'O que mais distingue a geração é a diversidade de propostas. Não existe um "jeito" de ser grupo da 4ª geração — há espaço para hip-hop autoral, narrativa literária e performance física extrema, às vezes no mesmo grupo. Stray Kids produzem as próprias faixas pela unidade interna 3RACHA; ATEEZ construíram reputação de melhor grupo ao vivo da geração; TXT e ENHYPEN transformaram cada era em capítulo de uma história maior.',
+            'Entre os grupos femininos, a diversificação foi ainda mais visível. aespa levaram o conceito ao metaverso com as contrapartes digitais e o universo KWANGYA; NewJeans quebraram a lógica do gênero com estética Y2K e músicas sem conceito elaborado; LE SSERAFIM e IVE consolidaram sonoridades que dispensam gimmick; ITZY fizeram da autoconfiança um manifesto desde "Dalla Dalla".',
+            'A marca prática da geração é a relação com narrativa: ouvir um álbum passou a ser o começo da experiência, não o fim. O conceito de "universe" — lore próprio, personagens, conexões entre MVs e letras — deixou de ser decoração e virou estrutura.',
+            'Isso tem consequência mensurável. Grupos da 4ª geração tendem a ter fandoms menores, porém mais intensos: números de streaming abaixo do pico da 3ª geração, mas taxas de compra de álbum físico, presença em eventos e consumo de conteúdo paralelo desproporcionalmente altas.',
         ],
+        whatYouWillFind:
+            'Todos os grupos com estreia entre 2018 e 2022, com perfil completo em português: integrantes, discografia, fandom e curiosidades.',
         keywords: ['grupos 4a geracao kpop', 'kpop 4th gen', 'novos grupos kpop', 'grupos kpop 2020 2021 2022 2023'],
         faq: [
-            { question: 'Quando começa a 4ª geração do K-Pop?', answer: 'A maioria dos fãs considera que a 4ª geração começou entre 2018 e 2020, com grupos como ATEEZ, TXT e Stray Kids abrindo caminho para a nova onda.' },
+            { question: 'Quando começa a 4ª geração do K-Pop?', answer: 'A maioria dos fãs considera que a 4ª geração começou entre 2018 e 2020, com grupos como ATEEZ, TXT e Stray Kids abrindo caminho para a nova onda. Este guia reúne os grupos com estreia entre 2018 e 2022.' },
             { question: 'Quais são os grupos mais populares da 4ª geração?', answer: 'Stray Kids, ATEEZ, ENHYPEN, aespa, IVE, NewJeans, Le Sserafim e NMIXX estão entre os mais citados.' },
+            { question: 'Qual a diferença entre a 3ª e a 4ª geração do K-Pop?', answer: 'A 3ª geração (2012–2017) levou o K-Pop ao mercado global — BTS, EXO, BLACKPINK e TWICE têm números de escala que nenhum grupo da 4ª igualou. A 4ª não superou em escala, superou em diversidade de abordagem: nunca houve tantos grupos com identidades tão distintas ativos ao mesmo tempo.' },
+            { question: 'Por qual grupo da 4ª geração começar?', answer: 'Depende do que você procura. Para produção autoral e som mais denso, Stray Kids. Para performance ao vivo, ATEEZ. Para narrativa e lore, TXT ou ENHYPEN. Para conceito experimental, aespa. Para pop imediato sem conceito elaborado, NewJeans. Para girl crush direto, LE SSERAFIM ou ITZY.' },
+            { question: 'O que é o "universe" dos grupos da 4ª geração?', answer: 'É a narrativa contínua que atravessa álbuns, clipes e letras, com personagens e conexões que os fãs catalogam e interpretam. TXT, aespa e ENHYPEN são os exemplos mais elaborados: cada era funciona como capítulo de uma história maior, e não como lançamento isolado.' },
+            { question: 'A 4ª geração já acabou?', answer: 'Não. Grupos continuam debutando e boa parte das carreiras está no meio do caminho. A discussão sobre onde termina a 4ª e começa a 5ª geração ainda não tem consenso entre fãs e imprensa especializada.' },
         ],
     },
     {

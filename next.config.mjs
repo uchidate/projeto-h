@@ -136,6 +136,10 @@ const nextConfig = {
             // Caminho convencional; o índice dinâmico canônico permanece em
             // /sitemap-static.xml por compatibilidade com Search Console.
             { source: '/sitemap.xml', destination: '/sitemap-static.xml', permanent: true },
+            // A rota /hubs/ virou /guias/ e o slug mudou junto, entao um curinga
+            // /hubs/:slug -> /guias/:slug cairia noutro 404. Mapeamento explicito.
+            // Sem tráfego nos ultimos 28 dias, mas a URL antiga esta indexada.
+            { source: '/hubs/grupos-kpop-4a-geracao', destination: '/guias/grupos-4a-geracao-kpop', permanent: true },
             // Artigo despublicado em 2026-09-15: todo o texto partia da premissa de
             // que o MEOVV era da HYBE (e comparava o grupo com ILLIT e LE SSERAFIM
             // "dentro da empresa"). O MEOVV e da The Black Label. A ficha do grupo,
