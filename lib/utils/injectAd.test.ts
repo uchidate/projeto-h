@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { splitContentForAd, splitContentForAds } from './injectAd'
+import { splitContentForAd, splitContentForAds, textoVisivel } from './injectAd'
 
 const p = (text: string) => `<p>${text}</p>`
 const shortParas = (n: number) => Array.from({ length: n }, (_, i) => p(`Frase curta ${i}.`)).join('')
@@ -21,14 +21,14 @@ describe('splitContentForAds', () => {
         expect(segments.length).toBeLessThanOrEqual(4) // maxAds 3 → 4 segmentos
         // todo segmento entre anúncios carrega o mínimo de texto
         for (const seg of segments.slice(0, -1)) {
-            expect(seg.replace(/<[^>]*>/g, '').length).toBeGreaterThanOrEqual(800)
+            expect(textoVisivel(seg)).toBeGreaterThanOrEqual(800)
         }
     })
 
     it('não deixa anúncio pendurado sem conteúdo depois', () => {
         const segments = splitContentForAds(longParas(5))
         const last = segments[segments.length - 1]
-        expect(last.replace(/<[^>]*>/g, '').length).toBeGreaterThanOrEqual(400)
+        expect(textoVisivel(last)).toBeGreaterThanOrEqual(400)
     })
 
     it('artigo curto demais fica sem anúncio no corpo', () => {
@@ -48,7 +48,7 @@ describe('splitContentForAd', () => {
         // Com corte fixo em 3 o anúncio nunca aparecia.
         const [antes, depois] = splitContentForAd(longParas(2), 3)
         expect(antes.match(/<\/p>/g)).toHaveLength(1)
-        expect(depois.replace(/<[^>]*>/g, '').length).toBeGreaterThanOrEqual(400)
+        expect(textoVisivel(depois)).toBeGreaterThanOrEqual(400)
     })
 
     it('não insere anúncio quando a cauda é curta demais', () => {
@@ -72,6 +72,6 @@ describe('splitContentForAd', () => {
 
     it('nunca corta no último parágrafo', () => {
         const [, depois] = splitContentForAd(longParas(3), 5)
-        expect(depois.replace(/<[^>]*>/g, '').length).toBeGreaterThanOrEqual(400)
+        expect(textoVisivel(depois)).toBeGreaterThanOrEqual(400)
     })
 })
