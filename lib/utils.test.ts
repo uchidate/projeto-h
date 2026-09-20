@@ -9,6 +9,7 @@ import {
     extractYoutubeId,
     toSpotifyEmbedUrl,
     stripHtml,
+    removeTags,
 } from './utils'
 
 describe('parseAcfDate', () => {
@@ -166,5 +167,21 @@ describe('formatDate', () => {
     it('formats a raw ACF date in pt-BR', () => {
         // Não fixamos o dia exato (varia por timezone do runner), só a presença do ano.
         expect(formatDate('20240305')).toContain('2024')
+    })
+})
+
+describe('removeTags', () => {
+    it('mantém texto comum intacto', () => {
+        expect(removeTags('<p>Olá <b>mundo</b></p>')).toBe('Olá mundo')
+    })
+
+    it('não deixa tag inteira sobrar em aninhamento proposital', () => {
+        const saida = removeTags('<scr<script>ipt>alert(1)</scr</script>ipt>')
+        expect(saida).not.toMatch(/<[^>]*>/)
+    })
+
+    it('é idempotente — aplicar de novo não muda', () => {
+        const uma = removeTags('<scr<script>ipt>alert(1)</scr</script>ipt>')
+        expect(removeTags(uma)).toBe(uma)
     })
 })

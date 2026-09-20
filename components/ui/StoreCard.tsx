@@ -4,6 +4,7 @@ import { SITE_NAME } from '@/lib/constants/site'
 import Image from 'next/image'
 import { ExternalLink, Star } from 'lucide-react'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import { stripHtml } from '@/lib/utils'
 
 const STORE_CONFIG: Record<string, { label: string; color: string; bg: string; textColor: string }> = {
     shopee:       { label: 'Shopee',        color: 'text-orange-500', bg: 'bg-orange-700',  textColor: 'text-white' },
@@ -21,7 +22,7 @@ interface StoreCardProps {
 
 export function StoreCard({ product, compact = false }: StoreCardProps) {
     const { acf, title } = product
-    const name = title.rendered.replace(/&amp;/g, '&').replace(/&#8211;/g, '–')
+    const name = stripHtml(title.rendered)
     const store = acf.store ?? 'outro'
     const cfg = STORE_CONFIG[store] ?? STORE_CONFIG.outro
 

@@ -1,3 +1,5 @@
+import { removeTags } from '@/lib/utils'
+
 /**
  * Tamanho do texto visível de um trecho de HTML — equivalente a
  * `strip_tags(...).trim().length`, sem construir a string intermediária.
@@ -84,7 +86,7 @@ interface AdBreakpointsOptions {
     minTailChars?: number
 }
 
-const stripTags = (html: string) => html.replace(/<[^>]*>/g, '')
+const stripTags = (html: string) => removeTags(html)
 
 /**
  * Divide o HTML em N+1 segmentos, um por ponto de inserção de anúncio

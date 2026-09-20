@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { paraLog } from '@/lib/utils/log'
 
 /**
  * Recebe as violações da Content Security Policy em modo report-only.
@@ -101,12 +102,14 @@ export async function POST(req: NextRequest) {
 
         const { registrar, suprimidas } = deveRegistrar(`${diretiva}|${origem}`)
         if (suprimidas > 0) {
-            console.warn(`[csp] ${suprimidas} violacoes suprimidas na janela anterior: ${diretiva} ${origem}`)
+            console.warn('[csp] violacoes suprimidas na janela anterior', {
+                suprimidas, diretiva: paraLog(diretiva), origem: paraLog(origem),
+            })
         }
         if (registrar) {
-            console.warn(
-                `[csp] violacao diretiva=${diretiva} origem=${origem} pagina=${pagina}`,
-            )
+            console.warn('[csp] violacao', {
+                diretiva: paraLog(diretiva), origem: paraLog(origem), pagina: paraLog(pagina),
+            })
         }
     }
 

@@ -1,7 +1,33 @@
 import { WORDPRESS_API_FALLBACK } from '@/lib/constants/site'
 
-export const WP_API_URL =
-    process.env.WORDPRESS_API_URL ?? WORDPRESS_API_FALLBACK
+/**
+ * Valida a URL da API do WordPress antes de usá-la.
+ *
+ * O valor vem de variável de ambiente, ou seja, de arquivo — e o CodeQL aponta
+ * isso em `js/file-access-to-http`: toda requisição de saída do site depende
+ * dele. Um valor errado (typo, `.env` trocado, variável vazando de outro
+ * ambiente) mandaria as chamadas, e os cabeçalhos que vão nelas, para outro
+ * host. Validar aqui é barato e falha no lugar certo, em vez de silenciosamente
+ * apontar para fora.
+ */
+function urlDaApiValida(valor: string | undefined): string {
+    if (!valor) return WORDPRESS_API_FALLBACK
+    let parsed: URL
+    try {
+        parsed = new URL(valor)
+    } catch {
+        console.error('[wp] WORDPRESS_API_URL não é uma URL válida; usando o padrão')
+        return WORDPRESS_API_FALLBACK
+    }
+    const local = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname.endsWith('.local')
+    if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && local)) {
+        console.error('[wp] WORDPRESS_API_URL precisa ser https (http só em host local); usando o padrão')
+        return WORDPRESS_API_FALLBACK
+    }
+    return valor
+}
+
+export const WP_API_URL = urlDaApiValida(process.env.WORDPRESS_API_URL)
 
 export const IS_BUILD =
     process.env.NEXT_PHASE === 'phase-production-build' && !process.env.WORDPRESS_API_URL

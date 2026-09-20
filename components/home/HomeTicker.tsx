@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { removeTags } from '@/lib/utils'
 import { getPosts } from '@/lib/wordpress/posts'
 
 export async function HomeTicker() {
@@ -21,7 +22,7 @@ export async function HomeTicker() {
             <div className="overflow-hidden flex-1">
                 <div className="flex items-center animate-home-ticker whitespace-nowrap" style={{ width: 'max-content' }}>
                     {items.map((post, idx) => {
-                        const title = post.title.rendered.replace(/<[^>]*>/g, '')
+                        const title = removeTags(post.title.rendered)
                         return (
                             <Link
                                 key={`${post.slug}-${idx}`}

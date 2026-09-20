@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { WP_API_URL } from '@/lib/wordpress/config'
 import { clientIpOrUnknown } from '@/lib/http/clientIp'
 import { createRateLimiter } from '@/lib/http/rateLimit'
+import { paraLog } from '@/lib/utils/log'
 
 const ALLOWED_TYPES = ['artist', 'group', 'production']
 const ALLOWED_CATEGORIES = ['foto_errada', 'membro_errado', 'dado_incorreto', 'outro']
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
     const ip = clientIpOrUnknown(req.headers)
 
     if (limiter.check(ip)) {
-        console.warn(`[report] rate limit excedido — ip=${ip}`)
+        console.warn('[report] rate limit excedido', { ip: paraLog(ip) })
         return NextResponse.json({ error: 'Muitas requisições, tente novamente mais tarde' }, { status: 429 })
     }
 
@@ -59,11 +60,19 @@ export async function POST(req: NextRequest) {
         const data = await res.json().catch(() => ({}))
 
         if (!res.ok) {
-            console.warn(`[report] falhou — status=${res.status} ip=${ip}`, data)
+            // Valor do cliente vai como ARGUMENTO, nunca dentro do template:
+            // com um segundo argumento presente, o template é format string de
+            // verdade e `%s` no valor consumiria `data` (js/tainted-format-string).
+            console.warn('[report] falhou', { status: res.status, ip: paraLog(ip), data })
             return NextResponse.json({ error: data.message ?? 'Falha ao enviar report' }, { status: res.status })
         }
 
-        console.log(`[report] ok — type=${target_type} id=${target_id} category=${category} ip=${ip}`)
+        console.log('[report] ok', {
+            type: paraLog(target_type),
+            id: paraLog(target_id),
+            category: paraLog(category),
+            ip: paraLog(ip),
+        })
         return NextResponse.json({ success: true })
     } catch (error) {
         console.error('[report] erro ao contatar WordPress', error)

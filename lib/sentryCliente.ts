@@ -77,8 +77,10 @@ export const OPCOES_SENTRY_CLIENTE: Parameters<Sentry['init']>[0] = {
         /^chrome-extension:\/\//,
         /^moz-extension:\/\//,
         /^safari(-web)?-extension:\/\//,
-        // Reescrita de link da Microsoft.
-        /safelinks\.protection\.outlook\.com/,
+        // Reescrita de link da Microsoft. Ancorado no host: sem as âncoras,
+        // `https://atacante.com/safelinks.protection.outlook.com` também casaria
+        // e silenciaria erros que deveríamos ver (js/regex/missing-regexp-anchor).
+        /^https?:\/\/([\w-]+\.)*safelinks\.protection\.outlook\.com(\/|$)/,
     ],
 
     // Nossas próprias sondas (fumaça, vigia da analítica) rodam em Chrome
