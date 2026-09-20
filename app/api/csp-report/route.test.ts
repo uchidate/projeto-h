@@ -26,7 +26,11 @@ let avisos: string[]
 
 beforeEach(() => {
     avisos = []
-    vi.spyOn(console, 'warn').mockImplementation((m: unknown) => { avisos.push(String(m)) })
+    // O log virou estruturado: a mensagem é fixa e os valores vão num objeto
+    // (ver paraLog / js/tainted-format-string). O teste serializa os dois.
+    vi.spyOn(console, 'warn').mockImplementation((m: unknown, dados?: unknown) => {
+        avisos.push(dados === undefined ? String(m) : `${String(m)} ${JSON.stringify(dados)}`)
+    })
 })
 afterEach(() => { vi.restoreAllMocks() })
 
@@ -40,8 +44,8 @@ describe('endpoint de relatório CSP', () => {
             },
         }))
         expect(r.status).toBe(204)
-        expect(avisos.join('\n')).toContain('diretiva=script-src')
-        expect(avisos.join('\n')).toContain('origem=https://malicioso.exemplo')
+        expect(avisos.join('\n')).toContain('"diretiva":"script-src"')
+        expect(avisos.join('\n')).toContain('"origem":"https://malicioso.exemplo"')
     })
 
     it('extrai diretiva e origem do formato Reporting API (camelCase)', async () => {
@@ -55,8 +59,8 @@ describe('endpoint de relatório CSP', () => {
         }], 'application/reports+json'))
         expect(r.status).toBe(204)
         // Era exatamente isto que falhava em produção: chegava "desconhecida".
-        expect(avisos.join('\n')).toContain('diretiva=img-src')
-        expect(avisos.join('\n')).toContain('origem=https://cdn.terceiro.exemplo')
+        expect(avisos.join('\n')).toContain('"diretiva":"img-src"')
+        expect(avisos.join('\n')).toContain('"origem":"https://cdn.terceiro.exemplo"')
         expect(avisos.join('\n')).not.toContain('desconhecida')
     })
 
@@ -79,7 +83,7 @@ describe('endpoint de relatório CSP', () => {
                 },
             }], 'application/reports+json'))
         }
-        const violacoes = avisos.filter((a) => a.includes('violacao diretiva=font-src'))
+        const violacoes = avisos.filter((a) => a.includes('[csp] violacao') && a.includes('"diretiva":"font-src"'))
         // Doze páginas distintas, uma única origem: o log não pode ter doze linhas.
         expect(violacoes.length).toBeLessThanOrEqual(5)
     })

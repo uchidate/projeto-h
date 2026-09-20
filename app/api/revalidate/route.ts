@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
     // ?secret= (vazio) como válido, igual ao bug já corrigido em
     // reset-wp-password (removido em 2026-07-04).
     if (!process.env.REVALIDATE_SECRET || secret !== process.env.REVALIDATE_SECRET) {
-        console.warn(`[revalidate] 401 tentativa inválida — ip=${forLog(ip)}`)
+        console.warn('[revalidate] 401 tentativa inválida', { ip: forLog(ip) })
         return NextResponse.json({ error: 'Invalid secret' }, { status: 401 })
     }
 
@@ -138,12 +138,12 @@ export async function POST(req: NextRequest) {
         const tags = requestedTag.split(',').map(t => normalizeWPTag(t.trim())).filter(Boolean)
         const unknown = tags.filter(tag => !isKnownWPTag(tag))
         if (tags.length === 0 || unknown.length > 0) {
-            console.error(`[revalidate] tag desconhecida: ${forLog(unknown.join(', '))}`)
+            console.error('[revalidate] tag desconhecida', { tags: forLog(unknown.join(', ')) })
             return NextResponse.json({ error: 'Invalid tag', received: unknown }, { status: 400 })
         }
         for (const tag of tags) revalidateTag(tag, PERFIL_PURGA)
         const ms = Date.now() - start
-        console.log(`[revalidate] ok — tags=[${forLog(tags.join(', '))}] ${ms}ms ip=${forLog(ip)}`)
+        console.log('[revalidate] ok', { tags: forLog(tags.join(', ')), ms, ip: forLog(ip) })
         return NextResponse.json({ revalidated: true, tags, ms })
     }
 
@@ -161,19 +161,19 @@ export async function POST(req: NextRequest) {
     if (type === 'store_product') {
         revalidateTag(WP_CACHE_TAGS.storeProducts, PERFIL_PURGA)
         const ms = Date.now() - start
-        console.log(`[revalidate] ok — type=store_product tags=[${WP_CACHE_TAGS.storeProducts}] ${ms}ms ip=${forLog(ip)}`)
+        console.log('[revalidate] ok', { type: 'store_product', tags: WP_CACHE_TAGS.storeProducts, ms, ip: forLog(ip) })
         return NextResponse.json({ revalidated: true, type, tags: [WP_CACHE_TAGS.storeProducts], ms })
     }
 
     if (type === 'monetization') {
         revalidateTag(WP_CACHE_TAGS.monetization, PERFIL_PURGA)
         const ms = Date.now() - start
-        console.log(`[revalidate] ok — type=monetization tags=[${WP_CACHE_TAGS.monetization}] ${ms}ms ip=${forLog(ip)}`)
+        console.log('[revalidate] ok', { type: 'monetization', tags: WP_CACHE_TAGS.monetization, ms, ip: forLog(ip) })
         return NextResponse.json({ revalidated: true, type, tags: [WP_CACHE_TAGS.monetization], ms })
     }
 
     if (!isWPPostType(type)) {
-        console.error(`[revalidate] tipo desconhecido: "${forLog(type)}"`)
+        console.error('[revalidate] tipo desconhecido', { type: forLog(type) })
         return NextResponse.json({ error: 'Invalid content type', received: type }, { status: 400 })
     }
 
@@ -191,7 +191,8 @@ export async function POST(req: NextRequest) {
 
     const ms = Date.now() - start
     console.log(
-        `[revalidate] ok — type=${forLog(type)} slug=${forLog(slug)} title="${forLog(title)}" tags=[${forLog(tags.join(', '))}] ${ms}ms ip=${forLog(ip)}`,
+        '[revalidate] ok',
+        { type: forLog(type), slug: forLog(slug), title: forLog(title), tags: forLog(tags.join(', ')), ms, ip: forLog(ip) },
     )
 
     return NextResponse.json({ revalidated: true, type, slug, tags, ms })
