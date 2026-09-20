@@ -1,5 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
+/**
+ * Confere o host de verdade. `url.includes('api.themoviedb.org')` casaria
+ * também com `https://atacante.com/?x=api.themoviedb.org`
+ * (js/incomplete-url-substring-sanitization).
+ */
+const ehTmdb = (url: string) => new URL(url).hostname === 'api.themoviedb.org'
+
 function tmdbShow(overrides: Partial<{
     id: number; name: string; poster_path: string | null
     first_air_date: string; vote_average: number; original_language: string
@@ -37,7 +44,7 @@ describe('getStreamingTopShows', () => {
 
     it('filtra pra manter só shows em coreano, mesmo pedindo with_original_language=ko à API', async () => {
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) {
+            if (ehTmdb(url)) {
                 return {
                     ok: true,
                     json: async () => ({
@@ -60,7 +67,7 @@ describe('getStreamingTopShows', () => {
 
     it('limita a 10 resultados por plataforma mesmo se a API retornar mais', async () => {
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) {
+            if (ehTmdb(url)) {
                 return {
                     ok: true,
                     json: async () => ({ results: Array.from({ length: 20 }, (_, i) => tmdbShow({ id: i, name: `Show ${i}` })) }),
@@ -75,7 +82,7 @@ describe('getStreamingTopShows', () => {
 
     it('numera o rank sequencialmente a partir de 1', async () => {
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) {
+            if (ehTmdb(url)) {
                 return { ok: true, json: async () => ({ results: [tmdbShow({ id: 1 }), tmdbShow({ id: 2 })] }) }
             }
             return { ok: true, json: async () => [] }
@@ -88,7 +95,7 @@ describe('getStreamingTopShows', () => {
     it('não quebra a busca inteira se uma plataforma falhar (Promise.allSettled)', async () => {
         let call = 0
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) {
+            if (ehTmdb(url)) {
                 call++
                 if (call === 1) throw new Error('TMDB fora do ar pra essa plataforma')
                 return { ok: true, json: async () => ({ results: [tmdbShow({ id: 1 })] }) }
@@ -104,7 +111,7 @@ describe('getStreamingTopShows', () => {
 
     it('omite a chave de plataformas sem nenhum show (evita objeto vazio poluindo o resultado)', async () => {
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) return { ok: true, json: async () => ({ results: [] }) }
+            if (ehTmdb(url)) return { ok: true, json: async () => ({ results: [] }) }
             return { ok: true, json: async () => [] }
         })
         const { getStreamingTopShows } = await import('./streaming')
@@ -114,7 +121,7 @@ describe('getStreamingTopShows', () => {
 
     it('enriquece os shows com o slug da produção no WP quando o tmdb_id bate', async () => {
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) {
+            if (ehTmdb(url)) {
                 return { ok: true, json: async () => ({ results: [tmdbShow({ id: 42, name: 'Stars Falling From the Sky' })] }) }
             }
             if (url.includes('wp/v2/production')) {
@@ -129,7 +136,7 @@ describe('getStreamingTopShows', () => {
 
     it('productionSlug fica null quando não há produção correspondente no WP', async () => {
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) return { ok: true, json: async () => ({ results: [tmdbShow({ id: 999 })] }) }
+            if (ehTmdb(url)) return { ok: true, json: async () => ({ results: [tmdbShow({ id: 999 })] }) }
             if (url.includes('wp/v2/production')) return { ok: true, json: async () => [] }
             return { ok: true, json: async () => [] }
         })
@@ -140,7 +147,7 @@ describe('getStreamingTopShows', () => {
 
     it('year fica null quando first_air_date está ausente ou é inválida', async () => {
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) {
+            if (ehTmdb(url)) {
                 return { ok: true, json: async () => ({ results: [tmdbShow({ id: 1, first_air_date: undefined })] }) }
             }
             return { ok: true, json: async () => [] }
@@ -152,7 +159,7 @@ describe('getStreamingTopShows', () => {
 
     it('posterUrl fica null quando poster_path é null', async () => {
         fetchMock.mockImplementation(async (url: string) => {
-            if (url.includes('api.themoviedb.org')) {
+            if (ehTmdb(url)) {
                 return { ok: true, json: async () => ({ results: [tmdbShow({ id: 1, poster_path: null })] }) }
             }
             return { ok: true, json: async () => [] }

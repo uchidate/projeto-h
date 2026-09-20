@@ -1,6 +1,7 @@
 import { wpFetch, buildParams } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
 import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
+import { removeTags } from '@/lib/utils'
 
 // Google News só considera artigos das últimas 48h; este sitemap precisa
 // refletir uma publicação em minutos, não no cron do dia seguinte. A tag
@@ -21,7 +22,7 @@ function escapeXml(value: string) {
 }
 
 function stripTags(value: string) {
-    return value.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+    return removeTags(value).replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
 }
 
 export async function GET() {

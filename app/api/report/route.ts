@@ -11,6 +11,16 @@ const ALLOWED_CATEGORIES = ['foto_errada', 'membro_errado', 'dado_incorreto', 'o
 const limiter = createRateLimiter({ max: 5, windowMs: 10 * 60 * 1000 })
 
 // Recebe reports de conteúdo do frontend e encaminha pro endpoint custom do WP
+/**
+ * Valor vindo do cliente nunca entra cru no log. Duas razões: quebra de linha
+ * permite forjar entradas falsas (log forging), e `%s`/`%d` num template
+ * passado ao console vira diretiva de formatação. Mantém só o que faz sentido
+ * num IP ou identificador e corta o resto.
+ */
+function paraLog(valor: string): string {
+    return valor.replace(/[^\w.:-]/g, '').slice(0, 64)
+}
+
 export async function POST(req: NextRequest) {
     const ip = clientIpOrUnknown(req.headers)
 
@@ -59,11 +69,11 @@ export async function POST(req: NextRequest) {
         const data = await res.json().catch(() => ({}))
 
         if (!res.ok) {
-            console.warn(`[report] falhou — status=${res.status} ip=${ip}`, data)
+            console.warn(`[report] falhou — status=${res.status} ip=${paraLog(ip)}`, data)
             return NextResponse.json({ error: data.message ?? 'Falha ao enviar report' }, { status: res.status })
         }
 
-        console.log(`[report] ok — type=${target_type} id=${target_id} category=${category} ip=${ip}`)
+        console.log(`[report] ok — type=${paraLog(String(target_type))} id=${paraLog(String(target_id))} category=${paraLog(category)} ip=${paraLog(ip)}`)
         return NextResponse.json({ success: true })
     } catch (error) {
         console.error('[report] erro ao contatar WordPress', error)

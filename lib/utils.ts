@@ -56,8 +56,30 @@ export function formatDateShort(date: string | Date, locale = intlLocale()): str
     }).format(parseAcfDate(date))
 }
 
+/**
+ * Remove tags de HTML, repetindo até o resultado estabilizar.
+ *
+ * Com `<[^>]*>` a repetição é, na prática, uma passada só: a regex consome até
+ * o primeiro `>`, então tag aninhada não se reconstrói — medido, a segunda
+ * passada nunca muda nada. O laço está aqui por dois motivos honestos: é o que
+ * o CodeQL pede em `js/incomplete-multi-character-sanitization`, e protege o
+ * dia em que alguém trocar a regex por uma que deixe resto.
+ *
+ * Isto NÃO é sanitizador de HTML. Serve para extrair texto (resumo, título,
+ * sitemap). Conteúdo que volta ao DOM como HTML precisa de sanitizador de
+ * verdade.
+ */
+export function removeTags(html: string): string {
+    let anterior = html
+    for (;;) {
+        const atual = anterior.replace(/<[^>]*>/g, '')
+        if (atual === anterior) return atual
+        anterior = atual
+    }
+}
+
 export function stripHtml(html: string): string {
-    return decodeHtmlEntities(html.replace(/<[^>]*>/g, ''))
+    return decodeHtmlEntities(removeTags(html))
 }
 
 function decodeHtmlEntities(value: string): string {
