@@ -149,6 +149,30 @@ describe('AdSlot', () => {
         expect(window.adsbygoogle).toHaveLength(0)
     })
 
+    it('mediaQuery + lazy: o slot ainda carrega (regressão)', async () => {
+        // Bug medido ao vivo em 19/09/2026 no artist_bio_mobile: com mediaQuery
+        // o primeiro render devolve null, então ref.current é null quando o
+        // efeito do IntersectionObserver roda. Como o efeito só dependia de
+        // [lazy], ele nunca reexecutava depois que a viewport ficava elegível —
+        // o slot ficava eternamente em "reserved" e o <ins> nunca aparecia.
+        vi.mocked(window.matchMedia).mockImplementation(() => ({
+            matches: true,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+        } as unknown as MediaQueryList))
+        const { container } = render(
+            <AdsProvider settings={settings()}>
+                <AdSlot slot="inline" mediaQuery="(max-width: 1279px)" lazy />
+            </AdsProvider>,
+        )
+        // O observer precisa ter sido registrado no elemento que só existe
+        // depois da viewport virar elegível (queueMicrotask no efeito de mediaQuery).
+        await waitFor(() => expect(container.querySelector('[data-ad-placement]')).not.toBeNull())
+        await waitFor(() => expect(observerInstances.length).toBeGreaterThan(0))
+        await act(async () => { triggerIntersection(0, true) })
+        expect(container.querySelector('ins.adsbygoogle')).not.toBeNull()
+    })
+
     it('monta e solicita o placement quando a viewport é elegível', async () => {
         vi.mocked(window.matchMedia).mockImplementation(() => ({
             matches: true,

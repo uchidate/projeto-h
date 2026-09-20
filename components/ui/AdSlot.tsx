@@ -90,6 +90,13 @@ export function AdSlot({
     useEffect(() => {
         if (!lazy) return
         const el = ref.current
+        // Com `mediaQuery`, o primeiro render devolve null (viewportEligible
+        // começa false), então aqui `ref.current` ainda é null. Por isso
+        // `viewportEligible` precisa estar nas dependências: sem ele o efeito
+        // não reexecutava quando a viewport virava elegível, o observer nunca
+        // era registrado e o slot ficava eternamente em "reserved".
+        // Medido ao vivo em 19/09/2026: artist_bio_mobile não carregava em
+        // nenhum celular ou tablet.
         if (!el) return
         if (!('IntersectionObserver' in window)) {
             const timer = setTimeout(() => setVisible(true), 0)
@@ -106,7 +113,7 @@ export function AdSlot({
         )
         obs.observe(el)
         return () => obs.disconnect()
-    }, [lazy])
+    }, [lazy, viewportEligible])
 
     useEffect(() => {
         if (!ads.enabled || !viewportEligible || !visible || pushed.current || !client || !resolvedSlot) return
