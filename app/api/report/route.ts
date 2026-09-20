@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { WP_API_URL } from '@/lib/wordpress/config'
 import { clientIpOrUnknown } from '@/lib/http/clientIp'
 import { createRateLimiter } from '@/lib/http/rateLimit'
+import { paraLog } from '@/lib/utils/log'
 
 const ALLOWED_TYPES = ['artist', 'group', 'production']
 const ALLOWED_CATEGORIES = ['foto_errada', 'membro_errado', 'dado_incorreto', 'outro']
@@ -11,21 +12,11 @@ const ALLOWED_CATEGORIES = ['foto_errada', 'membro_errado', 'dado_incorreto', 'o
 const limiter = createRateLimiter({ max: 5, windowMs: 10 * 60 * 1000 })
 
 // Recebe reports de conteúdo do frontend e encaminha pro endpoint custom do WP
-/**
- * Valor vindo do cliente nunca entra cru no log. Duas razões: quebra de linha
- * permite forjar entradas falsas (log forging), e `%s`/`%d` num template
- * passado ao console vira diretiva de formatação. Mantém só o que faz sentido
- * num IP ou identificador e corta o resto.
- */
-function paraLog(valor: string): string {
-    return valor.replace(/[^\w.:-]/g, '').slice(0, 64)
-}
-
 export async function POST(req: NextRequest) {
     const ip = clientIpOrUnknown(req.headers)
 
     if (limiter.check(ip)) {
-        console.warn(`[report] rate limit excedido — ip=${ip}`)
+        console.warn(`[report] rate limit excedido — ip=${paraLog(ip)}`)
         return NextResponse.json({ error: 'Muitas requisições, tente novamente mais tarde' }, { status: 429 })
     }
 
