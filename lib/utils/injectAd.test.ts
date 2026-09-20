@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { splitContentForAds } from './injectAd'
+import { splitContentForAd, splitContentForAds } from './injectAd'
 
 const p = (text: string) => `<p>${text}</p>`
 const shortParas = (n: number) => Array.from({ length: n }, (_, i) => p(`Frase curta ${i}.`)).join('')
@@ -33,5 +33,36 @@ describe('splitContentForAds', () => {
 
     it('artigo curto demais fica sem anúncio no corpo', () => {
         expect(splitContentForAds(longParas(3))).toHaveLength(1)
+    })
+})
+
+describe('splitContentForAd', () => {
+    it('corta no parágrafo pedido quando a ficha é longa', () => {
+        const [antes, depois] = splitContentForAd(longParas(6), 3)
+        expect(antes.match(/<\/p>/g)).toHaveLength(3)
+        expect(depois).not.toBe('')
+    })
+
+    it('recua o corte em ficha curta em vez de desistir', () => {
+        // O caso da massa: 1.385 fichas de artista têm exatamente 2 parágrafos.
+        // Com corte fixo em 3 o anúncio nunca aparecia.
+        const [antes, depois] = splitContentForAd(longParas(2), 3)
+        expect(antes.match(/<\/p>/g)).toHaveLength(1)
+        expect(depois.replace(/<[^>]*>/g, '').length).toBeGreaterThanOrEqual(400)
+    })
+
+    it('não insere anúncio quando a cauda é curta demais', () => {
+        // Protege o caso que a regra original queria proteger.
+        expect(splitContentForAd(shortParas(4), 3)).toEqual([shortParas(4), ''])
+    })
+
+    it('não insere anúncio em ficha de um parágrafo só', () => {
+        const html = longParas(1)
+        expect(splitContentForAd(html, 3)).toEqual([html, ''])
+    })
+
+    it('nunca corta no último parágrafo', () => {
+        const [, depois] = splitContentForAd(longParas(3), 5)
+        expect(depois.replace(/<[^>]*>/g, '').length).toBeGreaterThanOrEqual(400)
     })
 })

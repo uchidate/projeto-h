@@ -2,22 +2,44 @@
  * Divide o HTML do WordPress em duas partes para inserir um ad
  * após o N-ésimo parágrafo sem manipular o DOM via JS (SSR-safe).
  *
- * Retorna [antes, depois] ou [todo, ''] se não houver parágrafos suficientes.
+ * O corte é ADAPTATIVO: se a ficha não tem N parágrafos, recua para o último
+ * corte possível em vez de desistir. Medido em 2026-09-19: com corte fixo,
+ * 65% das fichas de artista, 43% das produções e 96% dos grupos nunca
+ * renderizavam o anúncio do corpo, porque o texto é mais curto que o corte.
+ *
+ * O piso é de CONTEÚDO, não de contagem de parágrafos: o que sobra depois do
+ * corte precisa ter `minTailChars` de texto real. É o mesmo critério de
+ * `splitContentForAds`, e é ele que protege o caso que a regra antiga queria
+ * proteger — anúncio colado no fim de uma ficha de uma frase.
+ *
+ * Retorna [antes, depois] ou [todo, ''] quando não há cauda suficiente.
  */
-export function splitContentForAd(html: string, afterParagraph = 2): [string, string] {
+export function splitContentForAd(html: string, afterParagraph = 2, minTailChars = 400): [string, string] {
     // Usa regex simples — o conteúdo já vem sanitizado pelo WP
     const paragraphEnd = '</p>'
-    let count = 0
-    let pos = 0
 
-    while (count < afterParagraph) {
-        const idx = html.indexOf(paragraphEnd, pos)
-        if (idx === -1) return [html, '']
-        pos = idx + paragraphEnd.length
-        count++
+    // Todas as posições de fim de parágrafo, para poder recuar.
+    const fins: number[] = []
+    let cursor = 0
+    for (;;) {
+        const idx = html.indexOf(paragraphEnd, cursor)
+        if (idx === -1) break
+        cursor = idx + paragraphEnd.length
+        fins.push(cursor)
+    }
+    if (fins.length < 2) return [html, '']
+
+    const textoDe = (trecho: string) => trecho.replace(/<[^>]*>/g, '').trim().length
+
+    // Do corte pedido para trás: o primeiro que deixa cauda suficiente vence.
+    // Nunca corta no último parágrafo — aí não sobraria nada depois.
+    const inicio = Math.min(afterParagraph, fins.length - 1)
+    for (let n = inicio; n >= 1; n--) {
+        const pos = fins[n - 1]
+        if (textoDe(html.slice(pos)) >= minTailChars) return [html.slice(0, pos), html.slice(pos)]
     }
 
-    return [html.slice(0, pos), html.slice(pos)]
+    return [html, '']
 }
 
 interface AdBreakpointsOptions {
