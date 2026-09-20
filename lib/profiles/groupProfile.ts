@@ -56,7 +56,9 @@ export function buildGroupProfileModel(group: WPGroup, currentYear = new Date().
     const labels = labelsFor(locale)
     const name = stripHtml(group.title.rendered) || group.slug
     const acf = group.acf ?? {}
-    const [contentBefore, contentAfter] = splitContentForAd(group.content.rendered, 2)
+    // Sem corte adaptativo: a cauda do grupo vai para o CollapsibleProse, e recuar
+    // o corte esconderia atrás de "continuar lendo" texto que hoje aparece inteiro.
+    const [contentBefore, contentAfter] = splitContentForAd(group.content.rendered, 2, 400, false)
     // `members` guarda a formação histórica: quem saiu continua lá, marcado em
     // `former_member_slugs`. A contagem exibida é a de quem está ativo hoje.
     const formerEntries = parseFormerMembers(group.former_member_slugs, group.slug)

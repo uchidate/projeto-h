@@ -14,7 +14,7 @@
  *
  * Retorna [antes, depois] ou [todo, ''] quando não há cauda suficiente.
  */
-export function splitContentForAd(html: string, afterParagraph = 2, minTailChars = 400): [string, string] {
+export function splitContentForAd(html: string, afterParagraph = 2, minTailChars = 400, adaptativo = true): [string, string] {
     // Usa regex simples — o conteúdo já vem sanitizado pelo WP
     const paragraphEnd = '</p>'
 
@@ -33,8 +33,12 @@ export function splitContentForAd(html: string, afterParagraph = 2, minTailChars
 
     // Do corte pedido para trás: o primeiro que deixa cauda suficiente vence.
     // Nunca corta no último parágrafo — aí não sobraria nada depois.
-    const inicio = Math.min(afterParagraph, fins.length - 1)
-    for (let n = inicio; n >= 1; n--) {
+    // `adaptativo: false` preserva o comportamento antigo (ou corta no parágrafo
+    // pedido, ou não corta). Usado onde a cauda vai para um "continuar lendo":
+    // recuar o corte esconderia atrás de um clique conteúdo que hoje está visível.
+    const inicio = adaptativo ? Math.min(afterParagraph, fins.length - 1) : afterParagraph
+    if (inicio > fins.length - 1) return [html, '']
+    for (let n = inicio; n >= (adaptativo ? 1 : inicio); n--) {
         const pos = fins[n - 1]
         if (textoDe(html.slice(pos)) >= minTailChars) return [html.slice(0, pos), html.slice(pos)]
     }

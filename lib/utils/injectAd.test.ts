@@ -61,6 +61,15 @@ describe('splitContentForAd', () => {
         expect(splitContentForAd(html, 3)).toEqual([html, ''])
     })
 
+    it('adaptativo:false mantém o comportamento antigo', () => {
+        // Grupos: a cauda vai para o "continuar lendo", então recuar o corte
+        // esconderia texto hoje visível.
+        const html = longParas(2)
+        expect(splitContentForAd(html, 3, 400, false)).toEqual([html, ''])
+        const [antes] = splitContentForAd(longParas(6), 3, 400, false)
+        expect(antes.match(/<\/p>/g)).toHaveLength(3)
+    })
+
     it('nunca corta no último parágrafo', () => {
         const [, depois] = splitContentForAd(longParas(3), 5)
         expect(depois.replace(/<[^>]*>/g, '').length).toBeGreaterThanOrEqual(400)
