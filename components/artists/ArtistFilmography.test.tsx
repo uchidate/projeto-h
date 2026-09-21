@@ -47,4 +47,13 @@ describe('ArtistFilmography — o que o Google recebe no HTML', () => {
     it('sem nome, mantém o título genérico', () => {
         expect(html(3)).toContain('Obras e participações')
     })
+
+    it('mostra as grafias alternativas como texto visível', () => {
+        const saida = html(3, { artistName: 'Moo Jin-sung', alternativas: ['Mu Jin-sung', 'Moo Jinsung'] })
+        expect(saida).toContain('Também grafado como Mu Jin-sung, Moo Jinsung.')
+    })
+
+    it('sem grafias, não cria a linha', () => {
+        expect(html(3, { artistName: 'Kangnam', alternativas: [] })).not.toContain('Também grafado')
+    })
 })

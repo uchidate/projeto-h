@@ -12,6 +12,8 @@ interface Props {
     accent: string
     /** Com o nome, o H2 vira "Filmes e programas de TV de X" — a formulação da busca. */
     artistName?: string
+    /** Grafias alternativas do nome, exibidas como texto (o Google casa a busca por elas). */
+    alternativas?: string[]
 }
 
 
@@ -28,7 +30,7 @@ function getRating(prod: WPProduction): number {
 
 const INITIAL_COUNT = 10
 
-export function ArtistFilmography({ productions, label, accent, artistName }: Props) {
+export function ArtistFilmography({ productions, label, accent, artistName, alternativas = [] }: Props) {
     const tc = useTranslations('client')
     const TYPE_LABEL: Record<string, string> = {
         drama: tc('filmography.type.drama'),
@@ -133,9 +135,16 @@ export function ArtistFilmography({ productions, label, accent, artistName }: Pr
             </div>
 
             <div className="mb-6 grid gap-4 profile-measure lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.42fr)]">
-                <p className="max-w-[62ch] text-[0.98rem] leading-7 text-foreground-subtle">
-                    {tc('filmography.intro')}
-                </p>
+                <div>
+                    <p className="max-w-[62ch] text-[0.98rem] leading-7 text-foreground-subtle">
+                        {tc('filmography.intro')}
+                    </p>
+                    {alternativas.length > 0 && (
+                        <p className="mt-3 max-w-[62ch] text-[0.85rem] leading-6 text-muted">
+                            {tc('filmography.alsoSpelled', { names: alternativas.join(', ') })}
+                        </p>
+                    )}
+                </div>
                 <FactGrid items={summaryItems} columns={2} />
             </div>
 

@@ -26,6 +26,7 @@
     "average": "Average",
     "title": "Works and appearances",
     "titleNamed": "Movies and TV shows with {name}",
+    "alsoSpelled": "Also spelled {names}.",
     "intro": "A map of the catalog linked on __SITE__, ordered from the most recent work to the earliest records. On premium profiles, this section is the way into specific productions.",
     "year": "Year",
     "titleCol": "Title",

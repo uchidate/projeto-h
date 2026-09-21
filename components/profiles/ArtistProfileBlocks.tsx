@@ -2,6 +2,7 @@ import type { WPAgency, WPArtist, WPGroup, WPPost, WPProduction } from '@/lib/wo
 import type { ArtistProfileModel } from '@/lib/profiles/artistProfile'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import type { EntityFAQItem } from '@/components/seo/EntityFAQ'
+import { grafiasAlternativas } from '@/lib/seo/grafias'
 import { adensarAnuncios, type ProfileEntry } from './ProfileSection'
 import type { useTranslations } from 'next-intl'
 import { ADSENSE } from '@/lib/config/ads'
@@ -153,7 +154,7 @@ export function buildArtistProfileEntries({
             render: () => <section className="page-wrap py-(--profile-section-block-compact) lg:pl-[calc(2.5rem+9.5rem+2.5rem)]"><ArtistPremiumGateway name={name} essencia={essencia} groups={groups} productions={productions} discography={discography} relatedPosts={relatedPosts} accent={accent} /></section>,
         },
         { id: 'essencia', nav: t('blocks.nav.reading'), present: hasEssencia, render: label => <ArtistEssencia eyebrow={label} accent={accent} {...essencia} /> },
-        { id: 'filmografia', nav: t('blocks.nav.works'), present: productions.length > 0, render: label => <ArtistFilmography productions={productions} label={label} accent={accent} artistName={name} /> },
+        { id: 'filmografia', nav: t('blocks.nav.works'), present: productions.length > 0, render: label => <ArtistFilmography productions={productions} label={label} accent={accent} artistName={name} alternativas={grafiasAlternativas(name)} /> },
         { id: 'grupos', nav: t('blocks.nav.groups'), present: groups.length > 0, render: label => <ArtistGroups groups={groups} artistName={name} label={label} accent={accent} /> },
         // Entre a filmografia e a música, no meio de fichas longas.
         //
