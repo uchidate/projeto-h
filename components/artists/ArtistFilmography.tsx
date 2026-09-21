@@ -10,6 +10,8 @@ interface Props {
     productions: WPProduction[]
     label: string
     accent: string
+    /** Com o nome, o H2 vira "Filmes e programas de TV de X" — a formulação da busca. */
+    artistName?: string
 }
 
 
@@ -26,7 +28,7 @@ function getRating(prod: WPProduction): number {
 
 const INITIAL_COUNT = 10
 
-export function ArtistFilmography({ productions, label, accent }: Props) {
+export function ArtistFilmography({ productions, label, accent, artistName }: Props) {
     const tc = useTranslations('client')
     const TYPE_LABEL: Record<string, string> = {
         drama: tc('filmography.type.drama'),
@@ -127,7 +129,7 @@ export function ArtistFilmography({ productions, label, accent }: Props) {
     return (
         <>
             <div className="mb-6 border-t pt-5 profile-measure" style={{ borderColor: `${accent}33` }}>
-                <SectionTitleBar eyebrow={label} title={tc('filmography.title')} />
+                <SectionTitleBar eyebrow={label} title={artistName ? tc('filmography.titleNamed', { name: artistName }) : tc('filmography.title')} />
             </div>
 
             <div className="mb-6 grid gap-4 profile-measure lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.42fr)]">

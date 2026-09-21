@@ -39,4 +39,12 @@ describe('ArtistFilmography — o que o Google recebe no HTML', () => {
     it('não cria "ver mais" quando cabe nas primeiras 10', () => {
         expect(html(8)).not.toContain('<details')
     })
+
+    it('o título carrega o nome e a intenção de busca "filmes e programas de TV"', () => {
+        expect(html(3, { artistName: 'Lee Sung-min' })).toContain('Filmes e programas de TV de Lee Sung-min')
+    })
+
+    it('sem nome, mantém o título genérico', () => {
+        expect(html(3)).toContain('Obras e participações')
+    })
 })

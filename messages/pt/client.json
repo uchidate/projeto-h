@@ -25,6 +25,7 @@
     "focus": "Foco",
     "average": "Média",
     "title": "Obras e participações",
+    "titleNamed": "Filmes e programas de TV de {name}",
     "intro": "Um mapa do catálogo conectado no __SITE__, organizado do trabalho mais recente aos primeiros registros. Em perfis premium, esta seção funciona como ponto de saída para produções específicas.",
     "year": "Ano",
     "titleCol": "Título",
