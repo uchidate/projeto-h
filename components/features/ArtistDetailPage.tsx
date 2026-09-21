@@ -14,6 +14,7 @@ import { toIsoDateString } from '@/lib/utils'
 import { intlLocale } from '@/lib/i18n/format'
 import { localizePlace, placeWithPreposition } from '@/lib/i18n/place'
 import { firstSentence } from '@/lib/seo/firstSentence'
+import { alternateNames, performerIn } from '@/lib/seo/person'
 import { ReadingBar } from '@/components/ui/ReadingBar'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import { QuizFacts } from '@/components/ui/QuizFacts'
@@ -142,7 +143,7 @@ export function ArtistDetailPage({
         <>
             <JsonLd data={{
                 '@context': 'https://schema.org', '@type': 'Person',
-                name, alternateName: acf.name_hangul, url: artistUrl,
+                name, alternateName: alternateNames(name, acf.name_hangul), url: artistUrl,
                 image: image ? { '@type': 'ImageObject', url: image.src } : undefined,
                 birthDate: toIsoDateString(acf.birth_date), deathDate: toIsoDateString(acf.death_date),
                 // Sem `nationality`: era 'Korean' fixo para todos, inclusive
@@ -155,6 +156,8 @@ export function ArtistDetailPage({
                 // Wikipedia primeiro: é a referência que o Google usa para
                 // desambiguar a pessoa no Knowledge Graph (ver lib/seo/entidade.ts).
                 sameAs: juntarSameAs([urlWikipedia(acf.wikipedia_title, artist.content.rendered)], socialEntries.map(s => s.url)),
+                // Filmografia no schema: a busca dominante por artista é "<nome> filmes e programas de tv".
+                performerIn: performerIn(productions, slug => `${SITE_URL}${href('production', { slug }, locale)}`),
                 gender: generoSchema(acf.gender),
                 height: alturaSchema(acf.height),
                 affiliation: agencyName ? { '@type': 'Organization', name: agencyName } : undefined,
