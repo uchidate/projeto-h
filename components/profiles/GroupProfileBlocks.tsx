@@ -19,6 +19,8 @@ import { GroupDiscography } from '@/components/groups/GroupDiscography'
 import { GroupEditorialAnalysis } from '@/components/groups/GroupEditorialAnalysis'
 import { GroupFactsTabbed } from '@/components/groups/GroupFactsTabbed'
 import { GroupMemberCard } from '@/components/groups/GroupMemberCard'
+import { GroupMembersTable } from '@/components/groups/GroupMembersTable'
+import { linhasIntegrantes, listaDeNomes } from '@/lib/seo/integrantes'
 import { GroupMemberVote } from '@/components/groups/GroupMemberVote'
 import { toMemberSummary } from '@/lib/artists/memberSummary'
 import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
@@ -67,6 +69,9 @@ export function buildGroupProfileEntries({
     // Conta também os ex sem ficha no CPT: só formerMembers deixaria de fora quem
     // não tem post (Ricky, no ZB1), e o cartão divergia do FAQ na mesma página.
     const totalEx = formerMembers.length + formerSemFicha.length
+
+    // Linhas da tabela idade/posição e da frase-resposta (só integrantes ativos).
+    const linhasAtivos = linhasIntegrantes(activeMembers.map(toMemberSummary), memberPositions)
 
     const factItems: FactItem[] = [
         acf.type && { label: t('blocks.fact.type'), value: labelsFor(locale).groupType(acf.type) },
@@ -150,7 +155,12 @@ export function buildGroupProfileEntries({
             id: 'membros', nav: t('blocks.nav.members'), present: members.length > 0 || formerSemFicha.length > 0, layout: 'self', indexed: true,
             render: label => <section id="membros" className={anchorClass}>
                 <GroupSectionHeading id="membros-titulo" eyebrow={label || undefined} title={totalEx > 0 ? t('blocks.groupMembersTitleWithFormer', { active: activeMembers.length, former: totalEx }) : t('blocks.groupMembersTitle', { count: members.length })} accent={accent} />
+                {/* Resposta direta no topo: é o formato que o Google extrai para "membros do X". */}
+                {linhasAtivos.length > 0 && <p className="mb-6 max-w-[62ch] text-[0.98rem] leading-7 text-foreground-subtle">
+                    {t('blocks.membersSummary', { group: name, count: linhasAtivos.length, names: listaDeNomes(linhasAtivos.map(l => l.nome), locale === 'en' ? 'and' : 'e') })}
+                </p>}
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">{activeMembers.map(member => <GroupMemberCard key={member.id} member={toMemberSummary(member)} accent={accent} positions={memberPositions[member.slug]} />)}</div>
+                <GroupMembersTable groupName={name} linhas={linhasAtivos} />
                 {totalEx > 0 && <div className="mt-6">
                     <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted mb-3">Ex-integrantes · {totalEx}</p>
                     {formerMembers.length > 0 && <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">{formerMembers.map(member => <GroupMemberCard key={member.id} member={toMemberSummary(member)} accent={accent} positions={memberPositions[member.slug]} isFormer />)}</div>}

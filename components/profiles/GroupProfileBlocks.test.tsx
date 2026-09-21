@@ -1,4 +1,8 @@
 import { describe, expect, it } from 'vitest'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { NextIntlClientProvider } from 'next-intl'
+import client from '@/messages/pt/client.json'
+import profile from '@/messages/pt/profile.json'
 import type { WPArtist, WPGroup } from '@/lib/wordpress/types'
 import { buildGroupProfileModel } from '@/lib/profiles/groupProfile'
 import { isInterstitial, type ProfileBlockDef } from './ProfileSection'
@@ -127,5 +131,42 @@ describe('ex-integrante sem ficha', () => {
             former_member_slugs: ['saiu-um', 'saiu-dois'],
         })
         expect(buildGroupProfileModel(value, 2026).memberCount).toBe(1)
+    })
+
+    describe('bloco de integrantes (busca por membros e por idade)', () => {
+        function htmlMembros() {
+            const ativos: WPArtist[] = [
+                { ...member(1), title: { rendered: 'S.Coups' }, acf: { birth_date: '1995-08-08', roles: ['leader'] } },
+                { ...member(2), title: { rendered: 'Jeonghan' }, acf: { birth_date: '1995-10-04' } },
+                { ...member(3), title: { rendered: 'Joshua' } },
+            ] as WPArtist[]
+            const value = group({ title: { rendered: 'SEVENTEEN' } })
+            const entries = buildGroupProfileEntries({
+                t: profileT, locale: 'pt', group: value, model: buildGroupProfileModel(value, 2026),
+                members: ativos, activeMembers: ativos, formerMembers: [], formerSemFicha: [],
+                memberPositions: { 'membro-1': ['leader'] }, relatedPosts: [], relatedGroups: [], discography: [],
+                agencyName: null, faqItems: [],
+            })
+            const bloco = entries.filter((e): e is ProfileBlockDef => !isInterstitial(e)).find(e => e.id === 'membros')
+            return renderToStaticMarkup(
+                <NextIntlClientProvider locale="pt" messages={{ client, profile }}>{bloco?.render('Integrantes')}</NextIntlClientProvider>,
+            )
+        }
+
+        it('abre com a frase-resposta que lista os integrantes', () => {
+            expect(htmlMembros()).toContain('tem 3 integrantes: S.Coups, Jeonghan e Joshua.')
+        })
+
+        it('inclui a tabela de idade e posição, com a posição traduzida', () => {
+            const saida = htmlMembros()
+            expect(saida).toContain('<table')
+            expect(saida).toContain('Idade e posição dos integrantes do')
+            expect(saida).toContain('Líder')
+        })
+
+        it('a frase vem antes dos cartões e a tabela depois', () => {
+            const saida = htmlMembros()
+            expect(saida.indexOf('integrantes: S.Coups')).toBeLessThan(saida.indexOf('<table'))
+        })
     })
 })
