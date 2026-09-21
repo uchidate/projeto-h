@@ -119,6 +119,15 @@
     "groupFactsTitle": "Key facts",
     "groupManagementTitle": "Who manages the group",
     "groupMembersTitle": "Members · {count}",
+    "membersSummary": "{group} has {count} members: {names}.",
+    "membersTable": {
+      "caption": "Age and position of {group} members",
+      "member": "Member",
+      "birth": "Born",
+      "age": "Age",
+      "position": "Position",
+      "empty": "—"
+    },
     "groupMembersTitleWithFormer": "Members · {active} active · {former} former",
     "groupNumbersTitle": "By the numbers",
     "groupColorTitle": "Official color",

@@ -120,6 +120,15 @@
     "groupManagementTitle": "Quem administra o grupo",
     "groupMembersTitle": "Integrantes · {count}",
     "groupMembersTitleWithFormer": "Integrantes · {active} ativos · {former} ex",
+    "membersSummary": "{group} tem {count} integrantes: {names}.",
+    "membersTable": {
+      "caption": "Idade e posição dos integrantes do {group}",
+      "member": "Integrante",
+      "birth": "Nascimento",
+      "age": "Idade",
+      "position": "Posição",
+      "empty": "—"
+    },
     "groupNumbersTitle": "Em números",
     "groupColorTitle": "Cor Oficial",
     "continueReading": "Continuar lendo",
