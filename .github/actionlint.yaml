@@ -1,3 +1,10 @@
-self-hosted-runner:
-  labels:
-    - deploy
+# Avisos de shellcheck conhecidos e intencionais nos workflows. Cada exceção é restrita ao
+# aviso exato e tem motivo; qualquer outro aviso continua falhando o `npm run quality:actions`.
+paths:
+  .github/workflows/**/*.yml:
+    ignore:
+      # SC2029 (info): dentro de `ssh "..."`, a variável ser expandida NO CLIENTE é o desejado.
+      - 'shellcheck reported issue in this script: SC2029:info:.+'
+      # SC1083: `HEAD^{tree}` é a sintaxe literal do `git rev-parse`; as chaves não são expansão
+      # (o passo roda em produção e funciona como escrito).
+      - 'shellcheck reported issue in this script: SC1083:warning:.+'
