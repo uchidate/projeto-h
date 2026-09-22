@@ -1,0 +1,64 @@
+name: Update Artist Access Score
+
+# Roda em ubuntu-latest, nao no runner self-hosted. Mesmo motivo documentado em
+# trending-scores.yml e streaming-scores.yml: o socket do Docker foi removido
+# do runner self-hosted por seguranca (2026-09-09), e o script consulta o
+# Postgres do Umami via `ssh oc "docker exec ... psql"`. Sem isso o job
+# quebraria no primeiro dia, como ja aconteceu com os outros dois.
+#
+# Job barato: uma única query no Postgres do Umami (<1s medido em
+# 2026-09-22). Semanal, na mesma cadência de trending-scores e da nova
+# artist-popularity — access_score usa uma janela de 90 dias de sessões, que
+# não muda o suficiente para justificar frequência diária.
+
+on:
+  schedule:
+    - cron: '30 6 * * 1'  # Toda segunda-feira às 06:30 UTC (depois de trending e popularity)
+  workflow_dispatch:       # Permite trigger manual
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # Job em si roda em <1s; folga generosa sem deixar um travamento real
+    # rodar o dia inteiro sem ninguém notar (mesmo padrão dos outros jobs).
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Update artist access score
+        env:
+          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
+          # Exceção de WAF da Cloudflare: sem ela a REST do WP devolve 403 ao
+          # runner e o job morre na primeira coleção (issue #19).
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/update-artist-access.mjs --confirm
+
+      - name: Trigger ISR revalidation (artists)
+        env:
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          # Exceção de WAF da Cloudflare para automação nossa; sem ela o POST leva 403.
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: |
+          curl -s -X POST \
+            -H "${{ vars.SONDA_HEADER }}: ${SONDA_TOKEN}" \
+            "${{ vars.SITE_URL }}/api/revalidate?secret=${REVALIDATE_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d '{"type":"artist"}' \
+            -w "Revalidation: %{http_code}\n"
