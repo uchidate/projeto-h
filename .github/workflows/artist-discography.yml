@@ -1,0 +1,63 @@
+name: Sync Artist/Group Discography (Spotify)
+
+# Roda em ubuntu-latest, nao no runner self-hosted — mesmo motivo documentado em
+# trending-scores.yml, streaming-scores.yml e artist-popularity.yml: o socket do
+# Docker foi removido do runner self-hosted por seguranca (2026-09-09), e o
+# script usa `docker cp`/`docker exec` por SSH via lib/wp.mjs.
+#
+# --lote 40, não o catálogo completo: a Spotify não publica número de cota do
+# modo Development de propósito. Medido em 22/09/2026: a cota estourou depois
+# de ~300-500 chamadas num backfill do catálogo inteiro (~170 artistas/grupos).
+# 40/semana cobre o catálogo em poucas semanas com folga generosa, e o script
+# faz rodízio sozinho via spotify_sync_em (quem nunca foi visto ou foi visto há
+# mais tempo entra primeiro) — não é preciso coordenar nada aqui, só rodar toda
+# semana. Decisão completa em
+# notas/decisoes/2026-09-22-spotify-link-artists-seguidores-sumiram-da-api.md.
+
+on:
+  schedule:
+    - cron: '45 6 * * 1'  # Toda segunda-feira às 06:45 UTC (depois do artist-access, 06:30)
+  workflow_dispatch:       # Permite trigger manual (aceita lote customizado)
+    inputs:
+      lote:
+        description: 'Quantos artistas/grupos processar nesta rodada'
+        required: false
+        default: '40'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # Cota da API pode abortar cedo (bom) ou o lote inteiro pode levar alguns
+    # minutos por causa da paginação de álbuns por artista; folga generosa sem
+    # deixar um travamento real (já visto: ~22h sem o teto de espera, corrigido
+    # no próprio script) rodar o dia inteiro sem ninguém notar.
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Sync discography
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          # Exceção de WAF da Cloudflare: sem ela a REST do WP devolve 403 ao
+          # runner (issue #19, mesma causa que já derrubou trending-scores e
+          # validate-wp-data).
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/spotify-sync-discography.mjs --confirm --lote ${{ github.event.inputs.lote || '40' }}
