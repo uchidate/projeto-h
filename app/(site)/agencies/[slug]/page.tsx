@@ -21,7 +21,6 @@ import { AgencyOrganizationMap } from '@/components/agency/AgencyOrganizationMap
 import { GroupPosts } from '@/components/groups/GroupPosts'
 import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
 import { FactGrid, type FactItem } from '@/components/blocks/FactGrid'
-import { BlockHeader } from '@/components/blocks/BlockHeader'
 import { CollapsibleProse } from '@/components/profiles/CollapsibleProse'
 import { EntityFAQ, type EntityFAQItem } from '@/components/seo/EntityFAQ'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
@@ -38,30 +37,16 @@ import {
     optionalAccent,
     toRgba,
     type CSSVariableProperties, AGENCY_TYPE_LABELS, ORGANIZATION_KIND_LABELS } from '@/lib/agencies/presentation'
+import { BIG4_SLUGS, LEGACY_AGENCY_TITLE, sameImageAsset, GENERATIONS } from './lib/helpers'
+import { GroupCard } from './components/GroupCard'
+import { SectionHeader } from './components/SectionHeader'
+import { AgencyKeyMetrics } from './components/AgencyKeyMetrics'
+import { AgencyMilestones } from './components/AgencyMilestones'
+import { AgencySources } from './components/AgencySources'
 
 export const revalidate = 3600
 
 type Params = Promise<{ slug: string }>
-
-const BIG4_SLUGS = new Set(['sm-entertainment', 'hybe', 'yg-entertainment', 'jyp-entertainment'])
-const LEGACY_AGENCY_TITLE = new RegExp(`\\s+[—–-]\\s+Agência K-Pop(?:\\s+\\|\\s+${SITE_NAME})?$`, 'i')
-
-function sameImageAsset(first?: string | null, second?: string | null) {
-    if (!first || !second) return false
-    try {
-        return new URL(first).pathname === new URL(second).pathname
-    } catch {
-        return first === second
-    }
-}
-
-const GENERATIONS = [
-    { label: '1ª Geração', shortLabel: '1ª Gen', from: 1990, to: 2002 },
-    { label: '2ª Geração', shortLabel: '2ª Gen', from: 2003, to: 2011 },
-    { label: '3ª Geração', shortLabel: '3ª Gen', from: 2012, to: 2017 },
-    { label: '4ª Geração', shortLabel: '4ª Gen', from: 2018, to: 2022 },
-    { label: '5ª Geração', shortLabel: '5ª Gen', from: 2023, to: 9999 },
-]
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { slug } = await params
@@ -529,34 +514,7 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
 
                 {/* ── EM NÚMEROS ───────────────────────────────────────── */}
                 {keyMetrics.length >= 3 && (
-                    <section id="numeros" aria-labelledby="numeros-agencia" className="scroll-mt-(--scroll-anchor-offset,106px) overflow-hidden border border-border bg-surface">
-                        <div className="flex flex-wrap items-end justify-between gap-2 border-b border-border px-5 py-4 sm:px-6">
-                            <div>
-                                <p className="font-mono text-[9px] font-black uppercase tracking-[0.15em] text-(--ac)">Em números</p>
-                                <h2 id="numeros-agencia" className="mt-1 text-sm font-bold text-foreground/75">A escala da {name}, em dados com fonte</h2>
-                            </div>
-                            <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-muted">Cada número liga para a fonte primária</p>
-                        </div>
-                        <dl className="grid sm:grid-cols-2 lg:grid-cols-3">
-                            {keyMetrics.map((metric, index) => (
-                                <div key={`${metric.label}-${index}`} className="group/metric relative border-b border-border p-5 transition-colors last:border-b-0 hover:bg-(--ac-08) sm:border-r sm:nth-[2n]:border-r-0 lg:nth-[2n]:border-r lg:nth-[3n]:border-r-0 sm:nth-last-[-n+2]:border-b-0 lg:nth-last-[-n+3]:border-b-0 sm:p-6">
-                                    <dt className="block font-mono text-[9px] font-black uppercase leading-4 tracking-[0.12em] text-muted">{metric.label}</dt>
-                                    <dd className="mt-3">
-                                        <strong className="block text-3xl font-black leading-none tracking-[-0.04em] transition-colors group-hover/metric:text-(--ac) sm:text-4xl">{metric.value}</strong>
-                                        {metric.context && <span className="mt-3 block max-w-[36ch] text-[12px] leading-5 text-foreground/60">{metric.context}</span>}
-                                        <span className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[8px] font-black uppercase tracking-[0.11em]">
-                                            {metric.as_of && <span className="text-muted">ref. {metric.as_of}</span>}
-                                            {metric.source_url && (
-                                                <a href={metric.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-muted underline decoration-border underline-offset-4 hover:text-(--ac)">
-                                                    Fonte <ExternalLink size={9} />
-                                                </a>
-                                            )}
-                                        </span>
-                                    </dd>
-                                </div>
-                            ))}
-                        </dl>
-                    </section>
+                    <AgencyKeyMetrics name={name} keyMetrics={keyMetrics} />
                 )}
 
                 {narrativeChapters.length > 0 && (
@@ -1175,54 +1133,7 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
                 )}
 
                 {narrativeChapters.length === 0 && milestones.length > 0 && (
-                    <section id="historia" className="scroll-mt-(--scroll-anchor-offset,106px)">
-                        <SectionHeader label="Cronologia" title="Linha do tempo" count={null} />
-                        <div className="mt-8 relative">
-                            {/* Vertical line */}
-                            <div className="absolute left-[39px] top-0 bottom-6 w-px hidden sm:block [background:var(--ac-15)]" />
-
-                            <div className="space-y-0">
-                                {milestones.map((m, i) => (
-                                    <div key={i} className="relative flex items-start gap-4 sm:gap-6 group/item">
-                                        {/* Year */}
-                                        <div className="relative z-1 shrink-0 w-[78px] pt-5">
-                                            <div
-                                                className="hidden sm:flex items-center justify-center w-full h-8 border font-mono text-[11px] font-black transition-all duration-150 group-hover/item:text-white"
-                                                style={{ borderColor: toRgba(interfaceAccent, 0.3) }}
-                                            >
-                                                <style>{`.group\\/item:hover .year-badge-${i} { background: var(--ac); border-color: var(--ac); color: white; }`}</style>
-                                                <span className={`year-badge-${i} w-full h-full flex items-center justify-center transition-all duration-150`}>
-                                                    {m.year}
-                                                </span>
-                                            </div>
-                                            <div className="sm:hidden font-mono text-[11px] font-black text-(--ac)">{m.year}</div>
-                                        </div>
-
-                                        {/* Dot on the line */}
-                                        <div
-                                            className="hidden sm:block absolute left-[39px] top-[22px] w-3 h-3 -translate-x-1/2 border-2 bg-background z-2 transition-all duration-150 group-hover/item:[background:var(--ac)] group-hover/item:border-(--ac)"
-                                            style={{ borderColor: toRgba(interfaceAccent, 0.4) }}
-                                        />
-
-                                        {/* Text */}
-                                        <div className="flex-1 py-5 border-b border-border/20 last:border-b-0">
-                                            <p className="text-[13px] leading-[1.7] text-foreground/75 group-hover/item:text-foreground/90 transition-colors">{m.desc}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="mt-10 flex items-center justify-center">
-                                <Link
-                                    href="/groups"
-                                    className="inline-flex items-center gap-2 border border-border px-5 py-3 font-mono text-[11px] font-black uppercase tracking-wider hover:border-(--ac) hover:text-(--ac) transition-colors group"
-                                >
-                                    Explorar todos os artistas & grupos
-                                    <ChevronRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-                                </Link>
-                            </div>
-                        </div>
-                    </section>
+                    <AgencyMilestones milestones={milestones} interfaceAccent={interfaceAccent} />
                 )}
 
                 <EntityFAQ
@@ -1233,86 +1144,10 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
 
                 {/* ── TRANSPARÊNCIA EDITORIAL ──────────────────────────── */}
                 {sourcesByHost.length > 0 && (
-                    <aside aria-label="Como apuramos" className="border border-border bg-surface px-5 py-5 sm:px-6">
-                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                            <p className="font-mono text-[9px] font-black uppercase tracking-[0.15em] text-(--ac)">Como apuramos</p>
-                            <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-muted">
-                                {citedSources.length} citações · {sourcesByHost.length} veículos
-                            </p>
-                        </div>
-                        <p className="mt-3 max-w-3xl text-[13px] leading-6 text-foreground/65">
-                            Números, capítulos e citações deste perfil apontam para a fonte primária no ponto em que aparecem.
-                            Priorizamos material institucional e imprensa verificável; opinião só entra atribuída.
-                        </p>
-                        <ul className="mt-4 flex flex-wrap gap-2">
-                            {sourcesByHost.map(source => (
-                                <li key={source.host} className="border border-border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.08em] text-foreground/60">
-                                    {source.host}
-                                    <span className="ml-1.5 font-black text-muted">×{source.count}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </aside>
+                    <AgencySources citedSourcesCount={citedSources.length} sourcesByHost={sourcesByHost} />
                 )}
             </div>
         </div>
     )
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
-
-function GroupCard({ group }: { group: Awaited<ReturnType<typeof getGroups>>['items'][number] }) {
-    const img = getWPImage(group._embedded, group.featured_image_url)
-    const gname = stripHtml(group.title.rendered)
-    const debutYear = getYear(group.acf?.debut_date)
-    const isActive = group.acf?.active !== false
-    const groupColor = optionalAccent(group.acf?.color)
-    const cardStyle: CSSVariableProperties | undefined = groupColor ? { '--gc': groupColor } : undefined
-    return (
-        <Link
-            href={`/groups/${group.slug}`}
-            prefetch={false}
-            style={cardStyle}
-            className="group border border-border bg-surface hover:border-foreground/20 transition-colors [border-top:2px_solid_var(--gc,var(--ac))]"
-        >
-            <div className="relative aspect-square overflow-hidden">
-                {img ? (
-                    <Image
-                        src={img.src}
-                        alt={gname}
-                        fill
-                        className="object-cover object-top group-hover:scale-[1.04] transition-transform duration-500"
-                        sizes="(max-width: 640px) 50vw, 20vw"
-                    />
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-surface">
-                        <span className="text-[28px] font-black text-muted/15">{gname[0]}</span>
-                    </div>
-                )}
-                <div className={`absolute top-2 right-2 px-1.5 py-0.5 font-mono text-[8px] font-bold text-white ${isActive ? '[background:var(--gc,var(--ac))]' : 'bg-muted/60'}`}>
-                    {isActive ? 'Ativo' : 'Inativo'}
-                </div>
-            </div>
-            <div className="p-3">
-                <p className="text-[13px] font-bold leading-snug group-hover:text-accent transition-colors line-clamp-2">{gname}</p>
-                {group.acf?.name_hangul && (
-                    <p className="font-mono text-[10px] text-muted mt-0.5">{group.acf.name_hangul}</p>
-                )}
-                {debutYear && (
-                    <p className="font-mono text-[9px] text-muted/50 mt-1">desde {debutYear}</p>
-                )}
-            </div>
-        </Link>
-    )
-}
-
-function SectionHeader({ label, title, count }: { label: string; title: string; count: number | null }) {
-    return (
-        <BlockHeader
-            eyebrow={label}
-            title={title}
-            brandDot
-            meta={count !== null ? <span className="font-mono text-[10px] tabular-nums text-muted">{count}</span> : undefined}
-        />
-    )
-}
