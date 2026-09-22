@@ -4,11 +4,11 @@ import { trackQuizComplete, trackSearch, trackScrollDepth, trackBlogRead } from 
 
 describe('envio duplo (Google Analytics + Umami)', () => {
     let gtag: ReturnType<typeof vi.fn<(...args: unknown[]) => void>>
-    let umamiTrack: ReturnType<typeof vi.fn<(nome: string, dados?: Record<string, unknown>) => void>>
+    let umamiTrack: ReturnType<typeof vi.fn<(nome?: string, dados?: Record<string, unknown>) => void>>
 
     beforeEach(() => {
         gtag = vi.fn<(...args: unknown[]) => void>()
-        umamiTrack = vi.fn<(nome: string, dados?: Record<string, unknown>) => void>()
+        umamiTrack = vi.fn<(nome?: string, dados?: Record<string, unknown>) => void>()
         window.gtag = gtag
         window.umami = { track: umamiTrack }
     })
@@ -59,10 +59,10 @@ describe('envio duplo (Google Analytics + Umami)', () => {
 })
 
 describe('segunda rodada: amostragem e formato', () => {
-    let umamiTrack: ReturnType<typeof vi.fn<(nome: string, dados?: Record<string, unknown>) => void>>
+    let umamiTrack: ReturnType<typeof vi.fn<(nome?: string, dados?: Record<string, unknown>) => void>>
 
     beforeEach(() => {
-        umamiTrack = vi.fn<(nome: string, dados?: Record<string, unknown>) => void>()
+        umamiTrack = vi.fn<(nome?: string, dados?: Record<string, unknown>) => void>()
         window.umami = { track: umamiTrack }
         window.gtag = vi.fn()
         sessionStorage.clear()

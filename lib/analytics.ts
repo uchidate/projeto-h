@@ -17,7 +17,8 @@ declare global {
     interface Window {
         gtag?: (...args: unknown[]) => void
         dataLayer?: unknown[][]
-        umami?: { track?: (nome: string, dados?: Record<string, unknown>) => void }
+        // `track()` sem argumentos registra pageview — usado por trackPageview().
+        umami?: { track?: (nome?: string, dados?: Record<string, unknown>) => void }
     }
 }
 
@@ -43,7 +44,15 @@ function gtag(...args: unknown[]) {
  * outro dispara na montagem e caia no vazio. Nao era o detector que falhava: era
  * o transporte.
  */
-const filaUmami: Array<[string, Record<string, unknown>]> = []
+/**
+ * Fila de CHAMADAS (nao so eventos nomeados) disparadas antes do tracker
+ * existir — serve tanto `umami()` (evento) quanto `trackPageview()`
+ * (pageview manual, sem nome). Generica desde 2026-09-22: era uma fila de
+ * `[nome, dados]` so para eventos; pageview manual precisou do mesmo
+ * reforco e duplicar a fila para isso teria sido o mesmo erro que motivou
+ * este arquivo (ver cabecalho).
+ */
+const filaUmami: Array<() => void> = []
 let sondaUmami: number | null = null
 
 /** Teto da espera. Depois disso o script nao vem mais — bloqueador, rede, erro. */
@@ -57,12 +66,11 @@ function escoarFila() {
     // proprio de CI em 2026-09-16 — maquina mais lenta, corrida visivel).
     // Devolver true encerra a sonda.
     if (typeof window === 'undefined') return true
-    const track = window.umami?.track
-    if (typeof track !== 'function') return false
+    if (typeof window.umami?.track !== 'function') return false
     while (filaUmami.length) {
-        const [nome, dados] = filaUmami.shift()!
+        const chamada = filaUmami.shift()!
         try {
-            track(nome, dados)
+            chamada()
         } catch {
             // idem abaixo: medicao nunca derruba a pagina.
         }
@@ -85,26 +93,38 @@ function agendarEscoamento() {
     }, INTERVALO_UMAMI_MS)
 }
 
-function umami(nome: string, dados: Record<string, unknown>) {
+/** Chama `fn` (um `track(...)` do Umami) agora se o script ja existe, senao enfileira. */
+function chamarUmami(fn: () => void) {
     if (typeof window === 'undefined') return
-    const limpo: Record<string, unknown> = {}
-    for (const [k, v] of Object.entries(dados)) {
-        limpo[k] = typeof v === 'string' ? v.slice(0, LIMITE_TEXTO) : v
-    }
-
-    const track = window.umami?.track
-    if (typeof track === 'function') {
+    if (typeof window.umami?.track === 'function') {
         try {
-            track(nome, limpo)
+            fn()
         } catch {
             // Analytics quebrado nunca interrompe o usuario: e informacao de
             // apoio, nao funcionalidade.
         }
         return
     }
-
-    filaUmami.push([nome, limpo])
+    filaUmami.push(fn)
     agendarEscoamento()
+}
+
+function umami(nome: string, dados: Record<string, unknown>) {
+    const limpo: Record<string, unknown> = {}
+    for (const [k, v] of Object.entries(dados)) {
+        limpo[k] = typeof v === 'string' ? v.slice(0, LIMITE_TEXTO) : v
+    }
+    chamarUmami(() => window.umami!.track!(nome, limpo))
+}
+
+/**
+ * Pageview manual — para quando `data-auto-track="false"` (ver UmamiScript).
+ *
+ * `window.umami.track()` SEM argumentos registra pageview; com nome vira
+ * evento customizado chamado "pageview", o que contaminaria a metrica.
+ */
+export function trackPageview() {
+    chamarUmami(() => window.umami!.track!())
 }
 
 /**
@@ -145,20 +165,12 @@ function umami(nome: string, dados: Record<string, unknown>) {
 const PROPORCAO_AMOSTRA_ANUNCIOS = 0.1
 const CHAVE_AMOSTRA = 'hh-amostra-anuncios'
 
+// Mesmo sorteio por sessao de `naAmostra` (abaixo, funcao hoisted) — so com
+// chave/proporcao proprias. Ate 2026-09-22 este era um segundo corpo de
+// try/sessionStorage identico; duas copias do mesmo sorteio divergem tao
+// facil quanto duas copias do mesmo rastreamento (ver cabecalho do arquivo).
 function naAmostraDeAnuncios(): boolean {
-    if (typeof window === 'undefined') return false
-    try {
-        const guardado = window.sessionStorage.getItem(CHAVE_AMOSTRA)
-        if (guardado !== null) return guardado === '1'
-        const sorteado = Math.random() < PROPORCAO_AMOSTRA_ANUNCIOS ? '1' : '0'
-        window.sessionStorage.setItem(CHAVE_AMOSTRA, sorteado)
-        return sorteado === '1'
-    } catch {
-        // Modo privado ou storage bloqueado: sortear a cada chamada manteria a
-        // razao enviesada pelo motivo descrito acima. Ficar de fora e a escolha
-        // conservadora — perde-se volume, nao se corrompe a metrica.
-        return false
-    }
+    return naAmostra(CHAVE_AMOSTRA, PROPORCAO_AMOSTRA_ANUNCIOS)
 }
 
 function enviar(nome: string, dados: Record<string, unknown>) {

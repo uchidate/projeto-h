@@ -1,7 +1,9 @@
 'use client'
 
+import { useEffect } from 'react'
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
+import { trackPageview } from '@/lib/analytics'
 
 /**
  * Carrega o Umami — exceto nas rotas de autenticação.
@@ -35,16 +37,18 @@ import { usePathname } from 'next/navigation'
  * De quebra: nenhum script de terceiro carrega na página onde alguém digita
  * senha. É a decisão certa por privacidade mesmo que não houvesse robô.
  *
- * ── O que isto NÃO resolve ──────────────────────────────────────────────────
+ * ── Navegação SPA para `/entrar`/`/cadastro` ────────────────────────────────
  *
- * O Umami engancha no histórico do navegador. Quem já está com o script
- * carregado e navega para `/entrar` pelo menu ainda gera um pageview: só o
- * carregamento DIRETO é evitado. É exatamente o padrão dos robôs (uma página
- * por sessão, sem segunda), então resolve o caso que existe — e fica dito que
- * não resolve o outro.
+ * `data-auto-track="false"` desliga o rastreamento automático do Umami
+ * (inclusive o gancho no histórico do navegador) e o pageview passa a ser
+ * disparado por nós, no efeito abaixo, por caminho — a mesma lista que
+ * decide se o script CARREGA agora também decide se cada navegação vira
+ * pageview. Até 2026-09-22 só o carregamento direto era coberto: quem já
+ * estava com o script ativo e navegava para `/entrar` pelo menu ainda gerava
+ * pageview, porque o gancho automático do Umami não conhecia esta lista.
  */
 
-/** Rotas onde o tracker não carrega. Prefixo, não igualdade: cobre subrotas. */
+/** Rotas onde o tracker não carrega nem conta pageview. Prefixo, não igualdade: cobre subrotas. */
 const ROTAS_SEM_MEDICAO = ['/entrar', '/cadastro']
 
 type Props = {
@@ -56,9 +60,14 @@ type Props = {
 
 export function UmamiScript({ src, websiteId, hostUrl, domains }: Props) {
     const caminho = usePathname()
-    if (ROTAS_SEM_MEDICAO.some((r) => caminho === r || caminho?.startsWith(`${r}/`))) {
-        return null
-    }
+    const excluida = ROTAS_SEM_MEDICAO.some((r) => caminho === r || caminho?.startsWith(`${r}/`))
+
+    useEffect(() => {
+        if (excluida) return
+        trackPageview()
+    }, [caminho, excluida])
+
+    if (excluida) return null
 
     return (
         <Script
@@ -67,6 +76,7 @@ export function UmamiScript({ src, websiteId, hostUrl, domains }: Props) {
             data-host-url={hostUrl}
             data-domains={domains}
             data-do-not-track="true"
+            data-auto-track="false"
             /* Core Web Vitals de usuario real (LCP, INP, CLS). O Lighthouse mede
                um laboratorio; isto mede quem de fato acessa, em rede e aparelho
                reais. */
