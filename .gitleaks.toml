@@ -8,4 +8,7 @@ paths = [
   '''(^|/)\.lighthouseci/''',
   '''(^|/)\.env\.local$''',
   '''(^|/)\.gsc-credentials\.json$''',
+  # Repositório de operação montado localmente: é outro repositório, varrido pelo seu próprio
+  # gitleaks (`make secrets` lá), como os demais artefatos locais desta lista.
+  '''(^|/)\.operacao/''',
 ]

@@ -9,9 +9,11 @@
         "@semantic-release/commit-analyzer",
         "@semantic-release/github",
         "@semantic-release/npm",
+        "@semantic-release/release-notes-generator",
         "conventional-changelog-conventionalcommits",
         "dotenv",
-        "sharp"
+        "postcss",
+        "semantic-release"
       ],
       "ignoreBinaries": [
         "actionlint",
@@ -19,7 +21,7 @@
         "graphify",
         "hadolint",
         "k6",
-        "lychee"
+        "shellcheck"
       ]
     }
   }
