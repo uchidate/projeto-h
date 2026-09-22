@@ -1,0 +1,8 @@
+# Exceções do hadolint (`npm run quality:containers`). Cada uma com o motivo.
+ignored:
+  # Alpine: as versões dos pacotes acompanham o repositório da imagem base já fixada; pin exato
+  # faz o rebuild falhar quando esse repositório roda.
+  - DL3018
+  # O npm é instalado na versão EXATA do campo `packageManager` do package.json, lida na hora do
+  # build (ver o comentário no Dockerfile): o pin existe, só que o hadolint não consegue vê-lo.
+  - DL3016
