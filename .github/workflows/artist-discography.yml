@@ -7,16 +7,16 @@ name: Sync Artist/Group Discography (Spotify)
 #
 # --lote 40, não o catálogo completo: a Spotify não publica número de cota do
 # modo Development de propósito. Medido em 22/09/2026: a cota estourou depois
-# de ~300-500 chamadas num backfill do catálogo inteiro (~170 artistas/grupos).
-# 40/semana cobre o catálogo em poucas semanas com folga generosa, e o script
-# faz rodízio sozinho via spotify_sync_em (quem nunca foi visto ou foi visto há
-# mais tempo entra primeiro) — não é preciso coordenar nada aqui, só rodar toda
-# semana. Decisão completa em
+# de ~300-500 chamadas num backfill do catálogo inteiro (~170 artistas/grupos)
+# — bem acima do que uma rodada diária de 40 usa sozinha. 40/dia cobre o
+# catálogo inteiro em ~4-5 dias, e o script faz rodízio sozinho via
+# spotify_sync_em (quem nunca foi visto ou foi visto há mais tempo entra
+# primeiro) — não é preciso coordenar nada aqui, só rodar. Decisão completa em
 # notas/decisoes/2026-09-22-spotify-link-artists-seguidores-sumiram-da-api.md.
 
 on:
   schedule:
-    - cron: '45 6 * * 1'  # Toda segunda-feira às 06:45 UTC (depois do artist-access, 06:30)
+    - cron: '45 6 * * *'  # Toda madrugada às 06:45 UTC
   workflow_dispatch:       # Permite trigger manual (aceita lote customizado)
     inputs:
       lote:
