@@ -4,7 +4,15 @@ module.exports = {
   ci: {
     collect: {
       numberOfRuns: 1,
-      url: [`${baseUrl}/`, `${baseUrl}/blog`, `${baseUrl}/productions`],
+      url: [
+        `${baseUrl}/`,
+        `${baseUrl}/blog`,
+        `${baseUrl}/productions`,
+        `${baseUrl}/quiz`,
+        `${baseUrl}/agencies/fnf-entertainment`,
+        `${baseUrl}/artists/han-yi-young`,
+        `${baseUrl}/groups/kard`,
+      ],
       settings: { chromeFlags: '--headless --no-sandbox' },
     },
     assert: {
@@ -14,6 +22,11 @@ module.exports = {
         'categories:accessibility': ['error', { minScore: 0.85 }],
         'categories:best-practices': ['error', { minScore: 0.55 }],
         'categories:seo': ['error', { minScore: 0.8 }],
+        // Baseline medido em produção (home) em 2026-09-22: performance 0.61.
+        // 'warn', não 'error': é rodado contra o site real (rede/terceiros
+        // variam entre execuções) e ainda não bloqueia PR — ver
+        // performance.yml, que só abre/atualiza issue quando cai abaixo disto.
+        'categories:performance': ['warn', { minScore: 0.5 }],
         'first-contentful-paint': ['warn', { maxNumericValue: 2500 }],
         'largest-contentful-paint': ['warn', { maxNumericValue: 4000 }],
         'cumulative-layout-shift': ['warn', { maxNumericValue: 0.15 }],
