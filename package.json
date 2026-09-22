@@ -36,11 +36,13 @@
     "grafo": "graphify export html && echo \"grafo em graphify-out/ — use: graphify query \\\"<pergunta>\\\"\"",
     "grafo:atualizar": "graphify update || echo \"sem graphify-out: rode a skill /graphify primeiro\"",
     "article:check": "node scripts/check-article-structure.mjs",
+    "context:check": "node scripts/check-project-context.mjs",
     "context:find": "node scripts/find-project-context.mjs",
     "context:impact": "node scripts/project-change-impact.mjs",
     "identity:check": "node scripts/check-product-identity.mjs",
     "notas:resumo": "node scripts/notas-resumo.mjs",
     "seo:check": "node scripts/check-seo-architecture.mjs",
+    "seo:test": "vitest run lib/seo",
     "prepare": "husky"
   },
   "dependencies": {
