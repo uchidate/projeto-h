@@ -139,7 +139,15 @@ const nextConfig = {
             // A rota /hubs/ virou /guias/ e o slug mudou junto, entao um curinga
             // /hubs/:slug -> /guias/:slug cairia noutro 404. Mapeamento explicito.
             // Sem tráfego nos ultimos 28 dias, mas a URL antiga esta indexada.
-            { source: '/hubs/grupos-kpop-4a-geracao', destination: '/guias/grupos-4a-geracao-kpop', permanent: true },
+            // Aponta direto para o blog (ver redirect de /guias/grupos-4a-geracao-kpop
+            // abaixo): sem isso encadearia dois redirects para o mesmo destino.
+            { source: '/hubs/grupos-kpop-4a-geracao', destination: '/blog/melhores-grupos-kpop-4a-geracao', permanent: true },
+            // Canibalização de SEO (22/09/2026): /guias/grupos-4a-geracao-kpop e
+            // /blog/melhores-grupos-kpop-4a-geracao disputavam a mesma busca
+            // ("grupos da 4ª geração"), título quase idêntico, nenhum dos dois subia
+            // no Google (posição 6-9 em 28 dias). O post do blog é o conteúdo mais
+            // forte (2785 vs 958 palavras); o guia virou redirect.
+            { source: '/guias/grupos-4a-geracao-kpop', destination: '/blog/melhores-grupos-kpop-4a-geracao', permanent: true },
             // Artigo despublicado em 2026-09-15: todo o texto partia da premissa de
             // que o MEOVV era da HYBE (e comparava o grupo com ILLIT e LE SSERAFIM
             // "dentro da empresa"). O MEOVV e da The Black Label. A ficha do grupo,
