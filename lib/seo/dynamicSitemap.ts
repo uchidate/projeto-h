@@ -199,11 +199,22 @@ export function buildUrlSet(entries: SitemapEntry[]) {
     return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${xhtml}>\n${urls}\n</urlset>\n`
 }
 
+/**
+ * 1h na borda e 24h de "velho aceitável" (era 5 min e 1h).
+ *
+ * Gerar um sitemap frio leva de 5 a 6s (produções 6,5s, artistas 5,3s, medido em
+ * 2026-09-23). Com 5 min de cache e 1h de tolerância, o Googlebot que voltava
+ * depois de uma hora pagava esse custo inteiro — e sitemap lento é sitemap que o
+ * robô rastreia menos. A defasagem custa pouco: página nova chega ao Google pelo
+ * IndexNow, não pelo sitemap; o sitemap é a rede de segurança.
+ */
+export const CACHE_SITEMAP = 'public, s-maxage=3600, stale-while-revalidate=86400'
+
 export function sitemapResponse(xml: string) {
     return new Response(xml, {
         headers: {
             'Content-Type': 'application/xml; charset=utf-8',
-            'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+            'Cache-Control': CACHE_SITEMAP,
         },
     })
 }
