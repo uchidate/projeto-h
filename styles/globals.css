@@ -2421,13 +2421,24 @@ ins.adsbygoogle[data-ad-status^="unfill"] { display: none !important; }
  *
  * `content-visibility: auto` mantém o HTML inteiro — busca na página, âncoras,
  * leitores de tela e o Google continuam vendo tudo — e só adia o trabalho de
- * renderização. `contain-intrinsic-size: auto 800px` reserva altura enquanto o
- * bloco não foi renderizado; o `auto` faz o navegador lembrar a altura real
+ * renderização. `contain-intrinsic-size: auto <altura>` reserva altura enquanto
+ * o bloco não foi renderizado; o `auto` faz o navegador lembrar a altura real
  * depois da primeira vez, então a rolagem não pula ao voltar.
+ *
+ * A altura reservada vem de `--cv-h`, definida em cada bloco. Reservar 800px
+ * para todos causava CLS: medido em 2026-09-23 na home, os blocos reais têm de
+ * 110 a 1808px, e ao rolar até eles a página encolhia/crescia centenas de
+ * pixels (CLS 0,113 no celular e 0,790 no desktop de 1440px). Com a altura
+ * medida por bloco e por faixa de largura: 0,007 e 0,016.
+ *
+ * As alturas são estimativas: dependem do conteúdo vindo do WordPress. Se um
+ * bloco mudar de forma (mais cards, outra grade), remeça com
+ * `node scripts/diagnostico-web-vitals.mjs --desktop` e ajuste `--cv-h`.
+ * Sem `--cv-h` cai em 800px, o valor antigo.
  */
 .cv-auto {
     content-visibility: auto;
-    contain-intrinsic-size: auto 800px;
+    contain-intrinsic-size: auto var(--cv-h, 800px);
 }
 
 /*

@@ -69,15 +69,15 @@ export function HomeFrontPage({ posts, productions, artists, spotlightArtists, f
                   * mede visibilidade com IntersectionObserver, e a mudança não
                   * deve mexer em como o AdSense enxerga a página.
                   */}
-                <div className="cv-auto grid border-t border-border bg-surface/55 lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
+                <div className="cv-auto [--cv-h:1800px] lg:[--cv-h:1180px] grid border-t border-border bg-surface/55 lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
                     <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} /></div>
                     <div data-bloco="home-artistas-em-alta" className="contents"><HomeTrendingArtists artists={artists} featuredArtist={featuredArtist} featuredArtistNote={featuredArtistNote} /></div>
                 </div>
-                <div className="cv-auto">
+                <div className="cv-auto [--cv-h:620px] sm:[--cv-h:720px] lg:[--cv-h:490px]">
                     <div data-bloco="home-producoes" className="contents"><HomeProductionsRail productions={productions} /></div>
                 </div>
                 {trendingGroups.length > 0 && (
-                    <div className="cv-auto grid border-t border-border bg-background lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
+                    <div className="cv-auto [--cv-h:1100px] lg:[--cv-h:920px] grid border-t border-border bg-background lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
                         <div data-bloco="home-ultimos" className="contents"><HomeLatestPosts posts={latest.slice(0, 8)} categoryMap={categoryMap} /></div>
                         <div data-bloco="home-grupos-em-alta" className="contents"><HomeTrendingGroups groups={trendingGroups} /></div>
                     </div>
@@ -87,10 +87,10 @@ export function HomeFrontPage({ posts, productions, artists, spotlightArtists, f
                         <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_mid_leaderboard" />
                     </div>
                 )}
-                <div className="cv-auto">
+                <div className="cv-auto [--cv-h:266px] sm:[--cv-h:284px] lg:[--cv-h:250px]">
                     <div data-bloco="home-streaming" className="contents"><HomeStreamingTop showsByPlatform={streamingByPlatform} /></div>
                 </div>
-                <div className="cv-auto border-t border-border px-4 sm:px-6 lg:px-10">
+                <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-10">
                     <div data-bloco="home-quiz" className="contents"><HomeQuizBanner /></div>
                 </div>
             </div>
