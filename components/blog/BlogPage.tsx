@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { BookOpen, Sparkles, ArrowRight } from 'lucide-react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import type { ArchiveHub } from '@/lib/guias'
+import { tituloDoBlog } from '@/lib/blog-titulo'
 import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
 import { PageBreadcrumb } from '@/components/ui/PageBreadcrumb'
 import { SearchInput } from '@/components/ui/SearchInput'
@@ -88,6 +89,11 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
         <div className="bg-background">
             {/* Chaves iguais ao SearchParams de app/(site)/blog/page.tsx. */}
             <RastreioDeFiltros listagem="blog" filtros={['category', 'tag', 'page', 'search']} />
+            {/* H1 só para leitor de tela e robô: o cabeçalho visual da página é o
+                breadcrumb, e um título grande aqui mexeria no layout. */}
+            <h1 className="sr-only">
+                {tituloDoBlog({ categoria: currentCategoryLabel, tag: currentTag, busca: currentSearch })}
+            </h1>
             <ResponsiveFilterBar label="Filtros" value={currentCategoryLabel ?? 'Artigos'}>
                 <div className="space-y-3 lg:flex lg:w-full lg:items-center lg:gap-2 lg:space-y-0">
                     <BlogCategorySelect categories={categories} current={currentCategory} />
