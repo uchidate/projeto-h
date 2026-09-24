@@ -3,7 +3,7 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getCompanies, COMPANY_INDUSTRY_LABELS, COMPANY_INDUSTRY_EMOJI } from '@/lib/wordpress/companies'
+import { getCompanies, COMPANY_INDUSTRY_LABELS, COMPANY_INDUSTRY_EMOJI, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
 import type { CompanyIndustry } from '@/lib/wordpress/types'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml } from '@/lib/utils'
@@ -93,8 +93,8 @@ export default async function EmpresasPage({ searchParams }: { searchParams: Sea
                                 const name = stripHtml(company.title.rendered)
                                 const acf = company.acf ?? {}
                                 const img = company.featured_image_url
-                                const indLabel = acf.industry ? COMPANY_INDUSTRY_LABELS[acf.industry] : null
-                                const indEmoji = acf.industry ? COMPANY_INDUSTRY_EMOJI[acf.industry] : '🏢'
+                                const indLabel = rotuloDoSetor(acf.industry)
+                                const indEmoji = emojiDoSetor(acf.industry)
 
                                 return (
                                     <Link key={company.id} href={`/empresas/${company.slug}`}

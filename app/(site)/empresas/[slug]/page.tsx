@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getCompanyBySlug, getCompanies, getRelatedCompanies, COMPANY_INDUSTRY_LABELS, COMPANY_INDUSTRY_EMOJI } from '@/lib/wordpress/companies'
+import { getCompanyBySlug, getCompanies, getRelatedCompanies, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
 import { SITE_URL } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
     const name = stripHtml(company.title.rendered)
     const korean = company.acf?.name_korean
-    const industry = company.acf?.industry ? COMPANY_INDUSTRY_LABELS[company.acf.industry] : 'Empresa sul-coreana'
+    const industry = rotuloDoSetor(company.acf?.industry) ?? 'Empresa sul-coreana'
     // "CJ ENM (CJ ENM)": o nome coreano cadastrado às vezes repete o próprio nome.
     const showKorean = korean && !korean.toLowerCase().includes(name.toLowerCase())
     const title = `${name}${showKorean ? ` (${korean})` : ''} — ${industry}`
@@ -60,8 +60,8 @@ export default async function CompanyPage({ params }: { params: Params }) {
     const acf = company.acf ?? {}
     const name = stripHtml(company.title.rendered)
     const img = getWPImage(company._embedded, company.featured_image_url)
-    const indLabel = acf.industry ? COMPANY_INDUSTRY_LABELS[acf.industry] : null
-    const indEmoji = acf.industry ? COMPANY_INDUSTRY_EMOJI[acf.industry] : '🏢'
+    const indLabel = rotuloDoSetor(acf.industry)
+    const indEmoji = emojiDoSetor(acf.industry)
     const companyUrl = `${SITE_URL}/empresas/${slug}`
 
     const relatedCompanies = await getRelatedCompanies(company.id, acf.industry, 6)
@@ -274,7 +274,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                             {relatedCompanies.map(c => {
                                 const cname = stripHtml(c.title.rendered)
                                 const cImg = c.featured_image_url
-                                const cEmoji = c.acf?.industry ? COMPANY_INDUSTRY_EMOJI[c.acf.industry] : '🏢'
+                                const cEmoji = emojiDoSetor(c.acf?.industry)
                                 return (
                                     <Link key={c.id} href={`/empresas/${c.slug}`}
                                         className="group flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent transition-colors">
@@ -287,8 +287,8 @@ export default async function CompanyPage({ params }: { params: Params }) {
                                         </div>
                                         <div>
                                             <p className="text-[13px] font-bold group-hover:text-accent transition-colors line-clamp-1">{cname}</p>
-                                            {c.acf?.industry && (
-                                                <p className="font-mono text-[10px] text-muted">{COMPANY_INDUSTRY_LABELS[c.acf.industry]}</p>
+                                            {rotuloDoSetor(c.acf?.industry) && (
+                                                <p className="font-mono text-[10px] text-muted">{rotuloDoSetor(c.acf?.industry)}</p>
                                             )}
                                         </div>
                                     </Link>

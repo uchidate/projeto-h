@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { getCompanyBySlug, getCompaniesByIds, getRelatedCompanies } from './companies'
+import { getCompanyBySlug, getCompaniesByIds, getRelatedCompanies, rotuloDoSetor, emojiDoSetor } from './companies'
 
 function company(id: number, slug: string) {
     return { id, slug, title: { rendered: slug } }
@@ -63,5 +63,33 @@ describe('getRelatedCompanies', () => {
     it('não quebra quando o pool retornado está vazio (seed % 0)', async () => {
         fetchMock.mockResolvedValue({ ok: true, json: async () => [] })
         expect(await getRelatedCompanies(5)).toEqual([])
+    })
+})
+
+describe('rotuloDoSetor', () => {
+    it('devolve o rótulo dos setores que o código conhece', () => {
+        expect(rotuloDoSetor('tech')).toBe('Tecnologia')
+        expect(rotuloDoSetor('automotive')).toBe('Automotivo')
+    })
+
+    it('entende os nomes que o WordPress grava de outro jeito', () => {
+        // Supernal e Boston Dynamics chegam como `technology`, Netflix Korea
+        // como `streaming`; antes viravam "— undefined" no título da página.
+        expect(rotuloDoSetor('technology')).toBe('Tecnologia')
+        expect(rotuloDoSetor('streaming')).toBe('Mídia')
+    })
+
+    it('devolve null para o desconhecido em vez de "undefined"', () => {
+        expect(rotuloDoSetor('robotica')).toBeNull()
+        expect(rotuloDoSetor(undefined)).toBeNull()
+        expect(rotuloDoSetor('')).toBeNull()
+    })
+})
+
+describe('emojiDoSetor', () => {
+    it('acompanha os sinônimos e cai no prédio quando não conhece', () => {
+        expect(emojiDoSetor('technology')).toBe(emojiDoSetor('tech'))
+        expect(emojiDoSetor('robotica')).toBe('🏢')
+        expect(emojiDoSetor(null)).toBe('🏢')
     })
 })

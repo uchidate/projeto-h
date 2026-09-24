@@ -117,3 +117,36 @@ export const COMPANY_INDUSTRY_EMOJI: Record<string, string> = {
     fashion:       '👗',
     ecommerce:     '📦',
 }
+
+/**
+ * Setores que o WordPress grava com outro nome do que o código conhece.
+ *
+ * Medido em 2026-09-23: 3 das 67 empresas (Supernal e Boston Dynamics com
+ * `technology`, Netflix Korea com `streaming`) saíam no título da página como
+ * "Boston Dynamics — undefined | HallyuHub": o mapa de rótulos é
+ * `Record<string, string>`, então o TypeScript não acusa chave faltando, e a
+ * interpolação transformou o `undefined` em texto que o Google exibe.
+ *
+ * Sinônimo, e não chave nova em COMPANY_INDUSTRY_LABELS: as chaves dele viram
+ * abas de filtro na listagem, e uma aba para uma empresa só não é o objetivo.
+ */
+const SETOR_SINONIMO: Record<string, string> = {
+    technology: 'tech',
+    streaming: 'media',
+}
+
+function setorNormalizado(industry?: string | null): string | null {
+    if (!industry) return null
+    return SETOR_SINONIMO[industry] ?? industry
+}
+
+/** Rótulo do setor, ou null se desconhecido — quem chama decide o fallback. */
+export function rotuloDoSetor(industry?: string | null): string | null {
+    const setor = setorNormalizado(industry)
+    return setor ? (COMPANY_INDUSTRY_LABELS[setor] ?? null) : null
+}
+
+export function emojiDoSetor(industry?: string | null): string {
+    const setor = setorNormalizado(industry)
+    return (setor && COMPANY_INDUSTRY_EMOJI[setor]) || '🏢'
+}
