@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect } from 'react'
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
-import { trackPageview } from '@/lib/analytics'
+import { rotaSemMedicao, umamiAntesDeEnviar } from '@/lib/umami-filtro'
 
 /**
  * Carrega o Umami — exceto nas rotas de autenticação.
@@ -39,17 +38,33 @@ import { trackPageview } from '@/lib/analytics'
  *
  * ── Navegação SPA para `/entrar`/`/cadastro` ────────────────────────────────
  *
- * `data-auto-track="false"` desliga o rastreamento automático do Umami
- * (inclusive o gancho no histórico do navegador) e o pageview passa a ser
- * disparado por nós, no efeito abaixo, por caminho — a mesma lista que
- * decide se o script CARREGA agora também decide se cada navegação vira
- * pageview. Até 2026-09-22 só o carregamento direto era coberto: quem já
- * estava com o script ativo e navegava para `/entrar` pelo menu ainda gerava
- * pageview, porque o gancho automático do Umami não conhecia esta lista.
+ * O carregamento direto é coberto por não montar o script (`excluida`). Quem já
+ * está com o script ativo e navega para `/entrar` pelo menu é coberto por
+ * `data-before-send`, que descarta o envio quando o caminho está na lista.
+ *
+ * ── Por que NÃO `data-auto-track="false"` ───────────────────────────────────
+ *
+ * O PR #56 (2026-09-22) desligou o rastreamento automático para contar o
+ * pageview à mão. Efeito colateral que ninguém viu: no Umami v3 a coleta de
+ * Web Vitals (`data-performance`) é iniciada DENTRO da inicialização do
+ * rastreamento automático. Sem ele, a aba Desempenho parou: até 22/09 chegavam
+ * de 117 a 244 medições de LCP por dia; a partir de 23/09, zero, com o resto
+ * dos eventos normal. Provado com o script real num navegador: auto-track
+ * desligado → 0 eventos de desempenho; ligado → eventos de desempenho, com as
+ * rotas excluídas descartadas pelo `before-send`.
+ *
+ * O gancho precisa existir em `window` antes do script carregar; por isso é
+ * registrado no escopo do módulo, e o script entra com `lazyOnload`.
  */
 
-/** Rotas onde o tracker não carrega nem conta pageview. Prefixo, não igualdade: cobre subrotas. */
-const ROTAS_SEM_MEDICAO = ['/entrar', '/cadastro']
+declare global {
+    interface Window {
+        umamiAntesDeEnviar?: typeof umamiAntesDeEnviar
+    }
+}
+
+if (typeof window !== 'undefined') window.umamiAntesDeEnviar = umamiAntesDeEnviar
+
 
 type Props = {
     src: string
@@ -60,12 +75,7 @@ type Props = {
 
 export function UmamiScript({ src, websiteId, hostUrl, domains }: Props) {
     const caminho = usePathname()
-    const excluida = ROTAS_SEM_MEDICAO.some((r) => caminho === r || caminho?.startsWith(`${r}/`))
-
-    useEffect(() => {
-        if (excluida) return
-        trackPageview()
-    }, [caminho, excluida])
+    const excluida = caminho !== null && rotaSemMedicao(caminho)
 
     if (excluida) return null
 
@@ -76,7 +86,7 @@ export function UmamiScript({ src, websiteId, hostUrl, domains }: Props) {
             data-host-url={hostUrl}
             data-domains={domains}
             data-do-not-track="true"
-            data-auto-track="false"
+            data-before-send="umamiAntesDeEnviar"
             /* Core Web Vitals de usuario real (LCP, INP, CLS). O Lighthouse mede
                um laboratorio; isto mede quem de fato acessa, em rede e aparelho
                reais. */
