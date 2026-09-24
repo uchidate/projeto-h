@@ -1,11 +1,16 @@
 import { NextResponse } from 'next/server'
 import { withAuth } from 'next-auth/middleware'
 import { producaoFoiRemovida } from '@/lib/producoes-removidas'
+import { secaoFoiRemovida } from '@/lib/secoes-removidas'
 
 const PROTECTED_PREFIXES = ['/dashboard', '/perfil', '/minhas-listas']
 
 const proxy = withAuth(
     async function protegerRota(req) {
+        // 410 para seções que saíram do site (`/news/<id>` e `/admin/…` do sistema anterior).
+        if (secaoFoiRemovida(req.nextUrl.pathname)) {
+            return new NextResponse(null, { status: 410 })
+        }
         // 410 para produção que não volta, em qualquer idioma (`/en/productions/…`). Consulta em memória, sem I/O: este
         // proxy já rodou um fetch por requisição no passado, para uma feature
         // que nunca funcionou, e a nota abaixo registra o custo disso.
