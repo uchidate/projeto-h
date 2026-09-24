@@ -320,6 +320,25 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # Aviso de falha no canal unico (ntfy), pelo mesmo `ssh oc` do deploy.
+      #
+      # Em 2026-09-24 dois deploys seguidos falharam (laco de redirect na
+      # Cloudflare, pego pelo passo do Traefik) e ninguem soube ate alguem abrir
+      # o GitHub. O site seguia no ar na versao anterior, entao nada gritava.
+      #
+      # Valores por `env`, nunca interpolados no script: mensagem de commit e
+      # texto de terceiros. `continue-on-error`: o aviso nao pode transformar uma
+      # falha ja registrada em outra.
+      - name: Avisar falha no ntfy
+        if: failure()
+        continue-on-error: true
+        env:
+          SHA: ${{ github.sha }}
+          URL_EXECUCAO: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          printf 'Commit %s\nO site segue na versao anterior (a falha ocorre antes da troca do container).\nAbra a execucao para ver o passo que falhou.\n' "${SHA:0:9}" \
+            | ssh oc "/usr/local/bin/ntfy-envia.sh infra 'Deploy de producao FALHOU' urgent 'rotating_light,x' 'view, Abrir execucao, ${URL_EXECUCAO}'"
+
   fumaca:
     name: Fumaça em produção
     needs: publicar
