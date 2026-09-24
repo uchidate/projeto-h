@@ -17,7 +17,6 @@ declare global {
     interface Window {
         gtag?: (...args: unknown[]) => void
         dataLayer?: unknown[][]
-        // `track()` sem argumentos registra pageview — usado por trackPageview().
         umami?: { track?: (nome?: string, dados?: Record<string, unknown>) => void }
     }
 }
@@ -46,11 +45,8 @@ function gtag(...args: unknown[]) {
  */
 /**
  * Fila de CHAMADAS (nao so eventos nomeados) disparadas antes do tracker
- * existir — serve tanto `umami()` (evento) quanto `trackPageview()`
- * (pageview manual, sem nome). Generica desde 2026-09-22: era uma fila de
- * `[nome, dados]` so para eventos; pageview manual precisou do mesmo
- * reforco e duplicar a fila para isso teria sido o mesmo erro que motivou
- * este arquivo (ver cabecalho).
+ * existir. Generica desde 2026-09-22 (era so `[nome, dados]`); o pageview
+ * manual que a motivou saiu em 2026-09-24, mas a forma generica ficou.
  */
 const filaUmami: Array<() => void> = []
 let sondaUmami: number | null = null
@@ -115,16 +111,6 @@ function umami(nome: string, dados: Record<string, unknown>) {
         limpo[k] = typeof v === 'string' ? v.slice(0, LIMITE_TEXTO) : v
     }
     chamarUmami(() => window.umami!.track!(nome, limpo))
-}
-
-/**
- * Pageview manual — para quando `data-auto-track="false"` (ver UmamiScript).
- *
- * `window.umami.track()` SEM argumentos registra pageview; com nome vira
- * evento customizado chamado "pageview", o que contaminaria a metrica.
- */
-export function trackPageview() {
-    chamarUmami(() => window.umami!.track!())
 }
 
 /**
