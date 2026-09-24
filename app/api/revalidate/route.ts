@@ -11,6 +11,7 @@ import {
 } from '@/lib/wordpress/cache'
 import { clientIpOrUnknown } from '@/lib/http/clientIp'
 import { buildIndexNowUrl, buildLocalizedIndexNowUrls, INDEXNOW_LOCALIZED_TYPES, submitToIndexNow } from '@/lib/seo/indexnow'
+import { purgarCloudflare } from '@/lib/cloudflare-purge'
 import { wpBuscarOpcional, buildParams } from '@/lib/wordpress/client'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { paraLog } from '@/lib/utils/log'
@@ -96,6 +97,31 @@ function avisarIndexNow(type: WPPostType, slug: unknown): void {
             }
         } catch (erro) {
             console.warn(`[indexnow] exceção inesperada — url=${url} ${erro instanceof Error ? erro.message : String(erro)}`)
+        }
+    })
+}
+
+/**
+ * Expurga a cópia da borda (Cloudflare) das URLs do item, incluindo as de outros
+ * idiomas. Sem isto o TTL da borda teria de ficar curto (ver lib/cloudflare-purge.ts).
+ * Bloco próprio: falha aqui não pode afetar o IndexNow nem a resposta.
+ */
+function expurgarBorda(type: WPPostType, slug: unknown): void {
+    if (typeof slug !== 'string' || slug.length === 0) return
+    const url = buildIndexNowUrl(type, slug)
+    if (!url) return
+
+    after(async () => {
+        try {
+            const urls = [url, ...buildLocalizedIndexNowUrls(type, slug, await idiomasPublicados(type, slug))]
+            const desfecho = await purgarCloudflare(urls)
+            if (desfecho.ok) {
+                console.log(`[cf-purge] ok — ${desfecho.purgadas} url(s) de ${type}/${slug}`)
+            } else if (desfecho.reason !== 'disabled' && desfecho.reason !== 'no-urls') {
+                console.warn(`[cf-purge] falhou — ${type}/${slug} motivo=${desfecho.reason} ${desfecho.detail ?? ''}`)
+            }
+        } catch (erro) {
+            console.warn(`[cf-purge] exceção inesperada — ${type}/${slug} ${erro instanceof Error ? erro.message : String(erro)}`)
         }
     })
 }
@@ -188,6 +214,7 @@ export async function POST(req: NextRequest) {
 
     for (const tag of tags) revalidateTag(tag, PERFIL_PURGA)
     avisarIndexNow(type, slug)
+    expurgarBorda(type, slug)
 
     const ms = Date.now() - start
     console.log(
