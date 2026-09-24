@@ -55,6 +55,13 @@ const nextConfig = {
     },
     images: {
         minimumCacheTTL: 31536000, // 1 ano — imagens WP são imutáveis por URL
+        // Larguras aceitas pelo otimizador: as padrão do Next 16 mais 512.
+        // O Bingbot (e outros) pedem `/_next/image?...&w=512` e recebiam 400
+        // (`"w" parameter (width) of 512 is not allowed`): 2.823 respostas em
+        // 72h, medido em 2026-09-23, todas da aplicação e 93% antes da regra de
+        // país na Cloudflare. As URLs vêm de fora (não estão no HTML atual), então
+        // o jeito de não devolver erro a robô é aceitar a largura.
+        imageSizes: [32, 48, 64, 96, 128, 256, 384, 512],
         remotePatterns: [
             // WordPress media servido pelo mesmo domínio
             {
