@@ -2,16 +2,13 @@ import { ADSENSE_CLIENT } from '@/lib/constants/identidade.mjs'
 import type { Metadata } from 'next'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, OG_IMAGE } from '@/lib/constants/site'
 
-// Lista, não valor único: o Google aceita várias verificações simultâneas na
-// mesma propriedade, e trocar o token existente por um novo DESVERIFICA quem já
-// era dono — quebrando Search Console/AdSense de quem estava lá, sem aviso.
-// Toda conta que precisar de acesso entra aqui somando, nunca substituindo.
-// A env var continua podendo acrescentar um token extra em ambientes próprios.
-const GOOGLE_SITE_VERIFICATION = [
-    'IA1hWZ2q7hXc44oWfXBrHLczwy4X74ynKJTsCwVjKKs',
-    '_1Rvzep2e60Vpoklynz8YesMkkaw8Da9PNUJpF0ivPQ',
-    process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-].filter((token): token is string => Boolean(token))
+// A verificação do Search Console não depende mais de meta no HTML: as três
+// propriedades (domínio, com www e sem www) estão verificadas por DNS (TXT) e as
+// de prefixo também por arquivo HTML. Se outra conta precisar de acesso por tag,
+// informe o token na env — ela soma, nunca substitui.
+const GOOGLE_SITE_VERIFICATION = [process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION].filter(
+    (token): token is string => Boolean(token),
+)
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
