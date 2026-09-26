@@ -7,6 +7,7 @@ describe('sitemap dinâmico', () => {
         expect(xml).toContain('/sitemaps/pages.xml')
         expect(xml).toContain('/sitemaps/posts.xml')
         expect(xml).toContain('/sitemaps/companies.xml')
+        expect(xml).toContain('/sitemaps/fandoms.xml')
         expect(xml).not.toContain('companys.xml')
         expect(xml).not.toContain('agencys.xml')
     })

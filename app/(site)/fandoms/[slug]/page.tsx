@@ -25,8 +25,11 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     const fandom = await getFandomBySlug(slug)
     if (!fandom) return {}
 
-    const title = `Fandom ${fandom.name} — grupos e curiosidades`
-    const description = `Conheça o fandom ${fandom.name}: cor oficial, lightstick e todos os grupos K-Pop ligados a essa torcida.`
+    const grupos = fandom.groups.map(g => stripHtml(g.title.rendered))
+    const listaGrupos = grupos.length > 2 ? `${grupos.slice(0, 2).join(', ')} e mais ${grupos.length - 2}` : grupos.join(' e ')
+    const title = `${fandom.name}, a torcida do ${listaGrupos}: nome, cor e novidades`
+    // A descrição só promete o que a página tem: o lightstick entra quando está cadastrado, as datas sempre que houver membros.
+    const description = `Tudo sobre o fandom ${fandom.name}, a torcida ${grupos.length > 1 ? 'dos grupos' : 'do grupo'} ${listaGrupos}: de onde vem o nome, ${fandom.lightstick ? `lightstick (${fandom.lightstick}), ` : ''}próximas datas, novidades e torcidas parecidas.`
     const url = `${SITE_URL}/fandoms/${slug}`
 
     return buildWordPressMetadata({
@@ -61,6 +64,7 @@ export default async function FandomPage({ params }: { params: Params }) {
     return (
         <>
             <JsonLd data={breadcrumbSchema} />
+            <JsonLd data={{ '@context': 'https://schema.org', '@type': 'WebPage', name: `${fandom.name}: torcida do ${fandom.groups.map(g => stripHtml(g.title.rendered)).join(', ')}`, url: fandomUrl, inLanguage: 'pt-BR', about: fandom.groups.map(g => ({ '@type': 'MusicGroup', name: stripHtml(g.title.rendered), url: `${SITE_URL}/groups/${g.slug}` })) }} />
             <FandomDetailPage fandom={fandom} artists={artists} outras={outras} />
         </>
     )

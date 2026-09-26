@@ -4,6 +4,8 @@ import type { QuizCategory } from '@/lib/wordpress/quiz'
 import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
 import { QuizClient } from './QuizClient'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 
 export const revalidate = 3600
 
@@ -18,11 +20,11 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
     const canonical = `${SITE_URL}/quiz${cat ? `?category=${encodeURIComponent(cat)}` : ''}`
     return {
         title: cat
-            ? `Quiz ${LABELS[cat]} — Teste seus conhecimentos`
-            : 'Quiz K-Pop e K-Drama — Teste seus conhecimentos',
+            ? `Quiz de ${LABELS[cat]}: teste seus conhecimentos e veja seu placar`
+            : 'Quiz de K-Pop e K-Drama: mais de 300 perguntas para testar seu lado fã',
         description: cat
-            ? `Teste seus conhecimentos sobre ${LABELS[cat]}. Perguntas de diferentes dificuldades com placar e estatísticas.`
-            : 'Teste seus conhecimentos sobre K-Pop, K-Drama e cultura coreana. Perguntas de diferentes dificuldades com placar e estatísticas.',
+            ? `Quiz de ${LABELS[cat]} com perguntas de três níveis, cronômetro, placar e explicação de cada resposta. Jogue grátis e descubra quanto você sabe.`
+            : 'Quiz grátis de K-Pop, K-Drama, cultura e história da Coreia: mais de 300 perguntas em três níveis, uma pergunta nova por dia, placar e sequência. Quanto você sabe?',
         alternates: {
             canonical,
         },
@@ -42,6 +44,19 @@ export default async function QuizPage({ searchParams }: { searchParams: SearchP
 
     return (
         <>
+            <JsonLd data={{
+                '@context': 'https://schema.org',
+                '@type': 'WebApplication',
+                name: 'Quiz Hallyu',
+                url: `${SITE_URL}/quiz`,
+                applicationCategory: 'GameApplication',
+                operatingSystem: 'Qualquer',
+                inLanguage: 'pt-BR',
+                isAccessibleForFree: true,
+                offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
+                description: 'Quiz de K-Pop, K-Drama, cultura e história da Coreia com pergunta do dia, placar e três níveis de dificuldade.',
+            }} />
+            <JsonLd data={buildBreadcrumbSchema([{ name: 'HallyuHub', url: SITE_URL }, { name: 'Quiz', url: `${SITE_URL}/quiz` }])} />
             <QuizClient
                 serverQuestions={questions}
                 initialCategory={activeCategory ?? 'all'}

@@ -34,6 +34,11 @@ export function FandomsPage({ fandoms, search }: Props) {
                 '@type': 'CollectionPage',
                 name: `Fandoms K-Pop | ${SITE_NAME}`,
                 description: 'Fandoms de K-Pop — cores oficiais, lightsticks e os grupos de cada torcida.',
+                mainEntity: {
+                    '@type': 'ItemList',
+                    numberOfItems: fandoms.length,
+                    itemListElement: fandoms.slice(0, 50).map((f, i) => ({ '@type': 'ListItem', position: i + 1, name: f.name, url: `${SITE_URL}/fandoms/${f.slug}` })),
+                },
                 url: `${SITE_URL}/fandoms`,
                 inLanguage: htmlLang(),
                 publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },

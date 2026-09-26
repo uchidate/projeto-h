@@ -12,8 +12,8 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
     const sp = await searchParams
     const url = `${SITE_URL}/fandoms${sp.search ? `?search=${encodeURIComponent(sp.search)}` : ''}`
     return {
-        title: 'Fandoms K-Pop',
-        description: 'Fandoms de K-Pop — cores oficiais, lightsticks e os grupos de cada torcida, em português.',
+        title: 'Fandoms K-Pop: nomes das torcidas, cores e grupos (ARMY, BLINK, ONCE)',
+        description: 'Descubra o nome da torcida de cada grupo de K-Pop, de ARMY a ONCE: cor oficial, grupos, próximas datas e novidades. Escolha a sua e acompanhe, em português.',
         alternates: { canonical: url },
         ...(sp.search ? { robots: { index: false, follow: true } } : {}),
         openGraph: baseOG(url),

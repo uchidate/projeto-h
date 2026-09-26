@@ -71,7 +71,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                     <div>
                         <span className="inline-block -rotate-2 bg-[#ffe14d] px-3 py-1 text-[12px] font-black tracking-[0.08em] text-[#15102b]">{totalAvailable} PERGUNTAS</span>
                         <h1 className="mt-3 font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-[1] sm:text-[52px] lg:text-[64px]">
-                            <span className="sr-only">Quiz Hallyu: </span>Bora testar seu<br />lado <span className="text-[#ff5fa2]">fã</span>? <span className="text-[#38e1c0]">✦</span>
+                            <span className="sr-only">Quiz de K-Pop e K-Drama: </span>Bora testar seu{' '}<br />lado <span className="text-[#ff5fa2]">fã</span>? <span className="text-[#38e1c0]">✦</span>
                         </h1>
                     </div>
                     {stats.totalGames > 0 && (

@@ -2,6 +2,7 @@ import { getAllHubs } from '@/lib/guias'
 import { SITE_URL } from '@/lib/constants/site'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
+import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
 
 export const SITEMAP_SHARDS = [
@@ -9,6 +10,7 @@ export const SITEMAP_SHARDS = [
     'productions',
     'artists',
     'groups',
+    'fandoms',
     'agencies',
     'foods',
     'companies',
@@ -47,7 +49,7 @@ const COLLECTIONS: Partial<Record<SitemapShard, {
 const STATIC_PAGES = [
     '', 'productions', 'artists', 'groups', 'groups/boy-groups',
     'groups/girl-groups', 'groups/grupos-mistos', 'groups/solos',
-    'agencies', 'blog', 'guias', 'quiz', 'about', 'contato', 'privacidade', 'termos',
+    'agencies', 'fandoms', 'blog', 'guias', 'quiz', 'about', 'contato', 'privacidade', 'termos',
 ]
 
 export function isSitemapShard(value: string): value is SitemapShard {
@@ -173,8 +175,17 @@ export async function getLocalizedSitemapEntries(shard: LocalizedShard, locale: 
     ]
 }
 
+/** Fandoms não são uma coleção do WordPress: derivam do campo de torcida dos grupos, então vêm de getAllFandoms. */
+async function fetchFandoms(): Promise<SitemapEntry[]> {
+    const fandoms = await getAllFandoms()
+    if (fandoms.length === 0) throw new Error('Sitemap fandoms retornou vazio')
+    return fandoms.map((f) => ({ loc: `${SITE_URL}/fandoms/${f.slug}` }))
+}
+
 export async function getSitemapEntries(shard: SitemapShard): Promise<SitemapEntry[]> {
-    return shard === 'pages' ? fetchPages() : fetchCollection(shard)
+    if (shard === 'pages') return fetchPages()
+    if (shard === 'fandoms') return fetchFandoms()
+    return fetchCollection(shard)
 }
 
 export function buildSitemapIndex() {
