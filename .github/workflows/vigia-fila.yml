@@ -13,12 +13,14 @@
 #
 # ── Por que 20 minutos ───────────────────────────────────────────────────────
 #
-# staging e producao serializam no mesmo runner de propósito (ver
-# docs/DEPLOY-NO-SERVIDOR.md, princípio 4) — um atrás do outro em fila é
-# normal, não incidente. 20 minutos é maior que qualquer deploy sozinho
-# (~5min medido) e menor que duas filas legítimas empilhadas, então cobre o
-# caso real (streaming-scores, que não deveria esperar por nada) sem alarme
-# falso na fila normal de staging/producao.
+# Desde 2026-09-26 staging e producao rodam nos runners do GitHub
+# (ubuntu-latest) e nao serializam mais por runner unico; o que ainda espera e
+# a `concurrency` (uma execucao de producao por vez), entao uma fila curta
+# continua normal. 20 minutos e maior que qualquer deploy sozinho (~2 a 5 min
+# medido) e menor que duas filas legitimas empilhadas, entao cobre o caso real
+# sem alarme falso. Este vigia depende do cron do GitHub, que atrasa por horas:
+# o aviso confiavel de fila presa vem do vigia-deploy.sh, no servidor
+# (ops/servidor/README.md).
 #
 # ── Por que ubuntu-latest, não o runner próprio ──────────────────────────────
 #
