@@ -37,10 +37,11 @@ interface Props {
     organizationContext?: EntityOrganizationContext
     relatedGroups?: WPGroup[]
     discography?: DiscographyAlbum[]
+    soloReleases?: Record<string, DiscographyAlbum[]>
     relatedHubs?: ArchiveHub[]
 }
 
-export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], relatedHubs = [] }: Props) {
+export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], soloReleases = {}, relatedHubs = [] }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const tC = useTranslations('profile.groupC')
@@ -210,7 +211,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
             {emC ? (
                 <GroupFichaC
                     group={group} model={model} activeMembers={activeMembers} formerMembers={formerMembers} formerSemFicha={formerSemFicha} memberPositions={memberPositions}
-                    relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography}
+                    relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography} soloReleases={soloReleases}
                     agencyName={agencyName} generation={generation} magra={magra}
                     nodes={nodesC} resto={restoC}
                 />

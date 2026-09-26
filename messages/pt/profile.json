@@ -364,7 +364,7 @@
     "debut": "Estreia",
     "lineup": "Formação",
     "start": "Comece por aqui",
-    "startSub": "Dois jeitos de entrar em {name}",
+    "startSub": "Jeitos de entrar em {name}",
     "byMember": "Por uma integrante",
     "byMemberTitle": "Comece por quem você já conhece",
     "byClip": "Por um clipe",
@@ -373,6 +373,12 @@
     "lineupTitle": "Formação",
     "lineupSub": "Quem está e quem passou pelo grupo",
     "lineupActive": "Integrante",
-    "lineupFormer": "Ex-integrante"
+    "lineupFormer": "Ex-integrante",
+    "soloTitle": "Fora do grupo",
+    "soloSub": "O que cada integrante lançou por conta própria",
+    "soloCount": "{count, plural, one {# lançamento solo} other {# lançamentos solo}}",
+    "soloSee": "Ver ficha",
+    "byHit": "Pelo hit",
+    "byHitTitle": "As músicas que definem o grupo"
   }
 }

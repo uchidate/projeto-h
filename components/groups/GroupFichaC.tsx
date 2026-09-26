@@ -29,6 +29,7 @@ interface Props {
     relatedGroups: WPGroup[]
     relatedPosts: WPPost[]
     discography: DiscographyAlbum[]
+    soloReleases: Record<string, DiscographyAlbum[]>
     agencyName: string | null
     generation: string | null
     magra: boolean
@@ -38,7 +39,6 @@ interface Props {
     resto: ReactNode[]
 }
 
-const LILAS = 'var(--group-accent, var(--color-accent))'
 const KICKER = 'font-mono text-[11px] font-black uppercase tracking-[0.14em]'
 const SERIF = 'font-[family-name:var(--font-playfair)]'
 const H2 = `${SERIF} text-[28px] font-semibold leading-[1.05] sm:text-[38px]`
@@ -54,7 +54,7 @@ function Anuncio({ placement, layout = 'content' }: { placement: string; layout?
  * Corpo da página de grupo na proposta "Página de grupo": integrantes primeiro, depois música, carreira,
  * sobre, fandom e leitura. O que a proposta não mostra fica recolhido no mesmo HTML.
  */
-export function GroupFichaC({ group, model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, agencyName, generation, magra, nodes, resto }: Props) {
+export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, soloReleases, agencyName, generation, magra, nodes, resto }: Props) {
     const t = useTranslations('profile.groupC')
     const labels = labelsFor(useLocale())
     const accent = model.accent
@@ -71,7 +71,12 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
     const semAnuncio = magra
     const clipes = videoList.map(v => ({ ...v, id: extractYoutubeId(v.url) })).filter((v): v is typeof v & { id: string } => !!v.id).slice(0, 3)
     const porIntegrante = activeMembers.filter(m => getWPImage(m._embedded, m.featured_image_url)).slice(0, 3)
-    const comeceAqui = clipes.length >= 2 && porIntegrante.length >= 2
+    const hits = (acf.hits ?? []).map(h => ({ ...h, id: extractYoutubeId(h.url) })).filter((h): h is typeof h & { id: string } => !!h.id).slice(0, 3)
+    // Os hits não repetem clipes já listados na trilha "Por um clipe".
+    const clipesSemHit = hits.length >= 2 ? clipes.filter(c => !hits.some(h => h.id === c.id)) : clipes
+    const trilhas = [hits.length >= 2, porIntegrante.length >= 2, clipesSemHit.length >= 2].filter(Boolean).length
+    const comeceAqui = trilhas >= 2
+    const foraDoGrupo = activeMembers.filter(m => (soloReleases[m.slug] ?? []).length > 0).slice(0, 5)
     const temFormacao = formerMembers.length + formerSemFicha.length > 0
 
     const abas = [
@@ -152,7 +157,25 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                     <div className={COL}>
                         <h2 className={H2}>{t('start')}</h2>
                         <p className="mt-2 text-[15px] text-muted">{t('startSub', { name })}</p>
-                        <div className="mt-6 grid gap-5 md:grid-cols-2">
+                        <div className={`mt-6 grid gap-5 ${trilhas === 3 ? 'lg:grid-cols-3' : 'md:grid-cols-2'}`}>
+                            {hits.length >= 2 && (
+                                <div className="border border-border-strong bg-surface p-5 sm:p-[22px]">
+                                    <p className={KICKER} style={{ color: accent }}>{t('byHit')}</p>
+                                    <p className={`${SERIF} mt-1.5 text-[22px] font-semibold sm:text-[24px]`}>{t('byHitTitle')}</p>
+                                    <ul className="mt-4 flex flex-col gap-2.5">
+                                        {hits.map(v => (
+                                            <li key={v.id}>
+                                                <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" className="touch-target flex items-center gap-3.5 bg-background/40 p-2">
+                                                    <span className="relative h-14 w-[100px] shrink-0 overflow-hidden bg-surface"><Image src={`https://img.youtube.com/vi/${v.id}/hqdefault.jpg`} alt="" fill sizes="100px" className="object-cover" /></span>
+                                                    <span className="min-w-0"><span className="block truncate text-[15px] font-bold">{v.title}</span>{v.context && <span className="mt-0.5 block truncate text-[12px] text-muted">{v.context}</span>}</span>
+                                                    <span aria-hidden className="ml-auto pr-1" style={{ color: accent }}>›</span>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                            {porIntegrante.length >= 2 && (
                             <div className="border border-border-strong bg-surface p-5 sm:p-[22px]">
                                 <p className={KICKER} style={{ color: accent }}>{t('byMember')}</p>
                                 <p className={`${SERIF} mt-1.5 text-[22px] font-semibold sm:text-[24px]`}>{t('byMemberTitle')}</p>
@@ -173,11 +196,13 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                                     })}
                                 </ul>
                             </div>
+                            )}
+                            {clipesSemHit.length >= 2 && (
                             <div className="border border-border-strong bg-surface p-5 sm:p-[22px]">
                                 <p className={KICKER} style={{ color: accent }}>{t('byClip')}</p>
                                 <p className={`${SERIF} mt-1.5 text-[22px] font-semibold sm:text-[24px]`}>{t('byClipTitle')}</p>
                                 <ul className="mt-4 flex flex-col gap-2.5">
-                                    {clipes.map(v => (
+                                    {clipesSemHit.map(v => (
                                         <li key={v.id}>
                                             <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" className="touch-target flex items-center gap-3.5 bg-background/40 p-2">
                                                 <span className="relative h-14 w-[100px] shrink-0 overflow-hidden bg-surface"><Image src={`https://img.youtube.com/vi/${v.id}/hqdefault.jpg`} alt="" fill sizes="100px" className="object-cover" /></span>
@@ -188,6 +213,7 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                                     ))}
                                 </ul>
                             </div>
+                            )}
                         </div>
                     </div>
                 </section>
@@ -205,6 +231,43 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                             </div>
                         )}
                         {discography.length > 0 && <GroupDiscography albums={discography} accent={accent} />}
+                    </div>
+                </section>
+            )}
+
+            {/* Fora do grupo: lançamentos solo das integrantes */}
+            {foraDoGrupo.length > 0 && (
+                <section id="solo" className="scroll-mt-28 border-t border-border py-10 sm:py-12" data-bloco="grupo-solo">
+                    <div className={COL}>
+                        <h2 className={H2}>{t('soloTitle')}</h2>
+                        <p className="mt-2 text-[15px] text-muted">{t('soloSub')}</p>
+                        <ul className="mt-6 grid gap-4 md:grid-cols-2">
+                            {foraDoGrupo.map(m => {
+                                const foto = getWPImage(m._embedded, m.featured_image_url)
+                                const nome = stripHtml(m.title?.rendered ?? '')
+                                const rs = soloReleases[m.slug]
+                                return (
+                                    <li key={m.id} className="border border-border-strong bg-surface p-5">
+                                        <Link href={`/artists/${m.slug}`} className="touch-target flex items-center gap-3.5">
+                                            <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-background">{foto && <Image src={foto.src} alt="" fill sizes="56px" className="object-cover object-top" />}</span>
+                                            <span className="min-w-0"><span className="block truncate text-[18px] font-bold">{nome}</span><span className="block text-[12px] text-muted">{t('soloCount', { count: rs.length })}</span></span>
+                                            <span className="ml-auto text-[13px] font-semibold" style={{ color: accent }}>{t('soloSee')} →</span>
+                                        </Link>
+                                        <ul className="mt-4 grid grid-cols-4 gap-2.5 sm:grid-cols-5">
+                                            {rs.slice(0, 5).map((r, i) => (
+                                                <li key={r.id} className={i === 4 ? 'hidden sm:block' : undefined}>
+                                                    <Link href={`/artists/${m.slug}#musica`} className="block">
+                                                        <span className="relative block aspect-square overflow-hidden bg-background">{r.coverUrl && <Image src={r.coverUrl} alt={r.title} fill sizes="80px" className="object-cover" />}</span>
+                                                        <span className="mt-1.5 block truncate text-[12px] font-bold">{r.title}</span>
+                                                        {r.releaseYear && <span className="block text-[11px] text-muted">{r.releaseYear}</span>}
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
+                                )
+                            })}
+                        </ul>
                     </div>
                 </section>
             )}

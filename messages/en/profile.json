@@ -364,7 +364,7 @@
     "debut": "Debut",
     "lineup": "Lineup",
     "start": "Start here",
-    "startSub": "Two ways into {name}",
+    "startSub": "Ways into {name}",
     "byMember": "By member",
     "byMemberTitle": "Start with who you already know",
     "byClip": "By video",
@@ -373,6 +373,12 @@
     "lineupTitle": "Lineup",
     "lineupSub": "Who is in the group and who has passed through",
     "lineupActive": "Member",
-    "lineupFormer": "Former member"
+    "lineupFormer": "Former member",
+    "soloTitle": "Outside the group",
+    "soloSub": "What each member has released on her own",
+    "soloCount": "{count, plural, one {# solo release} other {# solo releases}}",
+    "soloSee": "See profile",
+    "byHit": "By hit",
+    "byHitTitle": "The songs that define the group"
   }
 }
