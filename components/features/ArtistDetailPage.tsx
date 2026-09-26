@@ -160,7 +160,7 @@ export function ArtistDetailPage({
     const nodesC: Record<string, React.ReactNode> = {}
     const restoC: React.ReactNode[] = []
     if (emC) {
-        const JA_DESENHADOS = new Set(['biografia', 'trajetoria', 'recordes', 'premios', 'marcos', 'filmografia', 'faq', 'musica', 'grupos', 'relacionados'])
+        const JA_DESENHADOS = new Set(['biografia', 'trajetoria', 'recordes', 'premios', 'filmografia', 'faq', 'musica', 'grupos', 'relacionados'])
         entries.forEach((e, i) => {
             if (isInterstitial(e) || !e.present) return
             if (['filmografia', 'faq', 'grupos'].includes(e.id)) nodesC[e.id] = sectionNodes[i]
@@ -172,13 +172,12 @@ export function ArtistDetailPage({
     const temMusica = model.videoList.length > 0 || discography.length > 0 || !!acf.spotify
     const pageAnchors = emC
         ? ([
-            productions.length > 0 && { href: '#obras', label: tC('navObras') },
-            temMusica && { href: '#musica', label: tC('navMusica') },
-            { href: '#perfil', label: tC('navPerfil') },
-            hasStoryChapters && { href: '#trajetoria', label: tC('navTrajetoria') },
-            model.awards.length > 0 && { href: '#premios', label: tC('navPremios') },
-            (relatedArtists.length > 0 || groups.length > 0) && { href: '#universo', label: tC('navUniverso') },
-            relatedPosts.length > 0 && { href: '#noticias', label: tC('navNoticias') },
+            { href: '#visao', label: tC('tabs.visao') },
+            (hasStoryChapters || model.awards.length > 0) && { href: '#carreira', label: tC('tabs.carreira') },
+            temMusica && { href: '#musica', label: tC('tabs.musica') },
+            productions.length > 0 && { href: '#obras', label: tC('tabs.obras') },
+            (relatedArtists.some(r => r.id !== artist.id) || groups.length > 0) && { href: '#universo', label: tC('tabs.universo') },
+            relatedPosts.length > 0 && { href: '#ler', label: tC('tabs.ler') },
         ].filter(Boolean) as { href: string; label: string }[])
         : todasAncoras
 
@@ -223,9 +222,9 @@ export function ArtistDetailPage({
             <div hidden data-variante={emC ? 'artista-c' : 'artista-a'} />
             {emC ? (
                 <ArtistFichaC
-                    artist={artist} name={name} artistUrl={artistUrl} image={image} roleLabels={roleLabels}
+                    artist={artist} name={name} image={image} roleLabels={roleLabels}
                     groups={groups} agency={agency} productions={productions} relatedPosts={relatedPosts}
-                    relatedArtists={relatedArtists} discography={discography} model={model} quickFacts={quickFacts} magra={magra}
+                    relatedArtists={relatedArtists} discography={discography} model={model} magra={magra}
                     nodes={nodesC} resto={restoC}
                     titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
                 />

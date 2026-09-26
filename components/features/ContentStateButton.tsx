@@ -18,7 +18,7 @@ interface Props {
     label?: string
     activeLabel?: string
     signedOutLabel?: string
-    variant?: 'light' | 'dark' | 'primary'
+    variant?: 'light' | 'dark' | 'primary' | 'outline'
 }
 
 export function ContentStateButton({
@@ -127,10 +127,12 @@ export function ContentStateButton({
                 onClick={handleClick}
                 disabled={isPending}
                 aria-pressed={active}
-                className={`touch-target inline-flex items-center gap-1.5 border transition-colors disabled:opacity-60 ${variant === 'primary' ? 'h-12 px-7 text-[15px] font-extrabold' : 'px-3 py-2 text-[11px] font-black uppercase tracking-wider'} ${active
+                className={`touch-target inline-flex items-center gap-1.5 border transition-colors disabled:opacity-60 ${variant === 'primary' ? 'h-12 px-7 text-[15px] font-extrabold' : variant === 'outline' ? 'h-12 px-6 text-[15px] font-semibold' : 'px-3 py-2 text-[11px] font-black uppercase tracking-wider'} ${active
                     ? 'border-accent-a11y bg-accent-a11y text-white'
                     : variant === 'primary'
                         ? 'border-accent bg-accent text-[#0d0b0f] hover:opacity-90'
+                    : variant === 'outline'
+                        ? 'border-border-strong text-foreground hover:border-accent/60'
                     : variant === 'dark'
                         ? 'border-white/20 bg-black/35 text-white/75 hover:border-white hover:text-white'
                         : 'border-border text-muted hover:border-accent hover:text-accent'
