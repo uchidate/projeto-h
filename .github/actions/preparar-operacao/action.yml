@@ -22,6 +22,12 @@ inputs:
   chave:
     description: Chave SSH somente leitura do repositorio de operacao
     required: true
+  ref:
+    description: >-
+      Branch, tag ou commit do repositorio de operacao. Vazio = branch padrao.
+      Serve para ensaiar uma mudanca de scripts de deploy ANTES do merge.
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -46,6 +52,7 @@ runs:
       with:
         repository: ${{ inputs.repositorio }}
         ssh-key: ${{ inputs.chave }}
+        ref: ${{ inputs.ref }}
         path: .operacao
         persist-credentials: false
 
