@@ -626,7 +626,7 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
 
                         {/* Article content */}
                         <article
-                            className="wp-article-content oc-article-reading-column w-full"
+                            className="wp-article-content oc-article-reading-column w-full [&_[id]]:scroll-mt-[calc(var(--site-sticky-top,92px)+var(--section-bar-h,44px)+20px)]"
                             style={primaryGroupColor ? { '--color-accent': primaryGroupColor } as React.CSSProperties : undefined}
                         >
                             <BlogMobileReadMore semTrava={emB} slug={post.slug}>
@@ -819,16 +819,23 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
                         <aside aria-label="Informações do artigo" className="hidden xl:flex xl:flex-col">
                             {/* Só o índice e o anúncio acompanham a rolagem, sem caixa com rolagem interna; o índice vem primeiro. */}
                             <div className="flex flex-col gap-4" style={{ position: 'sticky', top: 'calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 36px + 8px)' }}>
+                                {/* O topo fixo do site ocupa ~284px: índice (~210) + 300×250 só cabem com janela de 800px ou mais.
+                                    Abaixo disso o índice desce e o anúncio fica sozinho na parte fixa, como na variante A. */}
                                 {enhancedContent.headings.length > 2 && (
-                                    <div className="rounded-md border border-border bg-surface p-4">
+                                    <div className="rounded-md border border-border bg-surface p-4 [@media(max-height:799px)]:hidden">
                                         <BlogToc headings={enhancedContent.headings} />
                                     </div>
                                 )}
                                 {ADSENSE.slots.article_sidebar && (
-                                    <ArticleSidebarAd slot={ADSENSE.slots.article_sidebar} readingMinutes={mins} alturaAlta={1000} />
+                                    <ArticleSidebarAd slot={ADSENSE.slots.article_sidebar} readingMinutes={mins} alturaAlta={1150} />
                                 )}
                             </div>
                             <div className="mt-auto flex flex-col gap-4 pt-10">
+                                {enhancedContent.headings.length > 2 && (
+                                    <div className="hidden rounded-md border border-border bg-surface p-4 [@media(max-height:799px)]:block">
+                                        <BlogToc headings={enhancedContent.headings} />
+                                    </div>
+                                )}
                                 {blocosFinais}
                             </div>
                         </aside>
