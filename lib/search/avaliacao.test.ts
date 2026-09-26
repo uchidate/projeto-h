@@ -29,6 +29,7 @@ const ACERVO: Record<string, Item[]> = {
         { id: 14, slug: 'lisa', title: 'Lisa', acf: { name_hangul: '리사', birth_date: '1997-03-27', groups: [2], trending_score: 35, roles: ['singer'] } },
         { id: 15, slug: 'jimin', title: 'Jimin', acf: { groups: [1] } },
         { id: 16, slug: 'seo-in-guk', title: 'Seo In-guk' },
+        { id: 17, slug: 'park-jisoo', title: 'Park Jisoo', acf: { groups: [3], birth_date: '19950626', roles: ['singer'] } },
     ],
     production: [
         { id: 20, slug: 'bts-bon-voyage', title: 'BTS: Bon Voyage' },
@@ -108,6 +109,14 @@ describe('busca: consultas de referência', () => {
         expect(sub['/artists/jisoo-kim']).toBe('Membro de BLACKPINK · 1995')
         expect(sub['/artists/kim-ji-soo']).toBe('Ator/Atriz · 1972')
         expect(sub['/artists/kim-ji-soo-2']).toBe('Ator/Atriz · 1993')
+    })
+
+    it('erro de digitação em várias palavras não traz grupo de nome parecido', async () => {
+        const { searchIndex, aguardarIndice } = await import('./index')
+        await aguardarIndice()
+        const hrefs = (await searchIndex('blakpink jisoo', 12))!.map(x => x.href)
+        expect(hrefs).toContain('/artists/jisoo-kim')
+        expect(hrefs).not.toContain('/artists/park-jisoo')
     })
 
     it('achado por hangul mostra a grafia que casou; achado pelo título, não', async () => {
