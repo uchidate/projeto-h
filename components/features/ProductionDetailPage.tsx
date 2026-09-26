@@ -13,6 +13,8 @@ import { ReportButton } from '@/components/ui/ReportButton'
 import { EntityActionBar } from '@/components/ui/EntityActionBar'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
+import { SemAnuncios } from '@/components/providers/AdsProvider'
+import { producaoMagra } from '@/lib/productions/fichaMagra'
 import { ProductionContent } from '@/components/productions/ProductionContent'
 import { ProductionCast } from '@/components/productions/ProductionCast'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
@@ -32,7 +34,12 @@ import { NumberedList } from '@/components/blocks/NumberedList'
 
 interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }> }
 
-export function ProductionDetailPage({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap }: Props) {
+export function ProductionDetailPage(props: Props) {
+    const pagina = <ProductionDetailPageConteudo {...props} />
+    return producaoMagra(props.production) ? <SemAnuncios>{pagina}</SemAnuncios> : pagina
+}
+
+function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const locale = useLocale()

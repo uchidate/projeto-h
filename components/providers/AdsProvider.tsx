@@ -37,3 +37,10 @@ export function AdsProvider({
 export function useAds() {
     return useContext(AdsContext)
 }
+
+/** Desliga os anúncios de tudo o que estiver dentro (página sem conteúdo suficiente). */
+export function SemAnuncios({ children }: { children: ReactNode }) {
+    const pai = useAds()
+    const value = useMemo(() => ({ ...pai, enabled: false }), [pai])
+    return <AdsContext.Provider value={value}>{children}</AdsContext.Provider>
+}
