@@ -1,4 +1,5 @@
 name: 🧪 Ensaio do deploy
+run-name: 🧪 Ensaio do deploy (ops ${{ inputs.ops_ref || 'main' }})
 
 # Roda scripts/deploy-ensaio.sh: confere, do MESMO runner que o deploy usa, tudo
 # de que o deploy de producao depende — SSH ate o servidor, container, env,
@@ -27,6 +28,11 @@ on:
   schedule:
     - cron: '40 6 * * *'
   workflow_dispatch:
+    inputs:
+      ops_ref:
+        description: 'Commit/branch do repositório de ops a ensaiar (vazio = main). Use o sha completo antes de empurrar mudança de deploy para a main do ops.'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -56,6 +62,7 @@ jobs:
           mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
           repositorio: ${{ vars.OPS_REPOSITORY }}
           chave: ${{ secrets.OPS_DEPLOY_KEY }}
+          ref: ${{ inputs.ops_ref }}
       - name: Conectar ao servidor
         uses: ./.github/actions/conectar-servidor
         with:
@@ -137,5 +144,6 @@ jobs:
           mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
           repositorio: ${{ vars.OPS_REPOSITORY }}
           chave: ${{ secrets.OPS_DEPLOY_KEY }}
+          ref: ${{ inputs.ops_ref }}
       - name: Procurar referências a coisas que não existem mais
         run: bash scripts/verifica-deriva-docs.sh
