@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { act } from 'react'
 import { BlogToc } from './BlogToc'
 
@@ -64,7 +64,7 @@ describe('BlogToc', () => {
         expect(container).toBeEmptyDOMElement()
     })
 
-    it('mostra todos os headings quando o total é menor ou igual à janela (5)', () => {
+    it('mostra todos os headings quando o total é curto (até 8)', () => {
         const headings = [heading('a', 'A'), heading('b', 'B'), heading('c', 'C')]
         renderWithVisibleHeadings(headings)
         expect(screen.getByRole('link', { name: 'A' })).toBeInTheDocument()
@@ -79,36 +79,59 @@ describe('BlogToc', () => {
         expect(screen.getByRole('link', { name: 'B' })).not.toHaveClass('text-accent')
     })
 
-    it('com mais de 5 headings, trunca a janela e mostra o contador "N seções abaixo"', () => {
+    it('mostra a lista inteira até 8 headings, sem contador (a lista não se move sob o cursor)', () => {
         const headings = Array.from({ length: 8 }, (_, i) => heading(`h${i}`, `Heading ${i}`))
         renderWithVisibleHeadings(headings)
-        // janela inicial: activeIdx=0, half=2, start=max(0,-2)=0, end=min(8,5)=5
+        expect(getTextLink('Heading 0')).toBeInTheDocument()
+        expect(getTextLink('Heading 7')).toBeInTheDocument()
+        expect(screen.queryByText(/seções (abaixo|acima)/i)).not.toBeInTheDocument()
+    })
+
+    it('com mais de 8 headings, trunca a janela e mostra o contador "N seções abaixo"', () => {
+        const headings = Array.from({ length: 10 }, (_, i) => heading(`h${i}`, `Heading ${i}`))
+        renderWithVisibleHeadings(headings)
+        // janela inicial: activeIdx=0, half=2, start=0, end=5
         expect(getTextLink('Heading 0')).toBeInTheDocument()
         expect(getTextLink('Heading 4')).toBeInTheDocument()
         expect(queryTextLink('Heading 5')).toBeNull()
-        expect(screen.getByText(/3 seções abaixo/i)).toBeInTheDocument()
+        expect(screen.getByText(/5 seções abaixo/i)).toBeInTheDocument()
     })
 
     it('atualiza a janela quando o IntersectionObserver reporta um heading diferente como ativo', () => {
-        const headings = Array.from({ length: 8 }, (_, i) => heading(`h${i}`, `Heading ${i}`))
+        const headings = Array.from({ length: 10 }, (_, i) => heading(`h${i}`, `Heading ${i}`))
         renderWithVisibleHeadings(headings)
 
         act(() => {
-            observerCallbacks[0]([{ target: { id: 'h6' }, isIntersecting: true }])
+            observerCallbacks[0]([{ target: { id: 'h8' }, isIntersecting: true }])
         })
 
-        // activeIdx=6, half=2, start=max(0,4)=4, end=min(8,9)=8 → shift start=max(0,8-5)=3
-        expect(getTextLink('Heading 6')).toHaveClass('text-accent')
-        expect(screen.getByText(/3 seções acima/i)).toBeInTheDocument()
+        // activeIdx=8, janela encostada no fim: start=5
+        expect(getTextLink('Heading 8')).toHaveClass('text-accent')
+        expect(screen.getByText(/5 seções acima/i)).toBeInTheDocument()
         expect(screen.queryByText(/seções abaixo/i)).not.toBeInTheDocument()
     })
 
     it('contador usa singular ("1 seção acima") quando só falta 1', () => {
-        const headings = Array.from({ length: 6 }, (_, i) => heading(`h${i}`, `Heading ${i}`))
+        const headings = Array.from({ length: 9 }, (_, i) => heading(`h${i}`, `Heading ${i}`))
         renderWithVisibleHeadings(headings)
         act(() => {
-            observerCallbacks[0]([{ target: { id: 'h5' }, isIntersecting: true }])
+            observerCallbacks[0]([{ target: { id: 'h3' }, isIntersecting: true }])
         })
         expect(screen.getByText(/1 seção acima/i)).toBeInTheDocument()
+    })
+
+    it('com o mouse sobre o índice, a janela não desliza mesmo que a seção ativa mude', () => {
+        const headings = Array.from({ length: 10 }, (_, i) => heading(`h${i}`, `Heading ${i}`))
+        renderWithVisibleHeadings(headings)
+        const nav = screen.getByRole('navigation', { name: 'Neste artigo' })
+        act(() => { fireEvent.mouseEnter(nav) })
+        act(() => {
+            observerCallbacks[0]([{ target: { id: 'h8' }, isIntersecting: true }])
+        })
+        // congelada em start=0: a lista continua igual à que o cursor estava vendo
+        expect(getTextLink('Heading 0')).toBeInTheDocument()
+        expect(queryTextLink('Heading 8')).toBeNull()
+        act(() => { fireEvent.mouseLeave(nav) })
+        expect(getTextLink('Heading 8')).toBeInTheDocument()
     })
 })
