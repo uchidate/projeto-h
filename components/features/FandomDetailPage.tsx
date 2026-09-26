@@ -10,7 +10,9 @@ import { SITE_URL } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
-import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
+import Image from 'next/image'
+import { getPosts } from '@/lib/wordpress/posts'
+import { QuizFacts } from '@/components/ui/QuizFacts'
 import { GroupMemberCard } from '@/components/groups/GroupMemberCard'
 import { FandomGroupCard } from '@/components/fandoms/FandomGroupCard'
 import { FandomSidebarFicha } from '@/components/fandoms/FandomSidebarFicha'
@@ -21,6 +23,30 @@ const SITE_ACCENT = '#e91e8c'
 interface Props {
     fandom: Fandom
     artists: WPArtist[]
+}
+
+const TITULO = 'font-[family-name:var(--font-playfair)] text-[28px] font-extrabold leading-tight sm:text-[34px]'
+
+/** Últimos artigos que citam o grupo principal da torcida. Some se não houver nenhum. */
+async function NovidadesDaTorcida({ grupoSlug, nome, cor, ink }: { grupoSlug: string; nome: string; cor: string; ink: string }) {
+    const { items } = await getPosts({ mentionsType: 'group', mentionsSlug: grupoSlug, perPage: 3, includeContent: false }).catch(() => ({ items: [] }))
+    if (items.length === 0) return null
+    return (
+        <section id="novidades">
+            <h2 className={TITULO}>Novidades da torcida 🔥</h2>
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                {items.map(p => (
+                    <Link key={p.id} href={`/blog/${p.slug}`} className="group flex flex-col border-2 border-border bg-surface transition-transform hover:-translate-y-0.5">
+                        <span className="relative block aspect-[16/10] overflow-hidden bg-background">
+                            {p.featured_image_url && <Image src={p.featured_image_url} alt="" fill sizes="(min-width: 640px) 320px, 100vw" className="object-cover object-top" />}
+                            <span className="absolute left-2 top-2 px-2 py-0.5 text-[11px] font-black" style={{ background: cor, color: ink }}>{nome}</span>
+                        </span>
+                        <span className="block p-3.5 text-[16px] font-bold leading-snug group-hover:underline">{stripHtml(p.title.rendered)}</span>
+                    </Link>
+                ))}
+            </div>
+        </section>
+    )
 }
 
 export function FandomDetailPage({ fandom, artists }: Props) {
@@ -73,10 +99,12 @@ export function FandomDetailPage({ fandom, artists }: Props) {
             <div className="page-wrap py-8 lg:py-12">
                 <div className="flex gap-10 items-start">
                     <div className="min-w-0 flex-1 space-y-12">
+                        {groups[0] && <NovidadesDaTorcida grupoSlug={groups[0].slug} nome={name} cor={accent} ink={ink} />}
+
                         <section id="grupos">
-                            <SectionTitleBar eyebrow="Fandom" title={`Grupos · ${groups.length}`} />
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                                {groups.map(group => <FandomGroupCard key={group.id} group={group} />)}
+                            <h2 className={TITULO}>{groups.length === 1 ? 'O grupo da torcida' : `Os ${groups.length} grupos da torcida`}</h2>
+                            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                                {groups.map(group => <FandomGroupCard key={group.id} group={group} cor={accent} tinta={ink} />)}
                             </div>
                         </section>
 
@@ -84,7 +112,7 @@ export function FandomDetailPage({ fandom, artists }: Props) {
 
                         {artists.length > 0 && (
                             <section id="artistas">
-                                <SectionTitleBar eyebrow="Fandom" title={`Artistas · ${artists.length}`} />
+                                <h2 className={`${TITULO} mb-5`}>Quem a torcida ama · {artists.length}</h2>
                                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                                     {artists.map(artist => (
                                         <GroupMemberCard key={artist.id} member={toMemberSummary(artist)} accent={accent} />
@@ -92,6 +120,8 @@ export function FandomDetailPage({ fandom, artists }: Props) {
                                 </div>
                             </section>
                         )}
+
+                        {groups[0] && <div className="-mx-4 sm:mx-0"><QuizFacts entityId={groups[0].id} entitySlug={groups[0].slug} entityType="group" entityName={stripHtml(groups[0].title.rendered)} /></div>}
 
                         <EntityFAQ items={faqItems} title={`Perguntas rápidas sobre ${name}`} />
                     </div>
