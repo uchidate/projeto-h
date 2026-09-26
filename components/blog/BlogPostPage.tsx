@@ -19,7 +19,7 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { BlogReadingProgress } from '@/components/blog/BlogReadingProgress'
 import { BlogToc } from '@/components/blog/BlogToc'
-import { BlogEntityCard } from '@/components/blog/BlogEntityCard'
+import { BlogEntityCard, type EntidadeDoCard } from '@/components/blog/BlogEntityCard'
 import { variantePorId } from '@/lib/experimento'
 import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
@@ -330,10 +330,13 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
 
     // Teste A/B por id (par = variante B): sem a trava "Saiba mais" no celular, card do grupo no texto e lateral fixa só com índice + anúncio.
     const emB = variantePorId(post.id) === 'b'
-    const grupoUnico = post.related_entities?.groups?.length === 1 ? post.related_entities.groups[0] : null
-    const artistasDoCard = (post.related_entities?.artists ?? []).filter(a => a.image).slice(0, 7)
-    const cardGrupo = emB && grupoUnico && artistasDoCard.length >= 2
-        ? <BlogEntityCard grupo={grupoUnico} artistas={artistasDoCard} />
+    // Quem o texto cita, com foto: grupos primeiro, depois artistas (até 7). Menos de 2 com foto não vale um card.
+    const citados: EntidadeDoCard[] = [
+        ...(post.related_entities?.groups ?? []).filter(g => g.image).map(g => ({ name: g.name, href: `/groups/${g.slug}`, image: g.image, tipo: 'grupo' as const })),
+        ...(post.related_entities?.artists ?? []).filter(x => x.image).map(x => ({ name: x.name, href: `/artists/${x.slug}`, image: x.image, tipo: 'artista' as const })),
+    ].slice(0, 7)
+    const cardGrupo = emB && citados.length >= 2
+        ? <BlogEntityCard titulo="Perfis citados no texto" itens={citados} color={primaryGroupColor} />
         : null
 
     const relatedPreviews = buildRelatedPreviewMap(post)
