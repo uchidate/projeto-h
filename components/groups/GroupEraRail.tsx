@@ -20,6 +20,8 @@ export function GroupEraRail({ chapters, accent, groupName }: Props) {
     const eras = chapters
         .map((chapter, index) => ({ chapter, index }))
         .filter(({ chapter }) => Boolean(chapter.visual_url))
+    // Com até 4 eras a faixa não rola: as capas dividem a largura em vez de ficar coladas à esquerda.
+    const poucas = eras.length <= 4
 
     const trackRef = useRef<HTMLDivElement | null>(null)
     const ticking = useRef(false)
@@ -74,16 +76,16 @@ export function GroupEraRail({ chapters, accent, groupName }: Props) {
                         // gerava key duplicada e aviso de children com mesma chave.
                         key={`${index}-${chapter.period}-rail`}
                         href={`#era-${index}`}
-                        className="group/era relative min-w-[168px] shrink-0 snap-start overflow-hidden bg-foreground sm:min-w-[200px]"
+                        className={`group/era relative min-w-[168px] shrink-0 snap-start overflow-hidden bg-foreground sm:min-w-[200px] ${poucas ? 'sm:flex-1' : ''}`}
                     >
-                        <figure className="relative aspect-square overflow-hidden bg-black">
+                        <figure className={`relative overflow-hidden bg-black ${poucas ? 'aspect-square sm:aspect-[4/3]' : 'aspect-square'}`}>
                             {/* A maioria das capas oficiais é quadrada — a moldura acompanha, sem corte nem blur de preenchimento */}
                             <Image
                                 src={chapter.visual_url!}
                                 alt={chapter.visual_alt || chapter.title}
                                 fill
                                 className="object-cover object-center grayscale transition-all duration-500 group-hover/era:scale-105 group-hover/era:grayscale-0 motion-reduce:transition-none"
-                                sizes="200px"
+                                sizes={poucas ? '(min-width: 640px) 33vw, 200px' : '200px'}
                             />
                             <div className="absolute inset-x-0 bottom-0 bg-black/55 p-3.5 backdrop-blur-xs">
                                 <span className="block font-mono text-[8px] font-black uppercase tracking-[0.12em] text-white/60 transition-colors group-hover/era:text-white">
