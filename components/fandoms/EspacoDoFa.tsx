@@ -79,30 +79,53 @@ export function BotaoTorcida({ slug, ink, cor }: { slug: string; ink: string; co
 }
 
 interface Artigo { slug: string; titulo: string; foto: string | null; data: string }
+interface DataProxima { tipo: 'estreia' | 'aniversario'; quem: string; dia: string; dias: number; anos: number }
 
-/** Últimos artigos sobre o grupo da torcida. Some sozinho se não houver ou se a consulta falhar. */
-function Novidades({ grupoSlug, ink }: { grupoSlug: string | null; ink: string }) {
+/** Últimos artigos e próximas datas da torcida. Cada bloco some sozinho se não houver dado ou se a consulta falhar. */
+function Novidades({ torcidaSlug, ink }: { torcidaSlug: string; ink: string }) {
     const [artigos, setArtigos] = useState<Artigo[]>([])
+    const [datas, setDatas] = useState<DataProxima[]>([])
     useEffect(() => {
-        if (!grupoSlug) return
         let vivo = true
-        fetch(`/api/fandoms/novidades?grupo=${encodeURIComponent(grupoSlug)}`)
-            .then(r => (r.ok ? r.json() : { artigos: [] }))
-            .then(d => { if (vivo && Array.isArray(d.artigos)) setArtigos(d.artigos.slice(0, 2)) })
+        fetch(`/api/fandoms/novidades?torcida=${encodeURIComponent(torcidaSlug)}`)
+            .then(r => (r.ok ? r.json() : { artigos: [], datas: [] }))
+            .then(d => {
+                if (!vivo) return
+                if (Array.isArray(d.artigos)) setArtigos(d.artigos.slice(0, 2))
+                if (Array.isArray(d.datas)) setDatas(d.datas.slice(0, 2))
+            })
             .catch(() => {})
         return () => { vivo = false }
-    }, [grupoSlug])
-    if (artigos.length === 0) return null
+    }, [torcidaSlug])
+    if (artigos.length === 0 && datas.length === 0) return null
+    const quando = (d: DataProxima) => (d.dias === 0 ? 'hoje' : d.dias === 1 ? 'amanhã' : `em ${d.dias} dias`)
     return (
-        <div className="border-t-2 pt-4" style={{ borderColor: `${ink}55` }}>
-            <p className="text-[12px] font-black uppercase tracking-[0.1em]">Novidades</p>
-            <ul className="mt-2 space-y-2">
-                {artigos.map(a => (
-                    <li key={a.slug}>
-                        <Link href={`/blog/${a.slug}`} className="block text-[15px] font-bold leading-snug underline-offset-2 hover:underline">{a.titulo}</Link>
-                    </li>
-                ))}
-            </ul>
+        <div className="space-y-4">
+            {datas.length > 0 && (
+                <div className="border-t-2 pt-4" style={{ borderColor: `${ink}55` }}>
+                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">Próximas datas 🎂</p>
+                    <ul className="mt-2 space-y-1.5">
+                        {datas.map(d => (
+                            <li key={`${d.tipo}-${d.quem}`} className="text-[15px] font-bold leading-snug">
+                                {d.tipo === 'estreia' ? `${d.quem} completa ${d.anos} ${d.anos === 1 ? 'ano' : 'anos'} de estreia` : `${d.quem} faz ${d.anos} anos`}
+                                <span className="font-medium opacity-80"> · {d.dia}, {quando(d)}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+            {artigos.length > 0 && (
+                <div className="border-t-2 pt-4" style={{ borderColor: `${ink}55` }}>
+                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">Novidades</p>
+                    <ul className="mt-2 space-y-2">
+                        {artigos.map(a => (
+                            <li key={a.slug}>
+                                <Link href={`/blog/${a.slug}`} className="block text-[15px] font-bold leading-snug underline-offset-2 hover:underline">{a.titulo}</Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     )
 }
@@ -138,7 +161,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                         <Link href="/quiz" className="touch-target inline-flex items-center bg-[#ffe14d] px-5 py-3 text-[14px] font-black text-[#15102b]">Fazer o quiz 🎯</Link>
                                         <button type="button" onClick={() => alternar(c.slug)} className="touch-target px-2 py-3 text-[13px] font-bold underline">Tirar</button>
                                     </div>
-                                    <Novidades grupoSlug={c.grupoSlug} ink={ink} />
+                                    <Novidades torcidaSlug={c.slug} ink={ink} />
                                 </div>
                             )
                         })}
