@@ -1,4 +1,5 @@
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'
+import { podeGuardarHistorico, recusouConsentimento } from '@/lib/consent'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -12,15 +13,21 @@ export interface QuizStats {
 
 export const EMPTY_STATS: QuizStats = { totalGames: 0, totalCorrect: 0, totalQuestions: 0, categoryStats: {}, scores: [] }
 
+const CHAVE = 'oc_quiz_stats'
+
 export function loadStats(): QuizStats {
     try {
-        const s = localStorage.getItem('oc_quiz_stats')
+        // Quem recusa os cookies não tem estatística guardada: apaga o que já existia e não lê.
+        if (recusouConsentimento()) { localStorage.removeItem(CHAVE); return EMPTY_STATS }
+        const s = localStorage.getItem(CHAVE)
         return s ? JSON.parse(s) : EMPTY_STATS
     } catch { return EMPTY_STATS }
 }
 
+/** Só guarda com permissão. Sem ela as estatísticas valem na visita (o componente as mantém em memória). */
 export function saveStats(stats: QuizStats) {
-    try { localStorage.setItem('oc_quiz_stats', JSON.stringify(stats)) } catch { /* ignore */ }
+    if (!podeGuardarHistorico()) return
+    try { localStorage.setItem(CHAVE, JSON.stringify(stats)) } catch { /* ignore */ }
 }
 
 export function updateStats(
