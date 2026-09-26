@@ -327,5 +327,41 @@
     "read": "Ler",
     "understand": "Entender a carreira",
     "understandDetail": "{count, plural, one {# capítulo, em poucos minutos} other {# capítulos, em poucos minutos}}"
+  },
+  "groupC": {
+    "tabs": {
+      "membros": "Integrantes",
+      "musica": "Música",
+      "carreira": "Carreira",
+      "fandom": "Fandom",
+      "ler": "Ler"
+    },
+    "tabsLabel": "Seções do grupo",
+    "members": "Integrantes",
+    "agePosition": "Idade e posição de cada integrante",
+    "music": "Música",
+    "career": "Carreira",
+    "openSpotify": "Abrir",
+    "fullCareer": "Ler a análise e os capítulos completos",
+    "about": "Quem é {name}",
+    "aboutSide": "Sobre o grupo",
+    "fandom": "Fandom {fandom}",
+    "fandomPlain": "Fandom",
+    "vote": "Em quem você vota?",
+    "officialColor": "Cor oficial",
+    "read": "Ler sobre {name}",
+    "seeAll": "Ver todos →",
+    "sameAgency": "Mesma agência: {agency}",
+    "faq": "Perguntas frequentes",
+    "fullSheet": "Ficha completa",
+    "years": "{count, plural, one {# ano} other {# anos}}",
+    "positionSep": " · ",
+    "type": "Tipo",
+    "generation": "Geração",
+    "agency": "Agência",
+    "meaning": "Significado do nome",
+    "fandomFact": "Fandom",
+    "debut": "Estreia",
+    "lineup": "Formação"
   }
 }

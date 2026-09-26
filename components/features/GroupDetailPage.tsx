@@ -25,6 +25,9 @@ import { buildGroupProfileEntries } from '@/components/profiles/GroupProfileBloc
 import type { EntityOrganizationContext } from '@/lib/agencies/network'
 import { toRgba } from '@/lib/theme/color'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
+import { GroupFichaC } from '@/components/groups/GroupFichaC'
+import { isInterstitial } from '@/components/profiles/ProfileSection'
+import { variantePorId } from '@/lib/experimento'
 
 interface Props {
     group: WPGroup
@@ -40,6 +43,7 @@ interface Props {
 export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], relatedHubs = [] }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
+    const tC = useTranslations('profile.groupC')
     const locale = useLocale()
     const model = buildGroupProfileModel(group, undefined, locale)
     const {
@@ -123,10 +127,32 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
     })
 
 
+    // Teste A/B por id (par = ficha nova): integrantes primeiro, cinco abas e o resto recolhido no mesmo HTML.
+    const emC = variantePorId(group.id) === 'b'
+    const magra = members.length === 0 && !model.hasBio
     const { anchors: navLinks, nodes: sectionNodes } = renderProfileEntries(entries, { parentProvidesRail: true, medir: { prefixo: 'ficha-grupo', ids: ['membros', 'discografia', 'relacionados', 'artigos'] } })
+
+    const nodesC: Record<string, React.ReactNode> = {}
+    const restoC: React.ReactNode[] = []
+    if (emC) {
+        const DESENHADOS = new Set(['sobre', 'membros', 'videos', 'discografia', 'spotify', 'votacao', 'identidade', 'relacionados', 'artigos', 'faq'])
+        entries.forEach((e, i) => {
+            if (isInterstitial(e) || !e.present) return
+            nodesC[e.id] = sectionNodes[i]
+            if (!DESENHADOS.has(e.id) && !['analise', 'trajetoria', 'recordes'].includes(e.id)) restoC.push(sectionNodes[i])
+        })
+    }
+    const anchorsC = emC ? [
+        activeMembers.length > 0 && { href: '#membros', label: tC('tabs.membros') },
+        (model.videoList.length > 0 || discography.length > 0 || !!acf.spotify) && { href: '#musica', label: tC('tabs.musica') },
+        ((acf.story_chapters ?? []).length > 0) && { href: '#carreira', label: tC('tabs.carreira') },
+        (members.length > 1 || !!acf.color) && { href: '#fandom', label: tC('tabs.fandom') },
+        relatedPosts.length > 0 && { href: '#ler', label: tC('tabs.ler') },
+    ].filter(Boolean) as { href: string; label: string }[] : navLinks
 
     return (
         <>
+            <div hidden data-variante={emC ? 'grupo-c' : 'grupo-a'} />
             <JsonLd
                 data={{
                     '@context': 'https://schema.org',
@@ -164,7 +190,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
             ` }} />
             <ProfileProseStyles scope="group-bio" accent={accent} />
 
-            <ReadingBar backHref={href('groups', undefined, locale)} backLabel={tEntity('breadcrumb.groups')} tagLabel={generation ?? undefined} tagColor={accent} title={name} pageUrl={groupUrl} pageAnchors={navLinks} />
+            <ReadingBar backHref={href('groups', undefined, locale)} backLabel={tEntity('breadcrumb.groups')} tagLabel={generation ?? undefined} tagColor={accent} title={name} pageUrl={groupUrl} pageAnchors={anchorsC} />
 
             <GroupHero
                 groupId={group.id}
@@ -181,6 +207,15 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                 totalMembers={activeCount > 0 ? activeCount : members.length}
             />
 
+            {emC ? (
+                <GroupFichaC
+                    group={group} model={model} activeMembers={activeMembers} memberPositions={memberPositions}
+                    relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography}
+                    agencyName={agencyName} generation={generation} magra={magra}
+                    nodes={nodesC} resto={restoC}
+                />
+            ) : (
+                <>
             {/* Page body */}
             <div className="page-wrap">
                 <div className="flex items-start gap-10">
@@ -199,6 +234,8 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                     />
                 </div>
             </div>
+                </>
+            )}
 
             {/* Guias só existem em português. */}
             {locale === DEFAULT_LOCALE && relatedHubs.length > 0 && (
