@@ -18,7 +18,7 @@ function assinar(aoMudar: () => void) {
 }
 
 /** Uma pergunta por dia, igual para todos; a sequência de dias fica só no navegador (e só com consentimento). */
-export function PerguntaDoDia({ pergunta, chave, dataExtenso, embutida = false }: { pergunta: PerguntaDia; chave: string; dataExtenso: string; /** Dentro de uma página que já tem o próprio contêiner (/quiz). */ embutida?: boolean }) {
+export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao' }: { pergunta: PerguntaDia; chave: string; dataExtenso: string; /** 'alegre': cartão amarelo da sala de jogo do /quiz (já dentro do contêiner da página). */ variante?: 'padrao' | 'alegre' }) {
     const cru = useSyncExternalStore(assinar, lerCru, () => '')
     const estado = interpretarEstado(cru)
     const respondida = estado?.ultimo === chave
@@ -33,8 +33,39 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, embutida = false }
         }
     }
 
+    if (variante === 'alegre') {
+        const LETRAS = ['A', 'B', 'C', 'D']
+        const CORES = ['#ff5fa2', '#38e1c0', '#7aa2ff', '#c39bff']
+        return (
+            <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="flex flex-col gap-5 bg-[#ffe14d] p-5 text-[#15102b] shadow-[10px_10px_0_#000] sm:p-8">
+                <div className="flex flex-wrap items-center gap-3">
+                    <span className="bg-[#15102b] px-3 py-1 text-[12px] font-black tracking-[0.12em] text-[#ffe14d]">PERGUNTA DO DIA</span>
+                    <span id="dia-titulo" className="text-[14px] font-bold">{dataExtenso} · {sequencia > 0 ? `🔥 ${sequencia} ${sequencia === 1 ? 'dia seguido' : 'dias seguidos'}` : 'comece sua sequência'}</span>
+                </div>
+                <p className={`${SERIF} text-[26px] font-extrabold leading-[1.12] sm:text-[36px]`}>{pergunta.question}</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                    {pergunta.options.map((op, i) => {
+                        const certa = respondida && i === pergunta.correct
+                        const errada = marcada === i && i !== pergunta.correct
+                        return (
+                            <button key={i} type="button" onClick={() => responder(i)} disabled={respondida}
+                                className={`touch-target flex min-h-[56px] items-center gap-3 border-[3px] border-[#15102b] px-4 py-2 text-left text-[16px] font-extrabold transition-transform sm:text-[18px] ${certa ? 'bg-[#38e1c0]' : errada ? 'bg-[#ff5fa2]' : 'bg-white hover:-translate-y-0.5 disabled:opacity-70'}`}>
+                                <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center text-[14px]" style={{ background: CORES[i] }}>{LETRAS[i]}</span>
+                                <span className="flex-1">{op}</span>
+                                {certa && <span className="text-[12px]">Certo!</span>}
+                            </button>
+                        )
+                    })}
+                </div>
+                {respondida && (
+                    <p aria-live="polite" className="text-[14px] font-medium leading-relaxed">{pergunta.explanation}</p>
+                )}
+            </section>
+        )
+    }
+
     return (
-        <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className={embutida ? 'mb-8 lg:mb-10' : 'page-wrap py-6'}>
+        <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="page-wrap py-6">
             <div className="border border-border bg-surface p-4 sm:p-6 lg:flex lg:gap-9">
                 <div className="lg:w-[240px] lg:shrink-0">
                     <p className="font-mono text-[11px] font-black uppercase tracking-[0.16em] text-accent">Pergunta do dia</p>

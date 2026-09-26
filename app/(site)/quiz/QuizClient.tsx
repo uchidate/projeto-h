@@ -67,8 +67,7 @@ function _PersonalStats({ stats }: { stats: QuizStats }) {
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
-export function QuizClient({ serverQuestions, initialCategory = 'all', initialSubcategory = '', aposTitulo, capas }: {
-    capas?: Partial<Record<string, string | null>>
+export function QuizClient({ serverQuestions, initialCategory = 'all', initialSubcategory = '', aposTitulo }: {
     aposTitulo?: ReactNode
     serverQuestions: QuizQuestion[]
     initialCategory?: CategoryFilter
@@ -167,7 +166,6 @@ export function QuizClient({ serverQuestions, initialCategory = 'all', initialSu
             initialCategory={initialCategory}
             initialSubcategory={initialSubcategory}
             aposTitulo={aposTitulo}
-            capas={capas}
         />
     )
 }
