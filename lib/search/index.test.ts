@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-function item(id: number, title: string, slug: string, meta?: object) {
-    return { id, slug, title: { rendered: title }, featured_image_url: null, meta: meta ?? [] }
+function item(id: number, title: string, slug: string, acf?: object) {
+    return { id, slug, title: { rendered: title }, featured_image_url: null, acf: acf ?? [] }
 }
 
 const BASE: Record<string, unknown[]> = {

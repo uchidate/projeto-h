@@ -33,14 +33,28 @@ type WPItem = {
     slug: string
     title: { rendered: string }
     featured_image_url?: string | null
-    meta?: { trending_score?: number; groups?: number[] } | []
+    /** Os campos editoriais vivem em `acf`; `meta` so traz Rank Math. */
+    acf?: {
+        groups?: number[]
+        trending_score?: number | null
+        popularity_score?: number | null
+        roles?: string[]
+        birth_date?: string | null
+        name_hangul?: string | null
+        name_romanized?: string | null
+        original_title?: string | null
+        type?: string | null
+        year?: number | null
+    } | []
 }
 
 type Entrada = {
     id: number
     title: string
-    /** slug com espacos: cobre a romanizacao ("kim-ji-soo") mesmo se o titulo variar */
-    slugTexto: string
+    /** Outras grafias buscaveis: slug, nome romanizado, hangul / titulo original. */
+    alternativas: string[]
+    /** Complemento exibido sob o titulo, para diferenciar homonimos ("Ator · 1972"). */
+    detalhe?: string
     href: string
     type: SearchResultType
     thumbnail?: string
@@ -56,13 +70,37 @@ let entradas: Entrada[] | null = null
 let carregadoEm = 0
 let carregando: Promise<void> | null = null
 
+const PAPEL: Record<string, string> = {
+    actor: 'Ator/Atriz', singer: 'Cantor(a)', idol: 'Idol', model: 'Modelo', dancer: 'Dançarino(a)',
+    rapper: 'Rapper', director: 'Diretor(a)', writer: 'Roteirista', host: 'Apresentador(a)',
+}
+
+function anoDe(valor?: string | number | null): string | undefined {
+    const m = String(valor ?? '').match(/^(\d{4})/)
+    return m ? m[1] : undefined
+}
+
+/** Texto que diferencia fichas de mesmo nome: papel + ano de nascimento; tipo + ano da obra. */
+function detalheDe(type: SearchResultType, acf?: Exclude<WPItem['acf'], unknown[] | undefined>): string | undefined {
+    if (!acf) return undefined
+    if (type === 'artist') {
+        const papel = PAPEL[acf.roles?.[0] ?? '']
+        return [papel, anoDe(acf.birth_date)].filter(Boolean).join(' · ') || undefined
+    }
+    if (type === 'production') {
+        const tipo = acf.type === 'movie' ? 'Filme' : acf.type === 'drama' ? 'Série' : undefined
+        return [tipo, anoDe(acf.year)].filter(Boolean).join(' · ') || undefined
+    }
+    return undefined
+}
+
 async function buscarColecao(c: Colecao): Promise<Entrada[]> {
     const pagina = (page: number) => wpFetchWithTotal<WPItem>(
         `/wp/v2/${c.endpoint}${buildParams({
             page,
             per_page: PER_PAGE,
             status: 'publish',
-            _fields: 'id,slug,title,featured_image_url,meta.groups,meta.trending_score',
+            _fields: 'id,slug,title,featured_image_url,acf.groups,acf.trending_score,acf.popularity_score,acf.roles,acf.birth_date,acf.name_hangul,acf.name_romanized,acf.original_title,acf.type,acf.year',
         })}`,
         { revalidate: 300, tags: [c.tag] },
     )
@@ -76,18 +114,20 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
     }
     return itens.map(item => {
         const titulo = stripHtml(item.title.rendered)
-        const meta = Array.isArray(item.meta) ? undefined : item.meta
+        const acf = Array.isArray(item.acf) || !item.acf ? undefined : item.acf
         return {
             id: item.id,
             title: titulo,
-            slugTexto: item.slug.replace(/-/g, ' '),
+            alternativas: [item.slug.replace(/-/g, ' '), acf?.name_romanized, acf?.name_hangul, acf?.original_title]
+                .filter((x): x is string => !!x && x !== titulo),
+            detalhe: detalheDe(c.type, acf),
             href: `${c.prefix}/${item.slug}`,
             type: c.type,
             thumbnail: item.featured_image_url ?? undefined,
             weight: c.weight,
             fuzzy: c.fuzzy,
-            trending: meta?.trending_score ?? 0,
-            grupos: meta?.groups ?? [],
+            trending: Math.max(acf?.trending_score ?? 0, acf?.popularity_score ?? 0),
+            grupos: acf?.groups ?? [],
             palavras: foldAccents(titulo).split(/[\s\-]+/).filter(Boolean),
             justo: stripSeparators(titulo),
         }
@@ -130,8 +170,8 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
     const base = entradas
     const ranqueado: Array<{ e: Entrada; score: number }> = []
     for (const e of base) {
-        // Melhor entre titulo e slug: "Kim Ji-soo" tambem casa "jisoo".
-        const s = Math.max(scoreTitle(e.title, q), scoreTitle(e.slugTexto, q))
+        // Melhor entre titulo e grafias alternativas (slug, romanizado, hangul).
+        const s = Math.max(scoreTitle(e.title, q), ...e.alternativas.map(a => scoreTitle(a, q)))
         if (s > 0) ranqueado.push({ e, score: s * e.weight + Math.min(e.trending, 100) * 0.05 })
     }
 
@@ -157,7 +197,11 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
         const r: SearchResult = { id: e.id, title: e.title, href: e.href, type: e.type, thumbnail: e.thumbnail }
         if (e.type === 'artist') {
             const nomes = e.grupos.map(id => nomeGrupo.get(id)).filter(Boolean)
-            if (nomes.length) r.subtitle = `Membro de ${nomes.slice(0, 2).join(', ')}`
+            const ano = e.detalhe?.match(/\d{4}$/)?.[0]
+            if (nomes.length) r.subtitle = [`Membro de ${nomes.slice(0, 2).join(', ')}`, ano].filter(Boolean).join(' · ')
+            else if (e.detalhe) r.subtitle = e.detalhe
+        } else if (e.detalhe) {
+            r.subtitle = e.detalhe
         }
         return r
     })
