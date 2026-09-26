@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { podeGuardarHistorico } from '@/lib/consent'
 import { contorno, tinta } from '@/lib/fandoms/cor'
+import { AvisoConsentimento } from '@/components/consent/AvisoConsentimento'
 
 export interface CartaoTorcida {
     slug: string
@@ -33,15 +34,20 @@ function assinar(aoMudar: () => void) {
 function interpretar(cru: string): string[] {
     try { const l = cru ? JSON.parse(cru) : []; return Array.isArray(l) ? l.filter((s): s is string => typeof s === 'string').slice(0, 5) : [] } catch { return [] }
 }
-function alternar(slug: string, atuais: string[]) {
-    if (!podeGuardarHistorico()) return
-    const novo = atuais.includes(slug) ? atuais.filter(s => s !== slug) : [slug, ...atuais].slice(0, 5)
-    try { window.localStorage.setItem(CHAVE, JSON.stringify(novo)); window.dispatchEvent(new Event(EVENTO)) } catch { /* sem armazenamento: a escolha não fica salva */ }
+/** Lista nova depois de marcar ou desmarcar (no máximo 5). */
+function proxima(slug: string, atuais: string[]): string[] {
+    return atuais.includes(slug) ? atuais.filter(s => s !== slug) : [slug, ...atuais].slice(0, 5)
 }
 
-function BotaoSou({ slug, marcada, atuais, cor }: { slug: string; marcada: boolean; atuais: string[]; cor: string }) {
+/** Guarda no navegador se houver permissão. Devolve false quando não guardou (sem permissão ou sem armazenamento). */
+function guardar(lista: string[]): boolean {
+    if (!podeGuardarHistorico()) return false
+    try { window.localStorage.setItem(CHAVE, JSON.stringify(lista)); window.dispatchEvent(new Event(EVENTO)); return true } catch { return false }
+}
+
+function BotaoSou({ slug, marcada, onAlternar, cor }: { slug: string; marcada: boolean; onAlternar: (slug: string) => void; cor: string }) {
     return (
-        <button type="button" aria-pressed={marcada} onClick={e => { e.preventDefault(); e.stopPropagation(); alternar(slug, atuais) }}
+        <button type="button" aria-pressed={marcada} onClick={e => { e.preventDefault(); e.stopPropagation(); onAlternar(slug) }}
             className="touch-target px-2.5 py-1.5 text-[11px] font-black"
             style={{ background: marcada ? '#15102b' : 'rgba(255,255,255,0.75)', color: marcada ? '#fff' : '#15102b' }}
             title={marcada ? 'Tirar das minhas torcidas' : 'Sou dessa torcida'}>
@@ -54,14 +60,21 @@ function BotaoSou({ slug, marcada, atuais, cor }: { slug: string; marcada: boole
 /** Botão "Sou dessa torcida" da página de cada fandom: marca ou desmarca e reflete o estado guardado. */
 export function BotaoTorcida({ slug, ink, cor }: { slug: string; ink: string; cor: string }) {
     const cru = useSyncExternalStore(assinar, lerCru, () => '')
-    const atuais = useMemo(() => interpretar(cru), [cru])
+    const guardadas = useMemo(() => interpretar(cru), [cru])
+    // Sem permissão para guardar, a marcação vale só nesta visita.
+    const [naSessao, setNaSessao] = useState<string[] | null>(null)
+    const atuais = naSessao ?? guardadas
     const marcada = atuais.includes(slug)
+    const alternar = () => { const novo = proxima(slug, atuais); if (!guardar(novo)) setNaSessao(novo) }
     return (
-        <button type="button" aria-pressed={marcada} onClick={() => alternar(slug, atuais)}
+        <>
+        <button type="button" aria-pressed={marcada} onClick={alternar}
             className="touch-target inline-flex items-center px-5 py-3 text-[14px] font-black"
             style={marcada ? { background: '#ffe14d', color: '#15102b' } : { background: ink, color: cor }}>
             {marcada ? '✓ Sua torcida' : '＋ Sou dessa torcida'}
         </button>
+        {marcada && <AvisoConsentimento recurso="sua torcida" className="w-full max-w-md" />}
+        </>
     )
 }
 
@@ -97,7 +110,11 @@ function Novidades({ grupoSlug, ink }: { grupoSlug: string | null; ink: string }
 /** Espaço do fã: escolher a(s) torcida(s), um painel só delas e o catálogo completo em cartões coloridos. */
 export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca?: string }) {
     const cru = useSyncExternalStore(assinar, lerCru, () => '')
-    const escolhidas = useMemo(() => interpretar(cru), [cru])
+    const guardadas = useMemo(() => interpretar(cru), [cru])
+    // Sem permissão para guardar, a escolha vale só nesta visita (fica em memória) e o aviso explica o porquê.
+    const [naSessao, setNaSessao] = useState<string[] | null>(null)
+    const escolhidas = naSessao ?? guardadas
+    const alternar = (slug: string) => { const novo = proxima(slug, escolhidas); if (!guardar(novo)) setNaSessao(novo) }
     const porSlug = useMemo(() => new Map(cartoes.map(c => [c.slug, c])), [cartoes])
     const minhas = escolhidas.map(s => porSlug.get(s)).filter((c): c is CartaoTorcida => !!c)
     const destaques = useMemo(() => DESTAQUES.map(n => cartoes.find(c => c.nome.toUpperCase() === n)).filter((c): c is CartaoTorcida => !!c), [cartoes])
@@ -108,6 +125,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
             {minhas.length > 0 && (
                 <section aria-labelledby="minhas-titulo" className="mb-12">
                     <h2 id="minhas-titulo" className="font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">Sua torcida 💜</h2>
+                    <AvisoConsentimento recurso="suas torcidas" className="mt-3 max-w-2xl" />
                     <div className="mt-5 grid gap-5 md:grid-cols-2">
                         {minhas.map(c => {
                             const ink = tinta(c.cor)
@@ -118,7 +136,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                     <div className="flex flex-wrap gap-3">
                                         <Link href={`/fandoms/${c.slug}`} className="touch-target inline-flex items-center px-5 py-3 text-[14px] font-black" style={{ background: ink, color: c.cor }}>Ver a torcida →</Link>
                                         <Link href="/quiz" className="touch-target inline-flex items-center bg-[#ffe14d] px-5 py-3 text-[14px] font-black text-[#15102b]">Fazer o quiz 🎯</Link>
-                                        <button type="button" onClick={() => alternar(c.slug, escolhidas)} className="touch-target px-2 py-3 text-[13px] font-bold underline">Tirar</button>
+                                        <button type="button" onClick={() => alternar(c.slug)} className="touch-target px-2 py-3 text-[13px] font-bold underline">Tirar</button>
                                     </div>
                                     <Novidades grupoSlug={c.grupoSlug} ink={ink} />
                                 </div>
@@ -140,7 +158,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                         <span className="relative block h-14 w-14 overflow-hidden bg-[#15102b]">
                                             {c.foto && <Image src={c.foto} alt="" fill sizes="56px" className="object-cover object-top" />}
                                         </span>
-                                        <BotaoSou slug={c.slug} marcada={false} atuais={escolhidas} cor={c.nome} />
+                                        <BotaoSou slug={c.slug} marcada={false} onAlternar={alternar} cor={c.nome} />
                                     </span>
                                     <span className="relative">
                                         <Link href={`/fandoms/${c.slug}`} className="block font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-none after:absolute after:inset-[-200px_-40px_-40px_-40px] after:content-[''] sm:text-[46px]">{c.nome}</Link>
@@ -169,7 +187,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                     <span className="block truncate text-[12px] font-bold opacity-85">{legenda}{c.ano ? ` · ${c.ano}` : ''}</span>
                                     {c.encerrado && <span className="block text-[10px] font-black uppercase tracking-widest opacity-75">encerrado</span>}
                                 </span>
-                                <span className="relative z-10"><BotaoSou slug={c.slug} marcada={false} atuais={escolhidas} cor={c.nome} /></span>
+                                <span className="relative z-10"><BotaoSou slug={c.slug} marcada={false} onAlternar={alternar} cor={c.nome} /></span>
                             </div>
                         )
                     })}
