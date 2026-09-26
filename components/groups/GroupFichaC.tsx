@@ -257,7 +257,7 @@ export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFich
                                             {rs.slice(0, 5).map((r, i) => (
                                                 <li key={r.id} className={i === 4 ? 'hidden sm:block' : undefined}>
                                                     <Link href={`/artists/${m.slug}#musica`} className="block">
-                                                        <span className="relative block aspect-square overflow-hidden bg-background">{r.coverUrl && <Image src={r.coverUrl} alt={r.title} fill sizes="80px" className="object-cover" />}</span>
+                                                        <span className="relative block aspect-square overflow-hidden bg-background">{r.coverUrl && <Image src={r.coverUrl} alt={r.title} fill sizes="80px" className="object-cover" unoptimized />}</span>
                                                         <span className="mt-1.5 block truncate text-[12px] font-bold">{r.title}</span>
                                                         {r.releaseYear && <span className="block text-[11px] text-muted">{r.releaseYear}</span>}
                                                     </Link>
