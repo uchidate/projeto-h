@@ -17,6 +17,8 @@ import { ProductionContent } from '@/components/productions/ProductionContent'
 import { ProductionCast } from '@/components/productions/ProductionCast'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { AtribuicaoJustWatch } from '@/components/productions/AtribuicaoJustWatch'
+import { ProductionPageB } from '@/components/productions/ProductionPageB'
+import { variantePorId } from '@/lib/experimento'
 import { ReadingBar } from '@/components/ui/ReadingBar'
 import { ProductionSidebar } from '@/components/productions/ProductionSidebar'
 import { ProductionActions } from '@/components/productions/ProductionActions'
@@ -84,11 +86,8 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
             : null,
     ].filter(Boolean).slice(0, 5) as EntityFAQItem[]
 
-    return (
-        <>
-            {/* Sem <h1> sr-only aqui: o hero sempre renderiza o <h1> visível, e
-                dois h1 com o mesmo texto confundiam a hierarquia da página. */}
-            <JsonLd data={{
+    const jsonLd = (
+        <JsonLd data={{
                 '@context': 'https://schema.org', '@type': schemaType,
                 name: title, alternateName: acf.original_title,
                 description: synopsis,
@@ -99,8 +98,34 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
                 genre: genres.map(g => g.name),
                 publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
             }} />
+    )
+    const readingBar = (
+        <ReadingBar backHref={href('productions', undefined, locale)} backLabel={tEntity('breadcrumb.productions')} tagLabel={genres[0]?.name} title={title} pageUrl={productionUrl} pageAnchors={navLinks} />
+    )
 
-            <ReadingBar backHref={href('productions', undefined, locale)} backLabel={tEntity('breadcrumb.productions')} tagLabel={genres[0]?.name} title={title} pageUrl={productionUrl} pageAnchors={navLinks} />
+    // Teste de estrutura: id par recebe a página "apresentação"; ímpar, a atual. Mesma
+    // regra do `variantePorId` para todo o site, e `data-variante` marca os eventos.
+    const variante = variantePorId(production.id)
+    if (variante === 'b') {
+        return (
+            <>
+                <div hidden data-variante="producao-b" />
+                {jsonLd}
+                {readingBar}
+                <ProductionPageB production={production} model={model} productionUrl={productionUrl} cast={cast} related={related}
+                    relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} />
+            </>
+        )
+    }
+
+    return (
+        <>
+            <div hidden data-variante="producao-a" />
+            {/* Sem <h1> sr-only aqui: o hero sempre renderiza o <h1> visível, e
+                dois h1 com o mesmo texto confundiam a hierarquia da página. */}
+            {jsonLd}
+
+            {readingBar}
 
             {/* ── HERO ── */}
             <section className="relative flex min-h-[620px] overflow-hidden bg-[#09080c] lg:min-h-[680px] max-w-[1440px] mx-auto">

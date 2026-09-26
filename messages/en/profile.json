@@ -60,6 +60,16 @@
     "episodesShort": "{count} eps.",
     "durationShort": "{count} min/ep.",
     "watchTrailer": "Watch trailer",
+    "summary": {
+        "whereToWatch": "Where to watch",
+        "readFull": "Read the full synopsis",
+        "mainCast": "Main cast",
+        "allCast": "See full cast",
+        "summaryLabel": "{title} at a glance",
+        "about": "About the series",
+        "castOf": "{title} cast",
+        "castCount": "{count} cast members"
+    },
     "posterAlt": "Poster — {title}",
     "posterAltShort": "{title} — poster",
     "coverAlt": "{title} — cover image",

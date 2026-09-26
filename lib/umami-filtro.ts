@@ -27,10 +27,11 @@ export function umamiAntesDeEnviar<T extends { url?: string; data?: Record<strin
         if (rotaSemMedicao(caminho)) return null
         // Contexto em TODO evento e pageview, num lugar só: cada `track*` deixaria
         // de repetir isto (e esqueceria). `tipo_pagina` agrupa por espécie de página
-        // em vez de URL; `visita` diz se a pessoa é nova ou voltou. O que o evento
+        // em vez de URL; `visita` diz se a pessoa é nova ou voltou; `variante` (quando a página faz parte de um teste, via `data-variante` no HTML) permite comparar os braços em qualquer métrica. O que o evento
         // já traz por conta própria vence.
         if (tipo !== 'event') return payload
-        return { ...payload, data: { tipo_pagina: tipoDePagina(caminho), visita: classeDaVisita(), ...payload.data } }
+        const variante = typeof document !== 'undefined' ? document.querySelector('[data-variante]')?.getAttribute('data-variante') : null
+        return { ...payload, data: { tipo_pagina: tipoDePagina(caminho), visita: classeDaVisita(), ...(variante && { variante }), ...payload.data } }
     } catch {
         return payload
     }

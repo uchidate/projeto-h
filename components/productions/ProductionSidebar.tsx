@@ -23,6 +23,12 @@ interface Props {
     statusProduction?: string
     cast?: WPArtist[]
     castRoles?: Map<string, string>
+    /**
+     * Lateral da página nova: só ficha técnica e anúncio. A nota mora no hero, o
+     * elenco na coluna principal e as plataformas no resumo; repeti-los aqui só
+     * empurrava a ficha para baixo da dobra.
+     */
+    compacto?: boolean
 }
 
 const AGE_COLORS: Record<string, string> = {
@@ -52,11 +58,13 @@ function MetaRow({ label, value }: { label: string; value: React.ReactNode }) {
     )
 }
 
-export function ProductionSidebar({
-    rating, platforms, type, year, episodes, durationMinutes,
-    ageRating, network, director, writer, statusProduction,
-    cast = [], castRoles,
-}: Props) {
+type FichaProps = Pick<Props, 'type' | 'year' | 'episodes' | 'durationMinutes' | 'ageRating' | 'network' | 'director' | 'writer' | 'statusProduction'> & {
+    /** `grade`: duas colunas, rótulo sobre o valor (celular); padrão: lista (lateral). */
+    grade?: boolean
+}
+
+/** Ficha técnica: uma fonte só de rótulos e valores para a lateral e para o celular. */
+export function FichaLinhas({ type, year, episodes, durationMinutes, ageRating, network, director, writer, statusProduction, grade = false }: FichaProps) {
     const t = useTranslations('profile.ui')
     const labels = labelsFor(useLocale())
     const tProduction = useTranslations('profile.production')
@@ -66,6 +74,53 @@ export function ProductionSidebar({
         ? { ...STATUS_LABELS[statusProduction], label: labels.productionStatus(statusProduction) ?? STATUS_LABELS[statusProduction].label }
         : null
     const ageColor = ageRating ? (AGE_COLORS[ageRating] ?? 'bg-surface text-foreground border border-border') : null
+    const Linha = grade ? GradeItem : MetaRow
+
+    return (
+        <div className={grade ? 'grid grid-cols-2 gap-x-5' : undefined}>
+
+                        {typeLabel && (
+                            <Linha label={t('sidebar.type')} value={
+                                <span className={`flex items-center gap-1 ${grade ? 'justify-start' : 'justify-end'}`}>{typeIcon}{typeLabel}</span>
+                            } />
+                        )}
+                        {statusInfo && (
+                            <Linha label={t('sidebar.status')} value={
+                                <span className={`px-1.5 py-0.5 text-[10px] font-bold ${statusInfo.color}`}>{statusInfo.label}</span>
+                            } />
+                        )}
+                        {year && <Linha label={t('sidebar.year')} value={year} />}
+                        {network && <Linha label={t('sidebar.network')} value={network} />}
+                        {episodes && <Linha label={t('sidebar.episodes')} value={tProduction('episodesShort', { count: episodes })} />}
+                        {durationMinutes && <Linha label={t('sidebar.duration')} value={tProduction('durationShort', { count: durationMinutes })} />}
+                        {ageRating && (
+                            <Linha label={t('sidebar.ageRating')} value={
+                                <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-black ${ageColor}`}>
+                                    <ShieldCheck size={9} />{ageRating === 'L' ? tProduction('ageRatingFree') : `${ageRating}+`}
+                                </span>
+                            } />
+                        )}
+                        {director && <Linha label={t('sidebar.director')} value={director} />}
+                        {writer && <Linha label={t('sidebar.writer')} value={writer} />}
+        </div>
+    )
+}
+
+function GradeItem({ label, value }: { label: string; value: React.ReactNode }) {
+    return (
+        <div className="border-b border-border/40 py-3">
+            <dt className="text-[12px] text-muted">{label}</dt>
+            <dd className="mt-0.5 text-[15px] font-semibold text-foreground">{value}</dd>
+        </div>
+    )
+}
+
+export function ProductionSidebar({
+    rating, platforms, type, year, episodes, durationMinutes,
+    ageRating, network, director, writer, statusProduction,
+    cast = [], castRoles, compacto = false,
+}: Props) {
+    const t = useTranslations('profile.ui')
 
     const hasMeta = !!(type || year || episodes || durationMinutes || network || director || writer || statusProduction || ageRating)
 
@@ -73,7 +128,7 @@ export function ProductionSidebar({
         <aside aria-label={t('sidebar.moreInfo')}
             className="hidden xl:flex flex-col gap-5 w-[300px] shrink-0 sticky top-[calc(var(--site-header-h,52px)+var(--reading-bar-h,42px)+56px)]">
 
-            {rating != null && (
+            {!compacto && rating != null && (
                 <SidebarSection label={t('sidebar.rating')}>
                     <div className="flex items-end gap-3">
                         <div className="flex items-center gap-1.5 text-amber-400">
@@ -85,7 +140,7 @@ export function ProductionSidebar({
                 </SidebarSection>
             )}
 
-            {cast.length > 0 && (
+            {!compacto && cast.length > 0 && (
                 <SidebarSection label={t('sidebar.mainCast')}>
                     <div className="space-y-2">
                         {cast.map(artist => {
@@ -112,35 +167,12 @@ export function ProductionSidebar({
 
             {hasMeta && (
                 <SidebarSection label={t('sidebar.technical')}>
-                    <div>
-                        {typeLabel && (
-                            <MetaRow label={t('sidebar.type')} value={
-                                <span className="flex items-center gap-1 justify-end">{typeIcon}{typeLabel}</span>
-                            } />
-                        )}
-                        {statusInfo && (
-                            <MetaRow label={t('sidebar.status')} value={
-                                <span className={`px-1.5 py-0.5 text-[10px] font-bold ${statusInfo.color}`}>{statusInfo.label}</span>
-                            } />
-                        )}
-                        {year && <MetaRow label={t('sidebar.year')} value={year} />}
-                        {network && <MetaRow label={t('sidebar.network')} value={network} />}
-                        {episodes && <MetaRow label={t('sidebar.episodes')} value={tProduction('episodesShort', { count: episodes })} />}
-                        {durationMinutes && <MetaRow label={t('sidebar.duration')} value={tProduction('durationShort', { count: durationMinutes })} />}
-                        {ageRating && (
-                            <MetaRow label={t('sidebar.ageRating')} value={
-                                <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-black ${ageColor}`}>
-                                    <ShieldCheck size={9} />{ageRating === 'L' ? tProduction('ageRatingFree') : `${ageRating}+`}
-                                </span>
-                            } />
-                        )}
-                        {director && <MetaRow label={t('sidebar.director')} value={director} />}
-                        {writer && <MetaRow label={t('sidebar.writer')} value={writer} />}
-                    </div>
+                    <FichaLinhas type={type} year={year} episodes={episodes} durationMinutes={durationMinutes}
+                        ageRating={ageRating} network={network} director={director} writer={writer} statusProduction={statusProduction} />
                 </SidebarSection>
             )}
 
-            {platforms.length > 0 && (
+            {!compacto && platforms.length > 0 && (
                 <SidebarSection label={t('sidebar.whereToWatch')}>
                     <ul className="space-y-2">
                         {platforms.map(p => (
