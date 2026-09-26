@@ -47,7 +47,7 @@ describe('QuickSearch', () => {
         expect(screen.getByRole('button', { name: /doramas/i })).toBeInTheDocument()
     })
 
-    it('agrupa os resultados por tipo, na ordem production > artist > group > post', async () => {
+    it('agrupa por tipo na ordem de relevância (o tipo do melhor resultado vem primeiro), com plural correto', async () => {
         vi.mocked(useWPSearch).mockReturnValue({
             results: [
                 result({ id: 1, type: 'post', title: 'Um artigo' }),
@@ -60,8 +60,24 @@ describe('QuickSearch', () => {
         const user = userEvent.setup()
         render(<QuickSearch />)
         await user.type(screen.getByRole('combobox'), 'xx') // sai do zero-state (query >= 2 chars)
-        const headings = screen.getAllByText(/^(Produçãos|Artistas|Grupos|Artigos)$/).map(el => el.textContent)
-        expect(headings).toEqual(['Produçãos', 'Artistas', 'Artigos'])
+        const headings = screen.getAllByText(/^(Produções|Artistas|Grupos|Artigos)$/).map(el => el.textContent)
+        expect(headings).toEqual(['Artigos', 'Produções', 'Artistas'])
+    })
+
+    it('"bts": o grupo (melhor resultado) aparece antes das produções', async () => {
+        vi.mocked(useWPSearch).mockReturnValue({
+            results: [
+                result({ id: 1, type: 'group', title: 'BTS' }),
+                result({ id: 2, type: 'production', title: 'BTS: Bon Voyage' }),
+            ],
+            isLoading: false,
+        })
+        useQuickSearch.setState({ isOpen: true })
+        const user = userEvent.setup()
+        render(<QuickSearch />)
+        await user.type(screen.getByRole('combobox'), 'bts')
+        const headings = screen.getAllByText(/^(Produções|Grupos)$/).map(el => el.textContent)
+        expect(headings).toEqual(['Grupos', 'Produções'])
     })
 
     it('mostra "Nenhum resultado" quando a busca não retorna nada', async () => {

@@ -1,7 +1,7 @@
 'use client'
 /* eslint-disable react-hooks/set-state-in-effect -- async search results reset keyboard selection */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -20,23 +20,24 @@ const SHORTCUTS = [
     { label: 'Blog', href: '/blog', icon: <BookOpen size={16} /> },
 ]
 
-const TYPE_LABEL: Record<SearchResult['type'], { label: string; icon: React.ReactNode }> = {
-    post:       { label: 'Artigo',    icon: <BookOpen size={14} /> },
-    production: { label: 'Produção',  icon: <Film size={14} /> },
-    artist:     { label: 'Artista',   icon: <Mic2 size={14} /> },
-    group:      { label: 'Grupo',     icon: <Users size={14} /> },
-    company:    { label: 'Empresa',   icon: <Building2 size={14} /> },
-    food:       { label: 'Comida',    icon: <UtensilsCrossed size={14} /> },
+const TYPE_LABEL: Record<SearchResult['type'], { label: string; plural: string; icon: React.ReactNode }> = {
+    post:       { label: 'Artigo', plural: 'Artigos',    icon: <BookOpen size={14} /> },
+    production: { label: 'Produção', plural: 'Produções',  icon: <Film size={14} /> },
+    artist:     { label: 'Artista', plural: 'Artistas',   icon: <Mic2 size={14} /> },
+    group:      { label: 'Grupo', plural: 'Grupos',     icon: <Users size={14} /> },
+    company:    { label: 'Empresa', plural: 'Empresas',   icon: <Building2 size={14} /> },
+    food:       { label: 'Comida', plural: 'Comidas',    icon: <UtensilsCrossed size={14} /> },
 }
 
 function groupByType(results: SearchResult[]): { type: SearchResult['type']; items: SearchResult[] }[] {
-    const order: SearchResult['type'][] = ['production', 'artist', 'group', 'company', 'food', 'post']
+    // Secoes na ordem de relevancia: `results` ja vem ranqueado, entao a secao do
+    // melhor resultado vem primeiro ("bts" mostra o grupo antes das producoes).
     const map = new Map<SearchResult['type'], SearchResult[]>()
     for (const r of results) {
         if (!map.has(r.type)) map.set(r.type, [])
         map.get(r.type)!.push(r)
     }
-    return order.filter(t => map.has(t)).map(type => ({ type, items: map.get(type)! }))
+    return [...map.entries()].map(([type, items]) => ({ type, items }))
 }
 
 function highlightMatch(title: string, query: string): string {
@@ -52,7 +53,9 @@ export function QuickSearch() {
     const inputRef = useRef<HTMLInputElement>(null)
     const [query, setQuery] = useState('')
     const [activeIndex, setActiveIndex] = useState(-1)
-    const { results, isLoading } = useWPSearch(query)
+    const { results: ranqueados, isLoading } = useWPSearch(query)
+    // Ordem de exibicao = ordem do teclado: setas e Enter percorrem o que se ve.
+    const results = useMemo(() => groupByType(ranqueados).flatMap(g => g.items), [ranqueados])
 
     const close = () => { closeModal(); setQuery(''); setActiveIndex(-1) }
 
@@ -194,7 +197,7 @@ export function QuickSearch() {
                             {groupByType(results).map(({ type, items }) => (
                                 <div key={type}>
                                     <p className="px-4 pt-3 pb-1 text-[10px] font-black uppercase tracking-widest text-muted">
-                                        {TYPE_LABEL[type].label}s
+                                        {TYPE_LABEL[type].plural}
                                     </p>
                                     {items.map((result) => {
                                         const index = results.indexOf(result)
