@@ -119,6 +119,15 @@ describe('busca: consultas de referência', () => {
         expect(hrefs).not.toContain('/artists/park-jisoo')
     })
 
+    it('populares: só artista, grupo e produção, do mais em alta para o menos', async () => {
+        const { populares, aguardarIndice } = await import('./index')
+        await aguardarIndice()
+        const top = populares(3)
+        expect(top.map(x => x.href)[0]).toBe('/artists/jisoo-kim') // trending 150, o maior do acervo
+        expect(top.every(x => ['artist', 'group', 'production'].includes(x.type))).toBe(true)
+        expect(populares(2)).toHaveLength(2)
+    })
+
     it('achado por hangul mostra a grafia que casou; achado pelo título, não', async () => {
         const { searchIndex, aguardarIndice } = await import('./index')
         await aguardarIndice()

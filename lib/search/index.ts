@@ -216,6 +216,20 @@ function pontuarPalavras(e: Entrada, palavras: string[], tolerante = false): num
     return (soma / palavras.length) * 0.9
 }
 
+/**
+ * Fichas mais em alta (artista, grupo, produção): o que sugerir quando a busca
+ * não acha nada, para a pessoa não ficar diante de um beco sem saída. Vazio com o
+ * índice ainda frio: sem ele não há como ordenar, e a resposta não é adiada por isso.
+ */
+export function populares(limit = 6): SearchResult[] {
+    if (!entradas) return []
+    return entradas
+        .filter(e => (e.type === 'artist' || e.type === 'group' || e.type === 'production') && e.trending > 0)
+        .sort((a, b) => b.trending - a.trending)
+        .slice(0, limit)
+        .map(e => ({ id: e.id, title: e.title, href: e.href, type: e.type, thumbnail: e.thumbnail, subtitle: e.detalhe }))
+}
+
 export async function searchIndex(query: string, limit: number): Promise<SearchResult[] | null> {
     if (!entradas || Date.now() - carregadoEm > TTL_MS) garantirCarregando()
     if (!entradas) return null // primeira vez: quem chamou usa a busca REST
