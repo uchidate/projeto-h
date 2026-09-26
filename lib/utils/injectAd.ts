@@ -28,6 +28,57 @@ export function textoVisivel(html: string): number {
 }
 
 /**
+ * Onde é seguro cortar o HTML para cada `</p>`: a posição logo depois dele, ou, se
+ * ele está dentro de um contêiner aberto, a posição logo depois do fechamento do
+ * contêiner mais externo.
+ *
+ * Cortar o HTML do WordPress em qualquer `</p>` parte ao meio um `<div>` que abre
+ * numa metade e fecha na outra (ex.: `<div class="hh-intro">` com os dois primeiros
+ * parágrafos). Cada metade vai para um elemento próprio e o navegador "conserta" as
+ * tags soltas de um jeito que o React não espera: a hidratação falha (React #418, em
+ * TODAS as fichas de produção, medido em 2026-09-26) e a página é refeita no cliente a
+ * cada visita. Em 150 produções, 30 dos 33 cortes com anúncio eram desse tipo.
+ *
+ * Recuar para "só cortes fora de contêiner" faria esses anúncios sumirem (e o
+ * `production_content` é o slot que mais preenche). Adiar o corte para o fim do
+ * contêiner mantém o anúncio no mesmo lugar visual: depois do trecho de abertura.
+ * Há uma entrada por parágrafo (repetida quando vários dividem o mesmo contêiner),
+ * para que "depois do N-ésimo parágrafo" continue querendo dizer o mesmo.
+ *
+ * Só conta contêiner de bloco; `<p>`, `<img>`, `<br>` e afins não abrem nada que
+ * precise fechar. Tag auto-fechada (`<div />`) não abre. Conteúdo sem fechamento
+ * (HTML desbalanceado) não gera corte.
+ */
+const CONTEINER = /<(\/?)(div|section|article|blockquote|ul|ol|table|figure|details|aside|main|header|footer|nav)\b[^>]*?(\/?)>/gi
+
+export function posicoesDeCorte(html: string, fimDeParagrafo = '</p>'): number[] {
+    // Fechamentos que zeram a profundidade, na ordem, e a profundidade ao longo do texto.
+    const eventos: Array<{ fim: number; profundidade: number }> = []
+    let profundidade = 0
+    for (const m of html.matchAll(CONTEINER)) {
+        if (m[3] === '/') continue
+        profundidade += m[1] === '/' ? -1 : 1
+        eventos.push({ fim: (m.index ?? 0) + m[0].length, profundidade })
+    }
+
+    const posicoes: number[] = []
+    let cursor = 0
+    let e = 0
+    let atual = 0
+    for (;;) {
+        const idx = html.indexOf(fimDeParagrafo, cursor)
+        if (idx === -1) break
+        cursor = idx + fimDeParagrafo.length
+        while (e < eventos.length && eventos[e].fim <= cursor) { atual = eventos[e].profundidade; e++ }
+        if (atual <= 0) { posicoes.push(cursor); continue }
+        // Dentro de um contêiner: o corte seguro é o fechamento que devolve a profundidade a zero.
+        const fechamento = eventos.slice(e).find(ev => ev.profundidade <= 0)
+        if (fechamento) posicoes.push(fechamento.fim)
+    }
+    return posicoes
+}
+
+/**
  * Divide o HTML do WordPress em duas partes para inserir um ad
  * após o N-ésimo parágrafo sem manipular o DOM via JS (SSR-safe).
  *
@@ -44,18 +95,8 @@ export function textoVisivel(html: string): number {
  * Retorna [antes, depois] ou [todo, ''] quando não há cauda suficiente.
  */
 export function splitContentForAd(html: string, afterParagraph = 2, minTailChars = 400, adaptativo = true): [string, string] {
-    // Usa regex simples — o conteúdo já vem sanitizado pelo WP
-    const paragraphEnd = '</p>'
-
-    // Todas as posições de fim de parágrafo, para poder recuar.
-    const fins: number[] = []
-    let cursor = 0
-    for (;;) {
-        const idx = html.indexOf(paragraphEnd, cursor)
-        if (idx === -1) break
-        cursor = idx + paragraphEnd.length
-        fins.push(cursor)
-    }
+    // Só cortes fora de contêineres abertos (ver `posicoesDeCorte`).
+    const fins = posicoesDeCorte(html)
     if (fins.length < 2) return [html, '']
 
     // Do corte pedido para trás: o primeiro que deixa cauda suficiente vence.
@@ -106,14 +147,7 @@ export function splitContentForAds(html: string, options: AdBreakpointsOptions =
         minCharsBetweenAds = 800, minTailChars = 400,
     } = options
 
-    const positions: number[] = []
-    let pos = 0
-    while (true) {
-        const idx = html.indexOf('</p>', pos)
-        if (idx === -1) break
-        pos = idx + '</p>'.length
-        positions.push(pos)
-    }
+    const positions = posicoesDeCorte(html)
 
     if (positions.length < minParagraphs) return [html]
 
