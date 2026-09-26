@@ -20,6 +20,8 @@ import { QuizWidget } from '@/components/ui/QuizWidget'
 import { QuizFacts } from '@/components/ui/QuizFacts'
 import { buildArtistProfileModel } from '@/lib/profiles/artistProfile'
 import { ArtistHero } from '@/components/artists/ArtistHero'
+import { ListaBarra, ListaProxima } from '@/components/artists/lista/ListaNavegacao'
+import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ArtistColophon } from '@/components/artists/ArtistColophon'
 import { ArtistNextRead } from '@/components/artists/ArtistNextRead'
 import type { EntityFAQItem } from '@/components/seo/EntityFAQ'
@@ -213,6 +215,8 @@ export function ArtistDetailPage({
 
             <ReadingBar backHref={href('artists', undefined, locale)} backLabel={tEntity('breadcrumb.artists')} tagLabel={roleLabels[0]} title={name} pageUrl={artistUrl} pageAnchors={pageAnchors} />
 
+            <RegistrarVisita item={{ slug: artist.slug, nome: name, foto: image?.src ?? null, papel: roleLabels[0] ?? null }} />
+            <ListaBarra slug={artist.slug} />
             <div hidden data-variante={emC ? 'artista-c' : 'artista-a'} />
             <ArtistHero
                 artist={artist} name={name} artistUrl={artistUrl} image={image}
@@ -223,6 +227,7 @@ export function ArtistDetailPage({
             {emC && <ArtistAtalhos destinos={[...atalhos]} accent={accent} />}
 
             {sectionNodes}
+            <ListaProxima slug={artist.slug} />
 
             {/* Guias só existem em português. */}
             {locale === DEFAULT_LOCALE && relatedHubs.length > 0 && (

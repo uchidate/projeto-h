@@ -11,7 +11,7 @@ interface Props {
     sizes?: string
     aspectRatio?: string
     showRole?: boolean
-    variant?: 'default' | 'catalog'
+    variant?: 'default' | 'catalog' | 'diretorio'
     /** Some quando a própria ordenação já comunica destaque (aba "Em alta"). */
     showTrendingBadge?: boolean
 }
@@ -29,6 +29,29 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
     const name = stripHtml(artist.title.rendered)
     const roles = (artist.acf?.roles as string[] | undefined)?.map(labels.role) ?? []
     const isTrending = showTrendingBadge && (artist.acf?.trending_score ?? 0) >= 50
+
+    // Diretório: só o rosto e o nome. A atuação ("Ator/Atriz") era a mesma em quase todos os cartões e o hangul
+    // segue na busca e na ficha; sem essas duas linhas, cabem mais artistas por tela.
+    if (variant === 'diretorio') {
+        return (
+            <Link href={`/artists/${artist.slug}`} className="group flex flex-col" data-slug={artist.slug}>
+                <div className="relative aspect-3/4 overflow-hidden bg-surface">
+                    {image ? (
+                        <Image src={image.src} alt={image.alt || name} fill priority={priority}
+                            className="object-cover object-top group-hover:scale-[1.03] transition-transform duration-500"
+                            sizes={sizes} />
+                    ) : (
+                        <div className="flex h-full w-full items-center justify-center" style={{ background: nameToGradient(name) }}>
+                            <span className="select-none text-[64px] font-black leading-none text-white/15">
+                                {artist.acf?.name_hangul?.slice(0, 2) ?? name[0]?.toUpperCase() ?? '?'}
+                            </span>
+                        </div>
+                    )}
+                </div>
+                <span className="mt-2.5 block truncate text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[15px]">{name}</span>
+            </Link>
+        )
+    }
 
     if (variant === 'catalog') {
         return (

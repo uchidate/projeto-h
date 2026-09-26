@@ -6,6 +6,7 @@ import {
     applyConsent,
     getBannerState,
     hasCertifiedCmp,
+    podeGuardarHistorico,
     readConsent,
     resetConsent,
     saveConsent,
@@ -92,6 +93,29 @@ describe('consent', () => {
         expect(hasCertifiedCmp()).toBe(true)
         expect(getBannerState()).toBe('oculto')
         cancelar()
+    })
+
+    describe('histórico "Continue de onde parou"', () => {
+        it('fora do EEE vale enquanto a pessoa não recusa', () => {
+            expect(podeGuardarHistorico()).toBe(true)
+            saveConsent('granted')
+            expect(podeGuardarHistorico()).toBe(true)
+        })
+
+        it('quem recusou não tem histórico', () => {
+            saveConsent('denied')
+            expect(podeGuardarHistorico()).toBe(false)
+        })
+
+        it('no EEE só com aceite explícito', () => {
+            instalarFundingChoices(true)
+            const cancelar = subscribeBanner(() => {})
+            expect(hasCertifiedCmp()).toBe(true)
+            expect(podeGuardarHistorico()).toBe(false)
+            saveConsent('granted')
+            expect(podeGuardarHistorico()).toBe(true)
+            cancelar()
+        })
     })
 
     it('fica calado enquanto o CMP ainda não respondeu', () => {

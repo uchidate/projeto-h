@@ -6,6 +6,7 @@ import { getArtists } from '@/lib/wordpress/artists'
 import { wpFetch } from '@/lib/wordpress/client'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistsPage } from '@/components/features/ArtistsPage'
+import { aniversariosDaSemana, hojeEmSaoPaulo, mesesDaJanela } from '@/lib/artists/aniversarios'
 
 export const revalidate = 600
 
@@ -79,6 +80,16 @@ export default async function ArtistsListPage({ searchParams }: { searchParams: 
     if (unfiltered && page === 1) exigirListagemComConteudo(items, '/artists')
     if (page > Math.max(1, totalPages)) notFound()
 
+    // Faixa "Aniversários da semana": só na página inicial sem filtro. Falha do WP não derruba a lista.
+    let aniversarios: Awaited<ReturnType<typeof aniversariosDaSemana>> = []
+    if (unfiltered && page === 1) {
+        const hoje = hojeEmSaoPaulo()
+        const porMes = await Promise.all(mesesDaJanela(hoje).map(birthMonth =>
+            getArtists({ birthMonth, perPage: 100, orderby: 'date', order: 'asc' }).then(r => r.items).catch(() => []),
+        ))
+        aniversarios = aniversariosDaSemana(porMes.flat(), hoje)
+    }
+
     return (
         <ArtistsPage
             artists={items}
@@ -91,6 +102,8 @@ export default async function ArtistsListPage({ searchParams }: { searchParams: 
             letter={letter}
             sortBy={sortBy}
             letterCounts={letterCounts}
+            perPage={48}
+            aniversarios={aniversarios}
         />
     )
 }
