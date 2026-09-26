@@ -165,7 +165,7 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
                 <div className="flex items-center gap-2">
                     {streak >= 2 && <span className="animate-pulse bg-[#ffe14d] px-2 py-1 text-[13px] font-black text-[#15102b]">🔥 {streak}x</span>}
                     <span className="bg-[#15102b] px-2 py-1 text-[13px] font-black tabular-nums text-[#ffe14d] dark:bg-[#ffe14d] dark:text-[#15102b]">{points.toLocaleString()} pts</span>
-                    <span className={`px-2 py-1 text-[15px] font-black tabular-nums text-[#15102b] ${timeLeft <= 3 ? 'bg-[#f87171]' : timeLeft <= 6 ? 'bg-[#fbbf24]' : 'bg-white'}`}>{timeLeft}s</span>
+                    <span className={`px-2 py-1 text-[15px] font-black tabular-nums text-[#15102b] ${timeLeft <= 3 ? 'bg-[#ff5fa2]' : timeLeft <= 6 ? 'bg-[#ffe14d]' : 'bg-[#38e1c0]'}`}>{timeLeft}s</span>
                 </div>
             </div>
 
@@ -174,7 +174,7 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
                 <div className="h-full bg-[#ff5fa2] transition-all duration-300" style={{ width: `${progress}%` }} />
             </div>
             <div className="mb-6 h-1.5 overflow-hidden bg-[#15102b]/15 dark:bg-white/15">
-                <div className="linear h-full transition-all duration-1000" style={{ width: `${timePct}%`, background: timeLeft <= 3 ? '#f87171' : timeLeft <= 6 ? '#fbbf24' : '#8b80c4' }} />
+                <div className="linear h-full transition-all duration-1000" style={{ width: `${timePct}%`, background: timeLeft <= 3 ? '#ff5fa2' : timeLeft <= 6 ? '#ffe14d' : '#38e1c0' }} />
             </div>
 
             <p className="mb-3 text-[12px] font-black uppercase tracking-[0.12em] opacity-70">Pergunta {current + 1} de {questions.length}</p>
@@ -190,8 +190,8 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
                     const isSelected = i === selected
                     let cls = `relative flex min-h-[58px] w-full items-center gap-3 border-[3px] border-[#15102b] px-4 py-3 text-left text-[16px] font-extrabold text-[#15102b] transition-transform sm:text-[18px] ${SOMBRA} `
                     if (!revealed) cls += 'cursor-pointer bg-white hover:-translate-y-0.5'
-                    else if (isCorrect) cls += 'cursor-default bg-[#4ade80]'
-                    else if (isSelected) cls += 'cursor-default bg-[#f87171]'
+                    else if (isCorrect) cls += 'cursor-default bg-[#38e1c0]'
+                    else if (isSelected) cls += 'cursor-default bg-[#ff5fa2]'
                     else cls += 'cursor-default bg-white opacity-40'
 
                     const shortcut = String.fromCharCode(65 + i)
