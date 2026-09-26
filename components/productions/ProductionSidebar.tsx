@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ExternalLink, Tv, Film, Star, ShieldCheck } from 'lucide-react'
 import type { WPTerm, WPArtist } from '@/lib/wordpress/types'
 import { ProfileSidebarAd } from '@/components/profiles/ProfileSidebarAd'
+import { AtribuicaoJustWatch } from '@/components/productions/AtribuicaoJustWatch'
 import { STATUS_LABELS } from '@/lib/productions/labels'
 import { labelsFor } from '@/lib/i18n/labels'
 import { getWPImage, stripHtml } from '@/lib/utils'
@@ -149,6 +150,7 @@ export function ProductionSidebar({
                             </li>
                         ))}
                     </ul>
+                    <AtribuicaoJustWatch className="mt-3 block" />
                 </SidebarSection>
             )}
 
