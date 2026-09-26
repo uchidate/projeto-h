@@ -6,11 +6,11 @@ import { PerguntaDoDia } from './PerguntaDoDia'
 const SUBJETIVA = /\b(mais (amad|famos|popular|marcante|import)|melhor|maior sucesso|favorit)/i
 
 /** Escolhe a pergunta do dia no servidor. Sem perguntas (WordPress fora), some em vez de quebrar a página. */
-export async function PerguntaDoDiaServer({ embutida = false }: { embutida?: boolean } = {}) {
+export async function PerguntaDoDiaServer({ variante = 'padrao' }: { variante?: 'padrao' | 'alegre' } = {}) {
     const chave = chaveDia()
     const pergunta = escolherDoDia((await getQuizQuestions()).filter(q => q.options.length === 4 && !SUBJETIVA.test(q.question)), chave)
     if (!pergunta) return null
     const dataExtenso = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: 'numeric', month: 'long' }).format(new Date())
     const { id, question, options, correct, explanation } = pergunta
-    return <PerguntaDoDia pergunta={{ id, question, options, correct, explanation }} chave={chave} dataExtenso={dataExtenso} embutida={embutida} />
+    return <PerguntaDoDia pergunta={{ id, question, options, correct, explanation }} chave={chave} dataExtenso={dataExtenso} variante={variante} />
 }
