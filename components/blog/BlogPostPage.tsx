@@ -19,6 +19,8 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { BlogReadingProgress } from '@/components/blog/BlogReadingProgress'
 import { BlogToc } from '@/components/blog/BlogToc'
+import { BlogEntityCard, type EntidadeDoCard } from '@/components/blog/BlogEntityCard'
+import { variantePorId } from '@/lib/experimento'
 import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
 import { BlogSuggestedNext } from '@/components/blog/BlogSuggestedNext'
@@ -326,6 +328,17 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
             : null
     const accentColor = primaryGroupColor ?? cs.color
 
+    // Teste A/B por id (par = variante B): sem a trava "Saiba mais" no celular, card do grupo no texto e lateral fixa só com índice + anúncio.
+    const emB = variantePorId(post.id) === 'b'
+    // Quem o texto cita, com foto: grupos primeiro, depois artistas (até 7). Menos de 2 com foto não vale um card.
+    const citados: EntidadeDoCard[] = [
+        ...(post.related_entities?.groups ?? []).filter(g => g.image).map(g => ({ name: g.name, href: `/groups/${g.slug}`, image: g.image, tipo: 'grupo' as const })),
+        ...(post.related_entities?.artists ?? []).filter(x => x.image).map(x => ({ name: x.name, href: `/artists/${x.slug}`, image: x.image, tipo: 'artista' as const })),
+    ].slice(0, 7)
+    const cardGrupo = emB && citados.length >= 2
+        ? <BlogEntityCard titulo="Perfis citados no texto" itens={citados} color={primaryGroupColor} />
+        : null
+
     const relatedPreviews = buildRelatedPreviewMap(post)
     const structuredModel = post.article_blocks?.length ? buildArticleModel(post.article_blocks) : null
     const enhancedContent = structuredModel
@@ -361,8 +374,41 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
     // exibição e clique dão a taxa de clique de cada um.
     const fechamentoNovo = post.id % 2 === 0
 
+    const blocosFinais = (
+        <>
+                            <div className="overflow-hidden rounded-xl border border-border bg-surface">
+                                <div className="flex items-center justify-between border-b border-border/60 px-3 py-2.5">
+                                    <p className="text-caption font-black uppercase tracking-widest text-muted">Achados</p>
+                                    <Link href="/blog" className="text-caption flex items-center gap-0.5 font-bold text-accent hover:underline">Ver tudo →</Link>
+                                </div>
+                                <p className="border border-x-0 border-t-0 border-accent/20 bg-accent/4 px-3 py-2 text-[10px] leading-relaxed text-muted">
+                                    <strong className="text-foreground">Publicidade afiliada:</strong> podemos receber comissão por compras feitas por links desta vitrine, sem custo extra para você.
+                                </p>
+                            </div>
+
+                            {categories.length > 1 && (
+                                <div className="rounded-md border border-border bg-surface p-4">
+                                    <p className="mb-3 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Categorias</p>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {categories.map(c => {
+                                            const cs2 = catStyle(c.slug)
+                                            return (
+                                                <Link key={c.id} href={`/blog?category=${c.slug}`}
+                                                    className="px-2 py-0.5 text-[11px] font-semibold transition-colors hover:brightness-95"
+                                                    style={{ color: cs2.color, backgroundColor: cs2.bg }}>
+                                                    {c.name}
+                                                </Link>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+        </>
+    )
+
     return (
         <>
+            <div hidden data-variante={emB ? 'artigo-b' : 'artigo-a'} />
             <JsonLd
                 data={buildArticleSchema({
                     type: isNewsPost ? 'NewsArticle' : 'BlogPosting',
@@ -580,19 +626,20 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
 
                         {/* Article content */}
                         <article
-                            className="wp-article-content oc-article-reading-column w-full"
+                            className="wp-article-content oc-article-reading-column w-full [&_[id]]:scroll-mt-[calc(var(--site-sticky-top,92px)+var(--section-bar-h,44px)+20px)]"
                             style={primaryGroupColor ? { '--color-accent': primaryGroupColor } as React.CSSProperties : undefined}
                         >
-                            <BlogMobileReadMore>
+                            <BlogMobileReadMore semTrava={emB} slug={post.slug}>
                                 {structuredModel ? (
                                     <>
-                                        <GutenbergArticleRenderer model={structuredModel} />
+                                        <GutenbergArticleRenderer model={structuredModel} cardGrupo={cardGrupo} />
                                     </>
                                 ) : (
                                     <>
                                         <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" dangerouslySetInnerHTML={{ __html: articleLead }} />
                                         {contentSegments.map((segment, i) => (
                                             <div key={i}>
+                                                {i === 1 && cardGrupo}
                                                 {i > 0 && ADSENSE.slots.inline && <div className="my-8"><AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="article_body" /></div>}
                                                 <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" dangerouslySetInnerHTML={{ __html: segment }} />
                                             </div>
@@ -768,6 +815,31 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
                     </div>
 
                     {/* ── Sidebar ── */}
+                    {emB ? (
+                        <aside aria-label="Informações do artigo" className="hidden xl:flex xl:flex-col">
+                            {/* Só o índice e o anúncio acompanham a rolagem, sem caixa com rolagem interna; o índice vem primeiro. */}
+                            <div className="flex flex-col gap-4" style={{ position: 'sticky', top: 'calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 36px + 8px)' }}>
+                                {/* O topo fixo do site ocupa ~284px: índice (~210) + 300×250 só cabem com janela de 800px ou mais.
+                                    Abaixo disso o índice desce e o anúncio fica sozinho na parte fixa, como na variante A. */}
+                                {enhancedContent.headings.length > 2 && (
+                                    <div className="rounded-md border border-border bg-surface p-4 [@media(max-height:799px)]:hidden">
+                                        <BlogToc headings={enhancedContent.headings} />
+                                    </div>
+                                )}
+                                {ADSENSE.slots.article_sidebar && (
+                                    <ArticleSidebarAd slot={ADSENSE.slots.article_sidebar} readingMinutes={mins} alturaAlta={1150} />
+                                )}
+                            </div>
+                            <div className="mt-auto flex flex-col gap-4 pt-10">
+                                {enhancedContent.headings.length > 2 && (
+                                    <div className="hidden rounded-md border border-border bg-surface p-4 [@media(max-height:799px)]:block">
+                                        <BlogToc headings={enhancedContent.headings} />
+                                    </div>
+                                )}
+                                {blocosFinais}
+                            </div>
+                        </aside>
+                    ) : (
                     <aside
                         aria-label="Informações do artigo"
                         className="hidden xl:flex xl:flex-col"
@@ -793,36 +865,11 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
                                 </div>
                             )}
 
-                            <div className="overflow-hidden rounded-xl border border-border bg-surface">
-                                <div className="flex items-center justify-between border-b border-border/60 px-3 py-2.5">
-                                    <p className="text-caption font-black uppercase tracking-widest text-muted">Achados</p>
-                                    <Link href="/blog" className="text-caption flex items-center gap-0.5 font-bold text-accent hover:underline">Ver tudo →</Link>
-                                </div>
-                                <p className="border border-x-0 border-t-0 border-accent/20 bg-accent/4 px-3 py-2 text-[10px] leading-relaxed text-muted">
-                                    <strong className="text-foreground">Publicidade afiliada:</strong> podemos receber comissão por compras feitas por links desta vitrine, sem custo extra para você.
-                                </p>
-                            </div>
-
-                            {categories.length > 1 && (
-                                <div className="rounded-md border border-border bg-surface p-4">
-                                    <p className="mb-3 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Categorias</p>
-                                    <div className="flex flex-wrap gap-1.5">
-                                        {categories.map(c => {
-                                            const cs2 = catStyle(c.slug)
-                                            return (
-                                                <Link key={c.id} href={`/blog?category=${c.slug}`}
-                                                    className="px-2 py-0.5 text-[11px] font-semibold transition-colors hover:brightness-95"
-                                                    style={{ color: cs2.color, backgroundColor: cs2.bg }}>
-                                                    {c.name}
-                                                </Link>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-                            )}
+                            {blocosFinais}
 
                         </div>
                     </aside>
+                    )}
                     </div>
 
                 {/* Quiz CTA — categoria do artigo */}

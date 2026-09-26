@@ -1,15 +1,20 @@
 'use client'
 
 import { useState } from 'react'
+import { trackBlogSaibaMais } from '@/lib/analytics'
 
 interface Props {
     children: React.ReactNode
     /** Height in px of visible content before the gate on mobile (default 1300) */
     gateHeight?: number
+    /** Variante B do teste: o texto corre inteiro, sem a trava "Saiba mais" no celular. */
+    semTrava?: boolean
+    slug?: string
 }
 
-export function BlogMobileReadMore({ children, gateHeight = 1300 }: Props) {
+export function BlogMobileReadMore({ children, gateHeight = 1300, semTrava = false, slug }: Props) {
     const [expanded, setExpanded] = useState(false)
+    if (semTrava) return <div>{children}</div>
 
     return (
         <div>
@@ -31,7 +36,7 @@ export function BlogMobileReadMore({ children, gateHeight = 1300 }: Props) {
                 <div id="blog-saiba-mais-gate" className="flex flex-col items-center bg-background pb-8 lg:hidden">
                     <button
                         type="button"
-                        onClick={() => setExpanded(true)}
+                        onClick={() => { setExpanded(true); trackBlogSaibaMais(slug) }}
                         className="mt-2 w-[80%] border-2 border-foreground py-3 font-mono text-[11px] font-black uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-foreground hover:text-background active:opacity-80"
                     >
                         Saiba mais
