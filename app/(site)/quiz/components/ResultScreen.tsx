@@ -93,6 +93,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
         navigator.clipboard?.writeText(`${shareText} ${url}`)
     }
 
+    const SOMBRA = 'shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]'
     const radius = 54
     const circ   = 2 * Math.PI * radius
     const dash   = circ * pct
@@ -105,17 +106,21 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                 @keyframes drawin { from{stroke-dashoffset:${circ}} to{stroke-dashoffset:${circ - dash}} }
             `}</style>
 
-            <div className="page-wrap py-8">
-                <div className="border-b-2 border-foreground pb-5 mb-8 flex items-start justify-between gap-4 flex-wrap">
-                    <h1 className="font-serif text-[28px] font-medium leading-[1.1] tracking-[-0.02em]">
-                        {result.title} <span className="text-muted font-medium text-[18px]">{result.sub}</span>
-                    </h1>
+            <div className="bg-[#f3efff] text-[#15102b] [--color-bg:#f3efff] [--color-border:#b9aee6] [--color-foreground:#15102b] [--color-muted:#5a4d99] [--color-surface:#ffffff] dark:bg-[#15102b] dark:text-white dark:[--color-bg:#15102b] dark:[--color-border:#3a2f6b] dark:[--color-foreground:#ffffff] dark:[--color-muted:#c9c2ee] dark:[--color-surface:#1f1840]">
+            <div className="mx-auto max-w-[1100px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+                <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <span className="inline-block -rotate-2 bg-[#ffe14d] px-3 py-1 text-[12px] font-black tracking-[0.08em] text-[#15102b]">{result.sub.toUpperCase()}</span>
+                        <h1 className="mt-3 font-[family-name:var(--font-playfair)] text-[40px] font-extrabold leading-none sm:text-[56px]">
+                            {perfect ? '🏆 ' : pct >= 0.6 ? '🎉 ' : '💪 '}{result.title}
+                        </h1>
+                    </div>
                     {bestStreak >= 3 && (
-                        <div className="flex items-center gap-2 border border-orange-400/30 bg-orange-400/8 px-3 py-2">
+                        <div className={`flex items-center gap-2 bg-[#ffe14d] px-3 py-2 text-[#15102b] ${SOMBRA}`}>
                             <span className="text-[18px]">🔥</span>
                             <div>
-                                <p className="text-[13px] font-black text-orange-400">Sequência de {bestStreak}!</p>
-                                <p className="text-[10px] text-muted">melhor streak</p>
+                                <p className="text-[14px] font-black">Sequência de {bestStreak}!</p>
+                                <p className="text-[11px] font-bold">melhor sequência</p>
                             </div>
                         </div>
                     )}
@@ -123,7 +128,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
 
                 {/* Score + categorias */}
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                    <div className="border border-border bg-surface p-6 flex flex-col items-center justify-center text-center">
+                    <div className={`flex flex-col items-center justify-center border-[3px] border-[#15102b] bg-surface p-6 text-center dark:border-white/30 ${SOMBRA}`}>
                         <div className="relative inline-flex items-center justify-center mb-4">
                             <svg width="140" height="140" viewBox="0 0 140 140" className="-rotate-90">
                                 <circle cx="70" cy="70" r={radius} fill="none" strokeWidth="10" stroke="var(--color-border)" />
@@ -138,16 +143,16 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                                 <span className="text-sm text-muted font-semibold">de {questions.length}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 border border-amber-400/20 bg-amber-400/8 px-5 py-2 mb-3">
-                            <Zap className="w-4 h-4 text-amber-400" />
-                            <span className="text-base font-black text-amber-400">{points.toLocaleString()} pts</span>
+                        <div className="mb-3 flex items-center gap-2 bg-[#ffe14d] px-5 py-2 text-[#15102b]">
+                            <Zap className="h-4 w-4" />
+                            <span className="text-base font-black">{points.toLocaleString()} pts</span>
                         </div>
                         <div className="w-full mt-2">
                             <AccuracyBar correct={score} total={questions.length} />
                         </div>
                     </div>
 
-                    <div className="border border-border bg-surface p-6">
+                    <div className={`border-[3px] border-[#15102b] bg-surface p-6 dark:border-white/30 ${SOMBRA}`}>
                         <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-4 flex items-center gap-1.5">
                             <BarChart3 className="w-3.5 h-3.5" />Por categoria
                         </p>
@@ -281,15 +286,15 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-3 flex-wrap mb-10">
                     <button type="button" onClick={onReset}
-                        className="flex items-center justify-center gap-2 border border-border px-5 py-3.5 sm:py-3 text-[13px] font-black hover:border-foreground transition-colors">
+                        className="flex items-center justify-center gap-2 bg-[#ff5fa2] px-6 py-3.5 text-[15px] font-black text-[#15102b] transition-transform hover:-translate-y-0.5 ${SOMBRA}">
                         <RotateCcw className="w-4 h-4" />Jogar novamente
                     </button>
                     <button type="button" onClick={handleShare}
-                        className="flex items-center justify-center gap-2 border border-border px-5 py-3.5 sm:py-3 text-[13px] font-black hover:border-foreground transition-colors">
+                        className="flex items-center justify-center gap-2 bg-[#38e1c0] px-6 py-3.5 text-[15px] font-black text-[#15102b] transition-transform hover:-translate-y-0.5 shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]">
                         <Share2 className="w-4 h-4" />Compartilhar resultado
                     </button>
                     <Link href={exploreHref}
-                        className="flex items-center justify-center gap-2 border border-accent/40 bg-accent/5 px-5 py-3.5 sm:py-3 text-[13px] font-black hover:border-accent transition-colors text-accent">
+                        className="flex items-center justify-center gap-2 bg-[#ffe14d] px-6 py-3.5 text-[15px] font-black text-[#15102b] transition-transform hover:-translate-y-0.5 shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]">
                         <Flame className="w-4 h-4" />{exploreLabel}
                     </Link>
                 </div>
@@ -335,6 +340,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                         </div>
                     </div>
                 )}
+            </div>
             </div>
         </>
     )

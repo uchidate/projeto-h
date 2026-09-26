@@ -67,3 +67,9 @@ export function shuffle<T>(arr: T[]): T[] {
     }
     return a
 }
+
+/** Identidade visual da "sala de jogo": cor e emoji de cada tema, usados na capa e nas telas de partida e resultado. */
+export const TEMA_VISUAL: Record<string, { cor: string; emoji: string }> = {
+    'k-pop': { cor: '#ff5fa2', emoji: '🎤' }, 'k-drama': { cor: '#7aa2ff', emoji: '📺' },
+    'cultura': { cor: '#38e1c0', emoji: '🍜' }, 'historia': { cor: '#c39bff', emoji: '🏯' },
+}

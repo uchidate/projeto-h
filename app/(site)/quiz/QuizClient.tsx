@@ -1,7 +1,7 @@
 'use client'
 /* eslint-disable react-hooks/set-state-in-effect -- quiz transitions intentionally reset coordinated state */
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, type ReactNode } from 'react'
 import { BarChart3 } from 'lucide-react'
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'
 import { trackQuizStart, trackQuizComplete } from '@/lib/analytics'
@@ -67,7 +67,8 @@ function _PersonalStats({ stats }: { stats: QuizStats }) {
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
-export function QuizClient({ serverQuestions, initialCategory = 'all', initialSubcategory = '' }: {
+export function QuizClient({ serverQuestions, initialCategory = 'all', initialSubcategory = '', aposTitulo }: {
+    aposTitulo?: ReactNode
     serverQuestions: QuizQuestion[]
     initialCategory?: CategoryFilter
     initialSubcategory?: string
@@ -164,6 +165,7 @@ export function QuizClient({ serverQuestions, initialCategory = 'all', initialSu
             allQuestions={serverQuestions}
             initialCategory={initialCategory}
             initialSubcategory={initialSubcategory}
+            aposTitulo={aposTitulo}
         />
     )
 }
