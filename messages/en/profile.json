@@ -180,7 +180,8 @@
       "ageRating": "Age rating",
       "director": "Director",
       "writer": "Writer",
-      "whereToWatch": "Where to watch"
+      "whereToWatch": "Where to watch",
+      "justWatch": "Availability data by JustWatch"
     },
     "awardsTitle": "Awards and recognition",
     "inOneSentence": "In one sentence",

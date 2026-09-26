@@ -18,6 +18,7 @@ import { ProductionCast } from '@/components/productions/ProductionCast'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionResumo } from '@/components/productions/ProductionResumo'
 import { variantePorId } from '@/lib/experimento'
+import { AtribuicaoJustWatch } from '@/components/productions/AtribuicaoJustWatch'
 import { ReadingBar } from '@/components/ui/ReadingBar'
 import { ProductionSidebar } from '@/components/productions/ProductionSidebar'
 import { ProductionActions } from '@/components/productions/ProductionActions'
@@ -237,6 +238,7 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
                                     {platforms.map(p => (
                                         <span key={p.id} className="text-[11px] font-semibold text-foreground">{p.name}</span>
                                     ))}
+                                    <AtribuicaoJustWatch className="ml-1" />
                                 </div>
                             )}
                         </div>}
