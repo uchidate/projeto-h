@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Search, X, Command, Film, Mic2, Users, BookOpen, Loader2, TrendingUp, Building2, UtensilsCrossed } from 'lucide-react'
 import { useQuickSearch } from '@/lib/hooks/useQuickSearch'
 import { useWPSearch } from '@/hooks/useWPSearch'
@@ -58,7 +59,7 @@ export function QuickSearch() {
     const inputRef = useRef<HTMLInputElement>(null)
     const [query, setQuery] = useState('')
     const [activeIndex, setActiveIndex] = useState(-1)
-    const { results: ranqueados, isLoading, erro } = useWPSearch(query)
+    const { results: ranqueados, sugestoes, isLoading, erro } = useWPSearch(query)
     // Ordem de exibicao = ordem do teclado: setas e Enter percorrem o que se ve.
     const results = useMemo(() => groupByType(ranqueados).flatMap(g => g.items), [ranqueados])
 
@@ -211,6 +212,20 @@ export function QuickSearch() {
                     ) : results.length === 0 && !isLoading ? (
                         <div className="px-4 py-10 text-center text-sm text-muted">
                             Nenhum resultado para <strong className="text-foreground">&ldquo;{query}&rdquo;</strong>
+                            {sugestoes.length > 0 && (
+                                <div data-bloco="busca-sem-resultado" className="mt-6 text-left">
+                                    <p className="mb-2 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Que tal começar por</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {sugestoes.map(s => (
+                                            <Link key={s.id} href={s.href} onClick={close}
+                                                className="border border-border bg-surface px-3 py-1.5 text-[13px] font-semibold text-foreground transition-colors hover:border-accent/60 hover:text-accent">
+                                                {s.title}
+                                                {s.subtitle && <span className="ml-1.5 text-[11px] font-normal text-muted">{s.subtitle}</span>}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div id="quick-search-results" role="listbox" className="py-2">

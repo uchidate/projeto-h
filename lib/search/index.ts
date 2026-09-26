@@ -2,7 +2,7 @@ import type { SearchResult, SearchResultType } from '@/lib/search/types'
 import { stripHtml } from '@/lib/utils'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
-import { foldAccents, fuzzyDistance, fuzzyThreshold, levenshtein, scoreTitle, stripSeparators } from '@/lib/search/scoring'
+import { foldAccents, fuzzyThreshold, levenshtein, scoreTitle, stripSeparators } from '@/lib/search/scoring'
 
 /**
  * Indice de busca em memoria: todos os titulos do acervo (~8 mil fichas, ~1 MB)
@@ -180,6 +180,20 @@ export async function aguardarIndice(): Promise<void> {
 }
 
 /**
+ * Distancia entre uma palavra digitada e o texto (inteiro ou por palavra), mas so
+ * contra candidatos de tamanho parecido: sem isso "blakpink" (8) chegava a "Apink"
+ * (5) e trazia o grupo errado. Infinity quando nenhum candidato serve.
+ */
+function distanciaDaPalavra(texto: string, p: string): number {
+    let melhor = Infinity
+    for (const c of [stripSeparators(texto), ...foldAccents(texto).split(/[\s\-]+/).filter(Boolean)]) {
+        if (Math.abs(c.length - p.length) > 1) continue
+        melhor = Math.min(melhor, levenshtein(c, p))
+    }
+    return melhor
+}
+
+/**
  * Consulta com varias palavras ("jisoo blackpink"): cada palavra precisa casar
  * com algum campo da ficha ou com o nome do grupo (esse com peso menor). Vale
  * um pouco menos que o casamento da frase inteira, que continua tendo prioridade.
@@ -193,14 +207,27 @@ function pontuarPalavras(e: Entrada, palavras: string[], tolerante = false): num
         let melhor = Math.max(direto, porGrupo)
         // Erro de digitacao numa das palavras ("blakpink jisoo"): vale menos que o acerto exato.
         if (melhor === 0 && tolerante && p.length >= 3) {
-            const dist = Math.min(fuzzyDistance(e.title, p), ...e.alternativas.map(a => fuzzyDistance(a, p)),
-                ...e.contexto.map(g => fuzzyDistance(g, p)))
-            if (dist <= fuzzyThreshold(p)) melhor = 30 - dist
+            const dist = Math.min(...[e.title, ...e.alternativas, ...e.contexto].map(t => distanciaDaPalavra(t, p)))
+            if (dist <= Math.min(fuzzyThreshold(p), 2)) melhor = 30 - dist
         }
         if (melhor === 0) return 0
         soma += melhor
     }
     return (soma / palavras.length) * 0.9
+}
+
+/**
+ * Fichas mais em alta (artista, grupo, produção): o que sugerir quando a busca
+ * não acha nada, para a pessoa não ficar diante de um beco sem saída. Vazio com o
+ * índice ainda frio: sem ele não há como ordenar, e a resposta não é adiada por isso.
+ */
+export function populares(limit = 6): SearchResult[] {
+    if (!entradas) return []
+    return entradas
+        .filter(e => (e.type === 'artist' || e.type === 'group' || e.type === 'production') && e.trending > 0)
+        .sort((a, b) => b.trending - a.trending)
+        .slice(0, limit)
+        .map(e => ({ id: e.id, title: e.title, href: e.href, type: e.type, thumbnail: e.thumbnail, subtitle: e.detalhe }))
 }
 
 export async function searchIndex(query: string, limit: number): Promise<SearchResult[] | null> {
