@@ -34,7 +34,10 @@ export function scoreTitle(title: string, query: string): number {
     if (words.includes(queryFolded)) return 70
     if (words.some(w => w.startsWith(queryFolded))) return 50
 
-    return 20
+    // Substring dentro do titulo ainda e match de titulo: fica ACIMA do fallback (40)
+    // dado a itens que o WP achou por meta/conteudo. Antes valia 20 e "jisoo" perdia
+    // a ficha "Kim Ji-soo" para artistas sem relacao.
+    return 45
 }
 
 export function levenshtein(a: string, b: string): number {
