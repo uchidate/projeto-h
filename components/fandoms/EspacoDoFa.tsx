@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useMemo, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { podeGuardarHistorico } from '@/lib/consent'
 
 export interface CartaoTorcida {
@@ -63,6 +63,35 @@ function BotaoSou({ slug, marcada, atuais, cor }: { slug: string; marcada: boole
     )
 }
 
+interface Artigo { slug: string; titulo: string; foto: string | null; data: string }
+
+/** Últimos artigos sobre o grupo da torcida. Some sozinho se não houver ou se a consulta falhar. */
+function Novidades({ grupoSlug, ink }: { grupoSlug: string | null; ink: string }) {
+    const [artigos, setArtigos] = useState<Artigo[]>([])
+    useEffect(() => {
+        if (!grupoSlug) return
+        let vivo = true
+        fetch(`/api/fandoms/novidades?grupo=${encodeURIComponent(grupoSlug)}`)
+            .then(r => (r.ok ? r.json() : { artigos: [] }))
+            .then(d => { if (vivo && Array.isArray(d.artigos)) setArtigos(d.artigos.slice(0, 2)) })
+            .catch(() => {})
+        return () => { vivo = false }
+    }, [grupoSlug])
+    if (artigos.length === 0) return null
+    return (
+        <div className="border-t-2 pt-4" style={{ borderColor: `${ink}55` }}>
+            <p className="text-[12px] font-black uppercase tracking-[0.1em]">Novidades</p>
+            <ul className="mt-2 space-y-2">
+                {artigos.map(a => (
+                    <li key={a.slug}>
+                        <Link href={`/blog/${a.slug}`} className="block text-[15px] font-bold leading-snug underline-offset-2 hover:underline">{a.titulo}</Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
+}
+
 /** Espaço do fã: escolher a(s) torcida(s), um painel só delas e o catálogo completo em cartões coloridos. */
 export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca?: string }) {
     const cru = useSyncExternalStore(assinar, lerCru, () => '')
@@ -89,6 +118,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                         <Link href="/quiz" className="touch-target inline-flex items-center bg-[#ffe14d] px-5 py-3 text-[14px] font-black text-[#15102b]">Fazer o quiz 🎯</Link>
                                         <button type="button" onClick={() => alternar(c.slug, escolhidas)} className="touch-target px-2 py-3 text-[13px] font-bold underline">Tirar</button>
                                     </div>
+                                    <Novidades grupoSlug={c.grupoSlug} ink={ink} />
                                 </div>
                             )
                         })}
