@@ -261,7 +261,7 @@ export function ArtistDetailPage({
 
             <ArtistColophon artist={artist} name={name} accent={accent} />
 
-            <QuizFacts entitySlug={artist.slug} entityType="artist" entityName={name} />
+            <QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />
             <QuizWidget category="k-pop" />
 
             {relatedArtists.length > 0 ? (

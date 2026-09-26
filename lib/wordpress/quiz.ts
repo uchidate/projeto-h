@@ -48,6 +48,7 @@ export interface QuizQuestion {
     difficulty: QuizDifficulty
     relatedHref?: string | null
     relatedLabel?: string | null
+    links?: { artists: number[]; groups: number[]; productions: number[] }
 }
 
 // Campos expostos via register_rest_field no nível raiz da resposta REST
@@ -59,6 +60,7 @@ interface WPQuizQuestion {
     correct_option?: string; explanation?: string
     category?: string; difficulty?: string
     related_post_url?: string; related_post_label?: string
+    quiz_links?: { artists?: number[]; groups?: number[]; productions?: number[] } | null
 }
 
 const CORRECT_MAP: Record<string, number> = { a: 0, b: 1, c: 2, d: 3 }
@@ -72,24 +74,32 @@ const CATEGORY_NORMALIZE: Record<string, QuizCategory> = {
     'história': 'historia',
 }
 
+// Textos antigos guardam aspas com barra invertida (\\")
+const limpar = (t?: string) => (t ?? '').replace(/\\+"/g, '"')
+
 function normalize(raw: WPQuizQuestion): QuizQuestion {
     const rawCat = (raw.category ?? '').toLowerCase().trim()
     const category: QuizCategory = CATEGORY_NORMALIZE[rawCat] ?? 'k-pop'
     return {
         id: raw.id,
-        question: raw.question ?? '',
-        options: [raw.option_a ?? '', raw.option_b ?? '', raw.option_c ?? '', raw.option_d ?? ''],
+        question: limpar(raw.question),
+        options: [raw.option_a, raw.option_b, raw.option_c, raw.option_d].map(limpar),
         correct: CORRECT_MAP[raw.correct_option ?? 'a'] ?? 0,
-        explanation: raw.explanation ?? '',
+        explanation: limpar(raw.explanation),
         category,
         subcategory: (raw.subcategory || '') as QuizSubcategory | '',
         difficulty: (raw.difficulty ?? 'medium') as QuizDifficulty,
         relatedHref: raw.related_post_url || null,
         relatedLabel: raw.related_post_label || null,
+        links: {
+            artists: raw.quiz_links?.artists ?? [],
+            groups: raw.quiz_links?.groups ?? [],
+            productions: raw.quiz_links?.productions ?? [],
+        },
     }
 }
 
-const FIELDS = 'id,question,option_a,option_b,option_c,option_d,correct_option,explanation,category,difficulty,subcategory,related_post_url,related_post_label'
+const FIELDS = 'id,question,option_a,option_b,option_c,option_d,correct_option,explanation,category,difficulty,subcategory,related_post_url,related_post_label,quiz_links'
 
 export async function getQuizQuestions(opts?: {
     category?: QuizCategory

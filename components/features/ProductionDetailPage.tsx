@@ -8,6 +8,7 @@ import type { WPProduction, WPArtist, WPPost } from '@/lib/wordpress/types'
 import { formatDatePt, getWPImage } from '@/lib/utils'
 import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
+import { QuizFacts } from '@/components/ui/QuizFacts'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ShareBar } from '@/components/ui/ShareBar'
 import { ReportButton } from '@/components/ui/ReportButton'
@@ -377,6 +378,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
                     </div>
                 )}
             </div>
+            <QuizFacts entityId={production.id} entitySlug={production.slug} entityType="production" entityName={title} />
         </>
     )
 }

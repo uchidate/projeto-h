@@ -260,7 +260,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                 </div>
             )}
 
-            <QuizFacts entitySlug={group.slug} entityType="group" entityName={name} />
+            <QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />
             <QuizWidget category="k-pop" />
 
             <ScrollToTop />
