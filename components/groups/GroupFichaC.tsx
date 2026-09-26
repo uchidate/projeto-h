@@ -285,6 +285,7 @@ export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFich
                                         <span className={`${KICKER} block`} style={{ color: accent }}>{c.period}</span>
                                         <span aria-hidden className="my-3 hidden h-0.5 bg-border sm:block" />
                                         <span className="mt-1 block text-[17px] font-bold leading-snug sm:mt-0">{c.title}</span>
+                                        <span className="mt-2 block text-[12px] leading-snug text-muted">{i < Math.min(capitulos.length, 6) - 1 ? t('after', { title: capitulos[i + 1].title }) : t('latest')}</span>
                                     </li>
                                 ))}
                             </ol>

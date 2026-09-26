@@ -379,6 +379,8 @@
     "soloCount": "{count, plural, one {# lançamento solo} other {# lançamentos solo}}",
     "soloSee": "Ver ficha",
     "byHit": "Pelo hit",
-    "byHitTitle": "As músicas que definem o grupo"
+    "byHitTitle": "As músicas que definem o grupo",
+    "after": "Depois: {title}",
+    "latest": "O capítulo mais recente"
   }
 }

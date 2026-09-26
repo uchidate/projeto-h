@@ -379,6 +379,8 @@
     "soloCount": "{count, plural, one {# solo release} other {# solo releases}}",
     "soloSee": "See profile",
     "byHit": "By hit",
-    "byHitTitle": "The songs that define the group"
+    "byHitTitle": "The songs that define the group",
+    "after": "Next: {title}",
+    "latest": "The latest chapter"
   }
 }
