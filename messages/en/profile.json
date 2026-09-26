@@ -65,7 +65,10 @@
         "readFull": "Read the full synopsis",
         "mainCast": "Main cast",
         "allCast": "See full cast",
-        "summaryLabel": "{title} at a glance"
+        "summaryLabel": "{title} at a glance",
+        "about": "About the series",
+        "castOf": "{title} cast",
+        "castCount": "{count} cast members"
     },
     "posterAlt": "Poster — {title}",
     "posterAltShort": "{title} — poster",

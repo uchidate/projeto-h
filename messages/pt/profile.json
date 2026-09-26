@@ -65,7 +65,10 @@
         "readFull": "Ler a sinopse completa",
         "mainCast": "Elenco principal",
         "allCast": "Ver elenco completo",
-        "summaryLabel": "Resumo de {title}"
+        "summaryLabel": "Resumo de {title}",
+        "about": "Sobre a série",
+        "castOf": "Elenco de {title}",
+        "castCount": "{count} atores e atrizes"
     },
     "posterAlt": "Pôster — {title}",
     "posterAltShort": "{title} — pôster",

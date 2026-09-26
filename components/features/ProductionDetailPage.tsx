@@ -16,9 +16,9 @@ import { ADSENSE } from '@/lib/config/ads'
 import { ProductionContent } from '@/components/productions/ProductionContent'
 import { ProductionCast } from '@/components/productions/ProductionCast'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
-import { ProductionResumo } from '@/components/productions/ProductionResumo'
-import { variantePorId } from '@/lib/experimento'
 import { AtribuicaoJustWatch } from '@/components/productions/AtribuicaoJustWatch'
+import { ProductionPageB } from '@/components/productions/ProductionPageB'
+import { variantePorId } from '@/lib/experimento'
 import { ReadingBar } from '@/components/ui/ReadingBar'
 import { ProductionSidebar } from '@/components/productions/ProductionSidebar'
 import { ProductionActions } from '@/components/productions/ProductionActions'
@@ -40,12 +40,8 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
     const {
         title, acf, genres, platforms, contentBefore, contentAfter, synopsis,
         displayType, schemaType, galleryUrls, backdropUrl, facts, castRoles,
-        statusInfo, hasTrailer, primaryPlatform, releaseLabel, sinopseResumo,
+        statusInfo, hasTrailer, primaryPlatform, releaseLabel,
     } = model
-    // Experimento de estrutura (ids pares): hero mais baixo e resumo logo abaixo, com
-    // sinopse curta, onde assistir e elenco principal. Mesmo HTML indexável nas duas.
-    const variante = variantePorId(production.id)
-    const apresentacao = variante === 'b'
     const image = getWPImage(production._embedded, production.featured_image_url)
     const productionUrl = `${SITE_URL}${href('production', { slug: production.slug }, locale)}`
 
@@ -90,11 +86,8 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
             : null,
     ].filter(Boolean).slice(0, 5) as EntityFAQItem[]
 
-    return (
-        <>
-            {/* Sem <h1> sr-only aqui: o hero sempre renderiza o <h1> visível, e
-                dois h1 com o mesmo texto confundiam a hierarquia da página. */}
-            <JsonLd data={{
+    const jsonLd = (
+        <JsonLd data={{
                 '@context': 'https://schema.org', '@type': schemaType,
                 name: title, alternateName: acf.original_title,
                 description: synopsis,
@@ -105,13 +98,37 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
                 genre: genres.map(g => g.name),
                 publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
             }} />
+    )
+    const readingBar = (
+        <ReadingBar backHref={href('productions', undefined, locale)} backLabel={tEntity('breadcrumb.productions')} tagLabel={genres[0]?.name} title={title} pageUrl={productionUrl} pageAnchors={navLinks} />
+    )
 
-            <ReadingBar backHref={href('productions', undefined, locale)} backLabel={tEntity('breadcrumb.productions')} tagLabel={genres[0]?.name} title={title} pageUrl={productionUrl} pageAnchors={navLinks} />
+    // Teste de estrutura: id par recebe a página "apresentação"; ímpar, a atual. Mesma
+    // regra do `variantePorId` para todo o site, e `data-variante` marca os eventos.
+    const variante = variantePorId(production.id)
+    if (variante === 'b') {
+        return (
+            <>
+                <div hidden data-variante="producao-b" />
+                {jsonLd}
+                {readingBar}
+                <ProductionPageB production={production} model={model} productionUrl={productionUrl} cast={cast} related={related}
+                    relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} />
+            </>
+        )
+    }
 
-            <div hidden data-variante={`producao-${variante}`} />
+    return (
+        <>
+            <div hidden data-variante="producao-a" />
+            {/* Sem <h1> sr-only aqui: o hero sempre renderiza o <h1> visível, e
+                dois h1 com o mesmo texto confundiam a hierarquia da página. */}
+            {jsonLd}
+
+            {readingBar}
 
             {/* ── HERO ── */}
-            <section className={`relative flex overflow-hidden bg-[#09080c] max-w-[1440px] mx-auto ${apresentacao ? 'min-h-[460px] lg:min-h-[520px]' : 'min-h-[620px] lg:min-h-[680px]'}`}>
+            <section className="relative flex min-h-[620px] overflow-hidden bg-[#09080c] lg:min-h-[680px] max-w-[1440px] mx-auto">
                 {/* Pôster no celular, backdrop a partir de sm. Com <picture> o navegador
                     baixa só a imagem da tela atual; dois <Image priority> com
                     `hidden` pré-carregavam as duas, e no celular o backdrop do TMDB
@@ -178,28 +195,10 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
 
             {/* ── INFO STRIP + AÇÕES ── */}
             <div className="page-wrap">
-                {apresentacao && (
-                    <>
-                        <ProductionResumo
-                            title={title}
-                            synopsis={sinopseResumo}
-                            rating={acf.rating}
-                            network={acf.network as string | null | undefined}
-                            releaseLabel={releaseLabel}
-                            episodes={acf.episodes}
-                            durationMinutes={acf.duration_minutes}
-                            status={statusInfo}
-                            platforms={platforms}
-                            cast={cast}
-                            castRoles={castRoles}
-                        />
-                    </>
-                )}
-
                 <div className="border-b border-border py-3">
-                    <div className={`mx-auto flex flex-wrap items-center gap-3 ${apresentacao ? 'justify-end' : 'justify-between'}`}>
-                        {/* métricas rápidas (na variante nova elas vivem no resumo) */}
-                        {!apresentacao && <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
+                    <div className="mx-auto  flex flex-wrap items-center justify-between gap-3">
+                        {/* métricas rápidas */}
+                        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
                             {acf.rating != null && (
                                 <div className="flex items-center gap-1.5">
                                     <Star size={13} className="text-amber-400" fill="currentColor" />
@@ -241,7 +240,7 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
                                     <AtribuicaoJustWatch className="ml-1" />
                                 </div>
                             )}
-                        </div>}
+                        </div>
                         {/* ações */}
                         <EntityActionBar density="wide">
                             <ProductionActions productionId={production.id} mode="favorite" />
@@ -250,13 +249,6 @@ export function ProductionDetailPage({ production, cast = [], related = [], rela
                         </EntityActionBar>
                     </div>
                 </div>
-
-                {apresentacao && (
-                    /* Um anúncio logo após o resumo e a barra de ações: alto na página (onde há atenção) e antes do texto longo. */
-                    <div className="mx-auto mt-8">
-                        <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="production_after_summary" />
-                    </div>
-                )}
 
                 {/* ── CONTEÚDO PRINCIPAL ── */}
                 <div className="flex gap-10 items-start pt-6">
