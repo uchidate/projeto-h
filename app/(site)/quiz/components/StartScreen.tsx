@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, type ReactNode } from 'react'
 import {
     Layers, Music, Tv, Globe, Clock, Play, ArrowRight, Keyboard, Medal,
 } from 'lucide-react'
@@ -12,7 +12,8 @@ import { ScoreHistory } from './ScoreHistory'
 
 // ─── Start Screen ─────────────────────────────────────────────────────────────
 
-export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'all', initialSubcategory = '' }: {
+export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'all', initialSubcategory = '', aposTitulo }: {
+    aposTitulo?: ReactNode
     onStart: (cat: CategoryFilter, diff: QuizDifficulty, excludeId?: number) => void
     stats: QuizStats
     allQuestions: QuizQuestion[]
@@ -74,12 +75,11 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
 
                 {/* Headline — sempre acima das 2 colunas */}
                 <div className="mb-8 lg:mb-10">
-                    <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-accent mb-3">
-                        Quiz Hallyu · {totalAvailable} perguntas
-                    </p>
-                    <h1 className="font-serif text-[36px] font-medium leading-[1.02] tracking-[-0.02em] mb-4 sm:text-[52px] lg:text-[60px]">
-                        Quanto você<br />sabe sobre<br className="sm:hidden" /> a Coreia?
+                    <h1 className="font-[family-name:var(--font-playfair)] whitespace-nowrap text-[34px] font-bold leading-none sm:text-[44px]">
+                        Quiz<span className="sr-only"> Hallyu: teste o que você sabe sobre K-pop, K-drama e a Coreia</span><span className="text-accent">.</span>
+                        <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{totalAvailable} perguntas</span>
                     </h1>
+                    <p className="mb-3 mt-2.5 text-[15px] text-muted sm:text-[16px]">Quanto você sabe sobre a Coreia? Escolha um tema e jogue.</p>
                     {/* Stats compactas inline — só para quem já jogou */}
                     {stats.totalGames > 0 && (
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-muted">
@@ -91,6 +91,8 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                         </div>
                     )}
                 </div>
+
+                {aposTitulo}
 
                 {/* A isca vem antes dos controles: a decisão de jogar é mais fácil
                     depois de já ter jogado uma pergunta do que antes. */}

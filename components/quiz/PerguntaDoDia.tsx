@@ -18,7 +18,7 @@ function assinar(aoMudar: () => void) {
 }
 
 /** Uma pergunta por dia, igual para todos; a sequência de dias fica só no navegador (e só com consentimento). */
-export function PerguntaDoDia({ pergunta, chave, dataExtenso }: { pergunta: PerguntaDia; chave: string; dataExtenso: string }) {
+export function PerguntaDoDia({ pergunta, chave, dataExtenso, embutida = false }: { pergunta: PerguntaDia; chave: string; dataExtenso: string; /** Dentro de uma página que já tem o próprio contêiner (/quiz). */ embutida?: boolean }) {
     const cru = useSyncExternalStore(assinar, lerCru, () => '')
     const estado = interpretarEstado(cru)
     const respondida = estado?.ultimo === chave
@@ -34,7 +34,7 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso }: { pergunta: Perg
     }
 
     return (
-        <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="page-wrap py-6">
+        <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className={embutida ? 'mb-8 lg:mb-10' : 'page-wrap py-6'}>
             <div className="border border-border bg-surface p-4 sm:p-6 lg:flex lg:gap-9">
                 <div className="lg:w-[240px] lg:shrink-0">
                     <p className="font-mono text-[11px] font-black uppercase tracking-[0.16em] text-accent">Pergunta do dia</p>

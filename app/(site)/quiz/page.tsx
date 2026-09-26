@@ -42,11 +42,11 @@ export default async function QuizPage({ searchParams }: { searchParams: SearchP
 
     return (
         <>
-            <PerguntaDoDiaServer />
             <QuizClient
                 serverQuestions={questions}
                 initialCategory={activeCategory ?? 'all'}
                 initialSubcategory={activeSub}
+                aposTitulo={<PerguntaDoDiaServer embutida />}
             />
         </>
     )
