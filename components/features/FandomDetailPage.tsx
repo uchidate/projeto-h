@@ -71,7 +71,7 @@ async function NovidadesDaTorcida({ grupoSlugs, nome, cor, ink }: { grupoSlugs: 
                 {items.map(p => (
                     <Link key={p.id} href={`/blog/${p.slug}`} className="group flex flex-col border-2 border-border bg-surface transition-transform hover:-translate-y-0.5">
                         <span className="relative block aspect-[16/10] overflow-hidden bg-background">
-                            {p.featured_image_url && <Image src={p.featured_image_url} alt="" fill sizes="(min-width: 640px) 320px, 100vw" className="object-cover object-top" />}
+                            {p.featured_image_url && <Image src={p.featured_image_url} alt={stripHtml(p.title.rendered)} fill sizes="(min-width: 640px) 320px, 100vw" className="object-cover object-top" />}
                             <span className="absolute left-2 top-2 px-2 py-0.5 text-[11px] font-black" style={{ background: cor, color: ink }}>{nome}</span>
                         </span>
                         <span className="block p-3.5 text-[16px] font-bold leading-snug group-hover:underline">{stripHtml(p.title.rendered)}</span>
@@ -117,7 +117,7 @@ export function FandomDetailPage({ fandom, artists, outras }: Props) {
 
     return (
         <>
-            <h1 className="sr-only">{name}</h1>
+            <h1 className="sr-only">Fandom {name}: a torcida {groups.length > 1 ? 'dos grupos' : 'do grupo'} {groups.map(g => stripHtml(g.title.rendered)).join(', ')}</h1>
             <JsonLd
                 data={{
                     '@context': 'https://schema.org',
@@ -172,7 +172,7 @@ export function FandomDetailPage({ fandom, artists, outras }: Props) {
                                             <li key={artist.id}>
                                                 <Link href={`/artists/${artist.slug}`} className="group flex w-[76px] flex-col items-center gap-1.5 text-center">
                                                     <span className="relative h-[68px] w-[68px] overflow-hidden rounded-full bg-surface ring-2 transition-transform group-hover:scale-105" style={{ ['--tw-ring-color' as string]: accent }}>
-                                                        {img && <Image src={img.src} alt="" fill sizes="68px" className="object-cover object-top" />}
+                                                        {img && <Image src={img.src} alt={`Foto de ${nome}, artista da torcida ${name}`} fill sizes="68px" className="object-cover object-top" />}
                                                     </span>
                                                     <span className="text-[12px] font-bold leading-tight group-hover:underline">{nome}</span>
                                                 </Link>
