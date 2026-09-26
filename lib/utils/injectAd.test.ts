@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { splitContentForAd, splitContentForAds, textoVisivel } from './injectAd'
+import { splitContentForAd, splitContentForAds, textoVisivel, posicoesDeCorte } from './injectAd'
 
 const p = (text: string) => `<p>${text}</p>`
 const shortParas = (n: number) => Array.from({ length: n }, (_, i) => p(`Frase curta ${i}.`)).join('')
@@ -73,5 +73,61 @@ describe('splitContentForAd', () => {
     it('nunca corta no último parágrafo', () => {
         const [, depois] = splitContentForAd(longParas(3), 5)
         expect(textoVisivel(depois)).toBeGreaterThanOrEqual(400)
+    })
+})
+
+
+describe('cortes fora de contêineres (hidratação)', () => {
+    const paragrafo = (n: number) => `<p>${'texto '.repeat(n)}</p>`
+    const balanceado = (h: string) => (h.match(/<div\b/g)?.length ?? 0) === (h.match(/<\/div>/g)?.length ?? 0)
+    // Forma real das produções: os dois primeiros parágrafos ficam num <div class="hh-intro">.
+    const comIntro = `<div class="hh-intro">${paragrafo(20)}${paragrafo(20)}</div>${paragrafo(80)}${paragrafo(80)}`
+
+    it('posicoesDeCorte adia o corte de um </p> dentro de contêiner para o fechamento dele', () => {
+        const pos = posicoesDeCorte(comIntro)
+        const fimDoIntro = comIntro.indexOf('</div>') + '</div>'.length
+        // Os dois parágrafos do intro apontam para o fim do <div>; os dois seguintes, para si mesmos.
+        expect(pos).toHaveLength(4)
+        expect(pos[0]).toBe(fimDoIntro)
+        expect(pos[1]).toBe(fimDoIntro)
+        expect(balanceado(comIntro.slice(0, pos[0]))).toBe(true)
+        expect(comIntro.slice(0, pos[2]).endsWith('</p>')).toBe(true)
+    })
+
+    it('o anúncio continua depois do trecho de abertura (mesmo lugar visual de antes)', () => {
+        const [antes, depois] = splitContentForAd(comIntro, 2)
+        expect(antes).toBe(`<div class="hh-intro">${paragrafo(20)}${paragrafo(20)}</div>`)
+        expect(depois.startsWith('<p>')).toBe(true)
+    })
+
+    it('conteúdo desbalanceado (</div> sem abertura) não gera corte no trecho quebrado', () => {
+        const solto = `${paragrafo(80)}</div>${paragrafo(80)}${paragrafo(80)}`
+        expect(posicoesDeCorte(solto).length).toBeGreaterThan(0)
+    })
+
+    it('splitContentForAd não deixa <div> aberto numa metade e </div> solto na outra', () => {
+        const [antes, depois] = splitContentForAd(comIntro, 2)
+        expect(antes).not.toBe('')
+        expect(depois).not.toBe('')
+        expect(balanceado(antes)).toBe(true)
+        expect(balanceado(depois)).toBe(true)
+        expect(depois.trimStart().startsWith('</div>')).toBe(false)
+    })
+
+    it('tudo dentro de um contêiner: não corta (melhor sem anúncio do que DOM quebrado)', () => {
+        const embrulhado = `<div class="corpo">${paragrafo(80)}${paragrafo(80)}${paragrafo(80)}</div>`
+        expect(splitContentForAd(embrulhado, 2)).toEqual([embrulhado, ''])
+    })
+
+    it('conteúdo sem contêineres continua cortando onde cortava', () => {
+        const simples = `${paragrafo(80)}${paragrafo(80)}${paragrafo(80)}`
+        const [antes, depois] = splitContentForAd(simples, 2)
+        expect(antes).toBe(paragrafo(80) + paragrafo(80))
+        expect(depois).toBe(paragrafo(80))
+    })
+
+    it('tag auto-fechada não conta como contêiner aberto', () => {
+        const html = `<div class="x" />${paragrafo(80)}${paragrafo(80)}${paragrafo(80)}`
+        expect(posicoesDeCorte(html).length).toBe(3)
     })
 })
