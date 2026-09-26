@@ -1,4 +1,7 @@
+import Link from 'next/link'
 import { SITE_NAME } from '@/lib/constants/site'
+import { BotaoTorcida } from '@/components/fandoms/EspacoDoFa'
+import { contorno, tinta } from '@/lib/fandoms/cor'
 import type { Fandom } from '@/lib/wordpress/fandoms'
 import { toMemberSummary } from '@/lib/artists/memberSummary'
 import type { WPArtist } from '@/lib/wordpress/types'
@@ -23,6 +26,7 @@ interface Props {
 export function FandomDetailPage({ fandom, artists }: Props) {
     const { name, color, lightstick, groups } = fandom
     const accent = color ?? SITE_ACCENT
+    const ink = tinta(accent)
     const fandomUrl = `${SITE_URL}/fandoms/${fandom.slug}`
 
     const faqItems: EntityFAQItem[] = [
@@ -50,26 +54,18 @@ export function FandomDetailPage({ fandom, artists }: Props) {
                 }}
             />
 
-            <div className="border-b border-border/40" style={{ borderTopColor: accent, borderTopWidth: 3 }}>
-                <div className="page-wrap py-6 sm:py-10">
-                    <p className="font-mono text-[11px] text-muted uppercase tracking-[0.06em] mb-1">Fandom</p>
-                    <h2 className="text-[28px] sm:text-[40px] font-black tracking-[-0.03em] leading-tight" style={{ color: accent }}>
-                        {name}
-                    </h2>
-                    <div className="flex flex-wrap items-center gap-3 mt-4 font-mono text-[11px] text-muted">
-                        <span>{groups.length} grupo{groups.length !== 1 ? 's' : ''}</span>
-                        {artists.length > 0 && (
-                            <>
-                                <span className="text-muted/30">·</span>
-                                <span>{artists.length} artistas</span>
-                            </>
-                        )}
-                        {lightstick && (
-                            <>
-                                <span className="text-muted/30">·</span>
-                                <span>Lightstick: {lightstick}</span>
-                            </>
-                        )}
+            <div className={`${contorno(accent)}`} style={{ background: accent, color: ink }}>
+                <div className="page-wrap py-8 sm:py-12">
+                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">Torcida · {groups.map(g => stripHtml(g.title.rendered)).slice(0, 3).join(', ')}</p>
+                    <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-[64px] font-extrabold leading-[0.95] sm:text-[112px]">{name}</h2>
+                    <div className="mt-5 flex flex-wrap items-center gap-2.5">
+                        <span className="bg-[#15102b] px-3 py-1.5 text-[12px] font-black text-white">{groups.length} grupo{groups.length !== 1 ? 's' : ''}</span>
+                        {artists.length > 0 && <span className="bg-[#15102b] px-3 py-1.5 text-[12px] font-black text-white">{artists.length} artistas</span>}
+                        {lightstick && <span className="bg-[#ffe14d] px-3 py-1.5 text-[12px] font-black text-[#15102b]">💡 {lightstick}</span>}
+                    </div>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                        <BotaoTorcida slug={fandom.slug} ink={ink} cor={accent} />
+                        <Link href="/quiz" className="touch-target inline-flex items-center bg-[#ffe14d] px-5 py-3 text-[14px] font-black text-[#15102b]">Fazer o quiz 🎯</Link>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { podeGuardarHistorico } from '@/lib/consent'
+import { contorno, tinta } from '@/lib/fandoms/cor'
 
 export interface CartaoTorcida {
     slug: string
@@ -38,19 +39,6 @@ function alternar(slug: string, atuais: string[]) {
     try { window.localStorage.setItem(CHAVE, JSON.stringify(novo)); window.dispatchEvent(new Event(EVENTO)) } catch { /* sem armazenamento: a escolha não fica salva */ }
 }
 
-function luminancia(cor: string): number {
-    const m = /^#?([0-9a-f]{6})$/i.exec(cor.trim())
-    if (!m) return 0.7
-    const n = parseInt(m[1], 16)
-    return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255
-}
-
-/** Tinta legível sobre a cor da torcida (escura sobre cor clara, branca sobre cor escura). */
-function tinta(cor: string): string { return luminancia(cor) > 0.55 ? '#15102b' : '#ffffff' }
-
-/** Cor quase preta some no fundo escuro da página: ganha um contorno claro. */
-function contorno(cor: string): string { return luminancia(cor) < 0.15 ? 'outline outline-2 -outline-offset-2 outline-white/40' : '' }
-
 function BotaoSou({ slug, marcada, atuais, cor }: { slug: string; marcada: boolean; atuais: string[]; cor: string }) {
     return (
         <button type="button" aria-pressed={marcada} onClick={e => { e.preventDefault(); e.stopPropagation(); alternar(slug, atuais) }}
@@ -59,6 +47,20 @@ function BotaoSou({ slug, marcada, atuais, cor }: { slug: string; marcada: boole
             title={marcada ? 'Tirar das minhas torcidas' : 'Sou dessa torcida'}>
             {marcada ? '✓ Sou dessa' : '＋ Sou dessa'}
             <span className="sr-only"> {cor}</span>
+        </button>
+    )
+}
+
+/** Botão "Sou dessa torcida" da página de cada fandom: marca ou desmarca e reflete o estado guardado. */
+export function BotaoTorcida({ slug, ink, cor }: { slug: string; ink: string; cor: string }) {
+    const cru = useSyncExternalStore(assinar, lerCru, () => '')
+    const atuais = useMemo(() => interpretar(cru), [cru])
+    const marcada = atuais.includes(slug)
+    return (
+        <button type="button" aria-pressed={marcada} onClick={() => alternar(slug, atuais)}
+            className="touch-target inline-flex items-center px-5 py-3 text-[14px] font-black"
+            style={marcada ? { background: '#ffe14d', color: '#15102b' } : { background: ink, color: cor }}>
+            {marcada ? '✓ Sua torcida' : '＋ Sou dessa torcida'}
         </button>
     )
 }
