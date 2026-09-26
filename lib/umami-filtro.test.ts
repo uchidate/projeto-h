@@ -35,6 +35,14 @@ describe('umamiAntesDeEnviar', () => {
         expect(umamiAntesDeEnviar('event', p)?.data).toEqual({ tipo_pagina: 'custom', visita: 'novo', block: 'menu' })
     })
 
+    it('inclui a variante quando a página declara uma (data-variante)', () => {
+        document.body.innerHTML = '<div hidden data-variante="producao-b"></div>'
+        const payload = (): { url: string; data?: Record<string, unknown> } => ({ url: '/productions/x' })
+        expect(umamiAntesDeEnviar('event', payload())?.data).toEqual({ tipo_pagina: 'ficha-producao', visita: 'novo', variante: 'producao-b' })
+        document.body.innerHTML = ''
+        expect(umamiAntesDeEnviar('event', payload())?.data).not.toHaveProperty('variante')
+    })
+
     it('desempenho e identify passam intactos (não são eventos de navegação)', () => {
         const p = { url: '/blog/x', lcp: 900 }
         expect(umamiAntesDeEnviar('performance', p)).toBe(p)

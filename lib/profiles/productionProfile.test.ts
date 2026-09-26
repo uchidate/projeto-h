@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { WPProduction } from '@/lib/wordpress/types'
-import { buildProductionProfileModel } from './productionProfile'
+import { buildProductionProfileModel, sinopseResumo } from './productionProfile'
 
 function production(overrides: Partial<WPProduction> = {}): WPProduction {
     return {
@@ -55,5 +55,30 @@ describe('buildProductionProfileModel', () => {
         }))
         expect(model.schemaType).toBe('Movie')
         expect(model.backdropUrl).toBe('https://img.test/backdrop.jpg')
+    })
+})
+
+
+describe('sinopseResumo', () => {
+    const ficha = '<p>Tudo Bem Não Ser Normal (2020) é uma série sul-coreana de 16 episódios, de cerca de 77 minutos cada.</p>'
+    const sinopse = '<p>O encontro entre uma escritora de livros infantis e um cuidador de doentes mentais dá início a uma jornada de superação dos problemas emocionais que ambos enfrentam.</p>'
+    const elenco = '<p>No elenco: Kim Soo-hyun (como Moon Gang-tae), Seo Yea-ji (como Ko Moon-young), Oh Jung-se e muitos outros atores do elenco principal.</p>'
+
+    it('pula a linha de ficha e devolve a sinopse real', () => {
+        expect(sinopseResumo(ficha + '<p></p>' + sinopse + elenco)).toMatch(/^O encontro entre uma escritora/)
+    })
+
+    it('nunca devolve o parágrafo de elenco', () => {
+        expect(sinopseResumo(ficha + elenco)).toBe('')
+    })
+
+    it('sem sinopse aproveitável devolve vazio, não texto genérico', () => {
+        expect(sinopseResumo('<p>curto</p>')).toBe('')
+        expect(sinopseResumo('')).toBe('')
+    })
+
+    it('limita o tamanho para caber no resumo', () => {
+        const longa = `<p>${'palavra '.repeat(200)}</p>`
+        expect(sinopseResumo(longa).length).toBeLessThanOrEqual(420)
     })
 })
