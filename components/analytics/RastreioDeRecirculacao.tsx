@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { trackCliqueExterno, trackRecirculacao, trackRecirculacaoVisto } from '@/lib/analytics'
 import { tipoDePagina } from '@/lib/tipoDePagina'
@@ -33,6 +33,11 @@ const SEM_EXIBICAO = new Set(['menu', 'rodape'])
 
 export function RastreioDeRecirculacao() {
     const caminho = usePathname() ?? ''
+    // Estado da página atual, compartilhado entre o observador (exibição) e o
+    // ouvinte de clique: o clique precisa saber se o bloco já tinha aparecido e
+    // quanto tempo a página tinha quando ele aconteceu.
+    const vistosRef = useRef<Set<string>>(new Set())
+    const inicioRef = useRef(0)
 
     // Exibição: um observador para todos os `[data-bloco]`, uma vez por bloco e por
     // página. O bloco só conta quando o topo dele passa de 25% acima da borda
@@ -42,6 +47,8 @@ export function RastreioDeRecirculacao() {
         if (typeof IntersectionObserver === 'undefined') return
 
         const vistos = new Set<string>()
+        vistosRef.current = vistos
+        inicioRef.current = performance.now()
         const alvos = new Map<Element, string>()
         for (const bloco of document.querySelectorAll<HTMLElement>('[data-bloco]')) {
             const nome = bloco.dataset.bloco ?? 'sem-nome'
@@ -101,8 +108,12 @@ export function RastreioDeRecirculacao() {
                 if (!destinos.includes(caminho)) destinos.push(caminho)
             }
 
+            const nomeDoBloco = bloco.dataset.bloco ?? 'sem-nome'
             trackRecirculacao({
-                bloco: bloco.dataset.bloco ?? 'sem-nome',
+                bloco: nomeDoBloco,
+                // Menu e rodapé não têm exibição registrada: "não visto" seria mentira.
+                visto: SEM_EXIBICAO.has(nomeDoBloco) ? undefined : vistosRef.current.has(nomeDoBloco),
+                segundos: Math.round((performance.now() - inicioRef.current) / 1000),
                 posicao: destinos.indexOf(destino.pathname) + 1,
                 destino: destino.pathname,
                 origem: window.location.pathname,

@@ -17,7 +17,10 @@ declare global {
     interface Window {
         gtag?: (...args: unknown[]) => void
         dataLayer?: unknown[][]
-        umami?: { track?: (nome?: string, dados?: Record<string, unknown>) => void }
+        umami?: {
+            track?: (nome?: string, dados?: Record<string, unknown>) => void
+            identify?: (dados: Record<string, unknown>) => void
+        }
     }
 }
 
@@ -398,13 +401,29 @@ export function trackAutenticacaoGoogleIniciada(origem: 'entrar' | 'cadastro') {
  * `posicao` começa em 1. Sem ela não dá para saber se o bloco funciona ou só o
  * primeiro card funciona — e a resposta muda o que reordenar.
  */
-export function trackRecirculacao(params: { bloco: string; posicao: number; destino: string; origem: string }) {
+export function trackRecirculacao(params: { bloco: string; posicao: number; destino: string; origem: string; visto?: boolean; segundos?: number }) {
     enviar('recirculation_click', {
         block: params.bloco,
         position: params.posicao,
         target_path: params.destino,
         source_path: params.origem,
+        // O bloco já tinha aparecido na tela? Clique sem exibição é clique acima da dobra.
+        ...(params.visto !== undefined && { seen: params.visto }),
+        // Segundos desde a abertura da página até o clique.
+        ...(params.segundos !== undefined && { seconds_to_click: params.segundos }),
     })
+}
+
+/**
+ * Marca a SESSÃO como de gente: chamada no primeiro gesto real (toque, clique, tecla
+ * ou roda do mouse) e gravada como dado de sessão no Umami.
+ *
+ * Em 2026-09 a separação humano/bot era por heurística (tela 375x812 + en-US, 71% das
+ * sessões, nenhuma com rolagem ou consentimento). Um dado gravado pelo próprio gesto
+ * troca a heurística por filtro exato: `humano = true` na sessão.
+ */
+export function marcarSessaoHumana() {
+    chamarUmami(() => window.umami!.identify?.({ humano: true }))
 }
 
 /**

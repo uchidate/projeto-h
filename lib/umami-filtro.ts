@@ -1,3 +1,6 @@
+import { tipoDePagina } from '@/lib/tipoDePagina'
+import { classeDaVisita } from '@/lib/visita'
+
 /**
  * Rotas onde o Umami não carrega nem conta nada. Prefixo, não igualdade: cobre
  * subrotas (`/cadastro/etapa-2`). Ver o porquê no cabeçalho de UmamiScript.
@@ -17,11 +20,17 @@ export function rotaSemMedicao(caminho: string): boolean {
  * as rotas excluídas quando a navegação é SPA. Sem `url`, ou com `url` que não
  * se lê, deixa passar: melhor contar a mais do que perder medição em silêncio.
  */
-export function umamiAntesDeEnviar<T extends { url?: string }>(_tipo: string, payload: T): T | null {
+export function umamiAntesDeEnviar<T extends { url?: string; data?: Record<string, unknown> }>(tipo: string, payload: T): T | null {
     if (!payload?.url) return payload
     try {
         const caminho = new URL(payload.url, 'https://origem.invalida').pathname
-        return rotaSemMedicao(caminho) ? null : payload
+        if (rotaSemMedicao(caminho)) return null
+        // Contexto em TODO evento e pageview, num lugar só: cada `track*` deixaria
+        // de repetir isto (e esqueceria). `tipo_pagina` agrupa por espécie de página
+        // em vez de URL; `visita` diz se a pessoa é nova ou voltou. O que o evento
+        // já traz por conta própria vence.
+        if (tipo !== 'event') return payload
+        return { ...payload, data: { tipo_pagina: tipoDePagina(caminho), visita: classeDaVisita(), ...payload.data } }
     } catch {
         return payload
     }

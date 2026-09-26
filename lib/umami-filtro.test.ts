@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest'
+// @vitest-environment jsdom
+import { beforeEach, describe, it, expect } from 'vitest'
 import { rotaSemMedicao, umamiAntesDeEnviar } from './umami-filtro'
 
 describe('rotaSemMedicao', () => {
@@ -22,9 +23,22 @@ describe('umamiAntesDeEnviar', () => {
         expect(umamiAntesDeEnviar('performance', { url: '/cadastro/etapa-2?ref=x' })).toBeNull()
     })
 
-    it('deixa passar o resto, devolvendo o mesmo payload', () => {
+    beforeEach(() => window.localStorage.clear())
+
+    it('evento e pageview ganham tipo da página e classe da visita, mantendo o resto', () => {
         const p = { url: 'https://www.hallyuhub.com.br/artists/lisa?ref=1', lcp: 1200 }
-        expect(umamiAntesDeEnviar('event', p)).toBe(p)
+        expect(umamiAntesDeEnviar('event', p)).toEqual({ ...p, data: { tipo_pagina: 'ficha-artista', visita: 'novo' } })
+    })
+
+    it('o que o evento já traz vence o contexto automático', () => {
+        const p = { url: '/blog/x', data: { tipo_pagina: 'custom', block: 'menu' } }
+        expect(umamiAntesDeEnviar('event', p)?.data).toEqual({ tipo_pagina: 'custom', visita: 'novo', block: 'menu' })
+    })
+
+    it('desempenho e identify passam intactos (não são eventos de navegação)', () => {
+        const p = { url: '/blog/x', lcp: 900 }
+        expect(umamiAntesDeEnviar('performance', p)).toBe(p)
+        expect(umamiAntesDeEnviar('identify', p)).toBe(p)
     })
 
     it('na dúvida, não perde medição', () => {
