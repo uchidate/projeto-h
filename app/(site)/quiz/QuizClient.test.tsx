@@ -51,7 +51,7 @@ describe('QuizClient — capa', () => {
     it('começa a partida ao clicar em começar', async () => {
         const user = userEvent.setup()
         render(<QuizClient serverQuestions={pool} />)
-        await user.click(screen.getAllByRole('button', { name: /Começar/ })[0])
+        await user.click(screen.getAllByRole('button', { name: /Jogar/ })[0])
         expect(screen.getByText(/pergunta 1 de/i)).toBeInTheDocument()
     })
 })
