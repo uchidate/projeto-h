@@ -10,6 +10,7 @@ import { useQuickSearch } from '@/lib/hooks/useQuickSearch'
 import { useWPSearch } from '@/hooks/useWPSearch'
 import type { SearchResult } from '@/lib/search/types'
 import { trackSearch, trackSearchClick } from '@/lib/analytics'
+import { trechosDestacados } from '@/lib/search/destaque'
 
 // Atalhos de navegação rápida — guiam o usuário sem precisar digitar
 const SHORTCUTS = [
@@ -40,10 +41,14 @@ function groupByType(results: SearchResult[]): { type: SearchResult['type']; ite
     return [...map.entries()].map(([type, items]) => ({ type, items }))
 }
 
-function highlightMatch(title: string, query: string): string {
-    if (!query.trim()) return title
-    const escaped = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    return title.replace(new RegExp(`(${escaped})`, 'gi'), '<mark class="bg-accent/20 text-accent font-black not-italic">$1</mark>')
+function Destacado({ texto, consulta }: { texto: string; consulta: string }) {
+    return (
+        <>
+            {trechosDestacados(texto, consulta).map((t, i) => t.marcado
+                ? <mark key={i} className="bg-accent/20 text-accent font-black not-italic">{t.texto}</mark>
+                : <span key={i}>{t.texto}</span>)}
+        </>
+    )
 }
 
 export function QuickSearch() {
@@ -199,6 +204,10 @@ export function QuickSearch() {
                                 ))}
                             </div>
                         </div>
+                    ) : erro && !isLoading ? (
+                        <div role="alert" className="px-4 py-10 text-center text-sm text-muted">
+                            Não foi possível buscar agora. Tente de novo em instantes.
+                        </div>
                     ) : results.length === 0 && !isLoading ? (
                         <div className="px-4 py-10 text-center text-sm text-muted">
                             Nenhum resultado para <strong className="text-foreground">&ldquo;{query}&rdquo;</strong>
@@ -243,11 +252,15 @@ export function QuickSearch() {
                                                     )}
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="truncate text-[13px] font-semibold text-foreground"
-                                                        dangerouslySetInnerHTML={{ __html: highlightMatch(result.title, query) }}
-                                                    />
-                                                    {result.subtitle && (
-                                                        <p className="truncate text-[11px] text-muted">{result.subtitle}</p>
+                                                    <p className="truncate text-[13px] font-semibold text-foreground">
+                                                        <Destacado texto={result.title} consulta={query} />
+                                                    </p>
+                                                    {(result.alias || result.subtitle) && (
+                                                        <p className="truncate text-[11px] text-muted">
+                                                            {result.alias && <Destacado texto={result.alias} consulta={query} />}
+                                                            {result.alias && result.subtitle && ' · '}
+                                                            {result.subtitle}
+                                                        </p>
                                                     )}
                                                 </div>
                                             </div>

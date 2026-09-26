@@ -192,6 +192,29 @@ describe('QuickSearch', () => {
         expect(mockPush).toHaveBeenCalledWith('/artists')
     })
 
+    it('falha da API mostra aviso, não "nenhum resultado"', async () => {
+        vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false, erro: true })
+        useQuickSearch.setState({ isOpen: true })
+        const user = userEvent.setup()
+        render(<QuickSearch />)
+        await user.type(screen.getByRole('combobox'), 'riize')
+        expect(screen.getByRole('alert')).toHaveTextContent(/não foi possível buscar/i)
+        expect(screen.queryByText(/nenhum resultado/i)).not.toBeInTheDocument()
+    })
+
+    it('destaca cada palavra da consulta e mostra a grafia alternativa que casou', async () => {
+        vi.mocked(useWPSearch).mockReturnValue({
+            results: [result({ title: 'Kim Ji-soo', alias: '지수', subtitle: 'Membro de BLACKPINK' })],
+            isLoading: false, erro: false,
+        })
+        useQuickSearch.setState({ isOpen: true })
+        const user = userEvent.setup()
+        const { container } = render(<QuickSearch />)
+        await user.type(screen.getByRole('combobox'), '지수 blackpink')
+        expect(container.ownerDocument.body.querySelector('mark')?.textContent).toBe('지수')
+        expect(screen.getByText(/Membro de BLACKPINK/)).toBeInTheDocument()
+    })
+
     describe('telemetria da busca', () => {
         let gtag: ReturnType<typeof vi.fn>
         const buscas = () => gtag.mock.calls.filter(c => c[1] === 'search')

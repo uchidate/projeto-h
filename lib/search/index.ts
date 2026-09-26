@@ -53,6 +53,8 @@ type Entrada = {
     title: string
     /** Outras grafias buscaveis: slug, nome romanizado, hangul / titulo original. */
     alternativas: string[]
+    /** Subconjunto de `alternativas` que vale mostrar ao usuario (sem o slug). */
+    grafias: string[]
     /** Complemento exibido sob o titulo, para diferenciar homonimos ("Ator · 1972"). */
     detalhe?: string
     /** Nomes dos grupos do artista: "jisoo blackpink" acha a Jisoo pelo grupo. */
@@ -122,11 +124,13 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
     return unicos.map(item => {
         const titulo = stripHtml(item.title.rendered)
         const acf = Array.isArray(item.acf) || !item.acf ? undefined : item.acf
+        const grafias = [acf?.name_romanized, acf?.name_hangul, acf?.original_title]
+            .filter((x): x is string => !!x && x !== titulo)
         return {
             id: item.id,
             title: titulo,
-            alternativas: [item.slug.replace(/-/g, ' '), acf?.name_romanized, acf?.name_hangul, acf?.original_title]
-                .filter((x): x is string => !!x && x !== titulo),
+            grafias,
+            alternativas: [item.slug.replace(/-/g, ' '), ...grafias],
             detalhe: detalheDe(c.type, acf),
             contexto: [],
             href: `${c.prefix}/${item.slug}`,
@@ -245,6 +249,11 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
     const nomeGrupo = new Map(base.filter(e => e.type === 'group').map(g => [g.id, g.title]))
     return ranqueado.slice(0, limit).map(({ e }) => {
         const r: SearchResult = { id: e.id, title: e.title, href: e.href, type: e.type, thumbnail: e.thumbnail }
+        // Achou por outra grafia (ex.: hangul): mostra qual, senao o resultado parece aleatorio.
+        if (scoreTitle(e.title, q) === 0) {
+            const alias = e.grafias.find(g => scoreTitle(g, q) > 0)
+            if (alias) r.alias = alias
+        }
         if (e.type === 'artist') {
             const nomes = e.grupos.map(id => nomeGrupo.get(id)).filter(Boolean)
             const ano = e.detalhe?.match(/\d{4}$/)?.[0]

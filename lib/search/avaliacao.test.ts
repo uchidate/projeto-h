@@ -110,6 +110,15 @@ describe('busca: consultas de referência', () => {
         expect(sub['/artists/kim-ji-soo-2']).toBe('Ator/Atriz · 1993')
     })
 
+    it('achado por hangul mostra a grafia que casou; achado pelo título, não', async () => {
+        const { searchIndex, aguardarIndice } = await import('./index')
+        await aguardarIndice()
+        const porHangul = (await searchIndex('리사', 12))!
+        expect(porHangul[0].alias).toBe('리사')
+        const porTitulo = (await searchIndex('lisa', 12))!
+        expect(porTitulo[0].alias).toBeUndefined()
+    })
+
     it('produção mostra tipo e ano', async () => {
         const { searchIndex, aguardarIndice } = await import('./index')
         await aguardarIndice()
