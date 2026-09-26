@@ -96,6 +96,23 @@ export default async function ProductionsListPage({ searchParams }: { searchPara
     }
     if (page > Math.max(1, productionsResult.totalPages)) notFound()
 
+    // Faixas de descoberta só na página inicial sem filtro; falha aqui não derruba a lista.
+    const inicio = page === 1 && !sp.genre && !sp.platform && !type && !sp.search && !sp.order
+    let plataformasTop: typeof platforms = []
+    let generosTop: { slug: string; nome: string; fotos: typeof productionsResult.items }[] = []
+    if (inicio) {
+        plataformasTop = [...platforms].sort((a, b) => b.count - a.count).slice(0, 6)
+        const topGeneros = [...genres].sort((a, b) => b.count - a.count).slice(0, 6)
+        const fotos = await Promise.all(topGeneros.map(g => getProductions({ genre: g.slug, perPage: 12, excludeAdult: true }).then(r => r.items).catch(() => [])))
+        // Cada pôster aparece uma vez só nas faixas de gênero (e nunca os que já estão em "Em alta"), senão Drama e Comédia mostram os mesmos.
+        const usados = new Set(productionsResult.items.slice(0, 6).map(p => p.id))
+        generosTop = topGeneros.map((g, i) => {
+            const escolhidos = fotos[i].filter(p => !usados.has(p.id)).slice(0, 3)
+            escolhidos.forEach(p => usados.add(p.id))
+            return { slug: g.slug, nome: g.name, fotos: escolhidos }
+        }).filter(g => g.fotos.length >= 2)
+    }
+
     return (
         <ProductionsPage
             productions={productionsResult.items}
@@ -109,6 +126,9 @@ export default async function ProductionsListPage({ searchParams }: { searchPara
             currentType={type}
             currentOrder={sp.order ?? 'trending'}
             search={sp.search}
+            emAlta={inicio ? productionsResult.items.slice(0, 6) : []}
+            plataformasTop={plataformasTop}
+            generosTop={generosTop}
         />
     )
 }
