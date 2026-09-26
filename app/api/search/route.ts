@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { searchWordPress } from '@/lib/wordpress/search'
-import { searchIndex } from '@/lib/search/index'
+import { populares, searchIndex } from '@/lib/search/index'
 import { clientIpOrUnknown } from '@/lib/http/clientIp'
 import { createRateLimiter } from '@/lib/http/rateLimit'
 
@@ -26,8 +26,11 @@ export async function GET(req: NextRequest) {
 
     const results = await searchWordPress(query, 12)
 
+    // Busca vazia: manda o que está em alta para a tela não terminar em "nenhum resultado".
+    const sugestoes = results.length === 0 ? populares(6) : undefined
+
     return NextResponse.json(
-        { results },
+        { results, ...(sugestoes && sugestoes.length > 0 ? { sugestoes } : {}) },
         { headers: { 'Cache-Control': 'private, max-age=30' } },
     )
 }
