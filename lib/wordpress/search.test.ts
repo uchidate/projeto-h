@@ -58,6 +58,16 @@ describe('searchWordPress', () => {
         expect(result[0].id).toBe(2)
     })
 
+    it('titulo que contem a query (Kim Ji-soo) vence item achado so por meta/conteudo (Lisa)', async () => {
+        fetchMock.mockImplementation(async (url: string) => {
+            if (url.includes('/wp/v2/artist')) return { ok: true, json: async () => [wpItem(1, 'Lisa', 'lisa'), wpItem(2, 'Kim Ji-soo', 'kim-ji-soo')] }
+            return { ok: true, json: async () => [] }
+        })
+        const { searchWordPress } = await import('./search')
+        const result = await searchWordPress('jisoo')
+        expect(result[0].id).toBe(2)
+    })
+
     it('respeita o limit total após juntar os 4 CPTs', async () => {
         fetchMock.mockImplementation(async (url: string) => {
             if (url.includes('/wp/v2/production')) return { ok: true, json: async () => Array.from({ length: 6 }, (_, i) => wpItem(i, `Item ${i}`, `item-${i}`)) }
