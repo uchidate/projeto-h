@@ -22,6 +22,7 @@ import { BlogToc } from '@/components/blog/BlogToc'
 import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
 import { BlogSuggestedNext } from '@/components/blog/BlogSuggestedNext'
+import { BlogContinuar } from '@/components/blog/BlogContinuar'
 import { BlogTextShare } from '@/components/blog/BlogTextShare'
 import { BlogMobileReadMore } from '@/components/blog/BlogMobileReadMore'
 import { BlogDaysUntil } from '@/components/blog/BlogDaysUntil'
@@ -354,6 +355,11 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
     // O primeiro item já aparece como sugestão individual logo após a leitura.
     // Evitar repeti-lo mantém o encerramento editorial útil e menos mecânico.
     const moreRelatedPosts = relatedPosts.slice(1, 5)
+    // Experimento: metade dos artigos (id par) recebe o fechamento novo, a outra metade
+    // mantém o "Leia também". Por artigo e não por visitante: sem cookie e sem risco de
+    // hidratação divergente numa página ISR. Cada bloco tem `data-bloco` próprio, então
+    // exibição e clique dão a taxa de clique de cada um.
+    const fechamentoNovo = post.id % 2 === 0
 
     return (
         <>
@@ -825,7 +831,10 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
                 </div>
 
                 {/* Posts relacionados */}
-                {moreRelatedPosts.length > 0 && (
+                {moreRelatedPosts.length > 0 && fechamentoNovo && (
+                    <BlogContinuar atual={post} candidatos={moreRelatedPosts} verMaisHref={cat ? `/blog?category=${cat.slug}` : '/blog'} />
+                )}
+                {moreRelatedPosts.length > 0 && !fechamentoNovo && (
                     <div data-bloco="artigo-leia-tambem" className="mt-10 border-t border-border pt-8 pb-8">
                         <div className="mb-5 flex items-end justify-between gap-4 px-4 sm:px-6 lg:px-8">
                             <div className="min-w-0">
