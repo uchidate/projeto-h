@@ -85,6 +85,26 @@ export function subscribeConsent(onChange: () => void) {
     }
 }
 
+/**
+ * O histórico "Continue de onde parou" guarda no aparelho os artistas que a pessoa abriu. Nunca sai do
+ * navegador, mas é histórico de navegação, então segue a decisão do banner:
+ * quem recusou não tem histórico; no EEE/Reino Unido (onde o CMP do Google decide) só com aceite explícito
+ * registrado aqui; no resto do mundo vale enquanto a pessoa não recusar.
+ * O contexto "anterior/próximo" da lista, guardado só na sessão da aba, não passa por esta regra: é o estado
+ * de uma navegação que a pessoa acabou de fazer.
+ */
+export function podeGuardarHistorico(): boolean {
+    const decisao = readConsent()?.decision
+    if (decisao === 'denied') return false
+    if (hasCertifiedCmp()) return decisao === 'granted'
+    return true
+}
+
+/** Verdadeiro só quando a pessoa recusou de forma explícita (no servidor nunca é). */
+export function recusouConsentimento(): boolean {
+    return readConsent()?.decision === 'denied'
+}
+
 /** No servidor ninguém consentiu ainda; o cliente reconcilia após a hidratação. */
 export function getServerConsent(): ConsentState | null {
     return null

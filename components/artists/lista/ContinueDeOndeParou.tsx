@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useMemo, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useSyncExternalStore } from 'react'
+import { getServerConsent, recusouConsentimento, subscribeConsent } from '@/lib/consent'
 import { assinarRecentes, interpretarRecentes, lerRecentesCru, limparRecentes } from '@/lib/artists/recentes'
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
@@ -11,7 +12,10 @@ const SERIF = 'font-[family-name:var(--font-playfair)]'
 export function ContinueDeOndeParou() {
     // No servidor e na hidratação o snapshot é vazio: a faixa só aparece depois, sem descompasso de HTML.
     const cru = useSyncExternalStore(assinarRecentes, lerRecentesCru, () => '')
-    const itens = useMemo(() => interpretarRecentes(cru).slice(0, 4), [cru])
+    // Quem recusa o consentimento não vê a faixa e tem o histórico já guardado apagado (nunca no servidor: snapshot falso).
+    const recusou = useSyncExternalStore(subscribeConsent, recusouConsentimento, () => getServerConsent() !== null)
+    useEffect(() => { if (recusou) limparRecentes() }, [recusou])
+    const itens = useMemo(() => (recusou ? [] : interpretarRecentes(cru).slice(0, 4)), [cru, recusou])
     if (itens.length === 0) return null
     return (
         <section aria-labelledby="continue-titulo" data-bloco="lista-continue" className="page-wrap pt-5">
