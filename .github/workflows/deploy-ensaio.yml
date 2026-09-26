@@ -33,7 +33,9 @@ permissions:
   issues: write
 
 concurrency:
-  group: deploy-ensaio
+  # Por ref: um ensaio manual/agendado (main) nao pode cancelar o check de um PR
+  # e deixa-lo vermelho sem falha real. So cancela execucao antiga da mesma ref.
+  group: deploy-ensaio-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
