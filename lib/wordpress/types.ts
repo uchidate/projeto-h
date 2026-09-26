@@ -299,6 +299,8 @@ export type WPGroup = {
             quote_context?: string
             quote_source_url?: string
         }>
+        /** Músicas que definem o grupo (trilha "Pelo hit" de "Comece por aqui"); sem o campo, a trilha não aparece. */
+        hits?: Array<{ title: string; url: string; context?: string }>
         key_metrics?: Array<{
             value: string
             label: string

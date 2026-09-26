@@ -12,6 +12,7 @@ import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { stripHtml, getWPImage } from '@/lib/utils'
 import { getMusicReleases } from '@/lib/wordpress/music'
+import { parseFormerMembers } from '@/lib/profiles/groupProfile'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
@@ -87,6 +88,20 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
         getMusicReleases({ groupId: group.id }),
     ])
 
+    // Lançamentos solo das integrantes ativas (até 6, para limitar chamadas ao WP).
+    const formerSet = new Set(parseFormerMembers(group.former_member_slugs, group.slug).map(e => e.slug))
+    const soloBase = members.filter(m => !formerSet.has(m.slug)).slice(0, 6)
+    const soloReleases: Record<string, DiscographyAlbum[]> = {}
+    await Promise.all(soloBase.map(async m => {
+        const rs = await getMusicReleases({ artistId: m.id, perPage: 12 })
+        if (rs.length) soloReleases[m.slug] = rs.map(r => ({
+            id: String(r.id), title: r.title,
+            type: r.release_type === 'album' ? 'ALBUM' : r.release_type === 'ep' ? 'EP' : r.release_type === 'compilation' ? 'COMPILATION' : 'SINGLE',
+            releaseYear: r.release_date ? parseInt(r.release_date.slice(0, 4)) : null,
+            coverUrl: r.cover_url, spotifyUrl: r.spotify_url ?? '', tracks: [],
+        }))
+    }))
+
     const discography: DiscographyAlbum[] = wpReleases.map(r => ({
         id: String(r.id),
         title: r.title,
@@ -116,7 +131,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('group', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} relatedHubs={relatedHubs} />
+            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} />
         </>
     )
 }
