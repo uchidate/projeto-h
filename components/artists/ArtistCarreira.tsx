@@ -26,7 +26,7 @@ export function ArtistCarreira({ id, eyebrow, titulo, tituloPremios, capitulos, 
     const t = useTranslations('profile.ui')
     return (
         <section id={id} aria-labelledby={`${id}-titulo`} className="page-wrap scroll-mt-(--scroll-anchor-offset,106px) py-12 sm:py-16">
-            <div className="border-t pt-5" style={{ borderColor: `${accent}55` }}>
+            <div className="border-t pt-5" style={{ borderColor: accent }}>
                 <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: accent }}>{eyebrow}</p>
                 <h2 id={`${id}-titulo`} className="mt-2 text-[26px] font-black leading-tight tracking-[-0.03em] sm:text-[34px]">{titulo}</h2>
             </div>
