@@ -8,7 +8,9 @@ import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { GroupsPage } from '@/components/features/GroupsPage'
 import { GENERATIONS, getGenerationBySlug, getGeneration } from '@/lib/constants/generations'
 import { hojeEmSaoPaulo } from '@/lib/artists/aniversarios'
-import { getYear, stripHtml } from '@/lib/utils'
+import { getYear, stripHtml, getWPImage } from '@/lib/utils'
+import { getArtistsByIds } from '@/lib/wordpress/artists'
+import { parseFormerMembers } from '@/lib/profiles/groupProfile'
 
 export const revalidate = 600
 
@@ -134,6 +136,24 @@ export default async function GroupsListPage({ searchParams }: { searchParams: S
     // transitória do WP — lançar preserva o snapshot ISR anterior em vez de
     // cachear a listagem em branco (mesmo guard de /productions).
     const unfiltered = !sp.search && !type && activeFilter === undefined && !letter && !generation && !order
+    // Rostos das integrantes para o hover dos cards: até 4 por grupo, sem ex-integrantes. Falha não derruba a lista.
+    const integrantes: Record<number, { nome: string; foto: string }[]> = {}
+    try {
+        const idsPorGrupo = new Map(items.map(g => [g.id, (g.acf?.members ?? []).slice(0, 6)]))
+        const todosIds = [...new Set([...idsPorGrupo.values()].flat())]
+        const lotes = Array.from({ length: Math.ceil(todosIds.length / 100) }, (_, i) => todosIds.slice(i * 100, i * 100 + 100))
+        const artistas = (await Promise.all(lotes.map(getArtistsByIds))).flat()
+        const porId = new Map(artistas.map(a => [a.id, a]))
+        for (const g of items) {
+            const ex = new Set(parseFormerMembers(g.former_member_slugs, g.slug).map(e => e.slug))
+            const lista = (idsPorGrupo.get(g.id) ?? []).flatMap(id => {
+                const a = porId.get(id)
+                const foto = a ? getWPImage(a._embedded, a.featured_image_url) : null
+                return a && foto && !ex.has(a.slug) ? [{ nome: stripHtml(a.title.rendered), foto: foto.src }] : []
+            }).slice(0, 4)
+            if (lista.length >= 2) integrantes[g.id] = lista
+        }
+    } catch { /* sem hover */ }
     if (unfiltered && page === 1) exigirListagemComConteudo(items, '/groups')
     if (page > Math.max(1, totalPages)) notFound()
 
@@ -154,6 +174,7 @@ export default async function GroupsListPage({ searchParams }: { searchParams: S
             geracoes={geracoes}
             debutaram={debutaram}
             mesNome={MESES[hoje.mes - 1]}
+            integrantes={integrantes}
         />
     )
 }
