@@ -19,6 +19,7 @@ import { ReadingBar } from '@/components/ui/ReadingBar'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import { QuizFacts } from '@/components/ui/QuizFacts'
 import { buildArtistProfileModel } from '@/lib/profiles/artistProfile'
+import { ArtistFichaC } from '@/components/artists/ArtistFichaC'
 import { ArtistHero } from '@/components/artists/ArtistHero'
 import { ListaBarra, ListaProxima } from '@/components/artists/lista/ListaNavegacao'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
@@ -28,10 +29,6 @@ import type { EntityFAQItem } from '@/components/seo/EntityFAQ'
 import { renderProfileEntries, isInterstitial, CHAVE_DE_ANUNCIO, type ProfileEntry } from '@/components/profiles/ProfileSection'
 import { variantePorId } from '@/lib/experimento'
 import { fichaMagra } from '@/lib/artists/fichaMagra'
-import { reordenarPorAba, limitarAnuncios, abasDasAncoras } from '@/lib/artists/fichaC'
-import { ArtistAtalhos } from '@/components/artists/ArtistAtalhos'
-import { ArtistObrasFaixa } from '@/components/artists/ArtistObrasFaixa'
-import { ArtistAbas } from '@/components/artists/ArtistAbas'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
 
@@ -63,8 +60,8 @@ export function ArtistDetailPage({
 }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
-    const tC = useTranslations('profile.artistC')
     const locale = useLocale()
+    const tC = useTranslations('profile.artistC')
     const model = buildArtistProfileModel(artist, undefined, locale)
     const {
         name, acf, age, roleLabels, socialEntries, heroCopy, heroMeta, quickFacts, accent,
@@ -158,25 +155,30 @@ export function ArtistDetailPage({
     })
     // Vale para as duas variantes: ficha magra não carrega anúncio (risco de "conteúdo de baixo valor").
     if (magra) entries = entries.filter(e => !(isInterstitial(e) && CHAVE_DE_ANUNCIO.test(e.key)))
-    if (emC) entries = limitarAnuncios(reordenarPorAba(entries), 3)
-    if (emC) entries = entries.map(e => !isInterstitial(e) && e.id === 'filmografia'
-        ? { ...e, render: (label: string) => <><ArtistObrasFaixa productions={productions} accent={accent} />{e.render(label)}</> }
-        : e)
-    const presentes = new Set(entries.filter(e => !isInterstitial(e) && e.present).map(e => (e as { id: string }).id))
-    const detalhes: Record<string, string | undefined> = {
-        musica: discography[0]?.title,
-        filmografia: productions[0] ? stripHtml(productions[0].title.rendered) : undefined,
-        artigos: relatedPosts[0] ? stripHtml(relatedPosts[0].title.rendered) : undefined,
-        trajetoria: storyChapters.length > 0 ? tC('understandDetail', { count: storyChapters.length }) : undefined,
+    const { anchors: todasAncoras, nodes: sectionNodes } = renderProfileEntries(entries, { parentProvidesRail: emC, medir: { prefixo: 'ficha-artista', ids: ['filmografia', 'grupos', 'relacionados', 'artigos'] } })
+    // Ficha C: blocos originais por id. Os que a ficha C desenha por conta própria não repetem; o resto fica recolhido.
+    const nodesC: Record<string, React.ReactNode> = {}
+    const restoC: React.ReactNode[] = []
+    if (emC) {
+        const JA_DESENHADOS = new Set(['biografia', 'trajetoria', 'recordes', 'premios', 'filmografia', 'faq', 'musica', 'grupos', 'relacionados'])
+        entries.forEach((e, i) => {
+            if (isInterstitial(e) || !e.present) return
+            if (['filmografia', 'faq', 'grupos'].includes(e.id)) nodesC[e.id] = sectionNodes[i]
+            if (!JA_DESENHADOS.has(e.id)) restoC.push(sectionNodes[i])
+        })
+        const nav = entries.find(e => !isInterstitial(e) && e.id === 'grupos' && e.present)
+        if (nav && productions.length > 0) restoC.push(nodesC.grupos)
     }
-    const atalhos = emC ? ([
-        { id: 'musica', tipo: 'listen' }, { id: 'filmografia', tipo: 'watch' },
-        { id: 'artigos', tipo: 'read' }, { id: 'trajetoria', tipo: 'understand' },
-    ] as const).filter(d => presentes.has(d.id) && (d.id !== 'musica' || discography.length > 0)).map(d => ({ ...d, detalhe: detalhes[d.id] })) : []
-
-    const { anchors: todasAncoras, nodes: sectionNodes } = renderProfileEntries(entries, { medir: { prefixo: 'ficha-artista', ids: ['filmografia', 'grupos', 'relacionados', 'artigos'] } })
+    const temMusica = model.videoList.length > 0 || discography.length > 0 || !!acf.spotify
     const pageAnchors = emC
-        ? abasDasAncoras(todasAncoras.map(a => a.href.slice(1)), aba => tC(`tabs.${aba}`))
+        ? ([
+            { href: '#visao', label: tC('tabs.visao') },
+            (hasStoryChapters || model.awards.length > 0) && { href: '#carreira', label: tC('tabs.carreira') },
+            temMusica && { href: '#musica', label: tC('tabs.musica') },
+            productions.length > 0 && { href: '#obras', label: tC('tabs.obras') },
+            (relatedArtists.some(r => r.id !== artist.id) || groups.length > 0) && { href: '#universo', label: tC('tabs.universo') },
+            relatedPosts.length > 0 && { href: '#ler', label: tC('tabs.ler') },
+        ].filter(Boolean) as { href: string; label: string }[])
         : todasAncoras
 
     return (
@@ -218,15 +220,24 @@ export function ArtistDetailPage({
             <RegistrarVisita item={{ slug: artist.slug, nome: name, foto: image?.src ?? null, papel: roleLabels[0] ?? null }} />
             <ListaBarra slug={artist.slug} />
             <div hidden data-variante={emC ? 'artista-c' : 'artista-a'} />
-            <ArtistHero
-                artist={artist} name={name} artistUrl={artistUrl} image={image}
-                roleLabels={roleLabels} groups={groups} agency={agency}
-                heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
-            />
-            {emC && <ArtistAbas abas={pageAnchors} accent={accent} />}
-            {emC && <ArtistAtalhos destinos={[...atalhos]} accent={accent} />}
-
-            {sectionNodes}
+            {emC ? (
+                <ArtistFichaC
+                    artist={artist} name={name} image={image} roleLabels={roleLabels}
+                    groups={groups} agency={agency} productions={productions} relatedPosts={relatedPosts}
+                    relatedArtists={relatedArtists} discography={discography} model={model} magra={magra}
+                    nodes={nodesC} resto={restoC}
+                    titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
+                />
+            ) : (
+                <>
+                    <ArtistHero
+                        artist={artist} name={name} artistUrl={artistUrl} image={image}
+                        roleLabels={roleLabels} groups={groups} agency={agency}
+                        heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
+                    />
+                    {sectionNodes}
+                </>
+            )}
             <ListaProxima slug={artist.slug} />
 
             {/* Guias só existem em português. */}
