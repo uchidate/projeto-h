@@ -219,6 +219,20 @@ export function trackSearch(query: string, resultCount: number) {
     if (resultCount === 0 && query.trim()) trackBuscaSemResultado(query)
 }
 
+/**
+ * Clique num resultado da busca. `position` e a posicao (1 = primeiro) na ordem
+ * exibida: clique em posicao alta = ranking ruim. Sem isso so se sabe quantos
+ * resultados houve, nao se o certo estava no topo.
+ */
+export function trackSearchClick(params: { query: string; position: number; type: string; href: string }) {
+    enviar('search_click', {
+        search_term: params.query,
+        position: params.position,
+        result_type: params.type,
+        result_href: params.href,
+    })
+}
+
 // Leitura de artigo
 //
 // A instrumentacao anterior destes dois eventos desapareceu do codigo em

@@ -80,6 +80,27 @@ describe('QuickSearch', () => {
         expect(headings).toEqual(['Grupos', 'Produções'])
     })
 
+    it('clicar num resultado registra search_click com a posição exibida', async () => {
+        const gtag = vi.fn()
+        ;(window as unknown as { gtag: unknown }).gtag = gtag
+        vi.mocked(useWPSearch).mockReturnValue({
+            results: [
+                result({ id: 1, type: 'group', title: 'BTS', href: '/groups/bts' }),
+                result({ id: 2, type: 'production', title: 'BTS: Bon Voyage', href: '/productions/bts-bon-voyage' }),
+            ],
+            isLoading: false,
+        })
+        useQuickSearch.setState({ isOpen: true })
+        const user = userEvent.setup()
+        render(<QuickSearch />)
+        await user.type(screen.getByRole('combobox'), 'bts')
+        await user.click(screen.getByRole('option', { name: /Bon Voyage/ }))
+        expect(gtag).toHaveBeenCalledWith('event', 'search_click', expect.objectContaining({
+            search_term: 'bts', position: 2, result_type: 'production', result_href: '/productions/bts-bon-voyage',
+        }))
+        delete (window as unknown as { gtag?: unknown }).gtag
+    })
+
     it('mostra "Nenhum resultado" quando a busca não retorna nada', async () => {
         vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false })
         useQuickSearch.setState({ isOpen: true })
