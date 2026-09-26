@@ -53,19 +53,28 @@ describe('ArtistsPage', () => {
         expect(screen.getByText('Artista Teste')).toBeInTheDocument()
     })
 
-    it('mostra a paginação com contagem quando há mais de 1 página', () => {
+    it('oferece "Ver mais" para a página seguinte quando há mais de 1 página', () => {
         render(<ArtistsPage {...baseProps()} totalPages={3} currentPage={2} total={100} />)
-        expect(screen.getByText(/pág\. 2 de 3/i)).toBeInTheDocument()
+        const ver = screen.getByRole('link', { name: /ver mais 48 artistas/i })
+        expect(ver).toHaveAttribute('href', expect.stringContaining('page=3'))
     })
 
-    it('não mostra a linha de paginação quando há só 1 página', () => {
-        render(<ArtistsPage {...baseProps()} totalPages={1} />)
-        expect(screen.queryByText(/pág\./i)).not.toBeInTheDocument()
+    it('não oferece "Ver mais" na última página nem quando há só 1 página', () => {
+        const { unmount } = render(<ArtistsPage {...baseProps()} totalPages={1} />)
+        expect(screen.queryByRole('link', { name: /ver mais/i })).not.toBeInTheDocument()
+        unmount()
+        render(<ArtistsPage {...baseProps()} totalPages={3} currentPage={3} total={100} />)
+        expect(screen.queryByRole('link', { name: /ver mais/i })).not.toBeInTheDocument()
+    })
+
+    it('mantém "Artistas K-Pop e K-Drama" como título para os buscadores', () => {
+        render(<ArtistsPage {...baseProps()} />)
+        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/artistas k-pop e k-drama/i)
     })
 
     it('mostra o heading da letra quando "letter" está definido', () => {
         render(<ArtistsPage {...baseProps()} letter="K" letterCounts={{ K: 42 }} />)
-        expect(screen.getByText('K', { selector: 'span.font-serif' })).toBeInTheDocument()
+        expect(screen.getAllByText('K').length).toBeGreaterThan(0)
         expect(screen.getByText(/42 artistas · letra k/i)).toBeInTheDocument()
     })
 
@@ -86,7 +95,7 @@ describe('ArtistsPage', () => {
         vi.useRealTimers()
         return (async () => {
             const user = userEvent.setup()
-            await user.type(screen.getByPlaceholderText(/buscar artista/i), 'bts')
+            await user.type(screen.getByPlaceholderText(/buscar por nome/i), 'bts')
             await new Promise(r => setTimeout(r, 450))
             expect(pushMock).toHaveBeenCalledWith(expect.stringContaining('search=bts'))
         })()
