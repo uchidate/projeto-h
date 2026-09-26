@@ -28,6 +28,7 @@ import { variantePorId } from '@/lib/experimento'
 import { fichaMagra } from '@/lib/artists/fichaMagra'
 import { reordenarPorAba, limitarAnuncios, abasDasAncoras } from '@/lib/artists/fichaC'
 import { ArtistAtalhos } from '@/components/artists/ArtistAtalhos'
+import { ArtistObrasFaixa } from '@/components/artists/ArtistObrasFaixa'
 import { ArtistAbas } from '@/components/artists/ArtistAbas'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
@@ -156,6 +157,9 @@ export function ArtistDetailPage({
     // Vale para as duas variantes: ficha magra não carrega anúncio (risco de "conteúdo de baixo valor").
     if (magra) entries = entries.filter(e => !(isInterstitial(e) && CHAVE_DE_ANUNCIO.test(e.key)))
     if (emC) entries = limitarAnuncios(reordenarPorAba(entries), 3)
+    if (emC) entries = entries.map(e => !isInterstitial(e) && e.id === 'filmografia'
+        ? { ...e, render: (label: string) => <><ArtistObrasFaixa productions={productions} accent={accent} />{e.render(label)}</> }
+        : e)
     const presentes = new Set(entries.filter(e => !isInterstitial(e) && e.present).map(e => (e as { id: string }).id))
     const detalhes: Record<string, string | undefined> = {
         musica: discography[0]?.title,
