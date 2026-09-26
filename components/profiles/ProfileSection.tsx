@@ -32,8 +32,10 @@ const WEIGHT_SPACING = {
  * `indented=false` evita recuo duplicado quando o contêiner pai já fornece o
  * rail (caso do layout de grupo com sidebar).
  */
-export function ProfileSection({ id, weight = 'pillar', label, indented = true, children }: {
+export function ProfileSection({ id, weight = 'pillar', label, indented = true, bloco, children }: {
     id: string
+    /** Nome para a medição de recirculação (`data-bloco`); ausente = bloco não medido. */
+    bloco?: string
     weight?: ProfileSectionWeight
     label?: string
     indented?: boolean
@@ -47,7 +49,7 @@ export function ProfileSection({ id, weight = 'pillar', label, indented = true, 
                         {label}
                     </p>
                 )}
-                <div>{children}</div>
+                <div data-bloco={bloco}>{children}</div>
             </div>
         </BlockSection>
     )
@@ -161,7 +163,17 @@ export function validateProfileEntries(entries: readonly ProfileEntry[]) {
  * - numberedLabel: "NN · NAV" pela posição VISÍVEL (buraco de dado não pula número)
  * - nodes: seções embrulhadas (ou `layout: self`) + interstitials no lugar exato
  */
-export function renderProfileEntries(entries: readonly ProfileEntry[], options: { parentProvidesRail?: boolean } = {}) {
+export function renderProfileEntries(
+    entries: readonly ProfileEntry[],
+    options: {
+        parentProvidesRail?: boolean
+        /**
+         * Blocos de NAVEGAÇÃO a medir (clique e exibição): `${prefixo}-${id}`. Só os que
+         * levam a outra página; medir todos geraria uma dúzia de eventos por ficha.
+         */
+        medir?: { prefixo: string; ids: readonly string[] }
+    } = {},
+) {
     validateProfileEntries(entries)
 
     const visibleBlocks = entries.filter((e): e is ProfileBlockDef => !isInterstitial(e) && e.present)
@@ -169,12 +181,14 @@ export function renderProfileEntries(entries: readonly ProfileEntry[], options: 
     const numberedBlocks = visibleBlocks.filter(b => b.numbered !== false)
     const numberOf = new Map(numberedBlocks.map((b, i) => [b.id, `${String(i + 1).padStart(2, '0')} · ${b.nav.toUpperCase()}`]))
 
+    const blocoDe = (id: string) => options.medir?.ids.includes(id) ? `${options.medir.prefixo}-${id}` : undefined
+
     const nodes = entries.map(entry => {
         if (isInterstitial(entry)) return <div key={`interstitial-${entry.key}`} data-profile-entry="interstitial">{entry.interstitial}</div>
         if (!entry.present) return null
         const label = numberOf.get(entry.id) ?? entry.nav.toUpperCase()
         if (entry.layout === 'self') return (
-            <div key={entry.id} className="relative" data-profile-entry="section" data-profile-weight={entry.weight ?? 'pillar'}>
+            <div key={entry.id} className="relative" data-profile-entry="section" data-profile-weight={entry.weight ?? 'pillar'} data-bloco={blocoDe(entry.id)}>
                 {entry.indexed && (
                     <p className="mb-4 font-mono text-[10px] font-black uppercase leading-4 tracking-[0.16em] text-muted">
                         {label}
@@ -186,7 +200,7 @@ export function renderProfileEntries(entries: readonly ProfileEntry[], options: 
         // O wrapper desenha o rótulo no mesmo eixo do título; o componente recebe
         // string vazia para não repetir o kicker.
         return (
-            <ProfileSection key={entry.id} id={entry.id} weight={entry.weight} label={label} indented={!options.parentProvidesRail}>
+            <ProfileSection key={entry.id} id={entry.id} weight={entry.weight} label={label} indented={!options.parentProvidesRail} bloco={blocoDe(entry.id)}>
                 {entry.render('')}
             </ProfileSection>
         )

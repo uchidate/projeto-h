@@ -19,6 +19,25 @@ function block(overrides: Partial<Extract<ProfileEntry, { id: string }>> = {}): 
 }
 
 describe('renderProfileEntries', () => {
+    it('medir marca só os blocos de navegação pedidos, com o prefixo da ficha', () => {
+        const entries: ProfileEntry[] = [
+            block({ id: 'biografia' }),
+            block({ id: 'filmografia', nav: 'Obras' }),
+            block({ id: 'relacionados', nav: 'Próximos', layout: 'self' }),
+            block({ id: 'faq', nav: 'FAQ', present: false }),
+        ]
+        const { nodes } = renderProfileEntries(entries, { medir: { prefixo: 'ficha-artista', ids: ['filmografia', 'relacionados', 'faq'] } })
+        const { container } = render(<>{nodes}</>)
+        const nomes = [...container.querySelectorAll('[data-bloco]')].map(e => e.getAttribute('data-bloco'))
+        expect(nomes).toEqual(['ficha-artista-filmografia', 'ficha-artista-relacionados'])
+    })
+
+    it('sem medir nenhum bloco recebe data-bloco', () => {
+        const { nodes } = renderProfileEntries([block(), block({ id: 'filmografia', nav: 'Obras' })])
+        const { container } = render(<>{nodes}</>)
+        expect(container.querySelector('[data-bloco]')).toBeNull()
+    })
+
     it('deriva as âncoras apenas dos blocos visíveis e na ordem do registro', () => {
         const entries: ProfileEntry[] = [
             block(),

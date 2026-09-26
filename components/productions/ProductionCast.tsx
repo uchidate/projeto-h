@@ -12,7 +12,7 @@ export function ProductionCast({ cast, details = [] }: Props) {
     if (!cast.length) return null
     const roles = new Map(details.map(item => [item.slug, item.role]))
     return (
-        <div className="mt-10">
+        <div data-bloco="ficha-producao-elenco" className="mt-10">
             <div className="flex items-baseline justify-between mb-5">
                 <h2 className="text-[18px] font-black">Elenco</h2>
                 <span className="font-mono text-[11px] text-muted">{cast.length} artistas</span>
