@@ -55,6 +55,8 @@ type Entrada = {
     alternativas: string[]
     /** Complemento exibido sob o titulo, para diferenciar homonimos ("Ator · 1972"). */
     detalhe?: string
+    /** Nomes dos grupos do artista: "jisoo blackpink" acha a Jisoo pelo grupo. */
+    contexto: string[]
     href: string
     type: SearchResultType
     thumbnail?: string
@@ -100,6 +102,9 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
             page,
             per_page: PER_PAGE,
             status: 'publish',
+            // Ordem estavel: sem ela, itens com a mesma data repetem/somem entre paginas.
+            orderby: 'id',
+            order: 'asc',
             _fields: 'id,slug,title,featured_image_url,acf.groups,acf.trending_score,acf.popularity_score,acf.roles,acf.birth_date,acf.name_hangul,acf.name_romanized,acf.original_title,acf.type,acf.year',
         })}`,
         { revalidate: 300, tags: [c.tag] },
@@ -112,7 +117,9 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
         const lote = await Promise.all(paginas.map(pagina))
         lote.forEach(r => itens.push(...r.items))
     }
-    return itens.map(item => {
+    // Rede de seguranca: se o WP mesmo assim repetir um id entre paginas, fica um so.
+    const unicos = [...new Map(itens.map(i => [i.id, i])).values()]
+    return unicos.map(item => {
         const titulo = stripHtml(item.title.rendered)
         const acf = Array.isArray(item.acf) || !item.acf ? undefined : item.acf
         return {
@@ -121,6 +128,7 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
             alternativas: [item.slug.replace(/-/g, ' '), acf?.name_romanized, acf?.name_hangul, acf?.original_title]
                 .filter((x): x is string => !!x && x !== titulo),
             detalhe: detalheDe(c.type, acf),
+            contexto: [],
             href: `${c.prefix}/${item.slug}`,
             type: c.type,
             thumbnail: item.featured_image_url ?? undefined,
@@ -138,7 +146,12 @@ async function carregar(): Promise<void> {
     const partes = await Promise.all(COLECOES.map(buscarColecao))
     // Colecao vazia = WP falhou (ou build): nao substitui um indice bom por um pela metade.
     if (partes.some(p => p.length === 0)) throw new Error('indice de busca incompleto')
-    entradas = partes.flat()
+    const todas = partes.flat()
+    const nomeGrupo = new Map(todas.filter(e => e.type === 'group').map(g => [g.id, g.title]))
+    for (const e of todas) {
+        if (e.type === 'artist') e.contexto = e.grupos.map(id => nomeGrupo.get(id)).filter((n): n is string => !!n)
+    }
+    entradas = todas
     carregadoEm = Date.now()
 }
 
@@ -162,16 +175,39 @@ export async function aguardarIndice(): Promise<void> {
     await carregando
 }
 
+/**
+ * Consulta com varias palavras ("jisoo blackpink"): cada palavra precisa casar
+ * com algum campo da ficha ou com o nome do grupo (esse com peso menor). Vale
+ * um pouco menos que o casamento da frase inteira, que continua tendo prioridade.
+ */
+function pontuarPalavras(e: Entrada, palavras: string[]): number {
+    if (palavras.length < 2) return 0
+    let soma = 0
+    for (const p of palavras) {
+        const direto = Math.max(scoreTitle(e.title, p), ...e.alternativas.map(a => scoreTitle(a, p)))
+        const porGrupo = Math.max(0, ...e.contexto.map(g => scoreTitle(g, p) * 0.6))
+        const melhor = Math.max(direto, porGrupo)
+        if (melhor === 0) return 0
+        soma += melhor
+    }
+    return (soma / palavras.length) * 0.9
+}
+
 export async function searchIndex(query: string, limit: number): Promise<SearchResult[] | null> {
     if (!entradas || Date.now() - carregadoEm > TTL_MS) garantirCarregando()
     if (!entradas) return null // primeira vez: quem chamou usa a busca REST
 
     const q = query.trim()
+    const palavras = foldAccents(q).split(/\s+/).filter(p => p.length >= 2)
     const base = entradas
     const ranqueado: Array<{ e: Entrada; score: number }> = []
     for (const e of base) {
         // Melhor entre titulo e grafias alternativas (slug, romanizado, hangul).
-        const s = Math.max(scoreTitle(e.title, q), ...e.alternativas.map(a => scoreTitle(a, q)))
+        const s = Math.max(
+            scoreTitle(e.title, q),
+            ...e.alternativas.map(a => scoreTitle(a, q)),
+            pontuarPalavras(e, palavras),
+        )
         if (s > 0) ranqueado.push({ e, score: s * e.weight + Math.min(e.trending, 100) * 0.05 })
     }
 
@@ -180,8 +216,9 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
     if (ranqueado.length < 3 && q.length >= 3) {
         const alvo = foldAccents(q)
         const limiar = Math.max(1, Math.ceil(alvo.length * 0.34))
+        const jaAchados = new Set(ranqueado.map(x => x.e))
         for (const e of base) {
-            if (!e.fuzzy) continue
+            if (!e.fuzzy || jaAchados.has(e)) continue
             let melhor = Infinity
             for (const c of [e.justo, ...e.palavras]) {
                 if (Math.abs(c.length - alvo.length) > limiar) continue

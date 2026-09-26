@@ -54,4 +54,14 @@ describe('indice de busca em memoria', () => {
         expect(await searchIndex('kimchi', 12)).toBeNull()
         BASE.food = [item(50, 'Kimchi', 'kimchi')]
     })
+
+    it('ficha repetida entre paginas do WP aparece uma vez só no índice', async () => {
+        const antes = BASE.artist
+        BASE.artist = [...antes, antes[0]]
+        const { searchIndex, aguardarIndice } = await import('./index')
+        await aguardarIndice()
+        const r = (await searchIndex('lisa', 12))!
+        expect(r.filter(x => x.id === 1)).toHaveLength(1)
+        BASE.artist = antes
+    })
 })
