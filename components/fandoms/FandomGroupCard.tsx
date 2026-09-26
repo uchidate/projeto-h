@@ -3,7 +3,8 @@ import Link from 'next/link'
 import type { WPGroup } from '@/lib/wordpress/types'
 import { getWPImage, getYear, stripHtml } from '@/lib/utils'
 
-export function FandomGroupCard({ group }: { group: WPGroup }) {
+/** Cartão do grupo dentro da página da torcida: foto grande, nome, hangul e um convite para abrir a ficha. */
+export function FandomGroupCard({ group, cor, tinta }: { group: WPGroup; cor: string; tinta: string }) {
     const img = getWPImage(group._embedded, group.featured_image_url)
     const name = stripHtml(group.title.rendered)
     const acf = group.acf ?? {}
@@ -12,31 +13,17 @@ export function FandomGroupCard({ group }: { group: WPGroup }) {
 
     return (
         <Link href={`/groups/${group.slug}`}
-            className="group flex flex-col items-center text-center p-3 rounded-xl border border-border hover:border-accent transition-colors bg-background hover:bg-surface/60">
-            <div className="relative w-20 h-20 mb-3 overflow-hidden rounded-full bg-surface ring-1 ring-border group-hover:ring-accent transition-colors"
-                style={acf.color ? { boxShadow: `0 0 0 2px ${acf.color}22` } : undefined}>
-                {img ? (
-                    <Image src={img.src} alt={name} fill
-                        className="object-cover group-hover:scale-[1.05] transition-transform duration-500"
-                        sizes="80px" />
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-accent/10">
-                        <span className="text-[24px] font-black text-accent/30">{name[0]}</span>
-                    </div>
-                )}
-                {!isActive && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <span className="font-mono text-[8px] font-bold text-white/80 uppercase">Inativo</span>
-                    </div>
-                )}
-            </div>
-            <p className="text-[13px] font-bold leading-tight group-hover:text-accent transition-colors line-clamp-2">{name}</p>
-            {acf.name_hangul && (
-                <p className="text-[10px] text-muted mt-0.5">{acf.name_hangul}</p>
-            )}
-            {debutYear && (
-                <p className="font-mono text-[10px] text-muted/60 mt-1">Est. {debutYear}</p>
-            )}
+            className="group flex items-center gap-4 p-4 transition-transform hover:-translate-y-0.5 shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"
+            style={{ background: cor, color: tinta }}>
+            <span className="relative h-[84px] w-[84px] shrink-0 overflow-hidden bg-[#15102b]">
+                {img && <Image src={img.src} alt="" fill sizes="84px" className={`object-cover object-top ${isActive ? '' : 'grayscale'}`} />}
+            </span>
+            <span className="min-w-0">
+                <span className="block truncate text-[22px] font-black leading-tight">{name}</span>
+                {acf.name_hangul && <span className="block truncate text-[13px] font-bold opacity-80">{acf.name_hangul}</span>}
+                <span className="mt-1 block text-[12px] font-bold">{debutYear ? `Desde ${debutYear}` : ''}{!isActive ? ' · encerrado' : ''}</span>
+                <span className="mt-2 inline-block bg-[#15102b] px-2.5 py-1 text-[11px] font-black text-white">Ver o grupo →</span>
+            </span>
         </Link>
     )
 }

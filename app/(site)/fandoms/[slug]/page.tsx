@@ -2,6 +2,8 @@ import { SITE_NAME } from '@/lib/constants/site'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getAllFandoms, getFandomBySlug } from '@/lib/wordpress/fandoms'
+import { stripHtml } from '@/lib/utils'
+import { torcidasParecidas } from '@/lib/fandoms/afinidade'
 import { getArtistsByIds } from '@/lib/wordpress/artists'
 import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
@@ -43,6 +45,12 @@ export default async function FandomPage({ params }: { params: Params }) {
     const memberIds = Array.from(new Set(fandom.groups.flatMap(g => g.acf?.members ?? [])))
     const artists = await getArtistsByIds(memberIds)
 
+    // Torcidas parecidas (mesma agência, mesmo tipo de grupo, estreia próxima); a lista já está em cache.
+    const todas = await getAllFandoms()
+    const outras = torcidasParecidas(fandom, todas, 8).map(f => ({
+        slug: f.slug, nome: f.name, cor: f.color ?? '#c39bff', grupo: stripHtml(f.groups[0]?.title.rendered ?? ''),
+    }))
+
     const fandomUrl = `${SITE_URL}/fandoms/${slug}`
     const breadcrumbSchema = buildBreadcrumbSchema([
         { name: `${SITE_NAME}`, url: SITE_URL },
@@ -53,7 +61,7 @@ export default async function FandomPage({ params }: { params: Params }) {
     return (
         <>
             <JsonLd data={breadcrumbSchema} />
-            <FandomDetailPage fandom={fandom} artists={artists} />
+            <FandomDetailPage fandom={fandom} artists={artists} outras={outras} />
         </>
     )
 }
