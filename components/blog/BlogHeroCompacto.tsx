@@ -19,7 +19,7 @@ export function BlogHeroCompacto({ post, categoryMap, priority = false }: { post
     const cs = catStyle(cat?.slug)
 
     return (
-        <Link href={`/blog/${post.slug}`} className="group relative block h-[340px] overflow-hidden bg-surface sm:h-[400px] lg:h-[460px]">
+        <Link href={`/blog/${post.slug}`} className="group relative block h-[340px] overflow-hidden bg-surface sm:h-[400px] md:h-[440px] lg:h-[460px]">
             {image ? (
                 <Image src={image.src} alt={title} fill priority={priority} fetchPriority={priority ? 'high' : undefined}
                     sizes="(max-width: 1024px) 100vw, 720px"

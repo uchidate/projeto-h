@@ -16,11 +16,11 @@ export function BlogEmAlta({ posts }: { posts: WPPost[] }) {
                     return (
                         <li key={p.id} className="border-b border-border/70">
                             <Link href={`/blog/${p.slug}`} data-posicao={i + 1} className="group flex items-center gap-3 py-3.5 lg:gap-4 lg:py-4">
-                                <span className="w-7 shrink-0 font-serif text-[26px] font-bold leading-none text-accent lg:text-[30px]">{i + 1}</span>
-                                <span className="min-w-0 flex-1 text-[15px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent lg:text-[17px]">{titulo}</span>
+                                <span className="w-6 shrink-0 font-serif text-[24px] font-bold leading-none text-accent lg:w-7 lg:text-[30px]">{i + 1}</span>
+                                <span className="min-w-0 flex-1 text-[14px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent lg:text-[17px]">{titulo}</span>
                                 {/* Guia sem imagem destacada: só o texto, sem quadrado vazio. */}
                                 {img && (
-                                    <span className="relative h-16 w-24 shrink-0 overflow-hidden bg-surface lg:h-20 lg:w-[120px]">
+                                    <span className="relative h-14 w-20 shrink-0 overflow-hidden bg-surface lg:h-20 lg:w-[120px]">
                                         <Image src={img.src} alt="" fill sizes="120px" className="object-cover" />
                                     </span>
                                 )}

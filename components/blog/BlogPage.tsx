@@ -130,7 +130,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
             <div className="page-wrap pt-6 pb-16">
 
                 {showHero && (
-                    <div className={`grid items-start gap-6 lg:gap-8 ${emAlta.length > 0 ? 'lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]' : ''}`}>
+                    <div className={`grid items-start gap-6 lg:gap-8 ${emAlta.length > 0 ? 'md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]' : ''}`}>
                         {destaques.length > 1
                             ? <BlogDestaque candidatos={destaques.map((p, i) => ({
                                 slug: p.slug,
