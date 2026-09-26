@@ -362,6 +362,17 @@
     "meaning": "Name meaning",
     "fandomFact": "Fandom",
     "debut": "Debut",
-    "lineup": "Lineup"
+    "lineup": "Lineup",
+    "start": "Start here",
+    "startSub": "Two ways into {name}",
+    "byMember": "By member",
+    "byMemberTitle": "Start with who you already know",
+    "byClip": "By video",
+    "byClipTitle": "Press play",
+    "clip": "Music video",
+    "lineupTitle": "Lineup",
+    "lineupSub": "Who is in the group and who has passed through",
+    "lineupActive": "Member",
+    "lineupFormer": "Former member"
   }
 }

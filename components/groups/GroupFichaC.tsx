@@ -8,7 +8,7 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ProfileSidebarAd } from '@/components/profiles/ProfileSidebarAd'
 import { CollapsibleProse } from '@/components/profiles/CollapsibleProse'
 import { highlightProse } from '@/lib/profiles/highlightProse'
-import { getWPImage, stripHtml } from '@/lib/utils'
+import { extractYoutubeId, getWPImage, stripHtml } from '@/lib/utils'
 import { POSITION_LABELS } from '@/lib/constants/positions'
 import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
 import { GroupDiscography, type DiscographyAlbum } from '@/components/groups/GroupDiscography'
@@ -23,6 +23,8 @@ interface Props {
     group: WPGroup
     model: GroupProfileModel
     activeMembers: WPArtist[]
+    formerMembers: WPArtist[]
+    formerSemFicha: { slug: string; name: string }[]
     memberPositions: Record<string, string[]>
     relatedGroups: WPGroup[]
     relatedPosts: WPPost[]
@@ -52,7 +54,7 @@ function Anuncio({ placement, layout = 'content' }: { placement: string; layout?
  * Corpo da página de grupo na proposta "Página de grupo": integrantes primeiro, depois música, carreira,
  * sobre, fandom e leitura. O que a proposta não mostra fica recolhido no mesmo HTML.
  */
-export function GroupFichaC({ group, model, activeMembers, memberPositions, relatedGroups, relatedPosts, discography, agencyName, generation, magra, nodes, resto }: Props) {
+export function GroupFichaC({ group, model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, agencyName, generation, magra, nodes, resto }: Props) {
     const t = useTranslations('profile.groupC')
     const labels = labelsFor(useLocale())
     const accent = model.accent
@@ -67,6 +69,10 @@ export function GroupFichaC({ group, model, activeMembers, memberPositions, rela
     const linhaDe = (slug: string) => linhas.find(l => l.slug === slug)
     const citacao = capitulos.find(c => c.quote_text && c.quote_author)
     const semAnuncio = magra
+    const clipes = videoList.map(v => ({ ...v, id: extractYoutubeId(v.url) })).filter((v): v is typeof v & { id: string } => !!v.id).slice(0, 3)
+    const porIntegrante = activeMembers.filter(m => getWPImage(m._embedded, m.featured_image_url)).slice(0, 3)
+    const comeceAqui = clipes.length >= 2 && porIntegrante.length >= 2
+    const temFormacao = formerMembers.length + formerSemFicha.length > 0
 
     const abas = [
         activeMembers.length > 0 && { href: '#membros', label: t('tabs.membros') },
@@ -140,6 +146,53 @@ export function GroupFichaC({ group, model, activeMembers, memberPositions, rela
             )}
             {!semAnuncio && <Anuncio placement="group_apos_integrantes" layout="leaderboard" />}
 
+            {/* Comece por aqui */}
+            {comeceAqui && (
+                <section id="comece" className="scroll-mt-28 border-t border-border py-10 sm:py-12" data-bloco="grupo-comece">
+                    <div className={COL}>
+                        <h2 className={H2}>{t('start')}</h2>
+                        <p className="mt-2 text-[15px] text-muted">{t('startSub', { name })}</p>
+                        <div className="mt-6 grid gap-5 md:grid-cols-2">
+                            <div className="border border-border-strong bg-surface p-5 sm:p-[22px]">
+                                <p className={KICKER} style={{ color: accent }}>{t('byMember')}</p>
+                                <p className={`${SERIF} mt-1.5 text-[22px] font-semibold sm:text-[24px]`}>{t('byMemberTitle')}</p>
+                                <ul className="mt-4 flex flex-col gap-2.5">
+                                    {porIntegrante.map(m => {
+                                        const foto = getWPImage(m._embedded, m.featured_image_url)
+                                        const nome = stripHtml(m.title?.rendered ?? '')
+                                        const pos = (memberPositions[m.slug] ?? []).map(p => POSITION_LABELS[p] ?? p).join(t('positionSep'))
+                                        return (
+                                            <li key={m.id}>
+                                                <Link href={`/artists/${m.slug}`} className="touch-target flex items-center gap-3.5 bg-background/40 p-2">
+                                                    <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-surface">{foto && <Image src={foto.src} alt="" fill sizes="56px" className="object-cover object-top" />}</span>
+                                                    <span className="min-w-0"><span className="block truncate text-[15px] font-bold">{nome}</span>{pos && <span className="mt-0.5 block truncate text-[12px] text-muted">{pos}</span>}</span>
+                                                    <span aria-hidden className="ml-auto pr-1" style={{ color: accent }}>›</span>
+                                                </Link>
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                            </div>
+                            <div className="border border-border-strong bg-surface p-5 sm:p-[22px]">
+                                <p className={KICKER} style={{ color: accent }}>{t('byClip')}</p>
+                                <p className={`${SERIF} mt-1.5 text-[22px] font-semibold sm:text-[24px]`}>{t('byClipTitle')}</p>
+                                <ul className="mt-4 flex flex-col gap-2.5">
+                                    {clipes.map(v => (
+                                        <li key={v.id}>
+                                            <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" className="touch-target flex items-center gap-3.5 bg-background/40 p-2">
+                                                <span className="relative h-14 w-[100px] shrink-0 overflow-hidden bg-surface"><Image src={`https://img.youtube.com/vi/${v.id}/hqdefault.jpg`} alt="" fill sizes="100px" className="object-cover" /></span>
+                                                <span className="min-w-0"><span className="block truncate text-[15px] font-bold">{v.title}</span><span className="mt-0.5 block truncate text-[12px] text-muted">{t('clip')}</span></span>
+                                                <span aria-hidden className="ml-auto pr-1" style={{ color: accent }}>›</span>
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Música */}
             {temMusica && (
                 <section id="musica" className="scroll-mt-28 border-t border-border py-10 sm:py-12">
@@ -197,6 +250,37 @@ export function GroupFichaC({ group, model, activeMembers, memberPositions, rela
                 </section>
             )}
             {!semAnuncio && temCarreira && <Anuncio placement="group_apos_carreira" />}
+
+            {/* Formação: só com ex-integrantes cadastrados */}
+            {temFormacao && (
+                <section id="formacao" className="scroll-mt-28 border-t border-border py-10 sm:py-12" data-bloco="grupo-formacao">
+                    <div className={COL}>
+                        <h2 className={H2}>{t('lineupTitle')}</h2>
+                        <p className="mt-2 text-[15px] text-muted">{t('lineupSub')}</p>
+                        <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 md:grid-cols-5">
+                            {[...activeMembers.map(m => ({ m, ex: false })), ...formerMembers.map(m => ({ m, ex: true }))].map(({ m, ex }) => {
+                                const foto = getWPImage(m._embedded, m.featured_image_url)
+                                const nome = stripHtml(m.title?.rendered ?? '')
+                                return (
+                                    <li key={m.id} className={ex ? 'opacity-60' : undefined}>
+                                        <Link href={`/artists/${m.slug}`} className="block">
+                                            <span className="relative block aspect-3/4 overflow-hidden bg-surface">{foto && <Image src={foto.src} alt={foto.alt || nome} fill sizes="(max-width: 640px) 50vw, 20vw" className="object-cover object-top" />}</span>
+                                            <span className="mt-2.5 block truncate text-[15px] font-bold">{nome}</span>
+                                            <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.1em]" style={{ color: ex ? 'var(--muted)' : accent }}>{ex ? t('lineupFormer') : t('lineupActive')}</span>
+                                        </Link>
+                                    </li>
+                                )
+                            })}
+                            {formerSemFicha.map(e => (
+                                <li key={e.slug} className="opacity-60">
+                                    <span className="flex aspect-3/4 items-end bg-surface p-3 text-[15px] font-bold">{e.name}</span>
+                                    <span className="mt-2.5 block font-mono text-[10px] uppercase tracking-[0.1em] text-muted">{t('lineupFormer')}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </section>
+            )}
 
             {/* Sobre + ficha lateral */}
             {(model.hasBio || ficha.length > 0) && (

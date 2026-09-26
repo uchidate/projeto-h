@@ -362,6 +362,17 @@
     "meaning": "Significado do nome",
     "fandomFact": "Fandom",
     "debut": "Estreia",
-    "lineup": "Formação"
+    "lineup": "Formação",
+    "start": "Comece por aqui",
+    "startSub": "Dois jeitos de entrar em {name}",
+    "byMember": "Por uma integrante",
+    "byMemberTitle": "Comece por quem você já conhece",
+    "byClip": "Por um clipe",
+    "byClipTitle": "Aperte o play",
+    "clip": "Clipe",
+    "lineupTitle": "Formação",
+    "lineupSub": "Quem está e quem passou pelo grupo",
+    "lineupActive": "Integrante",
+    "lineupFormer": "Ex-integrante"
   }
 }

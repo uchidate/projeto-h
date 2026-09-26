@@ -209,7 +209,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
 
             {emC ? (
                 <GroupFichaC
-                    group={group} model={model} activeMembers={activeMembers} memberPositions={memberPositions}
+                    group={group} model={model} activeMembers={activeMembers} formerMembers={formerMembers} formerSemFicha={formerSemFicha} memberPositions={memberPositions}
                     relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography}
                     agencyName={agencyName} generation={generation} magra={magra}
                     nodes={nodesC} resto={restoC}
