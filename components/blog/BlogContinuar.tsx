@@ -68,16 +68,16 @@ export function BlogContinuar({ atual, candidatos, verMaisHref }: Props) {
                 </Link>
             </div>
 
-            <Link href={`/blog/${destaque.slug}`} className="group grid gap-4 border border-border bg-surface transition-colors hover:border-accent/60 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-                <div className="relative aspect-video w-full overflow-hidden bg-background lg:aspect-auto lg:min-h-64">
+            <Link href={`/blog/${destaque.slug}`} className="group grid gap-4 border border-border bg-surface transition-colors hover:border-accent/60 sm:grid-cols-[240px_minmax(0,1fr)] sm:gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+                <div className="relative aspect-video w-full overflow-hidden bg-background sm:aspect-[4/3] sm:h-full">
                     {d.imagem && (
-                        <Image src={d.imagem.src} alt={d.imagem.alt || d.titulo} fill sizes="(max-width: 1024px) 100vw, 55vw"
+                        <Image src={d.imagem.src} alt={d.imagem.alt || d.titulo} fill sizes="(max-width: 640px) 100vw, 280px"
                             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                     )}
                 </div>
-                <div className="flex min-w-0 flex-col justify-center p-4 sm:p-6 lg:pl-2">
+                <div className="flex min-w-0 flex-col justify-center p-4 sm:py-5 sm:pl-0 sm:pr-6">
                     <Motivo atual={atual} candidato={destaque} categoria />
-                    <span className="block text-[22px] font-black leading-tight tracking-[-0.02em] text-foreground transition-colors group-hover:text-accent sm:text-[28px]">
+                    <span className="block text-[22px] font-black leading-tight tracking-[-0.02em] text-foreground transition-colors group-hover:text-accent sm:text-[24px]">
                         {d.titulo}
                     </span>
                     {d.resumo && (
@@ -96,10 +96,10 @@ export function BlogContinuar({ atual, candidatos, verMaisHref }: Props) {
                         const o = dadosDe(post)
                         return (
                             <Link key={post.id} href={`/blog/${post.slug}`}
-                                className="group grid min-w-0 grid-cols-[112px_minmax(0,1fr)] gap-3 sm:grid-cols-1">
-                                <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface sm:aspect-video">
+                                className="group grid min-w-0 grid-cols-[112px_minmax(0,1fr)] gap-3">
+                                <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface">
                                     {o.imagem && (
-                                        <Image src={o.imagem.src} alt={o.imagem.alt || o.titulo} fill sizes="(max-width: 640px) 112px, 30vw"
+                                        <Image src={o.imagem.src} alt={o.imagem.alt || o.titulo} fill sizes="112px"
                                             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                                     )}
                                 </div>
