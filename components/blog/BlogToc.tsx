@@ -2,10 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-const WINDOW = 5 // headings visible at once
+const WINDOW = 5 // headings visible at once, quando a lista é longa
+const LISTA_INTEIRA_ATE = 8 // até aqui mostra tudo: uma lista parada não se mexe sob o cursor
 
 export function BlogToc({ headings }: { headings: { id: string; text: string; level: 2 | 3 }[] }) {
     const [activeIdx, setActiveIdx] = useState(0)
+    // Com o mouse sobre o índice a janela não desliza: a seção ativa muda durante a rolagem e a lista se moveria sob o cursor (clique no link errado).
+    const [congelado, setCongelado] = useState<number | null>(null)
     const rafRef = useRef<number>(0)
 
     useEffect(() => {
@@ -53,20 +56,21 @@ export function BlogToc({ headings }: { headings: { id: string; text: string; le
 
     if (headings.length < 2) return null
 
-    // Compute visible window centered on activeIdx
+    // Janela de itens visíveis: lista curta aparece inteira; a longa desliza com a seção ativa, exceto sob o cursor.
     const total = headings.length
-    const half = Math.floor(WINDOW / 2)
-    let start = Math.max(0, activeIdx - half)
-    const end = Math.min(total, start + WINDOW)
-    // Shift window back if we hit the end
-    start = Math.max(0, end - WINDOW)
-
+    const tamanho = total <= LISTA_INTEIRA_ATE ? total : WINDOW
+    const half = Math.floor(tamanho / 2)
+    const primeiro = Math.max(0, activeIdx - half)
+    const end0 = Math.min(total, primeiro + tamanho)
+    const inicioNatural = Math.max(0, end0 - tamanho)
+    const start = congelado ?? inicioNatural
+    const end = Math.min(total, start + tamanho)
     const hiddenAbove = start
     const hiddenBelow = total - end
     const visible = headings.slice(start, end)
 
     return (
-        <nav aria-label="Neste artigo">
+        <nav aria-label="Neste artigo" onMouseEnter={() => setCongelado(inicioNatural)} onMouseLeave={() => setCongelado(null)} onFocus={() => setCongelado(inicioNatural)} onBlur={() => setCongelado(null)}>
             <p className="mb-2.5 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">
                 Neste artigo
             </p>
@@ -116,7 +120,7 @@ export function BlogToc({ headings }: { headings: { id: string; text: string; le
             </div>
 
             {/* Progress dots */}
-            {total > WINDOW && (
+            {total > tamanho && (
                 <div className="mt-3 flex items-center gap-[3px]">
                     {headings.map((_, i) => (
                         <a
