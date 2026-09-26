@@ -29,6 +29,8 @@ interface Props {
     roleLabels: string[]
     accent?: string
     bioQuote?: { text: string; author: string; context?: string } | null
+    /** Ficha magra: sem anúncio ao lado de um texto que mal chega a um parágrafo. */
+    semAnuncio?: boolean
 }
 
 function buildAgeDescription(age: number | null, isDeceased: boolean, t: ReturnType<typeof useTranslations<'profile.ui'>>) {
@@ -36,7 +38,7 @@ function buildAgeDescription(age: number | null, isDeceased: boolean, t: ReturnT
     return isDeceased ? t('bio.ageAtDeath', { age }) : t('bio.age', { age })
 }
 
-export function ArtistBiography({ name, label, contentBefore, contentAfter, facts, age, zodiac, roleLabels, accent = '#e91e8c', bioQuote }: Props) {
+export function ArtistBiography({ name, label, contentBefore, contentAfter, facts, age, zodiac, roleLabels, accent = '#e91e8c', bioQuote, semAnuncio = false }: Props) {
     const t = useTranslations('profile.ui')
     const locale = useLocale()
     // Com data de falecimento, `age` já vem congelado na morte — rotular como
@@ -71,7 +73,7 @@ export function ArtistBiography({ name, label, contentBefore, contentAfter, fact
                         />
 
                         {/* Só insere anúncio se a bio tiver conteúdo suficiente após o corte (evita anúncio colado ao fim de bios curtas) */}
-                        {contentAfter && ADSENSE.slots.inline && (
+                        {!semAnuncio && contentAfter && ADSENSE.slots.inline && (
                             <div className="xl:hidden">
                                 <AdSlotInline
                                     slot={ADSENSE.slots.inline}
@@ -139,7 +141,7 @@ export function ArtistBiography({ name, label, contentBefore, contentAfter, fact
                             </div>
                         )}
 
-                        <ProfileSidebarAd analyticsPlacement="artist_bio_desktop" />
+                        {!semAnuncio && <ProfileSidebarAd analyticsPlacement="artist_bio_desktop" />}
                     </aside>
                 </div>
             </div>

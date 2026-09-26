@@ -23,7 +23,12 @@ import { ArtistHero } from '@/components/artists/ArtistHero'
 import { ArtistColophon } from '@/components/artists/ArtistColophon'
 import { ArtistNextRead } from '@/components/artists/ArtistNextRead'
 import type { EntityFAQItem } from '@/components/seo/EntityFAQ'
-import { renderProfileEntries } from '@/components/profiles/ProfileSection'
+import { renderProfileEntries, isInterstitial, CHAVE_DE_ANUNCIO, type ProfileEntry } from '@/components/profiles/ProfileSection'
+import { variantePorId } from '@/lib/experimento'
+import { obrasEmDestaque, marcosDaCarreira, fichaMagra } from '@/lib/artists/obrasEmDestaque'
+import { ArtistObrasRail } from '@/components/artists/ArtistObrasRail'
+import { ArtistLinhaDoTempo } from '@/components/artists/ArtistLinhaDoTempo'
+import Image from 'next/image'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
 
@@ -132,10 +137,34 @@ export function ArtistDetailPage({
             : null,
     ].filter(Boolean).slice(0, 6) as EntityFAQItem[]
 
-    const entries = buildArtistProfileEntries({
+    // Teste A/B por id (par = estrutura "apresentação"), a mesma regra das produções.
+    // A variante B acrescenta a faixa de obras logo após o topo, a linha do tempo e o
+    // fundo do topo; e tira o anúncio das fichas magras. O texto indexável é o mesmo.
+    const variante = variantePorId(artist.id)
+    const emB = variante === 'b'
+    const magra = fichaMagra({
+        hasStoryChapters, hasAnalysis: !!model.editorialAnalysis, productions: productions.length,
+        bioChars: stripHtml(artist.content.rendered).length,
+    })
+    const baseEntries = buildArtistProfileEntries({
         model, productions, groups, discography, relatedArtists, relatedPosts,
         agency, connectionGroup, faqItems, categoryMap, portrait: image, t,
+        semAnuncio: emB && magra,
     })
+    const obras = emB ? obrasEmDestaque(productions) : []
+    const marcos = emB ? marcosDaCarreira(productions) : []
+    let entries: ProfileEntry[] = baseEntries
+    if (emB) {
+        if (magra) entries = entries.filter(e => !(isInterstitial(e) && CHAVE_DE_ANUNCIO.test(e.key)))
+        if (marcos.length >= 4) {
+            const antes = entries.findIndex(e => !isInterstitial(e) && (e.id === 'trajetoria' || e.id === 'guia'))
+            const linha: ProfileEntry = {
+                key: 'linha-do-tempo',
+                interstitial: <ArtistLinhaDoTempo marcos={marcos} artistName={name} accent={accent} />,
+            }
+            entries = antes >= 0 ? [...entries.slice(0, antes), linha, ...entries.slice(antes)] : [...entries, linha]
+        }
+    }
 
     const { anchors: pageAnchors, nodes: sectionNodes } = renderProfileEntries(entries, { medir: { prefixo: 'ficha-artista', ids: ['filmografia', 'grupos', 'relacionados', 'artigos'] } })
 
@@ -175,11 +204,22 @@ export function ArtistDetailPage({
 
             <ReadingBar backHref={href('artists', undefined, locale)} backLabel={tEntity('breadcrumb.artists')} tagLabel={roleLabels[0]} title={name} pageUrl={artistUrl} pageAnchors={pageAnchors} />
 
-            <ArtistHero
-                artist={artist} name={name} artistUrl={artistUrl} image={image}
-                roleLabels={roleLabels} groups={groups} agency={agency}
-                heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
-            />
+            <div hidden data-variante={emB ? 'artista-b' : 'artista-a'} />
+            <div className="relative isolate">
+                {emB && image && (
+                    // Retrato desfocado como fundo do topo: dá cor e clima sem carregar outra imagem.
+                    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[560px] overflow-hidden sm:block">
+                        <Image src={image.src} alt="" fill sizes="100vw" className="scale-125 object-cover object-top opacity-35 blur-3xl saturate-150" />
+                        <div className="absolute inset-0 bg-linear-to-b from-transparent to-background" />
+                    </div>
+                )}
+                <ArtistHero
+                    artist={artist} name={name} artistUrl={artistUrl} image={image}
+                    roleLabels={roleLabels} groups={groups} agency={agency}
+                    heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
+                />
+            </div>
+            {emB && <ArtistObrasRail obras={obras} total={productions.length} accent={accent} />}
 
             {sectionNodes}
 

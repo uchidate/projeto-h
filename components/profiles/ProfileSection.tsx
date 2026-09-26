@@ -93,7 +93,7 @@ export function isInterstitial(entry: ProfileEntry): entry is ProfileInterstitia
 }
 
 /** Interstitials de anúncio seguem a convenção de chave dos registros de perfil. */
-const CHAVE_DE_ANUNCIO = /(^|-)ad$|leaderboard|meio-ficha|densidade-/
+export const CHAVE_DE_ANUNCIO = /(^|-)ad$|leaderboard|meio-ficha|densidade-/
 
 /**
  * Garante que nunca passem `maxSemAnuncio` seções visíveis seguidas sem anúncio.
