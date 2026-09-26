@@ -1,0 +1,119 @@
+name: 🧪 Ensaio do deploy
+
+# Roda scripts/deploy-ensaio.sh: confere, do MESMO runner que o deploy usa, tudo
+# de que o deploy de producao depende — SSH ate o servidor, container, env,
+# disco, envio do codigo, YAML do Traefik, health publico pela WAF — sem alterar
+# nada no servidor.
+#
+# Por que existe: o deploy quebrou por AMBIENTE, nao por logica (runner sem `gh`
+# em 25/09; passo de snapshot interativo em 23/09). Teste com ssh/docker
+# simulados nao pega isso; o caminho real, do lugar real, pega.
+#
+# Cobertura:
+#   - pull_request que muda workflows/actions de deploy (script e servidor
+#     ficam no repositorio de ops, entao mudanca la NAO dispara este gatilho);
+#   - agendado diario e manual: cobrem mudancas em ops e no servidor. Depois de
+#     mexer em scripts de deploy no ops, rode manualmente:
+#       gh workflow run deploy-ensaio.yml
+# O agendado do GitHub e melhor-esforco e pode atrasar horas; nao substitui
+# alerta no servidor.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/producao.yml'
+      - '.github/workflows/staging.yml'
+      - '.github/workflows/deploy-ensaio.yml'
+      - '.github/actions/**'
+  schedule:
+    - cron: '40 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: deploy-ensaio
+  cancel-in-progress: true
+
+jobs:
+  ensaiar:
+    name: Ensaiar o caminho do deploy
+    # PR de fork nao recebe segredos: nao ha o que ensaiar.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # Mesma expressao do producao.yml: o ensaio valida o runner que o deploy usa.
+    runs-on: ${{ fromJSON(vars.PRODUCAO_RUNNERS_JSON || '["ubuntu-latest"]') }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+      - name: Ensaio (somente leitura)
+        id: ensaio
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+          HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+        run: bash scripts/deploy-ensaio.sh
+
+      # Uma issue so, atualizada, como nos outros vigias: falha agendada que
+      # ninguem le vira ruido; a issue fica aberta ate o ensaio voltar a passar.
+      - name: Abrir ou atualizar alerta (só agendado/manual)
+        if: failure() && github.event_name != 'pull_request'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const titulo = '🧪 Ensaio do deploy reprovou'
+            const corpo = [
+              'O ensaio somente-leitura do caminho de deploy falhou — o deploy real provavelmente quebraria.',
+              '',
+              `Execução: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'Reproduzir: `gh workflow run deploy-ensaio.yml` ou `bash scripts/deploy-ensaio.sh` na sua máquina.',
+            ].join('\n')
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'deploy',
+            })
+            const existente = abertas.data.find((i) => i.title === titulo)
+            if (existente) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existente.number, body: `Reprovou de novo em ${new Date().toISOString()}. ${corpo}`,
+              })
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: titulo, body: corpo, labels: ['deploy'],
+              })
+            }
+
+      - name: Fechar alerta quando voltar a passar
+        if: success() && github.event_name != 'pull_request'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const titulo = '🧪 Ensaio do deploy reprovou'
+            const abertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'deploy',
+            })
+            for (const i of abertas.data.filter((x) => x.title === titulo)) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: i.number,
+                body: 'O ensaio voltou a passar; fechando.',
+              })
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: i.number, state: 'closed',
+              })
+            }
