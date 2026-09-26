@@ -25,8 +25,8 @@ export function ContinueDeOndeParou() {
             </div>
             <ul className="-mx-4 mt-3.5 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:gap-3 sm:overflow-visible sm:px-0">
                 {itens.map((r, i) => (
-                    <li key={r.slug} className="w-[200px] shrink-0 sm:w-auto">
-                        <Link href={`/artists/${r.slug}`} data-posicao={i + 1} className="flex items-center gap-3 border border-border bg-surface p-2 hover:border-accent/60 sm:gap-3.5 sm:p-2.5">
+                    <li key={`${r.tipo ?? 'artista'}:${r.slug}`} className="w-[200px] shrink-0 sm:w-auto">
+                        <Link href={`/${r.tipo === 'grupo' ? 'groups' : 'artists'}/${r.slug}`} data-posicao={i + 1} className="flex items-center gap-3 border border-border bg-surface p-2 hover:border-accent/60 sm:gap-3.5 sm:p-2.5">
                             <span className="relative h-16 w-12 shrink-0 overflow-hidden bg-background sm:h-[72px] sm:w-14">
                                 {r.foto && <Image src={r.foto} alt="" fill sizes="56px" className="object-cover object-top" />}
                             </span>
