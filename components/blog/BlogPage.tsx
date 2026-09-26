@@ -3,11 +3,7 @@ import { BookOpen, Sparkles, ArrowRight } from 'lucide-react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import type { ArchiveHub } from '@/lib/guias'
 import { tituloDoBlog } from '@/lib/blog-titulo'
-import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
-import { PageBreadcrumb } from '@/components/ui/PageBreadcrumb'
 import { SearchInput } from '@/components/ui/SearchInput'
-import { BlogCategorySelect } from '@/components/blog/BlogCategorySelect'
-import { BlogHeroPost } from '@/components/blog/BlogHeroPost'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { BlogCompactCard } from '@/components/blog/BlogCompactCard'
 import { BlogSidebar } from '@/components/blog/BlogSidebar'
@@ -15,6 +11,10 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { BlogDestaque } from '@/components/blog/BlogDestaque'
+import { BlogHeroCompacto } from '@/components/blog/BlogHeroCompacto'
+import { BlogEmAlta } from '@/components/blog/BlogEmAlta'
+import { BlogGuiaCard } from '@/components/blog/BlogGuiaCard'
+import { BlogListaSidebarAd } from '@/components/blog/BlogListaSidebarAd'
 import { RastreioDeFiltros } from '@/components/analytics/RastreioDeFiltros'
 
 type Props = {
@@ -33,9 +33,11 @@ type Props = {
     /** Conteúdo-chave: passa dos 45 dias e continua entre os mais lidos. */
     perenes?: WPPost[]
     order?: string
+    /** Próximos por interesse, ao lado do destaque. */
+    emAlta?: WPPost[]
 }
 
-export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order }: Props) {
+export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, emAlta = [] }: Props) {
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
     function buildHref(overrides: Record<string, string | undefined> = {}) {
         const params = new URLSearchParams()
@@ -51,6 +53,13 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
     }
 
     const isFiltered = !!(currentCategory || currentTag || currentSearch)
+    // Cinco categorias com mais artigos (mais a atual, se estiver fora delas); as demais ficam na lateral.
+    const chipCategoria = (ativo: boolean) =>
+        `touch-target flex h-9 shrink-0 items-center border px-3.5 text-[13px] font-bold transition-colors ${ativo ? 'border-foreground bg-foreground text-background' : 'border-border-strong text-foreground hover:border-accent/60'}`
+    const maisUsadas = [...categories].filter(c => c.slug !== 'uncategorized').sort((a, b) => b.count - a.count).slice(0, 5)
+    const categoriasChip = currentCategory && !maisUsadas.some(c => c.slug === currentCategory)
+        ? [...maisUsadas.slice(0, 4), ...categories.filter(c => c.slug === currentCategory)]
+        : maisUsadas
     // O destaque padrão é o primeiro candidato (não mais o artigo mais novo); os demais cabem na grade normalmente.
     const hero = destaques[0] ?? posts[0]
     const rest = posts.filter(p => p.id !== hero?.id)
@@ -100,29 +109,38 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
             <RastreioDeFiltros listagem="blog" filtros={['category', 'tag', 'page', 'search', 'order']} />
             {/* H1 só para leitor de tela e robô: o cabeçalho visual da página é o
                 breadcrumb, e um título grande aqui mexeria no layout. */}
-            <h1 className="sr-only">
-                {tituloDoBlog({ categoria: currentCategoryLabel, tag: currentTag, busca: currentSearch })}
-            </h1>
-            <ResponsiveFilterBar label="Filtros" value={currentCategoryLabel ?? 'Artigos'}>
-                <div className="space-y-3 lg:flex lg:w-full lg:items-center lg:gap-2 lg:space-y-0">
-                    <BlogCategorySelect categories={categories} current={currentCategory} />
-                    <SearchInput placeholder="Buscar artigo..." param="search" current={currentSearch} className="lg:ml-auto" />
+            <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
+                <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
+                    <h1 className="whitespace-nowrap font-[family-name:var(--font-playfair)] text-[34px] font-bold leading-none sm:text-[44px]">
+                        {currentCategoryLabel ?? 'Artigos'}
+                        <span className="sr-only"> {tituloDoBlog({ categoria: currentCategoryLabel, tag: currentTag, busca: currentSearch })}</span>
+                        <span className="text-accent">.</span>
+                        <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{total.toLocaleString('pt-BR')}</span>
+                    </h1>
+                    <SearchInput placeholder="Buscar artigo por título" param="search" current={currentSearch} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[520px] lg:flex-1" />
+                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label="Categorias">
+                        <Link href="/blog" className={chipCategoria(!currentCategory)}>Todas</Link>
+                        {categoriasChip.map(c => (
+                            <Link key={c.id} href={`/blog?category=${c.slug}`} className={chipCategoria(currentCategory === c.slug)}>{c.name}</Link>
+                        ))}
+                    </div>
                 </div>
-            </ResponsiveFilterBar>
-            <PageBreadcrumb
-                crumbs={[{ label: 'Início', href: '/' }, { label: currentCategoryLabel ?? 'Artigos' }]}
-                description="Artigos sobre K-Pop, K-Drama e cultura coreana"
-            />
+            </section>
 
-            <div className="page-wrap pt-8 pb-16">
+            <div className="page-wrap pt-6 pb-16">
 
-                {showHero && (destaques.length > 1
-                    ? <BlogDestaque candidatos={destaques.map(p => ({
-                        slug: p.slug,
-                        categoria: categoryMap[p.categories?.[0]]?.slug ?? null,
-                        node: <BlogHeroPost post={p} categoryMap={categoryMap} />,
-                    }))} />
-                    : <BlogHeroPost post={hero} categoryMap={categoryMap} />)}
+                {showHero && (
+                    <div className={`grid gap-6 lg:gap-8 ${emAlta.length > 0 ? 'lg:grid-cols-[720px_minmax(0,1fr)]' : ''}`}>
+                        {destaques.length > 1
+                            ? <BlogDestaque candidatos={destaques.map((p, i) => ({
+                                slug: p.slug,
+                                categoria: categoryMap[p.categories?.[0]]?.slug ?? null,
+                                node: <BlogHeroCompacto post={p} categoryMap={categoryMap} priority={i === 0} />,
+                            }))} />
+                            : <BlogHeroCompacto post={hero} categoryMap={categoryMap} priority />}
+                        <BlogEmAlta posts={emAlta} />
+                    </div>
+                )}
                 {showHero && ADSENSE.slots.leaderboard && (
                     <div className="mt-6"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="blog_leaderboard" /></div>
                 )}
@@ -134,8 +152,8 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                             <h2 className="font-serif text-[26px] font-semibold leading-tight sm:text-[32px]">Comece por aqui</h2>
                             <p className="mt-1 text-[14px] text-muted">Os guias que continuam sendo lidos, meses depois de publicados</p>
                         </div>
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            {perenes.slice(0, 4).map(p => <BlogPostCard key={p.id} post={p} categoryMap={categoryMap} />)}
+                        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            {perenes.slice(0, 4).map(p => <BlogGuiaCard key={p.id} post={p} categoryMap={categoryMap} />)}
                         </div>
                     </section>
                 )}
@@ -177,7 +195,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                         className="py-24"
                     />
                 ) : (
-                    <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_300px] xl:gap-14">
+                    <div className="mt-10 grid items-stretch gap-10 lg:grid-cols-[minmax(0,1fr)_300px] xl:gap-14">
                         <div className="min-w-0">
                             {!isFiltered && (
                                 <div className="mb-4 flex gap-6 border-b border-border" role="group" aria-label="Ordenar artigos">
@@ -250,9 +268,17 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                             )}
                         </div>
 
-                        <div className="sticky top-[calc(var(--site-header-h,64px)+24px)] self-start max-h-[calc(100vh-var(--site-header-h,64px)-48px)] overflow-y-auto">
-                            <BlogSidebar recentPosts={sidebarPosts} categories={categories} currentCategory={currentCategory} />
-                        </div>
+                        <aside aria-label="Anúncio e categorias" className="hidden lg:flex lg:flex-col lg:self-stretch">
+                            {/* Só o anúncio acompanha a rolagem; o resto desce com a página e fica no fim da coluna. */}
+                            {ADSENSE.slots.article_sidebar && (
+                                <div className="hidden xl:block" style={{ position: 'sticky', top: 'calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 12px)' }}>
+                                    <BlogListaSidebarAd slot={ADSENSE.slots.article_sidebar} />
+                                </div>
+                            )}
+                            <div className="mt-8">
+                                <BlogSidebar recentPosts={sidebarPosts} categories={categories} currentCategory={currentCategory} />
+                            </div>
+                        </aside>
                     </div>
                 )}
             </div>
