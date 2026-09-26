@@ -9,7 +9,7 @@ import { Search, X, Command, Film, Mic2, Users, BookOpen, Loader2, TrendingUp, B
 import { useQuickSearch } from '@/lib/hooks/useQuickSearch'
 import { useWPSearch } from '@/hooks/useWPSearch'
 import type { SearchResult } from '@/lib/search/types'
-import { trackSearch } from '@/lib/analytics'
+import { trackSearch, trackSearchClick } from '@/lib/analytics'
 
 // Atalhos de navegação rápida — guiam o usuário sem precisar digitar
 const SHORTCUTS = [
@@ -86,11 +86,17 @@ export function QuickSearch() {
     if (!isOpen) return null
 
     const handleSelect = (href: string) => { close(); router.push(href) }
+    const selecionarResultado = (index: number) => {
+        const r = results[index]
+        if (!r) return
+        trackSearchClick({ query: query.trim(), position: index + 1, type: r.type, href: r.href })
+        handleSelect(r.href)
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         if (activeIndex >= 0 && results[activeIndex]) {
-            handleSelect(results[activeIndex].href)
+            selecionarResultado(activeIndex)
         } else if (query.trim()) {
             handleSelect(`/search?q=${encodeURIComponent(query.trim())}`)
         }
@@ -209,9 +215,9 @@ export function QuickSearch() {
                                                 role="option"
                                                 aria-selected={index === activeIndex ? true : false}
                                                 tabIndex={0}
-                                                onClick={() => handleSelect(result.href)}
+                                                onClick={() => selecionarResultado(index)}
                                                 onMouseEnter={() => setActiveIndex(index)}
-                                                onKeyDown={e => e.key === 'Enter' && handleSelect(result.href)}
+                                                onKeyDown={e => e.key === 'Enter' && selecionarResultado(index)}
                                                 className={`flex w-full cursor-pointer items-center gap-3 px-4 py-2 text-left transition-colors ${
                                                     index === activeIndex ? 'bg-surface' : 'hover:bg-surface'
                                                 }`}
