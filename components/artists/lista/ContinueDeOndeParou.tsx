@@ -9,13 +9,13 @@ import { assinarRecentes, interpretarRecentes, lerRecentesCru, limparRecentes } 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
 
 /** Faixa dos últimos artistas vistos. Não aparece para quem nunca abriu uma ficha. */
-export function ContinueDeOndeParou() {
+export function ContinueDeOndeParou({ apenas }: { apenas?: 'grupo' | 'producao' } = {}) {
     // No servidor e na hidratação o snapshot é vazio: a faixa só aparece depois, sem descompasso de HTML.
     const cru = useSyncExternalStore(assinarRecentes, lerRecentesCru, () => '')
     // Quem recusa o consentimento não vê a faixa e tem o histórico já guardado apagado (nunca no servidor: snapshot falso).
     const recusou = useSyncExternalStore(subscribeConsent, recusouConsentimento, () => getServerConsent() !== null)
     useEffect(() => { if (recusou) limparRecentes() }, [recusou])
-    const itens = useMemo(() => (recusou ? [] : interpretarRecentes(cru).slice(0, 4)), [cru, recusou])
+    const itens = useMemo(() => (recusou ? [] : interpretarRecentes(cru).filter(r => !apenas || r.tipo === apenas).slice(0, 4)), [cru, recusou, apenas])
     if (itens.length === 0) return null
     return (
         <section aria-labelledby="continue-titulo" data-bloco="lista-continue" className="page-wrap pt-5">
@@ -26,7 +26,7 @@ export function ContinueDeOndeParou() {
             <ul className="-mx-4 mt-3.5 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:gap-3 sm:overflow-visible sm:px-0">
                 {itens.map((r, i) => (
                     <li key={`${r.tipo ?? 'artista'}:${r.slug}`} className="w-[200px] shrink-0 sm:w-auto">
-                        <Link href={`/${r.tipo === 'grupo' ? 'groups' : 'artists'}/${r.slug}`} data-posicao={i + 1} className="flex items-center gap-3 border border-border bg-surface p-2 hover:border-accent/60 sm:gap-3.5 sm:p-2.5">
+                        <Link href={`/${r.tipo === 'grupo' ? 'groups' : r.tipo === 'producao' ? 'productions' : 'artists'}/${r.slug}`} data-posicao={i + 1} className="flex items-center gap-3 border border-border bg-surface p-2 hover:border-accent/60 sm:gap-3.5 sm:p-2.5">
                             <span className="relative h-16 w-12 shrink-0 overflow-hidden bg-background sm:h-[72px] sm:w-14">
                                 {r.foto && <Image src={r.foto} alt="" fill sizes="56px" className="object-cover object-top" />}
                             </span>
