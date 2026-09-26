@@ -43,6 +43,7 @@ type ArtistProfileBlocksContext = {
     faqItems: EntityFAQItem[]
     categoryMap?: Record<number, { name: string; slug: string }>
     portrait?: { src: string; alt: string } | null
+    semAnuncio?: boolean
     t: ReturnType<typeof useTranslations<'profile'>>
 }
 
@@ -50,7 +51,7 @@ const anchorClass = 'scroll-mt-(--scroll-anchor-offset,106px)'
 
 export function buildArtistProfileEntries({
     model, productions, groups, discography, relatedArtists, relatedPosts,
-    agency, connectionGroup, faqItems, categoryMap, portrait, t,
+    agency, connectionGroup, faqItems, categoryMap, portrait, t, semAnuncio = false,
 }: ArtistProfileBlocksContext): ProfileEntry[] {
     const {
         name, acf, contentBefore, contentAfter, age, zodiac, roleLabels,
@@ -91,7 +92,7 @@ export function buildArtistProfileEntries({
             id: 'biografia', nav: t('blocks.nav.profile'), present: hasBio,
             render: label => <ArtistBiography name={name} label={label} contentBefore={contentBefore}
                 contentAfter={contentAfter} facts={biographyFacts} age={age} zodiac={zodiac} roleLabels={roleLabels}
-                accent={accent} bioQuote={bioQuote} />,
+                accent={accent} bioQuote={bioQuote} semAnuncio={semAnuncio} />,
         },
         {
             id: 'analise', nav: t('blocks.nav.analysis'), present: !!editorialAnalysis, layout: 'self', numbered: false,

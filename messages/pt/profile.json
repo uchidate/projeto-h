@@ -317,5 +317,12 @@
     },
     "asOf": "ref. {date}",
     "fandomFollows": "Uma história acompanhada pelo fandom"
+  },
+  "artistB": {
+    "knownFor": "Mais conhecido por",
+    "startWithWorks": "Comece pelas obras",
+    "seeAll": "Ver as {count} →",
+    "timeline": "Linha do tempo",
+    "timelineTitle": "{name} em {count} marcos"
   }
 }

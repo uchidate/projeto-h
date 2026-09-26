@@ -317,5 +317,12 @@
     },
     "asOf": "as of {date}",
     "fandomFollows": "A story followed by the fandom"
+  },
+  "artistB": {
+    "knownFor": "Best known for",
+    "startWithWorks": "Start with these",
+    "seeAll": "See all {count} →",
+    "timeline": "Timeline",
+    "timelineTitle": "{name} in {count} milestones"
   }
 }
