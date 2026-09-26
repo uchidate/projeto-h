@@ -102,6 +102,9 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
             page,
             per_page: PER_PAGE,
             status: 'publish',
+            // Ordem estavel: sem ela, itens com a mesma data repetem/somem entre paginas.
+            orderby: 'id',
+            order: 'asc',
             _fields: 'id,slug,title,featured_image_url,acf.groups,acf.trending_score,acf.popularity_score,acf.roles,acf.birth_date,acf.name_hangul,acf.name_romanized,acf.original_title,acf.type,acf.year',
         })}`,
         { revalidate: 300, tags: [c.tag] },
@@ -114,7 +117,9 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
         const lote = await Promise.all(paginas.map(pagina))
         lote.forEach(r => itens.push(...r.items))
     }
-    return itens.map(item => {
+    // Rede de seguranca: se o WP mesmo assim repetir um id entre paginas, fica um so.
+    const unicos = [...new Map(itens.map(i => [i.id, i])).values()]
+    return unicos.map(item => {
         const titulo = stripHtml(item.title.rendered)
         const acf = Array.isArray(item.acf) || !item.acf ? undefined : item.acf
         return {
@@ -211,8 +216,9 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
     if (ranqueado.length < 3 && q.length >= 3) {
         const alvo = foldAccents(q)
         const limiar = Math.max(1, Math.ceil(alvo.length * 0.34))
+        const jaAchados = new Set(ranqueado.map(x => x.e))
         for (const e of base) {
-            if (!e.fuzzy) continue
+            if (!e.fuzzy || jaAchados.has(e)) continue
             let melhor = Infinity
             for (const c of [e.justo, ...e.palavras]) {
                 if (Math.abs(c.length - alvo.length) > limiar) continue
