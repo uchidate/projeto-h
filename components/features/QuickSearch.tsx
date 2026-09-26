@@ -53,7 +53,7 @@ export function QuickSearch() {
     const inputRef = useRef<HTMLInputElement>(null)
     const [query, setQuery] = useState('')
     const [activeIndex, setActiveIndex] = useState(-1)
-    const { results: ranqueados, isLoading } = useWPSearch(query)
+    const { results: ranqueados, isLoading, erro } = useWPSearch(query)
     // Ordem de exibicao = ordem do teclado: setas e Enter percorrem o que se ve.
     const results = useMemo(() => groupByType(ranqueados).flatMap(g => g.items), [ranqueados])
 
@@ -78,10 +78,15 @@ export function QuickSearch() {
         setActiveIndex(results.length > 0 ? 0 : -1)
     }, [results])
 
+    // Registra a busca so quando a consulta fica parada: sem isso cada prefixo
+    // digitado ("ella g", "ella gr"...) virava um evento, e falha da API contava
+    // como "sem resultado".
     useEffect(() => {
-        if (!isLoading && query.trim().length >= 2) trackSearch(query.trim(), results.length)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- registra a busca uma vez, quando o carregamento termina; incluir query/results mandaria um evento por tecla digitada
-    }, [isLoading])
+        const q = query.trim()
+        if (isLoading || erro || q.length < 2) return
+        const t = setTimeout(() => trackSearch(q, results.length), 1200)
+        return () => clearTimeout(t)
+    }, [query, isLoading, erro, results])
 
     if (!isOpen) return null
 
