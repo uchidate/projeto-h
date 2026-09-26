@@ -28,6 +28,7 @@ import { variantePorId } from '@/lib/experimento'
 import { fichaMagra } from '@/lib/artists/fichaMagra'
 import { reordenarPorAba, limitarAnuncios, abasDasAncoras } from '@/lib/artists/fichaC'
 import { ArtistAtalhos } from '@/components/artists/ArtistAtalhos'
+import { ArtistAbas } from '@/components/artists/ArtistAbas'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
 
@@ -156,10 +157,16 @@ export function ArtistDetailPage({
     if (magra) entries = entries.filter(e => !(isInterstitial(e) && CHAVE_DE_ANUNCIO.test(e.key)))
     if (emC) entries = limitarAnuncios(reordenarPorAba(entries), 3)
     const presentes = new Set(entries.filter(e => !isInterstitial(e) && e.present).map(e => (e as { id: string }).id))
+    const detalhes: Record<string, string | undefined> = {
+        musica: discography[0]?.title,
+        filmografia: productions[0] ? stripHtml(productions[0].title.rendered) : undefined,
+        artigos: relatedPosts[0] ? stripHtml(relatedPosts[0].title.rendered) : undefined,
+        trajetoria: storyChapters.length > 0 ? tC('understandDetail', { count: storyChapters.length }) : undefined,
+    }
     const atalhos = emC ? ([
         { id: 'musica', tipo: 'listen' }, { id: 'filmografia', tipo: 'watch' },
         { id: 'artigos', tipo: 'read' }, { id: 'trajetoria', tipo: 'understand' },
-    ] as const).filter(d => presentes.has(d.id)) : []
+    ] as const).filter(d => presentes.has(d.id) && (d.id !== 'musica' || discography.length > 0)).map(d => ({ ...d, detalhe: detalhes[d.id] })) : []
 
     const { anchors: todasAncoras, nodes: sectionNodes } = renderProfileEntries(entries, { medir: { prefixo: 'ficha-artista', ids: ['filmografia', 'grupos', 'relacionados', 'artigos'] } })
     const pageAnchors = emC
@@ -208,6 +215,7 @@ export function ArtistDetailPage({
                 roleLabels={roleLabels} groups={groups} agency={agency}
                 heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
             />
+            {emC && <ArtistAbas abas={pageAnchors} accent={accent} />}
             {emC && <ArtistAtalhos destinos={[...atalhos]} accent={accent} />}
 
             {sectionNodes}

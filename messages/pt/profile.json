@@ -320,10 +320,12 @@
   },
   "artistC": {
     "tabs": { "visao": "Visão geral", "carreira": "Carreira", "musica": "Música", "obras": "Obras", "universo": "Universo", "ler": "Ler" },
+    "tabsLabel": "Seções da ficha",
     "startWith": "Comece pelo que você quer",
     "listen": "Ouvir",
     "watch": "Assistir",
     "read": "Ler",
-    "understand": "Entender a carreira"
+    "understand": "Entender a carreira",
+    "understandDetail": "{count, plural, one {# capítulo, em poucos minutos} other {# capítulos, em poucos minutos}}"
   }
 }
