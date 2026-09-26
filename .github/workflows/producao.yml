@@ -259,6 +259,9 @@ jobs:
           # deploy-traefik.sh valida o caminho público do Site Kit; o header
           # autenticado atravessa a exceção WAF para runners do GitHub.
           SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+          # Snapshot do VPS antes do deploy (passo 1b do deploy-manual.sh). Sem
+          # este segredo o script avisa e segue sem ponto de retorno novo.
+          HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
         # --skip-gates: o job `gates` ja rodou lint, tipos e testes no GitHub.
         run: |
           set -euo pipefail
