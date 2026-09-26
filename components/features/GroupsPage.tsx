@@ -141,6 +141,8 @@ interface Props {
     geracoes?: GeracaoResumo[]
     debutaram?: DebutDoMes[]
     mesNome?: string
+    /** Rostos das integrantes por id do grupo, para o hover dos cards. */
+    integrantes?: Record<number, { nome: string; foto: string }[]>
 }
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
@@ -153,7 +155,7 @@ const aba = (ativo: boolean) =>
     `flex h-11 shrink-0 items-center border-b-2 text-[14px] font-semibold transition-colors ${ativo ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`
 
 /** Card de diretório: foto quadrada, nome e uma linha de meta (tipo · ano). */
-function GroupTile({ group, priority }: { group: WPGroup; priority?: boolean }) {
+function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?: boolean; integrantes?: { nome: string; foto: string }[] }) {
     const image = getWPImage(group._embedded, group.featured_image_url)
     const name = stripHtml(group.title.rendered)
     const acf = group.acf ?? {}
@@ -164,6 +166,17 @@ function GroupTile({ group, priority }: { group: WPGroup; priority?: boolean }) 
                 {image
                     ? <Image src={image.src} alt={image.alt || name} fill priority={priority} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw" className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transition-none" />
                     : <span className="flex h-full w-full items-center justify-center" style={{ background: nameToGradient(name) }}><Users size={30} className="text-white/20" /></span>}
+                {/* Só onde há mouse: mostra quem está no grupo. Enfeite (aria-hidden); o clique vai para a ficha do grupo. */}
+                {integrantes && (
+                    <span aria-hidden className="pointer-events-none absolute inset-0 hidden grid-cols-2 grid-rows-2 gap-0.5 bg-background opacity-0 transition-opacity duration-200 group-hover:opacity-100 motion-reduce:transition-none [@media(hover:hover)]:grid">
+                        {integrantes.slice(0, 4).map(m => (
+                            <span key={m.nome} className="relative overflow-hidden">
+                                <Image src={m.foto} alt="" fill sizes="10vw" className="object-cover object-top" />
+                                <span className="absolute inset-x-0 bottom-0 truncate bg-linear-to-t from-black/85 to-transparent px-1.5 pb-1 pt-4 text-[11px] font-bold text-white">{m.nome}</span>
+                            </span>
+                        ))}
+                    </span>
+                )}
                 {acf.active === false && <span className="absolute right-1.5 top-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-white/80">encerrado</span>}
             </span>
             <span className="mt-2 block truncate text-[14px] font-bold leading-tight group-hover:text-accent sm:text-[15px]">{name}</span>
@@ -172,7 +185,7 @@ function GroupTile({ group, priority }: { group: WPGroup; priority?: boolean }) 
     )
 }
 
-export function GroupsPage({ groups, total, totalPages, currentPage, search, type, active, letter, generation, order, letterCounts, emAlta = [], geracoes = [], debutaram = [], mesNome }: Props) {
+export function GroupsPage({ groups, total, totalPages, currentPage, search, type, active, letter, generation, order, letterCounts, emAlta = [], geracoes = [], debutaram = [], mesNome, integrantes = {} }: Props) {
     const hasLetterCounts = Object.keys(letterCounts).length > 0
     const inicio = currentPage === 1 && !search && !type && !active && !letter && !generation && !order
     const numero = (n: number) => n.toLocaleString(intlLocale())
@@ -365,7 +378,7 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                                     <Fragment key={b}>
                                         {b > 0 && <div className="my-6"><AdSlotInline slot={inline!} layout="feed" analyticsPlacement="groups_grid" /></div>}
                                         <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6 lg:gap-x-4">
-                                            {bloco.map((g, i) => <GroupTile key={g.id} group={g} priority={!inicio && inicioBloco + i < 6} />)}
+                                            {bloco.map((g, i) => <GroupTile key={g.id} group={g} integrantes={integrantes[g.id]} priority={!inicio && inicioBloco + i < 6} />)}
                                         </div>
                                     </Fragment>
                                 )

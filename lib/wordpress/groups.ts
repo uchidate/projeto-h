@@ -30,7 +30,7 @@ export async function getGroups(query: GroupsQuery = {}) {
         // fallback caso o filtro ainda não esteja deployado no WP.
         page, per_page: perPage, orderby: isMetaOrder ? 'date' : orderby, order, status: 'publish',
         oc_orderby: isMetaOrder ? 'popularity' : undefined,
-        _fields: locale ? 'id,slug,title,date,featured_image_url,acf,translations' : 'id,slug,title,date,featured_image_url,acf',
+        _fields: locale ? 'id,slug,title,date,featured_image_url,acf,former_member_slugs,translations' : 'id,slug,title,date,featured_image_url,acf,former_member_slugs',
         oc_locale: locale,
         slug: slug ?? undefined, search: search ?? undefined,
         oc_type: type, oc_active: active !== undefined ? String(active) : undefined,
