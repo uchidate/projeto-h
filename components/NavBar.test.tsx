@@ -7,7 +7,7 @@ import NavBar from './NavBar'
 let pathnameValue = '/'
 
 vi.mock('next/navigation', () => ({ usePathname: () => pathnameValue }))
-vi.mock('@/components/features/MobileMenu', () => ({ MobileMenu: () => <div data-testid="mobile-menu" /> }))
+vi.mock('@/components/features/MobileMais', () => ({ MobileMais: () => <div data-testid="mobile-mais" /> }))
 vi.mock('@/components/ui/ThemeToggle', () => ({ ThemeToggle: () => <div data-testid="theme-toggle" /> }))
 vi.mock('@/components/features/QuickSearch', () => ({ QuickSearch: () => <div data-testid="quick-search" /> }))
 vi.mock('@/components/ui/UserMenu', () => ({ UserMenu: () => <div data-testid="user-menu" /> }))
@@ -54,11 +54,19 @@ describe('NavBar', () => {
         expect(links.some(l => l.classList.contains('is-active'))).toBe(true)
     })
 
+    it('a aba ativa do celular usa aria-current="page"', () => {
+        pathnameValue = '/artists'
+        render(<NavBar navLinks={navLinks} logoSubtitles={['Hallyu']} />)
+        const ativas = screen.getAllByRole('link', { name: 'Artistas' }).filter(l => l.getAttribute('aria-current') === 'page')
+        expect(ativas.length).toBeGreaterThan(0)
+    })
+
     it('não marca outros links como ativos', () => {
         pathnameValue = '/artists'
         render(<NavBar navLinks={navLinks} logoSubtitles={['Hallyu']} />)
         const links = screen.getAllByRole('link', { name: 'Produções' })
-        expect(links.every(l => l.classList.contains('is-inactive'))).toBe(true)
+        // Desktop marca com classe; as abas do celular, com aria-current.
+        expect(links.every(l => !l.classList.contains('is-active') && !l.hasAttribute('aria-current'))).toBe(true)
     })
 
     it('clicar no botão de busca desktop abre a busca via store e dispara evento customizado', async () => {

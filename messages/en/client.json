@@ -166,6 +166,12 @@
     "browse": "Browse",
     "about": "About {site}",
     "language": "Language",
-    "home": "{site} — home"
+    "home": "{site} — home",
+    "more": "More",
+    "moreSections": "More sections",
+    "theme": "Theme",
+    "sections": "Sections",
+    "notifications": "Notifications",
+    "searchShort": "Search artists, groups…"
   }
 }

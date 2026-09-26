@@ -6,8 +6,8 @@ import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import { Command, Search, ChevronRight, ShoppingBag } from 'lucide-react'
-import { MobileMenu } from '@/components/features/MobileMenu'
+import { Command, Search, ShoppingBag } from 'lucide-react'
+import { MobileMais } from '@/components/features/MobileMais'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { useQuickSearch } from '@/lib/hooks/useQuickSearch'
 import { BrandMark } from '@/components/ui/BrandMark'
@@ -81,11 +81,9 @@ const NavBar = ({
     logoSubtitles: string[]
 }) => {
     const navRef = useRef<HTMLElement | null>(null)
-    const navLinksRef = useRef<HTMLDivElement | null>(null)
     const pathname = usePathname()
     const [isScrolled, setIsScrolled] = useState(false)
     const [isHidden, setIsHidden] = useState(false)
-    const [showNavArrow, setShowNavArrow] = useState(false)
     const openSearch = useQuickSearch((state) => state.open)
     const t = useTranslations('client')
     // A Loja e as rotas do menu do WordPress só existem em português; fora dele
@@ -113,19 +111,6 @@ const NavBar = ({
             return () => clearInterval(iv)
         }, msToNextMinute)
         return () => clearTimeout(t)
-    }, [])
-
-    useEffect(() => {
-        const el = navLinksRef.current
-        if (!el) return
-        const check = () => setShowNavArrow(
-            el.scrollWidth > el.clientWidth + 4 && el.scrollLeft < el.scrollWidth - el.clientWidth - 4
-        )
-        check()
-        el.addEventListener('scroll', check, { passive: true })
-        const ro = new ResizeObserver(check)
-        ro.observe(el)
-        return () => { el.removeEventListener('scroll', check); ro.disconnect() }
     }, [])
 
     useEffect(() => {
@@ -202,6 +187,14 @@ const NavBar = ({
         return pathname === href || pathname?.startsWith(`${href}/`)
     }
 
+    // Abas do celular: as cinco primeiras; o resto fica em "Mais". Se a página atual é uma das extras, ela aparece
+    // como aba ativa depois das cinco, para o leitor sempre ver onde está.
+    const ABAS_FIXAS = 5
+    const abasPrimarias = contentLinks.slice(0, ABAS_FIXAS)
+    const linksExtras = contentLinks.slice(ABAS_FIXAS)
+    const extraAtiva = linksExtras.find(link => isActive(link.href))
+    const abasVisiveis = extraAtiva ? [...abasPrimarias, extraAtiva] : abasPrimarias
+
     return (
         <>
             <nav
@@ -209,70 +202,43 @@ const NavBar = ({
                 ref={navRef}
                 className={`fixed left-1/2 z-320 w-full max-w-[1440px] -translate-x-1/2 bg-background transition-[transform,box-shadow] duration-200 motion-reduce:transition-none ${isScrolled ? 'shadow-[0_1px_0_var(--color-border)]' : ''} ${isHidden ? 'max-lg:-translate-y-full' : ''}`}
             >
-                {/* ── Mobile ── */}
+                {/* ── Mobile: logo, busca como campo e conta; abaixo, abas em pílulas e "Mais" ── */}
                 <div className="lg:hidden">
-                    <div className="flex h-[52px] items-center justify-between border-b border-border px-3">
-                        <div className="flex items-center gap-2">
-                            <MobileMenu links={contentLinks} />
-                            <Link href={homeHref} className="flex items-center gap-2 text-foreground" aria-label={t('nav.home', { site: SITE_NAME })}>
-                                <BrandMark size={32} />
-                                <span className="text-[20px] font-black tracking-[-0.035em]">
-                                    {SITE_NAME}<BrandDot />
-                                </span>
-                            </Link>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <button
-                                type="button"
-                                onClick={handleOpenSearch}
-                                className="flex h-9 w-9 items-center justify-center border border-transparent text-muted transition-colors hover:border-border hover:bg-surface hover:text-foreground"
-                                aria-label={t('nav.search')}
-                            >
-                                <Search className="h-[18px] w-[18px]" />
-                            </button>
-                            {isDefaultLocale && (
-                                <Link
-                                    href="/loja"
-                                    aria-label={t('nav.shop')}
-                                    aria-current={isActive('/loja') ? 'page' : undefined}
-                                    className={`flex h-9 w-9 items-center justify-center border transition-colors ${
-                                        isActive('/loja')
-                                            ? 'border-accent text-accent'
-                                            : 'border-transparent text-muted hover:border-border hover:bg-surface hover:text-foreground'
-                                    }`}
-                                >
-                                    <ShoppingBag className="h-[18px] w-[18px]" />
-                                </Link>
-                            )}
-                            <SeletorIdioma />
-                            <ThemeToggle />
-                            <NotificationBell />
-                            <UserMenu />
-                        </div>
+                    <div className="flex h-14 items-center gap-2 pl-4 pr-2">
+                        <Link href={homeHref} className="flex shrink-0 items-center gap-1.5 text-foreground" aria-label={t('nav.home', { site: SITE_NAME })}>
+                            <BrandMark size={30} />
+                            <span className="text-[19px] font-black tracking-[-0.035em]">{SITE_NAME}<BrandDot /></span>
+                        </Link>
+                        <button
+                            type="button"
+                            onClick={handleOpenSearch}
+                            className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-full border border-border-strong bg-surface px-3.5 text-left text-[14px] text-muted transition-colors hover:border-foreground"
+                            aria-label={t('nav.search')}
+                        >
+                            <Search className="h-4 w-4 shrink-0" />
+                            <span className="min-w-0 flex-1 truncate">{t('nav.searchShort')}</span>
+                        </button>
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center"><UserMenu /></div>
                     </div>
 
-                    {/* Nav links mobile */}
-                    <div className="navbar-dark-strip relative border-b border-white/20">
-                        <div
-                            ref={navLinksRef}
-                            className="flex h-10 items-center overflow-x-auto px-2 scrollbar-none"
-                        >
-                            {contentLinks.map(({ label, href }) => (
+                    <nav aria-label={t('nav.mainNav')} className="flex h-11 items-center border-b border-border">
+                        <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pl-4 pr-3 scrollbar-none">
+                            {abasVisiveis.map(({ label, href }) => (
                                 <Link
                                     key={href}
                                     href={href}
-                                    className={`nav-link-underline flex h-full shrink-0 items-center px-3 text-[13px] font-bold tracking-[-0.01em] transition-colors ${isActive(href) ? 'is-active nav-link-active' : 'is-inactive nav-link-inactive-mobile'}`}
+                                    aria-current={isActive(href) ? 'page' : undefined}
+                                    className={`flex h-9 shrink-0 items-center rounded-full border px-3.5 text-[14px] transition-colors ${isActive(href) ? 'border-accent-a11y bg-accent-a11y font-extrabold text-white' : 'border-border-strong font-semibold text-foreground-subtle hover:border-accent/60 hover:text-foreground'}`}
                                 >
                                     {label}
                                 </Link>
                             ))}
                         </div>
-                        {showNavArrow && (
-                            <div className="nav-links-fade pointer-events-none absolute right-0 top-0 flex h-full items-center pr-1.5 pl-6">
-                                <ChevronRight className="h-3.5 w-3.5 text-white/40" />
-                            </div>
-                        )}
-                    </div>
+                        <div className="relative shrink-0 pl-1 pr-3">
+                            <span aria-hidden className="pointer-events-none absolute right-full top-0 h-full w-7 bg-linear-to-r from-transparent to-background" />
+                            <MobileMais links={linksExtras} />
+                        </div>
+                    </nav>
                 </div>
 
                 {/* ── Desktop ── */}
