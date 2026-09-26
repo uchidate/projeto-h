@@ -202,6 +202,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
                     </div>
                 </div>
             </section>
+            <QuizFacts entityId={production.id} entitySlug={production.slug} entityType="production" entityName={title} />
 
             {/* ── INFO STRIP + AÇÕES ── */}
             <div className="page-wrap">
@@ -378,7 +379,6 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
                     </div>
                 )}
             </div>
-            <QuizFacts entityId={production.id} entitySlug={production.slug} entityType="production" entityName={title} />
         </>
     )
 }

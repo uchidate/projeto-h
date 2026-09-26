@@ -35,6 +35,8 @@ interface Props {
     magra: boolean
     /** Blocos originais já renderizados, por id. */
     nodes: Record<string, ReactNode>
+    /** Mini-quiz da entidade, antes da música. */
+    quiz?: ReactNode
     /** Blocos sem lugar na ficha nova; ficam recolhidos, mas no HTML. */
     resto: ReactNode[]
 }
@@ -54,7 +56,7 @@ function Anuncio({ placement, layout = 'content' }: { placement: string; layout?
  * Corpo da página de grupo na proposta "Página de grupo": integrantes primeiro, depois música, carreira,
  * sobre, fandom e leitura. O que a proposta não mostra fica recolhido no mesmo HTML.
  */
-export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, soloReleases, agencyName, generation, magra, nodes, resto }: Props) {
+export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, soloReleases, agencyName, generation, magra, nodes, resto , quiz }: Props) {
     const t = useTranslations('profile.groupC')
     const labels = labelsFor(useLocale())
     const accent = model.accent
@@ -218,6 +220,8 @@ export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFich
                     </div>
                 </section>
             )}
+
+            {quiz}
 
             {/* Música */}
             {temMusica && (
