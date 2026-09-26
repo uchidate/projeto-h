@@ -66,7 +66,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
             <style>{`@keyframes cffall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }`}</style>
 
             {/* Sala de jogo: fundo roxo, cartões de cor viva com sombra dura. */}
-            <div className="bg-[#15102b] text-white">
+            <div className="bg-[#f3efff] text-[#15102b] dark:bg-[#15102b] dark:text-white">
             <div className="relative mx-auto max-w-[1100px] overflow-hidden px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
                 <span aria-hidden className="pointer-events-none absolute right-6 top-6 hidden rotate-12 text-[56px] sm:block">🎤</span>
                 <span aria-hidden className="pointer-events-none absolute right-16 top-[300px] hidden rotate-[10deg] text-[40px] lg:block">🍜</span>
@@ -80,9 +80,9 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                     </div>
                     {stats.totalGames > 0 && (
                         <div className="flex flex-wrap gap-3">
-                            {bestStreak >= 2 && <div className="bg-[#ffe14d] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">🔥 {bestStreak}</div><div className="text-[11px] font-bold">melhor sequência</div></div>}
-                            <div className="bg-[#38e1c0] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">{avgPct}%</div><div className="text-[11px] font-bold">de acerto</div></div>
-                            {bestScore !== null && <div className="bg-[#ff5fa2] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">{bestScore.toLocaleString()}</div><div className="text-[11px] font-bold">melhor placar</div></div>}
+                            {bestStreak >= 2 && <div className="bg-[#ffe14d] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">🔥 {bestStreak}</div><div className="text-[11px] font-bold">melhor sequência</div></div>}
+                            <div className="bg-[#38e1c0] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">{avgPct}%</div><div className="text-[11px] font-bold">de acerto</div></div>
+                            {bestScore !== null && <div className="bg-[#ff5fa2] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">{bestScore.toLocaleString()}</div><div className="text-[11px] font-bold">melhor placar</div></div>}
                         </div>
                     )}
                 </div>
@@ -96,12 +96,12 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                 {/* Pergunta do dia + convite para a rodada completa */}
                 <div className="relative grid gap-0 lg:grid-cols-[minmax(0,1fr)_300px]">
                     {aposTitulo}
-                    <div className="flex flex-col justify-center gap-3 bg-[#1f1840] p-6 shadow-[10px_10px_0_#000] lg:-ml-px">
+                    <div className="flex flex-col justify-center gap-3 bg-[#1f1840] p-6 text-white shadow-[10px_10px_0_#15102b] dark:shadow-[10px_10px_0_#000] lg:-ml-px">
                         <span aria-hidden className="text-[30px]">🎉</span>
                         <p className="font-[family-name:var(--font-playfair)] text-[24px] font-extrabold leading-tight">Quer mais? Uma rodada de {QUIZ_SIZE}!</p>
                         <p className="text-[13px] text-[#c9c2ee]">{alvo} · {DIFFICULTY_CONFIG[difficulty].label}</p>
                         <button type="button" onClick={() => onStart(category, difficulty)} disabled={totalAvailable === 0}
-                            className="flex h-[54px] items-center justify-center gap-2 bg-[#ff5fa2] text-[16px] font-black text-[#15102b] shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-40">
+                            className="flex h-[54px] items-center justify-center gap-2 bg-[#ff5fa2] text-[16px] font-black text-[#15102b] shadow-[4px_4px_0_#15102b] dark:shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-40">
                             <Play className="h-5 w-5 fill-current" />Jogar agora<ArrowRight className="h-5 w-5" />
                         </button>
                         {availableCount < QUIZ_SIZE && <p className="text-[12px] text-[#ffe14d]">Só {availableCount} perguntas neste filtro: todas serão usadas.</p>}
@@ -120,7 +120,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                         return (
                             <button type="button" key={c.value} aria-pressed={active} onClick={() => setCategory(c.value)}
                                 style={{ background: cor }}
-                                className={`relative flex h-[150px] flex-col justify-between overflow-hidden p-4 text-left text-[#15102b] shadow-[6px_6px_0_#000] transition-transform hover:-translate-y-1 sm:h-[210px] sm:p-5 ${active ? 'outline outline-4 outline-offset-2 outline-white' : ''}`}>
+                                className={`relative flex h-[150px] flex-col justify-between overflow-hidden p-4 text-left text-[#15102b] shadow-[6px_6px_0_#15102b] dark:shadow-[6px_6px_0_#000] transition-transform hover:-translate-y-1 sm:h-[210px] sm:p-5 ${active ? 'outline outline-4 outline-offset-2 outline-[#15102b] dark:outline-white' : ''}`}>
                                 <span aria-hidden className="absolute -right-1 top-3 text-[56px] leading-none sm:top-4 sm:text-[84px]">{emoji}</span>
                                 <span className="relative flex items-center justify-between text-[12px] font-black uppercase tracking-[0.1em]">
                                     {c.label}
@@ -135,7 +135,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                     })}
                 </div>
                 <button type="button" aria-pressed={category === 'all'} onClick={() => setCategory('all')}
-                    className={`mt-5 flex h-[60px] w-full items-center justify-between bg-white px-6 text-[17px] font-black text-[#15102b] shadow-[6px_6px_0_#000] transition-transform hover:-translate-y-0.5 ${category === 'all' ? 'outline outline-4 outline-offset-2 outline-[#ffe14d]' : ''}`}>
+                    className={`mt-5 flex h-[60px] w-full items-center justify-between bg-white px-6 text-[17px] font-black text-[#15102b] shadow-[6px_6px_0_#15102b] dark:shadow-[6px_6px_0_#000] transition-transform hover:-translate-y-0.5 ${category === 'all' ? 'outline outline-4 outline-offset-2 outline-[#ffe14d]' : ''}`}>
                     <span>🎲 Tudo misturado</span>
                     <span className="text-[14px]">{allQuestions.length} perguntas</span>
                 </button>
@@ -148,16 +148,16 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                         const cfg = DIFFICULTY_CONFIG[d.value]
                         return (
                             <button type="button" key={d.value} aria-pressed={active} onClick={() => setDifficulty(d.value)}
-                                className={`p-5 text-left transition-transform hover:-translate-y-0.5 ${active ? 'bg-[#ffe14d] text-[#15102b] shadow-[6px_6px_0_#000]' : 'border-[3px] border-[#5a4d99] bg-[#1f1840] text-white'}`}>
+                                className={`p-5 text-left transition-transform hover:-translate-y-0.5 ${active ? 'bg-[#ffe14d] text-[#15102b] shadow-[6px_6px_0_#15102b] dark:shadow-[6px_6px_0_#000]' : 'border-[3px] border-[#b9aee6] bg-white text-[#15102b] dark:border-[#5a4d99] dark:bg-[#1f1840] dark:text-white'}`}>
                                 <span aria-hidden className="text-[26px]">{NIVEL_EMOJI[d.value]}</span>
                                 <span className="mt-1 block text-[20px] font-black">{d.label}</span>
-                                <span className={`mt-1 block text-[14px] font-bold ${active ? '' : 'text-[#c9c2ee]'}`}>{cfg.time} s por pergunta · até {cfg.pts * QUIZ_SIZE} pts</span>
+                                <span className={`mt-1 block text-[14px] font-bold ${active ? '' : 'text-[#5a4d99] dark:text-[#c9c2ee]'}`}>{cfg.time} s por pergunta · até {cfg.pts * QUIZ_SIZE} pts</span>
                             </button>
                         )
                     })}
                 </div>
 
-                <div className="mt-6 hidden items-center gap-2 text-[12px] text-[#c9c2ee] sm:flex">
+                <div className="mt-6 hidden items-center gap-2 text-[12px] text-[#5a4d99] dark:text-[#c9c2ee] sm:flex">
                     <Keyboard className="h-3.5 w-3.5 shrink-0" />
                     <span>Use <kbd className="font-mono font-black">A B C D</kbd> ou <kbd className="font-mono font-black">1 2 3 4</kbd> para responder</span>
                 </div>
@@ -169,7 +169,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
             {/* CTA mobile sticky */}
             <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 border-t-[3px] border-black bg-[#ffe14d] p-3">
                 <button type="button" onClick={() => onStart(category, difficulty)} disabled={totalAvailable === 0}
-                    className="flex h-[52px] w-full items-center justify-center gap-3 bg-[#ff5fa2] text-[16px] font-black text-[#15102b] shadow-[4px_4px_0_#000] active:translate-y-0.5 disabled:opacity-40">
+                    className="flex h-[52px] w-full items-center justify-center gap-3 bg-[#ff5fa2] text-[16px] font-black text-[#15102b] shadow-[4px_4px_0_#15102b] dark:shadow-[4px_4px_0_#000] active:translate-y-0.5 disabled:opacity-40">
                     <Play className="h-5 w-5 fill-current" />Jogar · {DIFFICULTY_CONFIG[difficulty].label}
                 </button>
             </div>

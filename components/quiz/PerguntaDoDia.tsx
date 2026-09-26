@@ -37,7 +37,7 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
         const LETRAS = ['A', 'B', 'C', 'D']
         const CORES = ['#ff5fa2', '#38e1c0', '#7aa2ff', '#c39bff']
         return (
-            <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="flex flex-col gap-5 bg-[#ffe14d] p-5 text-[#15102b] shadow-[10px_10px_0_#000] sm:p-8">
+            <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="flex flex-col gap-5 bg-[#ffe14d] p-5 text-[#15102b] shadow-[10px_10px_0_#15102b] dark:shadow-[10px_10px_0_#000] sm:p-8">
                 <div className="flex flex-wrap items-center gap-3">
                     <span className="bg-[#15102b] px-3 py-1 text-[12px] font-black tracking-[0.12em] text-[#ffe14d]">PERGUNTA DO DIA</span>
                     <span id="dia-titulo" className="text-[14px] font-bold">{dataExtenso} · {sequencia > 0 ? `🔥 ${sequencia} ${sequencia === 1 ? 'dia seguido' : 'dias seguidos'}` : 'comece sua sequência'}</span>
