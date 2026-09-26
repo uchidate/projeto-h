@@ -216,10 +216,11 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                     group={group} model={model} activeMembers={activeMembers} formerMembers={formerMembers} formerSemFicha={formerSemFicha} memberPositions={memberPositions}
                     relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography} soloReleases={soloReleases}
                     agencyName={agencyName} generation={generation} magra={magra}
-                    nodes={nodesC} resto={restoC}
+                    nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />}
                 />
             ) : (
                 <>
+            <QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />
             {/* Page body */}
             <div className="page-wrap">
                 <div className="flex items-start gap-10">
@@ -260,7 +261,6 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                 </div>
             )}
 
-            <QuizFacts entitySlug={group.slug} entityType="group" entityName={name} />
             <QuizWidget category="k-pop" />
 
             <ScrollToTop />

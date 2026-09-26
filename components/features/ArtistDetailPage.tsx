@@ -225,7 +225,7 @@ export function ArtistDetailPage({
                     artist={artist} name={name} image={image} roleLabels={roleLabels}
                     groups={groups} agency={agency} productions={productions} relatedPosts={relatedPosts}
                     relatedArtists={relatedArtists} discography={discography} model={model} magra={magra}
-                    nodes={nodesC} resto={restoC}
+                    nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />}
                     titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
                 />
             ) : (
@@ -235,6 +235,7 @@ export function ArtistDetailPage({
                         roleLabels={roleLabels} groups={groups} agency={agency}
                         heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
                     />
+                    <QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />
                     {sectionNodes}
                 </>
             )}
@@ -261,7 +262,6 @@ export function ArtistDetailPage({
 
             <ArtistColophon artist={artist} name={name} accent={accent} />
 
-            <QuizFacts entitySlug={artist.slug} entityType="artist" entityName={name} />
             <QuizWidget category="k-pop" />
 
             {relatedArtists.length > 0 ? (

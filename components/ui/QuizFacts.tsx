@@ -1,15 +1,17 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { Trophy, ArrowRight, Lightbulb } from 'lucide-react'
+import { MiniQuiz } from './MiniQuiz'
 import { getQuizQuestions } from '@/lib/wordpress/quiz'
 
 interface Props {
     entitySlug: string   // ex: "iu", "bts", "my-misterious-girl"
     entityType: 'artist' | 'group' | 'production'
     entityName: string
+    entityId?: number
 }
 
-export async function QuizFacts({ entitySlug, entityType, entityName }: Props) {
+export async function QuizFacts({ entitySlug, entityType, entityName, entityId }: Props) {
     const t = await getTranslations('profile.ui')
     const path = entityType === 'artist' ? `/artists/${entitySlug}`
         : entityType === 'group' ? `/groups/${entitySlug}`
@@ -17,9 +19,18 @@ export async function QuizFacts({ entitySlug, entityType, entityName }: Props) {
 
     const allQuestions = await getQuizQuestions()
 
-    // Filtra perguntas cujo relatedHref aponta para esta entidade
+    // Perguntas ligadas à entidade (por link do post ou pelos vínculos do quiz)
+    const chave = entityType === 'artist' ? 'artists' : entityType === 'group' ? 'groups' : 'productions'
+    // Pergunta cuja resposta é a própria entidade entrega a resposta na página dela.
+    const norm = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+    const nome = norm(entityName)
+    const entregaResposta = (q: { options: string[]; correct: number }) => {
+        const certa = norm(q.options[q.correct] ?? '')
+        return certa.length >= 3 && (certa === nome || certa.includes(nome) || nome.includes(certa))
+    }
     const facts = allQuestions
-        .filter(q => q.relatedHref?.includes(path))
+        .filter(q => !entregaResposta(q))
+        .filter(q => q.relatedHref?.includes(path) || (entityId != null && q.links?.[chave].includes(entityId)))
         .slice(0, 3)
 
     if (facts.length === 0) return null
@@ -31,18 +42,11 @@ export async function QuizFacts({ entitySlug, entityType, entityName }: Props) {
                     <Lightbulb className="w-3.5 h-3.5 text-accent" />
                 </div>
                 <p className="font-mono text-[9px] font-black uppercase tracking-[0.15em] text-muted">
-                    Você sabia? · Fatos do quiz sobre {entityName}
+                    Teste o que você sabe · {entityName}
                 </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {facts.map(q => (
-                    <div key={q.id} className="border border-border bg-surface p-4">
-                        <p className="text-[12px] font-black text-foreground leading-snug mb-2">{q.options[q.correct]}</p>
-                        <p className="text-[11px] text-muted leading-relaxed line-clamp-3">{q.explanation}</p>
-                    </div>
-                ))}
-            </div>
+            <MiniQuiz items={facts.map(({ id, question, options, correct, explanation }) => ({ id, question, options, correct, explanation }))} entityName={entityName} quizHref={`/quiz?category=${facts[0]?.category ?? 'k-pop'}`} />
 
             <Link href={`/quiz?category=${facts[0]?.category ?? 'k-pop'}`}
                 className="mt-4 inline-flex items-center gap-2 text-[11px] font-black text-accent hover:underline">

@@ -32,6 +32,8 @@ interface Props {
     magra: boolean
     /** Blocos originais já renderizados, por id: entram como estão onde a ficha C não tem versão própria. */
     nodes: Record<string, ReactNode>
+    /** Mini-quiz da entidade, logo depois da visão geral. */
+    quiz?: ReactNode
     /** Blocos sem lugar na ficha C; ficam recolhidos, mas no HTML. */
     resto: ReactNode[]
     titulos: { dossier: string; story: string; awards: string }
@@ -87,7 +89,7 @@ function fasesDe<T>(itens: T[]): T[][] {
  */
 export function ArtistFichaC({
     artist, name, image, roleLabels, groups, agency, productions, relatedPosts, relatedArtists, discography,
-    model, magra, nodes, resto, titulos,
+    model, magra, nodes, resto, titulos, quiz,
 }: Props) {
     const accent = ROSA
     const locale = useLocale()
@@ -218,6 +220,8 @@ export function ArtistFichaC({
                 </div>
             </section>
             {!semAnuncio && <Anuncio placement="artist_apos_visao" layout="leaderboard" />}
+
+            {quiz}
 
             {/* Carreira em fases (a linha do tempo completa fica recolhida logo abaixo) */}
             {fases.length > 0 && (
