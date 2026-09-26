@@ -119,3 +119,23 @@ jobs:
                 owner: context.repo.owner, repo: context.repo.repo, issue_number: i.number, state: 'closed',
               })
             }
+
+  # Deriva de documentacao: doc/script citando runner removido, label extinta ou o
+  # nome antigo do repositorio e armadilha na proxima reconstrucao do servidor.
+  # Job separado do ensaio de proposito: falha aqui NAO significa que o deploy
+  # quebraria, so que ha texto defasado.
+  deriva-docs:
+    name: Deriva da documentação
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+      - name: Procurar referências a coisas que não existem mais
+        run: bash scripts/verifica-deriva-docs.sh
