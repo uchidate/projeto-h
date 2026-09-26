@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getQuizQuestions } from '@/lib/wordpress/quiz'
 import type { QuizCategory } from '@/lib/wordpress/quiz'
+import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
 import { QuizClient } from './QuizClient'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 
@@ -40,10 +41,13 @@ export default async function QuizPage({ searchParams }: { searchParams: SearchP
     const questions = await getQuizQuestions()
 
     return (
-        <QuizClient
-            serverQuestions={questions}
-            initialCategory={activeCategory ?? 'all'}
-            initialSubcategory={activeSub}
-        />
+        <>
+            <QuizClient
+                serverQuestions={questions}
+                initialCategory={activeCategory ?? 'all'}
+                initialSubcategory={activeSub}
+                aposTitulo={<PerguntaDoDiaServer variante="alegre" />}
+            />
+        </>
     )
 }

@@ -10,6 +10,7 @@ import { getFeaturedSpotlight } from '@/lib/wordpress/spotlight'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { HomeFrontPage } from '@/components/home/HomeFrontPage'
+import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
 import { HomeBelowFold } from '@/components/home/HomeBelowFold'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
@@ -127,6 +128,9 @@ export default async function HomePage() {
                 streamingByPlatform={streamingByPlatform}
                 categoryMap={categoryMap}
             />
+            <Suspense fallback={null}>
+                <PerguntaDoDiaServer />
+            </Suspense>
             <Suspense fallback={null}>
                 <HomeBelowFold homeSettings={siteSettings.home} cultureGuides={siteSettings.cultureGuides} />
             </Suspense>
