@@ -12,7 +12,7 @@ export function ProductionRelated({ related, genres }: Props) {
     const t = useTranslations('profile.ui')
     if (!related.length) return null
     return (
-        <div className="mt-14 border-t border-border pt-10">
+        <div data-bloco="ficha-producao-relacionadas" className="mt-14 border-t border-border pt-10">
             <div className="flex items-baseline justify-between mb-6">
                 <h2 className="text-[20px] font-black">{t('youMayLike')}</h2>
                 {genres.length > 0 && (

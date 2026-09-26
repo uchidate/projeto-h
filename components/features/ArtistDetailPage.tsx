@@ -137,7 +137,7 @@ export function ArtistDetailPage({
         agency, connectionGroup, faqItems, categoryMap, portrait: image, t,
     })
 
-    const { anchors: pageAnchors, nodes: sectionNodes } = renderProfileEntries(entries)
+    const { anchors: pageAnchors, nodes: sectionNodes } = renderProfileEntries(entries, { medir: { prefixo: 'ficha-artista', ids: ['filmografia', 'grupos', 'relacionados', 'artigos'] } })
 
     return (
         <>

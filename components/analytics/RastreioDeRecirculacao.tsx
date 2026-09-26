@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { trackCliqueExterno, trackRecirculacao } from '@/lib/analytics'
+import { usePathname } from 'next/navigation'
+import { trackCliqueExterno, trackRecirculacao, trackRecirculacaoVisto } from '@/lib/analytics'
 import { tipoDePagina } from '@/lib/tipoDePagina'
 
 /**
@@ -24,7 +25,48 @@ import { tipoDePagina } from '@/lib/tipoDePagina'
  * a propagação ou navegue; e o Umami envia com `sendBeacon`/keepalive, então a
  * navegação do Next não corta o envio.
  */
+/**
+ * Blocos que ficam na tela em toda página: contar a exibição deles seria um
+ * evento por navegação sem dizer nada (a taxa de clique deles já sai do clique).
+ */
+const SEM_EXIBICAO = new Set(['menu', 'rodape'])
+
 export function RastreioDeRecirculacao() {
+    const caminho = usePathname() ?? ''
+
+    // Exibição: um observador para todos os `[data-bloco]`, uma vez por bloco e por
+    // página. O bloco só conta quando o topo dele passa de 25% acima da borda
+    // inferior da tela — com a tela inteira como limite, o rodapé de uma página
+    // curta contaria como visto sem o leitor ter rolado nada.
+    useEffect(() => {
+        if (typeof IntersectionObserver === 'undefined') return
+
+        const vistos = new Set<string>()
+        const alvos = new Map<Element, string>()
+        for (const bloco of document.querySelectorAll<HTMLElement>('[data-bloco]')) {
+            const nome = bloco.dataset.bloco ?? 'sem-nome'
+            if (SEM_EXIBICAO.has(nome)) continue
+            // `display: contents` não gera caixa e o observador nunca dispara nele:
+            // observa os filhos, que representam o bloco.
+            const caixa = getComputedStyle(bloco).display === 'contents' ? [...bloco.children] : [bloco]
+            for (const el of caixa) alvos.set(el, nome)
+        }
+        if (alvos.size === 0) return
+
+        const observador = new IntersectionObserver((entradas) => {
+            for (const entrada of entradas) {
+                if (!entrada.isIntersecting) continue
+                const nome = alvos.get(entrada.target)
+                if (!nome || vistos.has(nome)) continue
+                vistos.add(nome)
+                trackRecirculacaoVisto({ bloco: nome, origem: window.location.pathname })
+            }
+        }, { rootMargin: '0px 0px -25% 0px', threshold: 0.1 })
+        for (const el of alvos.keys()) observador.observe(el)
+
+        return () => observador.disconnect()
+    }, [caminho])
+
     useEffect(() => {
         const aoClicar = (evento: MouseEvent) => {
             const alvo = evento.target as Element | null

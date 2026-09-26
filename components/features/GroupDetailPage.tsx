@@ -123,7 +123,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
     })
 
 
-    const { anchors: navLinks, nodes: sectionNodes } = renderProfileEntries(entries, { parentProvidesRail: true })
+    const { anchors: navLinks, nodes: sectionNodes } = renderProfileEntries(entries, { parentProvidesRail: true, medir: { prefixo: 'ficha-grupo', ids: ['membros', 'discografia', 'relacionados', 'artigos'] } })
 
     return (
         <>
