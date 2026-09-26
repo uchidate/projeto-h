@@ -16,7 +16,7 @@ export function FandomGroupCard({ group, cor, tinta }: { group: WPGroup; cor: st
             className="group flex items-center gap-4 p-4 transition-transform hover:-translate-y-0.5 shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"
             style={{ background: cor, color: tinta }}>
             <span className="relative h-[84px] w-[84px] shrink-0 overflow-hidden bg-[#15102b]">
-                {img && <Image src={img.src} alt="" fill sizes="84px" className={`object-cover object-top ${isActive ? '' : 'grayscale'}`} />}
+                {img && <Image src={img.src} alt={`Foto do grupo ${name}`} fill sizes="84px" className={`object-cover object-top ${isActive ? '' : 'grayscale'}`} />}
             </span>
             <span className="min-w-0">
                 <span className="block truncate text-[22px] font-black leading-tight">{name}</span>

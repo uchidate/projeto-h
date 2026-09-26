@@ -179,7 +179,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                 <div key={c.slug} className={`group relative flex h-[190px] flex-col justify-between overflow-hidden p-4 transition-transform hover:-translate-y-1 sm:h-[220px] sm:p-5 ${SOMBRA_G} ${contorno(c.cor)}`} style={{ background: c.cor, color: ink }}>
                                     <span className="relative z-10 flex items-start justify-between gap-2">
                                         <span className="relative block h-14 w-14 overflow-hidden bg-[#15102b]">
-                                            {c.foto && <Image src={c.foto} alt="" fill sizes="56px" className="object-cover object-top" />}
+                                            {c.foto && <Image src={c.foto} alt={`Foto de ${c.grupos[0]}, grupo da torcida ${c.nome}`} fill sizes="56px" className="object-cover object-top" />}
                                         </span>
                                         <BotaoSou slug={c.slug} marcada={false} onAlternar={alternar} cor={c.nome} />
                                     </span>
@@ -203,7 +203,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                         return (
                             <div key={c.slug} className={`group relative flex min-h-[96px] items-center gap-3 p-3.5 transition-transform hover:-translate-y-0.5 ${SOMBRA} ${contorno(c.cor)}`} style={{ background: c.cor, color: ink }}>
                                 <span className="relative h-[52px] w-[52px] shrink-0 overflow-hidden bg-[#15102b]">
-                                    {c.foto && <Image src={c.foto} alt="" fill sizes="52px" className={`object-cover object-top ${c.encerrado ? 'grayscale' : ''}`} />}
+                                    {c.foto && <Image src={c.foto} alt={`Foto de ${c.grupos[0]}, grupo da torcida ${c.nome}`} fill sizes="52px" className={`object-cover object-top ${c.encerrado ? 'grayscale' : ''}`} />}
                                 </span>
                                 <span className="min-w-0 flex-1">
                                     <Link href={`/fandoms/${c.slug}`} className="block truncate text-[19px] font-black leading-tight after:absolute after:inset-0 after:content-['']">{c.nome}</Link>

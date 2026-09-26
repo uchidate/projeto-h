@@ -14,7 +14,8 @@ const NIVEL_EMOJI: Record<string, string> = { easy: '🐣', medium: '⚡', hard:
 
 // ─── Start Screen ─────────────────────────────────────────────────────────────
 
-export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'all', initialSubcategory = '', aposTitulo }: {
+export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'all', initialSubcategory = '', aposTitulo, rodape }: {
+    rodape?: ReactNode
     aposTitulo?: ReactNode
     onStart: (cat: CategoryFilter, diff: QuizDifficulty, excludeId?: number) => void
     stats: QuizStats
@@ -159,6 +160,8 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                 </div>
 
                 {stats.totalGames > 0 && <div className="mt-10"><ScoreHistory scores={stats.scores} /></div>}
+
+                {rodape}
             </div>
             </div>
 

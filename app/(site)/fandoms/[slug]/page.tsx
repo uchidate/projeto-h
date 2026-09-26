@@ -27,9 +27,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
     const grupos = fandom.groups.map(g => stripHtml(g.title.rendered))
     const listaGrupos = grupos.length > 2 ? `${grupos.slice(0, 2).join(', ')} e mais ${grupos.length - 2}` : grupos.join(' e ')
-    const title = `${fandom.name}, a torcida do ${listaGrupos}: nome, cor e novidades`
+    const title = `${fandom.name}, a torcida do ${listaGrupos}`
     // A descrição só promete o que a página tem: o lightstick entra quando está cadastrado, as datas sempre que houver membros.
-    const description = `Tudo sobre o fandom ${fandom.name}, a torcida ${grupos.length > 1 ? 'dos grupos' : 'do grupo'} ${listaGrupos}: de onde vem o nome, ${fandom.lightstick ? `lightstick (${fandom.lightstick}), ` : ''}próximas datas, novidades e torcidas parecidas.`
+    const description = `Fandom ${fandom.name}: a torcida ${grupos.length > 1 ? 'dos grupos' : 'do grupo'} ${listaGrupos}. De onde vem o nome, ${fandom.lightstick ? `lightstick (${fandom.lightstick}), ` : ''}próximas datas, novidades e torcidas parecidas.`
     const url = `${SITE_URL}/fandoms/${slug}`
 
     return buildWordPressMetadata({

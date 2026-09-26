@@ -4,6 +4,7 @@ import type { QuizCategory } from '@/lib/wordpress/quiz'
 import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
 import { QuizClient } from './QuizClient'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
+import { QuizSobre, PERGUNTAS_QUIZ } from '@/components/quiz/QuizSobre'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 
@@ -20,11 +21,11 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
     const canonical = `${SITE_URL}/quiz${cat ? `?category=${encodeURIComponent(cat)}` : ''}`
     return {
         title: cat
-            ? `Quiz de ${LABELS[cat]}: teste seus conhecimentos e veja seu placar`
-            : 'Quiz de K-Pop e K-Drama: mais de 300 perguntas para testar seu lado fã',
+            ? `Quiz de ${LABELS[cat]}: teste seus conhecimentos`
+            : 'Quiz de K-Pop e K-Drama: 300+ perguntas',
         description: cat
-            ? `Quiz de ${LABELS[cat]} com perguntas de três níveis, cronômetro, placar e explicação de cada resposta. Jogue grátis e descubra quanto você sabe.`
-            : 'Quiz grátis de K-Pop, K-Drama, cultura e história da Coreia: mais de 300 perguntas em três níveis, uma pergunta nova por dia, placar e sequência. Quanto você sabe?',
+            ? `Quiz de ${LABELS[cat]} grátis: perguntas em três níveis, cronômetro, placar e a explicação de cada resposta. Jogue agora e descubra quanto você sabe.`
+            : 'Quiz grátis de K-Pop, K-Drama, cultura e história da Coreia: mais de 300 perguntas em três níveis e uma pergunta nova por dia. Descubra quanto você sabe!',
         alternates: {
             canonical,
         },
@@ -56,12 +57,14 @@ export default async function QuizPage({ searchParams }: { searchParams: SearchP
                 offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
                 description: 'Quiz de K-Pop, K-Drama, cultura e história da Coreia com pergunta do dia, placar e três níveis de dificuldade.',
             }} />
+            <JsonLd data={{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: PERGUNTAS_QUIZ.map(({ p, r }) => ({ '@type': 'Question', name: p, acceptedAnswer: { '@type': 'Answer', text: r } })) }} />
             <JsonLd data={buildBreadcrumbSchema([{ name: 'HallyuHub', url: SITE_URL }, { name: 'Quiz', url: `${SITE_URL}/quiz` }])} />
             <QuizClient
                 serverQuestions={questions}
                 initialCategory={activeCategory ?? 'all'}
                 initialSubcategory={activeSub}
                 aposTitulo={<PerguntaDoDiaServer variante="alegre" />}
+                rodape={<QuizSobre />}
             />
         </>
     )

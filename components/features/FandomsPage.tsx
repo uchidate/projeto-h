@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { htmlLang } from '@/lib/i18n/format'
 import { Heart } from 'lucide-react'
 import { getWPImage, stripHtml, getYear } from '@/lib/utils'
@@ -49,7 +50,7 @@ export function FandomsPage({ fandoms, search }: Props) {
                 <h1 className="mt-3 font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-[1] sm:text-[56px]">
                     <span className="sr-only">Fandoms K-Pop: </span>Qual é a sua <span className="text-[#ff5fa2]">torcida</span>? <span className="text-[#38e1c0]">✦</span>
                 </h1>
-                <p className="mt-3 max-w-2xl text-[16px] text-foreground/70">Marque a sua (ou as suas) e este espaço passa a ser seu. De ARMY a ONCE.</p>
+                <p className="mt-3 max-w-2xl text-[16px] text-foreground/70">Fandom é o nome da torcida de um grupo de K-Pop: ARMY é a do BTS, BLINK a do BLACKPINK, ONCE a do TWICE. Marque a sua (ou as suas) e este espaço passa a ser seu, com novidades, datas e o quiz da sua torcida.</p>
                 <div className="mt-5 max-w-sm">
                     <SearchInput placeholder="Buscar fandom..." current={search} />
                 </div>
@@ -66,6 +67,14 @@ export function FandomsPage({ fandoms, search }: Props) {
                     />
                 ) : (
                     <EspacoDoFa cartoes={cartoes} busca={search} />
+                )}
+
+                {fandoms.length > 0 && (
+                    <section aria-labelledby="oque-fandom" className="mt-14 max-w-3xl space-y-3 text-[16px] leading-relaxed">
+                        <h2 id="oque-fandom" className="font-[family-name:var(--font-playfair)] text-[26px] font-extrabold leading-tight sm:text-[30px]">O que é um fandom de K-Pop?</h2>
+                        <p>Fandom é o conjunto de fãs de um artista ou grupo. No K-Pop cada torcida tem um nome oficial, uma cor e, em geral, um lightstick, o bastão de luz levado aos shows. O nome costuma ter uma história: ARMY, por exemplo, nasceu junto com o BTS, em 2013.</p>
+                        <p>Aqui você encontra {fandoms.length} torcidas, cada uma com o grupo, a origem do nome, as próximas datas comemoradas (estreia do grupo e aniversário dos membros) e as últimas notícias. Quer testar o que sabe? Faça o <Link href="/quiz" className="font-bold underline">quiz de K-Pop</Link>.</p>
+                    </section>
                 )}
 
                 {fandoms.length > 0 && ADSENSE.slots.inline && (
