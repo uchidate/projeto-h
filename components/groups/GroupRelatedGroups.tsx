@@ -20,7 +20,7 @@ export function GroupRelatedGroups({ groups, accent, agencyName }: Props) {
     const title = agencyName ? t('sameAgency', { agency: agencyName }) : t('keepExploring')
 
     return (
-        <div className="space-y-4">
+        <div data-bloco="ficha-grupo-relacionados" className="space-y-4">
             <GroupSectionHeading id="relacionados-titulo" eyebrow={t('discover')} title={title} accent={accent} />
 
             {/* Mobile: scroll horizontal; desktop: grid — mesma linguagem de capa quadrada da era rail */}

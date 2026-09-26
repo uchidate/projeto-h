@@ -2,8 +2,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 
-const { trackRecirculacao, trackCliqueExterno } = vi.hoisted(() => ({ trackRecirculacao: vi.fn(), trackCliqueExterno: vi.fn() }))
-vi.mock('@/lib/analytics', () => ({ trackRecirculacao, trackCliqueExterno }))
+const { trackRecirculacao, trackCliqueExterno, trackRecirculacaoVisto } = vi.hoisted(() => ({ trackRecirculacao: vi.fn(), trackCliqueExterno: vi.fn(), trackRecirculacaoVisto: vi.fn() }))
+vi.mock('@/lib/analytics', () => ({ trackRecirculacao, trackCliqueExterno, trackRecirculacaoVisto }))
+vi.mock('next/navigation', () => ({ usePathname: () => '/blog/x' }))
 
 import { RastreioDeRecirculacao } from './RastreioDeRecirculacao'
 
@@ -69,5 +70,47 @@ describe('RastreioDeRecirculacao', () => {
         const { container } = render(<><RastreioDeRecirculacao /><a href="mailto:x@y.com">M</a></>)
         clicar(container.querySelector('a')!)
         expect(trackCliqueExterno).not.toHaveBeenCalled()
+    })
+
+    describe('exibição do bloco', () => {
+        let dispara: (el: Element, visivel?: boolean) => void
+        let observados: Element[]
+
+        beforeEach(() => {
+            trackRecirculacaoVisto.mockClear()
+            observados = []
+            let cb: IntersectionObserverCallback = () => {}
+            vi.stubGlobal('IntersectionObserver', class {
+                constructor(c: IntersectionObserverCallback) { cb = c }
+                observe(el: Element) { observados.push(el) }
+                disconnect() {}
+            })
+            dispara = (el, visivel = true) => cb([{ target: el, isIntersecting: visivel } as IntersectionObserverEntry], {} as IntersectionObserver)
+        })
+        afterEach(() => { vi.unstubAllGlobals() })
+
+        it('conta a exibição uma vez por bloco, mesmo que ele volte à tela', () => {
+            const { container } = render(<><RastreioDeRecirculacao /><section data-bloco="artigo-leia-tambem"><a href="/blog/a">A</a></section></>)
+            const bloco = container.querySelector('section')!
+            dispara(bloco, false)
+            expect(trackRecirculacaoVisto).not.toHaveBeenCalled()
+            dispara(bloco)
+            dispara(bloco)
+            expect(trackRecirculacaoVisto).toHaveBeenCalledTimes(1)
+            expect(trackRecirculacaoVisto).toHaveBeenCalledWith({ bloco: 'artigo-leia-tambem', origem: window.location.pathname })
+        })
+
+        it('não observa menu nem rodapé, que estão em toda página', () => {
+            render(<><RastreioDeRecirculacao /><nav data-bloco="menu"><a href="/a">a</a></nav><footer data-bloco="rodape"><a href="/b">b</a></footer></>)
+            expect(observados).toHaveLength(0)
+        })
+
+        it('bloco com display: contents é observado pelos filhos', () => {
+            const { container } = render(<><RastreioDeRecirculacao /><div data-bloco="home-hero" style={{ display: 'contents' }}><section id="f"><a href="/x">x</a></section></div></>)
+            const filho = container.querySelector('#f')!
+            expect(observados).toEqual([filho])
+            dispara(filho)
+            expect(trackRecirculacaoVisto).toHaveBeenCalledWith(expect.objectContaining({ bloco: 'home-hero' }))
+        })
     })
 })

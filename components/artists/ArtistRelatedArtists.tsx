@@ -20,7 +20,7 @@ export function ArtistRelatedArtists({ artists, label, connectionGroup, agency, 
         : agency ? t('next.sameRoster', { name: stripHtml(agency.title.rendered) }) : t('next.nextNames')
 
     return (
-        <>
+        <div data-bloco="ficha-artista-relacionados">
             <SectionTitleBar eyebrow={label} title={heading} className="mb-6 profile-measure" />
             <div className="grid grid-cols-3 gap-4 sm:grid-cols-5 sm:gap-6 profile-measure">
                 {artists.map(rel => (
@@ -29,6 +29,6 @@ export function ArtistRelatedArtists({ artists, label, connectionGroup, agency, 
                         sizes="(max-width: 640px) 33vw, 20vw" />
                 ))}
             </div>
-        </>
+        </div>
     )
 }
