@@ -14,6 +14,7 @@ import { BlogSidebar } from '@/components/blog/BlogSidebar'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { BlogDestaque } from '@/components/blog/BlogDestaque'
 import { RastreioDeFiltros } from '@/components/analytics/RastreioDeFiltros'
 
 type Props = {
@@ -27,13 +28,19 @@ type Props = {
     currentSearch?: string
     sidebarPosts?: WPPost[]
     guias?: ArchiveHub[]
+    /** Candidatos a destaque, do melhor ao pior (o navegador escolhe entre eles). */
+    destaques?: WPPost[]
+    /** Conteúdo-chave: passa dos 45 dias e continua entre os mais lidos. */
+    perenes?: WPPost[]
+    order?: string
 }
 
-export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [] }: Props) {
+export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order }: Props) {
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
     function buildHref(overrides: Record<string, string | undefined> = {}) {
         const params = new URLSearchParams()
-        const next = { category: currentCategory, tag: currentTag, search: currentSearch, ...overrides }
+        const next = { category: currentCategory, tag: currentTag, search: currentSearch, order, ...overrides }
+        if (next.order) params.set('order', next.order)
         if (next.category) params.set('category', next.category)
         if (next.tag) params.set('tag', next.tag)
         if (next.search) params.set('search', next.search)
@@ -44,10 +51,12 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
     }
 
     const isFiltered = !!(currentCategory || currentTag || currentSearch)
-    const [hero, ...rest] = posts
+    // O destaque padrão é o primeiro candidato (não mais o artigo mais novo); os demais cabem na grade normalmente.
+    const hero = destaques[0] ?? posts[0]
+    const rest = posts.filter(p => p.id !== hero?.id)
     const currentCategoryLabel = categories.find(c => c.slug === currentCategory)?.name ?? currentCategory
 
-    const showHero = !isFiltered && currentPage === 1 && !!hero
+    const showHero = !isFiltered && currentPage === 1 && !order && !!hero
     const gridPosts = showHero ? rest : posts
     /* Célula vazia no fim da linha é aritmética. A grade tem 1, 2 e 3 colunas,
        então só fecha toda linha com um múltiplo de 6. A página traz 12 posts e
@@ -88,7 +97,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
     return (
         <div className="bg-background">
             {/* Chaves iguais ao SearchParams de app/(site)/blog/page.tsx. */}
-            <RastreioDeFiltros listagem="blog" filtros={['category', 'tag', 'page', 'search']} />
+            <RastreioDeFiltros listagem="blog" filtros={['category', 'tag', 'page', 'search', 'order']} />
             {/* H1 só para leitor de tela e robô: o cabeçalho visual da página é o
                 breadcrumb, e um título grande aqui mexeria no layout. */}
             <h1 className="sr-only">
@@ -107,12 +116,34 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
 
             <div className="page-wrap pt-8 pb-16">
 
-                {showHero && <BlogHeroPost post={hero} categoryMap={categoryMap} />}
+                {showHero && (destaques.length > 1
+                    ? <BlogDestaque candidatos={destaques.map(p => ({
+                        slug: p.slug,
+                        categoria: categoryMap[p.categories?.[0]]?.slug ?? null,
+                        node: <BlogHeroPost post={p} categoryMap={categoryMap} />,
+                    }))} />
+                    : <BlogHeroPost post={hero} categoryMap={categoryMap} />)}
+                {showHero && ADSENSE.slots.leaderboard && (
+                    <div className="mt-6"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="blog_leaderboard" /></div>
+                )}
+
+                {/* Conteúdo-chave: guias que continuam sendo lidos meses depois; quem chega sem saber por onde começar entra por aqui. */}
+                {showHero && perenes.length >= 3 && (
+                    <section data-bloco="blog-comece-por-aqui" className="mt-10 border-t border-border pt-6">
+                        <div className="mb-4">
+                            <h2 className="font-serif text-[26px] font-semibold leading-tight sm:text-[32px]">Comece por aqui</h2>
+                            <p className="mt-1 text-[14px] text-muted">Os guias que continuam sendo lidos, meses depois de publicados</p>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            {perenes.slice(0, 4).map(p => <BlogPostCard key={p.id} post={p} categoryMap={categoryMap} />)}
+                        </div>
+                    </section>
+                )}
 
                 {/* Guias saíram da navbar e reaparecem aqui, ao lado da intenção
                     que já os procurava. Só na primeira página sem filtro: numa
                     busca por artigo específico esta faixa seria ruído. */}
-                {!isFiltered && currentPage === 1 && guias.length > 0 && (
+                {!isFiltered && !order && currentPage === 1 && guias.length > 0 && (
                     <section className="mb-10 mt-10 border-t border-border pt-5">
                         <div className="mb-3 flex items-baseline gap-3">
                             <h2 className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60">
@@ -148,10 +179,16 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                 ) : (
                     <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_300px] xl:gap-14">
                         <div className="min-w-0">
+                            {!isFiltered && (
+                                <div className="mb-4 flex gap-6 border-b border-border" role="group" aria-label="Ordenar artigos">
+                                    <Link href="/blog" className={`flex h-11 items-center border-b-2 text-[14px] font-semibold transition-colors ${!order ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`}>Mais recentes</Link>
+                                    <Link href="/blog?order=lidos" className={`flex h-11 items-center border-b-2 text-[14px] font-semibold transition-colors ${order === 'lidos' ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`}>Mais lidos</Link>
+                                </div>
+                            )}
                             <div className="flex items-center gap-3 mb-5">
                                 <Sparkles size={12} className="text-accent shrink-0" />
                                 <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60 shrink-0">
-                                    {isFiltered ? 'Artigos encontrados' : 'Últimos artigos'}
+                                    {isFiltered ? 'Artigos encontrados' : order === 'lidos' ? 'Mais lidos' : 'Últimos artigos'}
                                 </p>
                                 <div className="flex-1 h-px bg-border" />
                                 {isFiltered && (
