@@ -139,7 +139,7 @@ export function ArtistDetailPage({
 
     // Teste A/B por id (par = estrutura "apresentação"), a mesma regra das produções.
     // A variante B acrescenta a faixa de obras logo após o topo, a linha do tempo e o
-    // fundo do topo; e tira o anúncio das fichas magras. O texto indexável é o mesmo.
+    // fundo do topo. O texto indexável é o mesmo.
     const variante = variantePorId(artist.id)
     const emB = variante === 'b'
     const magra = fichaMagra({
@@ -149,13 +149,14 @@ export function ArtistDetailPage({
     const baseEntries = buildArtistProfileEntries({
         model, productions, groups, discography, relatedArtists, relatedPosts,
         agency, connectionGroup, faqItems, categoryMap, portrait: image, t,
-        semAnuncio: emB && magra,
+        semAnuncio: magra,
     })
     const obras = emB ? obrasEmDestaque(productions) : []
     const marcos = emB ? marcosDaCarreira(productions) : []
     let entries: ProfileEntry[] = baseEntries
+    // Vale para as duas variantes: ficha magra não carrega anúncio (risco de "conteúdo de baixo valor").
+    if (magra) entries = entries.filter(e => !(isInterstitial(e) && CHAVE_DE_ANUNCIO.test(e.key)))
     if (emB) {
-        if (magra) entries = entries.filter(e => !(isInterstitial(e) && CHAVE_DE_ANUNCIO.test(e.key)))
         if (marcos.length >= 4) {
             const antes = entries.findIndex(e => !isInterstitial(e) && (e.id === 'trajetoria' || e.id === 'guia'))
             const linha: ProfileEntry = {
