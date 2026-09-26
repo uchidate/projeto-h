@@ -16,6 +16,7 @@ import { QuizFacts } from '@/components/ui/QuizFacts'
 import { GroupMemberCard } from '@/components/groups/GroupMemberCard'
 import { FandomGroupCard } from '@/components/fandoms/FandomGroupCard'
 import { FandomSidebarFicha } from '@/components/fandoms/FandomSidebarFicha'
+import { OutrasTorcidas, type TorcidaVizinha } from '@/components/fandoms/OutrasTorcidas'
 import { EntityFAQ, type EntityFAQItem } from '@/components/seo/EntityFAQ'
 
 const SITE_ACCENT = '#e91e8c'
@@ -23,6 +24,7 @@ const SITE_ACCENT = '#e91e8c'
 interface Props {
     fandom: Fandom
     artists: WPArtist[]
+    outras: TorcidaVizinha[]
 }
 
 const TITULO = 'font-[family-name:var(--font-playfair)] text-[28px] font-extrabold leading-tight sm:text-[34px]'
@@ -49,7 +51,7 @@ async function NovidadesDaTorcida({ grupoSlug, nome, cor, ink }: { grupoSlug: st
     )
 }
 
-export function FandomDetailPage({ fandom, artists }: Props) {
+export function FandomDetailPage({ fandom, artists, outras }: Props) {
     const { name, color, lightstick, groups } = fandom
     const accent = color ?? SITE_ACCENT
     const ink = tinta(accent)
@@ -113,7 +115,7 @@ export function FandomDetailPage({ fandom, artists }: Props) {
                         {artists.length > 0 && (
                             <section id="artistas">
                                 <h2 className={`${TITULO} mb-5`}>Quem a torcida ama · {artists.length}</h2>
-                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
                                     {artists.map(artist => (
                                         <GroupMemberCard key={artist.id} member={toMemberSummary(artist)} accent={accent} />
                                     ))}
@@ -123,16 +125,12 @@ export function FandomDetailPage({ fandom, artists }: Props) {
 
                         {groups[0] && <div className="-mx-4 sm:mx-0"><QuizFacts entityId={groups[0].id} entitySlug={groups[0].slug} entityType="group" entityName={stripHtml(groups[0].title.rendered)} /></div>}
 
+                        <div className="xl:hidden"><OutrasTorcidas torcidas={outras} /></div>
+
                         <EntityFAQ items={faqItems} title={`Perguntas rápidas sobre ${name}`} />
                     </div>
 
-                    <FandomSidebarFicha
-                        color={color}
-                        lightstick={lightstick}
-                        groupCount={groups.length}
-                        artistCount={artists.length}
-                        accent={accent}
-                    />
+                    <FandomSidebarFicha lightstick={lightstick} outras={outras} />
                 </div>
             </div>
         </>

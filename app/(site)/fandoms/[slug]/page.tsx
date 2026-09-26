@@ -2,6 +2,7 @@ import { SITE_NAME } from '@/lib/constants/site'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getAllFandoms, getFandomBySlug } from '@/lib/wordpress/fandoms'
+import { stripHtml } from '@/lib/utils'
 import { getArtistsByIds } from '@/lib/wordpress/artists'
 import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
@@ -43,6 +44,13 @@ export default async function FandomPage({ params }: { params: Params }) {
     const memberIds = Array.from(new Set(fandom.groups.flatMap(g => g.acf?.members ?? [])))
     const artists = await getArtistsByIds(memberIds)
 
+    // Vizinhas na ordem alfabética: estável entre visitas e sem consulta extra (a lista já está em cache).
+    const todas = await getAllFandoms()
+    const i = todas.findIndex(f => f.slug === slug)
+    const outras = [...todas.slice(i + 1), ...todas.slice(0, Math.max(i, 0))].slice(0, 8).map(f => ({
+        slug: f.slug, nome: f.name, cor: f.color ?? '#c39bff', grupo: stripHtml(f.groups[0]?.title.rendered ?? ''),
+    }))
+
     const fandomUrl = `${SITE_URL}/fandoms/${slug}`
     const breadcrumbSchema = buildBreadcrumbSchema([
         { name: `${SITE_NAME}`, url: SITE_URL },
@@ -53,7 +61,7 @@ export default async function FandomPage({ params }: { params: Params }) {
     return (
         <>
             <JsonLd data={breadcrumbSchema} />
-            <FandomDetailPage fandom={fandom} artists={artists} />
+            <FandomDetailPage fandom={fandom} artists={artists} outras={outras} />
         </>
     )
 }
