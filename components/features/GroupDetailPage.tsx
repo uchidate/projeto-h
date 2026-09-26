@@ -7,6 +7,7 @@ import type { WPGroup, WPArtist, WPPost, WPAgency } from '@/lib/wordpress/types'
 import type { ArchiveHub } from '@/lib/guias/types'
 import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
 import { formatDate } from '@/lib/i18n/format'
+import { labelsFor } from '@/lib/i18n/labels'
 import { firstSentence } from '@/lib/seo/firstSentence'
 import { SITE_URL } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -28,6 +29,7 @@ import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
 import { GroupFichaC } from '@/components/groups/GroupFichaC'
 import { isInterstitial } from '@/components/profiles/ProfileSection'
 import { variantePorId } from '@/lib/experimento'
+import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 
 interface Props {
     group: WPGroup
@@ -154,6 +156,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
     return (
         <>
             <div hidden data-variante={emC ? 'grupo-c' : 'grupo-a'} />
+            <RegistrarVisita item={{ slug: group.slug, nome: name, foto: image?.src ?? null, papel: acf.type ? labelsFor(locale).groupType(acf.type) : null, tipo: 'grupo' }} />
             <JsonLd
                 data={{
                     '@context': 'https://schema.org',

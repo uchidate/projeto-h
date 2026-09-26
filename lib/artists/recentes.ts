@@ -1,5 +1,5 @@
-/** Últimos artistas vistos, guardados só no navegador (sem login e sem ir para o servidor). */
-export interface Recente { slug: string; nome: string; foto: string | null; papel: string | null }
+/** Últimos artistas e grupos vistos, guardados só no navegador (sem login e sem ir para o servidor). */
+export interface Recente { slug: string; nome: string; foto: string | null; papel: string | null; /** Ausente = artista (registros antigos). */ tipo?: 'grupo' }
 
 export const CHAVE_RECENTES = 'hh:recentes:v1'
 const LIMITE = 8
@@ -31,7 +31,7 @@ export function assinarRecentes(aoMudar: () => void): () => void {
 
 export function registrarVisita(item: Recente): void {
     try {
-        const resto = lerRecentes().filter(r => r.slug !== item.slug)
+        const resto = lerRecentes().filter(r => !(r.slug === item.slug && r.tipo === item.tipo))
         window.localStorage.setItem(CHAVE_RECENTES, JSON.stringify([item, ...resto].slice(0, LIMITE)))
         window.dispatchEvent(new Event(EVENTO))
     } catch { /* armazenamento bloqueado: o recurso simplesmente não aparece */ }
