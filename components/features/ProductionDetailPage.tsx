@@ -8,6 +8,7 @@ import type { WPProduction, WPArtist, WPPost } from '@/lib/wordpress/types'
 import { formatDatePt, getWPImage } from '@/lib/utils'
 import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
+import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ShareBar } from '@/components/ui/ShareBar'
 import { ReportButton } from '@/components/ui/ReportButton'
 import { EntityActionBar } from '@/components/ui/EntityActionBar'
@@ -128,6 +129,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
     return (
         <>
             <div hidden data-variante="producao-a" />
+            <RegistrarVisita item={{ slug: production.slug, nome: title, foto: image?.src ?? null, papel: displayType || null, tipo: 'producao' }} />
             {/* Sem <h1> sr-only aqui: o hero sempre renderiza o <h1> visível, e
                 dois h1 com o mesmo texto confundiam a hierarquia da página. */}
             {jsonLd}
