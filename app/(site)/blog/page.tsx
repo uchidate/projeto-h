@@ -1,13 +1,26 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import type { WPPost } from '@/lib/wordpress/types'
 import { getPosts, getCategories, getSidebarPosts } from '@/lib/wordpress/posts'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { BlogPage } from '@/components/blog/BlogPage'
 import { getAllHubs } from '@/lib/guias'
+import { candidatosDestaque, maisLidos, perenes as escolherPerenes } from '@/lib/blog/destaque'
 
 export const revalidate = 300
 
-type SearchParams = Promise<{ category?: string; tag?: string; page?: string; search?: string }>
+async function carregarBase(): Promise<WPPost[]> {
+    try {
+        const primeira = await getPosts({ page: 1, perPage: 100, includeContent: false })
+        const paginas = Math.min(primeira.totalPages, 8)
+        const demais = await Promise.all(
+            Array.from({ length: Math.max(0, paginas - 1) }, (_, i) => getPosts({ page: i + 2, perPage: 100, includeContent: false }).then(r => r.items).catch(() => [] as WPPost[])),
+        )
+        return [primeira.items, ...demais].flat()
+    } catch { return [] }
+}
+
+type SearchParams = Promise<{ category?: string; tag?: string; page?: string; search?: string; order?: string }>
 
 function buildBlogUrl(siteUrl: string, page: number, opts: { category?: string; tag?: string }) {
     const ps = new URLSearchParams()
@@ -29,7 +42,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
 
     // Fetch só para saber totalPages (leve: 1 post, só cabeçalho X-WP-TotalPages)
     const { totalPages } = await getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false })
-    const shouldNoIndex = Boolean(sp.search || sp.tag) || page > Math.max(1, totalPages)
+    const shouldNoIndex = Boolean(sp.search || sp.tag || sp.order) || page > Math.max(1, totalPages)
 
     return {
         title,
@@ -49,11 +62,16 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
     const sp = await searchParams
     const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
 
-    const [postsResult, categories, sidebarPosts, hubs] = await Promise.all([
+    const semFiltro = !sp.category && !sp.tag && !sp.search
+    const order = sp.order === 'lidos' ? 'lidos' : undefined
+    const [postsResult, categories, sidebarPosts, hubs, pool] = await Promise.all([
         getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false }),
         getCategories(),
         getSidebarPosts(page, 13),
         getAllHubs(),
+        // Base do destaque, dos conteúdos-chave e de "Mais lidos": todo o acervo (até 8 chamadas de 100, em cache); os guias
+        // perenes costumam ser antigos e ficariam fora de uma janela só dos recentes. Falha aqui não derruba a lista.
+        semFiltro ? carregarBase() : Promise.resolve([] as WPPost[]),
     ])
     /* Os guias saíram da navbar — eram índice de índices ocupando slot de
        destino. Reaparecem aqui, que é onde a intenção "quero descobrir o que
@@ -69,11 +87,23 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
     }
     if (page > Math.max(1, postsResult.totalPages)) notFound()
 
+    // Mais lidos: ordena a base por leitura humana (90 dias) e pagina aqui mesmo.
+    const lidos = order === 'lidos' ? maisLidos(pool) : null
+    const porPagina = 12
+    const itens = lidos ? lidos.slice((page - 1) * porPagina, page * porPagina) : postsResult.items
+    const totalItens = lidos ? lidos.length : postsResult.total
+    const paginas = lidos ? Math.max(1, Math.ceil(lidos.length / porPagina)) : postsResult.totalPages
+    if (lidos && page > paginas) notFound()
+    const inicio = semFiltro && page === 1 && !order
+    const candidatos = inicio ? candidatosDestaque(pool, new Date(), 3) : []
+    // O que já é candidato a destaque não repete em "Comece por aqui".
+    const idsCandidatos = new Set(candidatos.map(p => p.id))
+
     return (
         <BlogPage
-            posts={postsResult.items}
-            total={postsResult.total}
-            totalPages={postsResult.totalPages}
+            posts={itens}
+            total={totalItens}
+            totalPages={paginas}
             categories={categories}
             currentPage={page}
             currentCategory={sp.category}
@@ -81,6 +111,9 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
             currentSearch={sp.search}
             sidebarPosts={sidebarPosts}
             guias={guias}
+            order={order}
+            destaques={candidatos}
+            perenes={inicio ? escolherPerenes(pool.filter(p => !idsCandidatos.has(p.id)), 4, new Date(), categories.filter(c => c.slug === 'noticias-k-pop').map(c => c.id)) : []}
         />
     )
 }

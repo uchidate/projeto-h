@@ -21,6 +21,7 @@ import { BlogReadingProgress } from '@/components/blog/BlogReadingProgress'
 import { BlogToc } from '@/components/blog/BlogToc'
 import { BlogEntityCard, type EntidadeDoCard } from '@/components/blog/BlogEntityCard'
 import { variantePorId } from '@/lib/experimento'
+import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
 import { BlogSuggestedNext } from '@/components/blog/BlogSuggestedNext'
@@ -409,6 +410,7 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
     return (
         <>
             <div hidden data-variante={emB ? 'artigo-b' : 'artigo-a'} />
+            <RegistrarVisita item={{ slug: post.slug, nome: title, foto: image?.src ?? null, papel: categories[0]?.name ?? null, tipo: 'artigo', ...(categories[0] ? { categoria: categories[0].slug } : {}) }} />
             <JsonLd
                 data={buildArticleSchema({
                     type: isNewsPost ? 'NewsArticle' : 'BlogPosting',

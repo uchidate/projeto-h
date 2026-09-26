@@ -6,9 +6,9 @@ import { podeGuardarHistorico } from '@/lib/consent'
 
 /** Na ficha: guarda o artista no histórico do navegador para a faixa "Continue de onde parou". */
 export function RegistrarVisita({ item }: { item: Recente }) {
-    const { slug, nome, foto, papel, tipo } = item
+    const { slug, nome, foto, papel, tipo, categoria } = item
     useEffect(() => {
-        if (podeGuardarHistorico()) registrarVisita({ slug, nome, foto, papel, ...(tipo ? { tipo } : {}) })
-    }, [slug, nome, foto, papel, tipo])
+        if (podeGuardarHistorico()) registrarVisita({ slug, nome, foto, papel, ...(tipo ? { tipo } : {}), ...(categoria ? { categoria } : {}) })
+    }, [slug, nome, foto, papel, tipo, categoria])
     return null
 }
