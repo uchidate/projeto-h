@@ -72,6 +72,33 @@ describe('RastreioDeRecirculacao', () => {
         expect(trackCliqueExterno).not.toHaveBeenCalled()
     })
 
+    describe('detalhe do clique', () => {
+        it('informa se o bloco já tinha sido visto e os segundos até o clique', () => {
+            let cb: IntersectionObserverCallback = () => {}
+            vi.stubGlobal('IntersectionObserver', class {
+                constructor(c: IntersectionObserverCallback) { cb = c }
+                observe() {}
+                disconnect() {}
+            })
+            const { container } = render(<><RastreioDeRecirculacao /><section data-bloco="artigo-continuar"><a href="/blog/a">A</a></section></>)
+            const bloco = container.querySelector('section')!
+            cb([{ target: bloco, isIntersecting: true } as unknown as IntersectionObserverEntry], {} as IntersectionObserver)
+            clicar(container.querySelector('a')!)
+            expect(trackRecirculacao).toHaveBeenLastCalledWith(expect.objectContaining({ bloco: 'artigo-continuar', visto: true, segundos: expect.any(Number) }))
+            vi.unstubAllGlobals()
+        })
+
+        it('clique em bloco ainda não exibido diz visto: false; menu não informa visto', () => {
+            vi.stubGlobal('IntersectionObserver', class { observe() {} disconnect() {} })
+            const { container } = render(<><RastreioDeRecirculacao /><section data-bloco="artigo-continuar"><a href="/blog/a">A</a></section><nav data-bloco="menu"><a href="/artists">Artistas</a></nav></>)
+            clicar(container.querySelector('section a')!)
+            expect(trackRecirculacao).toHaveBeenLastCalledWith(expect.objectContaining({ bloco: 'artigo-continuar', visto: false }))
+            clicar(container.querySelector('nav a')!)
+            expect(trackRecirculacao).toHaveBeenLastCalledWith(expect.objectContaining({ bloco: 'menu', visto: undefined }))
+            vi.unstubAllGlobals()
+        })
+    })
+
     describe('exibição do bloco', () => {
         let dispara: (el: Element, visivel?: boolean) => void
         let observados: Element[]

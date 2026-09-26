@@ -13,6 +13,7 @@ import Footer from '@/components/ui/Footer'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { CookieBanner } from '@/components/features/CookieBanner'
 import { RastreioDeRecirculacao } from '@/components/analytics/RastreioDeRecirculacao'
+import { SinalDeHumano } from '@/components/analytics/SinalDeHumano'
 import { AdSenseLoader } from '@/components/ui/AdSenseLoader'
 import { AdStickyBottom } from '@/components/ui/AdStickyBottom'
 import { ADSENSE } from '@/lib/config/ads'
@@ -192,6 +193,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
                 {/* LGPD / GDPR — ver lib/consent.ts */}
                 <CookieBanner />
                 <RastreioDeRecirculacao />
+            <SinalDeHumano />
                 <RastreioDeExperiencia />
 
                 {/*
