@@ -2,7 +2,7 @@ import type { SearchResult, SearchResultType } from '@/lib/search/types'
 import { stripHtml } from '@/lib/utils'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
-import { foldAccents, levenshtein, scoreTitle, stripSeparators } from '@/lib/search/scoring'
+import { foldAccents, fuzzyDistance, fuzzyThreshold, levenshtein, scoreTitle, stripSeparators } from '@/lib/search/scoring'
 
 /**
  * Indice de busca em memoria: todos os titulos do acervo (~8 mil fichas, ~1 MB)
@@ -180,13 +180,19 @@ export async function aguardarIndice(): Promise<void> {
  * com algum campo da ficha ou com o nome do grupo (esse com peso menor). Vale
  * um pouco menos que o casamento da frase inteira, que continua tendo prioridade.
  */
-function pontuarPalavras(e: Entrada, palavras: string[]): number {
+function pontuarPalavras(e: Entrada, palavras: string[], tolerante = false): number {
     if (palavras.length < 2) return 0
     let soma = 0
     for (const p of palavras) {
         const direto = Math.max(scoreTitle(e.title, p), ...e.alternativas.map(a => scoreTitle(a, p)))
         const porGrupo = Math.max(0, ...e.contexto.map(g => scoreTitle(g, p) * 0.6))
-        const melhor = Math.max(direto, porGrupo)
+        let melhor = Math.max(direto, porGrupo)
+        // Erro de digitacao numa das palavras ("blakpink jisoo"): vale menos que o acerto exato.
+        if (melhor === 0 && tolerante && p.length >= 3) {
+            const dist = Math.min(fuzzyDistance(e.title, p), ...e.alternativas.map(a => fuzzyDistance(a, p)),
+                ...e.contexto.map(g => fuzzyDistance(g, p)))
+            if (dist <= fuzzyThreshold(p)) melhor = 30 - dist
+        }
         if (melhor === 0) return 0
         soma += melhor
     }
@@ -217,6 +223,13 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
         const alvo = foldAccents(q)
         const limiar = Math.max(1, Math.ceil(alvo.length * 0.34))
         const jaAchados = new Set(ranqueado.map(x => x.e))
+        if (palavras.length >= 2) {
+            for (const e of base) {
+                if (!e.fuzzy || jaAchados.has(e)) continue
+                const s = pontuarPalavras(e, palavras, true)
+                if (s > 0) { ranqueado.push({ e, score: s * e.weight + Math.min(e.trending, 100) * 0.05 }); jaAchados.add(e) }
+            }
+        }
         for (const e of base) {
             if (!e.fuzzy || jaAchados.has(e)) continue
             let melhor = Infinity
