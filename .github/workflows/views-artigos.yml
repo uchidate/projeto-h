@@ -1,0 +1,61 @@
+name: Update Post Views
+
+# Grava em `views` (ACF do artigo) as visualizações humanas dos últimos 90 dias, lidas do Umami.
+# Alimenta "Mais lidos", o destaque por interesse e os conteúdos-chave da lista do blog
+# (lib/blog/destaque.ts). Sem esta rotina o ranking envelhece.
+#
+# Mesmo desenho do Update Trending Scores: ubuntu-latest, sem Docker no runner, e a parte
+# privilegiada (consulta ao Umami e gravação no WP) passa por SSH com chave dedicada.
+# O script vive no repositório de operação (scripts/update-post-views.mjs).
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'  # Toda segunda-feira às 07:00 UTC (depois do Update Trending Scores)
+  workflow_dispatch:       # Permite trigger manual
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # Sem teto, um travamento prenderia o runner o dia inteiro sem alerta — o
+    # mesmo caso que o streaming-scores ja documenta.
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Update post views
+        env:
+          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
+          # Exceção de WAF da Cloudflare: sem ela a REST do WP devolve 403 ao
+          # runner e o job morre na primeira coleção (issue #19).
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/update-post-views.mjs --confirm
+
+      - name: Trigger ISR revalidation
+        env:
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          # Exceção de WAF da Cloudflare para automação nossa; sem ela o POST leva 403.
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: |
+          curl -s -X POST \
+            -H "${{ vars.SONDA_HEADER }}: ${SONDA_TOKEN}" \
+            "${{ vars.SITE_URL }}/api/revalidate?secret=${REVALIDATE_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d '{"type":"post"}' \
+            -w "Revalidation: %{http_code}\n"
