@@ -23,6 +23,9 @@ on:
       - '**.md'
       - 'notas/**'
       - 'docs/**'
+      # Mudanca so em workflow/action nao muda o site: o PR ja passa pelo staging
+      # e pelo ensaio do deploy. Para deployar mesmo assim: workflow_dispatch.
+      - '.github/**'
   workflow_dispatch:
 
 # cancel-in-progress FALSE, ao contrario do staging.
