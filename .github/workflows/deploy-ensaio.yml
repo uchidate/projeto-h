@@ -147,3 +147,5 @@ jobs:
           ref: ${{ inputs.ops_ref }}
       - name: Procurar referências a coisas que não existem mais
         run: bash scripts/verifica-deriva-docs.sh
+      - name: Conferir dashboards do Grafana (uid, links, paineis)
+        run: python3 scripts/verifica-dashboards.py
