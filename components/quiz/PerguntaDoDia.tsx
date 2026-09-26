@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useSyncExternalStore } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { podeGuardarHistorico } from '@/lib/consent'
+import { AvisoConsentimento } from '@/components/consent/AvisoConsentimento'
 import { interpretarEstado, sequenciaApos, sequenciaVigente, type EstadoDia } from '@/lib/quiz/dia'
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
@@ -20,7 +21,10 @@ function assinar(aoMudar: () => void) {
 /** Uma pergunta por dia, igual para todos; a sequência de dias fica só no navegador (e só com consentimento). */
 export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao' }: { pergunta: PerguntaDia; chave: string; dataExtenso: string; /** 'alegre': cartão amarelo da sala de jogo do /quiz (já dentro do contêiner da página). */ variante?: 'padrao' | 'alegre' }) {
     const cru = useSyncExternalStore(assinar, lerCru, () => '')
-    const estado = interpretarEstado(cru)
+    const guardado = interpretarEstado(cru)
+    // Sem permissão para guardar, a resposta vale só nesta visita (fica em memória): a pergunta funciona igual.
+    const [naSessao, setNaSessao] = useState<EstadoDia | null>(null)
+    const estado = guardado?.ultimo === chave ? guardado : naSessao?.ultimo === chave ? naSessao : guardado
     const respondida = estado?.ultimo === chave
     const sequencia = sequenciaVigente(estado, chave)
     const marcada = respondida ? estado.resposta : null
@@ -29,8 +33,9 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
         if (respondida) return
         const novo: EstadoDia = { ultimo: chave, resposta: i, acertou: i === pergunta.correct, sequencia: sequenciaApos(estado, chave) }
         if (podeGuardarHistorico()) {
-            try { window.localStorage.setItem(CHAVE, JSON.stringify(novo)); window.dispatchEvent(new Event(EVENTO)) } catch { /* sem armazenamento: a resposta não fica salva */ }
+            try { window.localStorage.setItem(CHAVE, JSON.stringify(novo)); window.dispatchEvent(new Event(EVENTO)); return } catch { /* sem armazenamento: cai para a memória */ }
         }
+        setNaSessao(novo)
     }
 
     if (variante === 'alegre') {
@@ -60,6 +65,7 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
                 {respondida && (
                     <p aria-live="polite" className="text-[14px] font-medium leading-relaxed">{pergunta.explanation}</p>
                 )}
+                {respondida && <AvisoConsentimento recurso="sua sequência de dias" />}
             </section>
         )
     }
@@ -97,6 +103,7 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
                         <div aria-live="polite" className="mt-3">
                             <p className="text-[14px] leading-relaxed text-muted">{pergunta.explanation}</p>
                             <Link href="/quiz" className="touch-target mt-1 inline-flex items-center text-[14px] font-black text-accent hover:underline">Jogar o quiz completo →</Link>
+                            <AvisoConsentimento recurso="sua sequência de dias" className="mt-2 text-muted" />
                         </div>
                     )}
                 </div>

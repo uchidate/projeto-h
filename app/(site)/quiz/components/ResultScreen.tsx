@@ -12,6 +12,7 @@ import type { QuizQuestion } from '@/lib/wordpress/quiz'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { CATEGORY_META, CONTENT_LINKS, getResult } from '../lib/config'
+import { AvisoConsentimento } from '@/components/consent/AvisoConsentimento'
 import { QuestionText } from './QuestionText'
 import { Confetti } from './Confetti'
 import { AccuracyBar } from './AccuracyBar'
@@ -298,6 +299,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                         <Flame className="w-4 h-4" />{exploreLabel}
                     </Link>
                 </div>
+                <AvisoConsentimento recurso="seu placar e suas estatísticas" className="mb-10" />
 
                 {/* Categoria mais forte */}
                 {strongestCat && (

@@ -1,7 +1,8 @@
 'use client'
 /* eslint-disable react-hooks/set-state-in-effect -- quiz transitions intentionally reset coordinated state */
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useSyncExternalStore } from 'react'
+import { getBannerState, getServerBannerState, subscribeBanner } from '@/lib/consent'
 import Link from 'next/link'
 import { Trophy, ChevronRight, CheckCircle2, XCircle, BookOpen } from 'lucide-react'
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'
@@ -37,6 +38,9 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
 
     const q = questions[current]
     const meta = q ? CATEGORY_META[q.category] : null
+    // Enquanto o aviso de cookies cobre a tela, o relógio para: a pessoa não pode perder tempo de uma pergunta que nem viu.
+    const pausado = useSyncExternalStore(subscribeBanner, getBannerState, getServerBannerState) === 'perguntar'
+
     const progress = ((current + (revealed ? 1 : 0)) / questions.length) * 100
 
     useEffect(() => {
@@ -49,12 +53,12 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
     }, [current, cfg.time])
 
     useEffect(() => {
-        if (revealed) return
+        if (revealed || pausado) return
         if (timeLeft <= 0) { handleAnswer(null, cfg.time); return }
         const t = setTimeout(() => setTimeLeft(v => v - 1), 1000)
         return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- só o tique do relógio reinicia o timer; incluir handleAnswer/cfg recriaria o setTimeout a cada render e o cronômetro correria mais rápido
-    }, [timeLeft, revealed])
+    }, [timeLeft, revealed, pausado])
 
     // Auto-advance após revelar
     useEffect(() => {
