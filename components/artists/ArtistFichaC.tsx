@@ -62,9 +62,10 @@ function Sec({ id, kicker, title, children, className = '' }: { id?: string; kic
     )
 }
 
-function Anuncio({ placement, layout = 'content' }: { placement: string; layout?: 'content' | 'sidebar' }) {
-    if (!ADSENSE.slots.inline) return null
-    return <div className={`${COL} py-4`}><AdSlotInline slot={ADSENSE.slots.inline} layout={layout} analyticsPlacement={placement} /></div>
+function Anuncio({ placement, layout = 'content', mediaQuery }: { placement: string; layout?: 'content' | 'leaderboard'; mediaQuery?: string }) {
+    const slot = layout === 'leaderboard' ? ADSENSE.slots.leaderboard : ADSENSE.slots.inline
+    if (!slot) return null
+    return <div className={`${COL} py-4`}><AdSlotInline slot={slot} layout={layout} analyticsPlacement={placement} mediaQuery={mediaQuery} /></div>
 }
 
 /**
@@ -217,7 +218,7 @@ export function ArtistFichaC({
                     </ul>
                 </Sec>
             )}
-            {!semAnuncio && <Anuncio placement="artist_apos_obras" />}
+            {!semAnuncio && <Anuncio placement="artist_apos_obras" layout="leaderboard" />}
 
             {/* Música: player e Spotify lado a lado, discografia abaixo */}
             {temMusica && (
@@ -242,6 +243,11 @@ export function ArtistFichaC({
                         <h2 className={`mt-2 ${H2}`}>{tp('ui.whoIs', { name })}</h2>
                         <div className="artist-bio mt-5">
                             <div className="profile-prose prose prose-lg max-w-none prose-a:text-accent prose-a:no-underline dark:prose-invert" dangerouslySetInnerHTML={{ __html: highlightProse(contentBefore, name) }} />
+                            {!semAnuncio && contentAfter && ADSENSE.slots.inline && (
+                                <div className="lg:hidden">
+                                    <AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="artist_perfil_mobile" mediaQuery="(max-width: 1023px)" />
+                                </div>
+                            )}
                             {contentAfter && (
                                 <CollapsibleProse label={tp('ui.bio.continueReading')}>
                                     <div className="profile-prose prose prose-lg max-w-none prose-a:text-accent dark:prose-invert" dangerouslySetInnerHTML={{ __html: highlightProse(contentAfter, name) }} />
@@ -352,6 +358,8 @@ export function ArtistFichaC({
                 </Sec>
             )}
 
+            {!semAnuncio && (relatedArtists.length > 0 || grupo) && <Anuncio placement="artist_pos_universo" />}
+
             {/* Notícias */}
             {relatedPosts.length > 0 && (
                 <Sec id="noticias" kicker={t('newsKicker')} title={t('newsTitle')} className="pt-2 sm:pt-2">
@@ -376,6 +384,7 @@ export function ArtistFichaC({
                 </Sec>
             )}
 
+            {!semAnuncio && nodes.faq && <Anuncio placement="artist_pre_faq" layout="leaderboard" />}
             {nodes.faq}
 
             {/* Continue descobrindo */}

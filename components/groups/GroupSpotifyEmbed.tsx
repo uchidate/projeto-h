@@ -13,7 +13,7 @@ interface Props {
     accent: string
 }
 
-export function GroupSpotifyEmbed({ spotifyUrl, name, accent }: Props) {
+export function GroupSpotifyEmbed({ spotifyUrl, name, accent: _accent }: Props) {
     const tc = useTranslations('client')
     const [loaded, setLoaded] = useState(false)
     const embedUrl = toSpotifyEmbedUrl(spotifyUrl)
@@ -28,13 +28,12 @@ export function GroupSpotifyEmbed({ spotifyUrl, name, accent }: Props) {
                     {tc('spotify.open')}
                     <ExternalLink className="h-3 w-3" />
                 </a>} />
-            {/* Moldura em fio neutro: o verde fica no ícone e no link, onde
-                identifica a marca, e não como caixa colorida competindo com o
-                accent do perfil. */}
-            <div className="relative overflow-hidden border border-border bg-black"
-                style={{ borderTopColor: accent, borderTopWidth: 2 }}>
+            {/* Sem caixa: o player do Spotify já traz cantos arredondados e fundo próprio.
+                `color-scheme: normal` evita o fundo branco opaco que o navegador põe em
+                iframe quando a página é escura, que deixava pontas brancas nos cantos. */}
+            <div className="relative mt-4 overflow-hidden rounded-xl">
                 {!loaded && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
+                    <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-surface">
                         <div className="text-center">
                             <Music className="mx-auto mb-2 h-8 w-8 text-green-500 animate-pulse" />
                             <p className="text-xs text-muted">Carregando {name} no Spotify…</p>
@@ -45,7 +44,8 @@ export function GroupSpotifyEmbed({ spotifyUrl, name, accent }: Props) {
                     src={embedUrl}
                     width="100%"
                     height="352"
-                    className="h-[352px] w-full"
+                    className="block h-[352px] w-full rounded-xl"
+                    style={{ colorScheme: 'normal' }}
                     frameBorder="0"
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"
