@@ -19,7 +19,7 @@ vi.mock('next-intl', async () => {
 })
 
 vi.mock('next/navigation', () => ({ usePathname: () => '/en/groups/blackpink' }))
-vi.mock('@/components/features/MobileMenu', () => ({ MobileMenu: () => <div data-testid="mobile-menu" /> }))
+vi.mock('@/components/features/MobileMais', () => ({ MobileMais: () => <div data-testid="mobile-mais" /> }))
 vi.mock('@/components/ui/ThemeToggle', () => ({ ThemeToggle: () => <div data-testid="theme-toggle" /> }))
 vi.mock('@/components/ui/UserMenu', () => ({ UserMenu: () => <div data-testid="user-menu" /> }))
 vi.mock('@/components/ui/NotificationBell', () => ({ NotificationBell: () => <div data-testid="notification-bell" /> }))

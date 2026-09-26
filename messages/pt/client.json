@@ -166,6 +166,12 @@
     "browse": "Navegar",
     "about": "Sobre o {site}",
     "language": "Idioma",
-    "home": "{site} — página inicial"
+    "home": "{site} — página inicial",
+    "more": "Mais",
+    "moreSections": "Mais seções",
+    "theme": "Tema",
+    "sections": "Seções",
+    "notifications": "Avisos",
+    "searchShort": "Buscar artistas, grupos…"
   }
 }
