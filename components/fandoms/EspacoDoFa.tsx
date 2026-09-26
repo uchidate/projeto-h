@@ -38,14 +38,18 @@ function alternar(slug: string, atuais: string[]) {
     try { window.localStorage.setItem(CHAVE, JSON.stringify(novo)); window.dispatchEvent(new Event(EVENTO)) } catch { /* sem armazenamento: a escolha não fica salva */ }
 }
 
-/** Tinta legível sobre a cor da torcida (escura sobre cor clara, branca sobre cor escura). */
-function tinta(cor: string): string {
+function luminancia(cor: string): number {
     const m = /^#?([0-9a-f]{6})$/i.exec(cor.trim())
-    if (!m) return '#15102b'
+    if (!m) return 0.7
     const n = parseInt(m[1], 16)
-    const lum = (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255
-    return lum > 0.55 ? '#15102b' : '#ffffff'
+    return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255
 }
+
+/** Tinta legível sobre a cor da torcida (escura sobre cor clara, branca sobre cor escura). */
+function tinta(cor: string): string { return luminancia(cor) > 0.55 ? '#15102b' : '#ffffff' }
+
+/** Cor quase preta some no fundo escuro da página: ganha um contorno claro. */
+function contorno(cor: string): string { return luminancia(cor) < 0.15 ? 'outline outline-2 -outline-offset-2 outline-white/40' : '' }
 
 function BotaoSou({ slug, marcada, atuais, cor }: { slug: string; marcada: boolean; atuais: string[]; cor: string }) {
     return (
@@ -77,7 +81,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                         {minhas.map(c => {
                             const ink = tinta(c.cor)
                             return (
-                                <div key={c.slug} className={`relative flex flex-col gap-4 overflow-hidden p-6 sm:p-8 ${SOMBRA_G}`} style={{ background: c.cor, color: ink }}>
+                                <div key={c.slug} className={`relative flex flex-col gap-4 overflow-hidden p-6 sm:p-8 ${SOMBRA_G} ${contorno(c.cor)}`} style={{ background: c.cor, color: ink }}>
                                     <p className="text-[12px] font-black uppercase tracking-[0.1em]">Sua torcida · {c.grupos[0]}</p>
                                     <p className="font-[family-name:var(--font-playfair)] text-[56px] font-extrabold leading-[0.95] sm:text-[80px]">{c.nome}</p>
                                     <div className="flex flex-wrap gap-3">
@@ -99,13 +103,18 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                         {destaques.map(c => {
                             const ink = tinta(c.cor)
                             return (
-                                <Link key={c.slug} href={`/fandoms/${c.slug}`} className={`relative flex h-[190px] flex-col justify-between overflow-hidden p-4 transition-transform hover:-translate-y-1 sm:h-[220px] sm:p-5 ${SOMBRA_G}`} style={{ background: c.cor, color: ink }}>
-                                    <span className="relative"><BotaoSou slug={c.slug} marcada={false} atuais={escolhidas} cor={c.nome} /></span>
+                                <div key={c.slug} className={`group relative flex h-[190px] flex-col justify-between overflow-hidden p-4 transition-transform hover:-translate-y-1 sm:h-[220px] sm:p-5 ${SOMBRA_G} ${contorno(c.cor)}`} style={{ background: c.cor, color: ink }}>
+                                    <span className="relative z-10 flex items-start justify-between gap-2">
+                                        <span className="relative block h-14 w-14 overflow-hidden bg-[#15102b]">
+                                            {c.foto && <Image src={c.foto} alt="" fill sizes="56px" className="object-cover object-top" />}
+                                        </span>
+                                        <BotaoSou slug={c.slug} marcada={false} atuais={escolhidas} cor={c.nome} />
+                                    </span>
                                     <span className="relative">
-                                        <span className="block font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-none sm:text-[46px]">{c.nome}</span>
+                                        <Link href={`/fandoms/${c.slug}`} className="block font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-none after:absolute after:inset-[-200px_-40px_-40px_-40px] after:content-[''] sm:text-[46px]">{c.nome}</Link>
                                         <span className="mt-1 block text-[13px] font-bold">{c.grupos[0]}{c.ano ? ` · ${c.ano}` : ''}</span>
                                     </span>
-                                </Link>
+                                </div>
                             )
                         })}
                     </div>
@@ -119,17 +128,17 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                         const ink = tinta(c.cor)
                         const legenda = c.grupos.length > 2 ? `${c.grupos.length} grupos` : c.grupos.join(' · ')
                         return (
-                            <Link key={c.slug} href={`/fandoms/${c.slug}`} className={`group relative flex min-h-[96px] items-center gap-3 p-3.5 transition-transform hover:-translate-y-0.5 ${SOMBRA}`} style={{ background: c.cor, color: ink }}>
+                            <div key={c.slug} className={`group relative flex min-h-[96px] items-center gap-3 p-3.5 transition-transform hover:-translate-y-0.5 ${SOMBRA} ${contorno(c.cor)}`} style={{ background: c.cor, color: ink }}>
                                 <span className="relative h-[52px] w-[52px] shrink-0 overflow-hidden bg-[#15102b]">
                                     {c.foto && <Image src={c.foto} alt="" fill sizes="52px" className={`object-cover object-top ${c.encerrado ? 'grayscale' : ''}`} />}
                                 </span>
                                 <span className="min-w-0 flex-1">
-                                    <span className="block truncate text-[19px] font-black leading-tight">{c.nome}</span>
+                                    <Link href={`/fandoms/${c.slug}`} className="block truncate text-[19px] font-black leading-tight after:absolute after:inset-0 after:content-['']">{c.nome}</Link>
                                     <span className="block truncate text-[12px] font-bold opacity-85">{legenda}{c.ano ? ` · ${c.ano}` : ''}</span>
                                     {c.encerrado && <span className="block text-[10px] font-black uppercase tracking-widest opacity-75">encerrado</span>}
                                 </span>
-                                <BotaoSou slug={c.slug} marcada={false} atuais={escolhidas} cor={c.nome} />
-                            </Link>
+                                <span className="relative z-10"><BotaoSou slug={c.slug} marcada={false} atuais={escolhidas} cor={c.nome} /></span>
+                            </div>
                         )
                     })}
                 </div>
