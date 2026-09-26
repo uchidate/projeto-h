@@ -249,6 +249,10 @@ export function trackScrollDepth(params: { depth: 25 | 50 | 75 | 100; path: stri
     })
 }
 
+export function trackBlogSaibaMais(slug?: string) {
+    enviar('blog_saiba_mais', { content_slug: slug ?? '' })
+}
+
 export function trackBlogRead(params: { slug: string; seconds: number }) {
     enviar('blog_read', {
         content_slug: params.slug,
