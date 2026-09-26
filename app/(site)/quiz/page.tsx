@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getQuizQuestions } from '@/lib/wordpress/quiz'
 import type { QuizCategory } from '@/lib/wordpress/quiz'
 import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
+import { capasDoQuiz } from '@/lib/quiz/capas'
 import { QuizClient } from './QuizClient'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 
@@ -38,7 +39,7 @@ export default async function QuizPage({ searchParams }: { searchParams: SearchP
         ? sp.category as QuizCategory
         : null)
     const activeSub = sp.sub ?? ''
-    const questions = await getQuizQuestions()
+    const [questions, capas] = await Promise.all([getQuizQuestions(), capasDoQuiz()])
 
     return (
         <>
@@ -47,6 +48,7 @@ export default async function QuizPage({ searchParams }: { searchParams: SearchP
                 initialCategory={activeCategory ?? 'all'}
                 initialSubcategory={activeSub}
                 aposTitulo={<PerguntaDoDiaServer embutida />}
+                capas={capas}
             />
         </>
     )
