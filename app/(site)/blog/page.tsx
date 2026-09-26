@@ -95,7 +95,8 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
     const paginas = lidos ? Math.max(1, Math.ceil(lidos.length / porPagina)) : postsResult.totalPages
     if (lidos && page > paginas) notFound()
     const inicio = semFiltro && page === 1 && !order
-    const candidatos = inicio ? candidatosDestaque(pool, new Date(), 3) : []
+    const comImagem = pool.filter(p => p.featured_image_url)
+    const candidatos = inicio ? candidatosDestaque(comImagem, new Date(), 3) : []
     // O que já é candidato a destaque não repete em "Comece por aqui".
     const idsCandidatos = new Set(candidatos.map(p => p.id))
 
@@ -113,6 +114,7 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
             guias={guias}
             order={order}
             destaques={candidatos}
+            emAlta={inicio ? candidatosDestaque(pool, new Date(), 8).filter(p => !idsCandidatos.has(p.id)).slice(0, 4) : []}
             perenes={inicio ? escolherPerenes(pool.filter(p => !idsCandidatos.has(p.id)), 4, new Date(), categories.filter(c => c.slug === 'noticias-k-pop').map(c => c.id)) : []}
         />
     )
