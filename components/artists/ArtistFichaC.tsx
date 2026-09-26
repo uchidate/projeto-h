@@ -12,6 +12,9 @@ import { highlightProse } from '@/lib/profiles/highlightProse'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import type { WPAgency, WPArtist, WPGroup, WPPost, WPProduction } from '@/lib/wordpress/types'
 import type { ArtistProfileModel } from '@/lib/profiles/artistProfile'
+import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
+import { GroupDiscography, type DiscographyAlbum } from '@/components/groups/GroupDiscography'
+import { GroupSpotifyEmbed } from '@/components/groups/GroupSpotifyEmbed'
 import { ArtistCarreira } from '@/components/artists/ArtistCarreira'
 
 interface Props {
@@ -25,6 +28,7 @@ interface Props {
     productions: WPProduction[]
     relatedPosts: WPPost[]
     relatedArtists: WPArtist[]
+    discography: DiscographyAlbum[]
     model: ArtistProfileModel
     quickFacts: [string, string][]
     magra: boolean
@@ -70,7 +74,7 @@ function Anuncio({ placement, layout = 'content' }: { placement: string; layout?
  * recolhido em "Ficha completa", no mesmo HTML.
  */
 export function ArtistFichaC({
-    artist, name, artistUrl, image, roleLabels, groups, agency, productions, relatedPosts, relatedArtists,
+    artist, name, artistUrl, image, roleLabels, groups, agency, productions, relatedPosts, relatedArtists, discography,
     model, quickFacts, magra, nodes, resto, titulos,
 }: Props) {
     const accent = ROSA
@@ -90,15 +94,20 @@ export function ArtistFichaC({
         { rotulo: t('doorOld'), x: [...comPoster].sort((a, b) => anoDe(a.p) - anoDe(b.p))[0] },
     ].filter((d, i, arr) => arr.findIndex(o => o.x.p.id === d.x.p.id) === i) : []
 
+    const videos = model.videoList
+    const spotify = acf.spotify ? String(acf.spotify) : ''
+    const temMusica = videos.length > 0 || discography.length > 0 || !!spotify
     const marcos = storyChapters.length > 0
         ? storyChapters.slice(0, 6).map(c => ({ quando: c.period, titulo: c.title, sub: '' }))
         : milestones.slice(0, 6).map(m => ({ quando: m.year, titulo: m.description, sub: '' }))
     const viradas = storyChapters.slice(0, 3)
     const abas = [
         productions.length > 0 && { href: '#obras', label: t('navObras') },
+        temMusica && { href: '#musica', label: t('navMusica') },
         { href: '#perfil', label: t('navPerfil') },
         storyChapters.length > 0 && { href: '#trajetoria', label: t('navTrajetoria') },
         awards.length > 0 && { href: '#premios', label: t('navPremios') },
+        (relatedArtists.length > 0 || grupo) && { href: '#universo', label: t('navUniverso') },
         relatedPosts.length > 0 && { href: '#noticias', label: t('navNoticias') },
     ].filter(Boolean) as { href: string; label: string }[]
     const meta = [
@@ -210,8 +219,20 @@ export function ArtistFichaC({
             )}
             {!semAnuncio && <Anuncio placement="artist_apos_obras" />}
 
-            {/* Música (quando existe) */}
-            {nodes.musica}
+            {/* Música: player e Spotify lado a lado, discografia abaixo */}
+            {temMusica && (
+                <section id="musica" className="scroll-mt-28 py-10 sm:py-14">
+                    <div className={`${COL} space-y-10`}>
+                        {(videos.length > 0 || spotify) && (
+                            <div className={`grid gap-8 ${videos.length > 0 && spotify ? 'lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-10' : ''}`}>
+                                {videos.length > 0 && <GroupMVPlayer videos={videos} accent={accent} />}
+                                {spotify && <GroupSpotifyEmbed spotifyUrl={spotify} name={name} accent={accent} />}
+                            </div>
+                        )}
+                        {discography.length > 0 && <GroupDiscography albums={discography} accent={accent} />}
+                    </div>
+                </section>
+            )}
 
             {/* Perfil */}
             <section id="perfil" className="scroll-mt-28 py-10 sm:py-14">
@@ -301,11 +322,11 @@ export function ArtistFichaC({
                 </Sec>
             )}
 
-            {/* Do mesmo universo */}
-            {relatedArtists.length > 0 && (
-                <Sec kicker={t('alsoKicker')} title={t('alsoTitle')} className="pt-2 sm:pt-2">
+            {/* Universo: integrantes do grupo (quando há grupo) ou colegas do mesmo catálogo */}
+            {(relatedArtists.length > 0 || grupo) && (
+                <Sec id="universo" kicker={grupo ? t('membersKicker') : t('alsoKicker')} title={grupo ? t('membersTitle', { group: nomeGrupo ?? '' }) : t('alsoTitle')} className="pt-2 sm:pt-2">
                     <ul className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-                        {relatedArtists.slice(0, 4).map(r => {
+                        {relatedArtists.filter(r => r.id !== artist.id).slice(0, grupo ? 11 : 4).map(r => {
                             const foto = getWPImage(r._embedded, r.featured_image_url)
                             const nome = stripHtml(r.title?.rendered ?? '')
                             return (
@@ -319,6 +340,14 @@ export function ArtistFichaC({
                                 </li>
                             )
                         })}
+                        {grupo && (
+                            <li>
+                                <Link href={`/groups/${grupo.slug}`} className="flex items-center gap-4 border p-4 hover:opacity-90 sm:flex-col sm:text-center" style={{ borderColor: accent }}>
+                                    <span aria-hidden className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-[26px] font-bold text-[#0d0b0f] sm:h-24 sm:w-24" style={{ background: accent }}>{(nomeGrupo ?? '').charAt(0)}</span>
+                                    <span><span className="block text-[16px] font-bold">{nomeGrupo}</span><span className="mt-1 block text-[13px]" style={{ color: accent }}>{t('groupPage')}</span></span>
+                                </Link>
+                            </li>
+                        )}
                     </ul>
                 </Sec>
             )}
@@ -327,14 +356,22 @@ export function ArtistFichaC({
             {relatedPosts.length > 0 && (
                 <Sec id="noticias" kicker={t('newsKicker')} title={t('newsTitle')} className="pt-2 sm:pt-2">
                     <ul className="grid gap-3.5 md:grid-cols-3">
-                        {relatedPosts.slice(0, 3).map(p => (
-                            <li key={p.id}>
-                                <Link href={`/blog/${p.slug}`} className="block h-full bg-surface p-4 hover:bg-surface-hover">
-                                    <span className={`${KICKER} text-[10px]`} style={{ color: accent }}>{t('newsTag')}</span>
-                                    <span className="mt-2 block text-[17px] font-bold leading-snug">{stripHtml(p.title?.rendered ?? '')}</span>
-                                </Link>
-                            </li>
-                        ))}
+                        {relatedPosts.slice(0, 3).map(p => {
+                            const capa = getWPImage(p._embedded, p.featured_image_url)
+                            return (
+                                <li key={p.id}>
+                                    <Link href={`/blog/${p.slug}`} className="group block h-full overflow-hidden border border-border bg-surface hover:border-accent/60">
+                                        <span className="relative block aspect-[16/9] overflow-hidden bg-background">
+                                            {capa && <Image src={capa.src} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none" />}
+                                        </span>
+                                        <span className="block p-4">
+                                            <span className={`${KICKER} text-[10px]`} style={{ color: accent }}>{t('newsTag')}</span>
+                                            <span className="mt-2 block text-[17px] font-bold leading-snug">{stripHtml(p.title?.rendered ?? '')}</span>
+                                        </span>
+                                    </Link>
+                                </li>
+                            )
+                        })}
                     </ul>
                 </Sec>
             )}

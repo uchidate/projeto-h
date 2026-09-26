@@ -45,6 +45,7 @@ export function GroupSpotifyEmbed({ spotifyUrl, name, accent }: Props) {
                     src={embedUrl}
                     width="100%"
                     height="352"
+                    className="h-[352px] w-full"
                     frameBorder="0"
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"
