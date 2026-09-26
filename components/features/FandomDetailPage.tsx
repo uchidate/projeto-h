@@ -16,6 +16,7 @@ import { QuizFacts } from '@/components/ui/QuizFacts'
 import { GroupMemberCard } from '@/components/groups/GroupMemberCard'
 import { FandomGroupCard } from '@/components/fandoms/FandomGroupCard'
 import { FandomSidebarFicha } from '@/components/fandoms/FandomSidebarFicha'
+import { HistoriaEDicas, OuvirESeguir } from '@/components/fandoms/EnriquecerTorcida'
 import { OutrasTorcidas, type TorcidaVizinha } from '@/components/fandoms/OutrasTorcidas'
 import { EntityFAQ, type EntityFAQItem } from '@/components/seo/EntityFAQ'
 
@@ -110,6 +111,8 @@ export function FandomDetailPage({ fandom, artists, outras }: Props) {
                             </div>
                         </section>
 
+                        {groups[0] && <HistoriaEDicas grupo={groups[0]} nome={name} cor={accent} ink={ink} />}
+
                         {ADSENSE.slots.inline && <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="fandom_profile_feed" />}
 
                         {artists.length > 0 && (
@@ -122,6 +125,8 @@ export function FandomDetailPage({ fandom, artists, outras }: Props) {
                                 </div>
                             </section>
                         )}
+
+                        {groups[0] && <OuvirESeguir grupo={groups[0]} cor={accent} ink={ink} />}
 
                         {groups[0] && <div className="-mx-4 sm:mx-0"><QuizFacts entityId={groups[0].id} entitySlug={groups[0].slug} entityType="group" entityName={stripHtml(groups[0].title.rendered)} /></div>}
 
