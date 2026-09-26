@@ -25,7 +25,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
             : 'Quiz de K-Pop e K-Drama: 300+ perguntas',
         description: cat
             ? `Quiz de ${LABELS[cat]} grátis: perguntas em três níveis, cronômetro, placar e a explicação de cada resposta. Jogue agora e descubra quanto você sabe.`
-            : 'Quiz grátis de K-Pop, K-Drama, cultura e história da Coreia: mais de 300 perguntas em três níveis e uma pergunta nova por dia. Descubra quanto você sabe!',
+            : 'Quiz de K-Pop e K-Drama grátis: mais de 300 perguntas sobre música, séries, cultura e história da Coreia, em três níveis e com pergunta nova por dia.',
         alternates: {
             canonical,
         },

@@ -48,9 +48,9 @@ export function FandomsPage({ fandoms, search }: Props) {
             <div className="page-wrap py-6 sm:py-10">
                 <span className="inline-block -rotate-2 bg-[#ffe14d] px-3 py-1 text-[12px] font-black tracking-[0.08em] text-[#15102b]">{fandoms.length} TORCIDAS</span>
                 <h1 className="mt-3 font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-[1] sm:text-[56px]">
-                    <span className="sr-only">Fandoms K-Pop: </span>Qual é a sua <span className="text-[#ff5fa2]">torcida</span>? <span className="text-[#38e1c0]">✦</span>
+                    <span className="sr-only">Fandoms de K-Pop: </span>Qual é a sua <span className="text-[#ff5fa2]">torcida</span>? <span className="text-[#38e1c0]">✦</span>
                 </h1>
-                <p className="mt-3 max-w-2xl text-[16px] text-foreground/70">Fandom é o nome da torcida de um grupo de K-Pop: ARMY é a do BTS, BLINK a do BLACKPINK, ONCE a do TWICE. Marque a sua (ou as suas) e este espaço passa a ser seu, com novidades, datas e o quiz da sua torcida.</p>
+                <p className="mt-3 max-w-2xl text-[16px] text-foreground/70">Fandoms de K-Pop são as torcidas oficiais de cada grupo: ARMY é a do BTS, BLINK a do BLACKPINK, ONCE a do TWICE. Marque a sua (ou as suas) e este espaço passa a ser seu, com novidades, datas e o quiz da sua torcida.</p>
                 <div className="mt-5 max-w-sm">
                     <SearchInput placeholder="Buscar fandom..." current={search} />
                 </div>
