@@ -442,21 +442,6 @@ export function trackRecirculacaoVisto(params: { bloco: string; origem: string }
 }
 
 /**
- * Bloco de recirculação que entrou na tela.
- *
- * Sem a exibição, o clique é um número absoluto: 12 cliques em 2,3 mil leituras
- * pode ser bloco ruim ou bloco que ninguém viu. Com as duas pontas dá taxa de
- * clique por bloco, que é o que permite comparar formatos. Uma vez por bloco e
- * por página.
- */
-export function trackRecirculacaoVisto(params: { bloco: string; origem: string }) {
-    enviar('recirculation_view', {
-        block: params.bloco,
-        source_path: params.origem,
-    })
-}
-
-/**
  * Busca sem nenhum resultado, em evento próprio.
  *
  * O `search` já carrega `result_count`, mas um evento separado vira meta direta
