@@ -2,7 +2,7 @@ import type { SearchResult, SearchResultType } from '@/lib/search/types'
 import { stripHtml } from '@/lib/utils'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
-import { foldAccents, levenshtein, scoreTitle, stripSeparators } from '@/lib/search/scoring'
+import { foldAccents, fuzzyDistance, fuzzyThreshold, levenshtein, scoreTitle, stripSeparators } from '@/lib/search/scoring'
 
 /**
  * Indice de busca em memoria: todos os titulos do acervo (~8 mil fichas, ~1 MB)
@@ -53,6 +53,8 @@ type Entrada = {
     title: string
     /** Outras grafias buscaveis: slug, nome romanizado, hangul / titulo original. */
     alternativas: string[]
+    /** Subconjunto de `alternativas` que vale mostrar ao usuario (sem o slug). */
+    grafias: string[]
     /** Complemento exibido sob o titulo, para diferenciar homonimos ("Ator · 1972"). */
     detalhe?: string
     /** Nomes dos grupos do artista: "jisoo blackpink" acha a Jisoo pelo grupo. */
@@ -122,11 +124,13 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
     return unicos.map(item => {
         const titulo = stripHtml(item.title.rendered)
         const acf = Array.isArray(item.acf) || !item.acf ? undefined : item.acf
+        const grafias = [acf?.name_romanized, acf?.name_hangul, acf?.original_title]
+            .filter((x): x is string => !!x && x !== titulo)
         return {
             id: item.id,
             title: titulo,
-            alternativas: [item.slug.replace(/-/g, ' '), acf?.name_romanized, acf?.name_hangul, acf?.original_title]
-                .filter((x): x is string => !!x && x !== titulo),
+            grafias,
+            alternativas: [item.slug.replace(/-/g, ' '), ...grafias],
             detalhe: detalheDe(c.type, acf),
             contexto: [],
             href: `${c.prefix}/${item.slug}`,
@@ -180,13 +184,19 @@ export async function aguardarIndice(): Promise<void> {
  * com algum campo da ficha ou com o nome do grupo (esse com peso menor). Vale
  * um pouco menos que o casamento da frase inteira, que continua tendo prioridade.
  */
-function pontuarPalavras(e: Entrada, palavras: string[]): number {
+function pontuarPalavras(e: Entrada, palavras: string[], tolerante = false): number {
     if (palavras.length < 2) return 0
     let soma = 0
     for (const p of palavras) {
         const direto = Math.max(scoreTitle(e.title, p), ...e.alternativas.map(a => scoreTitle(a, p)))
         const porGrupo = Math.max(0, ...e.contexto.map(g => scoreTitle(g, p) * 0.6))
-        const melhor = Math.max(direto, porGrupo)
+        let melhor = Math.max(direto, porGrupo)
+        // Erro de digitacao numa das palavras ("blakpink jisoo"): vale menos que o acerto exato.
+        if (melhor === 0 && tolerante && p.length >= 3) {
+            const dist = Math.min(fuzzyDistance(e.title, p), ...e.alternativas.map(a => fuzzyDistance(a, p)),
+                ...e.contexto.map(g => fuzzyDistance(g, p)))
+            if (dist <= fuzzyThreshold(p)) melhor = 30 - dist
+        }
         if (melhor === 0) return 0
         soma += melhor
     }
@@ -217,6 +227,13 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
         const alvo = foldAccents(q)
         const limiar = Math.max(1, Math.ceil(alvo.length * 0.34))
         const jaAchados = new Set(ranqueado.map(x => x.e))
+        if (palavras.length >= 2) {
+            for (const e of base) {
+                if (!e.fuzzy || jaAchados.has(e)) continue
+                const s = pontuarPalavras(e, palavras, true)
+                if (s > 0) { ranqueado.push({ e, score: s * e.weight + Math.min(e.trending, 100) * 0.05 }); jaAchados.add(e) }
+            }
+        }
         for (const e of base) {
             if (!e.fuzzy || jaAchados.has(e)) continue
             let melhor = Infinity
@@ -232,6 +249,11 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
     const nomeGrupo = new Map(base.filter(e => e.type === 'group').map(g => [g.id, g.title]))
     return ranqueado.slice(0, limit).map(({ e }) => {
         const r: SearchResult = { id: e.id, title: e.title, href: e.href, type: e.type, thumbnail: e.thumbnail }
+        // Achou por outra grafia (ex.: hangul): mostra qual, senao o resultado parece aleatorio.
+        if (scoreTitle(e.title, q) === 0) {
+            const alias = e.grafias.find(g => scoreTitle(g, q) > 0)
+            if (alias) r.alias = alias
+        }
         if (e.type === 'artist') {
             const nomes = e.grupos.map(id => nomeGrupo.get(id)).filter(Boolean)
             const ano = e.detalhe?.match(/\d{4}$/)?.[0]

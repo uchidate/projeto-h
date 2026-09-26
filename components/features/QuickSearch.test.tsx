@@ -21,7 +21,7 @@ describe('QuickSearch', () => {
     beforeEach(() => {
         mockPush.mockReset()
         vi.mocked(useRouter).mockReturnValue({ push: mockPush } as unknown as ReturnType<typeof useRouter>)
-        vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false })
+        vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false, erro: false })
         useQuickSearch.setState({ isOpen: false })
     })
 
@@ -54,7 +54,7 @@ describe('QuickSearch', () => {
                 result({ id: 2, type: 'production', title: 'Um drama' }),
                 result({ id: 3, type: 'artist', title: 'Um artista' }),
             ],
-            isLoading: false,
+            isLoading: false, erro: false,
         })
         useQuickSearch.setState({ isOpen: true })
         const user = userEvent.setup()
@@ -70,7 +70,7 @@ describe('QuickSearch', () => {
                 result({ id: 1, type: 'group', title: 'BTS' }),
                 result({ id: 2, type: 'production', title: 'BTS: Bon Voyage' }),
             ],
-            isLoading: false,
+            isLoading: false, erro: false,
         })
         useQuickSearch.setState({ isOpen: true })
         const user = userEvent.setup()
@@ -88,7 +88,7 @@ describe('QuickSearch', () => {
                 result({ id: 1, type: 'group', title: 'BTS', href: '/groups/bts' }),
                 result({ id: 2, type: 'production', title: 'BTS: Bon Voyage', href: '/productions/bts-bon-voyage' }),
             ],
-            isLoading: false,
+            isLoading: false, erro: false,
         })
         useQuickSearch.setState({ isOpen: true })
         const user = userEvent.setup()
@@ -102,7 +102,7 @@ describe('QuickSearch', () => {
     })
 
     it('mostra "Nenhum resultado" quando a busca não retorna nada', async () => {
-        vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false })
+        vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false, erro: false })
         useQuickSearch.setState({ isOpen: true })
         const user = userEvent.setup()
         render(<QuickSearch />)
@@ -118,7 +118,7 @@ describe('QuickSearch', () => {
     // direto com as setas, testando exatamente a lógica de handleSubmit/
     // handleInputKeyDown, sem depender do timing do hook de busca real.
     it('Enter no primeiro resultado navega pra ele (activeIndex inicial = 0)', async () => {
-        vi.mocked(useWPSearch).mockReturnValue({ results: [result({ href: '/artists/jimin' })], isLoading: false })
+        vi.mocked(useWPSearch).mockReturnValue({ results: [result({ href: '/artists/jimin' })], isLoading: false, erro: false })
         useQuickSearch.setState({ isOpen: true })
         const user = userEvent.setup()
         render(<QuickSearch />)
@@ -130,7 +130,7 @@ describe('QuickSearch', () => {
     it('seta para baixo avança o activeIndex com wraparound', async () => {
         vi.mocked(useWPSearch).mockReturnValue({
             results: [result({ id: 1, href: '/a' }), result({ id: 2, href: '/b' })],
-            isLoading: false,
+            isLoading: false, erro: false,
         })
         useQuickSearch.setState({ isOpen: true })
         const user = userEvent.setup()
@@ -144,7 +144,7 @@ describe('QuickSearch', () => {
     it('seta para cima com activeIndex 0 vai pro último item (wraparound)', async () => {
         vi.mocked(useWPSearch).mockReturnValue({
             results: [result({ id: 1, href: '/a' }), result({ id: 2, href: '/b' })],
-            isLoading: false,
+            isLoading: false, erro: false,
         })
         useQuickSearch.setState({ isOpen: true })
         const user = userEvent.setup()
@@ -156,7 +156,7 @@ describe('QuickSearch', () => {
     })
 
     it('submeter sem selecionar nenhum resultado, mas com texto, navega pra /search?q=', async () => {
-        vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false })
+        vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false, erro: false })
         useQuickSearch.setState({ isOpen: true })
         const user = userEvent.setup()
         render(<QuickSearch />)
@@ -190,5 +190,61 @@ describe('QuickSearch', () => {
         render(<QuickSearch />)
         await user.click(screen.getByRole('button', { name: /artistas/i }))
         expect(mockPush).toHaveBeenCalledWith('/artists')
+    })
+
+    it('falha da API mostra aviso, não "nenhum resultado"', async () => {
+        vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false, erro: true })
+        useQuickSearch.setState({ isOpen: true })
+        const user = userEvent.setup()
+        render(<QuickSearch />)
+        await user.type(screen.getByRole('combobox'), 'riize')
+        expect(screen.getByRole('alert')).toHaveTextContent(/não foi possível buscar/i)
+        expect(screen.queryByText(/nenhum resultado/i)).not.toBeInTheDocument()
+    })
+
+    it('destaca cada palavra da consulta e mostra a grafia alternativa que casou', async () => {
+        vi.mocked(useWPSearch).mockReturnValue({
+            results: [result({ title: 'Kim Ji-soo', alias: '지수', subtitle: 'Membro de BLACKPINK' })],
+            isLoading: false, erro: false,
+        })
+        useQuickSearch.setState({ isOpen: true })
+        const user = userEvent.setup()
+        const { container } = render(<QuickSearch />)
+        await user.type(screen.getByRole('combobox'), '지수 blackpink')
+        expect(container.ownerDocument.body.querySelector('mark')?.textContent).toBe('지수')
+        expect(screen.getByText(/Membro de BLACKPINK/)).toBeInTheDocument()
+    })
+
+    describe('telemetria da busca', () => {
+        let gtag: ReturnType<typeof vi.fn>
+        const buscas = () => gtag.mock.calls.filter(c => c[1] === 'search')
+
+        beforeEach(() => {
+            vi.useFakeTimers({ shouldAdvanceTime: true })
+            gtag = vi.fn()
+            ;(window as unknown as { gtag: unknown }).gtag = gtag
+        })
+        afterEach(() => { vi.useRealTimers() })
+
+        it('registra uma vez a consulta estável, não cada tecla', async () => {
+            useQuickSearch.setState({ isOpen: true })
+            const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+            render(<QuickSearch />)
+            await user.type(screen.getByRole('combobox'), 'ella')
+            expect(buscas()).toHaveLength(0)
+            await vi.advanceTimersByTimeAsync(1300)
+            expect(buscas()).toHaveLength(1)
+            expect(buscas()[0][2]).toMatchObject({ search_term: 'ella', result_count: 0 })
+        })
+
+        it('falha da API não conta como "sem resultado"', async () => {
+            vi.mocked(useWPSearch).mockReturnValue({ results: [], isLoading: false, erro: true })
+            useQuickSearch.setState({ isOpen: true })
+            const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+            render(<QuickSearch />)
+            await user.type(screen.getByRole('combobox'), 'riize')
+            await vi.advanceTimersByTimeAsync(1300)
+            expect(buscas()).toHaveLength(0)
+        })
     })
 })

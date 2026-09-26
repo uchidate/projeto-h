@@ -65,6 +65,11 @@ const CASOS: Array<{ q: string; topo?: string; entre3?: string; nota?: string }>
     { q: 'jisoo blackpink', topo: '/artists/jisoo-kim', nota: 'nome + grupo, várias palavras' },
     { q: 'lisa blackpink', topo: '/artists/lisa', nota: 'nome + grupo' },
     { q: 'jimin bts', topo: '/artists/jimin', nota: 'nome + grupo' },
+    { q: 'blackpink jisoo', topo: '/artists/jisoo-kim', nota: 'grupo antes do nome' },
+    { q: 'blakpink jisoo', entre3: '/artists/jisoo-kim', nota: 'erro de digitação em nome + grupo' },
+    { q: 'jiso blackpink', entre3: '/artists/jisoo-kim', nota: 'erro de digitação no nome' },
+    { q: 'bts guia', topo: '/blog/guia-bts', nota: 'palavras fora de ordem no título' },
+    { q: 'filme unforgivable', topo: '/productions/unforgivable', nota: 'palavra-tipo' },
     { q: 'yg', topo: '/empresas/yg-entertainment' },
     { q: '지수', topo: '/artists/jisoo-kim', nota: 'hangul; entre dois 지수, o mais em alta' },
     { q: '리사', topo: '/artists/lisa', nota: 'hangul' },
@@ -103,6 +108,15 @@ describe('busca: consultas de referência', () => {
         expect(sub['/artists/jisoo-kim']).toBe('Membro de BLACKPINK · 1995')
         expect(sub['/artists/kim-ji-soo']).toBe('Ator/Atriz · 1972')
         expect(sub['/artists/kim-ji-soo-2']).toBe('Ator/Atriz · 1993')
+    })
+
+    it('achado por hangul mostra a grafia que casou; achado pelo título, não', async () => {
+        const { searchIndex, aguardarIndice } = await import('./index')
+        await aguardarIndice()
+        const porHangul = (await searchIndex('리사', 12))!
+        expect(porHangul[0].alias).toBe('리사')
+        const porTitulo = (await searchIndex('lisa', 12))!
+        expect(porTitulo[0].alias).toBeUndefined()
     })
 
     it('produção mostra tipo e ano', async () => {
