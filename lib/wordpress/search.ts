@@ -10,7 +10,8 @@ type WPItem = {
     slug: string
     title: { rendered: string }
     featured_image_url?: string | null
-    meta?: { trending_score?: number; groups?: number[] }
+    /** Campos editoriais vivem em `acf` (antes lia `meta`, que so tem Rank Math: trending e grupos eram sempre vazios). */
+    acf?: { trending_score?: number | null; groups?: number[] } | []
 }
 
 type TypeConfig = {
@@ -65,8 +66,8 @@ function toResults(cfg: TypeConfig, items: WPItem[]): ScoredCandidate[] {
         href: `${cfg.prefix}/${item.slug}`,
         type: cfg.type,
         thumbnail: item.featured_image_url ?? undefined,
-        _trendingScore: item.meta?.trending_score ?? 0,
-        _groupIds: item.meta?.groups,
+        _trendingScore: (Array.isArray(item.acf) ? undefined : item.acf?.trending_score) ?? 0,
+        _groupIds: Array.isArray(item.acf) ? undefined : item.acf?.groups,
     }))
 }
 
@@ -118,7 +119,7 @@ export async function searchWordPress(query: string, limit = 10): Promise<Search
         WP_CACHE_TAGS.productions, WP_CACHE_TAGS.artists, WP_CACHE_TAGS.groups,
         WP_CACHE_TAGS.posts, WP_CACHE_TAGS.companies, WP_CACHE_TAGS.foods,
     ]
-    const fields = 'id,slug,title,featured_image_url,meta'
+    const fields = 'id,slug,title,featured_image_url,acf.groups,acf.trending_score'
 
     const pools = await Promise.allSettled(TYPES.map(cfg => fetchPool(cfg, q, fields, revalidate, tags)))
 

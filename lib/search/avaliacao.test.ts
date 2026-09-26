@@ -13,7 +13,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
  * reportado, o caso do bug entra aqui antes da correção.
  */
 
-type Item = { id: number; slug: string; title: string; meta?: object }
+type Item = { id: number; slug: string; title: string; acf?: object }
 
 const ACERVO: Record<string, Item[]> = {
     group: [
@@ -22,12 +22,12 @@ const ACERVO: Record<string, Item[]> = {
         { id: 3, slug: 'apink', title: 'Apink' },
     ],
     artist: [
-        { id: 10, slug: 'jisoo-kim', title: 'Kim Ji-soo', meta: { groups: [2] } },
-        { id: 11, slug: 'kim-ji-soo', title: 'Kim Ji-soo' },
-        { id: 12, slug: 'kim-ji-soo-2', title: 'Kim Ji-soo' },
+        { id: 10, slug: 'jisoo-kim', title: 'Kim Ji-soo', acf: { name_hangul: '지수', name_romanized: 'Kim Ji-soo', birth_date: '19950103', groups: [2], trending_score: 150, roles: ['singer', 'actor'] } },
+        { id: 11, slug: 'kim-ji-soo', title: 'Kim Ji-soo', acf: { name_hangul: '김지수', birth_date: '19721024', trending_score: 44, roles: ['actor'] } },
+        { id: 12, slug: 'kim-ji-soo-2', title: 'Kim Ji-soo', acf: { name_hangul: '지수', birth_date: '19930328', trending_score: 41, roles: ['actor'] } },
         { id: 13, slug: 'kim-ji-sook-2047233', title: 'Kim Ji-sook' },
-        { id: 14, slug: 'lisa', title: 'Lisa', meta: { groups: [2] } },
-        { id: 15, slug: 'jimin', title: 'Jimin', meta: { groups: [1] } },
+        { id: 14, slug: 'lisa', title: 'Lisa', acf: { name_hangul: '리사', birth_date: '1997-03-27', groups: [2], trending_score: 35, roles: ['singer'] } },
+        { id: 15, slug: 'jimin', title: 'Jimin', acf: { groups: [1] } },
         { id: 16, slug: 'seo-in-guk', title: 'Seo In-guk' },
     ],
     production: [
@@ -40,6 +40,7 @@ const ACERVO: Record<string, Item[]> = {
         { id: 26, slug: 'parasita', title: 'Parasita' },
         { id: 27, slug: 'parasyte-the-grey', title: 'Parasyte: The Grey' },
         { id: 28, slug: 'snowdrop', title: 'Snowdrop' },
+        { id: 29, slug: 'unforgivable', title: 'Unforgivable', acf: { original_title: '비밀', type: 'movie', year: 2023 } },
     ],
     posts: [
         { id: 30, slug: 'jisoo-blackpink-visual', title: 'Jisoo (BLACKPINK): da Visual ao Centro do Palco' },
@@ -62,6 +63,9 @@ const CASOS: Array<{ q: string; topo?: string; entre3?: string; nota?: string }>
     { q: 'parasite', entre3: '/productions/parasita', nota: 'título em inglês, ficha em português' },
     { q: 'lisa', topo: '/artists/lisa' },
     { q: 'yg', topo: '/empresas/yg-entertainment' },
+    { q: '지수', topo: '/artists/jisoo-kim', nota: 'hangul; entre dois 지수, o mais em alta' },
+    { q: '리사', topo: '/artists/lisa', nota: 'hangul' },
+    { q: '비밀', topo: '/productions/unforgivable', nota: 'título original em hangul' },
     { q: 'kimchi', topo: '/comidas/kimchi' },
     { q: 'snowdrop', topo: '/productions/snowdrop' },
 ]
@@ -72,7 +76,7 @@ describe('busca: consultas de referência', () => {
         vi.stubGlobal('fetch', vi.fn(async (url: string) => {
             const tipo = Object.keys(ACERVO).find(t => url.includes(`/wp/v2/${t}?`))
             const itens = ACERVO[tipo!].map(i => ({
-                id: i.id, slug: i.slug, title: { rendered: i.title }, featured_image_url: null, meta: i.meta ?? [],
+                id: i.id, slug: i.slug, title: { rendered: i.title }, featured_image_url: null, acf: i.acf ?? [],
             }))
             return { ok: true, headers: new Headers({ 'x-wp-total': String(itens.length), 'x-wp-totalpages': '1' }), json: async () => itens }
         }))
@@ -86,5 +90,22 @@ describe('busca: consultas de referência', () => {
         const hrefs = r.map(x => x.href)
         if (topo) expect(hrefs[0], `resultados: ${hrefs.join(', ')}`).toBe(topo)
         if (entre3) expect(hrefs.slice(0, 3), `resultados: ${hrefs.join(', ')}`).toContain(entre3)
+    })
+
+    it('homônimos ganham subtítulo que os diferencia (grupo/papel e ano)', async () => {
+        const { searchIndex, aguardarIndice } = await import('./index')
+        await aguardarIndice()
+        const r = (await searchIndex('kim ji-soo', 12))!
+        const sub = Object.fromEntries(r.map(x => [x.href, x.subtitle]))
+        expect(sub['/artists/jisoo-kim']).toBe('Membro de BLACKPINK · 1995')
+        expect(sub['/artists/kim-ji-soo']).toBe('Ator/Atriz · 1972')
+        expect(sub['/artists/kim-ji-soo-2']).toBe('Ator/Atriz · 1993')
+    })
+
+    it('produção mostra tipo e ano', async () => {
+        const { searchIndex, aguardarIndice } = await import('./index')
+        await aguardarIndice()
+        const r = (await searchIndex('unforgivable', 12))!
+        expect(r[0].subtitle).toBe('Filme · 2023')
     })
 })

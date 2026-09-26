@@ -7,6 +7,9 @@ export function foldAccents(s: string): string {
         .toLowerCase()
         .normalize('NFD')
         .replace(COMBINING_DIACRITICS, '')
+        // Recompoe o hangul: o NFD o desmonta em jamo e "리사" casaria no meio de
+        // palavras sem relacao (varredura de jamo, nao de silaba).
+        .normalize('NFC')
         .trim()
 }
 
