@@ -21,7 +21,15 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId }
 
     // Perguntas ligadas à entidade (por link do post ou pelos vínculos do quiz)
     const chave = entityType === 'artist' ? 'artists' : entityType === 'group' ? 'groups' : 'productions'
+    // Pergunta cuja resposta é a própria entidade entrega a resposta na página dela.
+    const norm = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+    const nome = norm(entityName)
+    const entregaResposta = (q: { options: string[]; correct: number }) => {
+        const certa = norm(q.options[q.correct] ?? '')
+        return certa.length >= 3 && (certa === nome || certa.includes(nome) || nome.includes(certa))
+    }
     const facts = allQuestions
+        .filter(q => !entregaResposta(q))
         .filter(q => q.relatedHref?.includes(path) || (entityId != null && q.links?.[chave].includes(entityId)))
         .slice(0, 3)
 
