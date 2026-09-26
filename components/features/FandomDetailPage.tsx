@@ -6,7 +6,7 @@ import { proximasDatas } from '@/lib/fandoms/datas'
 import { chaveDia } from '@/lib/quiz/dia'
 import type { Fandom } from '@/lib/wordpress/fandoms'
 import type { WPArtist } from '@/lib/wordpress/types'
-import { getWPImage, stripHtml } from '@/lib/utils'
+import { getWPImage, getYear, stripHtml } from '@/lib/utils'
 import { SITE_URL } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
@@ -88,11 +88,25 @@ export function FandomDetailPage({ fandom, artists, outras }: Props) {
     const ink = tinta(accent)
     const fandomUrl = `${SITE_URL}/fandoms/${fandom.slug}`
 
+    const nomesGrupos = groups.map(g => stripHtml(g.title.rendered))
+    const estreias = groups.map(g => getYear(g.acf?.debut_date)).filter((a): a is number => !!a)
+    // A história do nome vem das curiosidades do grupo que citam a torcida; sem ela, a pergunta não entra.
+    const historiaDoNome = groups.flatMap(g => (Array.isArray(g.acf?.curiosidades) ? g.acf.curiosidades : [])).find(c => typeof c === 'string' && c.toLowerCase().includes(name.toLowerCase()))
+
     const faqItems: EntityFAQItem[] = [
         {
             question: `Quem faz parte do fandom ${name}?`,
-            answer: `${name} é o fandom de ${groups.map(g => stripHtml(g.title.rendered)).join(', ')} no ${SITE_NAME}.`,
+            answer: `${name} é o fandom de ${nomesGrupos.join(', ')} no ${SITE_NAME}.`,
         },
+        historiaDoNome
+            ? { question: `Por que o fandom se chama ${name}?`, answer: historiaDoNome }
+            : null,
+        estreias.length > 0
+            ? {
+                question: `Desde quando existe a torcida ${name}?`,
+                answer: `A torcida acompanha ${nomesGrupos[0]}, que estreou em ${Math.min(...estreias)}${estreias.length > 1 ? ` (o primeiro dos ${nomesGrupos.length} grupos da torcida)` : ''}.`,
+            }
+            : null,
         lightstick
             ? {
                 question: `Qual é o lightstick oficial do ${name}?`,
