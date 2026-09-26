@@ -318,11 +318,12 @@
     "asOf": "as of {date}",
     "fandomFollows": "A story followed by the fandom"
   },
-  "artistB": {
-    "knownFor": "Best known for",
-    "startWithWorks": "Start with these",
-    "seeAll": "See all {count} →",
-    "timeline": "Timeline",
-    "timelineTitle": "{name} in {count} milestones"
+  "artistC": {
+    "tabs": { "visao": "Overview", "carreira": "Career", "musica": "Music", "obras": "Works", "universo": "Universe", "ler": "Read" },
+    "startWith": "Start with what you want",
+    "listen": "Listen",
+    "watch": "Watch",
+    "read": "Read",
+    "understand": "Understand the career"
   }
 }

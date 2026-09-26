@@ -25,10 +25,9 @@ import { ArtistNextRead } from '@/components/artists/ArtistNextRead'
 import type { EntityFAQItem } from '@/components/seo/EntityFAQ'
 import { renderProfileEntries, isInterstitial, CHAVE_DE_ANUNCIO, type ProfileEntry } from '@/components/profiles/ProfileSection'
 import { variantePorId } from '@/lib/experimento'
-import { obrasEmDestaque, marcosDaCarreira, fichaMagra } from '@/lib/artists/obrasEmDestaque'
-import { ArtistObrasRail } from '@/components/artists/ArtistObrasRail'
-import { ArtistLinhaDoTempo } from '@/components/artists/ArtistLinhaDoTempo'
-import Image from 'next/image'
+import { fichaMagra } from '@/lib/artists/fichaMagra'
+import { reordenarPorAba, limitarAnuncios, abasDasAncoras } from '@/lib/artists/fichaC'
+import { ArtistAtalhos } from '@/components/artists/ArtistAtalhos'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
 
@@ -60,6 +59,7 @@ export function ArtistDetailPage({
 }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
+    const tC = useTranslations('profile.artistC')
     const locale = useLocale()
     const model = buildArtistProfileModel(artist, undefined, locale)
     const {
@@ -137,37 +137,34 @@ export function ArtistDetailPage({
             : null,
     ].filter(Boolean).slice(0, 6) as EntityFAQItem[]
 
-    // Teste A/B por id (par = estrutura "apresentação"), a mesma regra das produções.
-    // A variante B acrescenta a faixa de obras logo após o topo, a linha do tempo e o
-    // fundo do topo. O texto indexável é o mesmo.
+    // Teste A/B por id (par = ficha "C"), a mesma regra das produções. A C reordena a
+    // ficha em seis grupos (visão, carreira, música, obras, universo, ler), põe atalhos
+    // por intenção no topo, troca as âncoras por seis abas e limita a três anúncios.
+    // O texto indexável é o mesmo.
     const variante = variantePorId(artist.id)
-    const emB = variante === 'b'
+    const emC = variante === 'b'
     const magra = fichaMagra({
         hasStoryChapters, hasAnalysis: !!model.editorialAnalysis, productions: productions.length,
         bioChars: stripHtml(artist.content.rendered).length,
     })
-    const baseEntries = buildArtistProfileEntries({
+    let entries: ProfileEntry[] = buildArtistProfileEntries({
         model, productions, groups, discography, relatedArtists, relatedPosts,
         agency, connectionGroup, faqItems, categoryMap, portrait: image, t,
         semAnuncio: magra,
     })
-    const obras = emB ? obrasEmDestaque(productions) : []
-    const marcos = emB ? marcosDaCarreira(productions) : []
-    let entries: ProfileEntry[] = baseEntries
     // Vale para as duas variantes: ficha magra não carrega anúncio (risco de "conteúdo de baixo valor").
     if (magra) entries = entries.filter(e => !(isInterstitial(e) && CHAVE_DE_ANUNCIO.test(e.key)))
-    if (emB) {
-        if (marcos.length >= 4) {
-            const antes = entries.findIndex(e => !isInterstitial(e) && (e.id === 'trajetoria' || e.id === 'guia'))
-            const linha: ProfileEntry = {
-                key: 'linha-do-tempo',
-                interstitial: <ArtistLinhaDoTempo marcos={marcos} artistName={name} accent={accent} />,
-            }
-            entries = antes >= 0 ? [...entries.slice(0, antes), linha, ...entries.slice(antes)] : [...entries, linha]
-        }
-    }
+    if (emC) entries = limitarAnuncios(reordenarPorAba(entries), 3)
+    const presentes = new Set(entries.filter(e => !isInterstitial(e) && e.present).map(e => (e as { id: string }).id))
+    const atalhos = emC ? ([
+        { id: 'musica', tipo: 'listen' }, { id: 'filmografia', tipo: 'watch' },
+        { id: 'artigos', tipo: 'read' }, { id: 'trajetoria', tipo: 'understand' },
+    ] as const).filter(d => presentes.has(d.id)) : []
 
-    const { anchors: pageAnchors, nodes: sectionNodes } = renderProfileEntries(entries, { medir: { prefixo: 'ficha-artista', ids: ['filmografia', 'grupos', 'relacionados', 'artigos'] } })
+    const { anchors: todasAncoras, nodes: sectionNodes } = renderProfileEntries(entries, { medir: { prefixo: 'ficha-artista', ids: ['filmografia', 'grupos', 'relacionados', 'artigos'] } })
+    const pageAnchors = emC
+        ? abasDasAncoras(todasAncoras.map(a => a.href.slice(1)), aba => tC(`tabs.${aba}`))
+        : todasAncoras
 
     return (
         <>
@@ -205,22 +202,13 @@ export function ArtistDetailPage({
 
             <ReadingBar backHref={href('artists', undefined, locale)} backLabel={tEntity('breadcrumb.artists')} tagLabel={roleLabels[0]} title={name} pageUrl={artistUrl} pageAnchors={pageAnchors} />
 
-            <div hidden data-variante={emB ? 'artista-b' : 'artista-a'} />
-            <div className="relative isolate">
-                {emB && image && (
-                    // Retrato desfocado como fundo do topo: dá cor e clima sem carregar outra imagem.
-                    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[560px] overflow-hidden sm:block">
-                        <Image src={image.src} alt="" fill sizes="100vw" className="scale-125 object-cover object-top opacity-35 blur-3xl saturate-150" />
-                        <div className="absolute inset-0 bg-linear-to-b from-transparent to-background" />
-                    </div>
-                )}
-                <ArtistHero
-                    artist={artist} name={name} artistUrl={artistUrl} image={image}
-                    roleLabels={roleLabels} groups={groups} agency={agency}
-                    heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
-                />
-            </div>
-            {emB && <ArtistObrasRail obras={obras} total={productions.length} accent={accent} />}
+            <div hidden data-variante={emC ? 'artista-c' : 'artista-a'} />
+            <ArtistHero
+                artist={artist} name={name} artistUrl={artistUrl} image={image}
+                roleLabels={roleLabels} groups={groups} agency={agency}
+                heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
+            />
+            {emC && <ArtistAtalhos destinos={[...atalhos]} accent={accent} />}
 
             {sectionNodes}
 
