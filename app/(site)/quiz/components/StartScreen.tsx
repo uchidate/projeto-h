@@ -6,14 +6,10 @@ import {
 } from 'lucide-react'
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'
 import type { QuizStats } from '../lib/stats'
-import { type CategoryFilter, DIFFICULTY_CONFIG, QUIZ_SIZE } from '../lib/config'
+import { type CategoryFilter, DIFFICULTY_CONFIG, QUIZ_SIZE, TEMA_VISUAL as TOM } from '../lib/config'
 import { ScoreHistory } from './ScoreHistory'
 
 // Cor de cada tema: identifica o assunto de relance. Sala de jogo, de propósito mais viva que o resto do site.
-const TOM: Record<string, { cor: string; emoji: string }> = {
-    'k-pop': { cor: '#ff5fa2', emoji: '🎤' }, 'k-drama': { cor: '#7aa2ff', emoji: '📺' },
-    'cultura': { cor: '#38e1c0', emoji: '🍜' }, 'historia': { cor: '#c39bff', emoji: '🏯' },
-}
 const NIVEL_EMOJI: Record<string, string> = { easy: '🐣', medium: '⚡', hard: '🚀' }
 
 // ─── Start Screen ─────────────────────────────────────────────────────────────

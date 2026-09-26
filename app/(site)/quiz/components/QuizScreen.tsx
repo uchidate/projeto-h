@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Trophy, ChevronRight, CheckCircle2, XCircle, BookOpen } from 'lucide-react'
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'
-import { CATEGORY_META, DIFFICULTY_CONFIG } from '../lib/config'
+import { CATEGORY_META, DIFFICULTY_CONFIG, TEMA_VISUAL } from '../lib/config'
 import { QuestionText } from './QuestionText'
 
 // ─── Quiz Screen ──────────────────────────────────────────────────────────────
@@ -142,119 +142,99 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
 
     if (!q) return null
 
-    const timeColor = timeLeft <= 3 ? 'text-red-400' : timeLeft <= 6 ? 'text-amber-400' : 'text-foreground'
     const timePct = (timeLeft / cfg.time) * 100
+    const tema = TEMA_VISUAL[q.category] ?? TEMA_VISUAL['k-pop']
+    const CHIPS = ['#ff5fa2', '#38e1c0', '#7aa2ff', '#c39bff']
+    const SOMBRA = 'shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]'
 
     return (
-        <div className="page-wrap py-8 max-w-2xl">
+        <div className="bg-[#f3efff] text-[#15102b] dark:bg-[#15102b] dark:text-white">
+        <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-10">
             <style>{`
                 @keyframes cffall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
                 @keyframes correctPulse { 0%,100%{transform:scale(1)} 40%{transform:scale(1.015)} }
                 @keyframes wrongShake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-5px)} 40%,80%{transform:translateX(5px)} }
             `}</style>
 
-            {/* Header */}
-            <div className="flex items-center justify-between mb-2">
+            {/* Cabeçalho: tema, ritmo, sequência, pontos e tempo como etiquetas */}
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                    {meta && <meta.Icon className={`w-4 h-4 ${meta.color}`} />}
-                    <span className={`text-[11px] font-black uppercase tracking-[0.12em] ${meta?.color ?? 'text-muted'}`}>{meta?.label}</span>
-                    <span className="text-[11px] text-muted">· {difficulty === 'easy' ? 'Iniciante' : difficulty === 'medium' ? 'Médio' : 'Expert'}</span>
+                    <span className="px-2.5 py-1 text-[12px] font-black uppercase tracking-[0.1em] text-[#15102b]" style={{ background: tema.cor }}>{tema.emoji} {meta?.label}</span>
+                    <span className="text-[12px] font-bold opacity-70">{difficulty === 'easy' ? 'Iniciante' : difficulty === 'medium' ? 'Intermediário' : 'Expert'}</span>
                 </div>
-                <div className="flex items-center gap-3">
-                    {streak >= 2 && (
-                        <span className="font-mono text-[12px] font-black text-orange-400 animate-pulse">🔥{streak}x</span>
-                    )}
-                    <span className="font-mono text-[11px] font-black text-amber-400">{points.toLocaleString()} pts</span>
-                    <span className={`font-mono text-[18px] font-black tabular-nums ${timeColor}`}>{timeLeft}s</span>
+                <div className="flex items-center gap-2">
+                    {streak >= 2 && <span className="animate-pulse bg-[#ffe14d] px-2 py-1 text-[13px] font-black text-[#15102b]">🔥 {streak}x</span>}
+                    <span className="bg-[#15102b] px-2 py-1 text-[13px] font-black tabular-nums text-[#ffe14d] dark:bg-[#ffe14d] dark:text-[#15102b]">{points.toLocaleString()} pts</span>
+                    <span className={`px-2 py-1 text-[15px] font-black tabular-nums text-[#15102b] ${timeLeft <= 3 ? 'bg-[#f87171]' : timeLeft <= 6 ? 'bg-[#fbbf24]' : 'bg-white'}`}>{timeLeft}s</span>
                 </div>
             </div>
 
-            {/* Progress bar */}
-            <div className="h-1 bg-border mb-1 overflow-hidden">
-                <div className="h-full bg-accent transition-all duration-300" style={{ width: `${progress}%` }} />
+            {/* Progresso da partida e relógio da pergunta */}
+            <div className="mb-1 h-3 overflow-hidden border-2 border-[#15102b] bg-white dark:border-white/30 dark:bg-[#1f1840]">
+                <div className="h-full bg-[#ff5fa2] transition-all duration-300" style={{ width: `${progress}%` }} />
             </div>
-            {/* Timer bar */}
-            <div className="h-0.5 bg-border mb-6 overflow-hidden">
-                <div className="h-full transition-all duration-1000 linear"
-                    style={{ width: `${timePct}%`, background: timeLeft <= 3 ? '#f87171' : timeLeft <= 6 ? '#fbbf24' : 'var(--color-accent)' }} />
+            <div className="mb-6 h-1.5 overflow-hidden bg-[#15102b]/15 dark:bg-white/15">
+                <div className="linear h-full transition-all duration-1000" style={{ width: `${timePct}%`, background: timeLeft <= 3 ? '#f87171' : timeLeft <= 6 ? '#fbbf24' : '#8b80c4' }} />
             </div>
 
-            {/* Question number */}
-            <p className="text-[11px] font-mono text-muted mb-3">Pergunta {current + 1} de {questions.length}</p>
+            <p className="mb-3 text-[12px] font-black uppercase tracking-[0.12em] opacity-70">Pergunta {current + 1} de {questions.length}</p>
 
-            {/* Question */}
-            <h2 className="text-[20px] sm:text-[24px] font-black leading-tight tracking-[-0.02em] mb-6">
+            <h2 className="mb-6 font-[family-name:var(--font-playfair)] text-[26px] font-extrabold leading-[1.12] sm:text-[34px]">
                 <QuestionText text={q.question} />
             </h2>
 
-            {/* Options */}
-            <div className="grid gap-2 mb-4"
+            <div className="mb-5 grid gap-3"
                 style={{ animation: answerAnim === 'wrong' ? 'wrongShake 0.4s ease' : answerAnim === 'correct' ? 'correctPulse 0.4s ease' : undefined }}>
                 {q.options.map((opt, i) => {
                     const isCorrect = i === q.correct
                     const isSelected = i === selected
-                    let cls = 'flex items-center gap-3 px-4 py-3.5 border text-left text-[14px] font-semibold transition-all w-full relative'
-
-                    if (!revealed) {
-                        cls += ' border-border bg-background hover:border-accent hover:text-foreground cursor-pointer'
-                    } else if (isCorrect) {
-                        cls += ' border-green-500 bg-green-500/10 text-green-400 cursor-default'
-                    } else if (isSelected) {
-                        cls += ' border-red-500 bg-red-500/10 text-red-400 cursor-default'
-                    } else {
-                        cls += ' border-border bg-background text-muted cursor-default opacity-40'
-                    }
+                    let cls = `relative flex min-h-[58px] w-full items-center gap-3 border-[3px] border-[#15102b] px-4 py-3 text-left text-[16px] font-extrabold text-[#15102b] transition-transform sm:text-[18px] ${SOMBRA} `
+                    if (!revealed) cls += 'cursor-pointer bg-white hover:-translate-y-0.5'
+                    else if (isCorrect) cls += 'cursor-default bg-[#4ade80]'
+                    else if (isSelected) cls += 'cursor-default bg-[#f87171]'
+                    else cls += 'cursor-default bg-white opacity-40'
 
                     const shortcut = String.fromCharCode(65 + i)
                     return (
                         <button type="button" key={i} onClick={() => handleAnswer(i)} className={cls} disabled={revealed}>
-                            <span className="w-6 h-6 border border-current flex items-center justify-center text-[11px] font-black shrink-0">
-                                {revealed && isCorrect ? <CheckCircle2 className="w-4 h-4" /> :
-                                 revealed && isSelected ? <XCircle className="w-4 h-4" /> :
-                                 shortcut}
+                            <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center text-[14px] font-black" style={{ background: CHIPS[i] }}>
+                                {revealed && isCorrect ? <CheckCircle2 className="h-4 w-4" /> : revealed && isSelected ? <XCircle className="h-4 w-4" /> : shortcut}
                             </span>
                             <span className="flex-1">{opt}</span>
-                            {!revealed && (
-                                <kbd className="font-mono text-[9px] text-muted/50 shrink-0 hidden sm:block">{shortcut}</kbd>
-                            )}
                         </button>
                     )
                 })}
             </div>
 
-            {/* Streak bonus flash */}
             {revealed && streakBonus > 0 && streak >= 3 && (
-                <div className="mb-3 px-3 py-1.5 border border-orange-400/30 bg-orange-400/8 text-[12px] font-black text-orange-400 animate-fade-in">
-                    🔥 Sequência de {streak}! +{streakBonus} pts bônus
-                </div>
+                <div className="mb-4 bg-[#ffe14d] px-3 py-2 text-[13px] font-black text-[#15102b]">🔥 Sequência de {streak}! +{streakBonus} pts de bônus</div>
             )}
 
-            {/* Explanation */}
             {revealed && (
-                <div className={`border-l-2 pl-4 py-2 mb-6 ${selected === q.correct ? 'border-green-500' : 'border-red-500'}`}>
-                    <p className="text-[12px] font-black uppercase tracking-widest text-muted mb-1">
-                        {selected === q.correct ? 'Correto!' : selected === null ? 'Tempo esgotado!' : 'Incorreto!'}
+                <div className={`mb-6 bg-[#ffe14d] p-4 text-[#15102b] ${SOMBRA}`}>
+                    <p className="mb-1 text-[13px] font-black uppercase tracking-[0.1em]">
+                        {selected === q.correct ? '🎉 Acertou!' : selected === null ? '⏰ Tempo esgotado!' : '😅 Quase!'}
                     </p>
-                    <p className="text-[14px] text-foreground-subtle leading-relaxed"><QuestionText text={q.explanation} /></p>
+                    <p className="text-[15px] font-medium leading-relaxed"><QuestionText text={q.explanation} /></p>
                     {q.relatedHref && (
-                        <Link href={q.relatedHref} className="mt-2 inline-flex items-center gap-1 text-[12px] text-accent hover:underline">
-                            <BookOpen className="w-3 h-3" />{q.relatedLabel ?? 'Saiba mais'}
+                        <Link href={q.relatedHref} className="mt-2 inline-flex items-center gap-1 text-[13px] font-black underline">
+                            <BookOpen className="h-3.5 w-3.5" />{q.relatedLabel ?? 'Saiba mais'}
                         </Link>
                     )}
                 </div>
             )}
 
-            {/* Next button */}
             {revealed && (
                 <button type="button" onClick={handleNext}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 bg-foreground text-background font-black text-[14px] hover:opacity-90 transition-opacity">
+                    className={`flex h-14 w-full items-center justify-center gap-2 bg-[#ff5fa2] text-[16px] font-black text-[#15102b] transition-transform hover:-translate-y-0.5 ${SOMBRA}`}>
                     {current + 1 >= questions.length ? (
-                        <><Trophy className="w-4 h-4" />Ver resultado</>
+                        <><Trophy className="h-5 w-5" />Ver resultado</>
                     ) : (
-                        <>Próxima{autoSecs !== null ? ` (${autoSecs}s)` : ''}<ChevronRight className="w-4 h-4" /></>
+                        <>Próxima{autoSecs !== null ? ` (${autoSecs}s)` : ''}<ChevronRight className="h-5 w-5" /></>
                     )}
                 </button>
             )}
+        </div>
         </div>
     )
 }
