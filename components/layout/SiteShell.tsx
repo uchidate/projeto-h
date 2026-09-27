@@ -191,8 +191,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
                         {children}
                     </main>
 
-                    {/* Rodapé */}
-                    <footer>
+                    {/* Rodapé — mesma moldura do <main>, ver comentário acima. */}
+                    <footer className="mx-auto max-w-[1440px]">
                         <Footer columns={footerColumns} tagline={tagline} labels={footerLabels} mostSearched={isDefaultLocale ? siteSettings.maisBuscados : []} />
                     </footer>
                 </div>
