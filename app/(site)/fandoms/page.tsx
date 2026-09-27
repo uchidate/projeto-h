@@ -13,7 +13,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
     const url = `${SITE_URL}/fandoms${sp.search ? `?search=${encodeURIComponent(sp.search)}` : ''}`
     return {
         title: 'Fandoms de K-Pop: nome de cada torcida',
-        description: 'Descubra o nome da torcida de cada grupo de K-Pop, de ARMY a ONCE: cor oficial, próximas datas e novidades. Escolha a sua e acompanhe em português.',
+        description: 'Fandoms de K-Pop: descubra o nome da torcida de cada grupo, de ARMY a ONCE, com cor oficial, próximas datas e novidades. Escolha a sua e acompanhe.',
         alternates: { canonical: url },
         ...(sp.search ? { robots: { index: false, follow: true } } : {}),
         openGraph: baseOG(url),
