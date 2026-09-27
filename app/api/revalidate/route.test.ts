@@ -62,7 +62,7 @@ describe('POST /api/revalidate', () => {
     })
 
     it('rejeita type desconhecido', async () => {
-        const res = await POST(makeRequest({ type: 'quiz_question', slug: 'x' }))
+        const res = await POST(makeRequest({ type: 'nao-existe', slug: 'x' }))
         expect(res.status).toBe(400)
     })
 
@@ -72,6 +72,13 @@ describe('POST /api/revalidate', () => {
         const res = await POST(makeRequest({ type: 'music_release', slug: 'some-release' }))
         expect(res.status).toBe(200)
         expect(revalidateTagMock).toHaveBeenCalledWith('music-releases')
+    })
+
+    // quiz_question não tem página própria: só a coleção é invalidada, sem tag de item.
+    it('aceita quiz_question e invalida só a coleção', async () => {
+        const res = await POST(makeRequest({ type: 'quiz_question' }))
+        expect(res.status).toBe(200)
+        expect(revalidateTagMock).toHaveBeenCalledWith('quiz-questions')
     })
 
     it('invalida a tag de item específico quando slug é passado', async () => {
