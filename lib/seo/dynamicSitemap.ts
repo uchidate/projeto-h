@@ -49,7 +49,9 @@ const COLLECTIONS: Partial<Record<SitemapShard, {
 const STATIC_PAGES = [
     '', 'productions', 'artists', 'groups', 'groups/boy-groups',
     'groups/girl-groups', 'groups/grupos-mistos', 'groups/solos',
-    'agencies', 'fandoms', 'blog', 'guias', 'quiz', 'about', 'contato', 'privacidade', 'termos',
+    'agencies', 'fandoms', 'blog', 'guias', 'quiz',
+    'quiz/k-pop', 'quiz/k-drama', 'quiz/cultura', 'quiz/historia',
+    'about', 'contato', 'privacidade', 'termos',
 ]
 
 export function isSitemapShard(value: string): value is SitemapShard {

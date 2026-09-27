@@ -31,7 +31,7 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId }
     const facts = allQuestions
         .filter(q => !entregaResposta(q))
         .filter(q => q.relatedHref?.includes(path) || (entityId != null && q.links?.[chave].includes(entityId)))
-        .slice(0, 3)
+        .slice(0, 5)
 
     if (facts.length === 0) return null
 
@@ -46,9 +46,9 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId }
                 </p>
             </div>
 
-            <MiniQuiz items={facts.map(({ id, question, options, correct, explanation }) => ({ id, question, options, correct, explanation }))} entityName={entityName} quizHref={`/quiz?category=${facts[0]?.category ?? 'k-pop'}`} />
+            <MiniQuiz items={facts.map(({ id, question, options, correct, explanation }) => ({ id, question, options, correct, explanation }))} entityName={entityName} quizHref={`/quiz/${facts[0]?.category ?? 'k-pop'}`} />
 
-            <Link href={`/quiz?category=${facts[0]?.category ?? 'k-pop'}`}
+            <Link href={`/quiz/${facts[0]?.category ?? 'k-pop'}`}
                 className="mt-4 inline-flex items-center gap-2 text-[11px] font-black text-accent hover:underline">
                 <Trophy className="w-3.5 h-3.5" />
                 {t('quiz.testKnowledge')}
