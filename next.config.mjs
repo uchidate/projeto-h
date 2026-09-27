@@ -284,6 +284,15 @@ const nextConfig = {
                 source: '/(.*)',
                 headers: SECURITY_HEADERS,
             },
+            // As listas leem searchParams, então o Next as renderiza a cada
+            // requisição e devolve `private, no-store`: o Cloudflare não guarda e
+            // cada visita fria paga 0,7-1,0 s de TTFB (medido em 2026-09-26). O
+            // conteúdo não varia por visitante; 5 min de borda + SWR tira a
+            // renderização do caminho de quase todo mundo.
+            {
+                source: '/:lista(artists|groups|blog)',
+                headers: [{ key: 'Cache-Control', value: 's-maxage=300, stale-while-revalidate=600' }],
+            },
         ]
     },
 }
