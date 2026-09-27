@@ -13,6 +13,7 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { CATEGORY_META, CONTENT_LINKS, getResult } from '../lib/config'
 import { AvisoConsentimento } from '@/components/consent/AvisoConsentimento'
+import { generateShareCard } from './ShareCard'
 import { QuestionText } from './QuestionText'
 import { Confetti } from './Confetti'
 import { AccuracyBar } from './AccuracyBar'
@@ -88,8 +89,21 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
 
     const handleShare = async () => {
         const url = typeof window !== 'undefined' ? window.location.href : ''
+        const blob = await generateShareCard({ title: result.title, score, total: questions.length, points, streak: bestStreak, accent: result.color }).catch(() => null)
+        const file = blob ? new File([blob], 'quiz-hallyuhub.png', { type: 'image/png' }) : null
+
+        if (file && navigator.canShare?.({ files: [file] })) {
+            try { await navigator.share({ title: 'Quiz Hallyu', text: shareText, url, files: [file] }); return } catch { /* fallback */ }
+        }
         if (navigator.share) {
             try { await navigator.share({ title: 'Quiz Hallyu', text: shareText, url }); return } catch { /* fallback */ }
+        }
+        if (file) {
+            const a = document.createElement('a')
+            a.href = URL.createObjectURL(file)
+            a.download = file.name
+            a.click()
+            URL.revokeObjectURL(a.href)
         }
         navigator.clipboard?.writeText(`${shareText} ${url}`)
     }
