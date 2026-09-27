@@ -73,8 +73,10 @@ export function CookieBanner() {
                         Antes de continuar: sua escolha sobre cookies
                     </p>
                     <p id="consentimento-texto" className="mt-2 text-[14px] sm:text-[15px] text-muted leading-relaxed">
-                        Usamos cookies para medir audiência e personalizar anúncios. Recusar mantém o site
-                        completo, só com anúncios não personalizados. Veja a{' '}
+                        Usamos cookies para medir audiência e personalizar anúncios. Se você recusar, o
+                        site continua aberto para leitura, mas recursos que guardam suas escolhas neste
+                        aparelho, como resultados de quiz e o espaço do fã, ficam desativados, e os
+                        anúncios não são personalizados. Veja a{' '}
                         <a href="/privacidade" className="text-accent underline">política de privacidade</a>.
                     </p>
                     <div className="mt-5 grid grid-cols-2 gap-3">
