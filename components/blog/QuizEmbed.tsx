@@ -96,7 +96,7 @@ export function QuizEmbed({ questions, category }: Props) {
                             className="flex items-center justify-center gap-2 border border-border px-4 py-2.5 text-[12px] font-black hover:border-foreground transition-colors">
                             <RotateCcw className="w-3.5 h-3.5" />Repetir
                         </button>
-                        <Link href={`/quiz?category=${category}`}
+                        <Link href={`/quiz/${category}`}
                             className="flex items-center justify-center gap-2 border border-accent/40 bg-accent/5 text-accent px-4 py-2.5 text-[12px] font-black hover:border-accent transition-colors">
                             Quiz completo <ArrowRight className="w-3.5 h-3.5" />
                         </Link>
