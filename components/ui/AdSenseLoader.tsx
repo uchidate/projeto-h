@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useAds } from '@/components/providers/AdsProvider'
+import { getBannerState, subscribeBanner } from '@/lib/consent'
 
 export function AdSenseLoader() {
     const ads = useAds()
@@ -18,10 +19,23 @@ export function AdSenseLoader() {
         if (existing) return
 
         let injetado = false
+        let esperaBanner: (() => void) | null = null
         const injetar = () => {
             if (injetado) return
+            // O anúncio de âncora dos Anúncios automáticos do Google sobe com o
+            // maior z-index possível e cobre o banner de consentimento, que não
+            // tem como vencê-lo por camada. Com o banner aberto, o script só
+            // entra depois da decisão.
+            if (getBannerState() === 'perguntar') {
+                limpar()
+                esperaBanner ??= subscribeBanner(() => {
+                    if (getBannerState() !== 'perguntar') injetar()
+                })
+                return
+            }
             injetado = true
             limpar()
+            esperaBanner?.()
             const script = document.createElement('script')
             script.id = 'adsense-init'
             script.async = true
@@ -51,7 +65,10 @@ export function AdSenseLoader() {
         eventos.forEach(evento => window.addEventListener(evento, injetar, { once: true, passive: true }))
         const prazo = window.setTimeout(injetar, ESPERA_MS)
 
-        return limpar
+        return () => {
+            limpar()
+            esperaBanner?.()
+        }
     }, [ads.enabled, ads.client])
 
     return null
