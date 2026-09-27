@@ -31,7 +31,7 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId }
     const facts = allQuestions
         .filter(q => !entregaResposta(q))
         .filter(q => q.relatedHref?.includes(path) || (entityId != null && q.links?.[chave].includes(entityId)))
-        .slice(0, 3)
+        .slice(0, 5)
 
     if (facts.length === 0) return null
 
