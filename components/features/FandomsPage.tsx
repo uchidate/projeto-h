@@ -3,6 +3,8 @@ import { htmlLang } from '@/lib/i18n/format'
 import { Heart } from 'lucide-react'
 import { getWPImage, stripHtml, getYear } from '@/lib/utils'
 import type { Fandom } from '@/lib/wordpress/fandoms'
+import { proximasDatas } from '@/lib/fandoms/datas'
+import { chaveDia } from '@/lib/quiz/dia'
 import { SearchInput } from '@/components/ui/SearchInput'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
@@ -17,15 +19,23 @@ interface Props {
 }
 
 export function FandomsPage({ fandoms, search }: Props) {
+    const hoje = chaveDia()
     // Só o que o espaço do fã precisa, já em formato serializável para o componente de cliente.
     const cartoes: CartaoTorcida[] = fandoms.map(fandom => {
         const principal = fandom.groups[0]
         const imagem = principal ? getWPImage(principal._embedded, principal.featured_image_url) : null
+        // Selo de "aniversário perto" na grade: só a estreia do grupo (sem membros, pra não pesar
+        // a listagem inteira com dados de artista por torcida).
+        const proximaEstreia = proximasDatas(
+            fandom.groups.map(g => ({ nome: stripHtml(g.title.rendered), data: g.acf?.debut_date, encerrado: g.acf?.active === false })),
+            [], hoje, 14, 1,
+        )[0] ?? null
         return {
             slug: fandom.slug, nome: fandom.name, cor: fandom.color ?? '#c39bff',
             grupos: fandom.groups.map(g => stripHtml(g.title.rendered)), grupoSlug: principal?.slug ?? null,
             foto: imagem?.src ?? null, ano: principal ? getYear(principal.acf?.debut_date) : null,
             encerrado: fandom.groups.every(g => g.acf?.active === false),
+            diasProximaData: proximaEstreia?.dias ?? null,
         }
     })
     return (

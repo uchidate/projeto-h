@@ -17,6 +17,8 @@ export interface CartaoTorcida {
     foto: string | null
     ano: number | null
     encerrado: boolean
+    /** Dias até a próxima estreia comemorada (aniversário do grupo), se houver uma perto. */
+    diasProximaData: number | null
 }
 
 const CHAVE = 'hh:torcidas:v1'
@@ -43,6 +45,13 @@ function proxima(slug: string, atuais: string[]): string[] {
 function guardar(lista: string[]): boolean {
     if (!podeGuardarHistorico()) return false
     try { window.localStorage.setItem(CHAVE, JSON.stringify(lista)); window.dispatchEvent(new Event(EVENTO)); return true } catch { return false }
+}
+
+/** Selo "aniversário perto" nos cartões da grade — só quando há uma estreia comemorada nos próximos 14 dias. */
+function SeloData({ dias }: { dias: number | null }) {
+    if (dias == null) return null
+    const texto = dias === 0 ? 'hoje 🎂' : dias === 1 ? 'amanhã 🎂' : `em ${dias}d 🎂`
+    return <span className="mt-1 block text-[11px] font-black">{texto}</span>
 }
 
 function BotaoSou({ slug, marcada, onAlternar, cor }: { slug: string; marcada: boolean; onAlternar: (slug: string) => void; cor: string }) {
@@ -181,11 +190,12 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                         <span className="relative block h-14 w-14 overflow-hidden bg-[#15102b]">
                                             {c.foto && <Image src={c.foto} alt={`Foto de ${c.grupos[0]}, grupo da torcida ${c.nome}`} fill sizes="56px" className="object-cover object-top" />}
                                         </span>
-                                        <BotaoSou slug={c.slug} marcada={false} onAlternar={alternar} cor={c.nome} />
+                                        <BotaoSou slug={c.slug} marcada={escolhidas.includes(c.slug)} onAlternar={alternar} cor={c.nome} />
                                     </span>
                                     <span className="relative">
                                         <Link href={`/fandoms/${c.slug}`} className="block font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-none after:absolute after:inset-[-200px_-40px_-40px_-40px] after:content-[''] sm:text-[46px]">{c.nome}</Link>
                                         <span className="mt-1 block text-[13px] font-bold">{c.grupos[0]}{c.ano ? ` · ${c.ano}` : ''}</span>
+                                        <SeloData dias={c.diasProximaData} />
                                     </span>
                                 </div>
                             )
@@ -209,8 +219,9 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                     <Link href={`/fandoms/${c.slug}`} className="block truncate text-[19px] font-black leading-tight after:absolute after:inset-0 after:content-['']">{c.nome}</Link>
                                     <span className="block truncate text-[12px] font-bold opacity-85">{legenda}{c.ano ? ` · ${c.ano}` : ''}</span>
                                     {c.encerrado && <span className="block text-[10px] font-black uppercase tracking-widest opacity-75">encerrado</span>}
+                                    <SeloData dias={c.diasProximaData} />
                                 </span>
-                                <span className="relative z-10"><BotaoSou slug={c.slug} marcada={false} onAlternar={alternar} cor={c.nome} /></span>
+                                <span className="relative z-10"><BotaoSou slug={c.slug} marcada={escolhidas.includes(c.slug)} onAlternar={alternar} cor={c.nome} /></span>
                             </div>
                         )
                     })}
