@@ -20,7 +20,7 @@ const CATEGORY_META: Record<string, { label: string; color: string }> = {
 export function QuizWidget({ category = 'all', title, description }: Props) {
     const t = useTranslations('profile.ui')
     const meta = CATEGORY_META[category] ?? CATEGORY_META.all
-    const href = category !== 'all' ? `/quiz?category=${category}` : '/quiz'
+    const href = category !== 'all' ? `/quiz/${category}` : '/quiz'
     const defaultTitle = title ?? t('quiz.title', { topic: meta.label })
     const defaultDesc = description ?? t('quiz.desc', { topic: meta.label })
 

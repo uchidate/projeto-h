@@ -3,7 +3,7 @@ import { isWPPostType, getWPCollectionTag, getWPItemTag, WP_CACHE_TAGS } from '.
 
 describe('isWPPostType', () => {
     it('accepts every known type', () => {
-        for (const t of ['post', 'production', 'artist', 'group', 'agency', 'food', 'company', 'music_release']) {
+        for (const t of ['post', 'production', 'artist', 'group', 'agency', 'food', 'company', 'music_release', 'quiz_question']) {
             expect(isWPPostType(t)).toBe(true)
         }
     })
@@ -15,7 +15,6 @@ describe('isWPPostType', () => {
     })
 
     it('rejects unknown types instead of silently passing', () => {
-        expect(isWPPostType('quiz_question')).toBe(false)
         expect(isWPPostType('guia')).toBe(false)
         expect(isWPPostType('')).toBe(false)
         expect(isWPPostType(undefined)).toBe(false)

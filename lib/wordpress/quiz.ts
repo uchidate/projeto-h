@@ -1,4 +1,5 @@
 import { wpBuscarOpcional, wpFetchWithTotal } from './client'
+import { WP_CACHE_TAGS } from './cache'
 
 export type QuizDifficulty = 'easy' | 'medium' | 'hard'
 export type QuizCategory = 'k-pop' | 'k-drama' | 'cultura' | 'historia'
@@ -110,7 +111,7 @@ export async function getQuizQuestions(opts?: {
     // Busca página 1 para descobrir total de páginas
     const { items: page1, totalPages } = await wpFetchWithTotal<WPQuizQuestion>(
         `${base}&page=1`,
-        { revalidate: 3600 }
+        { revalidate: 3600, tags: [WP_CACHE_TAGS.quizQuestions] }
     )
 
     // Busca páginas restantes em paralelo
@@ -118,7 +119,7 @@ export async function getQuizQuestions(opts?: {
     if (totalPages > 1) {
         const extraPages = await Promise.all(
             Array.from({ length: totalPages - 1 }, (_, i) =>
-                wpBuscarOpcional<WPQuizQuestion[]>(`${base}&page=${i + 2}`, { revalidate: 3600 })
+                wpBuscarOpcional<WPQuizQuestion[]>(`${base}&page=${i + 2}`, { revalidate: 3600, tags: [WP_CACHE_TAGS.quizQuestions] })
             )
         )
         for (const page of extraPages) for (const item of page) all.push(item)

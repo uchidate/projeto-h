@@ -10,9 +10,9 @@ describe('QuizWidget', () => {
         expect(screen.getByRole('link')).toHaveAttribute('href', '/quiz')
     })
 
-    it('aponta o link pra /quiz?category=X quando uma categoria específica é passada', () => {
+    it('aponta o link pra /quiz/X quando uma categoria específica é passada', () => {
         render(<QuizWidget category="k-pop" />)
-        expect(screen.getByRole('link')).toHaveAttribute('href', '/quiz?category=k-pop')
+        expect(screen.getByRole('link')).toHaveAttribute('href', '/quiz/k-pop')
     })
 
     it('gera título/descrição default com base na categoria', () => {
