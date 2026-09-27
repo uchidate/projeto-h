@@ -17,9 +17,10 @@ export const WP_CACHE_TAGS = {
     guias: 'guias',
     storeProducts: 'store-products',
     musicReleases: 'music-releases',
+    quizQuestions: 'quiz-questions',
 } as const
 
-export type WPPostType = 'post' | 'production' | 'artist' | 'group' | 'agency' | 'food' | 'company' | 'music_release'
+export type WPPostType = 'post' | 'production' | 'artist' | 'group' | 'agency' | 'food' | 'company' | 'music_release' | 'quiz_question'
 
 const COLLECTION_TAG_BY_TYPE: Record<WPPostType, string> = {
     post: WP_CACHE_TAGS.posts,
@@ -30,6 +31,7 @@ const COLLECTION_TAG_BY_TYPE: Record<WPPostType, string> = {
     food: WP_CACHE_TAGS.foods,
     company: WP_CACHE_TAGS.companies,
     music_release: WP_CACHE_TAGS.musicReleases,
+    quiz_question: WP_CACHE_TAGS.quizQuestions,
 }
 
 export function isWPPostType(value: unknown): value is WPPostType {
