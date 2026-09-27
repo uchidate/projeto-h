@@ -12,6 +12,11 @@
  */
 export type Variante = 'a' | 'b'
 
-export function variantePorId(id: number): Variante {
-    return id % 2 === 0 ? 'b' : 'a'
+/**
+ * Teste encerrado em 2026-09-27: a variante B (nova) venceu e foi promovida
+ * para 100% das páginas. Mantido como função (não inlined nos callers) para
+ * não precisar tocar em cada ficha se um novo teste começar depois.
+ */
+export function variantePorId(_id: number): Variante {
+    return 'b'
 }
