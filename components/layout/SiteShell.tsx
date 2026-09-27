@@ -181,13 +181,18 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
                         />
                     </header>
 
-                    {/* Conteúdo principal — tag <main> essencial para acessibilidade e AdSense crawl */}
-                    <main id="main-content" tabIndex={-1}>
+                    {/* Conteúdo principal — tag <main> essencial para acessibilidade e AdSense crawl.
+                        max-w-[1440px] é a MESMA moldura da NavBar (que se centra sozinha por ser
+                        fixed): sem isto, qualquer fundo full-bleed dentro da página (hero de ficha,
+                        header de variante C) vira filho de bloco sem largura própria e herda 100%
+                        do viewport real, vazando pra fora da moldura em monitores largos — o
+                        overflow-x-clip do site-canvas escondia a barra de rolagem, não o vazamento. */}
+                    <main id="main-content" tabIndex={-1} className="mx-auto max-w-[1440px]">
                         {children}
                     </main>
 
-                    {/* Rodapé */}
-                    <footer>
+                    {/* Rodapé — mesma moldura do <main>, ver comentário acima. */}
+                    <footer className="mx-auto max-w-[1440px]">
                         <Footer columns={footerColumns} tagline={tagline} labels={footerLabels} mostSearched={isDefaultLocale ? siteSettings.maisBuscados : []} />
                     </footer>
                 </div>
