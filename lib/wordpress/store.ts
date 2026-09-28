@@ -1,4 +1,4 @@
-import { wpBuscarOpcional } from './client'
+import { wpFetchWithTotal } from './client'
 import { WP_CACHE_TAGS } from './cache'
 
 export type StoreProduct = {
@@ -48,11 +48,20 @@ export function formatCategory(category: string): string {
 }
 
 export async function getStoreProducts(): Promise<StoreProduct[]> {
-    const result = await wpBuscarOpcional<StoreProduct[]>(
-        '/wp/v2/store_products?per_page=100&orderby=id&order=asc&status=publish',
-        { revalidate: 300, tags: [WP_CACHE_TAGS.storeProducts] },
+    const opts = { revalidate: 300, tags: [WP_CACHE_TAGS.storeProducts] }
+    const first = await wpFetchWithTotal<StoreProduct>(
+        '/wp/v2/store_products?per_page=100&page=1&orderby=id&order=asc&status=publish',
+        opts,
     )
-    return Array.isArray(result) ? result : []
+    const items = [...first.items]
+    for (let page = 2; page <= first.totalPages; page++) {
+        const next = await wpFetchWithTotal<StoreProduct>(
+            `/wp/v2/store_products?per_page=100&page=${page}&orderby=id&order=asc&status=publish`,
+            opts,
+        )
+        items.push(...next.items)
+    }
+    return items
 }
 
 export async function getStoreProductsByGroupId(groupId: number): Promise<StoreProduct[]> {
