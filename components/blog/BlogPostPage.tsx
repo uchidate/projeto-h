@@ -25,6 +25,8 @@ import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
 import { BlogSuggestedNext } from '@/components/blog/BlogSuggestedNext'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 import { BlogContinuar } from '@/components/blog/BlogContinuar'
 import { BlogTextShare } from '@/components/blog/BlogTextShare'
 import { BlogMobileReadMore } from '@/components/blog/BlogMobileReadMore'
@@ -294,9 +296,10 @@ function enhanceArticleHtml(source: string, relatedPreviews: RelatedPreviewMap =
 interface Props {
     post: WPPost
     relatedPosts?: WPPost[]
+    shopProducts?: StoreProduct[]
 }
 
-export function BlogPostPage({ post, relatedPosts = [] }: Props) {
+export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Props) {
     /* Hallmark · macrostructure: Long Document · genre: editorial · theme: editorial tokens
      * audience: leitores de cultura coreana · use: leitura e descoberta · tone: editorial
      * pre-emit critique: P5 H4 E4 S5 R4 V4
@@ -780,6 +783,8 @@ export function BlogPostPage({ post, relatedPosts = [] }: Props) {
                                 </div>
                             </BlogMobileReadMore>
                         </article>
+
+                        <ShopRelatedSection title="Produtos relacionados" products={shopProducts} />
 
                         {/* Sugerido para você — logo abaixo do botão SAIBA MAIS, vira sticky ao subir */}
                         {relatedPosts[0] && (
