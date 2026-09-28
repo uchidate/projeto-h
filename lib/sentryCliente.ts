@@ -38,6 +38,10 @@ export const OPCOES_SENTRY_CLIENTE: Parameters<Sentry['init']>[0] = {
     tracesSampleRate: 0,
     integrations: [],
     enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
+    // v11 inverteu o default (sendDefaultPii virou dataCollection, ligado por
+    // padrão) — explícito aqui pra não passar a enviar PII do navegador pro
+    // Sentry sem decisão consciente.
+    sendDefaultPii: false,
 
     /**
      * Ruido de terceiros que nao e bug nosso e nao tem acao possivel.

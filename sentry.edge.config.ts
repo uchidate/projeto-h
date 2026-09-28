@@ -13,4 +13,8 @@ Sentry.init({
     release: process.env.GIT_COMMIT_SHA,
     tracesSampleRate: 0.1,
     enabled: !!process.env.SENTRY_DSN,
+    // v11 inverteu o default (sendDefaultPii virou dataCollection, ligado por
+    // padrão) — explícito aqui pra não passar a enviar corpo de request/cookies
+    // pro Sentry sem decisão consciente.
+    sendDefaultPii: false,
 })
