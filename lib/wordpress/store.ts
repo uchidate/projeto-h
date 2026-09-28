@@ -74,3 +74,8 @@ export async function getStoreProductsByArtistId(artistId: number): Promise<Stor
     const products = await getStoreProducts()
     return products.filter(p => !p.acf.is_hidden && p.acf.related_artist === artistId)
 }
+
+export async function getFeaturedStoreProducts(limit = 5): Promise<StoreProduct[]> {
+    const products = await getStoreProducts()
+    return products.filter(p => !p.acf.is_hidden && p.acf.featured).slice(0, limit)
+}
