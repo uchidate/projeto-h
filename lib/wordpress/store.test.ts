@@ -30,12 +30,20 @@ describe('getStoreProducts', () => {
 
     it('retorna os produtos quando a API responde um array', async () => {
         const products = [{ id: 1, title: { rendered: 'Album' }, acf: {} }]
-        fetchMock.mockResolvedValue({ ok: true, json: async () => products })
+        fetchMock.mockResolvedValue({
+            ok: true,
+            json: async () => products,
+            headers: new Headers({ 'X-WP-Total': '1', 'X-WP-TotalPages': '1' }),
+        })
         expect(await getStoreProducts()).toEqual(products)
     })
 
     it('retorna array vazio quando a API não responde um array (defesa contra resposta malformada do WP)', async () => {
-        fetchMock.mockResolvedValue({ ok: true, json: async () => ({ error: 'algo deu errado' }) })
+        fetchMock.mockResolvedValue({
+            ok: true,
+            json: async () => ({ error: 'algo deu errado' }),
+            headers: new Headers({ 'X-WP-Total': '0', 'X-WP-TotalPages': '0' }),
+        })
         expect(await getStoreProducts()).toEqual([])
     })
 
