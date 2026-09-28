@@ -33,6 +33,7 @@ export function FandomsPage({ fandoms, search }: Props) {
         return {
             slug: fandom.slug, nome: fandom.name, cor: fandom.color ?? '#c39bff',
             grupos: fandom.groups.map(g => stripHtml(g.title.rendered)), grupoSlug: principal?.slug ?? null,
+            grupoId: principal?.id ?? null,
             foto: imagem?.src ?? null, ano: principal ? getYear(principal.acf?.debut_date) : null,
             encerrado: fandom.groups.every(g => g.acf?.active === false),
             diasProximaData: proximaEstreia?.dias ?? null,
