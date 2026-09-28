@@ -2,6 +2,7 @@ import { SITE_NAME } from '@/lib/constants/site'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getPostBySlug, getPosts, getRelatedPosts } from '@/lib/wordpress/posts'
+import { getStoreProductsByGroupId, getStoreProductsByArtistId, type StoreProduct } from '@/lib/wordpress/store'
 import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { stripHtml, getWPImage, getWPTerms } from '@/lib/utils'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
@@ -13,6 +14,21 @@ import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescription } from '@/lib/seo/metaDescription'
 
 export const revalidate = 300
+
+async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostBySlug>>): Promise<StoreProduct[]> {
+    const groups = post?.related_entities?.groups ?? []
+    const artists = post?.related_entities?.artists ?? []
+    if (groups.length === 0 && artists.length === 0) return []
+
+    const lists = await Promise.all([
+        ...groups.slice(0, 2).map(g => getStoreProductsByGroupId(g.id)),
+        ...artists.slice(0, 2).map(a => getStoreProductsByArtistId(a.id)),
+    ])
+
+    const byId = new Map<number, StoreProduct>()
+    for (const list of lists) for (const product of list) byId.set(product.id, product)
+    return [...byId.values()]
+}
 
 type Params = Promise<{ slug: string }>
 
@@ -57,6 +73,7 @@ export default async function PostPage({ params }: { params: Params }) {
 
     const cats = getWPTerms(post._embedded, 'category')
     const relatedPosts = await getRelatedPosts(post)
+    const shopProducts = await getShopProductsForPost(post)
 
     const title = stripHtml(post.title.rendered)
     const url = `${SITE_URL}/blog/${slug}`
@@ -76,7 +93,7 @@ export default async function PostPage({ params }: { params: Params }) {
                 tempo de atencao sem tornar o artigo inteiro um Client
                 Component, o que custaria desempenho e SEO. */}
             <RastreioDeLeitura slug={slug} caminho={`/blog/${slug}`} />
-            <BlogPostPage post={post} relatedPosts={relatedPosts} />
+            <BlogPostPage post={post} relatedPosts={relatedPosts} shopProducts={shopProducts} />
         </>
     )
 }
