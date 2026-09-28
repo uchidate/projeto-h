@@ -56,7 +56,7 @@ export function StoreCard({ product, compact = false }: StoreCardProps) {
     return (
         <a href={acf.affiliate_url} target="_blank" rel="noopener noreferrer sponsored"
             title={`Ver no ${cfg.label} (link externo)`}
-            className="group flex h-full flex-col overflow-hidden border border-border bg-background transition-colors hover:border-accent/40">
+            className="group flex flex-col">
             <div className="relative aspect-square overflow-hidden bg-surface">
                 {acf.image_url ? (
                     <Image src={acf.image_url} alt={name} fill
@@ -72,41 +72,28 @@ export function StoreCard({ product, compact = false }: StoreCardProps) {
                         {acf.badge}
                     </span>
                 )}
-                <div className="absolute right-2 top-2 flex items-center gap-1 bg-black/60 px-1.5 py-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-                    <ExternalLink className="h-3 w-3 text-white" />
-                    <span className="font-mono text-[9px] text-white">{cfg.label}</span>
-                </div>
             </div>
-            <div className="flex flex-1 flex-col gap-2 p-3">
-                <div className="flex items-center justify-between gap-2">
-                    <span className={`inline-flex shrink-0 items-center px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wide ${cfg.bg} ${cfg.textColor}`}>
-                        {cfg.label}
+            <div className="mt-2.5 flex items-center justify-between gap-2">
+                <span className={`font-mono text-[9px] font-bold uppercase tracking-wide ${cfg.color}`}>{cfg.label}</span>
+                {acf.rating && acf.rating > 0 && (
+                    <span className="flex items-center gap-1 text-[11px] font-bold text-muted">
+                        <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                        {acf.rating.toFixed(1)}
                     </span>
-                    {acf.rating && acf.rating > 0 && (
-                        <span className="flex items-center gap-1 text-xs font-bold text-foreground">
-                            <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                            {acf.rating.toFixed(1)}
-                        </span>
-                    )}
-                </div>
-                <p className="min-h-9 line-clamp-2 text-sm font-bold leading-tight text-foreground">{name}</p>
-                <div className="mt-auto space-y-2 pt-1">
-                    {(acf.price || acf.original_price) && (
-                        <div>
-                            {acf.price && <p className="text-base font-black leading-none text-foreground">{acf.price}</p>}
-                            {acf.original_price && <p className="mt-1 text-xs text-muted line-through">{acf.original_price}</p>}
-                        </div>
-                    )}
-                    <div className="flex items-center justify-between gap-2 border-t border-border pt-2">
-                        <span className="min-w-0 truncate text-[11px] font-semibold text-muted">
-                            {acf.sold_count ? `${acf.sold_count} vendidos` : `Curadoria ${SITE_NAME}`}
-                        </span>
-                        <span className="flex shrink-0 items-center gap-1 text-[11px] font-black text-accent">
-                            Ver <ExternalLink className="h-3 w-3" />
-                        </span>
-                    </div>
-                </div>
+                )}
             </div>
+            <span className="mt-0.5 line-clamp-2 text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[15px]">
+                {name}
+            </span>
+            {(acf.price || acf.original_price) && (
+                <div className="mt-1 flex items-baseline gap-2">
+                    {acf.price && <span className="text-[14px] font-black text-foreground">{acf.price}</span>}
+                    {acf.original_price && <span className="text-[11px] text-muted line-through">{acf.original_price}</span>}
+                </div>
+            )}
+            <span className="mt-0.5 truncate text-[11px] text-muted">
+                {acf.sold_count ? `${acf.sold_count} vendidos` : `Curadoria ${SITE_NAME}`}
+            </span>
         </a>
     )
 }

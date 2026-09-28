@@ -1,6 +1,7 @@
 import { intlLocale } from '@/lib/i18n/format'
 import type { Metadata } from 'next'
-import { ShoppingBag, Sparkles, ExternalLink } from 'lucide-react'
+import { ExternalLink, ShoppingBag } from 'lucide-react'
+import Image from 'next/image'
 import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory } from '@/lib/wordpress/store'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
@@ -102,6 +103,19 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                     <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
                     Os links desta página são de afiliados. Você paga o mesmo preço — a comissão ajuda a manter o {SITE_NAME} no ar.
                 </p>
+
+                {/* Mosaico — mesmas imagens da vitrine, sem espaço vazio no hero */}
+                {featured.length > 0 && (
+                    <div className="mt-5 grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-8">
+                        {featured.slice(0, 8).map(p => (
+                            <div key={p.id} className="relative aspect-square overflow-hidden bg-surface">
+                                {p.acf.image_url && (
+                                    <Image src={p.acf.image_url} alt="" fill className="object-cover" unoptimized />
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </section>
 
             <div className="page-wrap py-6 space-y-8">
@@ -146,10 +160,9 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                         {/* Destaques — só quando não há filtro ativo */}
                         {!hasActive && featured.length > 0 && (
                             <section>
-                                <div className="mb-4 flex items-center gap-2 border-b border-border pb-2">
-                                    <Sparkles className="h-3.5 w-3.5 text-accent" />
-                                    <h2 className="text-[13px] font-black uppercase tracking-[0.08em]">Escolhas da curadoria</h2>
-                                </div>
+                                <h2 className="font-[family-name:var(--font-playfair)] mb-4 text-[22px] font-semibold">
+                                    Escolhas da curadoria
+                                </h2>
                                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                                     {featured.map(p => <StoreCard key={p.id} product={p} />)}
                                 </div>
@@ -172,11 +185,11 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                             /* Agrupado por categoria */
                             Object.entries(byCategory).map(([cat, items]) => (
                                 <section key={cat} id={`categoria-${cat}`}>
-                                    <div className="mb-4 flex items-center justify-between border-b border-border pb-2">
-                                        <h2 className="text-[13px] font-black uppercase tracking-[0.08em]">
+                                    <div className="mb-4 flex items-baseline justify-between">
+                                        <h2 className="font-[family-name:var(--font-playfair)] text-[22px] font-semibold">
                                             {formatCategory(cat)}
                                         </h2>
-                                        <span className="text-[11px] text-muted">{items.length} produto{items.length !== 1 ? 's' : ''}</span>
+                                        <span className="text-[12px] font-semibold text-muted">{items.length} produto{items.length !== 1 ? 's' : ''}</span>
                                     </div>
                                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                                         {items.map(p => <StoreCard key={p.id} product={p} />)}
