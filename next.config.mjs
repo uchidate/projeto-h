@@ -62,6 +62,11 @@ const nextConfig = {
         // país na Cloudflare. As URLs vêm de fora (não estão no HTML atual), então
         // o jeito de não devolver erro a robô é aceitar a largura.
         imageSizes: [32, 48, 64, 96, 128, 256, 384, 512],
+        // Next 16 só aceita os valores de `quality` explicitados aqui (o padrão
+        // implícito é [75] só). 20/45 são os que os heróis full-bleed passam a
+        // usar (fundo borrado e fundo de produção) — sem isto, a imagem quebra
+        // com 400 em vez de otimizar.
+        qualities: [20, 45, 75],
         remotePatterns: [
             // WordPress media servido pelo mesmo domínio
             {

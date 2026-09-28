@@ -151,7 +151,11 @@ export function ArtistFichaC({
         <>
             {/* Topo */}
             <header className="relative isolate overflow-hidden">
-                {image && <Image src={image.src} alt="" fill priority sizes="100vw" aria-hidden className="-z-20 scale-125 object-cover object-[center_20%] opacity-40 blur-[40px] saturate-[1.3]" />}
+                {/* sizes cap em 1440px (o header não tem largura própria; herda do <main>,
+                    que tem max-w-[1440px]) e quality bem baixa: blur-[40px] apaga qualquer
+                    detalhe que uma quality maior preservaria, então é puro desperdício de
+                    bytes — mesmo raciocínio aplicado ao hero de produção. */}
+                {image && <Image src={image.src} alt="" fill priority quality={20} sizes="(min-width: 1440px) 1440px, 100vw" aria-hidden className="-z-20 scale-125 object-cover object-[center_20%] opacity-40 blur-[40px] saturate-[1.3]" />}
                 <div aria-hidden className="absolute inset-0 -z-10" style={{ background: 'radial-gradient(60% 80% at 20% 30%, color-mix(in srgb, var(--color-accent) 30%, transparent), transparent 70%), linear-gradient(to bottom, rgba(13,11,15,.1), var(--background, #0d0b0f) 96%)' }} />
                 <div className={`${COL} grid grid-cols-[112px_minmax(0,1fr)] items-end gap-x-4 gap-y-4 py-8 sm:grid-cols-[300px_minmax(0,1fr)] sm:gap-x-12 sm:py-10`}>
                     {image ? (

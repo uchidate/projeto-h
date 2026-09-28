@@ -44,7 +44,13 @@ export function ProductionHeroB({
     return (
         <section aria-labelledby="titulo-producao" className="relative mx-auto flex h-[318px] max-w-[1440px] overflow-hidden bg-[#0d0b0f] sm:h-[400px] lg:h-[480px]">
             {fundo && (
-                <Image src={fundo} alt="" fill priority sizes="100vw"
+                // sizes cap em 1440px: a section tem max-w-[1440px], então "100vw" fazia
+                // monitor largo pedir o srcset de 3840px para uma imagem que nunca
+                // renderiza além de 1440. quality mais baixa: a imagem some sob o
+                // degradê escuro (linha 50-51) na maior parte da área, então perda de
+                // detalhe não é visível — mas é usada por baixo do texto do título, então
+                // não descer mais que isto.
+                <Image src={fundo} alt="" fill priority quality={45} sizes="(min-width: 1440px) 1440px, 100vw"
                     className={`object-cover ${backdrop ? 'object-[center_22%]' : 'object-top opacity-40'}`} />
             )}
             <div className="absolute inset-0 bg-linear-to-t from-[#0d0b0f] via-[#0d0b0f]/60 to-[#0d0b0f]/25" />
