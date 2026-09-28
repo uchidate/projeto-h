@@ -19,6 +19,7 @@ import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { GroupDetailPage } from '@/components/features/GroupDetailPage'
 import { getHubsForGroup } from '@/lib/guias/hub-lookup'
+import { getStoreProductsByGroupId } from '@/lib/wordpress/store'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
@@ -81,11 +82,12 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
     const memberIds = group.acf?.members ?? []
     const groupName = stripHtml(group.title.rendered)
 
-    const [members, { items: relatedPosts }, relatedGroups, wpReleases] = await Promise.all([
+    const [members, { items: relatedPosts }, relatedGroups, wpReleases, shopProducts] = await Promise.all([
         getArtistsByIds(memberIds),
         getPosts({ mentionsType: 'group', mentionsSlug: slug, perPage: 6, orderby: 'date', includeContent: false }),
         getRelatedGroups(group.id, group.acf?.agency ?? undefined),
         getMusicReleases({ groupId: group.id }),
+        getStoreProductsByGroupId(group.id),
     ])
 
     // Lançamentos solo das integrantes ativas (até 6, para limitar chamadas ao WP).
@@ -131,7 +133,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('group', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} />
+            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={locale === DEFAULT_LOCALE ? shopProducts : []} />
         </>
     )
 }

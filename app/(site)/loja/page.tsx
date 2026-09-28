@@ -64,47 +64,53 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
 
     const hasActive = sp.categoria || sp.loja || sp.busca
 
+    const setParam = (key: 'categoria' | 'loja', value: string) => {
+        const ps = new URLSearchParams()
+        if (key !== 'categoria' && sp.categoria) ps.set('categoria', sp.categoria)
+        if (key !== 'loja' && sp.loja) ps.set('loja', sp.loja)
+        if (sp.busca) ps.set('busca', sp.busca)
+        if (value) ps.set(key, value)
+        const qs = ps.toString()
+        return qs ? `/loja?${qs}` : '/loja'
+    }
+
     return (
         <main className="min-h-screen bg-background pb-20">
-            {/* Header */}
-            <div className="border-b border-border bg-surface px-4 py-8 sm:px-6">
-                <div className="mx-auto max-w-5xl">
-                    <p className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted">Vitrine</p>
-                    <h1 className="mt-1 text-3xl font-black tracking-tight text-foreground sm:text-4xl">
-                        Loja K-Pop
+            {/* Header — mesmo padrão de /artists */}
+            <section className="page-wrap pb-2 pt-6 sm:pt-7">
+                <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
+                    <h1 className="font-[family-name:var(--font-playfair)] whitespace-nowrap text-[34px] font-bold leading-none sm:text-[44px]">
+                        Loja<span className="text-accent">.</span>
+                        <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{products.length} produtos</span>
                     </h1>
-                    <p className="mt-2 text-sm text-muted">
-                        Álbuns · Lightsticks · Photocards · K-Beauty · Moda
-                    </p>
-                    {/* Aviso afiliado */}
-                    <div className="mt-4 flex items-start gap-2 rounded-md border border-border bg-background p-3 text-[12px] text-muted">
-                        <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
-                        <span>
-                            Os links desta página são de afiliados. Você paga o mesmo preço — a comissão ajuda a manter o {SITE_NAME} no ar. Obrigado pelo apoio!
-                        </span>
+                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group">
+                        <a href={setParam('categoria', '')}
+                            className={`shrink-0 px-4 py-2 text-[13px] font-semibold transition-colors ${!sp.categoria ? 'border border-accent text-accent' : 'border border-border-strong text-foreground-subtle hover:border-accent/50 hover:text-accent'}`}>
+                            Todos
+                        </a>
+                        {Object.entries(categoryCount)
+                            .sort((a, b) => (CATEGORY_LABELS[a[0]] ?? a[0]).localeCompare(CATEGORY_LABELS[b[0]] ?? b[0], intlLocale()))
+                            .map(([cat, count]) => (
+                                <a key={cat} href={setParam('categoria', cat)}
+                                    className={`shrink-0 whitespace-nowrap px-4 py-2 text-[13px] font-semibold transition-colors ${sp.categoria === cat ? 'border border-accent text-accent' : 'border border-border-strong text-foreground-subtle hover:border-accent/50 hover:text-accent'}`}>
+                                    {formatCategory(cat)} ({count})
+                                </a>
+                            ))}
                     </div>
                 </div>
-            </div>
+                <p className="mt-3 flex items-start gap-2 text-[12px] text-muted">
+                    <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
+                    Os links desta página são de afiliados. Você paga o mesmo preço — a comissão ajuda a manter o {SITE_NAME} no ar.
+                </p>
+            </section>
 
-            <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 space-y-8">
-                {/* Filtros */}
+            <div className="page-wrap py-6 space-y-8">
+                {/* Filtros secundários */}
                 <form className="flex flex-wrap gap-2 items-end">
-                    <label className="flex flex-col gap-1">
-                        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Categoria</span>
-                        <select name="categoria" defaultValue={sp.categoria ?? ''}
-                            className="h-8 rounded-md border border-border bg-background px-2.5 text-[12px] font-bold text-foreground focus:border-foreground focus:outline-hidden">
-                            <option value="">Todas</option>
-                            {Object.entries(categoryCount)
-                                .sort((a, b) => (CATEGORY_LABELS[a[0]] ?? a[0]).localeCompare(CATEGORY_LABELS[b[0]] ?? b[0], intlLocale()))
-                                .map(([cat, count]) => (
-                                    <option key={cat} value={cat}>{formatCategory(cat)} ({count})</option>
-                                ))}
-                        </select>
-                    </label>
                     <label className="flex flex-col gap-1">
                         <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Loja</span>
                         <select name="loja" defaultValue={sp.loja ?? ''}
-                            className="h-8 rounded-md border border-border bg-background px-2.5 text-[12px] font-bold text-foreground focus:border-foreground focus:outline-hidden">
+                            className="h-8 border border-border bg-surface px-2.5 text-[12px] font-bold text-foreground focus:border-foreground focus:outline-hidden">
                             <option value="">Todas</option>
                             {Object.entries(storeCount)
                                 .sort((a, b) => (STORE_LABELS[a[0]] ?? a[0]).localeCompare(STORE_LABELS[b[0]] ?? b[0], intlLocale()))
@@ -113,17 +119,18 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                                 ))}
                         </select>
                     </label>
-                    <label className="flex flex-col gap-1 min-w-[180px]">
+                    {sp.categoria && <input type="hidden" name="categoria" value={sp.categoria} />}
+                    <label className="flex flex-col gap-1 min-w-[220px]">
                         <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Busca</span>
                         <input name="busca" type="text" defaultValue={sp.busca ?? ''} placeholder="Buscar produto…"
-                            className="h-8 rounded-md border border-border bg-background px-2.5 text-[12px] text-foreground placeholder:text-muted focus:border-foreground focus:outline-hidden" />
+                            className="h-8 border border-border bg-surface px-2.5 text-[12px] text-foreground placeholder:text-muted focus:border-foreground focus:outline-hidden" />
                     </label>
                     <button type="submit"
-                        className="h-8 rounded-md bg-foreground px-3 text-[12px] font-bold text-background hover:opacity-85 transition-opacity">
+                        className="h-8 bg-foreground px-3 text-[12px] font-bold text-background hover:opacity-85 transition-opacity">
                         Aplicar
                     </button>
                     {hasActive && (
-                        <a href="/loja" className="h-8 rounded-md border border-border px-3 text-[12px] font-semibold text-muted hover:border-accent/50 hover:text-accent transition-colors flex items-center">
+                        <a href="/loja" className="h-8 border border-border px-3 text-[12px] font-semibold text-muted hover:border-accent/50 hover:text-accent transition-colors flex items-center">
                             Limpar
                         </a>
                     )}

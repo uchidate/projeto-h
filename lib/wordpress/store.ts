@@ -17,6 +17,8 @@ export type StoreProduct = {
         featured: boolean | null
         is_hidden: boolean | null
         position: number | null
+        related_group: number | null
+        related_artist: number | null
     }
 }
 
@@ -51,4 +53,14 @@ export async function getStoreProducts(): Promise<StoreProduct[]> {
         { revalidate: 300, tags: [WP_CACHE_TAGS.storeProducts] },
     )
     return Array.isArray(result) ? result : []
+}
+
+export async function getStoreProductsByGroupId(groupId: number): Promise<StoreProduct[]> {
+    const products = await getStoreProducts()
+    return products.filter(p => !p.acf.is_hidden && p.acf.related_group === groupId)
+}
+
+export async function getStoreProductsByArtistId(artistId: number): Promise<StoreProduct[]> {
+    const products = await getStoreProducts()
+    return products.filter(p => !p.acf.is_hidden && p.acf.related_artist === artistId)
 }

@@ -30,6 +30,8 @@ import { GroupFichaC } from '@/components/groups/GroupFichaC'
 import { isInterstitial } from '@/components/profiles/ProfileSection'
 import { variantePorId } from '@/lib/experimento'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 
 interface Props {
     group: WPGroup
@@ -41,9 +43,10 @@ interface Props {
     discography?: DiscographyAlbum[]
     soloReleases?: Record<string, DiscographyAlbum[]>
     relatedHubs?: ArchiveHub[]
+    shopProducts?: StoreProduct[]
 }
 
-export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], soloReleases = {}, relatedHubs = [] }: Props) {
+export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], soloReleases = {}, relatedHubs = [], shopProducts = [] }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const tC = useTranslations('profile.groupC')
@@ -260,6 +263,8 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                     </div>
                 </div>
             )}
+
+            <ShopRelatedSection title={`Shop ${name}`} products={shopProducts} />
 
             <QuizWidget category="k-pop" />
 
