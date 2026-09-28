@@ -31,6 +31,8 @@ import { variantePorId } from '@/lib/experimento'
 import { fichaMagra } from '@/lib/artists/fichaMagra'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 
 interface Props {
     artist: WPArtist
@@ -43,6 +45,7 @@ interface Props {
     discography?: DiscographyAlbum[]
     relatedHubs?: ArchiveHub[]
     categoryMap?: Record<number, { name: string; slug: string }>
+    shopProducts?: StoreProduct[]
 }
 
 
@@ -57,6 +60,7 @@ export function ArtistDetailPage({
     discography = [],
     relatedHubs = [],
     categoryMap,
+    shopProducts = [],
 }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
@@ -261,6 +265,8 @@ export function ArtistDetailPage({
             )}
 
             <ArtistColophon artist={artist} name={name} accent={accent} />
+
+            <ShopRelatedSection title={`Shop ${name}`} products={shopProducts} />
 
             <QuizWidget category="k-pop" />
 

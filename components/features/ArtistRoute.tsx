@@ -12,6 +12,7 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ArtistDetailPage } from '@/components/features/ArtistDetailPage'
 import { getHubsForArtist } from '@/lib/guias/hub-lookup'
+import { getStoreProductsByArtistId } from '@/lib/wordpress/store'
 import { getMusicReleases } from '@/lib/wordpress/music'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { applyArtistManifestPreview, applyArtistProductionsPreview } from '@/lib/agencies/preview'
@@ -80,13 +81,14 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
 
     const groupIds = artist.acf?.groups ?? []
 
-    const [productionsRaw, groups, { items: relatedPosts }, agency, wpReleases, categories] = await Promise.all([
+    const [productionsRaw, groups, { items: relatedPosts }, agency, wpReleases, categories, shopProducts] = await Promise.all([
         getProductionsByArtist(slug),
         groupIds.length > 0 ? getGroupsByIds(groupIds) : getGroupsByMemberId(artist.id),
         getPosts({ mentionsType: 'artist', mentionsSlug: slug, perPage: 4, orderby: 'date', includeContent: false }),
         artist.acf?.agency ? getAgencyById(artist.acf.agency) : Promise.resolve(null),
         getMusicReleases({ artistId: artist.id }),
         getCategories(),
+        getStoreProductsByArtistId(artist.id),
     ])
     const productions = await applyArtistProductionsPreview(slug, productionsRaw)
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
@@ -129,6 +131,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
             connectionGroup={groupMemberIds.length > 0 ? connectionGroup : undefined}
             discography={discography}
             relatedHubs={relatedHubs}
+            shopProducts={locale === DEFAULT_LOCALE ? shopProducts : []}
         />
         </>
     )
