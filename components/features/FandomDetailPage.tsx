@@ -137,7 +137,7 @@ export function FandomDetailPage({ fandom, artists, outras }: Props) {
                         {lightstick && <span className="bg-[#ffe14d] px-3 py-1.5 text-[12px] font-black text-[#15102b]">💡 {lightstick}</span>}
                     </div>
                     <div className="mt-6 flex flex-wrap gap-3">
-                        <BotaoTorcida slug={fandom.slug} ink={ink} cor={accent} />
+                        <BotaoTorcida grupoId={fandom.groups[0]?.id ?? null} ink={ink} cor={accent} />
                         <Link href="/quiz" className="touch-target inline-flex items-center bg-[#ffe14d] px-5 py-3 text-[14px] font-black text-[#15102b]">Fazer o quiz 🎯</Link>
                     </div>
                 </div>
