@@ -89,19 +89,19 @@ describe('PerfilClient', () => {
 
     it('calcula a % de completude do perfil com base nas tarefas concluídas', () => {
         // bio curta (< 20 chars) conta como não preenchida — só "Nome visível"
-        // fica concluída = 1 de 6 tarefas = 17% (arredondado)
+        // fica concluída = 1 de 7 tarefas = 14% (arredondado)
         render(<PerfilClient user={BASE_USER} stats={BASE_STATS} />)
-        expect(screen.getByText('17%')).toBeInTheDocument()
+        expect(screen.getByText('14%')).toBeInTheDocument()
     })
 
     it('bio com 20+ caracteres conta como tarefa "Bio preenchida" concluída', () => {
         const user = { ...BASE_USER, bio: 'Fã de K-pop desde 2016, apaixonada por tudo' }
         render(<PerfilClient user={user} stats={BASE_STATS} />)
-        // Nome visível + Bio preenchida = 2 de 6 = 33%
-        expect(screen.getByText('33%')).toBeInTheDocument()
+        // Nome visível + Bio preenchida = 2 de 7 = 29%
+        expect(screen.getByText('29%')).toBeInTheDocument()
     })
 
-    it('completude sobe pra 100% quando todas as tarefas do perfil estão concluídas', () => {
+    it('completude sobe pra 100% quando todas as tarefas do perfil estão concluídas, incluindo torcida', () => {
         const user = { ...BASE_USER, bio: 'Fã de K-pop desde 2016, apaixonada por tudo' }
         const stats = {
             ...BASE_STATS,
@@ -109,7 +109,19 @@ describe('PerfilClient', () => {
             contentCounts: { production: 0, artist: 1, group: 0, post: 0 },
             contentStateCounts: { favorite: 0, following: 0, saved: 1, read: 0 },
         }
-        render(<PerfilClient user={user} stats={stats} />)
+        const torcidas = [{ slug: 'army', nome: 'ARMY', cor: '#c6a852', grupo: 'BTS' }]
+        render(<PerfilClient user={user} stats={stats} torcidas={torcidas} />)
         expect(screen.getByText('100%')).toBeInTheDocument()
+    })
+
+    it('sem torcidas, mostra convite pra escolher uma', () => {
+        render(<PerfilClient user={BASE_USER} stats={BASE_STATS} />)
+        expect(screen.getByText(/ainda não marcou nenhuma torcida/i)).toBeInTheDocument()
+    })
+
+    it('com torcidas, mostra o cartão de cada uma linkando pra ficha dela', () => {
+        const torcidas = [{ slug: 'army', nome: 'ARMY', cor: '#c6a852', grupo: 'BTS' }]
+        render(<PerfilClient user={BASE_USER} stats={BASE_STATS} torcidas={torcidas} />)
+        expect(screen.getByRole('link', { name: /ARMY/ })).toHaveAttribute('href', '/fandoms/army')
     })
 })

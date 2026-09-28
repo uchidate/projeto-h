@@ -9,6 +9,9 @@ import { BookmarkCheck, BookOpen, Calendar, CheckCircle2, Compass, Heart, Mic2, 
 import { BrandDot } from '@/components/ui/BrandDot'
 import { getNotificationPreferences, updateNotificationPreferences, updateProfile, type NotificationPreferences } from '@/lib/wordpress/userApi'
 import { buildUserAchievements } from '@/lib/userJourney'
+import { tinta, contorno } from '@/lib/fandoms/cor'
+
+export interface TorcidaDoPerfil { slug: string; nome: string; cor: string; grupo: string }
 
 interface Props {
     user: { name: string; email: string; image: string | null; bio: string }
@@ -21,9 +24,11 @@ interface Props {
         contentCounts?: { production: number; artist: number; group: number; post: number }
         contentStateCounts?: { favorite: number; following: number; saved: number; read: number }
     }
+    /** Torcidas cujo grupo o usuário segue na conta — é a mesma marcação de /fandoms, não um dado à parte. */
+    torcidas?: TorcidaDoPerfil[]
 }
 
-export function PerfilClient({ user, stats }: Props) {
+export function PerfilClient({ user, stats, torcidas = [] }: Props) {
     const router = useRouter()
     const [editing, setEditing] = useState(false)
     const [name, setName] = useState(user.name)
@@ -48,6 +53,7 @@ export function PerfilClient({ user, stats }: Props) {
         { label: 'Lista Quero ver', done: stats.watchlistCount > 0 },
         { label: 'Seguir artista ou grupo', done: followingCount > 0 },
         { label: 'Salvar uma leitura', done: savedReadings > 0 || readArticles > 0 },
+        { label: 'Marcar uma torcida', done: torcidas.length > 0 },
     ]
     const profileTasks = fallbackProfileTasks
     const completedTasks = profileTasks.filter(task => task.done).length
@@ -221,6 +227,30 @@ export function PerfilClient({ user, stats }: Props) {
                             </span>
                         </Link>
                     </div>
+
+                    <section className="bg-[#15102b] p-6 sm:p-7">
+                        <div className="flex flex-wrap items-baseline justify-between gap-3">
+                            <h2 className="font-[family-name:var(--font-playfair)] text-[22px] font-extrabold text-white">Suas torcidas 💜</h2>
+                            <Link href="/fandoms" className="text-[12px] font-bold text-[#c9c2ee] underline underline-offset-2 hover:text-white">Gerenciar no Espaço do Fã →</Link>
+                        </div>
+                        {torcidas.length > 0 ? (
+                            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                {torcidas.map(t => {
+                                    const ink = tinta(t.cor)
+                                    return (
+                                        <Link key={t.slug} href={`/fandoms/${t.slug}`} className={`block p-4 transition-transform hover:-translate-y-0.5 ${contorno(t.cor)}`} style={{ background: t.cor, color: ink }}>
+                                            <p className="text-[11px] font-black uppercase tracking-[0.08em]">{t.grupo}</p>
+                                            <p className="mt-1 font-[family-name:var(--font-playfair)] text-[26px] font-extrabold leading-none">{t.nome}</p>
+                                        </Link>
+                                    )
+                                })}
+                            </div>
+                        ) : (
+                            <p className="mt-4 text-[13px] leading-relaxed text-[#c9c2ee]">
+                                Você ainda não marcou nenhuma torcida. <Link href="/fandoms" className="font-bold text-white underline">Escolha a sua</Link> pra ver novidades e datas específicas dela aqui.
+                            </p>
+                        )}
+                    </section>
 
                     <section className="border border-border bg-surface p-5">
                         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
