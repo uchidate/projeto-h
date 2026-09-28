@@ -58,8 +58,18 @@ export function CookieBanner() {
     // MV (260), o compartilhar texto (300) e a NavBar (320). E abaixo do que a
     // pessoa abre DE PROPÓSITO: busca e denúncia (500), menu do usuário (600),
     // menu mobile (9999).
+    //
+    // z-[2147483647] no wrapper externo (não no z-450 interno): o anúncio de
+    // âncora dos Anúncios automáticos do Google é injetado pelo próprio script
+    // do Google direto no <body>, fora da nossa árvore, com z-index no teto de
+    // 32 bits — nenhum valor da escala interna do site (max 9999) chega perto.
+    // No desktop ele aparecia por cima do banner. Ver AdSenseLoader.tsx: o
+    // script já tenta esperar a decisão, mas a janela de detecção do CMP (até
+    // 4 s) roda ANTES dessa decisão existir, e o anúncio pode carregar nesse
+    // meio-tempo — por isso a defesa tem de estar aqui, na camada, não só no
+    // atraso do script.
     return (
-        <>
+        <div className="relative z-2147483647">
             <div aria-hidden="true" className="fixed inset-0 z-450 bg-black/55 backdrop-blur-[2px]" />
             <div
                 role="dialog"
@@ -95,6 +105,6 @@ export function CookieBanner() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
