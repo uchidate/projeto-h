@@ -96,7 +96,7 @@ function HeroProduction({ production }: { production: WPProduction }) {
             {image ? (
                 <Image src={image.src} alt={title} fill priority fetchPriority="high"
                     className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
-                    sizes="100vw" />
+                    sizes="(min-width: 1440px) 1440px, 100vw" />
             ) : <div className="absolute inset-0 bg-surface" />}
             <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-transparent" />
             <div className="relative p-6 lg:p-12 max-w-3xl">
