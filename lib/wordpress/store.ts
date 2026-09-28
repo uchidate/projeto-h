@@ -53,6 +53,7 @@ export async function getStoreProducts(): Promise<StoreProduct[]> {
         '/wp/v2/store_products?per_page=100&page=1&orderby=id&order=asc&status=publish',
         opts,
     )
+    if (!Array.isArray(first.items)) return []
     const items = [...first.items]
     for (let page = 2; page <= first.totalPages; page++) {
         const next = await wpFetchWithTotal<StoreProduct>(
