@@ -13,6 +13,8 @@ import { HomeProductionsRail } from '@/components/home/HomeProductionsRail'
 import { HomeLatestPosts } from '@/components/home/HomeLatestPosts'
 import { HomeStreamingTop } from '@/components/home/HomeStreamingTop'
 import { HomeArtistSpotlight } from '@/components/home/HomeArtistSpotlight'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 import type { HomeSettings } from '@/lib/wordpress/site-settings'
 import type { ShowsByPlatform } from '@/lib/tmdb/streaming'
 
@@ -32,9 +34,10 @@ type Props = {
     homeSettings: HomeSettings
     streamingByPlatform: ShowsByPlatform
     categoryMap?: Record<number, { name: string; slug: string }>
+    featuredProducts?: StoreProduct[]
 }
 
-export function HomeFrontPage({ posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, streamingByPlatform, categoryMap }: Props) {
+export function HomeFrontPage({ posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, streamingByPlatform, categoryMap, featuredProducts = [] }: Props) {
     const heroPost = posts.find(post => post.id === homeSettings.heroPostId) ?? posts[0]
     const withoutHero = posts.filter(post => post.id !== heroPost?.id)
     const selectedHighlights = homeSettings.highlightPostIds
@@ -54,6 +57,7 @@ export function HomeFrontPage({ posts, productions, artists, spotlightArtists, f
                 <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} /></div>
                 <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} /></div>
                 <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} /></div>
+                <div data-bloco="home-loja" className="contents"><ShopRelatedSection title="Escolhas da curadoria" products={featuredProducts} /></div>
                 {ADSENSE.slots.inline && (
                     <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">
                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="home_feed" />

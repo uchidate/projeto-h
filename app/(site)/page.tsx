@@ -8,6 +8,7 @@ import { getProductions } from '@/lib/wordpress/productions'
 import { getMostAccessedArtists, getStreamingArtists } from '@/lib/wordpress/artists'
 import { getFeaturedSpotlight } from '@/lib/wordpress/spotlight'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
+import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { HomeFrontPage } from '@/components/home/HomeFrontPage'
 import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
@@ -59,7 +60,7 @@ export default async function HomePage() {
         ...siteSettings.home.highlightPostIds,
     ].filter(Boolean)
 
-    const [postsResult, curatedPostsResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult] = await Promise.allSettled([
+    const [postsResult, curatedPostsResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, featuredProductsResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (hero + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
@@ -74,6 +75,7 @@ export default async function HomePage() {
         getFeaturedSpotlight(),
         getStreamingTopShows(),
         getCategories(),
+        getFeaturedStoreProducts(),
     ])
 
     const latestPosts = postsResult.status === 'fulfilled' ? postsResult.value.items : []
@@ -91,6 +93,7 @@ export default async function HomePage() {
     const streamingByPlatform = streamingShows.status === 'fulfilled' ? streamingShows.value : {}
     const categories = categoriesResult.status === 'fulfilled' ? categoriesResult.value : []
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
+    const featuredProducts = featuredProductsResult.status === 'fulfilled' ? featuredProductsResult.value : []
 
     // Sem posts a home não é "home vazia", é home quebrada: wpFetch devolve []
     // quando o WordPress falha, e o resultado sairia com HTTP 200. Em 2026-08-06
@@ -127,6 +130,7 @@ export default async function HomePage() {
                 homeSettings={siteSettings.home}
                 streamingByPlatform={streamingByPlatform}
                 categoryMap={categoryMap}
+                featuredProducts={featuredProducts}
             />
             <Suspense fallback={null}>
                 <PerguntaDoDiaServer />
