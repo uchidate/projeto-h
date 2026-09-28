@@ -323,14 +323,19 @@ export function HubPageContent({
                         // anúncio entre os pedaços. Medido em 2026-09-18: guias têm ~11.000px
                         // de rolagem no celular e só um anúncio, no topo. Cortar a grade (em
                         // vez de inserir no meio) evita fileira pela metade.
+                        // As primeiras cartas ficam acima da dobra em qualquer breakpoint
+                        // (a grade vai de 2 a 6 colunas): sem priority, o next/image
+                        // atrasa o fetch delas até o IntersectionObserver disparar, e a
+                        // carta que vira o LCP da página fica esperando à toa.
+                        const ACIMA_DA_DOBRA = 6
                         const cards = [
-                            ...(hub.kind === 'productions' ? (productions ?? []).map(p => <ProductionCard key={p.id} production={p} />) : []),
-                            ...(hub.kind === 'artists' ? (artists ?? []).map(a => <ArtistCard key={a.id} artist={a} />) : []),
-                            ...(hub.kind === 'groups' ? (groups ?? []).map(g => (
+                            ...(hub.kind === 'productions' ? (productions ?? []).map((p, i) => <ProductionCard key={p.id} production={p} priority={i < ACIMA_DA_DOBRA} />) : []),
+                            ...(hub.kind === 'artists' ? (artists ?? []).map((a, i) => <ArtistCard key={a.id} artist={a} priority={i < ACIMA_DA_DOBRA} />) : []),
+                            ...(hub.kind === 'groups' ? (groups ?? []).map((g, i) => (
                                 <Link key={g.id} href={`/groups/${g.slug}`} className="group block">
                                     <div className="relative aspect-4/5 overflow-hidden bg-surface">
                                         {g.featured_image_url ? (
-                                            <Image src={g.featured_image_url} alt={g.title.rendered} fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw" className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]" />
+                                            <Image src={g.featured_image_url} alt={g.title.rendered} fill priority={i < ACIMA_DA_DOBRA} fetchPriority={i < ACIMA_DA_DOBRA ? 'high' : undefined} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw" className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]" />
                                         ) : (
                                             <div className="flex h-full items-center justify-center text-3xl font-black text-muted/20">{g.title.rendered[0]}</div>
                                         )}
