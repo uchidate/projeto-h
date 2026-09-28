@@ -40,6 +40,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
     acessorios:  'Acessórios',
     photocard:   'Photocards',
     snacks:      'Snacks',
+    alimenta:    'Comida Coreana', // valor gravado por engano no lugar de "snacks" nos produtos importados
     outros:      'Outros',
 }
 
