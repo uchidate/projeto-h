@@ -13,4 +13,21 @@ Sentry.init({
     release: process.env.GIT_COMMIT_SHA,
     tracesSampleRate: 0.1,
     enabled: !!process.env.SENTRY_DSN,
+    // v11 trocou sendDefaultPii por dataCollection, com TODOS os campos
+    // ligados por padrão (cookies, headers, corpo de request/response, query
+    // params, variáveis de stack frame etc.) — o oposto do sendDefaultPii:
+    // false que este projeto sempre teve. Replica a postura restritiva
+    // anterior campo a campo.
+    dataCollection: {
+        userInfo: false,
+        cookies: false,
+        httpHeaders: false,
+        httpBodies: [],
+        urlQueryParams: false,
+        databaseQueryData: false,
+        queues: false,
+        stackFrameVariables: false,
+        graphQL: { document: false, variables: false },
+        genAI: { inputs: false, outputs: false },
+    },
 })

@@ -38,6 +38,21 @@ export const OPCOES_SENTRY_CLIENTE: Parameters<Sentry['init']>[0] = {
     tracesSampleRate: 0,
     integrations: [],
     enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
+    // v11 trocou sendDefaultPii por dataCollection, com TODOS os campos
+    // ligados por padrão — o oposto do sendDefaultPii: false que este projeto
+    // sempre teve. Replica a postura restritiva anterior campo a campo.
+    dataCollection: {
+        userInfo: false,
+        cookies: false,
+        httpHeaders: false,
+        httpBodies: [],
+        urlQueryParams: false,
+        databaseQueryData: false,
+        queues: false,
+        stackFrameVariables: false,
+        graphQL: { document: false, variables: false },
+        genAI: { inputs: false, outputs: false },
+    },
 
     /**
      * Ruido de terceiros que nao e bug nosso e nao tem acao possivel.
