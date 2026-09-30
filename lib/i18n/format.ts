@@ -30,7 +30,3 @@ export function formatNumber(
 ): string {
     return new Intl.NumberFormat(LOCALE_META[locale].intl, options).format(value)
 }
-
-export function toLowerLocale(value: string, locale: Locale = DEFAULT_LOCALE): string {
-    return value.toLocaleLowerCase(LOCALE_META[locale].intl)
-}

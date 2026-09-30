@@ -26,7 +26,7 @@ export const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
  * formato em vez de confiar na env var: uma chave com espaço ou quebra de linha
  * colada errada no 1Password produziria 403 silencioso em toda submissão.
  */
-export const INDEXNOW_KEY_PATTERN = /^[a-zA-Z0-9-]{8,128}$/
+const INDEXNOW_KEY_PATTERN = /^[a-zA-Z0-9-]{8,128}$/
 
 /** Teto por requisição. A especificação permite 10.000; um lote pequeno é mais
  * fácil de auditar no log e limita o estrago de um bug de montagem de URL. */
@@ -49,7 +49,7 @@ const DEDUPE_MAX_ENTRIES = 2_000
  * pelo shard do sitemap, não pelo post type; mantê-los separados evita acoplar
  * a paginação do sitemap ao webhook.
  */
-export const INDEXNOW_PUBLIC_BASE: Partial<Record<WPPostType, string>> = {
+const INDEXNOW_PUBLIC_BASE: Partial<Record<WPPostType, string>> = {
     post: 'blog',
     production: 'productions',
     artist: 'artists',

@@ -1,9 +1,7 @@
 import type { WPPost } from '@/lib/wordpress/types'
 
-/** Dias sem publicação nova a partir dos quais o destaque deixa de ser "o mais novo" e passa a girar. */
-export const JANELA_NOVIDADE_DIAS = 7
 /** Idade mínima para o conteúdo contar como perene: o mesmo corte de 45 dias da pauta perene da operação. */
-export const IDADE_PERENE_DIAS = 45
+const IDADE_PERENE_DIAS = 45
 /** Quantos candidatos entram no rodízio do destaque. */
 const CANDIDATOS_NO_RODIZIO = 5
 

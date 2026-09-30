@@ -16,7 +16,7 @@ import { BlockSection } from '@/components/blocks/BlockSection'
  * - `pillar`    — seções de conteúdo próprio. É o padrão.
  * - `reference` — material de consulta: embeds, listas, canais. Comprime.
  */
-export type ProfileSectionWeight = 'spine' | 'pillar' | 'reference'
+type ProfileSectionWeight = 'spine' | 'pillar' | 'reference'
 
 const WEIGHT_SPACING = {
     spine: 'spine',
@@ -55,7 +55,7 @@ export function ProfileSection({ id, weight = 'pillar', label, indented = true, 
     )
 }
 
-export type ProfileBlockLayout =
+type ProfileBlockLayout =
     /** O registro aplica o wrapper visual padrão de perfis. */
     | 'profile'
     /** O componente controla seu próprio elemento semântico e seu layout. */

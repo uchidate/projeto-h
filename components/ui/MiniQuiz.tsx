@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Check, X, ArrowRight } from 'lucide-react'
 
-export interface MiniQuizItem {
+interface MiniQuizItem {
     id: number
     question: string
     options: string[]

@@ -8,7 +8,7 @@ export type WPArticleBlock = {
     innerBlocks: WPArticleBlock[]
 }
 
-export type ArticleBlockModel = WPArticleBlock & {
+type ArticleBlockModel = WPArticleBlock & {
     id: string
     textLength: number
 }

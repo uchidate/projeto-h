@@ -5,7 +5,7 @@ import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
 import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
 
-export const SITEMAP_SHARDS = [
+const SITEMAP_SHARDS = [
     'pages',
     'productions',
     'artists',
@@ -25,7 +25,7 @@ type WPEntry = { slug: string; date?: string; modified?: string; translations?: 
  * Shards com versão em outros idiomas — docs/I18N-ARQUITETURA.md (D7). O
  * arquivo é `<shard>-<locale>.xml` e só lista fichas com tradução publicada.
  */
-export const LOCALIZED_SHARDS = ['artists', 'groups', 'productions'] as const
+const LOCALIZED_SHARDS = ['artists', 'groups', 'productions'] as const
 type LocalizedShard = (typeof LOCALIZED_SHARDS)[number]
 
 function localizedSitemapLocales(): Locale[] {
@@ -221,7 +221,7 @@ export function buildUrlSet(entries: SitemapEntry[]) {
  * robô rastreia menos. A defasagem custa pouco: página nova chega ao Google pelo
  * IndexNow, não pelo sitemap; o sitemap é a rede de segurança.
  */
-export const CACHE_SITEMAP = 'public, s-maxage=3600, stale-while-revalidate=86400'
+const CACHE_SITEMAP = 'public, s-maxage=3600, stale-while-revalidate=86400'
 
 export function sitemapResponse(xml: string) {
     return new Response(xml, {
