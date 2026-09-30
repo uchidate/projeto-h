@@ -113,6 +113,17 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'www.gravatar.com',
             },
+            // Imagens de produto da loja (afiliados) — únicos dois hosts em uso
+            // hoje nos store_products; sem isto o <Image> precisa de
+            // `unoptimized` e baixa o arquivo original inteiro, sem redimensionar.
+            {
+                protocol: 'https',
+                hostname: 'http2.mlstatic.com',
+            },
+            {
+                protocol: 'https',
+                hostname: '*.img.susercontent.com',
+            },
         ],
     },
     async rewrites() {

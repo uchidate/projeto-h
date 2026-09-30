@@ -283,10 +283,6 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
             )}
             {inicio && leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={leaderboard} layout="leaderboard" analyticsPlacement="groups_leaderboard" /></div>}
 
-            {inicio && shopProducts.length > 0 && (
-                <ShopRelatedSection title="Merch de grupo K-pop" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:grupos" />
-            )}
-
             {/* ── Explore por geração ── */}
             {inicio && geracoes.length > 0 && (
                 <section className="page-wrap pt-10" data-bloco="lista-geracoes">
@@ -403,6 +399,10 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                     <Pagination currentPage={currentPage} totalPages={totalPages} buildHref={(page) => buildHref({ page: String(page) })} />
                 </div>
             </section>
+
+            {inicio && shopProducts.length > 0 && (
+                <ShopRelatedSection title="Merch de grupo K-pop" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:grupos" />
+            )}
         </>
     )
 }

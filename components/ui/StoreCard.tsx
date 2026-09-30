@@ -48,7 +48,7 @@ export function StoreCard({ product, compact = false, contexto = 'loja' }: Store
                 className="flex gap-3 border border-border bg-background p-3 transition-colors hover:border-accent/40 group">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-surface">
                     {acf.image_url ? (
-                        <Image src={acf.image_url} alt={name} fill className="object-cover" unoptimized />
+                        <Image src={acf.image_url} alt={name} fill sizes="64px" className="object-cover" />
                     ) : (
                         <div className="flex h-full w-full items-end bg-linear-to-br from-foreground/90 to-foreground/70 p-1">
                             <span className="line-clamp-3 text-[9px] font-black uppercase leading-tight text-background/60">{name}</span>
@@ -80,8 +80,8 @@ export function StoreCard({ product, compact = false, contexto = 'loja' }: Store
             <div className="relative aspect-square overflow-hidden bg-surface">
                 {acf.image_url ? (
                     <Image src={acf.image_url} alt={name} fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
-                        unoptimized />
+                        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 220px"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.06]" />
                 ) : (
                     <div className="flex h-full w-full items-end bg-linear-to-br from-foreground/90 to-foreground/70 p-3">
                         <span className="line-clamp-4 text-sm font-black uppercase leading-tight text-background/60">{name}</span>
