@@ -80,7 +80,12 @@ function revalidateEfetivo(opts: FetchOptions): number | false {
  * visitante esperando, e o custo de falhar é um deploy inteiro.
  */
 const TENTATIVAS_NO_BUILD = 3
-const ESPERA_BASE_MS = 400
+// 2s, depois 4s: 6s de folga no total. Eram 400ms e 800ms (1,2s), o que não
+// cobria o pico real. O build roda no mesmo servidor do WordPress (runner
+// próprio, 4 núcleos) e chega a load 16 — em 2026-09-30 o staging caiu em
+// `/empresas/cj-enm` com várias requisições "unavailable" no primeiro segundo
+// da geração de páginas, com o WP respondendo normalmente logo depois.
+const ESPERA_BASE_MS = 2000
 
 /** Vale retentar? Falha de infraestrutura sim; resposta do servidor, não. */
 function ehTransitorio(status: number | null): boolean {
