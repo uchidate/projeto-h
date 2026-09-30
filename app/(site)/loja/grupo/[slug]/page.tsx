@@ -35,7 +35,7 @@ export default async function LojaGrupoPage({ params }: { params: Params }) {
 
     const name = stripHtml(group.title.rendered)
     const img = getWPImage(group._embedded, group.featured_image_url, name)
-    const produtos = ordenarPrateleira(await getStoreProductsByGroupId(group.id))
+    const produtos = ordenarPrateleira(await getStoreProductsByGroupId(group.id), `loja_grupo:${slug}`)
 
     return (
         <main className="min-h-screen bg-background pb-20">

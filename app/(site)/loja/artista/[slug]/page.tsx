@@ -35,7 +35,7 @@ export default async function LojaArtistaPage({ params }: { params: Params }) {
 
     const name = stripHtml(artist.title.rendered)
     const img = getWPImage(artist._embedded, artist.featured_image_url, name)
-    const produtos = ordenarPrateleira(await getStoreProductsByArtistId(artist.id))
+    const produtos = ordenarPrateleira(await getStoreProductsByArtistId(artist.id), `loja_artista:${slug}`)
 
     return (
         <main className="min-h-screen bg-background pb-20">

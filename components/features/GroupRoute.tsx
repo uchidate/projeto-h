@@ -19,7 +19,7 @@ import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { GroupDetailPage } from '@/components/features/GroupDetailPage'
 import { getHubsForGroup } from '@/lib/guias/hub-lookup'
-import { getStoreProductsByGroupId } from '@/lib/wordpress/store'
+import { getStoreProductsByGroupId, ordenarPrateleira } from '@/lib/wordpress/store'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
@@ -133,7 +133,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('group', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={locale === DEFAULT_LOCALE ? shopProducts : []} />
+            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `grupo:${slug}`) : []} />
         </>
     )
 }

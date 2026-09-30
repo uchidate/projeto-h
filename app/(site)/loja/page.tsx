@@ -48,7 +48,7 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
             .filter(p => (descontos.get(p.id) ?? null) !== null)
             .sort((a, b) => (descontos.get(b.id) ?? 0) - (descontos.get(a.id) ?? 0))
     } else {
-        filtered = ordenarPrateleira(filtered)
+        filtered = ordenarPrateleira(filtered, 'loja:filtro')
     }
 
     // Destaques (sempre do total, não filtrado)
@@ -61,7 +61,7 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
         acc[cat].push(p)
         return acc
     }, {})
-    for (const cat of Object.keys(byCategory)) byCategory[cat] = ordenarPrateleira(byCategory[cat])
+    for (const cat of Object.keys(byCategory)) byCategory[cat] = ordenarPrateleira(byCategory[cat], `loja:categoria:${cat}`)
 
     // Contagens para filtros
     const categoryCount = products.reduce<Record<string, number>>((acc, p) => {
