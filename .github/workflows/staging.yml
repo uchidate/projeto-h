@@ -51,6 +51,12 @@ on:
       - 'instrumentation-client.ts'
       - 'sentry.edge.config.ts'
       - 'sentry.server.config.ts'
+      # Teste e documento nao mudam o que o staging serve: sem isto, um push so
+      # de teste gastava ~9 min de build + fumaca num unico runner em fila. Num
+      # push com teste E codigo o filtro ainda dispara (basta um caminho casar).
+      - '!**/*.test.ts'
+      - '!**/*.test.tsx'
+      - '!**/*.md'
 
 # Grupo GLOBAL, nao por branch: existe UM staging. Duas branches publicando ao
 # mesmo tempo disputariam o mesmo container e o resultado seria indeterminado.
