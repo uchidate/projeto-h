@@ -148,12 +148,6 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                     <div className="mt-6"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="blog_leaderboard" /></div>
                 )}
 
-                {showHero && shopProducts.length > 0 && (
-                    <div className="mt-6">
-                        <ShopRelatedSection title="Achados da curadoria" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:blog" />
-                    </div>
-                )}
-
                 {/* Conteúdo-chave: guias que continuam sendo lidos meses depois; quem chega sem saber por onde começar entra por aqui. */}
                 {showHero && perenes.length >= 3 && (
                     <section data-bloco="blog-comece-por-aqui" className="mt-10 border-t border-border pt-6">
@@ -191,6 +185,12 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                             ))}
                         </div>
                     </section>
+                )}
+
+                {showHero && shopProducts.length > 0 && (
+                    <div className="mt-10">
+                        <ShopRelatedSection title="Achados da curadoria" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:blog" />
+                    </div>
                 )}
 
                 {posts.length === 0 ? (

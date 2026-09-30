@@ -121,10 +121,6 @@ export function ProductionsPage({
             )}
             {inicio && ADSENSE.slots.leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="productions_leaderboard" /></div>}
 
-            {inicio && shopProducts.length > 0 && (
-                <ShopRelatedSection title="K-drama merch pra maratonar" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:producoes" />
-            )}
-
             {/* ── Onde assistir ── */}
             {inicio && plataformasTop.length > 0 && (
                 <section className="page-wrap pt-10" data-bloco="lista-plataformas">
@@ -169,6 +165,10 @@ export function ProductionsPage({
                         ))}
                     </ul>
                 </section>
+            )}
+
+            {inicio && shopProducts.length > 0 && (
+                <ShopRelatedSection title="K-drama merch pra maratonar" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:producoes" />
             )}
 
             {/* ── Todas as produções ── */}
