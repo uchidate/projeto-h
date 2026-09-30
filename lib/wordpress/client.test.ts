@@ -161,16 +161,24 @@ describe('lib/wordpress/client', () => {
                 fetchMock
                     .mockRejectedValueOnce(new Error('The operation was aborted due to timeout'))
                     .mockResolvedValueOnce({ ok: true, json: async () => [{ id: 1 }], headers: { get: () => '1' } })
+                vi.useFakeTimers()
                 const wpFetch = await noBuild()
-                const r = await wpFetch('/wp/v2/production')
+                const pending = wpFetch('/wp/v2/production')
+                await vi.runAllTimersAsync()
+                const r = await pending
+                vi.useRealTimers()
                 expect(fetchMock).toHaveBeenCalledTimes(2)
                 expect(r).not.toBeNull()
             })
 
             it('repete em 503 e desiste depois de 3 tentativas', async () => {
                 fetchMock.mockResolvedValue({ ok: false, status: 503, statusText: 'Service Unavailable' })
+                vi.useFakeTimers()
                 const wpFetch = await noBuild()
-                await wpFetch('/wp/v2/production')
+                const pending = wpFetch('/wp/v2/production')
+                await vi.runAllTimersAsync()
+                await pending
+                vi.useRealTimers()
                 expect(fetchMock).toHaveBeenCalledTimes(3)
             })
 

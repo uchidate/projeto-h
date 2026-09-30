@@ -252,6 +252,22 @@ jobs:
             echo "reuso=nao" >> "$GITHUB_OUTPUT"
           fi
 
+      # O deploy recusa working tree suja (a imagem sai do HEAD) mas nao diz QUAIS
+      # arquivos: em 2026-09-30 duas execucoes caíram so com "working tree sujo".
+      # Este passo tira os residuos conhecidos de jobs anteriores no mesmo runner
+      # (symlink node_modules e .pw da fumaca) e, se ainda sobrar algo, lista.
+      - name: Garantir working tree limpa
+        run: |
+          set -euo pipefail
+          [ -L node_modules ] && rm -f node_modules
+          rm -rf .pw
+          sujo="$(git status --porcelain)"
+          if [ -n "$sujo" ]; then
+            echo "::error::working tree sujo antes do deploy:"
+            echo "$sujo" | head -20
+            exit 1
+          fi
+
       - name: Deploy de producao
         id: deploy
         env:
