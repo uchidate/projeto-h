@@ -96,6 +96,7 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                     Loja<span className="text-accent">.</span>
                     <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{products.length} produtos</span>
                 </h1>
+                <p className="mt-1 text-[11px] text-foreground-subtle">Links de afiliado — podemos ganhar comissão sem custo extra pra você.</p>
                 <div className="sticky top-0 z-20 -mx-4 mt-3.5 border-y border-border bg-background px-4 py-2.5">
                     <div className="no-scrollbar flex gap-2 overflow-x-auto" role="group">
                         <a href={setParam('categoria', '')}
@@ -207,7 +208,7 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                                     Escolhas da curadoria
                                 </h2>
                                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                                    {featured.map(p => <StoreCard key={p.id} product={p} />)}
+                                    {featured.map(p => <StoreCard key={p.id} product={p} contexto="loja:destaques" />)}
                                 </div>
                             </section>
                         )}
@@ -220,7 +221,7 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                                 <section>
                                     <p className="mb-4 text-[12px] text-muted">{filtered.length} produto{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}</p>
                                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                        {filtered.map(p => <StoreCard key={p.id} product={p} />)}
+                                        {filtered.map(p => <StoreCard key={p.id} product={p} contexto="loja:filtro" />)}
                                     </div>
                                 </section>
                             )
@@ -235,7 +236,7 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                                         <span className="text-[12px] font-semibold text-muted">{items.length} produto{items.length !== 1 ? 's' : ''}</span>
                                     </div>
                                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                        {items.map(p => <StoreCard key={p.id} product={p} />)}
+                                        {items.map(p => <StoreCard key={p.id} product={p} contexto={`loja:categoria:${cat}`} />)}
                                     </div>
                                 </section>
                             ))

@@ -216,7 +216,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
 
             {/* Logo após o hero — pico de interesse do fã, antes do corpo longo do texto (poucos leitores chegam ao fim). */}
             <ShopRelatedSection title={`Curtiu ${name}? Leva pra casa`} products={shopProducts}
-                href={`/loja/grupo/${group.slug}`} verTudoLabel={`Ver tudo de ${name}`} />
+                href={`/loja/grupo/${group.slug}`} verTudoLabel={`Ver tudo de ${name}`} contexto={`grupo:${group.slug}`} />
 
             {emC ? (
                 <GroupFichaC

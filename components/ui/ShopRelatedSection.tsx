@@ -9,6 +9,8 @@ interface Shelf {
     href?: string
     /** Texto do link "ver tudo", já pensado pra reconhecer o contexto (não é genérico "ver loja"). */
     verTudoLabel?: string
+    /** Identifica a prateleira no evento de clique (ex.: "artista:jisoo-kim"). */
+    contexto?: string
 }
 
 interface Props extends Shelf {
@@ -16,7 +18,7 @@ interface Props extends Shelf {
     secondary?: Shelf
 }
 
-function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo na loja' }: Shelf) {
+function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo na loja', contexto = 'loja' }: Shelf) {
     return (
         <div>
             <div className="mb-5 flex items-center justify-between">
@@ -26,7 +28,7 @@ function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo 
                 </Link>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {products.slice(0, 4).map(p => <StoreCard key={p.id} product={p} />)}
+                {products.slice(0, 4).map(p => <StoreCard key={p.id} product={p} contexto={contexto} />)}
             </div>
         </div>
     )
@@ -44,7 +46,9 @@ export function ShopRelatedSection({ title, products, href = '/loja', verTudoLab
     return (
         <div className="border-y border-accent/20 bg-accent-a11y/5 py-10">
             <div className="page-wrap">
-                <p className="mb-1 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">🛍️ Shop</p>
+                <p className="mb-1 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">
+                    🛍️ Shop <span className="font-sans normal-case tracking-normal text-foreground-subtle">· links de afiliado</span>
+                </p>
                 <div className="space-y-8">
                     <ShelfBlock {...primaryShelf} />
                     {extraShelf && (

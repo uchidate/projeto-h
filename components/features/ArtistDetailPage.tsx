@@ -193,11 +193,13 @@ export function ArtistDetailPage({
             products={shopProducts}
             href={`/loja/artista/${artist.slug}`}
             verTudoLabel={`Ver tudo de ${name}`}
+            contexto={`artista:${artist.slug}`}
             secondary={connectionGroup ? {
                 title: `Também é do ${stripHtml(connectionGroup.title.rendered)}: leva a loja completa`,
                 products: groupShopProducts,
                 href: `/loja/grupo/${connectionGroup.slug}`,
                 verTudoLabel: `Ver tudo de ${stripHtml(connectionGroup.title.rendered)}`,
+                contexto: `artista:${artist.slug}:grupo:${connectionGroup.slug}`,
             } : undefined}
         />
     )

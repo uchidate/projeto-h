@@ -66,7 +66,7 @@ export default async function LojaGrupoPage({ params }: { params: Params }) {
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                        {produtos.map(p => <StoreCard key={p.id} product={p} />)}
+                        {produtos.map(p => <StoreCard key={p.id} product={p} contexto={`loja_grupo:${slug}`} />)}
                     </div>
                 )}
                 <div className="mt-10 border-t border-border pt-6">

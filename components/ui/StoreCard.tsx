@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { ExternalLink, Star } from 'lucide-react'
 import { calcularDesconto, ehMenorPrecoEmDias, ehNovo, type StoreProduct } from '@/lib/wordpress/store'
 import { stripHtml } from '@/lib/utils'
+import { trackProductClick } from '@/lib/analytics'
 
 const STORE_CONFIG: Record<string, { label: string; color: string; bg: string; textColor: string; stripe: string }> = {
     shopee:       { label: 'Shopee',        color: 'text-orange-500', bg: 'bg-orange-700',  textColor: 'text-white', stripe: 'bg-orange-600' },
@@ -18,10 +19,12 @@ const STORE_CONFIG: Record<string, { label: string; color: string; bg: string; t
 interface StoreCardProps {
     product: StoreProduct
     compact?: boolean
+    /** Página/vitrine onde o card aparece (ex.: "artista:jisoo-kim") — base do ranking por CTR. */
+    contexto?: string
 }
 
 
-export function StoreCard({ product, compact = false }: StoreCardProps) {
+export function StoreCard({ product, compact = false, contexto = 'loja' }: StoreCardProps) {
     const { acf, title } = product
     const name = stripHtml(title.rendered)
     const store = acf.store ?? 'outro'
@@ -36,9 +39,12 @@ export function StoreCard({ product, compact = false }: StoreCardProps) {
 
     if (!acf.affiliate_url) return null
 
+    const registrarClique = () => trackProductClick({ productId: product.id, store, contexto })
+
     if (compact) {
         return (
             <a href={acf.affiliate_url} target="_blank" rel="noopener noreferrer sponsored"
+                onClick={registrarClique}
                 className="flex gap-3 border border-border bg-background p-3 transition-colors hover:border-accent/40 group">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-surface">
                     {acf.image_url ? (
@@ -64,6 +70,7 @@ export function StoreCard({ product, compact = false }: StoreCardProps) {
     return (
         <a href={acf.affiliate_url} target="_blank" rel="noopener noreferrer sponsored"
             title={`Ver no ${cfg.label} (link externo)`}
+            onClick={registrarClique}
             className={`group relative flex flex-col p-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] ${
                 acf.featured
                     ? 'border-2 border-accent/70 bg-accent-a11y/4 hover:border-accent'
