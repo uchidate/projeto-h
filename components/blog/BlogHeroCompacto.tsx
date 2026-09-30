@@ -27,14 +27,18 @@ export function BlogHeroCompacto({ post, categoryMap, priority = false }: { post
             ) : (
                 <div className="h-full" style={{ background: `linear-gradient(135deg, ${cs.bg}, ${cs.color}55)` }} />
             )}
-            <div aria-hidden className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
+            {/* Degradê e texto fixos (não reativos ao tema): a foto embaixo é sempre
+                escura, então o contraste depende de um véu escuro + texto branco
+                constantes — usar tokens de tema aqui (claro no modo claro) deixaria
+                o título ilegível em cima da foto. */}
+            <div aria-hidden className="absolute inset-0 bg-linear-to-t from-black/90 via-black/45 to-transparent" />
             <div className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-5">
                 <div className="mb-2.5 flex items-center gap-2.5">
                     <span className="px-2 py-0.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em]" style={{ backgroundColor: cs.bg, color: cs.color }}>{cat?.name ?? 'Capa'}</span>
                     <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent">Para você</span>
                 </div>
-                <h2 className="font-serif text-[24px] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground transition-colors group-hover:text-accent sm:text-[30px] lg:text-[34px]">{title}</h2>
-                <p className="mt-2 flex items-center gap-3 text-[12px] text-foreground/75 sm:text-[13px]">
+                <h2 className="font-serif text-[24px] font-semibold leading-[1.1] tracking-[-0.02em] text-white transition-colors group-hover:text-accent sm:text-[30px] lg:text-[34px]">{title}</h2>
+                <p className="mt-2 flex items-center gap-3 text-[12px] text-white/75 sm:text-[13px]">
                     {formatDatePt(post.date)}
                     <span className="flex items-center gap-1"><Clock size={11} /> {mins} min</span>
                 </p>
