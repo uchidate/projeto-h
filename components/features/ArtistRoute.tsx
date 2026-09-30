@@ -13,6 +13,7 @@ import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ArtistDetailPage } from '@/components/features/ArtistDetailPage'
 import { getHubsForArtist } from '@/lib/guias/hub-lookup'
 import { getStoreProductsByArtistId, getStoreProductsByGroupId } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { getMusicReleases } from '@/lib/wordpress/music'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { applyArtistManifestPreview, applyArtistProductionsPreview } from '@/lib/agencies/preview'
@@ -109,12 +110,15 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     const connectionGroup = groups.find(group => group.acf?.active !== false) ?? groups[0]
     const groupMemberIds = (connectionGroup?.acf?.members ?? []).filter(id => id !== artist.id)
     const primaryRole = artist.acf?.roles?.[0] ?? undefined
-    const [groupShopProducts, relatedArtists] = await Promise.all([
+    const [groupShopProductsRaw, relatedArtists] = await Promise.all([
         connectionGroup && locale === DEFAULT_LOCALE ? getStoreProductsByGroupId(connectionGroup.id) : Promise.resolve([]),
         groupMemberIds.length > 0
             ? getArtistsByIds(groupMemberIds.slice(0, 10))
             : getRelatedArtists(artist.id, artist.acf?.agency ?? undefined, primaryRole),
     ])
+    const groupShopProducts = connectionGroup
+        ? ordenarPrateleira(groupShopProductsRaw, `artista:${slug}:grupo:${connectionGroup.slug}`)
+        : groupShopProductsRaw
 
     const relatedHubs = getHubsForArtist(artist)
 
@@ -134,7 +138,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
             connectionGroup={groupMemberIds.length > 0 ? connectionGroup : undefined}
             discography={discography}
             relatedHubs={relatedHubs}
-            shopProducts={locale === DEFAULT_LOCALE ? shopProducts : []}
+            shopProducts={locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `artista:${slug}`) : []}
             groupShopProducts={groupShopProducts}
         />
         </>

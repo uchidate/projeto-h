@@ -58,19 +58,6 @@ export function ehNovo(dateGmt: string, dias = 14): boolean {
     return Date.now() - publicado <= dias * 24 * 60 * 60 * 1000
 }
 
-/** Ordem de exibição dentro de uma prateleira: destaque > desconto > posição manual. */
-export function ordenarPrateleira(produtos: StoreProduct[]): StoreProduct[] {
-    return [...produtos].sort((a, b) => {
-        const destaqueA = a.acf.featured ? 1 : 0
-        const destaqueB = b.acf.featured ? 1 : 0
-        if (destaqueA !== destaqueB) return destaqueB - destaqueA
-        const descA = calcularDesconto(a.acf.price, a.acf.original_price) ?? -1
-        const descB = calcularDesconto(b.acf.price, b.acf.original_price) ?? -1
-        if (descA !== descB) return descB - descA
-        return (a.acf.position ?? 999) - (b.acf.position ?? 999)
-    })
-}
-
 export const STORE_LABELS: Record<string, string> = {
     shopee:       'Shopee',
     amazon:       'Amazon',

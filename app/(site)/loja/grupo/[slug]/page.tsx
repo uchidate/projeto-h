@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
 import { getGroupBySlug } from '@/lib/wordpress/groups'
-import { getStoreProductsByGroupId, ordenarPrateleira } from '@/lib/wordpress/store'
+import { getStoreProductsByGroupId } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
@@ -35,7 +36,7 @@ export default async function LojaGrupoPage({ params }: { params: Params }) {
 
     const name = stripHtml(group.title.rendered)
     const img = getWPImage(group._embedded, group.featured_image_url, name)
-    const produtos = ordenarPrateleira(await getStoreProductsByGroupId(group.id))
+    const produtos = ordenarPrateleira(await getStoreProductsByGroupId(group.id), `loja_grupo:${slug}`)
 
     return (
         <main className="min-h-screen bg-background pb-20">

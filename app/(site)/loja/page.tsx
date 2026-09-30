@@ -2,7 +2,8 @@ import { intlLocale } from '@/lib/i18n/format'
 import type { Metadata } from 'next'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
-import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto, ordenarPrateleira } from '@/lib/wordpress/store'
+import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 
@@ -48,7 +49,7 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
             .filter(p => (descontos.get(p.id) ?? null) !== null)
             .sort((a, b) => (descontos.get(b.id) ?? 0) - (descontos.get(a.id) ?? 0))
     } else {
-        filtered = ordenarPrateleira(filtered)
+        filtered = ordenarPrateleira(filtered, 'loja:filtro')
     }
 
     // Destaques (sempre do total, não filtrado)
@@ -61,7 +62,7 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
         acc[cat].push(p)
         return acc
     }, {})
-    for (const cat of Object.keys(byCategory)) byCategory[cat] = ordenarPrateleira(byCategory[cat])
+    for (const cat of Object.keys(byCategory)) byCategory[cat] = ordenarPrateleira(byCategory[cat], `loja:categoria:${cat}`)
 
     // Contagens para filtros
     const categoryCount = products.reduce<Record<string, number>>((acc, p) => {

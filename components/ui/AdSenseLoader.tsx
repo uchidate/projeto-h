@@ -1,14 +1,15 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useAds } from '@/components/providers/AdsProvider'
+import { useAds, useNaoAutomatizado } from '@/components/providers/AdsProvider'
 import { getBannerState, subscribeBanner } from '@/lib/consent'
 
 export function AdSenseLoader() {
     const ads = useAds()
+    const automatizado = useNaoAutomatizado()
 
     useEffect(() => {
-        if (!ads.enabled || !ads.client || process.env.NODE_ENV === 'development') return
+        if (!ads.enabled || !ads.client || automatizado || process.env.NODE_ENV === 'development') return
 
         // Site Kit continua como painel de conexão/relatórios, mas num site
         // headless o snippet pertence ao Next.js. Aceita um script preexistente
@@ -69,7 +70,7 @@ export function AdSenseLoader() {
             limpar()
             esperaBanner?.()
         }
-    }, [ads.enabled, ads.client])
+    }, [ads.enabled, ads.client, automatizado])
 
     return null
 }
