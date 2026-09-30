@@ -1,5 +1,9 @@
 # Dependencies
-node_modules/
+# Sem barra final de proposito: `node_modules/` so casa diretorio, e o runner
+# cria `node_modules` como SYMLINK (playwright-enxuto). Symlink nao ignorado deixa
+# a working tree suja e o deploy recusa (deploy-manual.sh), como em 2026-09-30.
+node_modules
+/.pw
 .pnp
 .pnp.js
 
