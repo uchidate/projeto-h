@@ -6,6 +6,8 @@ import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { BlogPage } from '@/components/blog/BlogPage'
 import { getAllHubs } from '@/lib/guias'
 import { candidatosDestaque, maisLidos, perenes as escolherPerenes } from '@/lib/blog/destaque'
+import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 
 export const revalidate = 300
 
@@ -99,6 +101,9 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
     const candidatos = inicio ? candidatosDestaque(comImagem, new Date(), 3) : []
     // O que já é candidato a destaque não repete em "Comece por aqui".
     const idsCandidatos = new Set(candidatos.map(p => p.id))
+    const shopProducts = inicio
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:blog')
+        : []
 
     return (
         <BlogPage
@@ -116,6 +121,7 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
             destaques={candidatos}
             emAlta={inicio ? candidatosDestaque(pool, new Date(), 8).filter(p => !idsCandidatos.has(p.id)).slice(0, 4) : []}
             perenes={inicio ? escolherPerenes(pool.filter(p => !idsCandidatos.has(p.id)), 4, new Date(), categories.filter(c => c.slug === 'noticias-k-pop').map(c => c.id)) : []}
+            shopProducts={shopProducts}
         />
     )
 }

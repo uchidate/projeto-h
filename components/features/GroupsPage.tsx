@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { Users } from 'lucide-react'
 import type { WPGroup } from '@/lib/wordpress/types'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 import { getWPImage, getYear, stripHtml } from '@/lib/utils'
 import { SearchInput } from '@/components/ui/SearchInput'
 import { Pagination } from '@/components/ui/Pagination'
@@ -143,6 +145,7 @@ interface Props {
     mesNome?: string
     /** Rostos das integrantes por id do grupo, para o hover dos cards. */
     integrantes?: Record<number, { nome: string; foto: string }[]>
+    shopProducts?: StoreProduct[]
 }
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
@@ -185,7 +188,7 @@ function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?
     )
 }
 
-export function GroupsPage({ groups, total, totalPages, currentPage, search, type, active, letter, generation, order, letterCounts, emAlta = [], geracoes = [], debutaram = [], mesNome, integrantes = {} }: Props) {
+export function GroupsPage({ groups, total, totalPages, currentPage, search, type, active, letter, generation, order, letterCounts, emAlta = [], geracoes = [], debutaram = [], mesNome, integrantes = {}, shopProducts = [] }: Props) {
     const hasLetterCounts = Object.keys(letterCounts).length > 0
     const inicio = currentPage === 1 && !search && !type && !active && !letter && !generation && !order
     const numero = (n: number) => n.toLocaleString(intlLocale())
@@ -279,6 +282,10 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                 </section>
             )}
             {inicio && leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={leaderboard} layout="leaderboard" analyticsPlacement="groups_leaderboard" /></div>}
+
+            {inicio && shopProducts.length > 0 && (
+                <ShopRelatedSection title="Merch de grupo K-pop" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:grupos" />
+            )}
 
             {/* ── Explore por geração ── */}
             {inicio && geracoes.length > 0 && (

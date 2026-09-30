@@ -47,6 +47,8 @@ interface Props {
     categoryMap?: Record<number, { name: string; slug: string }>
     shopProducts?: StoreProduct[]
     groupShopProducts?: StoreProduct[]
+    /** true quando shopProducts na verdade é a vitrine geral (nem artista nem grupo tinham produto próprio ainda). */
+    shopFallback?: boolean
 }
 
 
@@ -63,6 +65,7 @@ export function ArtistDetailPage({
     categoryMap,
     shopProducts = [],
     groupShopProducts = [],
+    shopFallback = false,
 }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
@@ -189,11 +192,11 @@ export function ArtistDetailPage({
 
     const shopSection = (
         <ShopRelatedSection
-            title={`Curtiu ${name}? Leva pra casa`}
+            title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`}
             products={shopProducts}
-            href={`/loja/artista/${artist.slug}`}
-            verTudoLabel={`Ver tudo de ${name}`}
-            contexto={`artista:${artist.slug}`}
+            href={shopFallback ? '/loja' : `/loja/artista/${artist.slug}`}
+            verTudoLabel={shopFallback ? 'Ver toda a loja' : `Ver tudo de ${name}`}
+            contexto={shopFallback ? 'artista:fallback' : `artista:${artist.slug}`}
             secondary={connectionGroup ? {
                 title: `Também é do ${stripHtml(connectionGroup.title.rendered)}: leva a loja completa`,
                 products: groupShopProducts,

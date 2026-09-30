@@ -19,7 +19,7 @@ import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { GroupDetailPage } from '@/components/features/GroupDetailPage'
 import { getHubsForGroup } from '@/lib/guias/hub-lookup'
-import { getStoreProductsByGroupId } from '@/lib/wordpress/store'
+import { getStoreProductsByGroupId, getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
@@ -118,6 +118,11 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
         tracks: [],
     }))
 
+    const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0
+    const shopFallbackProducts = semProdutoProprio
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'grupo:fallback')
+        : []
+
     const relatedHubs = getHubsForGroup(group)
     const t = await getTranslations({ locale, namespace: 'entity' })
 
@@ -134,7 +139,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('group', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `grupo:${slug}`) : []} />
+            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={semProdutoProprio ? shopFallbackProducts : (locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `grupo:${slug}`) : [])} shopFallback={semProdutoProprio} />
         </>
     )
 }

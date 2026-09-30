@@ -12,7 +12,7 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ArtistDetailPage } from '@/components/features/ArtistDetailPage'
 import { getHubsForArtist } from '@/lib/guias/hub-lookup'
-import { getStoreProductsByArtistId, getStoreProductsByGroupId } from '@/lib/wordpress/store'
+import { getStoreProductsByArtistId, getStoreProductsByGroupId, getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { getMusicReleases } from '@/lib/wordpress/music'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
@@ -120,6 +120,14 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
         ? ordenarPrateleira(groupShopProductsRaw, `artista:${slug}:grupo:${connectionGroup.slug}`)
         : groupShopProductsRaw
 
+    // Nem artista nem grupo têm produto próprio ainda: cai na vitrine geral
+    // em destaque em vez de esconder o bloco — a loja precisa aparecer em
+    // toda página, não só onde já existe cobertura própria de produto.
+    const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0 && groupShopProducts.length === 0
+    const shopFallbackProducts = semProdutoProprio
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'artista:fallback')
+        : []
+
     const relatedHubs = getHubsForArtist(artist)
 
     return (
@@ -138,8 +146,9 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
             connectionGroup={groupMemberIds.length > 0 ? connectionGroup : undefined}
             discography={discography}
             relatedHubs={relatedHubs}
-            shopProducts={locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `artista:${slug}`) : []}
+            shopProducts={semProdutoProprio ? shopFallbackProducts : (locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `artista:${slug}`) : [])}
             groupShopProducts={groupShopProducts}
+            shopFallback={semProdutoProprio}
         />
         </>
     )

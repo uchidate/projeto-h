@@ -44,9 +44,11 @@ interface Props {
     soloReleases?: Record<string, DiscographyAlbum[]>
     relatedHubs?: ArchiveHub[]
     shopProducts?: StoreProduct[]
+    /** true quando shopProducts é a vitrine geral (o grupo ainda não tem produto próprio). */
+    shopFallback?: boolean
 }
 
-export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], soloReleases = {}, relatedHubs = [], shopProducts = [] }: Props) {
+export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], soloReleases = {}, relatedHubs = [], shopProducts = [], shopFallback = false }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const tC = useTranslations('profile.groupC')
@@ -214,20 +216,26 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                 totalMembers={activeCount > 0 ? activeCount : members.length}
             />
 
-            {/* Logo após o hero — pico de interesse do fã, antes do corpo longo do texto (poucos leitores chegam ao fim). */}
-            <ShopRelatedSection title={`Curtiu ${name}? Leva pra casa`} products={shopProducts}
-                href={`/loja/grupo/${group.slug}`} verTudoLabel={`Ver tudo de ${name}`} contexto={`grupo:${group.slug}`} />
-
             {emC ? (
+                <>
                 <GroupFichaC
                     group={group} model={model} activeMembers={activeMembers} formerMembers={formerMembers} formerSemFicha={formerSemFicha} memberPositions={memberPositions}
                     relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography} soloReleases={soloReleases}
                     agencyName={agencyName} generation={generation} magra={magra}
                     nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />}
                 />
+                <ShopRelatedSection title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`} products={shopProducts}
+                    href={shopFallback ? '/loja' : `/loja/grupo/${group.slug}`} verTudoLabel={shopFallback ? 'Ver toda a loja' : `Ver tudo de ${name}`}
+                    contexto={shopFallback ? 'grupo:fallback' : `grupo:${group.slug}`} />
+                </>
             ) : (
                 <>
             <QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />
+            {/* Depois do quiz/estatísticas, não direto após o hero — ficava alto
+                demais e competia com a primeira impressão do perfil. */}
+            <ShopRelatedSection title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`} products={shopProducts}
+                href={shopFallback ? '/loja' : `/loja/grupo/${group.slug}`} verTudoLabel={shopFallback ? 'Ver toda a loja' : `Ver tudo de ${name}`}
+                contexto={shopFallback ? 'grupo:fallback' : `grupo:${group.slug}`} />
             {/* Page body */}
             <div className="page-wrap">
                 <div className="flex items-start gap-10">

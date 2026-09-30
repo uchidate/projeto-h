@@ -11,6 +11,8 @@ import { hojeEmSaoPaulo } from '@/lib/artists/aniversarios'
 import { getYear, stripHtml, getWPImage } from '@/lib/utils'
 import { getArtistsByIds } from '@/lib/wordpress/artists'
 import { parseFormerMembers } from '@/lib/profiles/groupProfile'
+import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 
 export const revalidate = 600
 
@@ -157,6 +159,10 @@ export default async function GroupsListPage({ searchParams }: { searchParams: S
     if (unfiltered && page === 1) exigirListagemComConteudo(items, '/groups')
     if (page > Math.max(1, totalPages)) notFound()
 
+    const shopProducts = inicio
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:grupos')
+        : []
+
     return (
         <GroupsPage
             groups={items}
@@ -175,6 +181,7 @@ export default async function GroupsListPage({ searchParams }: { searchParams: S
             debutaram={debutaram}
             mesNome={MESES[hoje.mes - 1]}
             integrantes={integrantes}
+            shopProducts={shopProducts}
         />
     )
 }
