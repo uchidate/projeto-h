@@ -93,6 +93,8 @@ const NavBar = ({
     // O logo leva a home do idioma da pagina: em /en, a /en, nao ao portugues.
     const homeHref = isDefaultLocale ? '/' : `/${locale}`
     const [editionDate, setEditionDate] = useState('')
+    const [abasRoladas, setAbasRoladas] = useState(false)
+    const abasScrollRef = useRef<HTMLDivElement | null>(null)
 
     /* A Loja saiu da lista de navegação e virou botão próprio no cabeçalho:
        comércio e conteúdo competiam pelo mesmo tipo de slot. O filtro mantém o
@@ -222,17 +224,27 @@ const NavBar = ({
                     </div>
 
                     <nav aria-label={t('nav.mainNav')} className="flex h-11 items-center border-b border-border">
-                        <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto pl-4 pr-3 scrollbar-none">
-                            {abasVisiveis.map(({ label, href }) => (
-                                <Link
-                                    key={href}
-                                    href={href}
-                                    aria-current={isActive(href) ? 'page' : undefined}
-                                    className={`flex h-9 shrink-0 items-center rounded-full border px-3.5 text-[14px] transition-colors ${isActive(href) ? 'border-accent-a11y bg-accent-a11y font-extrabold text-white' : 'border-border-strong font-semibold text-foreground-subtle hover:border-accent/60 hover:text-foreground'}`}
-                                >
-                                    {label}
-                                </Link>
-                            ))}
+                        <div className="relative min-w-0 flex-1">
+                            {/* Sinaliza que há mais abas à esquerda depois que o leitor rola — sem isto, a rolagem horizontal fica escondida. */}
+                            {abasRoladas && (
+                                <span aria-hidden className="pointer-events-none absolute left-0 top-0 z-10 h-full w-7 bg-linear-to-r from-background to-transparent" />
+                            )}
+                            <div
+                                ref={abasScrollRef}
+                                onScroll={e => setAbasRoladas(e.currentTarget.scrollLeft > 4)}
+                                className="flex items-center gap-2 overflow-x-auto pl-4 pr-3 scrollbar-none"
+                            >
+                                {abasVisiveis.map(({ label, href }) => (
+                                    <Link
+                                        key={href}
+                                        href={href}
+                                        aria-current={isActive(href) ? 'page' : undefined}
+                                        className={`flex h-9 shrink-0 items-center rounded-full border px-3.5 text-[14px] transition-colors ${isActive(href) ? 'border-accent-a11y bg-accent-a11y font-extrabold text-white' : 'border-border-strong font-semibold text-foreground-subtle hover:border-accent/60 hover:text-foreground'}`}
+                                    >
+                                        {label}
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
                         <div className="relative shrink-0 pl-1 pr-3">
                             <span aria-hidden className="pointer-events-none absolute right-full top-0 h-full w-7 bg-linear-to-r from-transparent to-background" />

@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { ChevronRight, ShoppingBag, X } from 'lucide-react'
+import { ChevronRight, Menu, ShoppingBag, X } from 'lucide-react'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { SITE_NAME } from '@/lib/constants/site'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
@@ -51,6 +51,7 @@ export function MobileMais({ links, destacado = false }: { links: NavLink[]; des
                     </button>
                 </div>
                 <nav aria-label={t('nav.sections')} className="flex-1 overflow-y-auto overscroll-contain">
+                    <p className="px-5 pb-1 pt-3 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('nav.browse')}</p>
                     <ul>
                         {links.map(({ label, href }) => (
                             <li key={href}>
@@ -70,6 +71,7 @@ export function MobileMais({ links, destacado = false }: { links: NavLink[]; des
                     </ul>
                 </nav>
                 <div className="shrink-0 space-y-1 border-t border-border px-5 py-3">
+                    <p className="pb-1 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('nav.preferences')}</p>
                     <div className="flex h-12 items-center justify-between text-[15px] font-semibold"><span>{t('nav.theme')}</span><ThemeToggle /></div>
                     <div className="flex min-h-12 items-center justify-between text-[15px] font-semibold"><span>{t('nav.language')}</span><SeletorIdioma /></div>
                     {/* Só aparece quando o sino existe (visitante logado); sem ele a linha ficaria com rótulo e nada ao lado. */}
@@ -90,9 +92,10 @@ export function MobileMais({ links, destacado = false }: { links: NavLink[]; des
                 onClick={() => setAberto(true)}
                 aria-expanded={aberto}
                 aria-haspopup="dialog"
-                className={`flex h-9 shrink-0 items-center gap-1 rounded-full border px-3.5 text-[14px] font-semibold transition-colors ${destacado ? 'border-accent-a11y bg-accent-a11y text-white' : 'border-border-strong text-foreground hover:border-accent/60'}`}
+                className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[14px] font-semibold transition-colors ${destacado ? 'border-accent-a11y bg-accent-a11y text-white' : 'border-border-strong text-foreground hover:border-accent/60'}`}
             >
-                {t('nav.more')}<span aria-hidden className="text-[10px]">▾</span>
+                <Menu size={15} aria-hidden />
+                {t('nav.more')}
             </button>
             {folha}
         </>

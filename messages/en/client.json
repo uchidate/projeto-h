@@ -172,6 +172,7 @@
     "theme": "Theme",
     "sections": "Sections",
     "notifications": "Notifications",
-    "searchShort": "Search artists, groups…"
+    "searchShort": "Search artists, groups…",
+    "preferences": "Preferences"
   }
 }
