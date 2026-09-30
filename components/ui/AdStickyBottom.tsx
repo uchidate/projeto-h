@@ -4,7 +4,7 @@ import { storageKey } from '@/lib/constants/identidade.mjs'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { X } from 'lucide-react'
-import { useAds } from '@/components/providers/AdsProvider'
+import { useAds, useNaoAutomatizado } from '@/components/providers/AdsProvider'
 import { enqueueSlotPush } from '@/lib/utils/adQueue'
 import type { AdPlacement } from '@/lib/config/ads'
 import { AD_RUNTIME } from '@/lib/config/adRuntime'
@@ -23,6 +23,7 @@ declare global {
  */
 export function AdStickyBottom({ slot }: { slot: string }) {
     const ads = useAds()
+    const automatizado = useNaoAutomatizado()
     const t = useTranslations('client')
     const client = ads.client
     const resolvedSlot = slot in ads.slots ? ads.slots[slot as AdPlacement] : slot
@@ -50,7 +51,7 @@ export function AdStickyBottom({ slot }: { slot: string }) {
     // anúncio não reaparecer a cada navegação e frustrar o leitor.
     useEffect(() => {
         const wasDismissed = sessionStorage.getItem(storageKey('ad_sticky_dismissed')) === '1'
-        if (!mobileViewport || wasDismissed || !ads.enabled || !client || !resolvedSlot) return
+        if (!mobileViewport || wasDismissed || !ads.enabled || automatizado || !client || !resolvedSlot) return
 
         let timer: ReturnType<typeof setTimeout> | undefined
         const schedule = () => { timer = setTimeout(() => setVisible(true), AD_RUNTIME.sticky.revealDelayMs) }
@@ -60,10 +61,10 @@ export function AdStickyBottom({ slot }: { slot: string }) {
             window.removeEventListener('load', schedule)
             if (timer) clearTimeout(timer)
         }
-    }, [mobileViewport, ads.enabled, client, resolvedSlot])
+    }, [mobileViewport, ads.enabled, automatizado, client, resolvedSlot])
 
     useEffect(() => {
-        if (!ads.enabled || !visible || dismissed || pushed.current || !client || !resolvedSlot) return
+        if (!ads.enabled || automatizado || !visible || dismissed || pushed.current || !client || !resolvedSlot) return
         pushed.current = true
         // Conferido na hora do push: a barra pode ter sido fechada ou ocultada na fila.
         enqueueSlotPush(() => adRef.current, () => {
@@ -73,7 +74,7 @@ export function AdStickyBottom({ slot }: { slot: string }) {
                 setRequested(true)
             }
         })
-    }, [ads.enabled, visible, dismissed, client, resolvedSlot])
+    }, [ads.enabled, automatizado, visible, dismissed, client, resolvedSlot])
 
     useEffect(() => {
         if (!requested || adStatus) return

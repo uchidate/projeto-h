@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { AdSlot } from './AdSlot'
-import { useAds } from '@/components/providers/AdsProvider'
+import { useAds, useNaoAutomatizado } from '@/components/providers/AdsProvider'
 import { AD_LAYOUT_POLICIES, type AdLayout } from '@/lib/config/adPlacements'
 
 interface Props {
@@ -34,12 +34,13 @@ interface Props {
  */
 export function AdSlotInline({ slot, format, eager, analyticsPlacement, emptyTimeoutMs, layout = 'content', mediaQuery }: Props) {
     const ads = useAds()
+    const automatizado = useNaoAutomatizado()
     const t = useTranslations('client')
     const [collapsed, setCollapsed] = useState(false)
     const policy = AD_LAYOUT_POLICIES[layout]
     const resolvedFormat = format ?? policy.format
     const resolvedEager = eager ?? policy.eager
-    if (!ads.enabled || !ads.client) return null
+    if (!ads.enabled || !ads.client || automatizado) return null
     if (collapsed) return null
 
     return (

@@ -17,32 +17,34 @@ export function AdsProvider({
     settings: MonetizationSettings
     children: ReactNode
 }) {
-    // Navegador automatizado não pede anúncio. Medido no Umami em 2026-09-14:
-    // `hub_feed` teve 1.115 desfechos com 6 preenchidos, quase todos de sessões
-    // de 1 página vindas de DE/US/GB/NL/FR. O AdSense já recusava o leilão, e
-    // pedido de robô é risco de tráfego inválido na conta.
-    //
-    // `useSyncExternalStore` (versão anterior) devia ser hydration-safe por
-    // design, mas mostrou mismatch real (server: <aside>, client: <section>)
-    // em 2026-09-30 num bloco atrás de Suspense/streaming — a garantia de
-    // "primeiro render do cliente usa getServerSnapshot" não se sustentou
-    // nesse caminho. `hidratado` via useEffect é mais grosseiro mas à prova
-    // de bala: false no servidor E no primeiro render do cliente, sempre,
-    // não importa o que aconteceu antes da montagem — a checagem de
-    // `navigator.webdriver` só roda DEPOIS, como uma atualização normal.
-    const [hidratado, setHidratado] = useState(false)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- gate de hidratação: precisa distinguir o 1º render (SSR-safe) do restante
-    useEffect(() => setHidratado(true), [])
-    const automatizado = hidratado && navigator.webdriver === true
-    const value = useMemo(
-        () => (automatizado ? { ...settings, enabled: false } : settings),
-        [automatizado, settings],
-    )
-    return <AdsContext.Provider value={value}>{children}</AdsContext.Provider>
+    return <AdsContext.Provider value={settings}>{children}</AdsContext.Provider>
 }
 
 export function useAds() {
     return useContext(AdsContext)
+}
+
+/**
+ * Navegador automatizado não pede anúncio. Medido no Umami em 2026-09-14:
+ * `hub_feed` teve 1.115 desfechos com 6 preenchidos, quase todos de sessões
+ * de 1 página vindas de DE/US/GB/NL/FR. O AdSense já recusava o leilão, e
+ * pedido de robô é risco de tráfego inválido na conta.
+ *
+ * Local a CADA slot de anúncio (não no AdsProvider/contexto compartilhado):
+ * um gate de hidratação num estado COMPARTILHADO significa que, quando um
+ * slot atrás de Suspense monta depois (streaming), o efeito de OUTRO slot já
+ * pode ter virado o estado compartilhado — esse slot novo nasce direto
+ * "hidratado", divergindo do HTML que o servidor mandou pra ELE. Confirmado
+ * em 2026-09-30: os slots acima da dobra hidratavam certo, mas
+ * `home_below_fold` (atrás de `<Suspense>`) já nascia com `enabled: false` no
+ * cliente contra `true` no servidor. Estado local por instância evita a
+ * corrida: cada slot só olha pro seu PRÓPRIO efeito, nunca o de outro.
+ */
+export function useNaoAutomatizado(): boolean {
+    const [hidratado, setHidratado] = useState(false)
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- gate de hidratação: precisa distinguir o 1º render (SSR-safe) do restante
+    useEffect(() => setHidratado(true), [])
+    return hidratado && navigator.webdriver === true
 }
 
 /** Desliga os anúncios de tudo o que estiver dentro (página sem conteúdo suficiente). */

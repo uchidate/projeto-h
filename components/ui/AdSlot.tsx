@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { useAds } from '@/components/providers/AdsProvider'
+import { useAds, useNaoAutomatizado } from '@/components/providers/AdsProvider'
 import { enqueueSlotPush } from '@/lib/utils/adQueue'
 import type { AdPlacement } from '@/lib/config/ads'
 import { AD_RUNTIME, parseAdSenseStatus, type AdRuntimeFormat, type AdRuntimeStatus } from '@/lib/config/adRuntime'
@@ -51,6 +51,7 @@ export function AdSlot({
     mediaQuery,
 }: AdSlotProps) {
     const ads = useAds()
+    const automatizado = useNaoAutomatizado()
     const t = useTranslations('client')
     const client = ads.client
     // ID próprio da posição vence o slot genérico; ver `placements` em monetization.ts.
@@ -116,7 +117,7 @@ export function AdSlot({
     }, [lazy, viewportEligible])
 
     useEffect(() => {
-        if (!ads.enabled || !viewportEligible || !visible || pushed.current || !client || !resolvedSlot) return
+        if (!ads.enabled || automatizado || !viewportEligible || !visible || pushed.current || !client || !resolvedSlot) return
         pushed.current = true
         const queuedAt = performance.now()
         const placement = analyticsPlacement ?? (slot in ads.slots ? slot : 'custom')
@@ -138,7 +139,7 @@ export function AdSlot({
                 setRequested(true)
             }
         })
-    }, [ads.enabled, viewportEligible, visible, client, resolvedSlot, analyticsPlacement, slot, ads.slots, format])
+    }, [ads.enabled, automatizado, viewportEligible, visible, client, resolvedSlot, analyticsPlacement, slot, ads.slots, format])
 
     useEffect(() => {
         // Safari pode adiar `load` e idle callbacks. O prazo deve começar
@@ -190,7 +191,7 @@ export function AdSlot({
         return () => observer.disconnect()
     }, [visible, slot, format, ads.slots, analyticsPlacement, onStatusChange])
 
-    if (!ads.enabled || !viewportEligible || !client || !resolvedSlot) return null
+    if (!ads.enabled || automatizado || !viewportEligible || !client || !resolvedSlot) return null
     if (adStatus === 'unfilled' || adStatus === 'timeout') return null
 
     // Reservas de altura anti-CLS: o pior layout shift é o formato expandir
