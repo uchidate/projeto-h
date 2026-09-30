@@ -551,3 +551,16 @@ export function trackTema(tema: 'dark' | 'light') {
 export function trackFiltroListagem(params: { listagem: string; filtros: string; origem: 'entrada' | 'interacao' }) {
     enviar('listing_filter', { listing: params.listagem, filters: params.filtros, filter_origin: params.origem })
 }
+
+/**
+ * Clique em produto de afiliado. Base do ranking por CTR: `contexto` é a
+ * página/vitrine onde apareceu (ex.: "artista:jisoo-kim", "loja"), pra medir
+ * relevância por página e não só popularidade global.
+ */
+export function trackProductClick(params: { productId: number; store: string; contexto: string }) {
+    enviar('product_click', {
+        product_id: params.productId,
+        product_store: params.store,
+        click_context: params.contexto,
+    })
+}
