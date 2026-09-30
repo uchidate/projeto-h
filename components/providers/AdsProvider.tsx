@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useMemo, useSyncExternalStore } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { MonetizationSettings } from '@/lib/wordpress/monetization'
 
@@ -9,10 +9,6 @@ const AdsContext = createContext<MonetizationSettings>({
     client: '',
     slots: { inline: '', article_sidebar: '', post_suggestion: '', leaderboard: '', sticky: '' },
 })
-
-const semAssinatura = () => () => {}
-const navegadorAutomatizado = () => navigator.webdriver === true
-const noServidor = () => false
 
 export function AdsProvider({
     settings,
@@ -24,9 +20,20 @@ export function AdsProvider({
     // Navegador automatizado não pede anúncio. Medido no Umami em 2026-09-14:
     // `hub_feed` teve 1.115 desfechos com 6 preenchidos, quase todos de sessões
     // de 1 página vindas de DE/US/GB/NL/FR. O AdSense já recusava o leilão, e
-    // pedido de robô é risco de tráfego inválido na conta. O servidor renderiza
-    // como humano; a troca acontece depois da hidratação, sem mismatch.
-    const automatizado = useSyncExternalStore(semAssinatura, navegadorAutomatizado, noServidor)
+    // pedido de robô é risco de tráfego inválido na conta.
+    //
+    // `useSyncExternalStore` (versão anterior) devia ser hydration-safe por
+    // design, mas mostrou mismatch real (server: <aside>, client: <section>)
+    // em 2026-09-30 num bloco atrás de Suspense/streaming — a garantia de
+    // "primeiro render do cliente usa getServerSnapshot" não se sustentou
+    // nesse caminho. `hidratado` via useEffect é mais grosseiro mas à prova
+    // de bala: false no servidor E no primeiro render do cliente, sempre,
+    // não importa o que aconteceu antes da montagem — a checagem de
+    // `navigator.webdriver` só roda DEPOIS, como uma atualização normal.
+    const [hidratado, setHidratado] = useState(false)
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- gate de hidratação: precisa distinguir o 1º render (SSR-safe) do restante
+    useEffect(() => setHidratado(true), [])
+    const automatizado = hidratado && navigator.webdriver === true
     const value = useMemo(
         () => (automatizado ? { ...settings, enabled: false } : settings),
         [automatizado, settings],
