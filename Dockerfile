@@ -55,10 +55,6 @@ ENV SENTRY_ORG=$SENTRY_ORG
 # O que se paga e frescor do HTML pre-renderizado; ver WP_BUILD_FETCH_TTL_S em
 # lib/wordpress/config.ts para o raciocinio e os dois mecanismos que limitam o
 # estrago. Fica desligado ate alguem escolher o numero.
-# Teto de workers do `next build` (ver next.config.mjs). O servidor tem 4
-# nucleos e o WordPress mora nele: 2 deixa metade para o site continuar de pe.
-ARG BUILD_MAX_WORKERS="2"
-ENV BUILD_MAX_WORKERS=$BUILD_MAX_WORKERS
 ARG WP_BUILD_FETCH_TTL_S=""
 ENV WP_BUILD_FETCH_TTL_S=$WP_BUILD_FETCH_TTL_S
 
