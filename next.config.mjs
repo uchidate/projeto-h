@@ -28,6 +28,10 @@ const nextConfig = {
     // Sentry: build de conteúdo idêntico reaproveita a imagem e mantém o id.
     deploymentId: process.env.NEXT_DEPLOYMENT_ID || process.env.NEXT_PUBLIC_SENTRY_RELEASE || undefined,
     poweredByHeader: false,
+    // O `next build` roda o tsc de novo (~34s no build do Docker), e o type-check
+    // ja barra o merge no quality.yml. So o build da imagem o pula (Dockerfile);
+    // `next build` local continua checando tipos.
+    typescript: { ignoreBuildErrors: process.env.SKIP_BUILD_TYPECHECK === '1' },
     // Nao existe mais bloco `eslint` aqui: o Next 16 removeu a opcao e passou a
     // avisar "Unrecognized key(s) in object: 'eslint'" a cada build. O build
     // simplesmente nao roda mais ESLint, entao o antigo `ignoreDuringBuilds`

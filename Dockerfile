@@ -25,6 +25,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # durante o build — a home era pré-renderizada VAZIA e, por nunca ter feito
 # fetch, saía sem tags de cache: revalidação sob demanda não a alcançava e só o
 # timer do ISR a substituía. Com a URL, o build gera a página real e com tags.
+# Pula o tsc do `next build` (~34s): o quality.yml ja o roda e barra o merge.
+ENV SKIP_BUILD_TYPECHECK=1
+
 ARG WORDPRESS_API_URL=""
 ENV WORDPRESS_API_URL=$WORDPRESS_API_URL
 
