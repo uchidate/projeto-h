@@ -27,7 +27,14 @@ runs:
       run: |
         set -euo pipefail
         npm install --prefix .pw --no-audit --no-fund --ignore-scripts "@playwright/test@${{ steps.versao.outputs.v }}" >/dev/null
-        [ -e node_modules ] || ln -s .pw/node_modules node_modules
+        [ -e node_modules ] || ln -sfn .pw/node_modules node_modules
         echo "/.pw" >> .git/info/exclude
         echo "/node_modules" >> .git/info/exclude
-        npx --prefix .pw playwright install --with-deps --only-shell chromium
+        # `--with-deps` roda apt-get a cada execucao (~10-15s). A imagem ubuntu-latest
+        # costuma ja trazer as bibliotecas: instala so o navegador e confirma que
+        # ele abre; so se nao abrir cai no caminho completo, que e o de antes.
+        npx --prefix .pw playwright install --only-shell chromium
+        if ! NODE_PATH="$PWD/.pw/node_modules" node -e "require('@playwright/test').chromium.launch().then(b=>b.close())" >/dev/null 2>&1; then
+          echo "chromium nao abriu sem as dependencias de sistema; instalando com --with-deps"
+          npx --prefix .pw playwright install --with-deps --only-shell chromium
+        fi

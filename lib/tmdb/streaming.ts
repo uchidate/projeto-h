@@ -60,6 +60,11 @@ function toEntry(show: TMDBShow, rank: number): StreamingEntry {
     }
 }
 
+// O top 10 so mostra titulo que tem ficha no site (link para /productions). Pede
+// mais que 10 ao TMDB para ter de onde preencher quando algum nao tem.
+const CANDIDATOS_POR_PLATAFORMA = 20
+const TAMANHO_DO_TOP = 10
+
 async function fetchPlatform(source: string): Promise<StreamingEntry[]> {
     const cfg = STREAMING_PLATFORMS[source]
     if (!cfg?.providerId) return []
@@ -74,7 +79,7 @@ async function fetchPlatform(source: string): Promise<StreamingEntry[]> {
         const data = await tmdbFetch<{ results: TMDBShow[] }>(`/discover/tv?${params}`)
         return data.results
             .filter(s => s.original_language === 'ko')
-            .slice(0, 10)
+            .slice(0, CANDIDATOS_POR_PLATAFORMA)
             .map((s, i) => toEntry(s, i + 1))
     } catch {
         return []
@@ -119,10 +124,22 @@ export async function getStreamingTopShows(): Promise<ShowsByPlatform> {
     }
     // Enriquecer com slugs do WP
     const slugMap = await resolveProductionSlugs(allShows)
-    for (const shows of Object.values(out)) {
+    for (const [source, shows] of Object.entries(out)) {
         for (const show of shows) {
             show.productionSlug = slugMap.get(show.tmdbId) ?? null
         }
+        // Mapa vazio = consulta ao WP falhou (ou nada bate): mantem a lista como
+        // veio em vez de esvaziar a home por causa de uma falha de rede.
+        if (slugMap.size === 0) {
+            out[source] = shows.slice(0, TAMANHO_DO_TOP)
+            continue
+        }
+        const comFicha = shows.filter(show => show.productionSlug)
+        if (comFicha.length === 0) {
+            delete out[source]
+            continue
+        }
+        out[source] = comFicha.slice(0, TAMANHO_DO_TOP).map((show, i) => ({ ...show, rank: i + 1 }))
     }
     return out
 }
