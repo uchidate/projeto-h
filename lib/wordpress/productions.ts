@@ -104,7 +104,7 @@ export async function getProductionsByArtist(artistSlug: string, perPage = 20): 
     } catch { return [] }
 }
 
-export async function getRelatedProductions(genreId: number, excludeId: number, perPage = 6): Promise<WPProduction[]> {
+async function getRelatedProductions(genreId: number, excludeId: number, perPage = 6): Promise<WPProduction[]> {
     try {
         return await wpBuscarOpcional<WPProduction[]>(
             `/wp/v2/production${buildParams({ production_genre: genreId, exclude: excludeId, per_page: perPage, status: 'publish', _fields: 'id,slug,title,date,featured_image_url,acf,production_genre', orderby: 'date', order: 'desc' })}`,

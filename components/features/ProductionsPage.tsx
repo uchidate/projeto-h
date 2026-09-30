@@ -17,7 +17,7 @@ import { RastreioDeFiltros } from '@/components/analytics/RastreioDeFiltros'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
 
-export interface GeneroResumo { slug: string; nome: string; fotos: WPProduction[] }
+interface GeneroResumo { slug: string; nome: string; fotos: WPProduction[] }
 
 interface Props {
     productions: WPProduction[]

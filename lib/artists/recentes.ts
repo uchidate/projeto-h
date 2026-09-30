@@ -1,7 +1,7 @@
 /** Últimos artistas e grupos vistos, guardados só no navegador (sem login e sem ir para o servidor). */
 export interface Recente { slug: string; nome: string; foto: string | null; papel: string | null; /** Ausente = artista (registros antigos). */ tipo?: 'grupo' | 'producao' | 'artigo'; /** Só artigos: slug da categoria principal, para o destaque da lista do blog. */ categoria?: string }
 
-export const CHAVE_RECENTES = 'hh:recentes:v1'
+const CHAVE_RECENTES = 'hh:recentes:v1'
 const LIMITE = 8
 
 const EVENTO = 'hh:recentes'
@@ -18,7 +18,7 @@ export function interpretarRecentes(cru: string): Recente[] {
     } catch { return [] }
 }
 
-export function lerRecentes(): Recente[] {
+function lerRecentes(): Recente[] {
     return interpretarRecentes(lerRecentesCru())
 }
 

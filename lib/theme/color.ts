@@ -1,7 +1,5 @@
-/** Cor de destaque padrão quando o valor do ACF não é um hex utilizável. */
-export const DEFAULT_ACCENT = '#e91e8c'
-
-const FALLBACK_RGB = '233,30,140' // DEFAULT_ACCENT em componentes
+/** Cor de destaque padrão (#e91e8c, em RGB) quando o valor do ACF não é um hex utilizável. */
+const FALLBACK_RGB = '233,30,140'
 
 /**
  * Converte o hex de destaque (ACF `color`) em rgba para uso em CSS inline.

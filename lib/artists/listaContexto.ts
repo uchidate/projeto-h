@@ -24,7 +24,7 @@ export interface Vizinhanca {
     proximo: ItemLista | null
 }
 
-export const CHAVE_LISTA = 'hh:lista:v1'
+const CHAVE_LISTA = 'hh:lista:v1'
 
 export function salvarContexto(ctx: ContextoLista): void {
     try { window.sessionStorage.setItem(CHAVE_LISTA, JSON.stringify(ctx)) } catch { /* sem sessão: sem navegação na lista */ }
@@ -41,10 +41,6 @@ export function interpretarContexto(cru: string): ContextoLista | null {
         const c = JSON.parse(cru)
         return c && Array.isArray(c.itens) && typeof c.href === 'string' ? c as ContextoLista : null
     } catch { return null }
-}
-
-export function lerContexto(): ContextoLista | null {
-    return interpretarContexto(lerContextoCru())
 }
 
 /** Vizinhos do artista na lista salva; nulo quando ele não está nela. Nas pontas da página não há vizinho do outro lado. */

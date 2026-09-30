@@ -43,15 +43,6 @@ export interface SpotifyAlbum {
     external_urls: { spotify: string }
 }
 
-export interface SpotifyTrack {
-    id: string
-    name: string
-    track_number: number
-    duration_ms: number
-    external_urls: { spotify: string }
-    preview_url: string | null
-}
-
 export async function getArtistAlbums(spotifyArtistId: string): Promise<SpotifyAlbum[]> {
     const all: SpotifyAlbum[] = []
     let path: string | null = `/artists/${spotifyArtistId}/albums?limit=50&include_groups=album,single,compilation&market=BR`
@@ -68,11 +59,6 @@ export async function getArtistAlbums(spotifyArtistId: string): Promise<SpotifyA
         seen.add(key)
         return true
     })
-}
-
-export async function getAlbumTracks(albumId: string): Promise<SpotifyTrack[]> {
-    const page = await spotifyGet<{ items: SpotifyTrack[] }>(`/albums/${albumId}/tracks?limit=50&market=BR`)
-    return page.items
 }
 
 export function extractSpotifyArtistId(url: string): string | null {

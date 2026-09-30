@@ -15,7 +15,7 @@ export type AgencyNetwork = {
     byParent: Map<number, WPAgency[]>
 }
 
-export type EntityOrganizationNode = {
+type EntityOrganizationNode = {
     organization: WPAgency
     depth: number
     direct: boolean

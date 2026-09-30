@@ -27,7 +27,7 @@ export type SiteSettings = {
     maisBuscados: SiteLink[]
 }
 
-export type HomeHub = {
+type HomeHub = {
     label: string
     href: string
     hangul: string
@@ -44,7 +44,7 @@ export type HomeSettings = {
     featuredArtistNote: string
 }
 
-export type ProductionSettings = {
+type ProductionSettings = {
     featuredIds: number[]
 }
 
@@ -54,7 +54,7 @@ export type BestOfList = {
     emoji: string
 }
 
-export type BlogCategory = {
+type BlogCategory = {
     label: string
     slug: string
     count: number

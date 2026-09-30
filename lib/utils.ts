@@ -48,14 +48,6 @@ export function formatDateTime(date: string | Date, locale = intlLocale()): stri
     }).format(parseAcfDate(date))
 }
 
-export function formatDateShort(date: string | Date, locale = intlLocale()): string {
-    return new Intl.DateTimeFormat(locale, {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-    }).format(parseAcfDate(date))
-}
-
 /**
  * Remove tags de HTML, repetindo até o resultado estabilizar.
  *

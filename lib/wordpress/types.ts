@@ -1,9 +1,9 @@
 import type { EntityTranslation } from '@/lib/i18n/entity-translation'
 /** Tipos base do WordPress REST API + Custom Post Types da site */
 
-export type WPRendered = { rendered: string; protected?: boolean }
+type WPRendered = { rendered: string; protected?: boolean }
 
-export type WPImage = {
+type WPImage = {
     id: number
     source_url: string
     alt_text: string
@@ -62,7 +62,7 @@ export type WPTerm = {
     count: number
 }
 
-export type WPAuthor = {
+type WPAuthor = {
     id: number
     name: string
     slug: string
@@ -142,7 +142,7 @@ export type AgencyAffiliation = {
     is_primary?: boolean
 }
 
-export type OrganizationRelationship = {
+type OrganizationRelationship = {
     organization_id: number
     relation_type: 'subsidiary_of' | 'label_of' | 'joint_venture_with' | 'division_of' | 'distributed_by' | string
     status: 'current' | 'former' | 'disputed' | 'announced'
@@ -506,7 +506,7 @@ export type WPYoast = {
     robots?: Record<string, string>
 }
 
-export type WPRankMathMeta = {
+type WPRankMathMeta = {
     rank_math_focus_keyword?: string
     rank_math_title?: string
     rank_math_description?: string

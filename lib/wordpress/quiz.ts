@@ -4,7 +4,7 @@ import { WP_CACHE_TAGS } from './cache'
 export type QuizDifficulty = 'easy' | 'medium' | 'hard'
 export type QuizCategory = 'k-pop' | 'k-drama' | 'cultura' | 'historia'
 
-export type QuizSubcategory =
+type QuizSubcategory =
     // k-pop
     | 'grupos' | 'idols' | 'musicas' | 'comebacks'
     // k-drama
@@ -13,30 +13,6 @@ export type QuizSubcategory =
     | 'gastronomia' | 'lingua' | 'festividades'
     // historia
     | 'antiga' | 'moderna'
-
-export const SUBCATEGORY_MAP: Record<QuizCategory, Array<{ value: QuizSubcategory; label: string; sub: string }>> = {
-    'k-pop': [
-        { value: 'grupos',    label: 'Grupos',    sub: 'Girl groups e boy groups' },
-        { value: 'idols',     label: 'Idols',     sub: 'Artistas e membros'       },
-        { value: 'musicas',   label: 'Músicas',   sub: 'Hits e álbuns'            },
-        { value: 'comebacks', label: 'Comebacks', sub: 'Lançamentos recentes'     },
-    ],
-    'k-drama': [
-        { value: 'romance',   label: 'Romance',   sub: 'Doramas românticos'  },
-        { value: 'thriller',  label: 'Thriller',  sub: 'Suspense e ação'     },
-        { value: 'classicos', label: 'Clássicos', sub: 'Séries históricas'   },
-        { value: 'cinema',    label: 'Cinema',    sub: 'Filmes coreanos'     },
-    ],
-    'cultura': [
-        { value: 'gastronomia',  label: 'Comida',       sub: 'Culinária coreana'   },
-        { value: 'lingua',       label: 'Língua',       sub: 'Hangul e expressões' },
-        { value: 'festividades', label: 'Festividades', sub: 'Festivais e datas'   },
-    ],
-    'historia': [
-        { value: 'antiga',  label: 'Antiga',  sub: 'Joseon e antes'   },
-        { value: 'moderna', label: 'Moderna', sub: 'Séc. XX até hoje' },
-    ],
-}
 
 export interface QuizQuestion {
     id: number

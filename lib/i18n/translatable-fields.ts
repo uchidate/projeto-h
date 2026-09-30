@@ -11,10 +11,8 @@
  * `true` = string ou lista de strings; lista de chaves = lista de objetos, da
  * qual só essas chaves são traduzíveis.
  */
-export type FieldRule = true | readonly string[]
+type FieldRule = true | readonly string[]
 export type TranslatableSchema = { readonly [field: string]: FieldRule }
-
-export const TRANSLATABLE_TOP_LEVEL = ['title', 'content', 'excerpt', 'seo_title', 'seo_description'] as const
 
 const CHAPTER = ['period', 'title', 'description', 'visual_alt', 'quote_text', 'quote_context'] as const
 const METRIC = ['value', 'label', 'context', 'as_of'] as const

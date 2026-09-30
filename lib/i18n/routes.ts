@@ -6,7 +6,7 @@ import { DEFAULT_LOCALE, type Locale } from './config'
  * Escopo inicial do inglês: fichas de artista, grupo e produção, suas listagens
  * e a home. Rota fora deste registro não tem versão em outro idioma.
  */
-export const ROUTES = {
+const ROUTES = {
     home: { pt: '/', en: '/' },
     artists: { pt: '/artists', en: '/artists' },
     artist: { pt: '/artists/[slug]', en: '/artists/[slug]' },

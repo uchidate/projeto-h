@@ -6,7 +6,7 @@
  * só existe com tradução `published` (sophia-katseye e katseye no piloto);
  * as demais continuam 404 em inglês.
  */
-export const LOCALES = ['pt', 'en'] as const
+const LOCALES = ['pt', 'en'] as const
 export type Locale = (typeof LOCALES)[number]
 
 export const DEFAULT_LOCALE: Locale = 'pt'

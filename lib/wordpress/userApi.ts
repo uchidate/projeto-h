@@ -82,13 +82,6 @@ export async function toggleFavorite(token: string | null | undefined, productio
     })
 }
 
-export async function toggleWatchlist(token: string | null | undefined, productionId: number) {
-    return wpUser<{ action: 'added' | 'removed'; total: number }>('/user/watchlist', token, {
-        method: 'POST',
-        body: JSON.stringify({ production_id: productionId }),
-    })
-}
-
 export async function getProductionStatus(token: string | null | undefined, productionId: number) {
     return wpUser<{ productionId: number; status: ProductionStatus }>(`/user/production-status?production_id=${productionId}`, token)
 }

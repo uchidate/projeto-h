@@ -58,7 +58,7 @@ export function buildPostsRss(posts: WPPost[], options: FeedOptions) {
 </rss>`
 }
 
-export function xmlEsc(str: string): string {
+function xmlEsc(str: string): string {
     return str
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')

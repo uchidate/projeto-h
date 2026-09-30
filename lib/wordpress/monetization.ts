@@ -18,7 +18,7 @@ export type MonetizationSettings = {
 const PLACEMENT_NAME = /^[a-z0-9_]{1,64}$/
 const SLOT_ID = /^\d{6,20}$/
 
-export function sanitizePlacements(raw: unknown): Record<string, string> {
+function sanitizePlacements(raw: unknown): Record<string, string> {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {}
     return Object.fromEntries(
         Object.entries(raw as Record<string, unknown>).filter(

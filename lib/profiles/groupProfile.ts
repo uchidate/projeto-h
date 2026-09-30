@@ -45,13 +45,6 @@ export function countActiveMembers(memberSlugs: string[], formerSlugs: string[],
     return memberSlugs.filter(slug => !ex.has(slug)).length
 }
 
-export const GROUP_TYPE_LABELS: Record<string, string> = {
-    girl_group: 'Girl Group',
-    boy_group: 'Boy Group',
-    co_ed: 'Grupo misto',
-    solo: 'Artista solo',
-}
-
 export function buildGroupProfileModel(group: WPGroup, currentYear = new Date().getFullYear(), locale: Locale = DEFAULT_LOCALE) {
     const labels = labelsFor(locale)
     const name = stripHtml(group.title.rendered) || group.slug

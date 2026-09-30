@@ -66,13 +66,6 @@ export async function getCategories() {
     return categories.filter(c => c.slug !== 'uncategorized')
 }
 
-export async function getTags() {
-    return wpBuscarOpcional<WPTerm[]>(
-        `/wp/v2/tags${buildParams({ per_page: 100, hide_empty: true, orderby: 'count', order: 'desc' })}`,
-        { revalidate: 3600, tags: [WP_CACHE_TAGS.tags] },
-    )
-}
-
 const RELATED_FIELDS = 'id,slug,title,date,excerpt,featured_image_url,acf,categories,tags,related_entities'
 
 export async function getRelatedPosts(post: WPPost, limit = 4): Promise<WPPost[]> {

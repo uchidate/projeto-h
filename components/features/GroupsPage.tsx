@@ -124,8 +124,8 @@ export function GroupCard({ group, priority }: { group: WPGroup; priority?: bool
     )
 }
 
-export interface GeracaoResumo { slug: string; label: string; fotos: WPGroup[] }
-export interface DebutDoMes { slug: string; nome: string; dia: number; ano: number }
+interface GeracaoResumo { slug: string; label: string; fotos: WPGroup[] }
+interface DebutDoMes { slug: string; nome: string; dia: number; ano: number }
 
 interface Props {
     groups: WPGroup[]

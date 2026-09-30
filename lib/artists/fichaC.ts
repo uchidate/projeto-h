@@ -3,7 +3,7 @@ import { isInterstitial, CHAVE_DE_ANUNCIO } from '@/components/profiles/ProfileS
 
 /** Grupo (aba) de cada bloco da ficha; a ordem dos grupos é a ordem da página. */
 export type AbaC = 'visao' | 'carreira' | 'musica' | 'obras' | 'universo' | 'ler'
-export const ORDEM_ABAS: readonly AbaC[] = ['visao', 'carreira', 'musica', 'obras', 'universo', 'ler']
+const ORDEM_ABAS: readonly AbaC[] = ['visao', 'carreira', 'musica', 'obras', 'universo', 'ler']
 
 const ABA_DO_BLOCO: Record<string, AbaC> = {
     biografia: 'visao', analise: 'visao', redes: 'visao',
@@ -13,10 +13,6 @@ const ABA_DO_BLOCO: Record<string, AbaC> = {
     filmografia: 'obras',
     grupos: 'universo', relacionados: 'universo',
     artigos: 'ler', faq: 'ler',
-}
-
-export function abaDoBloco(id: string): AbaC | undefined {
-    return ABA_DO_BLOCO[id]
 }
 
 /**

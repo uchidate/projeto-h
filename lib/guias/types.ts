@@ -29,6 +29,3 @@ export type ArchiveHub = {
     whatYouWillFind?: string
     relatedSearches?: Array<{ label: string; href: string }>
 }
-
-export const SINGER_ROLE_TERMS = ['cantor', 'cantora', 'singer', 'vocalist', 'rapper', 'idol']
-export const ACTOR_ROLE_TERMS = ['ator', 'atriz', 'actor', 'actress']
