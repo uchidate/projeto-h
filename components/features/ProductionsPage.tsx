@@ -167,10 +167,6 @@ export function ProductionsPage({
                 </section>
             )}
 
-            {inicio && shopProducts.length > 0 && (
-                <ShopRelatedSection title="K-drama merch pra maratonar" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:producoes" />
-            )}
-
             {/* ── Todas as produções ── */}
             <section className="page-wrap pt-10" data-bloco="lista-todas">
                 <div className="flex flex-col gap-1 border-b border-border sm:flex-row sm:items-end sm:justify-between">
@@ -223,6 +219,10 @@ export function ProductionsPage({
                     <Pagination currentPage={currentPage} totalPages={totalPages} buildHref={p => buildHref({ page: String(p) })} />
                 </div>
             </section>
+
+            {inicio && shopProducts.length > 0 && (
+                <ShopRelatedSection title="K-drama merch pra maratonar" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:producoes" />
+            )}
         </>
     )
 }

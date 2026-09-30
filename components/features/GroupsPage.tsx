@@ -328,10 +328,6 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                 </section>
             )}
 
-            {inicio && shopProducts.length > 0 && (
-                <ShopRelatedSection title="Merch de grupo K-pop" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:grupos" />
-            )}
-
             {/* ── Todos os grupos ── */}
             <section className="page-wrap pt-10" data-bloco="lista-todos">
                 <div className="flex flex-col gap-1 border-b border-border sm:flex-row sm:items-end sm:justify-between">
@@ -403,6 +399,10 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                     <Pagination currentPage={currentPage} totalPages={totalPages} buildHref={(page) => buildHref({ page: String(page) })} />
                 </div>
             </section>
+
+            {inicio && shopProducts.length > 0 && (
+                <ShopRelatedSection title="Merch de grupo K-pop" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:grupos" />
+            )}
         </>
     )
 }

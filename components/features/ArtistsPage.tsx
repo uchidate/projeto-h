@@ -215,12 +215,6 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                     <h2 className={`${SERIF} text-[28px] font-semibold leading-tight sm:text-[38px]`}>Todos os artistas</h2>
                 </div>
 
-                {inicio && shopProducts.length > 0 && (
-                    <div className="mt-6">
-                        <ShopRelatedSection title="Pra levar do seu bias" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:artistas" />
-                    </div>
-                )}
-
                 <div className="page-wrap">
                     <div className="mt-6 flex flex-col gap-3 border-y border-border/70 py-3 lg:h-14 lg:flex-row lg:items-center lg:justify-between lg:py-0">
                         <div className="-mx-4 flex gap-1 overflow-x-auto px-4 lg:mx-0 lg:px-0" role="group" aria-label="Ordenar por">
@@ -321,6 +315,10 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                     <Pagination currentPage={currentPage} totalPages={totalPages} buildHref={(page) => buildHref({ page: String(page) })} />
                 </div>
             </section>
+
+            {inicio && shopProducts.length > 0 && (
+                <ShopRelatedSection title="Pra levar do seu bias" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:artistas" />
+            )}
 
             {/* ── Continue explorando ─────────────────────────────── */}
             <section className="border-t border-border bg-surface/60 py-9 sm:py-11" data-bloco="lista-explorar">
