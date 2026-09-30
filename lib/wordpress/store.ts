@@ -4,6 +4,7 @@ import { WP_CACHE_TAGS } from './cache'
 export type StoreProduct = {
     id: number
     title: { rendered: string }
+    date_gmt: string
     acf: {
         price: string | null
         original_price: string | null
@@ -19,7 +20,55 @@ export type StoreProduct = {
         position: number | null
         related_group: number | null
         related_artist: number | null
+        price_history: { date: string; price: string }[] | null
     }
+}
+
+/** Calcula o desconto real a partir dos dois preços já gravados — nunca inventa percentual. */
+export function calcularDesconto(price?: string | null, originalPrice?: string | null): number | null {
+    if (!price || !originalPrice) return null
+    const parse = (s: string) => Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'))
+    const atual = parse(price)
+    const original = parse(originalPrice)
+    if (!Number.isFinite(atual) || !Number.isFinite(original) || original <= atual) return null
+    return Math.round(((original - atual) / original) * 100)
+}
+
+/**
+ * true só quando o preço atual é, de fato, o menor registrado no histórico
+ * dentro da janela — nunca aproxima nem assume na ausência de dado.
+ * Exige pelo menos 2 leituras no histórico (senão não há "histórico" real).
+ */
+export function ehMenorPrecoEmDias(price: string | null, history: { date: string; price: string }[] | null, dias = 30): boolean {
+    if (!price || !history || history.length < 2) return false
+    const parse = (s: string) => Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'))
+    const atual = parse(price)
+    if (!Number.isFinite(atual)) return false
+    const limite = Date.now() - dias * 24 * 60 * 60 * 1000
+    const janela = history.filter(h => new Date(h.date).getTime() >= limite)
+    if (janela.length < 2) return false
+    const menor = Math.min(...janela.map(h => parse(h.price)).filter(Number.isFinite))
+    return Number.isFinite(menor) && atual <= menor
+}
+
+/** Data real de publicação do post — nunca "novo" fabricado. */
+export function ehNovo(dateGmt: string, dias = 14): boolean {
+    const publicado = new Date(`${dateGmt}Z`).getTime()
+    if (!Number.isFinite(publicado)) return false
+    return Date.now() - publicado <= dias * 24 * 60 * 60 * 1000
+}
+
+/** Ordem de exibição dentro de uma prateleira: destaque > desconto > posição manual. */
+export function ordenarPrateleira(produtos: StoreProduct[]): StoreProduct[] {
+    return [...produtos].sort((a, b) => {
+        const destaqueA = a.acf.featured ? 1 : 0
+        const destaqueB = b.acf.featured ? 1 : 0
+        if (destaqueA !== destaqueB) return destaqueB - destaqueA
+        const descA = calcularDesconto(a.acf.price, a.acf.original_price) ?? -1
+        const descB = calcularDesconto(b.acf.price, b.acf.original_price) ?? -1
+        if (descA !== descB) return descB - descA
+        return (a.acf.position ?? 999) - (b.acf.position ?? 999)
+    })
 }
 
 export const STORE_LABELS: Record<string, string> = {

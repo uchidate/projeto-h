@@ -94,8 +94,8 @@ export function ProductionHeroB({
                                 </a>
                             )}
                             <ProductionActions productionId={productionId} mode="watch" variant="hero" />
-                            <ProductionActions productionId={productionId} mode="favorite" />
-                            <ShareBar url={productionUrl} title={title} horizontal showLabel={false} />
+                            <ProductionActions productionId={productionId} mode="favorite" variant="hero" />
+                            <ShareBar url={productionUrl} title={title} horizontal showLabel={false} tone="photo" />
                         </div>
                     </div>
                 </div>

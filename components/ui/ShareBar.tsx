@@ -13,9 +13,12 @@ interface Props {
     title: string
     horizontal?: boolean
     showLabel?: boolean
+    /** 'photo': sobre imagem escura fixa (hero com backdrop) — border-border/text-muted
+     *  são tokens de tema pensados pro fundo da página e ficam ilegíveis ali. */
+    tone?: 'default' | 'photo'
 }
 
-export function ShareBar({ url, title, horizontal = true, showLabel = true }: Props) {
+export function ShareBar({ url, title, horizontal = true, showLabel = true, tone = 'default' }: Props) {
     const tc = useTranslations('client')
     const [copied, setCopied] = useState(false)
 
@@ -52,12 +55,15 @@ export function ShareBar({ url, title, horizontal = true, showLabel = true }: Pr
     }
 
     const wrapperClass = horizontal ? 'flex items-center gap-2' : 'flex flex-col items-center gap-2'
-    const btnClass = 'touch-target flex min-w-(--tap-target-min) items-center justify-center border border-border text-muted transition-colors hover:border-accent hover:text-accent'
+    const btnClass = tone === 'photo'
+        ? 'touch-target flex min-w-(--tap-target-min) items-center justify-center border border-white/30 bg-black/30 text-white backdrop-blur-xs transition-colors hover:border-white hover:bg-black/50'
+        : 'touch-target flex min-w-(--tap-target-min) items-center justify-center border border-border text-muted transition-colors hover:border-accent hover:text-accent'
+    const labelClass = tone === 'photo' ? 'text-[11px] text-white/75' : 'text-[11px] text-muted'
 
     return (
         <div className={wrapperClass} aria-label={tc('share.label')}>
             {!horizontal && (
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted">
+                <span className={`text-[10px] font-black uppercase tracking-widest ${tone === 'photo' ? 'text-white/75' : 'text-muted'}`}>
                     {tc('share.label')}
                 </span>
             )}
@@ -83,7 +89,7 @@ export function ShareBar({ url, title, horizontal = true, showLabel = true }: Pr
                 {copied ? <Check size={14} /> : <Link2 size={16} />}
             </button>
             {horizontal && showLabel && (
-                <span className="text-[11px] text-muted ml-1">
+                <span className={`${labelClass} ml-1`}>
                     {copied ? tc('share.copied') : tc('share.label')}
                 </span>
             )}

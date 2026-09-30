@@ -214,6 +214,10 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                 totalMembers={activeCount > 0 ? activeCount : members.length}
             />
 
+            {/* Logo após o hero — pico de interesse do fã, antes do corpo longo do texto (poucos leitores chegam ao fim). */}
+            <ShopRelatedSection title={`Curtiu ${name}? Leva pra casa`} products={shopProducts}
+                href={`/loja/grupo/${group.slug}`} verTudoLabel={`Ver tudo de ${name}`} />
+
             {emC ? (
                 <GroupFichaC
                     group={group} model={model} activeMembers={activeMembers} formerMembers={formerMembers} formerSemFicha={formerSemFicha} memberPositions={memberPositions}
@@ -263,8 +267,6 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                     </div>
                 </div>
             )}
-
-            <ShopRelatedSection title={`Shop ${name}`} products={shopProducts} />
 
             <QuizWidget category="k-pop" />
 

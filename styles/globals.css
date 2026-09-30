@@ -2441,6 +2441,15 @@ ins.adsbygoogle[data-ad-status^="unfill"] { display: none !important; }
     contain-intrinsic-size: auto var(--cv-h, 800px);
 }
 
+/* Scroll horizontal sem a barra nativa (chips de filtro, carrosséis de pills) — o scroll continua funcionando por toque/roda, só a track crua some. */
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
 /*
  * Compatibilidade do space-y dentro de .prose (Tailwind 3 -> 4).
  *
