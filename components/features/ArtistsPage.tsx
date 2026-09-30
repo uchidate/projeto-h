@@ -23,6 +23,8 @@ import { SalvarContextoLista } from '@/components/artists/lista/SalvarContextoLi
 import { labelsFor } from '@/lib/i18n/labels'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import type { AniversarianteSemana } from '@/lib/artists/aniversarios'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 
 const SORT_OPTIONS = [
     { value: 'trending', label: 'Em alta' },
@@ -54,9 +56,10 @@ interface Props {
     letterCounts: Record<string, number>
     perPage?: number
     aniversarios?: AniversarianteSemana[]
+    shopProducts?: StoreProduct[]
 }
 
-export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [] }: Props) {
+export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [] }: Props) {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -205,6 +208,10 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                 </div>
             )}
             {inicio && <AniversariosSemana itens={aniversarios} />}
+
+            {inicio && shopProducts.length > 0 && (
+                <ShopRelatedSection title="Pra levar do seu bias" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:artistas" />
+            )}
 
             {/* ── Diretório completo ───────────────────────────────── */}
             <section id="diretorio" className="scroll-mt-24 border-t border-border/70 pb-10 pt-8 sm:pt-9">

@@ -14,6 +14,8 @@ import { ProductionsFilterSelects } from '@/components/features/ProductionsFilte
 import { ProductionCard } from '@/components/productions/ProductionCard'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { RastreioDeFiltros } from '@/components/analytics/RastreioDeFiltros'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 
 export interface GeneroResumo { slug: string; nome: string; fotos: WPProduction[] }
 
@@ -32,6 +34,7 @@ interface Props {
     emAlta?: WPProduction[]
     plataformasTop?: WPTerm[]
     generosTop?: GeneroResumo[]
+    shopProducts?: StoreProduct[]
 }
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
@@ -51,7 +54,7 @@ const aba = (ativo: boolean) =>
 export function ProductionsPage({
     productions, total, totalPages, genres, platforms,
     currentPage, currentGenre, currentPlatform, currentType, currentOrder = 'trending', search,
-    emAlta = [], plataformasTop = [], generosTop = [],
+    emAlta = [], plataformasTop = [], generosTop = [], shopProducts = [],
 }: Props) {
     const genreMap = Object.fromEntries(genres.map(g => [g.id, g.name]))
     const numero = (n: number) => n.toLocaleString(intlLocale())
@@ -117,6 +120,10 @@ export function ProductionsPage({
                 </section>
             )}
             {inicio && ADSENSE.slots.leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="productions_leaderboard" /></div>}
+
+            {inicio && shopProducts.length > 0 && (
+                <ShopRelatedSection title="K-drama merch pra maratonar" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:producoes" />
+            )}
 
             {/* ── Onde assistir ── */}
             {inicio && plataformasTop.length > 0 && (

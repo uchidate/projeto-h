@@ -16,6 +16,8 @@ import { BlogEmAlta } from '@/components/blog/BlogEmAlta'
 import { BlogGuiaCard } from '@/components/blog/BlogGuiaCard'
 import { BlogListaSidebarAd } from '@/components/blog/BlogListaSidebarAd'
 import { RastreioDeFiltros } from '@/components/analytics/RastreioDeFiltros'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 
 type Props = {
     posts: WPPost[]
@@ -35,9 +37,10 @@ type Props = {
     order?: string
     /** Próximos por interesse, ao lado do destaque. */
     emAlta?: WPPost[]
+    shopProducts?: StoreProduct[]
 }
 
-export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, emAlta = [] }: Props) {
+export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, emAlta = [], shopProducts = [] }: Props) {
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
     function buildHref(overrides: Record<string, string | undefined> = {}) {
         const params = new URLSearchParams()
@@ -143,6 +146,12 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                 )}
                 {showHero && ADSENSE.slots.leaderboard && (
                     <div className="mt-6"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="blog_leaderboard" /></div>
+                )}
+
+                {showHero && shopProducts.length > 0 && (
+                    <div className="mt-6">
+                        <ShopRelatedSection title="Achados da curadoria" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:blog" />
+                    </div>
                 )}
 
                 {/* Conteúdo-chave: guias que continuam sendo lidos meses depois; quem chega sem saber por onde começar entra por aqui. */}

@@ -7,6 +7,8 @@ import { wpFetch } from '@/lib/wordpress/client'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistsPage } from '@/components/features/ArtistsPage'
 import { aniversariosDaSemana, hojeEmSaoPaulo, mesesDaJanela } from '@/lib/artists/aniversarios'
+import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 
 export const revalidate = 600
 
@@ -90,6 +92,10 @@ export default async function ArtistsListPage({ searchParams }: { searchParams: 
         aniversarios = aniversariosDaSemana(porMes.flat(), hoje)
     }
 
+    const shopProducts = unfiltered && page === 1
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:artistas')
+        : []
+
     return (
         <ArtistsPage
             artists={items}
@@ -104,6 +110,7 @@ export default async function ArtistsListPage({ searchParams }: { searchParams: 
             letterCounts={letterCounts}
             perPage={48}
             aniversarios={aniversarios}
+            shopProducts={shopProducts}
         />
     )
 }

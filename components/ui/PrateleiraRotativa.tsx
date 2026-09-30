@@ -28,8 +28,16 @@ interface Props {
  * sem mismatch de hidratação); o sorteio troca depois, no efeito — roda uma
  * vez por montagem, ou seja, a cada carregamento/navegação da página.
  */
+/** Troca o último slot por um candidato da `loja` quando nenhum dos exibidos já é dela — determinístico, seguro pro primeiro render (SSR) e pro sorteio depois. */
+function garantirLoja(selecionados: StoreProduct[], produtos: StoreProduct[], loja: string): StoreProduct[] {
+    if (selecionados.some(p => p.acf.store === loja)) return selecionados
+    const candidato = produtos.find(p => p.acf.store === loja && !selecionados.includes(p))
+    if (!candidato || selecionados.length === 0) return selecionados
+    return [...selecionados.slice(0, -1), candidato]
+}
+
 export function PrateleiraRotativa({ produtos, contexto, quantidade = 4 }: Props) {
-    const [exibidos, setExibidos] = useState(() => produtos.slice(0, quantidade))
+    const [exibidos, setExibidos] = useState(() => garantirLoja(produtos.slice(0, quantidade), produtos, 'shopee'))
 
     useEffect(() => {
         const fixos = produtos.filter(p => p.acf.featured || calcularDesconto(p.acf.price, p.acf.original_price) !== null)
@@ -51,7 +59,10 @@ export function PrateleiraRotativa({ produtos, contexto, quantidade = 4 }: Props
             sorteados.push(pool.splice(Math.min(escolhido, pool.length - 1), 1)[0])
         }
 
-        setExibidos([...fixosExibidos, ...sorteados])
+        // Regra de negócio: a prateleira sempre representa a Shopee quando ela
+        // tem produto disponível pro contexto — nunca some, mesmo que o
+        // sorteio por CTR não a tenha escolhido.
+        setExibidos(garantirLoja([...fixosExibidos, ...sorteados], produtos, 'shopee'))
     // eslint-disable-next-line react-hooks/exhaustive-deps -- sorteia uma vez por montagem (cada visualização da página), não a cada render
     }, [])
 

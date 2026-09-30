@@ -5,6 +5,8 @@ import { getProductions, getProductionGenres, getProductionPlatforms } from '@/l
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { getSingleGenreHubSlug } from '@/lib/guias/hub-lookup'
 import { ProductionsPage } from '@/components/features/ProductionsPage'
+import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 
 export const revalidate = 600
 
@@ -100,6 +102,9 @@ export default async function ProductionsListPage({ searchParams }: { searchPara
     const inicio = page === 1 && !sp.genre && !sp.platform && !type && !sp.search && !sp.order
     let plataformasTop: typeof platforms = []
     let generosTop: { slug: string; nome: string; fotos: typeof productionsResult.items }[] = []
+    const shopProducts = inicio
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:producoes')
+        : []
     if (inicio) {
         plataformasTop = [...platforms].sort((a, b) => b.count - a.count).slice(0, 6)
         const topGeneros = [...genres].sort((a, b) => b.count - a.count).slice(0, 6)
@@ -129,6 +134,7 @@ export default async function ProductionsListPage({ searchParams }: { searchPara
             emAlta={inicio ? productionsResult.items.slice(0, 6) : []}
             plataformasTop={plataformasTop}
             generosTop={generosTop}
+            shopProducts={shopProducts}
         />
     )
 }
