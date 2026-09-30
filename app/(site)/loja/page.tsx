@@ -2,7 +2,7 @@ import { intlLocale } from '@/lib/i18n/format'
 import type { Metadata } from 'next'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
-import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory } from '@/lib/wordpress/store'
+import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto, ordenarPrateleira } from '@/lib/wordpress/store'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     twitter: { ...baseTwitter() },
 }
 
-type SearchParams = Promise<{ categoria?: string; loja?: string; busca?: string }>
+type SearchParams = Promise<{ categoria?: string; loja?: string; busca?: string; ofertas?: string }>
 
 export default async function LojaPage({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
@@ -28,6 +28,10 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
 
     // Filtrar ocultos
     const products = allProducts.filter(p => !p.acf.is_hidden)
+
+    // Desconto real por produto (mesma conta do StoreCard) — usado no filtro e na ordenação de Ofertas
+    const descontos = new Map(products.map(p => [p.id, calcularDesconto(p.acf.price, p.acf.original_price)]))
+    const totalOfertas = products.filter(p => (descontos.get(p.id) ?? null) !== null).length
 
     // Filtros do cliente
     let filtered = products
@@ -39,17 +43,25 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
             p.title.rendered.toLowerCase().includes(q)
         )
     }
+    if (sp.ofertas === '1') {
+        filtered = filtered
+            .filter(p => (descontos.get(p.id) ?? null) !== null)
+            .sort((a, b) => (descontos.get(b.id) ?? 0) - (descontos.get(a.id) ?? 0))
+    } else {
+        filtered = ordenarPrateleira(filtered)
+    }
 
     // Destaques (sempre do total, não filtrado)
     const featured = products.filter(p => p.acf.featured).slice(0, 5)
 
-    // Agrupar por categoria para exibição
+    // Agrupar por categoria para exibição — destaque e desconto primeiro dentro de cada uma
     const byCategory = filtered.reduce<Record<string, typeof filtered>>((acc, p) => {
         const cat = p.acf.category ?? 'outros'
         if (!acc[cat]) acc[cat] = []
         acc[cat].push(p)
         return acc
     }, {})
+    for (const cat of Object.keys(byCategory)) byCategory[cat] = ordenarPrateleira(byCategory[cat])
 
     // Contagens para filtros
     const categoryCount = products.reduce<Record<string, number>>((acc, p) => {
@@ -63,12 +75,13 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
         return acc
     }, {})
 
-    const hasActive = sp.categoria || sp.loja || sp.busca
+    const hasActive = sp.categoria || sp.loja || sp.busca || sp.ofertas === '1'
 
-    const setParam = (key: 'categoria' | 'loja', value: string) => {
+    const setParam = (key: 'categoria' | 'loja' | 'ofertas', value: string) => {
         const ps = new URLSearchParams()
         if (key !== 'categoria' && sp.categoria) ps.set('categoria', sp.categoria)
         if (key !== 'loja' && sp.loja) ps.set('loja', sp.loja)
+        if (key !== 'ofertas' && sp.ofertas === '1') ps.set('ofertas', '1')
         if (sp.busca) ps.set('busca', sp.busca)
         if (value) ps.set(key, value)
         const qs = ps.toString()
@@ -79,16 +92,22 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
         <main className="min-h-screen bg-background pb-20">
             {/* Header — mesmo padrão de /artists */}
             <section className="page-wrap pb-2 pt-6 sm:pt-7">
-                <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
-                    <h1 className="font-[family-name:var(--font-playfair)] whitespace-nowrap text-[34px] font-bold leading-none sm:text-[44px]">
-                        Loja<span className="text-accent">.</span>
-                        <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{products.length} produtos</span>
-                    </h1>
-                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group">
+                <h1 className="font-[family-name:var(--font-playfair)] whitespace-nowrap text-[34px] font-bold leading-none sm:text-[44px]">
+                    Loja<span className="text-accent">.</span>
+                    <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{products.length} produtos</span>
+                </h1>
+                <div className="sticky top-0 z-20 -mx-4 mt-3.5 border-y border-border bg-background px-4 py-2.5">
+                    <div className="no-scrollbar flex gap-2 overflow-x-auto" role="group">
                         <a href={setParam('categoria', '')}
                             className={`shrink-0 px-4 py-2 text-[13px] font-semibold transition-colors ${!sp.categoria ? 'border border-accent text-accent' : 'border border-border-strong text-foreground-subtle hover:border-accent/50 hover:text-accent'}`}>
                             Todos
                         </a>
+                        {totalOfertas > 0 && (
+                            <a href={setParam('ofertas', sp.ofertas === '1' ? '' : '1')}
+                                className={`shrink-0 whitespace-nowrap px-4 py-2 text-[13px] font-black transition-colors ${sp.ofertas === '1' ? 'border border-red-500 bg-red-500 text-white' : 'border border-red-500/50 text-red-500 hover:bg-red-500/10'}`}>
+                                🔥 Ofertas ({totalOfertas})
+                            </a>
+                        )}
                         {Object.entries(categoryCount)
                             .sort((a, b) => (CATEGORY_LABELS[a[0]] ?? a[0]).localeCompare(CATEGORY_LABELS[b[0]] ?? b[0], intlLocale()))
                             .map(([cat, count]) => (
@@ -104,51 +123,75 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                     Os links desta página são de afiliados. Você paga o mesmo preço — a comissão ajuda a manter o {SITE_NAME} no ar.
                 </p>
 
-                {/* Mosaico — mesmas imagens da vitrine, sem espaço vazio no hero */}
+                {/* Mosaico — mesmas imagens da vitrine, com desconto/preço no hover em vez de decoração pura */}
                 {featured.length > 0 && (
                     <div className="mt-5 grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-8">
-                        {featured.slice(0, 8).map(p => (
-                            <div key={p.id} className="relative aspect-square overflow-hidden bg-surface">
-                                {p.acf.image_url && (
-                                    <Image src={p.acf.image_url} alt="" fill className="object-cover" unoptimized />
-                                )}
-                            </div>
-                        ))}
+                        {featured.slice(0, 8).map(p => {
+                            const descontoMosaico = calcularDesconto(p.acf.price, p.acf.original_price)
+                            return (
+                                <a key={p.id} href={p.acf.affiliate_url ?? '#'} target="_blank" rel="noopener noreferrer sponsored"
+                                    className="group relative aspect-square overflow-hidden bg-surface">
+                                    {p.acf.image_url && (
+                                        <Image src={p.acf.image_url} alt="" fill
+                                            className="object-cover transition-transform duration-300 group-hover:scale-105" unoptimized />
+                                    )}
+                                    {descontoMosaico !== null && (
+                                        <span className="absolute left-1 top-1 bg-foreground px-1 py-0.5 font-mono text-[9px] font-black tabular-nums text-background">
+                                            -{descontoMosaico}%
+                                        </span>
+                                    )}
+                                    {p.acf.price && (
+                                        <span className="absolute inset-x-0 bottom-0 translate-y-full bg-foreground/90 px-1 py-1 text-center font-mono text-[10px] font-black text-background transition-transform duration-200 group-hover:translate-y-0">
+                                            {p.acf.price}
+                                        </span>
+                                    )}
+                                </a>
+                            )
+                        })}
                     </div>
                 )}
             </section>
 
             <div className="page-wrap py-6 space-y-8">
                 {/* Filtros secundários */}
-                <form className="flex flex-wrap gap-2 items-end">
-                    <label className="flex flex-col gap-1">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
+                    <div className="flex flex-col gap-1.5">
                         <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Loja</span>
-                        <select name="loja" defaultValue={sp.loja ?? ''}
-                            className="h-8 border border-border bg-surface px-2.5 text-[12px] font-bold text-foreground focus:border-foreground focus:outline-hidden">
-                            <option value="">Todas</option>
+                        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="group">
+                            <a href={setParam('loja', '')}
+                                className={`shrink-0 px-3 py-1.5 text-[12px] font-bold transition-colors ${!sp.loja ? 'border border-accent text-accent' : 'border border-border-strong text-foreground-subtle hover:border-accent/50 hover:text-accent'}`}>
+                                Todas
+                            </a>
                             {Object.entries(storeCount)
                                 .sort((a, b) => (STORE_LABELS[a[0]] ?? a[0]).localeCompare(STORE_LABELS[b[0]] ?? b[0], intlLocale()))
                                 .map(([s, count]) => (
-                                    <option key={s} value={s}>{STORE_LABELS[s] ?? s} ({count})</option>
+                                    <a key={s} href={setParam('loja', s)}
+                                        className={`shrink-0 whitespace-nowrap px-3 py-1.5 text-[12px] font-bold transition-colors ${sp.loja === s ? 'border border-accent text-accent' : 'border border-border-strong text-foreground-subtle hover:border-accent/50 hover:text-accent'}`}>
+                                        {STORE_LABELS[s] ?? s} ({count})
+                                    </a>
                                 ))}
-                        </select>
-                    </label>
-                    {sp.categoria && <input type="hidden" name="categoria" value={sp.categoria} />}
-                    <label className="flex flex-col gap-1 min-w-[220px]">
-                        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Busca</span>
-                        <input name="busca" type="text" defaultValue={sp.busca ?? ''} placeholder="Buscar produto…"
-                            className="h-8 border border-border bg-surface px-2.5 text-[12px] text-foreground placeholder:text-muted focus:border-foreground focus:outline-hidden" />
-                    </label>
-                    <button type="submit"
-                        className="h-8 bg-foreground px-3 text-[12px] font-bold text-background hover:opacity-85 transition-opacity">
-                        Aplicar
-                    </button>
-                    {hasActive && (
-                        <a href="/loja" className="h-8 border border-border px-3 text-[12px] font-semibold text-muted hover:border-accent/50 hover:text-accent transition-colors flex items-center">
-                            Limpar
-                        </a>
-                    )}
-                </form>
+                        </div>
+                    </div>
+                    <form className="flex flex-wrap items-end gap-2 lg:shrink-0">
+                        {sp.categoria && <input type="hidden" name="categoria" value={sp.categoria} />}
+                        {sp.loja && <input type="hidden" name="loja" value={sp.loja} />}
+                        {sp.ofertas === '1' && <input type="hidden" name="ofertas" value="1" />}
+                        <label className="flex min-w-[220px] flex-col gap-1 lg:min-w-70">
+                            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Busca</span>
+                            <input name="busca" type="text" defaultValue={sp.busca ?? ''} placeholder="Buscar produto…"
+                                className="h-8 border border-border bg-surface px-2.5 text-[12px] text-foreground placeholder:text-muted focus:border-foreground focus:outline-hidden" />
+                        </label>
+                        <button type="submit"
+                            className="h-8 bg-foreground px-3 text-[12px] font-bold text-background hover:opacity-85 transition-opacity">
+                            Aplicar
+                        </button>
+                        {hasActive && (
+                            <a href="/loja" className="flex h-8 items-center border border-border px-3 text-[12px] font-semibold text-muted transition-colors hover:border-accent/50 hover:text-accent">
+                                Limpar
+                            </a>
+                        )}
+                    </form>
+                </div>
 
                 {products.length === 0 ? (
                     <div className="flex flex-col items-center justify-center gap-3 py-20 text-muted">

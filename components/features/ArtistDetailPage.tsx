@@ -46,6 +46,7 @@ interface Props {
     relatedHubs?: ArchiveHub[]
     categoryMap?: Record<number, { name: string; slug: string }>
     shopProducts?: StoreProduct[]
+    groupShopProducts?: StoreProduct[]
 }
 
 
@@ -61,6 +62,7 @@ export function ArtistDetailPage({
     relatedHubs = [],
     categoryMap,
     shopProducts = [],
+    groupShopProducts = [],
 }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
@@ -185,6 +187,21 @@ export function ArtistDetailPage({
         ].filter(Boolean) as { href: string; label: string }[])
         : todasAncoras
 
+    const shopSection = (
+        <ShopRelatedSection
+            title={`Curtiu ${name}? Leva pra casa`}
+            products={shopProducts}
+            href={`/loja/artista/${artist.slug}`}
+            verTudoLabel={`Ver tudo de ${name}`}
+            secondary={connectionGroup ? {
+                title: `Também é do ${stripHtml(connectionGroup.title.rendered)}: leva a loja completa`,
+                products: groupShopProducts,
+                href: `/loja/grupo/${connectionGroup.slug}`,
+                verTudoLabel: `Ver tudo de ${stripHtml(connectionGroup.title.rendered)}`,
+            } : undefined}
+        />
+    )
+
     return (
         <>
             <JsonLd data={{
@@ -239,10 +256,12 @@ export function ArtistDetailPage({
                         roleLabels={roleLabels} groups={groups} agency={agency}
                         heroMeta={heroMeta} heroCopy={heroCopy} quickFacts={quickFacts} accent={accent}
                     />
+                    {shopSection}
                     <QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />
                     {sectionNodes}
                 </>
             )}
+            {emC && shopSection}
             <ListaProxima slug={artist.slug} />
 
             {/* Guias só existem em português. */}
@@ -265,8 +284,6 @@ export function ArtistDetailPage({
             )}
 
             <ArtistColophon artist={artist} name={name} accent={accent} />
-
-            <ShopRelatedSection title={`Shop ${name}`} products={shopProducts} />
 
             <QuizWidget category="k-pop" />
 

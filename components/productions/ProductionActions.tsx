@@ -152,7 +152,9 @@ export function ProductionActions({ productionId, mode = 'all', variant = 'defau
                     className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold border transition-colors disabled:opacity-60
                     ${isFav
                         ? 'bg-accent-a11y border-accent-a11y text-white'
-                        : 'border-border text-muted hover:border-accent hover:text-accent'
+                        : variant === 'hero'
+                            ? 'border-white/30 bg-black/30 text-white backdrop-blur-xs hover:border-white hover:bg-black/50'
+                            : 'border-border text-muted hover:border-accent hover:text-accent'
                     }`}
                 >
                     <Heart size={13} fill={isFav ? 'currentColor' : 'none'} />

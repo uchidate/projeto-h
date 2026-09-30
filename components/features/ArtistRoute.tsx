@@ -12,7 +12,7 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ArtistDetailPage } from '@/components/features/ArtistDetailPage'
 import { getHubsForArtist } from '@/lib/guias/hub-lookup'
-import { getStoreProductsByArtistId } from '@/lib/wordpress/store'
+import { getStoreProductsByArtistId, getStoreProductsByGroupId } from '@/lib/wordpress/store'
 import { getMusicReleases } from '@/lib/wordpress/music'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { applyArtistManifestPreview, applyArtistProductionsPreview } from '@/lib/agencies/preview'
@@ -109,9 +109,12 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     const connectionGroup = groups.find(group => group.acf?.active !== false) ?? groups[0]
     const groupMemberIds = (connectionGroup?.acf?.members ?? []).filter(id => id !== artist.id)
     const primaryRole = artist.acf?.roles?.[0] ?? undefined
-    const relatedArtists = groupMemberIds.length > 0
-        ? await getArtistsByIds(groupMemberIds.slice(0, 10))
-        : await getRelatedArtists(artist.id, artist.acf?.agency ?? undefined, primaryRole)
+    const [groupShopProducts, relatedArtists] = await Promise.all([
+        connectionGroup && locale === DEFAULT_LOCALE ? getStoreProductsByGroupId(connectionGroup.id) : Promise.resolve([]),
+        groupMemberIds.length > 0
+            ? getArtistsByIds(groupMemberIds.slice(0, 10))
+            : getRelatedArtists(artist.id, artist.acf?.agency ?? undefined, primaryRole),
+    ])
 
     const relatedHubs = getHubsForArtist(artist)
 
@@ -132,6 +135,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
             discography={discography}
             relatedHubs={relatedHubs}
             shopProducts={locale === DEFAULT_LOCALE ? shopProducts : []}
+            groupShopProducts={groupShopProducts}
         />
         </>
     )
