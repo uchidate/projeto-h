@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { StoreProduct } from '@/lib/wordpress/store'
-import { StoreCard } from '@/components/ui/StoreCard'
+import { PrateleiraRotativa } from '@/components/ui/PrateleiraRotativa'
 
 interface Shelf {
     title: string
@@ -27,9 +27,7 @@ function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo 
                     {verTudoLabel} →
                 </Link>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {products.slice(0, 4).map(p => <StoreCard key={p.id} product={p} contexto={contexto} />)}
-            </div>
+            <PrateleiraRotativa produtos={products.slice(0, 8)} contexto={contexto} />
         </div>
     )
 }
