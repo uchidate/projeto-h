@@ -42,14 +42,6 @@ const nextConfig = {
             static: 3600,
         },
         webpackBuildWorker: true,
-        // Teto de workers do build (compilacao e prerender). Sem ele o Next usa
-        // todos os nucleos, e o build divide o servidor de 4 nucleos com o
-        // proprio WordPress: a carga chegou a 16 e o WP deixou de responder
-        // durante o prerender (falha de staging em 2026-09-30). Variavel vazia
-        // mantem o padrao do Next, que e o que vale no desenvolvimento local.
-        ...(Number(process.env.BUILD_MAX_WORKERS) > 0
-            ? { cpus: Number(process.env.BUILD_MAX_WORKERS) }
-            : {}),
         // `inlineCss` desligado em 2026-09-14 (ligado no #50 um dia antes).
         // O CSS do Tailwind tem 231KB sem compressão e o Next o embute não só no
         // <style> do HTML, mas também no payload RSC — HTML (2x), `.rsc` e
