@@ -134,7 +134,7 @@ describe('getStreamingTopShows', () => {
         expect(result.netflix_br?.[0].productionSlug).toBe('stars-falling-from-the-sky')
     })
 
-    it('productionSlug fica null quando não há produção correspondente no WP', async () => {
+    it('mantém a lista sem link quando a consulta ao WP não devolve nada (não esvazia a home)', async () => {
         fetchMock.mockImplementation(async (url: string) => {
             if (ehTmdb(url)) return { ok: true, json: async () => ({ results: [tmdbShow({ id: 999 })] }) }
             if (url.includes('wp/v2/production')) return { ok: true, json: async () => [] }
@@ -143,6 +143,49 @@ describe('getStreamingTopShows', () => {
         const { getStreamingTopShows } = await import('./streaming')
         const result = await getStreamingTopShows()
         expect(result.netflix_br?.[0].productionSlug).toBeNull()
+    })
+
+    it('some da lista o título sem ficha e preenche o top 10 com o próximo que tem', async () => {
+        fetchMock.mockImplementation(async (url: string) => {
+            if (ehTmdb(url)) {
+                return { ok: true, json: async () => ({ results: [
+                    tmdbShow({ id: 1, name: 'Sem ficha' }),
+                    tmdbShow({ id: 2, name: 'Com ficha A' }),
+                    tmdbShow({ id: 3, name: 'Com ficha B' }),
+                ] }) }
+            }
+            if (url.includes('wp/v2/production')) {
+                return { ok: true, json: async () => [
+                    { slug: 'a', acf: { tmdb_id: 2 } },
+                    { slug: 'b', acf: { tmdb_id: 3 } },
+                ] }
+            }
+            return { ok: true, json: async () => [] }
+        })
+        const { getStreamingTopShows } = await import('./streaming')
+        const result = await getStreamingTopShows()
+        expect(result.netflix_br?.map(s => [s.rank, s.title, s.productionSlug])).toEqual([
+            [1, 'Com ficha A', 'a'],
+            [2, 'Com ficha B', 'b'],
+        ])
+    })
+
+    it('completa 10 com títulos de ficha mesmo quando os primeiros do TMDB não têm', async () => {
+        fetchMock.mockImplementation(async (url: string) => {
+            if (ehTmdb(url)) {
+                return { ok: true, json: async () => ({ results: Array.from({ length: 20 }, (_, i) => tmdbShow({ id: i + 1, name: `Show ${i + 1}` })) }) }
+            }
+            if (url.includes('wp/v2/production')) {
+                // só os ids 6..20 têm ficha
+                return { ok: true, json: async () => Array.from({ length: 15 }, (_, i) => ({ slug: `s${i + 6}`, acf: { tmdb_id: i + 6 } })) }
+            }
+            return { ok: true, json: async () => [] }
+        })
+        const { getStreamingTopShows } = await import('./streaming')
+        const result = await getStreamingTopShows()
+        expect(result.netflix_br).toHaveLength(10)
+        expect(result.netflix_br?.every(s => s.productionSlug)).toBe(true)
+        expect(result.netflix_br?.map(s => s.rank)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     })
 
     it('year fica null quando first_air_date está ausente ou é inválida', async () => {
