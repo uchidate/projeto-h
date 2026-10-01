@@ -1,5 +1,6 @@
 import { htmlLang } from '@/lib/i18n/format'
 import { SITE_NAME, SITE_URL } from '@/lib/constants/site'
+import type { Receita } from '@/lib/receitas/tipos'
 
 type BreadcrumbItem = { name: string; url: string }
 
@@ -121,13 +122,21 @@ type RecipeSchemaInput = {
     isVegan?: boolean
     datePublished?: string
     dateModified?: string
+    preparo?: Receita | null
+}
+
+// Duração ISO 8601 (PT1H30M) a partir de minutos.
+export function duracaoIso(min: number): string {
+    const h = Math.floor(min / 60)
+    const m = min % 60
+    return `PT${h ? `${h}H` : ''}${m || !h ? `${m}M` : ''}`
 }
 
 // Schema.org Recipe simplificado: só declara campos que refletem dado real
 // do CPT food (sem inventar recipeInstructions/prepTime que não temos).
 export function buildRecipeSchema({
     name, nameKorean, description, image, url, category, region,
-    ingredients, keywords, isVegetarian, isVegan, datePublished, dateModified,
+    ingredients, keywords, isVegetarian, isVegan, datePublished, dateModified, preparo,
 }: RecipeSchemaInput) {
     const suitableForDiet = isVegan
         ? 'https://schema.org/VeganDiet'
@@ -146,7 +155,18 @@ export function buildRecipeSchema({
         ...(category && { recipeCategory: category }),
         ...(region && { keywords: [region, ...(keywords ?? [])].join(', ') }),
         ...(!region && keywords && keywords.length > 0 && { keywords: keywords.join(', ') }),
-        ...(ingredients && ingredients.length > 0 && { recipeIngredient: ingredients }),
+        ...(preparo
+            ? { recipeIngredient: preparo.ingredientes.map(i => `${i.quantidade} ${i.item}`) }
+            : ingredients && ingredients.length > 0 && { recipeIngredient: ingredients }),
+        // Só com receita revisada (data/receitas.json): sem ela o schema não
+        // declara instruções nem tempos, que não existem no CPT.
+        ...(preparo && {
+            recipeInstructions: preparo.passos.map((text, i) => ({ '@type': 'HowToStep', position: i + 1, text })),
+            prepTime: duracaoIso(preparo.preparoMin),
+            cookTime: duracaoIso(preparo.cozimentoMin),
+            totalTime: duracaoIso(preparo.preparoMin + preparo.cozimentoMin),
+            recipeYield: `${preparo.porcoes} porções`,
+        }),
         ...(suitableForDiet && { suitableForDiet }),
         author: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
         ...(datePublished && { datePublished }),

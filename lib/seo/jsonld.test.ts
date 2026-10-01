@@ -58,3 +58,33 @@ describe('buildArticleSchema', () => {
         expect(schema).not.toHaveProperty('articleSection')
     })
 })
+
+import { buildRecipeSchema, duracaoIso } from './jsonld'
+import type { Receita } from '@/lib/receitas/tipos'
+
+describe('Recipe com modo de preparo', () => {
+    const preparo: Receita = {
+        porcoes: 4, preparoMin: 30, cozimentoMin: 45,
+        ingredientes: [{ item: 'arroz', quantidade: '2 xícaras' }, { item: 'ovo', quantidade: '2' }, { item: 'sal', quantidade: '1 pitada' }],
+        passos: ['Cozinhe o arroz.', 'Frite os ovos.', 'Monte e sirva.'],
+        fontes: [{ nome: 'A', url: 'https://a.com' }, { nome: 'B', url: 'https://b.com' }],
+        conferidoEm: '2026-10-01',
+    }
+
+    it('formata duração ISO 8601', () => {
+        expect(duracaoIso(45)).toBe('PT45M')
+        expect(duracaoIso(90)).toBe('PT1H30M')
+        expect(duracaoIso(120)).toBe('PT2H')
+    })
+
+    it('emite instruções e tempos só quando há preparo', () => {
+        const com = buildRecipeSchema({ name: 'Kimbap', url: 'https://x/k', preparo })
+        expect(com.recipeInstructions).toHaveLength(3)
+        expect(com.totalTime).toBe('PT1H15M')
+        expect(com.recipeYield).toBe('4 porções')
+        expect(com.recipeIngredient).toContain('2 xícaras arroz')
+        const sem = buildRecipeSchema({ name: 'Kimbap', url: 'https://x/k', ingredients: ['arroz'] })
+        expect(sem).not.toHaveProperty('recipeInstructions')
+        expect(sem).not.toHaveProperty('totalTime')
+    })
+})
