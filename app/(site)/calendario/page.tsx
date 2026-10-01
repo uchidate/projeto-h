@@ -4,6 +4,7 @@ import { getGroups } from '@/lib/wordpress/groups'
 import { CalendarPage } from '@/components/features/CalendarPage'
 import { SITE_URL } from '@/lib/constants/site'
 import { parseAcfDate, stripHtml, getWPImage } from '@/lib/utils'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 3600
 
@@ -140,5 +141,10 @@ export default async function CalendarioPage() {
 
     events.sort((a, b) => a.daysUntil - b.daysUntil || a.name.localeCompare(b.name))
 
-    return <CalendarPage events={events} todayStr={todayStr} />
+    return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Calendário', path: '/calendario' }]} />
+            <CalendarPage events={events} todayStr={todayStr} />
+        </>
+    )
 }

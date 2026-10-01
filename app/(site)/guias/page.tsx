@@ -9,6 +9,7 @@ import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { SITE_URL } from '@/lib/constants/site'
+import { PageBreadcrumb as BreadcrumbSchemaLd } from '@/components/seo/PageBreadcrumb'
 
 export const metadata: Metadata = {
     title: 'Guias de K-Drama, K-Pop e Cinema Coreano',
@@ -52,6 +53,7 @@ export default async function GuiasPage({ searchParams }: Props) {
 
     return (
         <>
+            <BreadcrumbSchemaLd items={[{ name: 'Guias', path: '/guias' }]} />
             <ResponsiveFilterBar label="Categoria" value={activeLabel}>
                 <div className="flex items-center gap-1.5 shrink-0">
                     <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted mr-2 shrink-0">

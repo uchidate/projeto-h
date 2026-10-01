@@ -9,6 +9,7 @@ import { ArtistsPage } from '@/components/features/ArtistsPage'
 import { aniversariosDaSemana, hojeEmSaoPaulo, mesesDaJanela } from '@/lib/artists/aniversarios'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 600
 
@@ -97,6 +98,8 @@ export default async function ArtistsListPage({ searchParams }: { searchParams: 
         : []
 
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Artistas', path: '/artists' }]} />
         <ArtistsPage
             artists={items}
             total={total}
@@ -112,5 +115,6 @@ export default async function ArtistsListPage({ searchParams }: { searchParams: 
             aniversarios={aniversarios}
             shopProducts={shopProducts}
         />
+        </>
     )
 }

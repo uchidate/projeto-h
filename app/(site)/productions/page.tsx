@@ -7,6 +7,7 @@ import { getSingleGenreHubSlug } from '@/lib/guias/hub-lookup'
 import { ProductionsPage } from '@/components/features/ProductionsPage'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 600
 
@@ -119,6 +120,8 @@ export default async function ProductionsListPage({ searchParams }: { searchPara
     }
 
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Produções', path: '/productions' }]} />
         <ProductionsPage
             productions={productionsResult.items}
             total={productionsResult.total}
@@ -136,5 +139,6 @@ export default async function ProductionsListPage({ searchParams }: { searchPara
             generosTop={generosTop}
             shopProducts={shopProducts}
         />
+        </>
     )
 }

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { POSITION_LABELS } from '@/lib/constants/positions'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 3600
 
@@ -30,6 +31,8 @@ export const metadata: Metadata = {
 
 export default function PositionsIndexPage() {
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Posições', path: '/positions' }]} />
         <div className="mx-auto max-w-4xl px-4 py-10">
             <h1 className="text-2xl font-black text-foreground sm:text-3xl">Posições em Grupos de K-Pop</h1>
             <p className="mt-2 max-w-2xl text-sm text-muted">
@@ -52,5 +55,6 @@ export default function PositionsIndexPage() {
                 ))}
             </div>
         </div>
+        </>
     )
 }

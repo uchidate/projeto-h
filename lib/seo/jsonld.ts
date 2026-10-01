@@ -49,11 +49,13 @@ type ArticleSchemaInput = {
     author: { type: 'Person' | 'Organization'; name: string; url?: string }
     publisher: { name: string; url: string }
     articleSection?: string
+    keywords?: string[]
+    wordCount?: number
 }
 
 export function buildArticleSchema({
     type, headline, description, url, datePublished, dateModified,
-    image, author, publisher, articleSection,
+    image, author, publisher, articleSection, keywords, wordCount,
 }: ArticleSchemaInput) {
     return {
         '@context': 'https://schema.org',
@@ -73,6 +75,33 @@ export function buildArticleSchema({
         inLanguage: htmlLang(),
         mainEntityOfPage: { '@type': 'WebPage', '@id': url },
         ...(articleSection && { articleSection }),
+        ...(keywords && keywords.length > 0 && { keywords: keywords.join(', ') }),
+        ...(wordCount && wordCount > 0 && { wordCount }),
+        isAccessibleForFree: true,
+    }
+}
+
+// IDs de vídeos do YouTube embutidos no HTML do artigo (youtube.com ou -nocookie).
+export function extractYoutubeIds(html: string): string[] {
+    const ids = new Set<string>()
+    for (const m of html.matchAll(/youtube(?:-nocookie)?\.com\/embed\/([A-Za-z0-9_-]{11})/g)) ids.add(m[1])
+    return [...ids]
+}
+
+type VideoSchemaInput = { id: string; name: string; description: string; uploadDate: string }
+
+// VideoObject habilita o selo de vídeo nos resultados. uploadDate é obrigatório
+// e o embed não o expõe: usamos a data do artigo que o contém.
+export function buildVideoSchema({ id, name, description, uploadDate }: VideoSchemaInput) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'VideoObject',
+        name,
+        description,
+        thumbnailUrl: [`https://i.ytimg.com/vi/${id}/hqdefault.jpg`],
+        uploadDate,
+        embedUrl: `https://www.youtube.com/embed/${id}`,
+        contentUrl: `https://www.youtube.com/watch?v=${id}`,
     }
 }
 

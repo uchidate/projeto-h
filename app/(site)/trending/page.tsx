@@ -7,6 +7,7 @@ import { getTrendingGroups } from '@/lib/wordpress/groups'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistCard } from '@/components/artists/ArtistCard'
 import { GroupCard } from '@/components/features/GroupsPage'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 300
 
@@ -26,6 +27,8 @@ export default async function TrendingPage() {
     ])
 
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Em Alta', path: '/trending' }]} />
         <div className="mx-auto max-w-6xl px-4 py-10">
             <nav className="mb-2 font-mono text-[10px] text-muted">
                 <Link href="/" className="hover:text-foreground">Início</Link> / Em Alta
@@ -78,5 +81,6 @@ export default async function TrendingPage() {
                 </section>
             )}
         </div>
+        </>
     )
 }

@@ -3,6 +3,7 @@ import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { stripHtml } from '@/lib/utils'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { FandomsPage } from '@/components/features/FandomsPage'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 600
 
@@ -33,5 +34,10 @@ export default async function FandomsListPage({ searchParams }: { searchParams: 
             f.groups.some(g => stripHtml(g.title.rendered).toLowerCase().includes(search)))
         : fandoms
 
-    return <FandomsPage fandoms={filtered} search={sp.search} />
+    return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Fandoms', path: '/fandoms' }]} />
+            <FandomsPage fandoms={filtered} search={sp.search} />
+        </>
+    )
 }

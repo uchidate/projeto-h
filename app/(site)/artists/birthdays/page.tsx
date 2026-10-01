@@ -9,6 +9,7 @@ import { getArtists } from '@/lib/wordpress/artists'
 import { SITE_URL } from '@/lib/constants/site'
 import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
 import { JsonLd } from '@/components/seo/JsonLd'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 3600
 
@@ -92,6 +93,7 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
 
     return (
         <>
+            <PageBreadcrumb items={[{ name: 'Artistas', path: '/artists' }, { name: 'Aniversários', path: '/artists/birthdays' }]} />
             <JsonLd data={{
                 '@context': 'https://schema.org',
                 '@type': 'CollectionPage',

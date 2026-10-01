@@ -6,6 +6,7 @@ import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcul
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 300
 
@@ -90,6 +91,8 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
     }
 
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Loja', path: '/loja' }]} />
         <main className="min-h-screen bg-background pb-20">
             {/* Header — mesmo padrão de /artists */}
             <section className="page-wrap pb-2 pt-6 sm:pt-7">
@@ -246,5 +249,6 @@ export default async function LojaPage({ searchParams }: { searchParams: SearchP
                 )}
             </div>
         </main>
+        </>
     )
 }
