@@ -5,8 +5,8 @@ import { href } from '@/lib/i18n/routes'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { Star, Tv, Film, Clock, Calendar, Play, Images, ShieldCheck } from 'lucide-react'
 import type { WPProduction, WPArtist, WPPost } from '@/lib/wordpress/types'
-import { formatDatePt, getWPImage } from '@/lib/utils'
-import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
+import { formatDatePt, getWPImage, stripHtml } from '@/lib/utils'
+import { SITE_URL } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { QuizFacts } from '@/components/ui/QuizFacts'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
@@ -105,7 +105,14 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
                 numberOfEpisodes: acf.episodes, inLanguage: 'ko',
                 countryOfOrigin: { '@type': 'Country', name: 'Korea, Republic of' },
                 genre: genres.map(g => g.name),
-                publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+                // actor só com quem já tem ficha no site: o link prova a identidade.
+                actor: cast.length > 0
+                    ? cast.slice(0, 10).map(a => ({
+                        '@type': 'Person',
+                        name: stripHtml(a.title.rendered),
+                        url: `${SITE_URL}${href('artist', { slug: a.slug }, locale)}`,
+                    }))
+                    : undefined,
             }} />
     )
     const readingBar = (

@@ -14,6 +14,7 @@ export function OrganizationSchema() {
                     url: SITE_URL,
                     logo: `${SITE_URL}/icon-192.png`,
                     description: SITE_DESCRIPTION,
+                    sameAs: ['https://www.instagram.com/hallyuhub_br/'],
                 }),
                 '@type': 'NewsMediaOrganization',
                 '@id': `${SITE_URL}/#organization`,

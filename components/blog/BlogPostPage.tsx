@@ -9,7 +9,7 @@ import type { QuizCategory } from '@/lib/wordpress/quiz'
 import type { WPPost } from '@/lib/wordpress/types'
 import { formatDateTime, getWPImage, getWPTerms, stripHtml, readingTime } from '@/lib/utils'
 import { catStyle } from '@/lib/blog/catStyle'
-import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
+import { SITE_URL, SITE_NAME, buildOgImageUrl } from '@/lib/constants/site'
 import { splitContentForAd, splitContentForAds } from '@/lib/utils/injectAd'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildArticleSchema, buildVideoSchema, extractYoutubeIds } from '@/lib/seo/jsonld'
@@ -428,10 +428,12 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                     url: postUrl,
                     datePublished: post.date,
                     dateModified: post.modified,
-                    image: image?.src,
-                    author: author
+                    image: image?.src
+                        ? [image.src, buildOgImageUrl({ title, subtitle: metaDescription(summary), image: image.src, type: 'post' })]
+                        : undefined,
+                    author: author && !/^reda[cç][aã]o/i.test(author.name)
                         ? { type: 'Person', name: author.name }
-                        : { type: 'Organization', name: SITE_NAME, url: SITE_URL },
+                        : { type: 'Organization', name: author?.name ?? SITE_NAME, url: `${SITE_URL}/about` },
                     publisher: { name: SITE_NAME, url: SITE_URL },
                     articleSection,
                     keywords: tags.map(t => t.name),

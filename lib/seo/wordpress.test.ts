@@ -85,7 +85,8 @@ describe('buildWordPressMetadata', () => {
 
     it('mapeia seo.robots pra noindex/nofollow do Next.js', () => {
         const meta = buildWordPressMetadata({ ...BASE, seo: { robots: { noindex: 'noindex', nofollow: '' } } })
-        expect(meta.robots).toEqual({ index: false, follow: true })
+        expect(meta.robots).toMatchObject({ index: false, follow: true })
+        expect(meta.robots).toMatchObject({ 'max-image-preview': 'large' })
     })
 
     it('sem seo.robots, não define robots (deixa o default do Next.js)', () => {

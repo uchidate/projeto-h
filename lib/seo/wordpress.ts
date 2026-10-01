@@ -70,7 +70,7 @@ export function buildWordPressMetadata({
             : resolvedTitle,
         description: resolvedDescription,
         alternates: { canonical, ...(languages ? { languages } : {}) },
-        ...(robots?.length ? { robots: { index: !robots.includes('noindex'), follow: !robots.includes('nofollow') } } : {}),
+        ...(robots?.length ? { robots: { index: !robots.includes('noindex'), follow: !robots.includes('nofollow'), 'max-image-preview': 'large' as const, 'max-snippet': -1, 'max-video-preview': -1 } } : {}),
         openGraph: {
             ...baseOG(canonical),
             ...(ogLocale ? { locale: ogLocale } : {}),

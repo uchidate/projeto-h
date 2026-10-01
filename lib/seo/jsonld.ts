@@ -45,7 +45,7 @@ type ArticleSchemaInput = {
     url: string
     datePublished: string
     dateModified: string
-    image?: string | null
+    image?: string | string[] | null
     author: { type: 'Person' | 'Organization'; name: string; url?: string }
     publisher: { name: string; url: string }
     articleSection?: string
@@ -65,7 +65,9 @@ export function buildArticleSchema({
         url,
         datePublished,
         dateModified,
-        ...(image && { image: { '@type': 'ImageObject', url: image } }),
+        ...(image && {
+            image: (Array.isArray(image) ? image : [image]).map(url => ({ '@type': 'ImageObject', url })),
+        }),
         author: {
             '@type': author.type,
             name: author.name,
