@@ -95,7 +95,7 @@ export async function KoreaRegionMap({ activeRegion }: Props) {
                                         : 'fill-surface stroke-border/60'}
                                     strokeWidth={2}
                                 >
-                                    <title>{LABELS[region]} — {count} prato{count !== 1 ? 's' : ''}</title>
+                                    <title>{`${LABELS[region]} — ${count} prato${count !== 1 ? 's' : ''}`}</title>
                                 </polygon>
                                 <text
                                     x={pos.x} y={pos.y}
@@ -127,7 +127,7 @@ export async function KoreaRegionMap({ activeRegion }: Props) {
                                         ? `fill-accent-a11y transition-opacity ${isActive ? 'opacity-90' : 'opacity-60 hover:opacity-90'}`
                                         : 'fill-border/60'}
                                 >
-                                    <title>Sejong — {count} prato{count !== 1 ? 's' : ''}</title>
+                                    <title>{`Sejong — ${count} prato${count !== 1 ? 's' : ''}`}</title>
                                 </circle>
                                 <text
                                     x={pos.x} y={pos.y}
