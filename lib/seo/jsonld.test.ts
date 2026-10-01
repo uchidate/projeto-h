@@ -40,7 +40,7 @@ describe('buildArticleSchema', () => {
             mainEntityOfPage: { '@id': base.url },
             author: { '@type': 'Person', name: 'Autora' },
             publisher: { '@type': 'Organization', name: 'Portal', url: 'https://x' },
-            image: { '@type': 'ImageObject', url: 'https://x/image.jpg' },
+            image: [{ '@type': 'ImageObject', url: 'https://x/image.jpg' }],
             articleSection: 'Notícias',
         })
     })
