@@ -120,7 +120,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                                 <p className="font-mono text-[13px] text-muted/70 mt-0.5">{acf.name_romanized}</p>
                             )}
                             {company.excerpt?.rendered && (
-                                <p className="text-[15px] leading-relaxed text-foreground/80 mt-4 max-w-xl"
+                                <div className="text-[15px] leading-relaxed text-foreground/80 mt-4 max-w-xl"
                                     dangerouslySetInnerHTML={{ __html: company.excerpt.rendered }} />
                             )}
 
