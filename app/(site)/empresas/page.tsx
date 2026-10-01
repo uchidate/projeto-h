@@ -7,6 +7,7 @@ import { getCompanies, COMPANY_INDUSTRY_LABELS, COMPANY_INDUSTRY_EMOJI, rotuloDo
 import type { CompanyIndustry } from '@/lib/wordpress/types'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml } from '@/lib/utils'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 600
 
@@ -37,6 +38,8 @@ export default async function EmpresasPage({ searchParams }: { searchParams: Sea
     })
 
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Empresas', path: '/empresas' }]} />
         <div>
             {/* Header */}
             <div className="border-b border-border/40">
@@ -165,5 +168,6 @@ export default async function EmpresasPage({ searchParams }: { searchParams: Sea
                 )}
             </div>
         </div>
+        </>
     )
 }

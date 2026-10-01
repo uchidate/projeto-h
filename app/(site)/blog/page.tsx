@@ -8,6 +8,7 @@ import { getAllHubs } from '@/lib/guias'
 import { candidatosDestaque, maisLidos, perenes as escolherPerenes } from '@/lib/blog/destaque'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 300
 
@@ -106,6 +107,8 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
         : []
 
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Blog', path: '/blog' }]} />
         <BlogPage
             posts={itens}
             total={totalItens}
@@ -123,5 +126,6 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
             perenes={inicio ? escolherPerenes(pool.filter(p => !idsCandidatos.has(p.id)), 4, new Date(), categories.filter(c => c.slug === 'noticias-k-pop').map(c => c.id)) : []}
             shopProducts={shopProducts}
         />
+        </>
     )
 }

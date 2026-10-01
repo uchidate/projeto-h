@@ -9,6 +9,7 @@ import type { FoodCategory } from '@/lib/wordpress/types'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml } from '@/lib/utils'
 import { KoreaRegionMap } from '@/components/food/KoreaRegionMap'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 600
 
@@ -99,6 +100,8 @@ export default async function ComidasPage({ searchParams }: { searchParams: Sear
     if (page > Math.max(1, totalPages)) notFound()
 
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Comidas', path: '/comidas' }]} />
         <div>
             {/* Header */}
             <div className="border-b border-border/40">
@@ -280,5 +283,6 @@ export default async function ComidasPage({ searchParams }: { searchParams: Sear
                 )}
             </div>
         </div>
+        </>
     )
 }

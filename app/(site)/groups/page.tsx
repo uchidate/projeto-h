@@ -13,6 +13,7 @@ import { getArtistsByIds } from '@/lib/wordpress/artists'
 import { parseFormerMembers } from '@/lib/profiles/groupProfile'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 600
 
@@ -164,6 +165,8 @@ export default async function GroupsListPage({ searchParams }: { searchParams: S
         : []
 
     return (
+        <>
+            <PageBreadcrumb items={[{ name: 'Grupos', path: '/groups' }]} />
         <GroupsPage
             groups={items}
             total={total}
@@ -183,5 +186,6 @@ export default async function GroupsListPage({ searchParams }: { searchParams: S
             integrantes={integrantes}
             shopProducts={shopProducts}
         />
+        </>
     )
 }

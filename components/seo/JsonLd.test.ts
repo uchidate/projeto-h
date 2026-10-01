@@ -34,3 +34,21 @@ describe('omitNulls (JSON.stringify replacer)', () => {
         expect(JSON.parse(out)).toEqual({ list: [1, null, 3] })
     })
 })
+
+import { buildVideoSchema, extractYoutubeIds } from '@/lib/seo/jsonld'
+
+describe('vídeos do YouTube no artigo', () => {
+    it('extrai ids únicos de embeds comuns e nocookie', () => {
+        const html = '<iframe src="https://www.youtube-nocookie.com/embed/vxyzFk_z-Wc"></iframe>'
+            + '<iframe src="https://www.youtube.com/embed/vxyzFk_z-Wc"></iframe>'
+            + '<iframe src="https://www.youtube.com/embed/AAAAAAAAAAA"></iframe>'
+        expect(extractYoutubeIds(html)).toEqual(['vxyzFk_z-Wc', 'AAAAAAAAAAA'])
+    })
+
+    it('monta VideoObject com os campos obrigatórios', () => {
+        const v = buildVideoSchema({ id: 'vxyzFk_z-Wc', name: 'T', description: 'D', uploadDate: '2026-01-01' })
+        expect(v['@type']).toBe('VideoObject')
+        expect(v.thumbnailUrl[0]).toContain('vxyzFk_z-Wc')
+        expect(v.embedUrl).toBe('https://www.youtube.com/embed/vxyzFk_z-Wc')
+    })
+})

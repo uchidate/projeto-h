@@ -12,7 +12,7 @@ import { catStyle } from '@/lib/blog/catStyle'
 import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
 import { splitContentForAd, splitContentForAds } from '@/lib/utils/injectAd'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { buildArticleSchema } from '@/lib/seo/jsonld'
+import { buildArticleSchema, buildVideoSchema, extractYoutubeIds } from '@/lib/seo/jsonld'
 import { ShareBar } from '@/components/ui/ShareBar'
 import { EntityActionBar } from '@/components/ui/EntityActionBar'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
@@ -434,8 +434,21 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                         : { type: 'Organization', name: SITE_NAME, url: SITE_URL },
                     publisher: { name: SITE_NAME, url: SITE_URL },
                     articleSection,
+                    keywords: tags.map(t => t.name),
+                    wordCount: stripHtml(post.content.rendered).split(/\s+/).filter(Boolean).length,
                 })}
             />
+            {extractYoutubeIds(post.content.rendered).slice(0, 3).map(id => (
+                <JsonLd
+                    key={id}
+                    data={buildVideoSchema({
+                        id,
+                        name: title,
+                        description: metaDescription(summary),
+                        uploadDate: post.date,
+                    })}
+                />
+            ))}
             <BlogBackToTop />
             <BlogTextShare shareUrl={postUrl} />
             <BlogDaysUntil />

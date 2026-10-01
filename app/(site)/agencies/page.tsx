@@ -14,6 +14,7 @@ import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import type { WPArtist, WPGroup } from '@/lib/wordpress/types'
+import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 3600
 
@@ -129,6 +130,7 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
 
     return (
         <>
+            <PageBreadcrumb items={[{ name: 'Agências', path: '/agencies' }]} />
             <JsonLd data={{
                 '@context': 'https://schema.org',
                 '@type': 'CollectionPage',
