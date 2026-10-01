@@ -165,7 +165,7 @@ export function buildRecipeSchema({
             prepTime: duracaoIso(preparo.preparoMin),
             cookTime: duracaoIso(preparo.cozimentoMin),
             totalTime: duracaoIso(preparo.preparoMin + preparo.cozimentoMin),
-            recipeYield: `${preparo.porcoes} porções`,
+            recipeYield: preparo.rendimento ?? `${preparo.porcoes} porções`,
         }),
         ...(suitableForDiet && { suitableForDiet }),
         author: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },

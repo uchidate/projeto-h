@@ -1,1 +1,904 @@
-{}
+{
+  "kimbap": {
+    "porcoes": 5,
+    "rendimento": "5 rolos",
+    "preparoMin": 25,
+    "cozimentoMin": 25,
+    "ingredientes": [
+      {
+        "item": "arroz japonês de grão curto, cru",
+        "quantidade": "2 xícaras (cerca de 400 g)"
+      },
+      {
+        "item": "água para cozinhar o arroz",
+        "quantidade": "2 xícaras (480 ml)"
+      },
+      {
+        "item": "óleo de gergelim torrado (para temperar o arroz)",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "sal (para temperar o arroz)",
+        "quantidade": "½ colher de chá"
+      },
+      {
+        "item": "alcatra ou contrafilé em fatias de cerca de 1 cm",
+        "quantidade": "225 g"
+      },
+      {
+        "item": "shoyu (para a carne)",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "mirin",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "açúcar (para a carne)",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "óleo de gergelim (para a carne)",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "alho picado",
+        "quantidade": "2 dentes"
+      },
+      {
+        "item": "espinafre",
+        "quantidade": "225 g"
+      },
+      {
+        "item": "cenoura em tiras finas (julienne)",
+        "quantidade": "2 unidades"
+      },
+      {
+        "item": "ovos grandes",
+        "quantidade": "3 unidades"
+      },
+      {
+        "item": "rabanete amarelo em conserva (danmuji), em tiras",
+        "quantidade": "4 a 5 tiras"
+      },
+      {
+        "item": "folhas de alga nori (gim)",
+        "quantidade": "4 a 5 folhas"
+      },
+      {
+        "item": "kamaboko (eomuk) em tiras de cerca de 1 cm (opcional)",
+        "quantidade": "2 placas"
+      },
+      {
+        "item": "shoyu, açúcar e óleo de gergelim (para o kamaboko)",
+        "quantidade": "1 colher de chá, ½ colher de chá e ½ colher de chá"
+      }
+    ],
+    "passos": [
+      "Cozinhe o arroz na panela elétrica ou no fogão. Ainda quente, misture 1 colher de sopa de óleo de gergelim e ½ colher de chá de sal.",
+      "Misture a carne com o shoyu, o mirin, o açúcar, o óleo de gergelim e o alho. Deixe marinar por 15 minutos.",
+      "Escalde o espinafre em água fervente por 30 segundos, passe para água fria e esprema bem até sair toda a água. Tempere com 1 colher de chá de óleo de gergelim e uma pitada de sal.",
+      "Refogue a cenoura em 1 colher de chá de óleo de gergelim com uma pitada de sal por cerca de 1 minuto, em fogo médio-alto.",
+      "Bata os ovos com uma pitada de sal. Em frigideira com óleo, em fogo médio-alto, deixe o fundo firmar (cerca de 60%), dobre a borda duas vezes e retire. Corte em tiras de cerca de 0,6 cm.",
+      "Refogue por cerca de 2 minutos o kamaboko misturado com shoyu, açúcar e óleo de gergelim, se for usar.",
+      "Na mesma frigideira, frite a carne marinada por 2 a 3 minutos.",
+      "Coloque a alga sobre a esteira de bambu, com o lado brilhante para baixo. Espalhe cerca de ¾ de xícara (180 ml) de arroz, deixando uma faixa de 2 a 3 cm sem arroz na borda de cima.",
+      "Distribua os recheios em tiras no centro do arroz, sem encostar na faixa vazia.",
+      "Levante a borda de baixo com as duas mãos, empurre o recheio com os dedos e enrole firmemente, apertando enquanto avança.",
+      "Pincele o rolo com um pouco de óleo de gergelim e corte em fatias de cerca de 1,5 cm com uma faca afiada e levemente úmida."
+    ],
+    "dicas": [
+      "Deixe o arroz amornar antes de montar: arroz muito quente rasga a alga.",
+      "Passar uma faca úmida entre os cortes evita que o arroz grude e desmanche as fatias."
+    ],
+    "fontes": [
+      {
+        "nome": "Takes Two Eggs",
+        "url": "https://takestwoeggs.com/kimbap/"
+      },
+      {
+        "nome": "Umami Cart",
+        "url": "https://www.umamicart.com/kimbap-recipe/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "japchae": {
+    "porcoes": 4,
+    "preparoMin": 20,
+    "cozimentoMin": 40,
+    "ingredientes": [
+      {
+        "item": "macarrão de batata-doce (dangmyeon)",
+        "quantidade": "225 g"
+      },
+      {
+        "item": "óleo de gergelim (para o macarrão)",
+        "quantidade": "2 colheres de chá"
+      },
+      {
+        "item": "alcatra ou contrafilé em fatias finas",
+        "quantidade": "290 g"
+      },
+      {
+        "item": "shoyu (para marinar a carne)",
+        "quantidade": "2 colheres de sopa"
+      },
+      {
+        "item": "alho picado",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "espinafre",
+        "quantidade": "60 g (2 xícaras)"
+      },
+      {
+        "item": "shoyu (para o espinafre)",
+        "quantidade": "½ colher de chá"
+      },
+      {
+        "item": "óleo de gergelim (para o espinafre)",
+        "quantidade": "¼ de colher de chá"
+      },
+      {
+        "item": "cebola amarela em tiras",
+        "quantidade": "½ unidade média (130 g)"
+      },
+      {
+        "item": "cebolinha em pedaços de 5 cm",
+        "quantidade": "3 talos (28 g)"
+      },
+      {
+        "item": "cogumelo shiitake fatiado fino",
+        "quantidade": "60 g (1 xícara)"
+      },
+      {
+        "item": "cenoura em tiras finas (julienne)",
+        "quantidade": "1 unidade média (50 g)"
+      },
+      {
+        "item": "pimentão vermelho em tiras finas",
+        "quantidade": "¼ de unidade média (72 g)"
+      },
+      {
+        "item": "ovo grande",
+        "quantidade": "1 unidade"
+      },
+      {
+        "item": "shoyu (para o molho)",
+        "quantidade": "3 colheres de sopa (52 g)"
+      },
+      {
+        "item": "açúcar mascavo escuro",
+        "quantidade": "1 colher de sopa (12 g)"
+      },
+      {
+        "item": "óleo de gergelim (para o molho)",
+        "quantidade": "2 colheres de chá (9 g)"
+      },
+      {
+        "item": "pimenta-do-reino",
+        "quantidade": "¼ de colher de chá"
+      },
+      {
+        "item": "óleo vegetal e sal",
+        "quantidade": "o suficiente para refogar"
+      }
+    ],
+    "passos": [
+      "Misture os ingredientes do molho (shoyu, açúcar mascavo, óleo de gergelim e pimenta) e reserve.",
+      "Misture a carne com o shoyu e o alho da marinada e reserve.",
+      "Escalde o espinafre por 1 minuto em água fervente, esfrie, esprema bem a água e tempere com shoyu e óleo de gergelim.",
+      "Cozinhe o macarrão conforme a embalagem (cerca de 10 minutos), escorra, tempere com óleo de gergelim e corte em tiras de cerca de 15 cm com tesoura.",
+      "Refogue a cebola por 3 minutos, junte a cebolinha por mais 2 minutos e passe para uma tigela grande.",
+      "Refogue a cenoura e o pimentão por 2 minutos e junte à tigela.",
+      "Faça um omelete fino com o ovo, enrole, corte em tiras finas e reserve.",
+      "Refogue o shiitake por 3 minutos, até amolecer, e junte à tigela.",
+      "Doure o alho por 30 segundos, junte a carne marinada e cozinhe por 2 minutos, até dourar. Passe para a tigela.",
+      "Regue com o molho, misture bem até cobrir tudo, ajuste o tempero e sirva na hora ou gelado."
+    ],
+    "dicas": [
+      "Cortar o macarrão com tesoura depois de cozido facilita misturar e comer."
+    ],
+    "fontes": [
+      {
+        "nome": "Hungry Huy",
+        "url": "https://www.hungryhuy.com/japchae-korean-glass-noodles/"
+      },
+      {
+        "nome": "Posh Journal",
+        "url": "https://poshjournal.com/sweet-potato-noodles-korean-japchae"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "bibimbap": {
+    "porcoes": 2,
+    "preparoMin": 30,
+    "cozimentoMin": 30,
+    "ingredientes": [
+      {
+        "item": "arroz de grão curto cozido",
+        "quantidade": "3 xícaras (720 ml)"
+      },
+      {
+        "item": "carne bovina em fatias finas (contrafilé, alcatra ou filé mignon)",
+        "quantidade": "225 g"
+      },
+      {
+        "item": "alho picado (marinada da carne)",
+        "quantidade": "3 dentes"
+      },
+      {
+        "item": "shoyu (marinada da carne)",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "mel",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "óleo de gergelim (marinada da carne)",
+        "quantidade": "2 colheres de chá"
+      },
+      {
+        "item": "broto de feijão (moyashi)",
+        "quantidade": "1 xícara"
+      },
+      {
+        "item": "espinafre",
+        "quantidade": "1 maço (225 g)"
+      },
+      {
+        "item": "cenoura em tiras finas (julienne)",
+        "quantidade": "1 unidade"
+      },
+      {
+        "item": "cogumelo shiitake sem talo, fatiado fino",
+        "quantidade": "8 unidades"
+      },
+      {
+        "item": "abobrinha em meias-luas",
+        "quantidade": "1 unidade"
+      },
+      {
+        "item": "alho picado fino (legumes)",
+        "quantidade": "2 dentes"
+      },
+      {
+        "item": "sal (legumes)",
+        "quantidade": "1¼ colher de chá, dividida"
+      },
+      {
+        "item": "óleo de gergelim (legumes)",
+        "quantidade": "1¼ colher de chá, dividida"
+      },
+      {
+        "item": "gochujang",
+        "quantidade": "¼ de xícara (60 g)"
+      },
+      {
+        "item": "alho picado fino (molho)",
+        "quantidade": "2 dentes"
+      },
+      {
+        "item": "vinagre de arroz",
+        "quantidade": "2 colheres de sopa"
+      },
+      {
+        "item": "shoyu (molho)",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "açúcar",
+        "quantidade": "2 colheres de sopa"
+      },
+      {
+        "item": "óleo de gergelim (molho)",
+        "quantidade": "2 colheres de chá"
+      },
+      {
+        "item": "ovos fritos",
+        "quantidade": "3 unidades"
+      },
+      {
+        "item": "gergelim",
+        "quantidade": "a gosto, para finalizar"
+      }
+    ],
+    "passos": [
+      "Misture a carne com o alho, o shoyu, o mel e o óleo de gergelim. Cubra e deixe marinar por no mínimo 30 minutos.",
+      "Aqueça 1 colher de sopa de óleo em fogo médio-alto e frite a carne aos poucos, de 3 a 4 minutos de cada lado. Reserve.",
+      "Ferva o broto de feijão por 5 minutos em água com sal, esfrie em água fria e esprema bem. Tempere com ¼ de colher de chá de alho, sal e óleo de gergelim.",
+      "Na mesma água, escalde o espinafre por 30 segundos, esfrie, esprema e tempere do mesmo jeito.",
+      "Refogue a abobrinha em 1 colher de sopa de óleo por 2 a 3 minutos, com sal e óleo de gergelim.",
+      "Refogue a cenoura do mesmo modo, por 2 a 3 minutos.",
+      "Refogue o shiitake por 4 a 5 minutos, até dourar, com sal e óleo de gergelim.",
+      "Misture o gochujang, o alho, o vinagre, o shoyu, o açúcar e o óleo de gergelim para o molho.",
+      "Monte as tigelas com o arroz, a carne e os legumes em porções separadas, regue com o molho e finalize com o ovo frito e o gergelim. Misture tudo na hora de comer."
+    ],
+    "dicas": [
+      "Temperar cada legume separadamente é o que dá ao prato a variedade de sabores: não misture tudo na mesma panela."
+    ],
+    "fontes": [
+      {
+        "nome": "Takes Two Eggs",
+        "url": "https://takestwoeggs.com/bibimbap/"
+      },
+      {
+        "nome": "Carlsbad Cravings",
+        "url": "https://carlsbadcravings.com/bibimbap/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "jajangmyeon": {
+    "porcoes": 4,
+    "preparoMin": 10,
+    "cozimentoMin": 20,
+    "ingredientes": [
+      {
+        "item": "macarrão fresco de trigo para jajangmyeon (ou macarrão de trigo grosso)",
+        "quantidade": "680 g"
+      },
+      {
+        "item": "barriga de porco em cubos",
+        "quantidade": "285 g"
+      },
+      {
+        "item": "gengibre ralado",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "mirin",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "shoyu",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "pimenta-do-reino",
+        "quantidade": "¼ de colher de chá"
+      },
+      {
+        "item": "óleo vegetal",
+        "quantidade": "3 colheres de sopa"
+      },
+      {
+        "item": "chunjang (pasta de feijão preto torrada)",
+        "quantidade": "½ xícara (cerca de 120 g)"
+      },
+      {
+        "item": "açúcar mascavo",
+        "quantidade": "2 colheres de sopa"
+      },
+      {
+        "item": "caldo de galinha",
+        "quantidade": "1 xícara (240 ml)"
+      },
+      {
+        "item": "molho de ostra",
+        "quantidade": "1½ colher de sopa"
+      },
+      {
+        "item": "amido de milho",
+        "quantidade": "1½ colher de sopa"
+      },
+      {
+        "item": "água (para dissolver o amido)",
+        "quantidade": "3 colheres de sopa"
+      },
+      {
+        "item": "cebola média em cubos",
+        "quantidade": "1 unidade"
+      },
+      {
+        "item": "cebolinha picada",
+        "quantidade": "2 talos"
+      },
+      {
+        "item": "batata descascada em cubos",
+        "quantidade": "1 xícara"
+      },
+      {
+        "item": "abobrinha em cubos",
+        "quantidade": "1 xícara"
+      },
+      {
+        "item": "repolho em cubos",
+        "quantidade": "1 xícara"
+      },
+      {
+        "item": "pepino em tiras finas, para servir",
+        "quantidade": "1 unidade"
+      },
+      {
+        "item": "rabanete amarelo em conserva (danmuji)",
+        "quantidade": "para servir"
+      }
+    ],
+    "passos": [
+      "Misture a barriga de porco com o gengibre, o mirin, o shoyu e a pimenta. Reserve.",
+      "Em frigideira grande, em fogo baixo, aqueça o óleo e toste a pasta chunjang com o açúcar por 3 a 4 minutos, mexendo sempre. Passe para uma tigela e descarte o excesso de óleo.",
+      "Na mesma frigideira, em fogo médio com 1 colher de sopa de óleo, doure levemente a carne nas bordas e reserve.",
+      "Acrescente mais 1 colher de sopa de óleo, refogue a cebola e a cebolinha até ficarem translúcidas e perfumadas. Junte a batata e a abobrinha e mexa por 3 a 5 minutos, até amolecerem. Junte o repolho e cozinhe por 2 a 3 minutos, até murchar.",
+      "Volte a pasta e a carne à frigideira, adicione o caldo e o molho de ostra e mexa até ferver de leve, por 2 a 3 minutos.",
+      "Dissolva o amido na água, despeje no molho em fervura e mexa até engrossar.",
+      "Cozinhe o macarrão em água fervente por 3 a 4 minutos, até ficar al dente, e escorra.",
+      "Divida o macarrão em tigelas, cubra com o molho e finalize com o pepino, o gergelim e o danmuji."
+    ],
+    "dicas": [
+      "As duas fontes tostam a chunjang no óleo antes de montar o molho: o passo deixa a pasta brilhante e com sabor mais torrado."
+    ],
+    "fontes": [
+      {
+        "nome": "Takes Two Eggs",
+        "url": "https://takestwoeggs.com/jajangmyeon-korean-black-bean-noodles/"
+      },
+      {
+        "nome": "Umami Cart",
+        "url": "https://www.umamicart.com/jajangmyeon-recipe/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "hotteok": {
+    "porcoes": 12,
+    "rendimento": "12 panquecas",
+    "preparoMin": 80,
+    "cozimentoMin": 15,
+    "ingredientes": [
+      {
+        "item": "água morna (27 a 38 °C)",
+        "quantidade": "1 xícara (240 ml)"
+      },
+      {
+        "item": "fermento biológico seco",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "açúcar",
+        "quantidade": "¼ de xícara (50 g), dividido"
+      },
+      {
+        "item": "manteiga derretida",
+        "quantidade": "¼ de xícara (60 g)"
+      },
+      {
+        "item": "leite em temperatura ambiente",
+        "quantidade": "¼ de xícara (60 ml)"
+      },
+      {
+        "item": "sal",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "farinha de trigo para pão",
+        "quantidade": "1½ xícara e 2 colheres de sopa (cerca de 195 g)"
+      },
+      {
+        "item": "farinha de arroz glutinoso (mochiko)",
+        "quantidade": "⅓ de xícara (cerca de 45 g)"
+      },
+      {
+        "item": "óleo vegetal para fritar",
+        "quantidade": "¼ de xícara (60 ml)"
+      },
+      {
+        "item": "açúcar mascavo (recheio)",
+        "quantidade": "¼ de xícara e 2 colheres de sopa (cerca de 75 g)"
+      },
+      {
+        "item": "nozes picadas",
+        "quantidade": "¼ de xícara (cerca de 30 g)"
+      },
+      {
+        "item": "pinoli",
+        "quantidade": "2 colheres de sopa"
+      },
+      {
+        "item": "canela em pó",
+        "quantidade": "1 colher de chá"
+      }
+    ],
+    "passos": [
+      "Misture a água morna com 1 colher de sopa do açúcar, junte o fermento e deixe de 8 a 10 minutos, até espumar.",
+      "Acrescente o restante do açúcar, a manteiga derretida, o leite e o sal.",
+      "Em uma tigela grande, misture a farinha de trigo e a farinha de arroz glutinoso.",
+      "Junte a mistura do fermento à farinha e mexa com espátula por cerca de 5 minutos, até formar a massa. Cubra e deixe crescer em lugar morno de 30 a 60 minutos, até dobrar de volume.",
+      "Misture o açúcar mascavo, as nozes, o pinoli e a canela para o recheio.",
+      "Unte as mãos com óleo. Pegue cerca de 60 g de massa, achate num disco de 10 cm, coloque 1 colher de sopa de recheio, feche puxando as bordas para o centro e belisque. Deixe com a emenda para baixo sobre papel-manteiga.",
+      "Aqueça o óleo em fogo médio-baixo, coloque a massa com a emenda para baixo e achate com a espátula. Doure por 45 a 60 segundos, vire e doure o outro lado por 30 a 45 segundos.",
+      "Escorra em papel-toalha e sirva morno, se quiser com uma bola de sorvete de baunilha."
+    ],
+    "dicas": [
+      "Uma segunda fonte deixa a massa descansar por até 3 horas: o crescimento mais longo rende mais sabor.",
+      "O açúcar do recheio derrete por dentro da massa, então sirva morno."
+    ],
+    "fontes": [
+      {
+        "nome": "Beyond Sweet and Savory",
+        "url": "https://beyondsweetandsavory.com/hotteok-korean-sweet-pancakes/"
+      },
+      {
+        "nome": "Seonkyoung Longest",
+        "url": "https://seonkyounglongest.com/hotteok-korean-street-food/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "dakkochi": {
+    "porcoes": 4,
+    "rendimento": "6 a 8 espetos",
+    "preparoMin": 40,
+    "cozimentoMin": 8,
+    "ingredientes": [
+      {
+        "item": "peito e/ou sobrecoxa de frango sem pele e sem osso, em cubos de 2,5 cm",
+        "quantidade": "450 g"
+      },
+      {
+        "item": "sal",
+        "quantidade": "¼ de colher de chá"
+      },
+      {
+        "item": "pimenta-do-reino",
+        "quantidade": "¼ de colher de chá"
+      },
+      {
+        "item": "vinho de cozinha (ou saquê)",
+        "quantidade": "3 colheres de sopa"
+      },
+      {
+        "item": "gengibre ralado",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "alho ralado",
+        "quantidade": "1 colher de sopa (cerca de 3 dentes)"
+      },
+      {
+        "item": "cebolinha em pedaços de 4 cm",
+        "quantidade": "8 a 10 talos"
+      },
+      {
+        "item": "espetos de bambu de 15 cm",
+        "quantidade": "6 a 8 unidades"
+      },
+      {
+        "item": "shoyu (molho doce)",
+        "quantidade": "½ xícara (120 ml)"
+      },
+      {
+        "item": "mel (molho doce)",
+        "quantidade": "½ xícara (cerca de 170 g)"
+      },
+      {
+        "item": "gochugaru (pimenta em flocos coreana, molho picante)",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "sriracha (molho picante)",
+        "quantidade": "1 colher de sopa"
+      }
+    ],
+    "passos": [
+      "Deixe os espetos de molho em água por 30 a 60 minutos.",
+      "Misture o frango com o sal, a pimenta, o vinho de cozinha, o gengibre e o alho. Cubra e deixe marinar na geladeira por no mínimo 20 minutos (pode ser de um dia para o outro).",
+      "Bata o shoyu com o mel para fazer o molho doce. Para o molho picante, misture metade desse molho com o gochugaru, a sriracha e ¼ de colher de chá de pimenta-do-reino.",
+      "Monte os espetos alternando um pedaço de cebolinha e um ou dois pedaços de frango.",
+      "Aqueça a grelha, o forno em modo grill ou uma frigideira em fogo médio-alto. Cozinhe 4 a 5 minutos de um lado, vire e pincele com o molho.",
+      "Cozinhe 2 minutos do outro lado e continue virando e pincelando até o frango estar cozido e com a cor desejada. Sirva na hora."
+    ],
+    "dicas": [
+      "Pincele o molho só depois da primeira virada, para o mel não queimar antes de o frango cozinhar.",
+      "Outra fonte usa um molho de gochujang, açúcar e alho para quem prefere o espeto bem vermelho."
+    ],
+    "fontes": [
+      {
+        "nome": "Seonkyoung Longest",
+        "url": "https://seonkyounglongest.com/korean-chicken-on-a-stick/"
+      },
+      {
+        "nome": "Crazy Korean Cooking",
+        "url": "https://crazykoreancooking.com/recipe/spicy-chicken-skewers"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "gosari-namul": {
+    "porcoes": 4,
+    "preparoMin": 1635,
+    "cozimentoMin": 14,
+    "ingredientes": [
+      {
+        "item": "samambaia-do-campo seca (gosari)",
+        "quantidade": "40 g (ou 2 xícaras já hidratada e cozida)"
+      },
+      {
+        "item": "shoyu",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "sal",
+        "quantidade": "½ colher de chá"
+      },
+      {
+        "item": "caldo de carne em pó (tipo Dasida)",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "pimenta-do-reino",
+        "quantidade": "¼ de colher de chá"
+      },
+      {
+        "item": "molho de peixe",
+        "quantidade": "½ colher de chá"
+      },
+      {
+        "item": "óleo de gergelim",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "azeite",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "cebolinha fatiada na diagonal",
+        "quantidade": "1 talo"
+      },
+      {
+        "item": "gergelim torrado",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "alho picado",
+        "quantidade": "1 colher de chá"
+      }
+    ],
+    "passos": [
+      "Coloque a samambaia seca numa panela com água para cobrir e leve à fervura.",
+      "Reduza o fogo, tampe deixando uma fresta e cozinhe por cerca de 1 hora.",
+      "Deixe a samambaia na água quente por cerca de 2 horas.",
+      "Enxágue, escorra e deixe de molho em água fria limpa por 24 horas. Escorra e corte em pedaços de 5 cm.",
+      "Aqueça o azeite em fogo médio-alto, junte a samambaia e refogue até a água evaporar, cerca de 10 minutos.",
+      "Acrescente o shoyu, o sal, o caldo em pó, o alho, a pimenta e o molho de peixe e refogue por 2 a 3 minutos.",
+      "Junte a cebolinha, o óleo de gergelim e o gergelim e misture por cerca de 30 segundos.",
+      "Retire do fogo e sirva como acompanhamento."
+    ],
+    "dicas": [
+      "O tempo de hidratação varia: outra fonte indica de 8 a 24 horas de molho e de 15 a 20 minutos de fervura. Comece a receita no dia anterior.",
+      "Pronta, a samambaia também entra no bibimbap."
+    ],
+    "fontes": [
+      {
+        "nome": "Asian Recipes at Home",
+        "url": "https://asianrecipesathome.com/korean-stir-fried-fernbrake-side-dish-gosari-namul/"
+      },
+      {
+        "nome": "Taste Korean Food",
+        "url": "https://www.tastekoreanfood.com/recipes/gosari-namul-seasoned-fernbrake"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "bungeoppang": {
+    "porcoes": 4,
+    "rendimento": "4 a 6 bungeoppang",
+    "preparoMin": 10,
+    "cozimentoMin": 10,
+    "ingredientes": [
+      {
+        "item": "farinha de trigo",
+        "quantidade": "1 xícara (cerca de 120 g)"
+      },
+      {
+        "item": "fermento em pó",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "açúcar",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "sal",
+        "quantidade": "¼ de colher de chá"
+      },
+      {
+        "item": "leite",
+        "quantidade": "¾ de xícara (180 ml)"
+      },
+      {
+        "item": "ovo",
+        "quantidade": "1 unidade"
+      },
+      {
+        "item": "extrato de baunilha",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "pasta de feijão azuki doce (anko)",
+        "quantidade": "¼ de xícara (cerca de 60 g)"
+      },
+      {
+        "item": "óleo para untar a fôrma",
+        "quantidade": "o suficiente"
+      }
+    ],
+    "passos": [
+      "Misture a farinha, o fermento, o açúcar e o sal numa tigela.",
+      "Junte o leite, o ovo e a baunilha e mexa até a massa ficar lisa.",
+      "Unte a fôrma em formato de peixe e aqueça em fogo baixo.",
+      "Coloque uma camada fina de massa em um dos lados da fôrma.",
+      "Ponha a pasta de feijão azuki no centro da massa.",
+      "Cubra com outra camada de massa para fechar o recheio.",
+      "Feche a fôrma e cozinhe de 2 a 3 minutos de um lado.",
+      "Vire a fôrma e cozinhe até dourar. Sirva quente, na hora."
+    ],
+    "dicas": [
+      "É preciso uma fôrma própria de bungeoppang, que vai direto ao fogo do fogão.",
+      "Outra fonte enche cerca de ⅓ da fôrma com massa antes do recheio, para o peixe não transbordar."
+    ],
+    "fontes": [
+      {
+        "nome": "Tasty Bytez",
+        "url": "https://tastybytez.com/korean-bungeoppang-recipe/"
+      },
+      {
+        "nome": "That Cute Dish",
+        "url": "https://www.thatcutedish.com/bungeoppang/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "galbi": {
+    "porcoes": 6,
+    "preparoMin": 260,
+    "cozimentoMin": 20,
+    "ingredientes": [
+      {
+        "item": "costela bovina em tiras transversais (estilo LA, flanken)",
+        "quantidade": "cerca de 1,4 kg (3 lb)"
+      },
+      {
+        "item": "pera coreana (ou asiática) sem sementes, picada",
+        "quantidade": "½ unidade grande"
+      },
+      {
+        "item": "cebola amarela picada",
+        "quantidade": "½ unidade média"
+      },
+      {
+        "item": "alho",
+        "quantidade": "6 dentes"
+      },
+      {
+        "item": "gengibre descascado e fatiado",
+        "quantidade": "2,5 cm"
+      },
+      {
+        "item": "shoyu",
+        "quantidade": "8 colheres de sopa"
+      },
+      {
+        "item": "mirin",
+        "quantidade": "7 colheres de sopa"
+      },
+      {
+        "item": "xarope de arroz ou mel",
+        "quantidade": "2 colheres de sopa"
+      },
+      {
+        "item": "pimenta-do-reino moída grossa",
+        "quantidade": "1 colher de chá"
+      },
+      {
+        "item": "óleo de gergelim torrado",
+        "quantidade": "1 colher de sopa"
+      }
+    ],
+    "passos": [
+      "Lave a costela em água corrente e retire com os dedos os estilhaços de osso.",
+      "Deixe de molho em água fria por 20 minutos, trocando a água na metade do tempo.",
+      "Bata no liquidificador a pera, a cebola, o alho, o gengibre, o shoyu, o mirin, o xarope de arroz e a pimenta, até virar um purê grosso.",
+      "Misture o óleo de gergelim ao tempero com uma espátula.",
+      "Coloque a costela num recipiente e cubra com a marinada.",
+      "Deixe marinar na geladeira de 4 a 8 horas, virando as peças na metade do tempo.",
+      "Tire da geladeira 1 hora antes de cozinhar, para a carne chegar à temperatura ambiente.",
+      "Grelhe por 9 a 10 minutos, virando de vez em quando, ou doure na frigideira de inox por 8 a 10 minutos, até o centro atingir 63 °C.",
+      "Corte a carne com tesoura antes de servir."
+    ],
+    "dicas": [
+      "Esta receita indica de 4 a 8 horas de marinada; a pera tem uma enzima que amacia a carne, então não passe muito disso.",
+      "Outra receita marina por pelo menos 1 dia (melhor entre o segundo e o terceiro) e deixa a costela 30 minutos em água com açúcar antes."
+    ],
+    "fontes": [
+      {
+        "nome": "Hungry Huy",
+        "url": "https://www.hungryhuy.com/la-galbi-korean-bbq-short-ribs/"
+      },
+      {
+        "nome": "Ahnest Kitchen",
+        "url": "https://ahnestkitchen.com/food/la-galbi"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "galbitang": {
+    "porcoes": 4,
+    "preparoMin": 75,
+    "cozimentoMin": 90,
+    "ingredientes": [
+      {
+        "item": "costela bovina",
+        "quantidade": "680 g (1,5 lb)"
+      },
+      {
+        "item": "água",
+        "quantidade": "10 xícaras (2,4 L)"
+      },
+      {
+        "item": "cebola amarela com casca",
+        "quantidade": "1 unidade"
+      },
+      {
+        "item": "cebolinha ou alho-poró coreano (daepa), para o caldo",
+        "quantidade": "2 talos (ou 1 daepa)"
+      },
+      {
+        "item": "fatias grossas de gengibre",
+        "quantidade": "2 unidades"
+      },
+      {
+        "item": "rabanete coreano (mu) em fatias finas",
+        "quantidade": "½ unidade média"
+      },
+      {
+        "item": "cebolinha ou daepa fatiada, para finalizar",
+        "quantidade": "2 talos (ou 1 daepa)"
+      },
+      {
+        "item": "alho picado (ou 5 a 6 dentes inteiros)",
+        "quantidade": "2 colheres de sopa"
+      },
+      {
+        "item": "shoyu para sopa (guk-ganjang)",
+        "quantidade": "1 colher de sopa"
+      },
+      {
+        "item": "sal marinho",
+        "quantidade": "1½ colher de chá"
+      },
+      {
+        "item": "pimenta-do-reino",
+        "quantidade": "a gosto, para servir"
+      }
+    ],
+    "passos": [
+      "Deixe a costela de molho em água fria por 1 hora (ou ferva rapidamente e enxágue).",
+      "Separe a cebola, o gengibre, o alho e a cebolinha.",
+      "Coloque a costela, os aromáticos e as 10 xícaras de água numa panela grande e leve à fervura.",
+      "Reduza para fogo médio e retire a espuma e a gordura que subirem.",
+      "Cozinhe sem tampa em fogo médio-baixo por 1 hora.",
+      "Junte o rabanete em fatias finas e cozinhe por mais 20 minutos.",
+      "Retire e descarte os aromáticos, deixando o rabanete.",
+      "Tempere com o shoyu para sopa, o sal e o alho e cozinhe por mais 10 minutos.",
+      "Sirva quente, com a cebolinha fatiada e pimenta-do-reino, acompanhado de arroz."
+    ],
+    "dicas": [
+      "Uma segunda fonte escalda a costela por 5 minutos e descarta essa água antes do caldo principal, o que deixa o caldo mais limpo."
+    ],
+    "fontes": [
+      {
+        "nome": "Yum with Mia",
+        "url": "https://yumwithmia.com/short-rib-soup-galbitang-recipe/"
+      },
+      {
+        "nome": "Seasoned by Jin",
+        "url": "https://seasonedbyjin.com/homemade-tasty-galbitang-short-ribbed-soup/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  }
+}

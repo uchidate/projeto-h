@@ -21,6 +21,9 @@ export function validarReceita(slug: string, r: Receita): string[] {
         falha('todo ingrediente precisa de item e quantidade')
     }
 
+    const nomes = (r.ingredientes ?? []).map(i => i.item)
+    if (new Set(nomes).size !== nomes.length) falha('ingredientes com nome repetido')
+
     if (!Array.isArray(r.passos) || r.passos.length < MIN_PASSOS) falha(`mínimo de ${MIN_PASSOS} passos`)
     else if (r.passos.some(p => p.trim().length < 15)) falha('passo curto demais (< 15 caracteres)')
 

@@ -21,5 +21,6 @@ describe('ReceitaPreparo', () => {
         expect(screen.getByText('2 xícaras')).toBeTruthy()
         expect(screen.getByText('Frite os ovos em fogo médio.')).toBeTruthy()
         expect(screen.getByRole('link', { name: 'Fonte B' }).getAttribute('href')).toBe('https://b.com/r')
+        expect(screen.getByText(/Receita adaptada de/)).toBeTruthy()
     })
 })
