@@ -14,6 +14,8 @@ import { buildBreadcrumbSchema, buildRecipeSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescription } from '@/lib/seo/metaDescription'
+import { getReceita } from '@/lib/receitas'
+import { ReceitaPreparo } from '@/components/features/ReceitaPreparo'
 
 export const revalidate = 600
 
@@ -79,6 +81,8 @@ export default async function FoodPage({ params }: { params: Params }) {
         { name: name, url: foodUrl },
     ])
 
+    const receita = getReceita(slug)
+
     const recipeSchema = buildRecipeSchema({
         name,
         nameKorean: acf.name_korean,
@@ -93,6 +97,7 @@ export default async function FoodPage({ params }: { params: Params }) {
         isVegan: acf.is_vegan,
         datePublished: food.date,
         dateModified: food.modified,
+        preparo: receita,
     })
 
     return (
@@ -195,6 +200,8 @@ export default async function FoodPage({ params }: { params: Params }) {
                             dangerouslySetInnerHTML={{ __html: food.content.rendered }}
                         />
                     )}
+
+                    {receita && <ReceitaPreparo nome={name} receita={receita} />}
 
                     {/* Página sem anúncio nenhum até 2026-09-17 (inventário de todas as rotas no celular). */}
                     {ADSENSE.slots.inline && (
