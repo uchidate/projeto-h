@@ -131,32 +131,48 @@ const nextConfig = {
         ],
     },
     async rewrites() {
-        // O IndexNow exige o arquivo de verificação na raiz, com o nome da
-        // própria chave. O padrão é restrito ao alfabeto da especificação e a
-        // 8-128 caracteres para não capturar nenhum outro .txt; e este array
-        // roda depois de `public/`, então robots.txt e ads.txt continuam
-        // sendo servidos como arquivos estáticos.
-        return [
-            {
-                source: '/:key([a-zA-Z0-9-]{8,128}).txt',
-                destination: '/api/indexnow/key/:key',
-            },
-            // Umami servido pelo proprio dominio.
-            //
-            // O subdominio `umami.` com `/script.js` casa com padroes de listas
-            // de bloqueio (EasyPrivacy), e o visitante bloqueado simplesmente
-            // nao e contado — perda silenciosa, que aparece como queda de
-            // audiencia sem causa. Servido de primeira parte, sob um caminho
-            // neutro, o tracker deixa de casar com essas regras.
-            {
-                source: '/stats/script.js',
-                destination: `${UMAMI_ORIGIN}/script.js`,
-            },
-            {
-                source: '/stats/api/send',
-                destination: `${UMAMI_ORIGIN}/api/send`,
-            },
+        // /guias e /guias/<slug> leem filtros pela query; ler `searchParams` na página
+        // a torna dinâmica (no-store, Cloudflare em BYPASS). Sem filtro a rota fica
+        // estática e cacheável; com filtro, o desvio abaixo (que mantém a URL e a
+        // query) manda para a variante dinâmica. As chaves vêm de CHAVES_FILTRO_GUIA
+        // em app/(site)/guias/[slug]/GuiaPagina.tsx.
+        const desviosGuias = [
+            ...['page', 'genre', 'platform', 'network', 'type', 'year'].map(key => ({
+                source: '/guias/:slug',
+                has: [{ type: 'query', key }],
+                destination: '/guias/:slug/filtrado',
+            })),
+            { source: '/guias', has: [{ type: 'query', key: 'kind' }], destination: '/guias/filtrado' },
         ]
+        return {
+            beforeFiles: desviosGuias,
+            afterFiles: [
+            // O IndexNow exige o arquivo de verificação na raiz, com o nome da
+            // própria chave. O padrão é restrito ao alfabeto da especificação e a
+            // 8-128 caracteres para não capturar nenhum outro .txt; e este array
+            // roda depois de `public/`, então robots.txt e ads.txt continuam
+            // sendo servidos como arquivos estáticos.
+                {
+                    source: '/:key([a-zA-Z0-9-]{8,128}).txt',
+                    destination: '/api/indexnow/key/:key',
+                },
+                // Umami servido pelo proprio dominio.
+                //
+                // O subdominio `umami.` com `/script.js` casa com padroes de listas
+                // de bloqueio (EasyPrivacy), e o visitante bloqueado simplesmente
+                // nao e contado — perda silenciosa, que aparece como queda de
+                // audiencia sem causa. Servido de primeira parte, sob um caminho
+                // neutro, o tracker deixa de casar com essas regras.
+                {
+                    source: '/stats/script.js',
+                    destination: `${UMAMI_ORIGIN}/script.js`,
+                },
+                {
+                    source: '/stats/api/send',
+                    destination: `${UMAMI_ORIGIN}/api/send`,
+                },
+            ],
+        }
     },
     async redirects() {
         return [
