@@ -424,7 +424,11 @@ jobs:
   release:
     name: Release (semantic-release)
     needs: publicar
-    if: ${{ needs.publicar.result == 'success' && github.event_name == 'push' }}
+    # always(): sem ele este job é pulado. `publicar` só roda por ter always() (o job `gates`
+    # fica skipped nos pushes), e o success() implícito de um job que dependa de `publicar`
+    # olha a cadeia INTEIRA: um ancestral skipped conta como não-sucesso. A checagem explícita
+    # do resultado garante que só roda depois de um deploy bem-sucedido.
+    if: ${{ always() && needs.publicar.result == 'success' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
     continue-on-error: true
     timeout-minutes: 10
