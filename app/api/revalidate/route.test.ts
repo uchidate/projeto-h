@@ -61,6 +61,24 @@ describe('POST /api/revalidate', () => {
         expect(res.status).toBe(400)
     })
 
+    it('descarta slug com quebra de linha antes de qualquer envio ou log (js/log-injection)', async () => {
+        // buildIndexNowUrl só aceita slug que sobrevive a encodeURIComponent; uma quebra
+        // de linha vira %0A e a rota para ali. Os console.* seguintes recebem slugs já
+        // restritos, e paraLog fica como defesa em profundidade.
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        try {
+            await POST(makeRequest({ type: 'post', slug: 'abc\n[revalidate] ok — evento forjado' }))
+            expect(submitMock).not.toHaveBeenCalled()
+            expect(warn).not.toHaveBeenCalled()
+            const linhas = log.mock.calls.map(c => String(c[0]))
+            for (const l of linhas) expect(l).not.toMatch(/evento forjado/)
+        } finally {
+            log.mockRestore()
+            warn.mockRestore()
+        }
+    })
+
     it('rejeita type desconhecido', async () => {
         const res = await POST(makeRequest({ type: 'nao-existe', slug: 'x' }))
         expect(res.status).toBe(400)

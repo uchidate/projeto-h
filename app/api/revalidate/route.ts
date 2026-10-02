@@ -91,12 +91,12 @@ function avisarIndexNow(type: WPPostType, slug: unknown): void {
             const urls = [url, ...buildLocalizedIndexNowUrls(type, slug, await idiomasPublicados(type, slug))]
             const desfecho = await submitToIndexNow(urls)
             if (desfecho.ok) {
-                console.log(`[indexnow] ok — ${desfecho.submitted.join(', ')} status=${desfecho.status}`)
+                console.log(`[indexnow] ok — ${paraLog(desfecho.submitted.join(', '), 300)} status=${desfecho.status}`)
             } else if (desfecho.reason !== 'disabled' && desfecho.reason !== 'no-valid-urls') {
-                console.warn(`[indexnow] falhou — url=${url} motivo=${desfecho.reason} ${desfecho.status ?? desfecho.detail ?? ''}`)
+                console.warn(`[indexnow] falhou — url=${paraLog(url, 200)} motivo=${desfecho.reason} ${paraLog(desfecho.status ?? desfecho.detail ?? '')}`)
             }
         } catch (erro) {
-            console.warn(`[indexnow] exceção inesperada — url=${url} ${erro instanceof Error ? erro.message : String(erro)}`)
+            console.warn(`[indexnow] exceção inesperada — url=${paraLog(url, 200)} ${paraLog(erro instanceof Error ? erro.message : erro)}`)
         }
     })
 }
@@ -116,12 +116,12 @@ function expurgarBorda(type: WPPostType, slug: unknown): void {
             const urls = [url, ...buildLocalizedIndexNowUrls(type, slug, await idiomasPublicados(type, slug))]
             const desfecho = await purgarCloudflare(urls)
             if (desfecho.ok) {
-                console.log(`[cf-purge] ok — ${desfecho.purgadas} url(s) de ${type}/${slug}`)
+                console.log(`[cf-purge] ok — ${desfecho.purgadas} url(s) de ${paraLog(type)}/${paraLog(slug)}`)
             } else if (desfecho.reason !== 'disabled' && desfecho.reason !== 'no-urls') {
-                console.warn(`[cf-purge] falhou — ${type}/${slug} motivo=${desfecho.reason} ${desfecho.detail ?? ''}`)
+                console.warn(`[cf-purge] falhou — ${paraLog(type)}/${paraLog(slug)} motivo=${desfecho.reason} ${paraLog(desfecho.detail ?? '')}`)
             }
         } catch (erro) {
-            console.warn(`[cf-purge] exceção inesperada — ${type}/${slug} ${erro instanceof Error ? erro.message : String(erro)}`)
+            console.warn(`[cf-purge] exceção inesperada — ${paraLog(type)}/${paraLog(slug)} ${paraLog(erro instanceof Error ? erro.message : erro)}`)
         }
     })
 }
