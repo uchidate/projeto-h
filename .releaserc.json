@@ -52,6 +52,15 @@
           {
             "type": "style",
             "release": false
+          },
+          {
+            "type": "chore",
+            "scope": "deps",
+            "release": "patch"
+          },
+          {
+            "breaking": true,
+            "release": "major"
           }
         ]
       }
@@ -97,8 +106,7 @@
             },
             {
               "type": "chore",
-              "section": "Manutenção",
-              "hidden": true
+              "section": "Manutenção"
             },
             {
               "type": "docs",

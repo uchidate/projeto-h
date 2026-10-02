@@ -404,3 +404,58 @@ jobs:
         env:
           SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
         run: node scripts/fumaca.mjs ${{ vars.SITE_URL }}
+
+  # Versão e release (semantic-release): cria a tag vX.Y.Z, a release no GitHub e comenta
+  # nos PRs incluídos qual versão os levou. A numeração continua da v1.98.0 (tag-base,
+  # herdada do repositório anterior, ondacoreana).
+  #
+  # Roda DEPOIS do deploy saudável e em job próprio por dois motivos:
+  #   - se só o release falhar (ex.: permissão para comentar), o deploy já feito e saudável
+  #     não vira vermelho; foi o que aconteceu na v1.78.0;
+  #   - só sai versão de commit que foi para produção.
+  # continue-on-error: uma falha aqui NÃO bloqueia nada, mas deixa o job vermelho no log.
+  #
+  # Começa em MODO DE TESTE (--dry-run: calcula e mostra a versão, não cria tag nem release).
+  # Para publicar de verdade: Settings > Variables > RELEASE_ATIVO = true.
+  # GITHUB_TOKEN e não um PAT: uma tag criada com ele não redispara workflows (não há laço
+  # deploy -> release -> deploy), e não existe commit de versão na main (sem o plugin git).
+  # Se a main andou durante o deploy, o semantic-release avisa que o branch local está atrás
+  # e não publica; o release do deploy seguinte cobre as duas mudanças.
+  release:
+    name: Release (semantic-release)
+    needs: publicar
+    if: ${{ needs.publicar.result == 'success' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 10
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      # fetch-depth: 0 porque o semantic-release precisa do histórico inteiro e das tags
+      # para calcular a próxima versão.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # --ignore-scripts: o `prepare` do husky não tem o que fazer no CI.
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODO: ${{ vars.RELEASE_ATIVO == 'true' && 'publicar' || 'teste (--dry-run)' }}
+        run: |
+          echo "Modo: ${MODO}"
+          if [ "${{ vars.RELEASE_ATIVO }}" = "true" ]; then
+            npx semantic-release
+          else
+            npx semantic-release --dry-run
+          fi
