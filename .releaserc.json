@@ -10,6 +10,11 @@
         "preset": "conventionalcommits",
         "releaseRules": [
           {
+            "type": "chore",
+            "scope": "deps",
+            "release": "patch"
+          },
+          {
             "type": "fix",
             "release": "patch"
           },
@@ -97,8 +102,7 @@
             },
             {
               "type": "chore",
-              "section": "Manutenção",
-              "hidden": true
+              "section": "Manutenção"
             },
             {
               "type": "docs",
