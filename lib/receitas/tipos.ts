@@ -1,9 +1,9 @@
 // Modo de preparo de uma receita do CPT food. Fica no repo (data/receitas.json)
 // porque o WordPress não tem esses campos e o Google exige que o schema
 // Recipe corresponda ao conteúdo visível na página.
-export type IngredienteReceita = { item: string; quantidade: string }
+type IngredienteReceita = { item: string; quantidade: string }
 
-export type FonteReceita = { nome: string; url: string }
+type FonteReceita = { nome: string; url: string }
 
 export type Receita = {
     /** Porções que a receita rende (número inteiro). */
