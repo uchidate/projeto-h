@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: 'Quiz de K-Pop e K-Drama: 300+ perguntas',
         description: 'Quiz de K-Pop e K-Drama grátis: mais de 300 perguntas sobre música, séries, cultura e história da Coreia, em três níveis e com pergunta nova por dia.',
-        alternates: { canonical },
+        alternates: { canonical: canonical },
         keywords: ['quiz kpop', 'quiz kdrama', 'teste kpop', 'perguntas kpop', 'quiz cultura coreana'],
         openGraph: baseOG(canonical),
         twitter: baseTwitter(),
