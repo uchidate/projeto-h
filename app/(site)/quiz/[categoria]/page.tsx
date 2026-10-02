@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     return {
         title: `Quiz de ${label}: teste seus conhecimentos`,
         description: `Quiz de ${label} grátis: perguntas em três níveis, cronômetro, placar e a explicação de cada resposta. Jogue agora e descubra quanto você sabe de ${label}.`,
-        alternates: { canonical },
+        alternates: { canonical: canonical },
         keywords: [`quiz ${label.toLowerCase()}`, `perguntas ${label.toLowerCase()}`, `teste ${label.toLowerCase()}`],
         openGraph: baseOG(canonical),
         twitter: baseTwitter(),
