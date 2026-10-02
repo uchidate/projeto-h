@@ -10,11 +10,6 @@
         "preset": "conventionalcommits",
         "releaseRules": [
           {
-            "type": "chore",
-            "scope": "deps",
-            "release": "patch"
-          },
-          {
             "type": "fix",
             "release": "patch"
           },
@@ -57,6 +52,15 @@
           {
             "type": "style",
             "release": false
+          },
+          {
+            "type": "chore",
+            "scope": "deps",
+            "release": "patch"
+          },
+          {
+            "breaking": true,
+            "release": "major"
           }
         ]
       }
