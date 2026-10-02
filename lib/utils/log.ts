@@ -16,11 +16,15 @@
  */
 export function paraLog(valor: unknown, max = 120): string {
     return String(valor ?? '—')
-        // Quebra de linha primeiro e explícita: além de ser o caso que importa,
-        // é a forma que o CodeQL reconhece como barreira de js/log-injection.
-        // Uma classe como [\u0000-\u001f] cobre \n e \r, mas a análise não
-        // enxerga isso e continua apontando o alerta.
+        // Quebra de linha primeiro: vira espaço, que mantém o log legível.
         .replace(/[\r\n]+/g, ' ')
+        // Os dois passos seguintes não mudam o resultado (as quebras já saíram acima), mas são
+        // o formato que o CodeQL reconhece como barreira de js/log-injection: replace GLOBAL de
+        // \n ou \r por string VAZIA. Só o passo acima (classe de caracteres, troca por espaço)
+        // não bastou: os alertas #51 a #53 continuaram abertos com o caminho do dado passando
+        // por aqui sem ser cortado.
+        .replace(/\n/g, '')
+        .replace(/\r/g, '')
         // Demais caracteres de controle (tab, escape, DEL) sujam o log do mesmo
         // jeito, ainda que não criem linha nova.
         .replace(/[\x00-\x1f\x7f]+/g, ' ')
