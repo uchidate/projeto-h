@@ -40,12 +40,6 @@ updates:
       # eslint <=9.7 e usa context.getFilename, removido no 10 — PR #73.
       - dependency-name: eslint
         update-types: ['version-update:semver-major']
-      # conventional-changelog-conventionalcommits 10: exige
-      # conventional-changelog-writer@9, e o @semantic-release/release-notes-
-      # generator 14.1.1 (ultimo) ainda usa o antigo — a geracao de notas quebra
-      # e o release falha. Testado chamando os plugins com o .releaserc — PR #74.
-      - dependency-name: conventional-changelog-conventionalcommits
-        update-types: ['version-update:semver-major']
     labels: [dependencias]
     commit-message:
       prefix: 'chore(deps)'
