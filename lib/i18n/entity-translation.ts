@@ -45,6 +45,15 @@ export function hasLocale(entity: Pick<TranslatableEntity, 'translations'>, loca
     return availableLocales(entity).includes(locale)
 }
 
+/**
+ * Fora do português e sem tradução publicada: a rota existe (D10 em
+ * docs/I18N-V2.md), com a interface no idioma, um aviso e o corpo original.
+ * Essa versão não é indexada e não entra no hreflang.
+ */
+export function semTraducao(entity: Pick<TranslatableEntity, 'translations'>, locale: Locale): boolean {
+    return locale !== DEFAULT_LOCALE && !hasLocale(entity, locale)
+}
+
 /** Aplica só texto sobre `base`, preservando tipo e forma. */
 export function mergeText(base: unknown, overlay: unknown): unknown {
     if (overlay === undefined || overlay === null) return base

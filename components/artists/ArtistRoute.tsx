@@ -21,10 +21,11 @@ import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
 import type { Locale } from '@/lib/i18n/config'
-import { availableLocales, hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
+import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
 import { buildAlternates } from '@/lib/i18n/alternates'
 import { buildLanguageLinks } from '@/lib/i18n/language-links'
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
+import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
 import { metaDescription } from '@/lib/seo/metaDescription'
 
@@ -38,7 +39,12 @@ import { metaDescription } from '@/lib/seo/metaDescription'
  */
 export async function buildArtistMetadata(slug: string, locale: Locale): Promise<Metadata> {
     const found = await getArtistBySlug(slug)
-    if (!found || !hasLocale(found, locale)) return {}
+    if (!found) return {}
+    // Sem tradução publicada: mesma ficha em português como conteúdo, fora do índice
+    // e com canonical na versão original (D10 em docs/I18N-V2.md).
+    if (semTraducao(found, locale)) {
+        return { ...(await buildArtistMetadata(slug, DEFAULT_LOCALE)), robots: { index: false, follow: true } }
+    }
     const artist = localizeEntity(found, locale, 'artist')
     const t = await getTranslations({ locale, namespace: 'entity' })
 
@@ -73,7 +79,8 @@ export async function buildArtistMetadata(slug: string, locale: Locale): Promise
 
 export async function ArtistRoute({ slug, locale }: { slug: string; locale: Locale }) {
     const sourceArtist = await getArtistBySlug(slug)
-    if (!sourceArtist || !hasLocale(sourceArtist, locale)) notFound()
+    if (!sourceArtist) notFound()
+    const emFallback = semTraducao(sourceArtist, locale)
     const [languageLinks, tSwitcher] = await Promise.all([
         buildLanguageLinks('artist', { slug }, locale, availableLocales(sourceArtist)),
         getTranslations({ locale, namespace: 'entity.switcher' }),
@@ -133,6 +140,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     return (
         <>
         <WpEditSetter postId={artist.id} postType="artist" />
+            {emFallback && <AvisoSemTraducao locale={locale} hrefOriginal={href('artist', { slug }, DEFAULT_LOCALE)} />}
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
         <RastreioDeRolagem caminho={href('artist', { slug }, locale)} />
         <ArtistDetailPage

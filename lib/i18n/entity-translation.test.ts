@@ -10,7 +10,7 @@ vi.mock('./config', async (importOriginal) => {
     }
 })
 
-const { availableLocales, localizeEntity, mergeText } = await import('./entity-translation')
+const { availableLocales, localizeEntity, mergeText, semTraducao } = await import('./entity-translation')
 const { buildAlternates } = await import('./alternates')
 
 const artist = {
@@ -113,5 +113,22 @@ describe('buildAlternates', () => {
             en: 'https://www.example.com/en/artists/yoona',
             'x-default': 'https://www.example.com/artists/yoona',
         })
+    })
+})
+
+describe('semTraducao', () => {
+    const comEn = { translations: { en: { title: 'Yoona' } } }
+
+    it('português nunca é "sem tradução"', () => {
+        expect(semTraducao({ translations: null }, 'pt')).toBe(false)
+    })
+
+    it('outro idioma sem tradução publicada cai no fallback', () => {
+        expect(semTraducao({ translations: null }, 'en')).toBe(true)
+        expect(semTraducao({ translations: {} }, 'en')).toBe(true)
+    })
+
+    it('com tradução publicada no idioma, não é fallback', () => {
+        expect(semTraducao(comEn, 'en')).toBe(false)
     })
 })
