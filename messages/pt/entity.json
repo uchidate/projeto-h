@@ -46,7 +46,11 @@
     "emptyLink": "Ver o catálogo completo em português",
     "previous": "← Anterior",
     "next": "Próxima →",
-    "pageOf": "Página {page} de {total}"
+    "pageOf": "Página {page} de {total}",
+    "translatedHeading": "Disponível neste idioma",
+    "originalHeading": "Mais no site",
+    "originalNote": "Estes perfis ainda não foram traduzidos. Abrem no original em português.",
+    "badge": "PT"
   },
   "footer": {
     "catalog": "Catálogo"

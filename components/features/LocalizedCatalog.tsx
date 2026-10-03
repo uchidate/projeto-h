@@ -11,6 +11,7 @@ import { getWPImage, stripHtml } from '@/lib/utils'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
+import { paginaDe, paginaInvalida } from '@/lib/listagem'
 import { href } from '@/lib/i18n/routes'
 import { labelsFor } from '@/lib/i18n/labels'
 
@@ -49,7 +50,49 @@ export async function fetchCatalog(kind: CatalogKind, locale: Locale, page: numb
 }
 
 function parsePage(value?: string) {
-    return Math.max(1, parseInt(value ?? '1', 10) || 1)
+    return paginaDe(value)
+}
+
+/** Catálogo original (português), paginado, sem filtrar por tradução. */
+async function fetchOriginal(kind: CatalogKind, page: number) {
+    const query = { page, perPage: PER_PAGE, orderby: 'title' as const, order: 'asc' as const }
+    const result: { items: Entity[]; total: number; totalPages: number } =
+        kind === 'artists' ? await getArtists(query)
+            : kind === 'groups' ? await getGroups(query)
+                : await getProductions({ ...query, excludeAdult: true })
+    return result
+}
+
+/**
+ * Listagem completa (D10 em docs/I18N-V2.md): as fichas traduzidas em destaque na
+ * primeira página, depois o catálogo inteiro no original, com selo "PT". Os itens
+ * em português apontam para a versão original, não para `/en/<slug>`: assim o
+ * rastreador não descobre milhares de páginas de fallback por esta listagem.
+ */
+export async function fetchCatalogCompleto(kind: CatalogKind, locale: Locale, page: number) {
+    const [traduzidas, original] = await Promise.all([
+        fetchTodasTraduzidas(kind, locale),
+        fetchOriginal(kind, page),
+    ])
+    const traduzidosSlugs = new Set(traduzidas.map((item) => item.slug))
+    return {
+        traduzidas: page === 1 ? traduzidas : [],
+        totalTraduzidas: traduzidas.length,
+        originais: original.items.filter((item) => !traduzidosSlugs.has(item.slug)),
+        total: original.total,
+        totalPages: original.totalPages,
+    }
+}
+
+/** Todas as fichas com tradução publicada (poucas dezenas, algumas centenas no máximo). */
+const MAX_PAGINAS_TRADUZIDAS = 10
+async function fetchTodasTraduzidas(kind: CatalogKind, locale: Locale): Promise<Entity[]> {
+    const primeira = await fetchCatalog(kind, locale, 1)
+    const paginas = Math.min(primeira.totalPages, MAX_PAGINAS_TRADUZIDAS)
+    const demais = await Promise.all(
+        Array.from({ length: Math.max(0, paginas - 1) }, (_, i) => fetchCatalog(kind, locale, i + 2)),
+    )
+    return [...primeira.items, ...demais.flatMap((resultado) => resultado.items)]
 }
 
 function pageUrl(kind: CatalogKind, locale: Locale, page: number) {
@@ -77,19 +120,20 @@ export async function defaultCatalogLanguages(kind: CatalogKind): Promise<Record
 
 export async function buildCatalogMetadata(kind: CatalogKind, locale: Locale, pageParam?: string): Promise<Metadata> {
     const page = parsePage(pageParam)
-    const [t, { total, totalPages }] = await Promise.all([
+    const [t, { totalTraduzidas, totalPages }] = await Promise.all([
         getTranslations({ locale, namespace: 'entity.catalog' }),
-        fetchCatalog(kind, locale, page),
+        fetchCatalogCompleto(kind, locale, page),
     ])
     const url = pageUrl(kind, locale, page)
-    // Listagem vazia ou página fora do total não merece índice.
-    const thin = total === 0 || page > Math.max(1, totalPages)
+    // Só a primeira página, e só com ao menos uma ficha traduzida, é indexável:
+    // as seguintes listam o catálogo no original e não têm conteúdo próprio.
+    const thin = totalTraduzidas === 0 || page > 1 || paginaInvalida(page, totalPages)
     return {
         title: t(`${kind}.title`),
         description: t(`${kind}.description`),
         alternates: {
             canonical: url,
-            ...(page === 1 && !thin ? {
+            ...(!thin ? {
                 languages: {
                     [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}${href(kind)}`,
                     [LOCALE_META[locale].htmlLang]: url,
@@ -104,7 +148,7 @@ export async function buildCatalogMetadata(kind: CatalogKind, locale: Locale, pa
 }
 
 /** Grade de fichas: a mesma no catalogo e na home em outro idioma. */
-export function EntityGrid({ items, kind, locale, limite }: { items: Entity[]; kind: CatalogKind; locale: Locale; limite?: number }) {
+export function EntityGrid({ items, kind, locale, limite, emPortugues = false, selo }: { items: Entity[]; kind: CatalogKind; locale: Locale; limite?: number; emPortugues?: boolean; selo?: string }) {
     const labels = labelsFor(locale)
 
     const subtitle = (item: Entity): string | undefined => {
@@ -119,15 +163,18 @@ export function EntityGrid({ items, kind, locale, limite }: { items: Entity[]; k
             {(limite ? items.slice(0, limite) : items).map((item) => {
                 const name = stripHtml(item.title.rendered)
                 const image = getWPImage(undefined, item.featured_image_url, name)
-                const detail = (href as (r: string, p: unknown, l: Locale) => string)(DETAIL_ROUTE[kind], { slug: item.slug }, locale)
+                const detail = (href as (r: string, p: unknown, l: Locale) => string)(DETAIL_ROUTE[kind], { slug: item.slug }, emPortugues ? DEFAULT_LOCALE : locale)
                 const meta = subtitle(item)
                 return (
                     <li key={item.id}>
-                        <Link href={detail} className="group block">
+                        <Link href={detail} {...(emPortugues ? { hrefLang: LOCALE_META[DEFAULT_LOCALE].htmlLang } : {})} className="group block">
                             <div className={`relative overflow-hidden bg-surface ${kind === 'productions' ? 'aspect-2/3' : 'aspect-3/4'}`}>
                                 {image && (
                                     <Image src={image.src} alt={image.alt || name} fill sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 16vw"
                                         className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                                )}
+                                {emPortugues && selo && (
+                                    <span className="absolute left-2 top-2 border border-white/25 bg-black/60 px-1.5 py-0.5 font-mono text-[9px] font-black uppercase tracking-[0.12em] text-white">{selo}</span>
                                 )}
                             </div>
                             <p className="mt-2 text-[14px] font-bold leading-tight transition-colors group-hover:text-accent">{name}</p>
@@ -142,11 +189,11 @@ export function EntityGrid({ items, kind, locale, limite }: { items: Entity[]; k
 
 export async function LocalizedCatalog({ kind, locale, pageParam }: { kind: CatalogKind; locale: Locale; pageParam?: string }) {
     const page = parsePage(pageParam)
-    const [t, { items, total, totalPages }] = await Promise.all([
+    const [t, { traduzidas, totalTraduzidas, originais, total, totalPages }] = await Promise.all([
         getTranslations({ locale, namespace: 'entity.catalog' }),
-        fetchCatalog(kind, locale, page),
+        fetchCatalogCompleto(kind, locale, page),
     ])
-    if (total > 0 && page > totalPages) notFound()
+    if (paginaInvalida(page, totalPages) || (page > 1 && total === 0)) notFound()
     return (
         <div className="page-wrap py-10 sm:py-14">
             <header className="mb-8 border-b border-border pb-6">
@@ -155,15 +202,28 @@ export async function LocalizedCatalog({ kind, locale, pageParam }: { kind: Cata
                 {total > 0 && <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">{t('count', { count: total })}</p>}
             </header>
 
-            {items.length === 0 ? (
+            {traduzidas.length > 0 && (
+                <section className="mb-12" aria-labelledby="catalogo-traduzidas">
+                    <h2 id="catalogo-traduzidas" className="mb-4 font-mono text-[11px] font-black uppercase tracking-[0.14em] text-muted">
+                        {t('translatedHeading')} · {totalTraduzidas}
+                    </h2>
+                    <EntityGrid items={traduzidas} kind={kind} locale={locale} />
+                </section>
+            )}
+
+            {originais.length > 0 ? (
+                <section aria-labelledby="catalogo-originais">
+                    <h2 id="catalogo-originais" className="font-mono text-[11px] font-black uppercase tracking-[0.14em] text-muted">{t('originalHeading')}</h2>
+                    <p className="mb-4 mt-1 text-[13px] text-muted">{t('originalNote')}</p>
+                    <EntityGrid items={originais} kind={kind} locale={locale} emPortugues selo={t('badge')} />
+                </section>
+            ) : traduzidas.length === 0 && (
                 <p className="text-[15px] text-muted">
                     {t('empty')}{' '}
                     <Link href={href(kind)} hrefLang={LOCALE_META[DEFAULT_LOCALE].htmlLang} className="font-semibold text-accent hover:underline">
                         {t('emptyLink')} →
                     </Link>
                 </p>
-            ) : (
-                <EntityGrid items={items} kind={kind} locale={locale} />
             )}
 
             {totalPages > 1 && (

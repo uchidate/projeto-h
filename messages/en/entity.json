@@ -46,7 +46,11 @@
     "emptyLink": "See the full catalog in Portuguese",
     "previous": "← Previous",
     "next": "Next →",
-    "pageOf": "Page {page} of {total}"
+    "pageOf": "Page {page} of {total}",
+    "translatedHeading": "Available in English",
+    "originalHeading": "More on the site",
+    "originalNote": "These profiles are not translated yet. They open in the original Portuguese.",
+    "badge": "PT"
   },
   "footer": {
     "catalog": "Catalog"
