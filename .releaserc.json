@@ -59,6 +59,16 @@
             "release": "patch"
           },
           {
+            "type": "fix",
+            "scope": "ci",
+            "release": false
+          },
+          {
+            "type": "fix",
+            "scope": "release",
+            "release": false
+          },
+          {
             "breaking": true,
             "release": "major"
           }
