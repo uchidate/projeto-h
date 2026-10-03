@@ -67,6 +67,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
     // traduzida. Fora do português, menu e rodapé listam apenas o que existe
     // no idioma — ver lib/i18n/navigation.ts.
     const navLabels = {
+        home: messages.entity.breadcrumb.home,
+        blog: messages.entity.breadcrumb.blog,
         productions: messages.entity.breadcrumb.productions,
         artists: messages.entity.breadcrumb.artists,
         groups: messages.entity.breadcrumb.groups,

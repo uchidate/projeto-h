@@ -11,14 +11,16 @@ import type { FooterColumn, SiteLink } from '@/lib/wordpress/site-settings'
  * 2026-09-16. Aqui o menu lista apenas o que EXISTE no idioma (registro em
  * `routes.ts`), com rótulo traduzido.
  */
-export type NavLabels = { productions: string; artists: string; groups: string }
+export type NavLabels = { home: string; productions: string; artists: string; groups: string; blog: string }
 
 export function localizedNavigation(locale: Locale, labels: NavLabels): SiteLink[] {
     if (locale === DEFAULT_LOCALE) return []
     return [
+        { label: labels.home, href: href('home', undefined, locale) },
         { label: labels.productions, href: href('productions', undefined, locale) },
         { label: labels.artists, href: href('artists', undefined, locale) },
         { label: labels.groups, href: href('groups', undefined, locale) },
+        { label: labels.blog, href: href('blog', undefined, locale) },
     ]
 }
 

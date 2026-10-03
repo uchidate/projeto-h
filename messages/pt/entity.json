@@ -1,8 +1,10 @@
 {
   "breadcrumb": {
+    "home": "Início",
     "artists": "Artistas",
     "groups": "Grupos",
-    "productions": "Produções"
+    "productions": "Produções",
+    "blog": "Artigos"
   },
   "artist": {
     "metaTitle": "{name} — Perfil, carreira e curiosidades",
