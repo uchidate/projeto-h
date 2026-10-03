@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Cake, Star, Search, X, Calendar } from 'lucide-react'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
-import type { CalendarEvent } from '@/app/(site)/calendario/page'
+import type { CalendarEvent } from '@/lib/calendario/tipos'
 
 /* Hallmark · pre-emit critique: P4 H5 E4 S5 R5 V4
  * genre: editorial · macrostructure: Countdown Spine (agenda temporal)
