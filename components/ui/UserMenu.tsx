@@ -39,7 +39,7 @@ export function UserMenu() {
     if (!session) {
         const callbackUrl = pathname && pathname !== '/' ? `/entrar?callbackUrl=${encodeURIComponent(pathname)}` : '/entrar'
         return (
-            <Link href={callbackUrl}
+            <Link href={callbackUrl} prefetch={false}
                 aria-label="Entrar na sua conta"
                 className="flex items-center gap-1.5 border border-border px-2.5 py-1.5 text-[12px] font-black uppercase tracking-wider text-muted hover:border-accent hover:text-accent transition-colors">
                 <LogIn size={13} />
