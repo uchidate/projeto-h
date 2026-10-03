@@ -149,8 +149,24 @@ const nextConfig = {
             })),
             { source: '/guias', has: [{ type: 'query', key: 'kind' }], destination: '/guias/filtrado' },
         ]
+        // Mesmo desvio nas listagens: sem query a página é estática (ISR); com
+        // filtro, paginação ou busca vai para <lista>/filtrado, que lê `searchParams`.
+        // As chaves vêm do tipo SearchParams de app/(site)/<lista>/<Lista>Listagem.tsx.
+        const chavesDasListagens = {
+            artists: ['search', 'page', 'role', 'affiliation', 'letter', 'sortBy'],
+            groups: ['search', 'page', 'type', 'active', 'letter', 'generation', 'order'],
+            productions: ['genre', 'platform', 'type', 'order', 'page', 'search'],
+            blog: ['category', 'tag', 'page', 'search', 'order'],
+        }
+        const desviosListagens = Object.entries(chavesDasListagens).flatMap(([lista, chaves]) =>
+            chaves.map(key => ({
+                source: `/${lista}`,
+                has: [{ type: 'query', key }],
+                destination: `/${lista}/filtrado`,
+            })),
+        )
         return {
-            beforeFiles: desviosGuias,
+            beforeFiles: [...desviosGuias, ...desviosListagens],
             afterFiles: [
             // O IndexNow exige o arquivo de verificação na raiz, com o nome da
             // própria chave. O padrão é restrito ao alfabeto da especificação e a
@@ -325,13 +341,13 @@ const nextConfig = {
                 source: '/(.*)',
                 headers: SECURITY_HEADERS,
             },
-            // As listas leem searchParams, então o Next as renderiza a cada
-            // requisição e devolve `private, no-store`: o Cloudflare não guarda e
-            // cada visita fria paga 0,7-1,0 s de TTFB (medido em 2026-09-26). O
-            // conteúdo não varia por visitante; 5 min de borda + SWR tira a
-            // renderização do caminho de quase todo mundo.
+            // Sem filtro as listas são estáticas (ISR); a variante <lista>/filtrado lê
+            // searchParams e o Next a devolve `private, no-store`, que o Cloudflare
+            // não guarda (0,7-1,0 s de TTFB por visita fria, medido em 2026-09-26).
+            // O conteúdo não varia por visitante; 5 min de borda + SWR tiram a
+            // renderização do caminho de quase todo mundo, filtrado ou não.
             {
-                source: '/:lista(artists|groups|blog)',
+                source: '/:lista(artists|groups|blog|productions)',
                 headers: [{ key: 'Cache-Control', value: 's-maxage=300, stale-while-revalidate=600' }],
             },
         ]
