@@ -10,7 +10,7 @@ import {
     type WPPostType,
 } from '@/lib/wordpress/cache'
 import { clientIpOrUnknown } from '@/lib/http/clientIp'
-import { buildIndexNowUrl, buildLocalizedIndexNowUrls, INDEXNOW_LOCALIZED_TYPES, submitToIndexNow } from '@/lib/seo/indexnow'
+import { buildIndexNowUrl, buildLocalizedIndexNowUrls, buildPurgeUrls, INDEXNOW_LOCALIZED_TYPES, submitToIndexNow } from '@/lib/seo/indexnow'
 import { purgarCloudflare } from '@/lib/cloudflare-purge'
 import { wpBuscarOpcional, buildParams } from '@/lib/wordpress/client'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE } from '@/lib/i18n/config'
@@ -102,18 +102,17 @@ function avisarIndexNow(type: WPPostType, slug: unknown): void {
 }
 
 /**
- * Expurga a cópia da borda (Cloudflare) das URLs do item, incluindo as de outros
- * idiomas. Sem isto o TTL da borda teria de ficar curto (ver lib/cloudflare-purge.ts).
+ * Expurga a cópia da borda (Cloudflare) das URLs do item, incluindo as de todos os
+ * idiomas ativos (com ou sem tradução publicada: a ficha sem tradução também é servida). Sem isto o TTL da borda teria de ficar curto (ver lib/cloudflare-purge.ts).
  * Bloco próprio: falha aqui não pode afetar o IndexNow nem a resposta.
  */
 function expurgarBorda(type: WPPostType, slug: unknown): void {
     if (typeof slug !== 'string' || slug.length === 0) return
-    const url = buildIndexNowUrl(type, slug)
-    if (!url) return
+    const urls = buildPurgeUrls(type, slug)
+    if (urls.length === 0) return
 
     after(async () => {
         try {
-            const urls = [url, ...buildLocalizedIndexNowUrls(type, slug, await idiomasPublicados(type, slug))]
             const desfecho = await purgarCloudflare(urls)
             if (desfecho.ok) {
                 console.log(`[cf-purge] ok — ${desfecho.purgadas} url(s) de ${paraLog(type)}/${paraLog(slug)}`)
