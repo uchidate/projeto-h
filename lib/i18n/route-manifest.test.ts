@@ -42,17 +42,23 @@ describe('manifesto de rotas (i18n)', () => {
         expect(orfas, `Entradas sem página em app/(site): ${orfas.join(', ')}`).toEqual([])
     })
 
-    it('rota marcada como pronta existe em app/(intl)/[locale]', () => {
+    it('rota marcada como pronta ou parcial existe em app/(intl)/[locale]', () => {
         const emIntl = paginasEmIntl()
-        const prontas = Object.entries(MANIFESTO_DE_ROTAS).filter(([, r]) => r.estado === 'pronta').map(([c]) => c)
+        const prontas = Object.entries(MANIFESTO_DE_ROTAS).filter(([, r]) => r.estado === 'pronta' || r.estado === 'parcial').map(([c]) => c)
         const faltando = prontas.filter(c => !emIntl.includes(c))
         expect(faltando, `Marcadas como prontas, mas sem página em app/(intl): ${faltando.join(', ')}`).toEqual([])
     })
 
     it('toda página em app/(intl) está marcada como pronta (sem tradução fantasma)', () => {
         const emIntl = paginasEmIntl()
-        const naoMarcadas = emIntl.filter(c => MANIFESTO_DE_ROTAS[c]?.estado !== 'pronta')
+        const naoMarcadas = emIntl.filter(c => !['pronta', 'parcial'].includes(MANIFESTO_DE_ROTAS[c]?.estado))
         expect(naoMarcadas, `Páginas em app/(intl) fora do manifesto como "pronta": ${naoMarcadas.join(', ')}`).toEqual([])
+    })
+
+    it('"parcial" sempre diz o que falta', () => {
+        for (const [caminho, rota] of Object.entries(MANIFESTO_DE_ROTAS)) {
+            if (rota.estado === 'parcial') expect(rota.falta.trim(), caminho).not.toBe('')
+        }
     })
 
     it('"somentePt" sempre traz o motivo', () => {
