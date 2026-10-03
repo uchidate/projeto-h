@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { linksDePaginacao, paginaDe, paginaInvalida, robotsDaListagem, urlDaListagem } from '@/lib/listagem'
 import { notFound } from 'next/navigation'
 import type { WPPost } from '@/lib/wordpress/types'
 import { getPosts, getCategories, getSidebarPosts } from '@/lib/wordpress/posts'
@@ -26,16 +27,12 @@ async function carregarBase(): Promise<WPPost[]> {
 type SearchParams = Promise<{ category?: string; tag?: string; page?: string; search?: string; order?: string }>
 
 function buildBlogUrl(siteUrl: string, page: number, opts: { category?: string; tag?: string }) {
-    const ps = new URLSearchParams()
-    if (opts.category) ps.set('category', opts.category)
-    if (opts.tag) ps.set('tag', opts.tag)
-    if (page > 1) ps.set('page', String(page))
-    return `${siteUrl}/blog${ps.toString() ? `?${ps}` : ''}`
+    return urlDaListagem('/blog', ['category', 'tag'], { category: opts.category, tag: opts.tag, page: page > 1 ? String(page) : undefined }, siteUrl)
 }
 
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
     const sp = await searchParams
-    const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
+    const page = paginaDe(sp.page)
     const canonical = buildBlogUrl(SITE_URL, page, sp)
     const title = sp.category
         ? `Blog — ${sp.category}${page > 1 ? ` — página ${page}` : ''}`
@@ -45,17 +42,16 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
 
     // Fetch só para saber totalPages (leve: 1 post, só cabeçalho X-WP-TotalPages)
     const { totalPages } = await getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false })
-    const shouldNoIndex = Boolean(sp.search || sp.tag || sp.order) || page > Math.max(1, totalPages)
+    const shouldNoIndex = Boolean(sp.search || sp.tag || sp.order) || paginaInvalida(page, totalPages)
 
     return {
         title,
         description: 'Artigos, reviews e guias sobre K-Drama, K-Pop e cultura coreana em português.',
         alternates: {
             canonical,
-            ...(page > 1 ? { prev: buildBlogUrl(SITE_URL, page - 1, sp) } : {}),
-            ...(page < totalPages ? { next: buildBlogUrl(SITE_URL, page + 1, sp) } : {}),
+            ...linksDePaginacao({ page, totalPages, urlDaPagina: (p) => buildBlogUrl(SITE_URL, p, sp) }),
         },
-        ...(shouldNoIndex ? { robots: { index: false, follow: true } } : {}),
+        ...robotsDaListagem(shouldNoIndex),
         openGraph: baseOG(canonical),
         twitter: baseTwitter(),
     }
@@ -63,7 +59,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
 
 export default async function BlogListPage({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
-    const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
+    const page = paginaDe(sp.page)
 
     const semFiltro = !sp.category && !sp.tag && !sp.search
     const order = sp.order === 'lidos' ? 'lidos' : undefined
@@ -88,7 +84,7 @@ export default async function BlogListPage({ searchParams }: { searchParams: Sea
     if (unfiltered && page === 1 && postsResult.items.length === 0) {
         throw new Error('Listagem do blog retornou vazia — WP indisponível durante a regeneração')
     }
-    if (page > Math.max(1, postsResult.totalPages)) notFound()
+    if (paginaInvalida(page, postsResult.totalPages)) notFound()
 
     // Mais lidos: ordena a base por leitura humana (90 dias) e pagina aqui mesmo.
     const lidos = order === 'lidos' ? maisLidos(pool) : null

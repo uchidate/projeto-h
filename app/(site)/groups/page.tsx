@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { linksDePaginacao, paginaDe, paginaInvalida, robotsDaListagem, urlDaListagem } from '@/lib/listagem'
 import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { notFound } from 'next/navigation'
@@ -22,14 +23,7 @@ type SearchParams = Promise<{ search?: string; page?: string; type?: string; act
 const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
 
 function buildGroupsUrl(sp: { type?: string; active?: string; letter?: string; generation?: string; order?: string; page?: string }) {
-    const ps = new URLSearchParams()
-    if (sp.type) ps.set('type', sp.type)
-    if (sp.active) ps.set('active', sp.active)
-    if (sp.letter) ps.set('letter', sp.letter)
-    if (sp.generation) ps.set('generation', sp.generation)
-    if (sp.order) ps.set('order', sp.order)
-    if (sp.page && sp.page !== '1') ps.set('page', sp.page)
-    return `${SITE_URL}/groups${ps.toString() ? `?${ps}` : ''}`
+    return urlDaListagem('/groups', ['type', 'active', 'letter', 'generation', 'order'], sp)
 }
 
 // Rotas estáticas equivalentes em /groups/[slug] (TIPO_CONFIGS) — quando o
@@ -44,7 +38,7 @@ const TYPE_TO_STATIC_SLUG: Record<string, string> = {
 
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
     const sp = await searchParams
-    const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
+    const page = paginaDe(sp.page)
     const isPureTypeFilter = sp.type && !sp.active && !sp.letter && !sp.generation && !sp.order && (!sp.page || sp.page === '1')
     const staticSlug = isPureTypeFilter ? TYPE_TO_STATIC_SLUG[sp.type!] : undefined
     const url = staticSlug ? `${SITE_URL}/groups/${staticSlug}` : buildGroupsUrl(sp)
@@ -62,7 +56,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
             debutMax: generation ? `${generation.max}1231` : undefined,
         })
     const hasFacets = Boolean(sp.search || sp.type || sp.active || sp.letter || sp.generation || sp.order)
-    const invalidPage = page > Math.max(1, totalPages)
+    const invalidPage = paginaInvalida(page, totalPages)
 
     const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('groups') : undefined
 
@@ -72,10 +66,9 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
         alternates: {
             canonical: url,
             ...(languages ? { languages } : {}),
-            ...(!staticSlug && page > 1 ? { prev: buildGroupsUrl({ ...sp, page: String(page - 1) }) } : {}),
-            ...(!staticSlug && page < totalPages ? { next: buildGroupsUrl({ ...sp, page: String(page + 1) }) } : {}),
+            ...linksDePaginacao({ page, totalPages, ativa: !staticSlug, urlDaPagina: (p) => buildGroupsUrl({ ...sp, page: String(p) }) }),
         },
-        ...(hasFacets || invalidPage ? { robots: { index: false, follow: true } } : {}),
+        ...robotsDaListagem(hasFacets || invalidPage),
         openGraph: baseOG(url),
         twitter: baseTwitter(),
     }
@@ -83,7 +76,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
 
 export default async function GroupsListPage({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
-    const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
+    const page = paginaDe(sp.page)
     const letter = sp.letter?.toUpperCase().slice(0, 1)
     const activeFilter = sp.active === 'true' ? true : sp.active === 'false' ? false : undefined
     const validTypes = ['girl_group', 'boy_group', 'co_ed', 'solo'] as const
@@ -158,7 +151,7 @@ export default async function GroupsListPage({ searchParams }: { searchParams: S
         }
     } catch { /* sem hover */ }
     if (unfiltered && page === 1) exigirListagemComConteudo(items, '/groups')
-    if (page > Math.max(1, totalPages)) notFound()
+    if (paginaInvalida(page, totalPages)) notFound()
 
     const shopProducts = inicio
         ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:grupos')
