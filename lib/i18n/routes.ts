@@ -14,6 +14,11 @@ const ROUTES = {
     group: { pt: '/groups/[slug]', en: '/groups/[slug]' },
     productions: { pt: '/productions', en: '/productions' },
     production: { pt: '/productions/[slug]', en: '/productions/[slug]' },
+    about: { pt: '/about', en: '/about' },
+    contact: { pt: '/contato', en: '/contact' },
+    ethics: { pt: '/ethics', en: '/ethics' },
+    editorialStandards: { pt: '/editorial-standards', en: '/editorial-standards' },
+    corrections: { pt: '/corrections', en: '/corrections' },
     login: { pt: '/entrar', en: '/sign-in' },
     signup: { pt: '/cadastro', en: '/sign-up' },
 } as const satisfies Record<string, Record<Locale, string>>

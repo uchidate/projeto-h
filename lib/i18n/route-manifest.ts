@@ -63,11 +63,11 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
 
     // Páginas estáticas e institucionais
     '/': { tipo: 'estatica', ...pronta },
-    '/about': { tipo: 'estatica', ...pendente },
-    '/contato': { tipo: 'estatica', ...pendente },
-    '/ethics': { tipo: 'estatica', ...pendente },
-    '/editorial-standards': { tipo: 'estatica', ...pendente },
-    '/corrections': { tipo: 'estatica', ...pendente },
+    '/about': { tipo: 'estatica', ...pronta },
+    '/contato': { tipo: 'estatica', ...pronta },
+    '/ethics': { tipo: 'estatica', ...pronta },
+    '/editorial-standards': { tipo: 'estatica', ...pronta },
+    '/corrections': { tipo: 'estatica', ...pronta },
     '/cultura-coreana-101': { tipo: 'estatica', ...pendente },
     // Textos legais exigem revisão humana por idioma (docs/I18N-V2.md, §7).
     '/privacidade': { tipo: 'estatica', ...pendente },
