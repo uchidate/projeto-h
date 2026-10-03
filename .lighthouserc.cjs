@@ -1,5 +1,13 @@
 const baseUrl = (process.env.LHCI_BASE_URL || 'http://127.0.0.1:3000').replace(/\/$/, '')
 
+// A Cloudflare desafia IP de datacenter (runner do GitHub = Azure) e o Lighthouse
+// media a página de desafio, não o site (SEO 40 em todas as URLs). A regra "Skip bot -
+// automacao do CI" isenta quem manda o cabeçalho; o workflow passa nome e valor por env.
+const extraHeaders =
+  process.env.LHCI_SONDA_HEADER && process.env.LHCI_SONDA_TOKEN
+    ? { [process.env.LHCI_SONDA_HEADER]: process.env.LHCI_SONDA_TOKEN }
+    : undefined
+
 module.exports = {
   ci: {
     collect: {
@@ -13,7 +21,7 @@ module.exports = {
         `${baseUrl}/artists/han-yi-young`,
         `${baseUrl}/groups/kard`,
       ],
-      settings: { chromeFlags: '--headless --no-sandbox' },
+      settings: { chromeFlags: '--headless --no-sandbox', ...(extraHeaders && { extraHeaders }) },
     },
     assert: {
       assertions: {
