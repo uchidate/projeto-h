@@ -11,8 +11,8 @@ let searchParamsValue = ''
 vi.mock('next/navigation', () => ({
     useRouter: () => ({ push: pushMock, replace: vi.fn() }),
     usePathname: () => '/productions',
-    useSearchParams: () => new URLSearchParams(searchParamsValue),
 }))
+vi.mock('@/lib/listagem/query-atual', () => ({ queryAtual: () => new URLSearchParams(searchParamsValue) }))
 
 function term(overrides: Partial<WPTerm> = {}): WPTerm {
     return { id: 1, slug: 'drama', name: 'Drama', count: 10, ...overrides } as WPTerm

@@ -10,8 +10,8 @@ let searchParamsValue = ''
 vi.mock('next/navigation', () => ({
     useRouter: () => ({ push: pushMock, replace: vi.fn() }),
     usePathname: () => '/artists',
-    useSearchParams: () => new URLSearchParams(searchParamsValue),
 }))
+vi.mock('@/lib/listagem/query-atual', () => ({ queryAtual: () => new URLSearchParams(searchParamsValue) }))
 
 function options(): FilterOption[] {
     return [{ value: 'singer', label: 'Cantor' }, { value: 'actor', label: 'Ator' }]

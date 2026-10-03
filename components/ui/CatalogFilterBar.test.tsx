@@ -6,7 +6,6 @@ import { CatalogFilterBar, type FilterPill } from './CatalogFilterBar'
 vi.mock('next/navigation', () => ({
     useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
     usePathname: () => '/productions',
-    useSearchParams: () => new URLSearchParams(),
 }))
 
 function pill(overrides: Partial<FilterPill> = {}): FilterPill {

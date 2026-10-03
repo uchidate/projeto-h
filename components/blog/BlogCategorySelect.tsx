@@ -1,8 +1,9 @@
 'use client'
 
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import type { WPTerm } from '@/lib/wordpress/types'
 import { FilterSelect } from '@/components/ui/FilterSelect'
+import { queryAtual } from '@/lib/listagem/query-atual'
 
 interface Props {
     categories: WPTerm[]
@@ -12,10 +13,9 @@ interface Props {
 export function BlogCategorySelect({ categories, current }: Props) {
     const router = useRouter()
     const pathname = usePathname()
-    const searchParams = useSearchParams()
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const params = new URLSearchParams(searchParams.toString())
+        const params = queryAtual()
         if (e.target.value) {
             params.set('category', e.target.value)
         } else {

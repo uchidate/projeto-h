@@ -13,6 +13,7 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/artists',
     useSearchParams: () => new URLSearchParams(searchParamsValue),
 }))
+vi.mock('@/lib/listagem/query-atual', () => ({ queryAtual: () => new URLSearchParams(searchParamsValue) }))
 vi.mock('@/components/artists/ArtistCard', () => ({ ArtistCard: ({ artist }: { artist: WPArtist }) => <div>{artist.title.rendered}</div> }))
 vi.mock('@/components/ui/Pagination', () => ({ Pagination: () => <div data-testid="pagination" /> }))
 vi.mock('@/components/ui/AdSlotInline', () => ({ AdSlotInline: () => <div data-testid="ad-slot" /> }))

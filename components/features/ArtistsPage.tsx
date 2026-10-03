@@ -2,7 +2,7 @@
 
 import { htmlLang, intlLocale } from '@/lib/i18n/format'
 import Link from 'next/link'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import { Mic2, Search, X } from 'lucide-react'
 import { useCallback, useRef, useState, useEffect } from 'react'
@@ -25,6 +25,7 @@ import { getWPImage, stripHtml } from '@/lib/utils'
 import type { AniversarianteSemana } from '@/lib/artists/aniversarios'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import { queryAtual } from '@/lib/listagem/query-atual'
 
 const SORT_OPTIONS = [
     { value: 'trending', label: 'Em alta' },
@@ -62,7 +63,6 @@ interface Props {
 export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [] }: Props) {
     const router = useRouter()
     const pathname = usePathname()
-    const searchParams = useSearchParams()
 
     const [searchVal, setSearchVal] = useState(search ?? '')
     const [sortVal, setSortVal] = useState(sortBy)
@@ -70,17 +70,17 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
     const [affiliationVal, setAffiliationVal] = useState(affiliation ?? '')
 
     const buildUrl = useCallback((s: string, sort: string, r: string, a: string) => {
-        const params = new URLSearchParams(searchParams.toString())
+        const params = queryAtual()
         if (s) params.set('search', s); else params.delete('search')
         if (sort && sort !== 'trending') params.set('sortBy', sort); else params.delete('sortBy')
         if (r) params.set('role', r); else params.delete('role')
         if (a) params.set('affiliation', a); else params.delete('affiliation')
         params.delete('page')
         return params.toString() ? `${pathname}?${params}` : pathname
-    }, [pathname, searchParams])
+    }, [pathname])
 
     const buildHref = useCallback((overrides: Record<string, string | undefined> = {}) => {
-        const params = new URLSearchParams(searchParams.toString())
+        const params = queryAtual()
         const entries: Record<string, string | undefined> = { search, role, affiliation, letter, sortBy, ...overrides }
         if (entries.search) params.set('search', entries.search); else params.delete('search')
         if (entries.role) params.set('role', entries.role); else params.delete('role')
@@ -89,7 +89,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
         if (entries.sortBy && entries.sortBy !== 'trending') params.set('sortBy', entries.sortBy); else params.delete('sortBy')
         if (overrides.page && overrides.page !== '1') params.set('page', overrides.page); else params.delete('page')
         return params.toString() ? `${pathname}?${params}` : pathname
-    }, [search, role, affiliation, letter, sortBy, pathname, searchParams])
+    }, [search, role, affiliation, letter, sortBy, pathname])
 
     const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -133,8 +133,16 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
     const grade = emAltaArtistas.length > 0 ? artists.slice(emAltaArtistas.length) : artists
 
     const rotulo = [SORT_OPTIONS.find(o => o.value === sortBy)?.label ?? 'Em alta', ROLE_OPTIONS.find(o => o.value === role)?.label, affiliation === 'group' ? 'Em grupo' : affiliation === 'solo' ? 'Solo' : undefined, letter ? `Letra ${letter}` : undefined, search ? `“${search}”` : undefined].filter(Boolean).join(' · ')
+    const consultaAtual = new URLSearchParams()
+    if (search) consultaAtual.set('search', search)
+    if (role) consultaAtual.set('role', role)
+    if (affiliation) consultaAtual.set('affiliation', affiliation)
+    if (letter) consultaAtual.set('letter', letter)
+    if (sortBy !== 'trending') consultaAtual.set('sortBy', sortBy)
+    if (currentPage > 1) consultaAtual.set('page', String(currentPage))
+    const hrefAtual = consultaAtual.toString() ? `${pathname}?${consultaAtual}` : pathname
     const contexto = {
-        href: searchParams.toString() ? `${pathname}?${searchParams}` : pathname,
+        href: hrefAtual,
         rotulo,
         inicio: (currentPage - 1) * perPage + 1,
         total,

@@ -2,13 +2,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { SearchInput } from './SearchInput'
 
 vi.mock('next/navigation', () => ({
     useRouter: vi.fn(),
     usePathname: vi.fn(),
-    useSearchParams: vi.fn(),
 }))
 
 const mockPush = vi.fn()
@@ -16,7 +15,7 @@ const mockPush = vi.fn()
 function setup(searchParams = '') {
     vi.mocked(useRouter).mockReturnValue({ push: mockPush } as unknown as ReturnType<typeof useRouter>)
     vi.mocked(usePathname).mockReturnValue('/productions')
-    vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams(searchParams) as unknown as ReturnType<typeof useSearchParams>)
+    window.history.replaceState(null, '', `/productions${searchParams ? `?${searchParams}` : ''}`)
 }
 
 describe('SearchInput', () => {
