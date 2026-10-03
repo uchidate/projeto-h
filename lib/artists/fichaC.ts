@@ -1,5 +1,5 @@
-import type { ProfileEntry } from '@/components/profiles/ProfileSection'
-import { isInterstitial, CHAVE_DE_ANUNCIO } from '@/components/profiles/ProfileSection'
+import type { ProfileEntry } from '@/lib/profiles/entries'
+import { isInterstitial, CHAVE_DE_ANUNCIO } from '@/lib/profiles/entries'
 
 /** Grupo (aba) de cada bloco da ficha; a ordem dos grupos é a ordem da página. */
 export type AbaC = 'visao' | 'carreira' | 'musica' | 'obras' | 'universo' | 'ler'

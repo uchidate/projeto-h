@@ -19,10 +19,6 @@ A dependência só desce. **(lint)**
 - `components/ui/` é o genérico (botão, input, card base): não depende de nenhuma
   entidade. **(lint)**
 
-Dívida conhecida, listada em `eslint.config.mjs`: `lib/artists/fichaC.ts`,
-`lib/artists/socials.ts` e `lib/i18n/language-links.ts` ainda importam de
-`components/`. Ao resolver um, tire-o da lista.
-
 ## Onde mora cada coisa
 
 | O que é | Onde |
