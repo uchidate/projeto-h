@@ -46,6 +46,11 @@ const nextConfig = {
             static: 3600,
         },
         webpackBuildWorker: true,
+        // Geração estática: ~886 páginas e ~2.300 chamadas ao WP no mesmo servidor do WP
+        // (load até 16 em 4 núcleos). Metade das páginas simultâneas por worker alivia
+        // a carga, e uma falha transitória refaz a página em vez de derrubar o build.
+        staticGenerationMaxConcurrency: 4,
+        staticGenerationRetryCount: 2,
         // `inlineCss` desligado em 2026-09-14 (ligado no #50 um dia antes).
         // O CSS do Tailwind tem 231KB sem compressão e o Next o embute não só no
         // <style> do HTML, mas também no payload RSC — HTML (2x), `.rsc` e
