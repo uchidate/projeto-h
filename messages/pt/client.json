@@ -174,5 +174,50 @@
     "notifications": "Avisos",
     "searchShort": "Buscar artistas, grupos…",
     "preferences": "Preferências"
+  },
+  "auth": {
+    "login": {
+      "eyebrow": "Conta",
+      "title": "Entrar",
+      "intro": "Acesse favoritos, lista e seu painel personalizado.",
+      "google": "Entrar com Google",
+      "usernameLabel": "E-mail ou usuário",
+      "usernamePlaceholder": "seu@email.com",
+      "passwordLabel": "Senha",
+      "togglePassword": "Mostrar ou ocultar a senha",
+      "error": "E-mail ou senha incorretos.",
+      "submit": "Entrar",
+      "submitting": "Entrando…",
+      "noAccount": "Ainda não tem conta?",
+      "createAccount": "Criar conta"
+    },
+    "signup": {
+      "eyebrow": "Conta",
+      "title": "Criar conta",
+      "intro": "Crie uma conta para sincronizar favoritos, Quero ver e seu painel em qualquer dispositivo.",
+      "google": "Criar conta com Google",
+      "nameLabel": "Nome",
+      "namePlaceholder": "Seu nome",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "seu@email.com",
+      "passwordLabel": "Senha",
+      "passwordPlaceholder": "Mínimo 8 caracteres",
+      "togglePassword": "Mostrar ou ocultar a senha",
+      "passwordShort": "A senha deve ter no mínimo 8 caracteres.",
+      "createdSignIn": "Conta criada! Faça login para continuar.",
+      "genericError": "Erro ao criar conta.",
+      "submit": "Criar conta",
+      "submitting": "Criando conta…",
+      "hasAccount": "Já tem conta?",
+      "signIn": "Entrar"
+    },
+    "google": {
+      "opening": "Abrindo…",
+      "or": "ou"
+    },
+    "menu": {
+      "signIn": "Entrar",
+      "signInAria": "Entrar na sua conta"
+    }
   }
 }

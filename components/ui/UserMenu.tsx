@@ -5,11 +5,16 @@ import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useLocale, useTranslations } from 'next-intl'
+import { href } from '@/lib/i18n/routes'
+import type { Locale } from '@/lib/i18n/config'
 import { LayoutDashboard, BookmarkCheck, BookOpen, Heart, PlayCircle, Trophy, User, LogOut, LogIn } from 'lucide-react'
 
 export function UserMenu() {
     const { data: session, status } = useSession()
     const pathname = usePathname()
+    const t = useTranslations('client.auth.menu')
+    const locale = useLocale() as Locale
     const [open, setOpen] = useState(false)
     const [pos, setPos] = useState({ top: 0, right: 0 })
     const btnRef = useRef<HTMLButtonElement>(null)
@@ -37,13 +42,14 @@ export function UserMenu() {
     if (status === 'loading') return <div className="h-8 w-8 bg-surface animate-pulse" />
 
     if (!session) {
-        const callbackUrl = pathname && pathname !== '/' ? `/entrar?callbackUrl=${encodeURIComponent(pathname)}` : '/entrar'
+        const entrar = href('login', undefined, locale)
+        const callbackUrl = pathname && pathname !== '/' ? `${entrar}?callbackUrl=${encodeURIComponent(pathname)}` : entrar
         return (
             <Link href={callbackUrl} prefetch={false}
-                aria-label="Entrar na sua conta"
+                aria-label={t('signInAria')}
                 className="flex items-center gap-1.5 border border-border px-2.5 py-1.5 text-[12px] font-black uppercase tracking-wider text-muted hover:border-accent hover:text-accent transition-colors">
                 <LogIn size={13} />
-                <span className="hidden sm:inline">Entrar</span>
+                <span className="hidden sm:inline">{t('signIn')}</span>
             </Link>
         )
     }
