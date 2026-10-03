@@ -40,6 +40,28 @@ export default defineConfig([
         },
     },
     {
+        // Texto de interface não fica literal no JSX (D12/E em docs/I18N-V2.md): vai
+        // para messages/<idioma>/ e entra por next-intl. Catraca: a lista só cresce —
+        // pasta nova entra aqui quando seu texto for extraído, e nunca sai. Cobre só
+        // JSXText; atributos (aria-label, placeholder) e constantes ficam para revisão.
+        // Repete a regra do segue-header porque `no-restricted-syntax` não soma entre
+        // blocos: o último que casa o arquivo vence.
+        files: ['components/i18n/**/*.tsx', 'components/layout/**/*.tsx'],
+        ignores: ['components/ui/BarraAncorada.tsx', '**/*.test.tsx'],
+        rules: {
+            'no-restricted-syntax': ['error', {
+                selector: "Literal[value=/\\bsegue-header\\b/]",
+                message: 'Use <BarraAncorada> em vez da classe segue-header — ela encapsula o contrato de --site-header-h/--reading-bar-h.',
+            }, {
+                selector: "TemplateElement[value.raw=/\\bsegue-header\\b/]",
+                message: 'Use <BarraAncorada> em vez da classe segue-header — ela encapsula o contrato de --site-header-h/--reading-bar-h.',
+            }, {
+                selector: "JSXText[value=/[A-Za-zÀ-ÿ]{2,}/]",
+                message: 'Texto literal em JSX: mova para messages/<idioma>/ e use next-intl (ver CONVENCOES.md, "Textos de interface").',
+            }],
+        },
+    },
+    {
         // Fronteiras entre camadas (ver CONVENCOES.md). Dependência só desce:
         // app -> components -> lib. Uma regra por camada, para a mensagem dizer o porquê.
         files: ['components/**/*.{ts,tsx}', 'lib/**/*.{ts,tsx}'],

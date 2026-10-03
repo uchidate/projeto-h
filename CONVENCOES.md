@@ -55,6 +55,14 @@ Controles de filtro leem a query no evento (`queryAtual()`), nunca com
 `useSearchParams()` no render: em página estática isso exige Suspense e o
 conteúdo só chega no cliente.
 
+## Textos de interface
+
+Texto visível não fica literal no JSX: vai para `messages/pt` e `messages/en` e
+entra por `next-intl`. O `eslint.config.mjs` proíbe literal em JSX nas pastas já
+extraídas (hoje `components/i18n` e `components/layout`); a lista só cresce. Ao
+extrair uma pasta, acrescente-a lá no mesmo PR, e rode
+`npm run i18n:lock -- --write` depois de revisar o EN.
+
 ## Nomes
 
 - Componentes: `PascalCase.tsx`, um por arquivo, nome igual ao export.
