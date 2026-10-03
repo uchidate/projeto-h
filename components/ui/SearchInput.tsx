@@ -1,9 +1,10 @@
 'use client'
 /* eslint-disable react-hooks/set-state-in-effect -- controlled input follows external URL state */
 
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Search, X } from 'lucide-react'
+import { queryAtual } from '@/lib/listagem/query-atual'
 
 interface Props {
     placeholder?: string
@@ -15,7 +16,6 @@ interface Props {
 export function SearchInput({ placeholder = 'Buscar...', param = 'search', current = '', className = '' }: Props) {
     const router = useRouter()
     const pathname = usePathname()
-    const searchParams = useSearchParams()
     const [value, setValue] = useState(current)
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -25,12 +25,12 @@ export function SearchInput({ placeholder = 'Buscar...', param = 'search', curre
     }, [])
 
     const push = useCallback((q: string) => {
-        const params = new URLSearchParams(searchParams.toString())
+        const params = queryAtual()
         if (q) { params.set(param, q) } else { params.delete(param) }
         params.delete('page')
         const qs = params.toString()
         router.push(`${pathname}${qs ? `?${qs}` : ''}`)
-    }, [pathname, param, router, searchParams])
+    }, [pathname, param, router])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const q = e.target.value

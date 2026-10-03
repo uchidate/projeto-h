@@ -1,7 +1,8 @@
 'use client'
 
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useCallback } from 'react'
+import { queryAtual } from '@/lib/listagem/query-atual'
 
 export interface FilterOption {
     value: string
@@ -18,10 +19,9 @@ interface FilterGroupProps {
 export function FilterBar({ groups }: { groups: FilterGroupProps[] }) {
     const router = useRouter()
     const pathname = usePathname()
-    const searchParams = useSearchParams()
 
     const setParam = useCallback((param: string, value: string) => {
-        const params = new URLSearchParams(searchParams.toString())
+        const params = queryAtual()
         if (value) {
             params.set(param, value)
         } else {
@@ -29,7 +29,7 @@ export function FilterBar({ groups }: { groups: FilterGroupProps[] }) {
         }
         params.delete('page') // reset página ao filtrar
         router.push(`${pathname}?${params.toString()}`)
-    }, [pathname, router, searchParams])
+    }, [pathname, router])
 
     return (
         <div className="flex flex-wrap gap-3 mb-8">

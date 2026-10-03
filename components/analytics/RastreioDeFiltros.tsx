@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { trackFiltroListagem } from '@/lib/analytics'
 
@@ -14,7 +14,7 @@ import { trackFiltroListagem } from '@/lib/analytics'
  * A primeira leitura é `entrada` (chegou filtrado: Google, link); as seguintes
  * são `interacao` (filtrou dentro do site).
  */
-export function RastreioDeFiltros({ listagem, filtros }: { listagem: string; filtros: readonly string[] }) {
+function Rastreio({ listagem, filtros }: { listagem: string; filtros: readonly string[] }) {
     const params = useSearchParams()
     const primeira = useRef(true)
     const anterior = useRef<string | null>(null)
@@ -35,4 +35,14 @@ export function RastreioDeFiltros({ listagem, filtros }: { listagem: string; fil
     }, [params, listagem, filtros])
 
     return null
+}
+
+// `useSearchParams()` exige Suspense em página estática; o componente não
+// renderiza nada, então o fallback vazio não muda o HTML.
+export function RastreioDeFiltros(props: { listagem: string; filtros: readonly string[] }) {
+    return (
+        <Suspense fallback={null}>
+            <Rastreio {...props} />
+        </Suspense>
+    )
 }
