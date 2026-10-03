@@ -1,4 +1,7 @@
 import { getTranslations } from 'next-intl/server'
+import { HomePtBadge } from '@/components/home/HomePtBadge'
+import { postLink } from '@/components/home/postLink'
+import { href as rota } from '@/lib/i18n/routes'
 import { SITE_NAME } from '@/lib/constants/site'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
@@ -20,7 +23,7 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
 
     return (
         <div className="lg:flex lg:h-[400px]">
-            <Link href={`/blog/${post.slug}`}
+            <Link {...postLink(post.slug, locale)}
                 className="group relative block min-w-0 overflow-hidden border-b border-border lg:w-[50%] lg:shrink-0 lg:border-b-0 lg:border-r">
                 <div className="relative aspect-16/10 w-full sm:aspect-video lg:h-full lg:aspect-auto">
                     {image ? (
@@ -42,8 +45,9 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
                     <span className="text-muted">{homeCatName(post, undefined, tc('artigo'))}</span>
                     <span className="text-muted/45" aria-hidden="true">·</span>
                     <span className="text-muted">{tc('minutosDeLeitura', { mins })}</span>
+                    <HomePtBadge locale={locale} />
                 </div>
-                <Link href={`/blog/${post.slug}`} className="group mt-3 min-w-0">
+                <Link {...postLink(post.slug, locale)} className="group mt-3 min-w-0">
                     {/* Variante mobile do mesmo título: como <h1>, formava par com o
                         hero desktop e o crawler (que não aplica breakpoint) via dois H1.
                         role/aria-level preserva o cabeçalho para leitor de tela. */}
@@ -54,7 +58,7 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
                 {excerpt && <p className="mt-3 max-w-[58ch] text-[13px] leading-5 text-muted line-clamp-2">{excerpt}</p>}
                 <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-4">
                     <span className="min-w-0 truncate text-[11px] text-muted">{data}</span>
-                    <Link href={`/blog/${post.slug}`}
+                    <Link {...postLink(post.slug, locale)}
                         className="shrink-0 whitespace-nowrap border-b border-accent pb-0.5 font-mono text-[10px] font-black uppercase tracking-widest text-foreground transition-colors hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent">
                         {`${t('lerAgora')} `}<span aria-hidden="true">→</span>
                     </Link>
@@ -72,9 +76,10 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
                         <span className="text-muted">{homeCatName(post, undefined, tc('artigo'))}</span>
                         <span className="text-muted/45">·</span>
                         <span className="text-muted">{tc('minutosDeLeitura', { mins })}</span>
+                        <HomePtBadge locale={locale} />
                     </div>
                 </div>
-                <Link href={`/blog/${post.slug}`} className="group relative">
+                <Link {...postLink(post.slug, locale)} className="group relative">
                     <h1 className="min-w-0 max-w-[20ch] wrap-anywhere font-serif text-home-hero font-medium text-foreground transition-colors group-hover:text-accent">
                         {title}
                     </h1>
@@ -82,7 +87,7 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
                 {excerpt && <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.65] text-foreground/65 line-clamp-3">{excerpt}</p>}
                 <div className="mt-auto pt-5 border-t border-border flex items-center justify-between">
                     <span className="text-[12px] text-muted"><b className="text-foreground">{SITE_NAME}</b> · {data}</span>
-                    <Link href={`/blog/${post.slug}`}
+                    <Link {...postLink(post.slug, locale)}
                         className="inline-flex items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white hover:bg-accent-a11y/90 transition-colors shrink-0">
                         {`${t('continuarLeitura')} `}<span aria-hidden>→</span>
                     </Link>
@@ -98,7 +103,7 @@ async function HeroProduction({ production, locale }: { production: WPProduction
     const title = stripHtml(production.title.rendered)
     const acf = production.acf ?? {}
     return (
-        <Link href={`/productions/${production.slug}`}
+        <Link href={rota('production', { slug: production.slug }, locale)}
             className="group relative flex items-end overflow-hidden min-h-[420px] lg:min-h-[420px]">
             {image ? (
                 <Image src={image.src} alt={title} fill priority fetchPriority="high"
@@ -134,8 +139,8 @@ async function HeroFallback({ locale }: { locale: Locale }) {
                     {t('fallbackTitulo')}
                 </h1>
                 <div className="mt-7 flex flex-wrap gap-2">
-                    <Link href="/blog" className="bg-accent-a11y px-4 py-2 text-[12px] font-black uppercase tracking-[0.12em] text-white">{t('verArtigos')}</Link>
-                    <Link href="/artists" className="border border-foreground px-4 py-2 text-[12px] font-black uppercase tracking-[0.12em]">{t('artistas')}</Link>
+                    <Link href={rota('blog', undefined, locale)} className="bg-accent-a11y px-4 py-2 text-[12px] font-black uppercase tracking-[0.12em] text-white">{t('verArtigos')}</Link>
+                    <Link href={rota('artists', undefined, locale)} className="border border-foreground px-4 py-2 text-[12px] font-black uppercase tracking-[0.12em]">{t('artistas')}</Link>
                 </div>
             </div>
             <div className="relative hidden overflow-hidden border-l border-border bg-foreground text-background lg:block">

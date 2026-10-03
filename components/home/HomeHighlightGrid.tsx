@@ -1,4 +1,6 @@
 import { getTranslations } from 'next-intl/server'
+import { postLink } from '@/components/home/postLink'
+import { href as rota } from '@/lib/i18n/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { WPPost } from '@/lib/wordpress/types'
@@ -28,7 +30,7 @@ export async function HomeHighlightGrid({ posts, categoryMap, locale = DEFAULT_L
                     const title = stripHtml(featured.title.rendered)
                     const excerpt = stripHtml(featured.excerpt?.rendered ?? '').slice(0, 130)
                     return (
-                        <Link href={`/blog/${featured.slug}`} className="group block sm:col-span-2 lg:col-span-1">
+                        <Link {...postLink(featured.slug, locale)} className="group block sm:col-span-2 lg:col-span-1">
                             <div className="relative aspect-4/3 overflow-hidden border border-border bg-surface">
                                 {image ? (
                                     <Image src={image.src} alt={image.alt || title} fill
@@ -58,7 +60,7 @@ export async function HomeHighlightGrid({ posts, categoryMap, locale = DEFAULT_L
                         const image = getWPImage(post._embedded, post.featured_image_url)
                         const title = stripHtml(post.title.rendered)
                         return (
-                            <Link key={post.id} href={`/blog/${post.slug}`}
+                            <Link key={post.id} {...postLink(post.slug, locale)}
                                 className={`${index >= 3 ? 'hidden sm:flex' : 'flex'} group gap-4 border-b border-border py-4 first:pt-0 items-start`}>
                                 <div className="relative w-[100px] shrink-0 aspect-4/3 overflow-hidden border border-border bg-surface">
                                     {image ? (
@@ -77,7 +79,7 @@ export async function HomeHighlightGrid({ posts, categoryMap, locale = DEFAULT_L
                             </Link>
                         )
                     })}
-                    <Link href="/blog"
+                    <Link href={rota('blog', undefined, locale)}
                         className="group mt-auto flex items-center justify-between border border-border bg-surface/60 px-4 py-3 hover:border-accent/50 hover:bg-surface transition-colors">
                         <span className="text-[12px] font-black text-foreground group-hover:text-accent transition-colors">{t('verTodosArtigos')}</span>
                         <span className="text-accent font-mono font-black transition-transform group-hover:translate-x-1">→</span>

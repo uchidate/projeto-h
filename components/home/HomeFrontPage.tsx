@@ -41,6 +41,9 @@ type Props = {
 
 export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, streamingByPlatform, categoryMap, featuredProducts = [] }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
+    // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
+    // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
+    const soPt = locale === DEFAULT_LOCALE
     const heroPost = posts.find(post => post.id === homeSettings.heroPostId) ?? posts[0]
     const withoutHero = posts.filter(post => post.id !== heroPost?.id)
     const selectedHighlights = homeSettings.highlightPostIds
@@ -57,10 +60,10 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
         <section className="bg-background" aria-label={t('rotulo')}>
             <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
                 <div data-bloco="home-hero" className="contents"><HomeHero post={heroPost} production={!heroPost ? productions[0] : undefined} locale={locale} /></div>
-                <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>
+                {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} locale={locale} /></div>
                 <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} locale={locale} /></div>
-                <div data-bloco="home-loja" className="contents"><ShopRelatedSection title={t('lojaTitulo')} products={featuredProducts} /></div>
+                {soPt && <div data-bloco="home-loja" className="contents"><ShopRelatedSection title={t('lojaTitulo')} products={featuredProducts} /></div>}
                 {ADSENSE.slots.inline && (
                     <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">
                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="home_feed" />
@@ -94,12 +97,16 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_mid_leaderboard" />
                     </div>
                 )}
-                <div className="cv-auto [--cv-h:266px] sm:[--cv-h:284px] lg:[--cv-h:250px]">
-                    <div data-bloco="home-streaming" className="contents"><HomeStreamingTop showsByPlatform={streamingByPlatform} /></div>
-                </div>
-                <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-10">
-                    <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
-                </div>
+                {soPt && (
+                    <>
+                        <div className="cv-auto [--cv-h:266px] sm:[--cv-h:284px] lg:[--cv-h:250px]">
+                            <div data-bloco="home-streaming" className="contents"><HomeStreamingTop showsByPlatform={streamingByPlatform} /></div>
+                        </div>
+                        <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-10">
+                            <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
+                        </div>
+                    </>
+                )}
             </div>
         </section>
     )
