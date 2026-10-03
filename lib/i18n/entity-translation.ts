@@ -18,6 +18,12 @@ import { TRANSLATABLE_ACF, pickTranslatable, type TranslatableType } from './tra
 type TranslatedValue = string | TranslatedValue[] | { [key: string]: TranslatedValue }
 
 export interface EntityTranslation {
+    /**
+     * O português mudou depois desta tradução (hash da fonte diferente; calculado
+     * no WordPress). Tradução desatualizada não é servida: a ficha cai no fallback
+     * (D10 em docs/I18N-V2.md) até ser revisada de novo.
+     */
+    stale?: boolean
     title?: string
     content?: string
     excerpt?: string
@@ -37,7 +43,10 @@ export interface TranslatableEntity {
 
 /** Idiomas em que a ficha existe: português sempre, os demais se publicados e ativos. */
 export function availableLocales(entity: Pick<TranslatableEntity, 'translations'>): Locale[] {
-    const published = Object.keys(entity.translations ?? {}).filter(isActiveLocale)
+    const published = Object.entries(entity.translations ?? {})
+        .filter(([, tr]) => tr && !tr.stale)
+        .map(([locale]) => locale)
+        .filter(isActiveLocale)
     return ACTIVE_LOCALES.filter((locale) => locale === DEFAULT_LOCALE || published.includes(locale))
 }
 
@@ -76,7 +85,7 @@ export function mergeText(base: unknown, overlay: unknown): unknown {
 export function localizeEntity<T extends TranslatableEntity>(entity: T, locale: Locale, type: TranslatableType): T {
     if (locale === DEFAULT_LOCALE) return entity
     const tr = entity.translations?.[locale]
-    if (!tr) return entity
+    if (!tr || tr.stale) return entity
 
     const rendered = (field: { rendered: string } | undefined, value: string | undefined) =>
         field ? { ...field, rendered: mergeText(field.rendered, value) as string } : field

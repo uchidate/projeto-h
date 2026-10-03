@@ -71,11 +71,12 @@ const PERFIL_PURGA = 'max'
  */
 async function idiomasPublicados(type: WPPostType, slug: string): Promise<string[]> {
     if (!INDEXNOW_LOCALIZED_TYPES.includes(type) || !ACTIVE_LOCALES.some((locale) => locale !== DEFAULT_LOCALE)) return []
-    const itens = await wpBuscarOpcional<Array<{ translations?: Record<string, unknown> | null }>>(
+    const itens = await wpBuscarOpcional<Array<{ translations?: Record<string, { stale?: boolean } | null> | null }>>(
         `/wp/v2/${type}${buildParams({ slug, status: 'publish', _fields: 'translations' })}`,
         { revalidate: 0 },
     )
-    return Object.keys(itens[0]?.translations ?? {})
+    // Tradução desatualizada não é indexável: só o que está em dia vai ao IndexNow.
+    return Object.entries(itens[0]?.translations ?? {}).filter(([, tr]) => tr && !tr.stale).map(([locale]) => locale)
 }
 
 function avisarIndexNow(type: WPPostType, slug: unknown): void {

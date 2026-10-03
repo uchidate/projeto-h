@@ -45,6 +45,10 @@ describe('availableLocales', () => {
         expect(availableLocales({ translations: null })).toEqual(['pt'])
         expect(availableLocales({ translations: { es: {} } })).toEqual(['pt'])
     })
+
+    it('ignora tradução desatualizada (stale)', () => {
+        expect(availableLocales({ translations: { en: { title: 'Yoona', stale: true } } })).toEqual(['pt'])
+    })
 })
 
 describe('localizeEntity', () => {
@@ -59,6 +63,11 @@ describe('localizeEntity', () => {
         expect(en.meta.rank_math_description).toBeUndefined()
         expect(en.acf.story_chapters[0].title).toBe('Debut')
         expect(en.acf.story_chapters[1].title).toBe('Atuação')
+    })
+
+    it('tradução desatualizada devolve a fonte em português', () => {
+        const velha = { ...artist, translations: { en: { ...artist.translations.en, stale: true } } }
+        expect(localizeEntity(velha, 'en', 'artist')).toBe(velha)
     })
 
     it('never changes non-text data or list shape', () => {
@@ -130,5 +139,9 @@ describe('semTraducao', () => {
 
     it('com tradução publicada no idioma, não é fallback', () => {
         expect(semTraducao(comEn, 'en')).toBe(false)
+    })
+
+    it('tradução desatualizada cai no fallback', () => {
+        expect(semTraducao({ translations: { en: { title: 'Yoona', stale: true } } }, 'en')).toBe(true)
     })
 })

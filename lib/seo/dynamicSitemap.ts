@@ -19,7 +19,7 @@ const SITEMAP_SHARDS = [
 
 export type SitemapShard = (typeof SITEMAP_SHARDS)[number]
 type SitemapEntry = { loc: string; lastmod?: string; alternates?: Record<string, string> }
-type WPEntry = { slug: string; date?: string; modified?: string; translations?: Record<string, unknown> | null }
+type WPEntry = { slug: string; date?: string; modified?: string; translations?: Record<string, { stale?: boolean } | null> | null }
 
 /**
  * Shards com versão em outros idiomas — docs/I18N-ARQUITETURA.md (D7). O
@@ -130,7 +130,7 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
 
     // Sem tradução publicada a ficha não existe no idioma — fica fora do sitemap.
     return entries
-        .filter((entry) => entry.translations && locale in entry.translations)
+        .filter((entry) => entry.translations?.[locale] && !entry.translations[locale]?.stale)
         .map((entry) => {
             const pt = `${SITE_URL}/${collection.publicBase}/${entry.slug}`
             const localized = `${SITE_URL}/${locale}/${collection.publicBase}/${entry.slug}`
