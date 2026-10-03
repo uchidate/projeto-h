@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { href as rota } from '@/lib/i18n/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { WPGroup } from '@/lib/wordpress/types'
@@ -29,7 +30,7 @@ export async function HomeTrendingGroups({ groups, locale = DEFAULT_LOCALE }: { 
                     const fandom = acf.fandom_name ?? null
                     const sub = fandom ? t('fandom', { nome: fandom }) : (type ?? null)
                     return (
-                        <Link key={group.id} href={`/groups/${group.slug}`}
+                        <Link key={group.id} href={rota('group', { slug: group.slug }, locale)}
                             className={`grid-cols-[42px_44px_minmax(0,1fr)] items-center gap-3 border-b border-border py-3 transition-colors last:border-b-0 hover:bg-background/70 ${index >= 5 ? 'hidden lg:grid' : 'grid'}`}>
                             <span className={`font-serif text-[32px] leading-none ${index < 3 ? 'text-accent' : 'text-muted/45'}`}>
                                 {String(index + 1).padStart(2, '0')}
@@ -53,7 +54,7 @@ export async function HomeTrendingGroups({ groups, locale = DEFAULT_LOCALE }: { 
                 })}
             </div>
             {groups.length > 0 && (
-                <Link href={`/groups/${groups[0].slug}`}
+                <Link href={rota('group', { slug: groups[0].slug }, locale)}
                     className="group mt-6 flex overflow-hidden border border-foreground bg-foreground text-background transition-opacity hover:opacity-95">
                     <div className="flex flex-1 flex-col justify-center p-5">
                         <p className="text-[10px] font-black uppercase tracking-[0.18em] text-accent-a11y">{t('grupoDaSemana')}</p>
@@ -76,7 +77,7 @@ export async function HomeTrendingGroups({ groups, locale = DEFAULT_LOCALE }: { 
                     )}
                 </Link>
             )}
-            <Link href="/groups" className="mt-4 flex items-center justify-between border border-border bg-surface px-4 py-3 hover:border-accent/40 transition-colors group">
+            <Link href={rota('groups', undefined, locale)} className="mt-4 flex items-center justify-between border border-border bg-surface px-4 py-3 hover:border-accent/40 transition-colors group">
                 <span className="text-[13px] font-black text-foreground group-hover:text-accent transition-colors">{t('verTodos')}</span>
                 <span className="text-accent font-mono font-black transition-transform group-hover:translate-x-1">→</span>
             </Link>

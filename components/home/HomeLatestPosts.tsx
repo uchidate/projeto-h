@@ -1,4 +1,6 @@
 import { getTranslations } from 'next-intl/server'
+import { postLink } from '@/components/home/postLink'
+import { href as rota } from '@/lib/i18n/routes'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
@@ -22,7 +24,7 @@ export async function HomeLatestPosts({ posts, categoryMap, locale = DEFAULT_LOC
     const tc = await getTranslations({ locale, namespace: 'home.comum' })
     return (
         <div className="border-t border-border px-4 py-8 sm:px-6 lg:px-10">
-            <SectionTitleBar title={t('titulo')} href="/blog" linkText={t('verFeed')} />
+            <SectionTitleBar title={t('titulo')} href={rota('blog', undefined, locale)} linkText={t('verFeed')} />
             <div>
                 {posts.map((post, i) => {
                     const cat = post.categories?.[0] && categoryMap
@@ -30,7 +32,7 @@ export async function HomeLatestPosts({ posts, categoryMap, locale = DEFAULT_LOC
                         : ((post._embedded?.['wp:term']?.[0] ?? []) as WPTerm[])[0]
                     const color = CAT_COLORS[cat?.slug ?? ''] ?? CAT_COLORS['k-drama']
                     return (
-                        <Link key={post.id} href={`/blog/${post.slug}`}
+                        <Link key={post.id} {...postLink(post.slug, locale)}
                             className={`group grid-cols-[96px_minmax(0,1fr)] items-center gap-3 border-b border-border py-4 transition-colors hover:bg-surface/60 sm:grid-cols-[96px_minmax(0,1fr)_112px] sm:gap-5 ${i >= 4 ? 'hidden lg:grid' : 'grid'}`}>
                             <span
                                 className="inline-block truncate text-[9px] font-black uppercase tracking-[0.12em] text-(--category-light) dark:text-(--category-dark)"

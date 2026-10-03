@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { href as rota } from '@/lib/i18n/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { WPArtist, WPGroup } from '@/lib/wordpress/types'
@@ -10,12 +11,12 @@ type SpotlightItem =
     | { kind: 'artist'; data: WPArtist }
     | { kind: 'group'; data: WPGroup }
 
-function SpotlightCard({ item, labels }: { item: SpotlightItem; labels: ReturnType<typeof labelsFor> }) {
+function SpotlightCard({ item, labels, locale }: { item: SpotlightItem; labels: ReturnType<typeof labelsFor>; locale: Locale }) {
     const isGroup = item.kind === 'group'
     const raw = item.data
     const name = stripHtml(raw.title.rendered)
     const image = getWPImage(raw._embedded, raw.featured_image_url)
-    const href = isGroup ? `/groups/${raw.slug}` : `/artists/${raw.slug}`
+    const href = isGroup ? rota('group', { slug: raw.slug }, locale) : rota('artist', { slug: raw.slug }, locale)
     const accent = isGroup ? ((raw as WPGroup).acf?.color ?? undefined) : undefined
     const rawRole = (raw as WPArtist).acf?.roles?.[0]
     const sub = isGroup
@@ -91,15 +92,15 @@ export async function HomeArtistSpotlight({ artists = [], groups = [], locale = 
                     <p className="mt-0.5 text-[11px] text-muted hidden sm:block">{t('descricao')}</p>
                 </div>
                 <div className="flex gap-2">
-                    <Link href="/artists" className="text-[11px] font-bold text-muted hover:text-accent transition-colors">{t('artistas')}</Link>
+                    <Link href={rota('artists', undefined, locale)} className="text-[11px] font-bold text-muted hover:text-accent transition-colors">{t('artistas')}</Link>
                     <span className="text-muted/30">·</span>
-                    <Link href="/groups" className="text-[11px] font-bold text-muted hover:text-accent transition-colors">{t('grupos')}</Link>
+                    <Link href={rota('groups', undefined, locale)} className="text-[11px] font-bold text-muted hover:text-accent transition-colors">{t('grupos')}</Link>
                 </div>
             </div>
             {/* Mobile/tablet: scroll horizontal — Desktop: 1 linha com justify-between */}
             <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:overflow-hidden lg:gap-0 lg:justify-between">
                 {capped.map((item, i) => (
-                    <SpotlightCard key={`${item.kind}-${item.data.id}-${i}`} item={item} labels={labels} />
+                    <SpotlightCard key={`${item.kind}-${item.data.id}-${i}`} item={item} labels={labels} locale={locale} />
                 ))}
             </div>
         </div>

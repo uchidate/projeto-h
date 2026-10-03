@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { href as rota } from '@/lib/i18n/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { WPArtist } from '@/lib/wordpress/types'
@@ -35,7 +36,7 @@ export async function HomeTrendingArtists({ artists, featuredArtist, featuredArt
                     const roles = (acf.roles as string[] | undefined)
                         ?.slice(0, 2).map(r => labels.role(r)).join(', ')
                     return (
-                        <Link key={artist.id} href={`/artists/${artist.slug}`}
+                        <Link key={artist.id} href={rota('artist', { slug: artist.slug }, locale)}
                             className={`grid-cols-[42px_44px_minmax(0,1fr)] items-center gap-3 border-b border-border py-3 transition-colors last:border-b-0 hover:bg-background/70 ${index >= 5 ? 'hidden lg:grid' : 'grid'}`}>
                             <span className={`font-serif text-[32px] leading-none ${index < 3 ? 'text-accent' : 'text-muted/45'}`}>
                                 {String(index + 1).padStart(2, '0')}
@@ -62,7 +63,7 @@ export async function HomeTrendingArtists({ artists, featuredArtist, featuredArt
                 const name = stripHtml(spotlight.title.rendered)
                 const image = getWPImage(spotlight._embedded, spotlight.featured_image_url)
                 const isGroup = !spotlight.acf?.roles
-                const href = isGroup ? `/groups/${spotlight.slug}` : `/artists/${spotlight.slug}`
+                const href = isGroup ? rota('group', { slug: spotlight.slug }, locale) : rota('artist', { slug: spotlight.slug }, locale)
                 const sub = featuredArtistNote || spotlight.acf?.name_hangul || (spotlight.acf?.roles?.[0] ? labels.role(spotlight.acf.roles[0]) : '') || t('perfilEmFoco')
                 const isCurated = !!featuredArtist
                 return (
@@ -84,7 +85,7 @@ export async function HomeTrendingArtists({ artists, featuredArtist, featuredArt
                     </Link>
                 )
             })()}
-            <Link href="/artists" className="mt-4 flex items-center justify-between border border-border bg-surface px-4 py-3 hover:border-accent/40 transition-colors group">
+            <Link href={rota('artists', undefined, locale)} className="mt-4 flex items-center justify-between border border-border bg-surface px-4 py-3 hover:border-accent/40 transition-colors group">
                 <span className="text-[13px] font-black text-foreground group-hover:text-accent transition-colors">{t('verTodos')}</span>
                 <span className="text-accent font-mono font-black transition-transform group-hover:translate-x-1">→</span>
             </Link>

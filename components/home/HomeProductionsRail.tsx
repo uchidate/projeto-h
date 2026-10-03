@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { href as rota } from '@/lib/i18n/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Star } from 'lucide-react'
@@ -12,14 +13,14 @@ export async function HomeProductionsRail({ productions, locale = DEFAULT_LOCALE
     const t = await getTranslations({ locale, namespace: 'home.producoes' })
     return (
         <div className="border-t border-border px-4 py-8 sm:px-6 lg:px-10">
-            <SectionTitleBar title={t('titulo')} eyebrow={t('eyebrow')} href="/productions" linkText={t('verTodos')} />
+            <SectionTitleBar title={t('titulo')} eyebrow={t('eyebrow')} href={rota('productions', undefined, locale)} linkText={t('verTodos')} />
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                 {productions.slice(0, 6).map((prod) => {
                     const image = getWPImage(prod._embedded, prod.featured_image_url)
                     const title = stripHtml(prod.title.rendered)
                     const acf = prod.acf ?? {}
                     return (
-                        <Link key={prod.id} href={`/productions/${prod.slug}`} className="group flex flex-col">
+                        <Link key={prod.id} href={rota('production', { slug: prod.slug }, locale)} className="group flex flex-col">
                             <div className="relative aspect-2/3 overflow-hidden bg-surface mb-2">
                                 {image ? (
                                     // Sem priority: o rail fica abaixo da dobra e o preload destes
