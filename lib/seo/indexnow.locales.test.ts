@@ -21,7 +21,13 @@ describe('buildPurgeUrls com inglês ativo', () => {
         expect(buildPurgeUrls('artist', 'yoona')).toEqual([
             'https://www.example.com/artists/yoona',
             'https://www.example.com/en/artists/yoona',
+            'https://www.example.com/en/artists',
         ])
+    })
+
+    it('expurga a listagem em outro idioma do tipo do item', () => {
+        expect(buildPurgeUrls('group', 'kard')).toContain('https://www.example.com/en/groups')
+        expect(buildPurgeUrls('production', 'x')).toContain('https://www.example.com/en/productions')
     })
 
     it('tipos sem versão em outro idioma expurgam só a original', () => {

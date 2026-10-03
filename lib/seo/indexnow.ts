@@ -18,6 +18,7 @@
 import { SITE_URL } from '@/lib/constants/site'
 import type { WPPostType } from '@/lib/wordpress/cache'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 
 export const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
 
@@ -77,17 +78,25 @@ export function buildLocalizedIndexNowUrls(type: WPPostType, slug: string, publi
         .map((locale) => `${SITE_URL}/${locale}${path}`)
 }
 
+const LISTAGEM_DO_TIPO = { artist: 'artists', group: 'groups', production: 'productions' } as const
+
 /**
  * URLs a expurgar na borda quando o item muda: a original e a de TODO idioma
- * ativo, tenha ou não tradução publicada. Sem tradução, `/en/<slug>` serve a
- * ficha em português com aviso (D10 em docs/I18N-V2.md); se a edição em
- * português não expurgasse essa cópia, ela ficaria velha até o fim do TTL.
+ * ativo, tenha ou não tradução publicada, mais a primeira página da listagem
+ * de cada idioma. Sem tradução, `/en/<slug>` serve a ficha em português com
+ * aviso (D10 em docs/I18N-V2.md); se a edição em português não expurgasse essa
+ * cópia, ela ficaria velha até o fim do TTL. A listagem em outro idioma mostra
+ * as traduzidas em destaque e o início do catálogo, e muda com o item.
  * Diferente do IndexNow, que só submete o que é indexável (traduzido).
  */
 export function buildPurgeUrls(type: WPPostType, slug: string): string[] {
     const base = buildIndexNowUrl(type, slug)
     if (!base) return []
-    return [base, ...buildLocalizedIndexNowUrls(type, slug, ACTIVE_LOCALES)]
+    const listagem = LISTAGEM_DO_TIPO[type as keyof typeof LISTAGEM_DO_TIPO]
+    const listagens = listagem
+        ? ACTIVE_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE).map((locale) => `${SITE_URL}${href(listagem, undefined, locale)}`)
+        : []
+    return [base, ...buildLocalizedIndexNowUrls(type, slug, ACTIVE_LOCALES), ...listagens]
 }
 
 export type IndexNowOutcome =
