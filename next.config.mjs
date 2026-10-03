@@ -157,6 +157,7 @@ const nextConfig = {
             groups: ['search', 'page', 'type', 'active', 'letter', 'generation', 'order'],
             productions: ['genre', 'platform', 'type', 'order', 'page', 'search'],
             blog: ['category', 'tag', 'page', 'search', 'order'],
+            loja: ['categoria', 'loja', 'busca', 'ofertas'],
         }
         const desviosListagens = Object.entries(chavesDasListagens).flatMap(([lista, chaves]) =>
             chaves.map(key => ({
@@ -347,7 +348,7 @@ const nextConfig = {
             // O conteúdo não varia por visitante; 5 min de borda + SWR tiram a
             // renderização do caminho de quase todo mundo, filtrado ou não.
             {
-                source: '/:lista(artists|groups|blog|productions)',
+                source: '/:lista(artists|groups|blog|productions|loja)',
                 headers: [{ key: 'Cache-Control', value: 's-maxage=300, stale-while-revalidate=600' }],
             },
         ]
