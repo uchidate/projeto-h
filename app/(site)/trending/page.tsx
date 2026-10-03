@@ -4,6 +4,7 @@ import { ADSENSE } from '@/lib/config/ads'
 import Link from 'next/link'
 import { getTrendingArtists, getStreamingArtists } from '@/lib/wordpress/artists'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
+import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistCard } from '@/components/artists/ArtistCard'
 import { GroupCard } from '@/components/features/GroupsPage'
@@ -25,6 +26,10 @@ export default async function TrendingPage() {
         getTrendingArtists(24),
         getTrendingGroups(24),
     ])
+    // Artistas e grupos em alta nunca somem juntos: os dois vazios é falha
+    // transitória do WP (o client converte em []). Lançar faz o ISR manter o
+    // snapshot anterior em vez de cachear a página em branco por 5 minutos.
+    if (trendingArtists.length === 0) exigirListagemComConteudo(trendingGroups, '/trending')
 
     return (
         <>
