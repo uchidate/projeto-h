@@ -66,10 +66,8 @@ export default defineConfig([
         },
     },
     {
-        // Dívida registrada: estes arquivos de lib/ importam de components/. A regra vale
-        // para todo o resto de lib/; ao resolver um deles, tire-o desta lista.
         files: ['lib/**/*.{ts,tsx}'],
-        ignores: ['**/*.test.{ts,tsx}', 'lib/artists/fichaC.ts', 'lib/artists/socials.ts', 'lib/i18n/language-links.ts'],
+        ignores: ['**/*.test.{ts,tsx}'],
         rules: {
             'no-restricted-imports': ['error', {
                 patterns: [{

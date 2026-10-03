@@ -3,16 +3,9 @@
 
 import { useEffect, useState } from 'react'
 
-export type LanguageLink = {
-    locale: string
-    htmlLang: string
-    href: string
-    /** Nome do idioma no próprio idioma ("English", "Português"). */
-    name: string
-    /** Convite escrito no idioma de destino — quem prefere aquele idioma entende. */
-    prompt: string
-    open: string
-}
+import type { LanguageLink } from '@/lib/i18n/language-links'
+
+export type { LanguageLink }
 
 const DISMISS_KEY = 'hh-language-notice-dismissed'
 

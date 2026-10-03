@@ -2,7 +2,17 @@ import { createTranslator } from 'next-intl'
 import { LOCALE_META, type Locale } from './config'
 import { loadMessages } from './messages'
 import { href, type RouteName } from './routes'
-import type { LanguageLink } from '@/components/i18n/LanguageSwitcher'
+
+export type LanguageLink = {
+    locale: string
+    htmlLang: string
+    href: string
+    /** Nome do idioma no próprio idioma ("English", "Português"). */
+    name: string
+    /** Convite escrito no idioma de destino — quem prefere aquele idioma entende. */
+    prompt: string
+    open: string
+}
 
 /**
  * Links para as versões da página em outros idiomas, com os textos de cada
