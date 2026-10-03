@@ -4,7 +4,7 @@ import { analyzeCommits } from '@semantic-release/commit-analyzer'
 
 // Guarda das regras de versão do semantic-release (.releaserc.json). O analisador avalia
 // TODAS as regras que casam e uma regra `release: false` posterior sobrescreve a anterior,
-// então `chore(deps) → patch` e `breaking → major` precisam vir DEPOIS das genéricas. Sem
+// então `chore(deps) → patch` e `breaking → major` precisam vir DEPOIS das genéricas; `fix(ci)` e `fix(release)` corrigem só a esteira e não geram versão. Sem
 // `breaking`, uma mudança incompatível sairia como minor ou patch.
 const cfg = JSON.parse(readFileSync('.releaserc.json', 'utf8')).plugins[0][1]
 
@@ -24,6 +24,9 @@ describe('regras de versão (.releaserc.json)', () => {
         ['ci(deps): bump actions/upload-artifact from 4 to 7', null],
         ['chore: ajuste interno', null],
         ['docs: texto', null],
+        ['fix(ci): job release roda depois do deploy', null],
+        ['fix(release): ordem das regras', null],
+        ['fix(ci)!: muda o contrato do workflow', 'major'],
         ['feat!: quebra de API', 'major'],
         ['chore!: remove suporte', 'major'],
         ['fix: x\n\nBREAKING CHANGE: muda o contrato', 'major'],
