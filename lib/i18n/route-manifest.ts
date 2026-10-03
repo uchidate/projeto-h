@@ -13,6 +13,8 @@ export type TipoDeRota = 'detalhe' | 'listagem' | 'editorial' | 'estatica' | 'co
 export type EstadoDaRota =
     /** Existe em `app/(intl)/[locale]` (e em `ROUTES`). */
     | { estado: 'pronta' }
+    /** Existe em `app/(intl)/[locale]`, mas não é equivalente à versão em português; `falta` diz o quê. */
+    | { estado: 'parcial'; falta: string }
     /** Vai existir; ainda não foi construída. Não bloqueia a CI. */
     | { estado: 'pendente' }
     /** Decisão de ficar só em português, com o motivo. */
@@ -62,7 +64,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/quiz': { tipo: 'listagem', ...pendente },
 
     // Páginas estáticas e institucionais
-    '/': { tipo: 'estatica', ...pronta },
+    '/': { tipo: 'estatica', estado: 'parcial', falta: 'só a vitrine de fichas traduzidas; faltam os blocos editoriais da home em português (destaques, últimos, longreads, hubs, loja, quiz...)' },
     '/about': { tipo: 'estatica', ...pronta },
     '/contato': { tipo: 'estatica', ...pronta },
     '/ethics': { tipo: 'estatica', ...pronta },
