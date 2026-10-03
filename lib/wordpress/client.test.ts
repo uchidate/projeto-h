@@ -171,7 +171,7 @@ describe('lib/wordpress/client', () => {
                 expect(r).not.toBeNull()
             })
 
-            it('repete em 503 e desiste depois de 3 tentativas', async () => {
+            it('repete em 503 e desiste depois de 5 tentativas', async () => {
                 fetchMock.mockResolvedValue({ ok: false, status: 503, statusText: 'Service Unavailable' })
                 vi.useFakeTimers()
                 const wpFetch = await noBuild()
@@ -179,7 +179,7 @@ describe('lib/wordpress/client', () => {
                 await vi.runAllTimersAsync()
                 await pending
                 vi.useRealTimers()
-                expect(fetchMock).toHaveBeenCalledTimes(3)
+                expect(fetchMock).toHaveBeenCalledTimes(5)
             })
 
             it('NAO repete em 404 — resposta do servidor nao melhora repetindo', async () => {
