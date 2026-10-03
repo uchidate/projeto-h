@@ -36,6 +36,7 @@
     "grafo": "graphify export html && echo \"grafo em graphify-out/ — use: graphify query \\\"<pergunta>\\\"\"",
     "grafo:atualizar": "graphify update || echo \"sem graphify-out: rode a skill /graphify primeiro\"",
     "article:check": "node scripts/check-article-structure.mjs",
+    "i18n:lock": "node lib/i18n/message-lock-cli.mjs",
     "context:check": "node scripts/check-project-context.mjs",
     "context:find": "node scripts/find-project-context.mjs",
     "context:impact": "node scripts/project-change-impact.mjs",
