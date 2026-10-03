@@ -9,7 +9,7 @@ export const metadata: Metadata = {
         default: `${SITE_NAME} — K-Pop, K-Drama e Cultura Coreana`,
     },
     description: 'Dramas, filmes, artistas e cultura coreana em português. O seu portal Hallyu no Brasil.',
-    manifest: '/manifest.json',
+    manifest: '/manifest.webmanifest',
     appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: SITE_NAME },
     openGraph: {
         title: `${SITE_NAME} — K-Pop, K-Drama e Cultura Coreana`,

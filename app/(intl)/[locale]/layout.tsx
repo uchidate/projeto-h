@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     return {
         metadataBase: new URL(SITE_URL),
         title: { template: `%s | ${SITE_NAME}`, default: SITE_NAME },
-        manifest: '/manifest.json',
+        manifest: '/manifest.webmanifest',
         openGraph: { siteName: SITE_NAME, locale: LOCALE_META[locale].ogLocale, type: 'website' },
     }
 }
