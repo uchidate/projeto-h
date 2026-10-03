@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { linksDePaginacao, paginaDe, paginaInvalida, robotsDaListagem, urlDaListagem } from '@/lib/listagem'
 import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { notFound } from 'next/navigation'
 import { getProductions, getProductionGenres, getProductionPlatforms } from '@/lib/wordpress/productions'
@@ -27,17 +28,12 @@ function parseOrder(value?: string): OrderParam {
 }
 
 function buildProductionsUrl(sp: { genre?: string; platform?: string; type?: string; page?: string }) {
-    const ps = new URLSearchParams()
-    if (sp.genre) ps.set('genre', sp.genre)
-    if (sp.platform) ps.set('platform', sp.platform)
-    if (sp.type) ps.set('type', sp.type)
-    if (sp.page && sp.page !== '1') ps.set('page', sp.page)
-    return `${SITE_URL}/productions${ps.toString() ? `?${ps}` : ''}`
+    return urlDaListagem('/productions', ['genre', 'platform', 'type'], sp)
 }
 
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
     const sp = await searchParams
-    const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
+    const page = paginaDe(sp.page)
 
     // Filtro puro de gênero (sem platform/type/page combinados) com guia editorial
     // equivalente: aponta o canonical para o guia em vez de auto-referenciar, pra
@@ -50,7 +46,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
         ? { totalPages: 1 }
         : await getProductions({ page, perPage: 24, genre: sp.genre, platform: sp.platform, type: parseProductionType(sp.type), search: sp.search, excludeAdult: true })
     const hasFacets = Boolean(sp.search || sp.genre || sp.platform || sp.type || sp.order)
-    const invalidPage = page > Math.max(1, totalPages)
+    const invalidPage = paginaInvalida(page, totalPages)
 
     const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('productions') : undefined
 
@@ -60,10 +56,9 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
         alternates: {
             canonical: url,
             ...(languages ? { languages } : {}),
-            ...(!hubSlug && page > 1 ? { prev: buildProductionsUrl({ ...sp, page: String(page - 1) }) } : {}),
-            ...(!hubSlug && page < totalPages ? { next: buildProductionsUrl({ ...sp, page: String(page + 1) }) } : {}),
+            ...linksDePaginacao({ page, totalPages, ativa: !hubSlug, urlDaPagina: (p) => buildProductionsUrl({ ...sp, page: String(p) }) }),
         },
-        ...(hasFacets || invalidPage ? { robots: { index: false, follow: true } } : {}),
+        ...robotsDaListagem(hasFacets || invalidPage),
         openGraph: baseOG(url),
         twitter: baseTwitter(),
     }
@@ -71,7 +66,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
 
 export default async function ProductionsListPage({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
-    const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
+    const page = paginaDe(sp.page)
     const type = parseProductionType(sp.type)
     const { orderby, order } = parseOrder(sp.order)
 
@@ -97,7 +92,7 @@ export default async function ProductionsListPage({ searchParams }: { searchPara
     if (unfiltered && page === 1 && productionsResult.items.length === 0) {
         throw new Error('Catálogo de produções retornou vazio — WP indisponível durante a regeneração')
     }
-    if (page > Math.max(1, productionsResult.totalPages)) notFound()
+    if (paginaInvalida(page, productionsResult.totalPages)) notFound()
 
     // Faixas de descoberta só na página inicial sem filtro; falha aqui não derruba a lista.
     const inicio = page === 1 && !sp.genre && !sp.platform && !type && !sp.search && !sp.order

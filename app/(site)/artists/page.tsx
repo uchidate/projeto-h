@@ -4,34 +4,30 @@ import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { notFound } from 'next/navigation'
 import { getArtists } from '@/lib/wordpress/artists'
 import { wpFetch } from '@/lib/wordpress/client'
-import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
+import { baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistsPage } from '@/components/features/ArtistsPage'
 import { aniversariosDaSemana, hojeEmSaoPaulo, mesesDaJanela } from '@/lib/artists/aniversarios'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { linksDePaginacao, paginaDe, paginaInvalida, robotsDaListagem, urlDaListagem } from '@/lib/listagem'
 
 export const revalidate = 600
 
 type SearchParams = Promise<{ search?: string; page?: string; role?: string; affiliation?: string; letter?: string; sortBy?: string }>
 
 function buildArtistsUrl(sp: { role?: string; affiliation?: string; letter?: string; page?: string }) {
-    const ps = new URLSearchParams()
-    if (sp.role) ps.set('role', sp.role)
-    if (sp.affiliation) ps.set('affiliation', sp.affiliation)
-    if (sp.letter) ps.set('letter', sp.letter)
-    if (sp.page && sp.page !== '1') ps.set('page', sp.page)
-    return `${SITE_URL}/artists${ps.toString() ? `?${ps}` : ''}`
+    return urlDaListagem('/artists', ['role', 'affiliation', 'letter'], sp)
 }
 
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
     const sp = await searchParams
-    const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
+    const page = paginaDe(sp.page)
     const url = buildArtistsUrl(sp)
     const affiliation = sp.affiliation === 'group' || sp.affiliation === 'solo' ? sp.affiliation : undefined
     const { totalPages } = await getArtists({ page, perPage: 48, search: sp.search, role: sp.role, affiliation, letter: sp.letter?.toUpperCase().slice(0, 1) })
     const hasFacets = Boolean(sp.search || sp.role || sp.affiliation || sp.letter || sp.sortBy)
-    const invalidPage = page > Math.max(1, totalPages)
+    const invalidPage = paginaInvalida(page, totalPages)
 
     const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('artists') : undefined
 
@@ -41,10 +37,9 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
         alternates: {
             canonical: url,
             ...(languages ? { languages } : {}),
-            ...(page > 1 ? { prev: buildArtistsUrl({ ...sp, page: String(page - 1) }) } : {}),
-            ...(page < totalPages ? { next: buildArtistsUrl({ ...sp, page: String(page + 1) }) } : {}),
+            ...linksDePaginacao({ page, totalPages, urlDaPagina: (p) => buildArtistsUrl({ ...sp, page: String(p) }) }),
         },
-        ...(hasFacets || invalidPage ? { robots: { index: false, follow: true } } : {}),
+        ...robotsDaListagem(hasFacets || invalidPage),
         openGraph: baseOG(url),
         twitter: baseTwitter(),
     }
@@ -52,7 +47,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
 
 export default async function ArtistsListPage({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
-    const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
+    const page = paginaDe(sp.page)
     const letter = sp.letter?.toUpperCase().slice(0, 1)
     const sortBy = ['popular', 'trending', 'name', 'newest'].includes(sp.sortBy ?? '') ? sp.sortBy! : 'trending'
     const affiliation = sp.affiliation === 'group' || sp.affiliation === 'solo' ? sp.affiliation : undefined
@@ -81,7 +76,7 @@ export default async function ArtistsListPage({ searchParams }: { searchParams: 
     // cachear a listagem em branco (mesmo guard de /productions).
     const unfiltered = !sp.search && !sp.role && !affiliation && !letter
     if (unfiltered && page === 1) exigirListagemComConteudo(items, '/artists')
-    if (page > Math.max(1, totalPages)) notFound()
+    if (paginaInvalida(page, totalPages)) notFound()
 
     // Faixa "Aniversários da semana": só na página inicial sem filtro. Falha do WP não derruba a lista.
     let aniversarios: Awaited<ReturnType<typeof aniversariosDaSemana>> = []
