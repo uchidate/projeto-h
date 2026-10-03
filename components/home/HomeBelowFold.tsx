@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Cake } from 'lucide-react'
@@ -10,6 +11,8 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import type { HomeSettings, BestOfList } from '@/lib/wordpress/site-settings'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { intlLocale } from '@/lib/i18n/format'
 
 /* ── Culture guide chip (link curado, editável no WP admin) ── */
 function CultureGuideChip({ guide }: { guide: BestOfList }) {
@@ -25,7 +28,8 @@ function CultureGuideChip({ guide }: { guide: BestOfList }) {
 }
 
 /* ── Group chip ── */
-function GroupChip({ group, className = '' }: { group: WPGroup; className?: string }) {
+async function GroupChip({ group, className = '', locale }: { group: WPGroup; className?: string; locale: Locale }) {
+    const t = await getTranslations({ locale, namespace: 'home.abaixoDaDobra' })
     const image = getWPImage(group._embedded, group.featured_image_url)
     const name = stripHtml(group.title.rendered)
     const acf = group.acf ?? {}
@@ -52,12 +56,12 @@ function GroupChip({ group, className = '' }: { group: WPGroup; className?: stri
                 )}
                 {(acf.members?.length ?? 0) > 0 && (
                     <span className="absolute bottom-1.5 left-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[8px] font-bold text-white">
-                        {acf.members!.length} mbr
+                        {t('membros', { n: acf.members!.length })}
                     </span>
                 )}
                 {acf.active === false && (
                     <span className="absolute top-1.5 right-1.5 bg-black/60 px-1 py-0.5 font-mono text-[7px] uppercase text-white/70">
-                        encerrado
+                        {t('encerrado')}
                     </span>
                 )}
             </div>
@@ -65,7 +69,7 @@ function GroupChip({ group, className = '' }: { group: WPGroup; className?: stri
                 <p className="truncate text-[14px] font-black text-foreground transition-colors group-hover:text-accent">{name}</p>
                 {acf.name_hangul && <p className="mt-0.5 font-mono text-[10px] text-muted">{acf.name_hangul}</p>}
                 <p className="mt-1 font-mono text-[9px] uppercase tracking-wider text-muted/70">
-                    {acf.debut_date ? acf.debut_date.slice(0, 4) : (acf.active === false ? 'Encerrado' : 'Em atividade')}
+                    {acf.debut_date ? acf.debut_date.slice(0, 4) : (acf.active === false ? t('encerradoCapitalizado') : t('emAtividade'))}
                 </p>
             </div>
         </Link>
@@ -73,7 +77,8 @@ function GroupChip({ group, className = '' }: { group: WPGroup; className?: stri
 }
 
 /* ── Birthday chip ── */
-function BirthdayChip({ artist, today }: { artist: WPArtist; today: number }) {
+async function BirthdayChip({ artist, today, locale }: { artist: WPArtist; today: number; locale: Locale }) {
+    const t = await getTranslations({ locale, namespace: 'home.abaixoDaDobra' })
     const image = getWPImage(artist._embedded, artist.featured_image_url)
     const name = stripHtml(artist.title.rendered)
     let day: number | null = null
@@ -100,17 +105,21 @@ function BirthdayChip({ artist, today }: { artist: WPArtist; today: number }) {
             </div>
             <div className="min-w-0 w-full">
                 <p className="text-[11px] font-semibold leading-tight line-clamp-2 group-hover:text-accent transition-colors">{name}</p>
-                {day && <p className="font-mono text-[9px] text-muted">dia {day}</p>}
+                {day && <p className="font-mono text-[9px] text-muted">{t('dia', { dia: day })}</p>}
             </div>
         </Link>
     )
 }
 
 /* ── Main (Server Component) ── */
-export async function HomeBelowFold({ homeSettings, cultureGuides }: { homeSettings: HomeSettings; cultureGuides: BestOfList[] }) {
+export async function HomeBelowFold({ homeSettings, cultureGuides, locale = DEFAULT_LOCALE }: { homeSettings: HomeSettings; cultureGuides: BestOfList[]; locale?: Locale }) {
+    const t = await getTranslations({ locale, namespace: 'home.abaixoDaDobra' })
+    const tc = await getTranslations({ locale, namespace: 'home.comum' })
     const now = new Date()
     const currentMonth = now.getMonth() + 1
     const today = now.getUTCDate()
+    const nomeDoMes = new Intl.DateTimeFormat(intlLocale(locale), { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2000, currentMonth - 1, 1)))
+    const mes = nomeDoMes.charAt(0).toLocaleUpperCase(intlLocale(locale)) + nomeDoMes.slice(1)
 
     const [groupsResult, selectedGroupsResult, productionsResult, birthdaysResult] = await Promise.allSettled([
         getGroups({ perPage: 8 }),
@@ -143,7 +152,7 @@ export async function HomeBelowFold({ homeSettings, cultureGuides }: { homeSetti
             {/* Comece por aqui: cultura coreana — bloco fixo, curado no WP admin */}
             {cultureGuides.length > 0 && (
                 <section>
-                    <SectionTitleBar title="Comece por Aqui" eyebrow="cultura coreana 101" href="/cultura-coreana-101" linkText="ver todos →" />
+                    <SectionTitleBar title={t('guiasTitulo')} eyebrow={t('guiasEyebrow')} href="/cultura-coreana-101" linkText={tc('verTodos')} />
                     <div className="-mx-4 grid auto-cols-[minmax(240px,78vw)] grid-flow-col gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid-flow-row sm:grid-cols-2 sm:px-0 lg:grid-cols-3">
                         {cultureGuides.slice(0, 6).map(g => <CultureGuideChip key={g.href} guide={g} />)}
                     </div>
@@ -153,10 +162,10 @@ export async function HomeBelowFold({ homeSettings, cultureGuides }: { homeSetti
             {/* Grupos em destaque */}
             {groups.length > 0 && (
                 <section>
-                    <SectionTitleBar title="Grupos K-Pop" eyebrow="seleção editorial" href="/groups" linkText="ver todos →" />
+                    <SectionTitleBar title={t('gruposTitulo')} eyebrow={t('gruposEyebrow')} href="/groups" linkText={tc('verTodos')} />
                     <div className="-mx-4 grid auto-cols-[minmax(240px,78vw)] grid-flow-col gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid-flow-row sm:grid-cols-2 sm:px-0 lg:grid-cols-4">
                         {groups.map((g, index) => (
-                            <GroupChip key={g.id} group={g} className={index >= 4 ? 'hidden sm:grid' : 'grid'} />
+                            <GroupChip key={g.id} group={g} locale={locale} className={index >= 4 ? 'hidden sm:grid' : 'grid'} />
                         ))}
                     </div>
                 </section>
@@ -166,14 +175,14 @@ export async function HomeBelowFold({ homeSettings, cultureGuides }: { homeSetti
             {birthdays.length > 0 && (
                 <section>
                     <SectionTitleBar
-                        title={`Aniversariantes — ${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][currentMonth - 1]}`}
-                        eyebrow="nascidos este mês"
+                        title={t('aniversariantesTitulo', { mes })}
+                        eyebrow={t('aniversariantesEyebrow')}
                         href="/artists/birthdays"
-                        linkText="ver todos →"
+                        linkText={tc('verTodos')}
                     />
                     <div className="-mx-4 grid auto-cols-[60px] grid-flow-col gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid-flow-row sm:grid-cols-8 sm:px-0 md:grid-cols-10">
                         {birthdays.slice(0, 10).map(a => (
-                            <BirthdayChip key={a.id} artist={a} today={today} />
+                            <BirthdayChip key={a.id} artist={a} today={today} locale={locale} />
                         ))}
                     </div>
                 </section>

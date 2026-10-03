@@ -33,9 +33,9 @@ export function homeCatStyle(post: WPPost, categoryMap?: Record<number, { name: 
     return { color, bg: `color-mix(in srgb, ${color} 12.5%, transparent)` }
 }
 
-export function homeCatName(post: WPPost, categoryMap?: Record<number, { name: string; slug: string }>): string {
+export function homeCatName(post: WPPost, categoryMap?: Record<number, { name: string; slug: string }>, fallback = 'Artigo'): string {
     const cat = resolveCategory(post, categoryMap)
-    return cat?.name ?? 'Artigo'
+    return cat?.name ?? fallback
 }
 
 export function nameToGradient(name: string): string {

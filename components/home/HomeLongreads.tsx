@@ -1,14 +1,20 @@
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { WPPost } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import { Clock } from 'lucide-react'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { intlLocale } from '@/lib/i18n/format'
 
-export function HomeLongreads({ posts }: { posts: WPPost[] }) {
+export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts: WPPost[]; locale?: Locale }) {
+    const t = await getTranslations({ locale, namespace: 'home.longreads' })
+    const tc = await getTranslations({ locale, namespace: 'home.comum' })
+    const data = (date: string) => formatDatePt(date, intlLocale(locale))
     return (
         <div className="border-b border-border px-4 py-8 sm:px-6 lg:border-b-0 lg:border-r lg:px-10">
-            <SectionTitleBar title="Para ler com calma" href="/blog" linkText="arquivo →" className="mb-3" />
+            <SectionTitleBar title={t('titulo')} href="/blog" linkText={t('arquivo')} className="mb-3" />
             <div>
                 {posts.map((post, index) => {
                     const image = getWPImage(post._embedded, post.featured_image_url)
@@ -27,22 +33,22 @@ export function HomeLongreads({ posts }: { posts: WPPost[] }) {
                                         className="object-cover object-top" />
                                 ) : <div className="h-full bg-surface" />}
                                 {isLead && (
-                                    <span className="absolute top-1.5 left-1.5 bg-accent-a11y text-white font-mono text-[8px] font-black uppercase px-1.5 py-0.5 leading-none">Capa</span>
+                                    <span className="absolute top-1.5 left-1.5 bg-accent-a11y text-white font-mono text-[8px] font-black uppercase px-1.5 py-0.5 leading-none">{tc('capa')}</span>
                                 )}
                             </div>
                             <div className="flex flex-col justify-center min-w-0">
                                 <span className="inline-flex items-center gap-1.5 w-fit rounded-xs bg-accent/8 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-accent">
-                                    <Clock size={8} /> {mins} min
+                                    <Clock size={8} /> {tc('minutos', { mins })}
                                 </span>
                                 <h3 className={`mt-2 font-serif font-medium text-foreground transition-colors group-hover:text-accent ${isLead ? 'text-[clamp(1.45rem,4vw,2rem)] leading-[1.08]' : 'text-home-title line-clamp-3 sm:line-clamp-2'}`}>
                                     {title}
                                 </h3>
                                 {excerpt && <p className={`mt-1.5 line-clamp-2 text-home-body-lg text-muted ${isLead ? 'block' : 'hidden sm:block'}`}>{excerpt}</p>}
-                                {isLead && <span className="mt-4 text-[10px] font-bold uppercase tracking-[0.12em] text-muted">{formatDatePt(post.date)}</span>}
+                                {isLead && <span className="mt-4 text-[10px] font-bold uppercase tracking-[0.12em] text-muted">{data(post.date)}</span>}
                             </div>
                             {!isLead && (
                                 <span className="hidden self-start pt-1 text-right text-[11px] font-bold uppercase tracking-[0.12em] text-muted sm:block">
-                                    {formatDatePt(post.date)}
+                                    {data(post.date)}
                                 </span>
                             )}
                         </Link>

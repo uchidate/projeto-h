@@ -1,11 +1,14 @@
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import type { HomeSettings } from '@/lib/wordpress/site-settings'
 
-export function HomeEditorialHubs({ hubs }: { hubs: HomeSettings['hubs'] }) {
+export async function HomeEditorialHubs({ hubs, locale = DEFAULT_LOCALE }: { hubs: HomeSettings['hubs']; locale?: Locale }) {
+    const t = await getTranslations({ locale, namespace: 'home.hubs' })
     return (
         <div className="border-t border-border px-4 py-5 sm:px-6 lg:px-5">
-            <SectionTitleBar title="Explorar por categoria" href="/blog" linkText="ver todas →" className="mb-3" />
+            <SectionTitleBar title={t('titulo')} href="/blog" linkText={t('verTodas')} className="mb-3" />
             <div className="lg:hidden -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:px-6" style={{ scrollbarWidth: 'none' }}>
                 {hubs.map(h => (
                     <Link key={`${h.label}-${h.href}`} href={h.href}

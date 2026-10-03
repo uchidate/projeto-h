@@ -1,18 +1,16 @@
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { WPArtist, WPGroup } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
-
-const ROLE_PT: Record<string, string> = {
-    singer: 'Cantor(a)', actor: 'Ator/Atriz', dancer: 'Dançarino(a)',
-    rapper: 'Rapper', model: 'Modelo', host: 'Apresentador(a)',
-}
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { labelsFor } from '@/lib/i18n/labels'
 
 type SpotlightItem =
     | { kind: 'artist'; data: WPArtist }
     | { kind: 'group'; data: WPGroup }
 
-function SpotlightCard({ item }: { item: SpotlightItem }) {
+function SpotlightCard({ item, labels }: { item: SpotlightItem; labels: ReturnType<typeof labelsFor> }) {
     const isGroup = item.kind === 'group'
     const raw = item.data
     const name = stripHtml(raw.title.rendered)
@@ -22,7 +20,7 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
     const rawRole = (raw as WPArtist).acf?.roles?.[0]
     const sub = isGroup
         ? ((raw as WPGroup).acf?.debut_date?.slice(0, 4) ?? null)
-        : (rawRole ? (ROLE_PT[rawRole] ?? rawRole) : null)
+        : (rawRole ? labels.role(rawRole) : null)
 
     return (
         <Link href={href} className="group flex shrink-0 flex-col items-center gap-2 w-[80px] sm:w-[96px] lg:w-[100px]">
@@ -65,10 +63,13 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
 interface Props {
     artists?: WPArtist[]
     groups?: WPGroup[]
+    locale?: Locale
 }
 
-export function HomeArtistSpotlight({ artists = [], groups = [] }: Props) {
+export async function HomeArtistSpotlight({ artists = [], groups = [], locale = DEFAULT_LOCALE }: Props) {
     if (!artists.length && !groups.length) return null
+    const t = await getTranslations({ locale, namespace: 'home.spotlight' })
+    const labels = labelsFor(locale)
 
     // Intercala grupos e artistas para variedade visual
     const items: SpotlightItem[] = []
@@ -83,22 +84,22 @@ export function HomeArtistSpotlight({ artists = [], groups = [] }: Props) {
         <div className="border-t border-border bg-surface/40 px-4 py-5 sm:px-6 lg:px-10">
             <div className="flex items-center justify-between mb-4">
                 <div>
-                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.16em] text-accent">● charts &amp; buzz coreano</p>
+                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.16em] text-accent">{t('eyebrow')}</p>
                     <h2 className="font-sans text-[14px] sm:text-[15px] font-black tracking-[-0.02em] text-foreground mt-0.5">
-                        Populares na Coreia agora
+                        {t('titulo')}
                     </h2>
-                    <p className="mt-0.5 text-[11px] text-muted hidden sm:block">Baseado em charts, streams e redes sociais na Coreia</p>
+                    <p className="mt-0.5 text-[11px] text-muted hidden sm:block">{t('descricao')}</p>
                 </div>
                 <div className="flex gap-2">
-                    <Link href="/artists" className="text-[11px] font-bold text-muted hover:text-accent transition-colors">Artistas →</Link>
+                    <Link href="/artists" className="text-[11px] font-bold text-muted hover:text-accent transition-colors">{t('artistas')}</Link>
                     <span className="text-muted/30">·</span>
-                    <Link href="/groups" className="text-[11px] font-bold text-muted hover:text-accent transition-colors">Grupos →</Link>
+                    <Link href="/groups" className="text-[11px] font-bold text-muted hover:text-accent transition-colors">{t('grupos')}</Link>
                 </div>
             </div>
             {/* Mobile/tablet: scroll horizontal — Desktop: 1 linha com justify-between */}
             <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:overflow-hidden lg:gap-0 lg:justify-between">
                 {capped.map((item, i) => (
-                    <SpotlightCard key={`${item.kind}-${item.data.id}-${i}`} item={item} />
+                    <SpotlightCard key={`${item.kind}-${item.data.id}-${i}`} item={item} labels={labels} />
                 ))}
             </div>
         </div>

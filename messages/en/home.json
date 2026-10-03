@@ -1,0 +1,98 @@
+{
+  "pagina": {
+    "rotulo": "__SITE__ home page",
+    "lojaTitulo": "Editors' picks"
+  },
+  "comum": {
+    "verTodos": "see all →",
+    "minutos": "{mins} min",
+    "minutosDeLeitura": "{mins} min read",
+    "capa": "Cover",
+    "artigo": "Article"
+  },
+  "hero": {
+    "lerAgora": "Read now",
+    "continuarLeitura": "Keep reading",
+    "filmeEmDestaque": "Featured film",
+    "doramaEmDestaque": "Featured drama",
+    "fallbackEyebrow": "Edition updating",
+    "fallbackTitulo": "Korean culture, in English.",
+    "fallbackSubtitulo": "Korean dramas, films and artists, covered every day.",
+    "verArtigos": "Browse articles",
+    "artistas": "Artists"
+  },
+  "hubs": {
+    "titulo": "Browse by category",
+    "verTodas": "see all →"
+  },
+  "spotlight": {
+    "eyebrow": "● Korean charts & buzz",
+    "titulo": "Popular in Korea right now",
+    "descricao": "Based on charts, streams and social media in Korea",
+    "artistas": "Artists →",
+    "grupos": "Groups →"
+  },
+  "destaques": {
+    "titulo": "Featured",
+    "selecaoEditorial": "editors' selection",
+    "verTodosArtigos": "See all articles"
+  },
+  "ultimas": {
+    "titulo": "Latest posts",
+    "verFeed": "see feed →"
+  },
+  "longreads": {
+    "titulo": "Longer reads",
+    "arquivo": "archive →"
+  },
+  "artistasEmAlta": {
+    "eyebrow": "● site ranking",
+    "titulo": "Most searched on __SITE__",
+    "descricao": "Artists with the most visits and searches on the site",
+    "perfilEmFoco": "Profile in focus",
+    "escolhaEditorial": "Editors' pick",
+    "destaqueDaSemana": "Highlight of the week",
+    "verTodos": "See all artists"
+  },
+  "gruposEmAlta": {
+    "titulo": "Trending groups",
+    "aoVivo": "● live",
+    "fandom": "Fandom: {nome}",
+    "perfilEmFoco": "Profile in focus",
+    "grupoDaSemana": "Group of the week",
+    "verTodos": "See all groups"
+  },
+  "tipoDeGrupo": {
+    "girl_group": "Girl group",
+    "boy_group": "Boy group",
+    "co_ed": "Co-ed",
+    "solo": "Solo"
+  },
+  "producoes": {
+    "titulo": "Dramas & Films",
+    "eyebrow": "K-Drama & Cinema",
+    "verTodos": "see all →"
+  },
+  "quiz": {
+    "eyebrow": "Quiz",
+    "titulo": "How much do you know about K-Pop and K-Drama?",
+    "descricao": "15 questions about Korean culture. New questions every round!",
+    "pergunta1": "What is BTS's fandom called?",
+    "pergunta2": "Who starred in Crash Landing on You?",
+    "pergunta3": "What does \"Hallyu\" mean?",
+    "acao": "Take the quiz"
+  },
+  "abaixoDaDobra": {
+    "guiasTitulo": "Start Here",
+    "guiasEyebrow": "Korean culture 101",
+    "gruposTitulo": "K-Pop Groups",
+    "gruposEyebrow": "editors' selection",
+    "aniversariantesTitulo": "Birthdays — {mes}",
+    "aniversariantesEyebrow": "born this month",
+    "membros": "{n} mbr",
+    "encerrado": "disbanded",
+    "encerradoCapitalizado": "Disbanded",
+    "emAtividade": "Active",
+    "dia": "day {dia}"
+  }
+}

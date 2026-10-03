@@ -1,19 +1,24 @@
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { WPPost } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml, formatDatePt } from '@/lib/utils'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import { HomeKicker } from '@/components/home/HomeKicker'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { intlLocale } from '@/lib/i18n/format'
 
-export function HomeHighlightGrid({ posts, categoryMap }: { posts: WPPost[]; categoryMap?: Record<number, { name: string; slug: string }> }) {
+export async function HomeHighlightGrid({ posts, categoryMap, locale = DEFAULT_LOCALE }: { posts: WPPost[]; categoryMap?: Record<number, { name: string; slug: string }>; locale?: Locale }) {
     if (!posts.length) return null
+    const t = await getTranslations({ locale, namespace: 'home.destaques' })
+    const data = (date: string) => formatDatePt(date, intlLocale(locale))
     const [featured, ...secondary] = posts
 
     return (
         <div className="border-t border-border px-4 py-7 sm:px-6 sm:py-8 lg:px-10">
             <SectionTitleBar
-                title="Em destaque"
-                action={<span className="hidden font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted sm:block">seleção editorial</span>}
+                title={t('titulo')}
+                action={<span className="hidden font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted sm:block">{t('selecaoEditorial')}</span>}
             />
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-6">
 
@@ -31,7 +36,7 @@ export function HomeHighlightGrid({ posts, categoryMap }: { posts: WPPost[]; cat
                                         className="object-cover" />
                                 ) : <div className="h-full bg-surface" />}
                                 <div className="absolute bottom-3 left-3">
-                                    <HomeKicker post={featured} categoryMap={categoryMap} />
+                                    <HomeKicker post={featured} categoryMap={categoryMap} locale={locale} />
                                 </div>
                             </div>
                             <div className="mt-4">
@@ -41,7 +46,7 @@ export function HomeHighlightGrid({ posts, categoryMap }: { posts: WPPost[]; cat
                                 {excerpt && (
                                     <p className="mt-2 text-home-body-lg text-muted line-clamp-2">{excerpt}</p>
                                 )}
-                                <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.12em] text-muted/70">{formatDatePt(featured.date)}</p>
+                                <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.12em] text-muted/70">{data(featured.date)}</p>
                             </div>
                         </Link>
                     )
@@ -63,18 +68,18 @@ export function HomeHighlightGrid({ posts, categoryMap }: { posts: WPPost[]; cat
                                     ) : <div className="h-full bg-surface" />}
                                 </div>
                                 <div className="min-w-0 flex-1 flex flex-col justify-center">
-                                    <HomeKicker post={post} categoryMap={categoryMap} />
+                                    <HomeKicker post={post} categoryMap={categoryMap} locale={locale} />
                                     <h3 className="mt-1.5 font-serif text-home-title-sm font-medium text-foreground group-hover:text-accent transition-colors line-clamp-3">
                                         {title}
                                     </h3>
-                                    <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-muted/70">{formatDatePt(post.date)}</p>
+                                    <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-muted/70">{data(post.date)}</p>
                                 </div>
                             </Link>
                         )
                     })}
                     <Link href="/blog"
                         className="group mt-auto flex items-center justify-between border border-border bg-surface/60 px-4 py-3 hover:border-accent/50 hover:bg-surface transition-colors">
-                        <span className="text-[12px] font-black text-foreground group-hover:text-accent transition-colors">Ver todos os artigos</span>
+                        <span className="text-[12px] font-black text-foreground group-hover:text-accent transition-colors">{t('verTodosArtigos')}</span>
                         <span className="text-accent font-mono font-black transition-transform group-hover:translate-x-1">→</span>
                     </Link>
                 </div>

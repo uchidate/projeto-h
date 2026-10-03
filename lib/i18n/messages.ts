@@ -3,6 +3,7 @@ import ptEntity from '@/messages/pt/entity.json'
 import ptProfile from '@/messages/pt/profile.json'
 import ptClient from '@/messages/pt/client.json'
 import ptInstitucional from '@/messages/pt/institucional.json'
+import ptHome from '@/messages/pt/home.json'
 import { SITE_NAME } from '@/lib/constants/identidade.mjs'
 
 /**
@@ -28,7 +29,7 @@ function comNomeDoSite<T>(valor: T): T {
  * Um namespace = um arquivo em messages/<locale>/. Ao criar um namespace,
  * registre-o nos dois objetos abaixo.
  */
-const pt = comNomeDoSite({ entity: ptEntity, profile: ptProfile, client: ptClient, institucional: ptInstitucional })
+const pt = comNomeDoSite({ entity: ptEntity, profile: ptProfile, client: ptClient, institucional: ptInstitucional, home: ptHome })
 
 export type Messages = typeof pt
 
@@ -38,13 +39,14 @@ export const PT_MESSAGES: Messages = pt
 const loaders: Record<Locale, () => Promise<Messages>> = {
     pt: async () => pt,
     en: async () => {
-        const [entity, profile, client, institucional]: [Messages['entity'], Messages['profile'], Messages['client'], Messages['institucional']] = await Promise.all([
+        const [entity, profile, client, institucional, home]: [Messages['entity'], Messages['profile'], Messages['client'], Messages['institucional'], Messages['home']] = await Promise.all([
             import('@/messages/en/entity.json').then((m) => m.default),
             import('@/messages/en/profile.json').then((m) => m.default),
             import('@/messages/en/client.json').then((m) => m.default),
             import('@/messages/en/institucional.json').then((m) => m.default),
+            import('@/messages/en/home.json').then((m) => m.default),
         ])
-        return comNomeDoSite({ entity, profile, client, institucional })
+        return comNomeDoSite({ entity, profile, client, institucional, home })
     },
 }
 

@@ -1,4 +1,5 @@
-import { SITE_NAME } from '@/lib/constants/site'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import type { WPPost, WPProduction, WPArtist, WPGroup } from '@/lib/wordpress/types'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { HomeQuizBanner } from '@/components/home/HomeQuizBanner'
@@ -35,9 +36,11 @@ type Props = {
     streamingByPlatform: ShowsByPlatform
     categoryMap?: Record<number, { name: string; slug: string }>
     featuredProducts?: StoreProduct[]
+    locale?: Locale
 }
 
-export function HomeFrontPage({ posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, streamingByPlatform, categoryMap, featuredProducts = [] }: Props) {
+export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, streamingByPlatform, categoryMap, featuredProducts = [] }: Props) {
+    const t = await getTranslations({ locale, namespace: 'home.pagina' })
     const heroPost = posts.find(post => post.id === homeSettings.heroPostId) ?? posts[0]
     const withoutHero = posts.filter(post => post.id !== heroPost?.id)
     const selectedHighlights = homeSettings.highlightPostIds
@@ -51,13 +54,13 @@ export function HomeFrontPage({ posts, productions, artists, spotlightArtists, f
     const latest = rest.slice(4, 14)
 
     return (
-        <section className="bg-background" aria-label={`Página inicial ${SITE_NAME}`}>
+        <section className="bg-background" aria-label={t('rotulo')}>
             <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
-                <div data-bloco="home-hero" className="contents"><HomeHero post={heroPost} production={!heroPost ? productions[0] : undefined} /></div>
-                <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} /></div>
-                <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} /></div>
-                <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} /></div>
-                <div data-bloco="home-loja" className="contents"><ShopRelatedSection title="Escolhas da curadoria" products={featuredProducts} /></div>
+                <div data-bloco="home-hero" className="contents"><HomeHero post={heroPost} production={!heroPost ? productions[0] : undefined} locale={locale} /></div>
+                <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>
+                <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} locale={locale} /></div>
+                <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} locale={locale} /></div>
+                <div data-bloco="home-loja" className="contents"><ShopRelatedSection title={t('lojaTitulo')} products={featuredProducts} /></div>
                 {ADSENSE.slots.inline && (
                     <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">
                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="home_feed" />
@@ -74,16 +77,16 @@ export function HomeFrontPage({ posts, productions, artists, spotlightArtists, f
                   * deve mexer em como o AdSense enxerga a página.
                   */}
                 <div className="cv-auto [--cv-h:1800px] lg:[--cv-h:1180px] grid border-t border-border bg-surface/55 lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
-                    <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} /></div>
-                    <div data-bloco="home-artistas-em-alta" className="contents"><HomeTrendingArtists artists={artists} featuredArtist={featuredArtist} featuredArtistNote={featuredArtistNote} /></div>
+                    <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} locale={locale} /></div>
+                    <div data-bloco="home-artistas-em-alta" className="contents"><HomeTrendingArtists artists={artists} featuredArtist={featuredArtist} featuredArtistNote={featuredArtistNote} locale={locale} /></div>
                 </div>
                 <div className="cv-auto [--cv-h:620px] sm:[--cv-h:720px] lg:[--cv-h:490px]">
-                    <div data-bloco="home-producoes" className="contents"><HomeProductionsRail productions={productions} /></div>
+                    <div data-bloco="home-producoes" className="contents"><HomeProductionsRail productions={productions} locale={locale} /></div>
                 </div>
                 {trendingGroups.length > 0 && (
                     <div className="cv-auto [--cv-h:1100px] lg:[--cv-h:920px] grid border-t border-border bg-background lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
-                        <div data-bloco="home-ultimos" className="contents"><HomeLatestPosts posts={latest.slice(0, 8)} categoryMap={categoryMap} /></div>
-                        <div data-bloco="home-grupos-em-alta" className="contents"><HomeTrendingGroups groups={trendingGroups} /></div>
+                        <div data-bloco="home-ultimos" className="contents"><HomeLatestPosts posts={latest.slice(0, 8)} categoryMap={categoryMap} locale={locale} /></div>
+                        <div data-bloco="home-grupos-em-alta" className="contents"><HomeTrendingGroups groups={trendingGroups} locale={locale} /></div>
                     </div>
                 )}
                 {ADSENSE.slots.leaderboard && (
@@ -95,7 +98,7 @@ export function HomeFrontPage({ posts, productions, artists, spotlightArtists, f
                     <div data-bloco="home-streaming" className="contents"><HomeStreamingTop showsByPlatform={streamingByPlatform} /></div>
                 </div>
                 <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-10">
-                    <div data-bloco="home-quiz" className="contents"><HomeQuizBanner /></div>
+                    <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
                 </div>
             </div>
         </section>

@@ -1,15 +1,18 @@
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Star } from 'lucide-react'
 import type { WPProduction } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 
-export function HomeProductionsRail({ productions }: { productions: WPProduction[] }) {
+export async function HomeProductionsRail({ productions, locale = DEFAULT_LOCALE }: { productions: WPProduction[]; locale?: Locale }) {
     if (!productions.length) return null
+    const t = await getTranslations({ locale, namespace: 'home.producoes' })
     return (
         <div className="border-t border-border px-4 py-8 sm:px-6 lg:px-10">
-            <SectionTitleBar title="Doramas & Filmes" eyebrow="K-Drama & Cinema" href="/productions" linkText="ver todos →" />
+            <SectionTitleBar title={t('titulo')} eyebrow={t('eyebrow')} href="/productions" linkText={t('verTodos')} />
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                 {productions.slice(0, 6).map((prod) => {
                     const image = getWPImage(prod._embedded, prod.featured_image_url)
