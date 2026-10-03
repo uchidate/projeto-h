@@ -14,6 +14,7 @@ const ROUTES = {
     group: { pt: '/groups/[slug]', en: '/groups/[slug]' },
     productions: { pt: '/productions', en: '/productions' },
     production: { pt: '/productions/[slug]', en: '/productions/[slug]' },
+    blog: { pt: '/blog', en: '/blog' },
     about: { pt: '/about', en: '/about' },
     contact: { pt: '/contato', en: '/contact' },
     ethics: { pt: '/ethics', en: '/ethics' },
