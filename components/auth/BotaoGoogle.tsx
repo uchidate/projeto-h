@@ -14,9 +14,11 @@
 
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { trackAutenticacaoGoogleIniciada } from '@/lib/analytics'
 
 export function BotaoGoogle({ callbackUrl, rotulo, origem }: { callbackUrl: string; rotulo: string; origem: 'entrar' | 'cadastro' }) {
+    const t = useTranslations('client.auth.google')
     const [indo, setIndo] = useState(false)
 
     return (
@@ -36,12 +38,12 @@ export function BotaoGoogle({ callbackUrl, rotulo, origem }: { callbackUrl: stri
                     <path fill="#FBBC05" d="M11.8 28.4c-.4-1.3-.7-2.7-.7-4.4s.3-3.1.7-4.4v-5.7H4.5C2.9 17.1 2 20.4 2 24s.9 6.9 2.5 10.1l7.3-5.7z" />
                     <path fill="#EA4335" d="M24 10.4c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 3.9 29.9 2 24 2 15.5 2 8.1 6.8 4.5 13.9l7.3 5.7c1.7-5.2 6.5-9.2 12.2-9.2z" />
                 </svg>
-                {indo ? 'Abrindo…' : rotulo}
+                {indo ? t('opening') : rotulo}
             </button>
 
             <div className="flex items-center gap-3" aria-hidden="true">
                 <span className="h-px flex-1 bg-border" />
-                <span className="text-[10px] font-black uppercase tracking-wider text-muted">ou</span>
+                <span className="text-[10px] font-black uppercase tracking-wider text-muted">{t('or')}</span>
                 <span className="h-px flex-1 bg-border" />
             </div>
         </div>

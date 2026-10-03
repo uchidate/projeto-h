@@ -174,5 +174,50 @@
     "notifications": "Notifications",
     "searchShort": "Search artists, groups…",
     "preferences": "Preferences"
+  },
+  "auth": {
+    "login": {
+      "eyebrow": "Account",
+      "title": "Sign in",
+      "intro": "Access your favorites, lists and personalized dashboard.",
+      "google": "Sign in with Google",
+      "usernameLabel": "Email or username",
+      "usernamePlaceholder": "you@email.com",
+      "passwordLabel": "Password",
+      "togglePassword": "Show or hide password",
+      "error": "Incorrect email or password.",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "noAccount": "Don't have an account yet?",
+      "createAccount": "Create account"
+    },
+    "signup": {
+      "eyebrow": "Account",
+      "title": "Create account",
+      "intro": "Create an account to sync your favorites, watchlist and dashboard across devices.",
+      "google": "Sign up with Google",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "togglePassword": "Show or hide password",
+      "passwordShort": "Password must be at least 8 characters.",
+      "createdSignIn": "Account created! Sign in to continue.",
+      "genericError": "Couldn't create the account.",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "google": {
+      "opening": "Opening…",
+      "or": "or"
+    },
+    "menu": {
+      "signIn": "Sign in",
+      "signInAria": "Sign in to your account"
+    }
   }
 }

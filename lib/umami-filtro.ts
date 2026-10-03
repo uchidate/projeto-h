@@ -5,7 +5,7 @@ import { classeDaVisita } from '@/lib/visita'
  * Rotas onde o Umami não carrega nem conta nada. Prefixo, não igualdade: cobre
  * subrotas (`/cadastro/etapa-2`). Ver o porquê no cabeçalho de UmamiScript.
  */
-const ROTAS_SEM_MEDICAO = ['/entrar', '/cadastro']
+const ROTAS_SEM_MEDICAO = ['/entrar', '/cadastro', '/en/sign-in', '/en/sign-up']
 
 export function rotaSemMedicao(caminho: string): boolean {
     return ROTAS_SEM_MEDICAO.some((r) => caminho === r || caminho.startsWith(`${r}/`))

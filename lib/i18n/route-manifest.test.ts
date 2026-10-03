@@ -2,6 +2,7 @@ import { readdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { MANIFESTO_DE_ROTAS } from './route-manifest'
+import { caminhoPtDe } from './routes'
 
 const RAIZ = process.cwd()
 
@@ -22,6 +23,12 @@ function paginasDe(grupo: string): string[] {
 /** `filtrado` é destino interno de rewrite (listagens estáticas), não uma rota pública. */
 const ehInterna = (caminho: string) => caminho.split('/').includes('filtrado')
 
+/** Páginas de `app/(intl)/[locale]`, trazidas ao caminho em português via `ROUTES` (`/sign-in` → `/entrar`). */
+const paginasEmIntl = () => {
+    const dePara = caminhoPtDe('en')
+    return paginasDe('(intl)/[locale]').map(c => dePara[c] ?? c)
+}
+
 const paginasPt = paginasDe('(site)').filter(c => !ehInterna(c))
 
 describe('manifesto de rotas (i18n)', () => {
@@ -36,14 +43,14 @@ describe('manifesto de rotas (i18n)', () => {
     })
 
     it('rota marcada como pronta existe em app/(intl)/[locale]', () => {
-        const emIntl = paginasDe('(intl)/[locale]')
+        const emIntl = paginasEmIntl()
         const prontas = Object.entries(MANIFESTO_DE_ROTAS).filter(([, r]) => r.estado === 'pronta').map(([c]) => c)
         const faltando = prontas.filter(c => !emIntl.includes(c))
         expect(faltando, `Marcadas como prontas, mas sem página em app/(intl): ${faltando.join(', ')}`).toEqual([])
     })
 
     it('toda página em app/(intl) está marcada como pronta (sem tradução fantasma)', () => {
-        const emIntl = paginasDe('(intl)/[locale]')
+        const emIntl = paginasEmIntl()
         const naoMarcadas = emIntl.filter(c => MANIFESTO_DE_ROTAS[c]?.estado !== 'pronta')
         expect(naoMarcadas, `Páginas em app/(intl) fora do manifesto como "pronta": ${naoMarcadas.join(', ')}`).toEqual([])
     })

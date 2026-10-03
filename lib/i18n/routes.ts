@@ -14,9 +14,18 @@ const ROUTES = {
     group: { pt: '/groups/[slug]', en: '/groups/[slug]' },
     productions: { pt: '/productions', en: '/productions' },
     production: { pt: '/productions/[slug]', en: '/productions/[slug]' },
+    login: { pt: '/entrar', en: '/sign-in' },
+    signup: { pt: '/cadastro', en: '/sign-up' },
 } as const satisfies Record<string, Record<Locale, string>>
 
 export type RouteName = keyof typeof ROUTES
+
+/** Caminho sem prefixo de idioma → caminho em português (`/sign-in` → `/entrar`). Rotas com o mesmo caminho nos dois idiomas ficam de fora. */
+export function caminhoPtDe(locale: Locale): Record<string, string> {
+    return Object.fromEntries(
+        Object.values(ROUTES).filter((r) => r[locale] !== r[DEFAULT_LOCALE]).map((r) => [r[locale], r[DEFAULT_LOCALE]]),
+    )
+}
 
 type ParamsOf<P extends string> = P extends `${string}[${infer K}]${infer Rest}`
     ? { [key in K]: string } & ParamsOf<Rest>

@@ -74,8 +74,8 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/termos': { tipo: 'estatica', ...pendente },
 
     // Conta
-    '/entrar': { tipo: 'conta', ...pendente },
-    '/cadastro': { tipo: 'conta', ...pendente },
+    '/entrar': { tipo: 'conta', ...pronta },
+    '/cadastro': { tipo: 'conta', ...pronta },
     '/perfil': { tipo: 'conta', ...pendente },
     '/minhas-listas': { tipo: 'conta', ...pendente },
     '/dashboard': { tipo: 'conta', estado: 'somentePt', motivo: 'painel interno da operação, sem público externo' },

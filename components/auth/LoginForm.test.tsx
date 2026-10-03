@@ -28,16 +28,16 @@ describe('LoginForm', () => {
     it('associa os labels aos inputs via htmlFor/id', () => {
         render(<LoginForm />)
         expect(screen.getByLabelText(/e-mail ou usuário/i)).toBeInTheDocument()
-        expect(screen.getByLabelText(/senha/i)).toBeInTheDocument()
+        expect(screen.getByLabelText('Senha')).toBeInTheDocument()
     })
 
     it('alterna a visibilidade da senha ao clicar no botão de olho', async () => {
         const user = userEvent.setup()
         render(<LoginForm />)
-        const pwd = screen.getByLabelText(/senha/i)
+        const pwd = screen.getByLabelText('Senha')
         expect(pwd).toHaveAttribute('type', 'password')
 
-        await user.click(screen.getByRole('button', { name: '' }))
+        await user.click(screen.getByRole('button', { name: /mostrar ou ocultar/i }))
         expect(pwd).toHaveAttribute('type', 'text')
     })
 
@@ -49,8 +49,8 @@ describe('LoginForm', () => {
         render(<LoginForm />)
 
         await user.type(screen.getByLabelText(/e-mail ou usuário/i), 'user@x.com')
-        await user.type(screen.getByLabelText(/senha/i), 'senha123')
-        await user.click(screen.getByRole('button', { name: /entrar/i }))
+        await user.type(screen.getByLabelText('Senha'), 'senha123')
+        await user.click(screen.getByRole('button', { name: 'Entrar' }))
 
         expect(mockedSignIn).toHaveBeenCalledWith('credentials', {
             username: 'user@x.com',
@@ -68,8 +68,8 @@ describe('LoginForm', () => {
         render(<LoginForm />)
 
         await user.type(screen.getByLabelText(/e-mail ou usuário/i), 'user@x.com')
-        await user.type(screen.getByLabelText(/senha/i), 'senhaerrada')
-        await user.click(screen.getByRole('button', { name: /entrar/i }))
+        await user.type(screen.getByLabelText('Senha'), 'senhaerrada')
+        await user.click(screen.getByRole('button', { name: 'Entrar' }))
 
         expect(screen.getByText(/e-mail ou senha incorretos/i)).toBeInTheDocument()
         expect(pushMock).not.toHaveBeenCalled()
