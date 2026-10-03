@@ -24,7 +24,8 @@ A dependência só desce. **(lint)**
 | O que é | Onde |
 |---|---|
 | Peça reutilizável de uma entidade (card, filtro, seção) | `components/<entidade>/` |
-| Página inteira montada para mais de uma rota | `components/features/` |
+| Página inteira de uma entidade (`XPage`, `XDetailPage`, `XRoute`) | `components/<entidade>/` |
+| Tela transversal, sem entidade (busca, calendário, hub) | `components/features/` |
 | Peça usada por **uma** rota só | `app/<rota>/components/` |
 | Dados e regra de **uma** rota só | `app/<rota>/lib/` |
 | Regra ou acesso a dados compartilhado | `lib/<dominio>/` |

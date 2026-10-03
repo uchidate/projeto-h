@@ -15,7 +15,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { getReceita } from '@/lib/receitas'
-import { ReceitaPreparo } from '@/components/features/ReceitaPreparo'
+import { ReceitaPreparo } from '@/components/food/ReceitaPreparo'
 
 export const revalidate = 600
 

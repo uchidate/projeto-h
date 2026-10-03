@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { SITE_NAME, SITE_URL } from '@/lib/constants/site'
-import { ConsentPreferences } from '@/components/features/ConsentPreferences'
+import { ConsentPreferences } from '@/components/consent/ConsentPreferences'
 
 export const metadata: Metadata = {
     title: 'Política de Privacidade',

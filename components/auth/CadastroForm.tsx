@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Eye, EyeOff, UserPlus } from 'lucide-react'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { registerUser } from '@/lib/wordpress/userApi'
-import { BotaoGoogle } from '@/components/features/BotaoGoogle'
+import { BotaoGoogle } from '@/components/auth/BotaoGoogle'
 import { trackCadastro, trackLogin } from '@/lib/analytics'
 
 export function CadastroForm({ googleAtivo = false }: { googleAtivo?: boolean }) {

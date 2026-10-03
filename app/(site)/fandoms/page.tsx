@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { stripHtml } from '@/lib/utils'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
-import { FandomsPage } from '@/components/features/FandomsPage'
+import { FandomsPage } from '@/components/fandoms/FandomsPage'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 600

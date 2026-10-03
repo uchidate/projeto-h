@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { Eye, EyeOff, LogIn } from 'lucide-react'
-import { BotaoGoogle } from '@/components/features/BotaoGoogle'
+import { BotaoGoogle } from '@/components/auth/BotaoGoogle'
 import { trackLogin } from '@/lib/analytics'
 
 export function LoginForm({ googleAtivo = false }: { googleAtivo?: boolean }) {

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setPageLocale } from '@/lib/i18n/request-locale'
 import { isActiveLocale } from '@/lib/i18n/config'
-import { ProductionRoute, buildProductionMetadata } from '@/components/features/ProductionRoute'
+import { ProductionRoute, buildProductionMetadata } from '@/components/productions/ProductionRoute'
 
 // 6h (era 600s). O `s-maxage` da borda vem daqui, e com 600s a cauda longa quase nunca
 // acertava o cache (3 de 40 páginas, 2026-09-24; miss custa 0,8 a 2,2s contra 0,2s).
