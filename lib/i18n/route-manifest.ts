@@ -36,8 +36,8 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/comidas/[slug]': { tipo: 'detalhe', ...pendente },
     '/fandoms/[slug]': { tipo: 'detalhe', ...pendente },
     '/positions/[position]': { tipo: 'detalhe', ...pendente },
-    '/loja/artista/[slug]': { tipo: 'detalhe', ...pendente },
-    '/loja/grupo/[slug]': { tipo: 'detalhe', ...pendente },
+    '/loja/artista/[slug]': { tipo: 'detalhe', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
+    '/loja/grupo/[slug]': { tipo: 'detalhe', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
     '/quiz/[categoria]': { tipo: 'detalhe', ...pendente },
 
     // Editorial
@@ -54,7 +54,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/comidas': { tipo: 'listagem', ...pendente },
     '/fandoms': { tipo: 'listagem', ...pendente },
     '/positions': { tipo: 'listagem', ...pendente },
-    '/loja': { tipo: 'listagem', ...pendente },
+    '/loja': { tipo: 'listagem', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
     '/blog': { tipo: 'listagem', estado: 'parcial', falta: 'só a listagem (artigos com selo PT abrindo no original); /en/blog/[slug] só quando o post tiver tradução, o que exige estender translations ao blog no WP' },
     '/guias': { tipo: 'listagem', ...pendente },
     '/trending': { tipo: 'listagem', ...pendente },
