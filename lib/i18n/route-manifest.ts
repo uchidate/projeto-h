@@ -64,7 +64,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/quiz': { tipo: 'listagem', ...pendente },
 
     // Páginas estáticas e institucionais
-    '/': { tipo: 'estatica', estado: 'parcial', falta: 'só a vitrine de fichas traduzidas; faltam os blocos editoriais da home em português (destaques, últimos, longreads, hubs, loja, quiz...)' },
+    '/': { tipo: 'estatica', estado: 'parcial', falta: 'sem os blocos só-PT por decisão (loja, streaming BR, quiz) e sem guias/hubs, pendentes até haver guias traduzidos; artigos aparecem em português com selo PT' },
     '/about': { tipo: 'estatica', ...pronta },
     '/contato': { tipo: 'estatica', ...pronta },
     '/ethics': { tipo: 'estatica', ...pronta },
