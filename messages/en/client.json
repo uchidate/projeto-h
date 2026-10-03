@@ -219,5 +219,11 @@
       "signIn": "Sign in",
       "signInAria": "Sign in to your account"
     }
+  },
+  "home": {
+    "streaming": {
+      "titulo": "Top 10 on streaming",
+      "mostrarRanking": "Show the {plataforma} ranking"
+    }
   }
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Star } from 'lucide-react'
@@ -21,6 +22,7 @@ const PLATFORM_FILTER_SLUG: Record<string, string> = {
 }
 
 export function HomeStreamingTop({ showsByPlatform }: Props) {
+    const t = useTranslations('client.home.streaming')
     const available = PLATFORM_ORDER.filter(p => (showsByPlatform[p]?.length ?? 0) > 0)
     const [active, setActive] = useState<string>(available[0] ?? '')
 
@@ -37,7 +39,7 @@ export function HomeStreamingTop({ showsByPlatform }: Props) {
                     href={`/productions?platform=${PLATFORM_FILTER_SLUG[active] ?? active}`}
                     className="shrink-0 font-mono text-[9px] font-black uppercase tracking-[0.15em] text-foreground/50 transition-colors hover:text-foreground"
                 >
-                    Top 10 nos Streamings
+                    {t('titulo')}
                 </Link>
                 <div className="flex min-w-0 items-center gap-1 overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
                     {available.map(platform => {
@@ -48,7 +50,7 @@ export function HomeStreamingTop({ showsByPlatform }: Props) {
                                 key={platform}
                                 type="button"
                                 onClick={() => setActive(platform)}
-                                aria-label={`Mostrar ranking da ${c.label}`}
+                                aria-label={t('mostrarRanking', { plataforma: c.label })}
                                 aria-pressed={isActive}
                                 className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors"
                                 style={isActive

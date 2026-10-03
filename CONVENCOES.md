@@ -59,7 +59,7 @@ conteúdo só chega no cliente.
 
 Texto visível não fica literal no JSX: vai para `messages/pt` e `messages/en` e
 entra por `next-intl`. O `eslint.config.mjs` proíbe literal em JSX nas pastas já
-extraídas (hoje `components/i18n`, `components/layout`, `components/auth` e `components/institucional`); a lista só cresce. Ao
+extraídas (hoje `components/i18n`, `components/layout`, `components/auth`, `components/institucional` e `components/home`); a lista só cresce. Ao
 extrair uma pasta, acrescente-a lá no mesmo PR, e rode
 `npm run i18n:lock -- --write` depois de revisar o EN.
 

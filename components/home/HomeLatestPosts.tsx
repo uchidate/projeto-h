@@ -1,7 +1,10 @@
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import { stripHtml, formatDatePt } from '@/lib/utils'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { intlLocale } from '@/lib/i18n/format'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 
 const CAT_COLORS: Record<string, { light: string; dark: string }> = {
@@ -13,11 +16,13 @@ const CAT_COLORS: Record<string, { light: string; dark: string }> = {
     'k-beauty': { light: '#be185d', dark: '#f472b6' },
 }
 
-export function HomeLatestPosts({ posts, categoryMap }: { posts: WPPost[]; categoryMap?: Record<number, { name: string; slug: string }> }) {
+export async function HomeLatestPosts({ posts, categoryMap, locale = DEFAULT_LOCALE }: { posts: WPPost[]; categoryMap?: Record<number, { name: string; slug: string }>; locale?: Locale }) {
     if (!posts.length) return null
+    const t = await getTranslations({ locale, namespace: 'home.ultimas' })
+    const tc = await getTranslations({ locale, namespace: 'home.comum' })
     return (
         <div className="border-t border-border px-4 py-8 sm:px-6 lg:px-10">
-            <SectionTitleBar title="Últimas publicações" href="/blog" linkText="ver feed →" />
+            <SectionTitleBar title={t('titulo')} href="/blog" linkText={t('verFeed')} />
             <div>
                 {posts.map((post, i) => {
                     const cat = post.categories?.[0] && categoryMap
@@ -31,13 +36,13 @@ export function HomeLatestPosts({ posts, categoryMap }: { posts: WPPost[]; categ
                                 className="inline-block truncate text-[9px] font-black uppercase tracking-[0.12em] text-(--category-light) dark:text-(--category-dark)"
                                 style={{ '--category-light': color.light, '--category-dark': color.dark } as CSSProperties}
                             >
-                                {cat?.name ?? 'Artigo'}
+                                {cat?.name ?? tc('artigo')}
                             </span>
                             <span className="line-clamp-2 text-[13px] font-medium leading-[1.3] text-foreground transition-colors group-hover:text-accent sm:text-[15px]">
                                 {stripHtml(post.title.rendered)}
                             </span>
                             <span className="hidden sm:block text-right font-mono text-[10px] text-muted">
-                                {formatDatePt(post.date)}
+                                {formatDatePt(post.date, intlLocale(locale))}
                             </span>
                         </Link>
                     )

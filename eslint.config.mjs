@@ -46,7 +46,7 @@ export default defineConfig([
         // JSXText; atributos (aria-label, placeholder) e constantes ficam para revisão.
         // Repete a regra do segue-header porque `no-restricted-syntax` não soma entre
         // blocos: o último que casa o arquivo vence.
-        files: ['components/i18n/**/*.tsx', 'components/layout/**/*.tsx', 'components/auth/**/*.tsx', 'components/institucional/**/*.tsx'],
+        files: ['components/i18n/**/*.tsx', 'components/layout/**/*.tsx', 'components/auth/**/*.tsx', 'components/institucional/**/*.tsx', 'components/home/**/*.tsx'],
         ignores: ['components/ui/BarraAncorada.tsx', '**/*.test.tsx'],
         rules: {
             'no-restricted-syntax': ['error', {
