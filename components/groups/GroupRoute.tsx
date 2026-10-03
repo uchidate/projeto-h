@@ -25,10 +25,11 @@ import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
 import type { Locale } from '@/lib/i18n/config'
-import { availableLocales, hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
+import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
 import { buildAlternates } from '@/lib/i18n/alternates'
 import { buildLanguageLinks } from '@/lib/i18n/language-links'
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
+import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
 import { metaDescription } from '@/lib/seo/metaDescription'
 
@@ -39,7 +40,12 @@ import { metaDescription } from '@/lib/seo/metaDescription'
  */
 export async function buildGroupMetadata(slug: string, locale: Locale): Promise<Metadata> {
     const found = await getGroupBySlug(slug)
-    if (!found || !hasLocale(found, locale)) return {}
+    if (!found) return {}
+    // Sem tradução publicada: mesma ficha em português como conteúdo, fora do índice
+    // e com canonical na versão original (D10 em docs/I18N-V2.md).
+    if (semTraducao(found, locale)) {
+        return { ...(await buildGroupMetadata(slug, DEFAULT_LOCALE)), robots: { index: false, follow: true } }
+    }
     const group = localizeEntity(found, locale, 'group')
     const t = await getTranslations({ locale, namespace: 'entity' })
 
@@ -67,7 +73,8 @@ export async function buildGroupMetadata(slug: string, locale: Locale): Promise<
 
 export async function GroupRoute({ slug, locale }: { slug: string; locale: Locale }) {
     const sourceGroup = await getGroupBySlug(slug)
-    if (!sourceGroup || !hasLocale(sourceGroup, locale)) notFound()
+    if (!sourceGroup) notFound()
+    const emFallback = semTraducao(sourceGroup, locale)
     const [languageLinks, tSwitcher] = await Promise.all([
         buildLanguageLinks('group', { slug }, locale, availableLocales(sourceGroup)),
         getTranslations({ locale, namespace: 'entity.switcher' }),
@@ -136,6 +143,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
     return (
         <>
             <WpEditSetter postId={group.id} postType="group" />
+            {emFallback && <AvisoSemTraducao locale={locale} hrefOriginal={href('group', { slug }, DEFAULT_LOCALE)} />}
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('group', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />

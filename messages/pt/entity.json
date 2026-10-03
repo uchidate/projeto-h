@@ -77,5 +77,9 @@
       "groups": "Grupos",
       "productions": "Dramas e filmes"
     }
+  },
+  "fallback": {
+    "notice": "Esta página ainda não está disponível neste idioma. O conteúdo abaixo é o original em português.",
+    "readOriginal": "Ver a página em português"
   }
 }

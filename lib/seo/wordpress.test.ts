@@ -8,6 +8,15 @@ const BASE = {
 }
 
 describe('buildWordPressMetadata', () => {
+    it('noindex: fora do índice, com links seguidos', () => {
+        const meta = buildWordPressMetadata({ ...BASE, noindex: true })
+        expect(meta.robots).toEqual({ index: false, follow: true })
+    })
+
+    it('sem noindex não mexe nos robots do site', () => {
+        expect(buildWordPressMetadata(BASE).robots).toBeUndefined()
+    })
+
     it('declara og:locale:alternate com as outras versoes do hreflang', () => {
         const meta = buildWordPressMetadata({
             ...BASE,

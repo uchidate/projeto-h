@@ -19,6 +19,8 @@ type WordPressMetadataInput = {
     languages?: Record<string, string>
     /** `og:locale`; o padrão do site vale quando ausente. */
     ogLocale?: string
+    /** Página que existe só pela interface (sem tradução): fora do índice, links seguidos. */
+    noindex?: boolean
 }
 
 /** Combina SEO editorial do WordPress com fallbacks consistentes do frontend. */
@@ -32,6 +34,7 @@ export function buildWordPressMetadata({
     ogImageOverride,
     languages,
     ogLocale,
+    noindex,
 }: WordPressMetadataInput): Metadata {
     const resolvedTitle = seo?.title || title
     const resolvedDescription = seo?.description || description
@@ -70,7 +73,7 @@ export function buildWordPressMetadata({
             : resolvedTitle,
         description: resolvedDescription,
         alternates: { canonical, ...(languages ? { languages } : {}) },
-        ...(robots?.length ? { robots: { index: !robots.includes('noindex'), follow: !robots.includes('nofollow'), 'max-image-preview': 'large' as const, 'max-snippet': -1, 'max-video-preview': -1 } } : {}),
+        ...(noindex ? { robots: { index: false, follow: true } } : robots?.length ? { robots: { index: !robots.includes('noindex'), follow: !robots.includes('nofollow'), 'max-image-preview': 'large' as const, 'max-snippet': -1, 'max-video-preview': -1 } } : {}),
         openGraph: {
             ...baseOG(canonical),
             ...(ogLocale ? { locale: ogLocale } : {}),

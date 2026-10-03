@@ -17,10 +17,11 @@ import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
 import type { Locale } from '@/lib/i18n/config'
-import { availableLocales, hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
+import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
 import { buildAlternates } from '@/lib/i18n/alternates'
 import { buildLanguageLinks } from '@/lib/i18n/language-links'
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
+import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
 import { metaDescription } from '@/lib/seo/metaDescription'
 
@@ -29,7 +30,12 @@ import { metaDescription } from '@/lib/seo/metaDescription'
  */
 export async function buildProductionMetadata(slug: string, locale: Locale): Promise<Metadata> {
     const found = await getProductionBySlug(slug)
-    if (!found || !hasLocale(found, locale)) return {}
+    if (!found) return {}
+    // Sem tradução publicada: mesma ficha em português como conteúdo, fora do índice
+    // e com canonical na versão original (D10 em docs/I18N-V2.md).
+    if (semTraducao(found, locale)) {
+        return { ...(await buildProductionMetadata(slug, DEFAULT_LOCALE)), robots: { index: false, follow: true } }
+    }
     const production = localizeEntity(found, locale, 'production')
 
     const productionTitle = stripHtml(production.title.rendered)
@@ -66,7 +72,8 @@ export async function buildProductionMetadata(slug: string, locale: Locale): Pro
 
 export async function ProductionRoute({ slug, locale }: { slug: string; locale: Locale }) {
     const sourceProduction = await getProductionBySlug(slug)
-    if (!sourceProduction || !hasLocale(sourceProduction, locale)) notFound()
+    if (!sourceProduction) notFound()
+    const emFallback = semTraducao(sourceProduction, locale)
     const [languageLinks, tSwitcher] = await Promise.all([
         buildLanguageLinks('production', { slug }, locale, availableLocales(sourceProduction)),
         getTranslations({ locale, namespace: 'entity.switcher' }),
@@ -123,6 +130,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
     return (
         <>
             <WpEditSetter postId={production.id} postType="production" />
+            {emFallback && <AvisoSemTraducao locale={locale} hrefOriginal={href('production', { slug }, DEFAULT_LOCALE)} />}
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
