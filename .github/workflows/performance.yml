@@ -70,6 +70,22 @@ jobs:
               linhas = [`_Erro lendo manifesto: ${e.message}_`]
             }
 
+            // Auditorias de SEO reprovadas, por URL: sem isto a issue acusa a nota
+            // baixa mas não diz qual auditoria falhou.
+            const reprovadas = []
+            try {
+              for (const f of fs.readdirSync(dir).filter((n) => /^lhr-.*\.json$/.test(n))) {
+                const lhr = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))
+                const falhas = (lhr.categories?.seo?.auditRefs || [])
+                  .map((r) => lhr.audits[r.id])
+                  .filter((a) => a && typeof a.score === 'number' && a.score < 1)
+                  .map((a) => `\`${a.id}\``)
+                if (falhas.length) reprovadas.push(`- ${lhr.finalDisplayedUrl || lhr.requestedUrl}: ${falhas.join(', ')}`)
+              }
+            } catch (e) {
+              reprovadas.push(`_Erro lendo relatórios: ${e.message}_`)
+            }
+
             const tabela = [
               '| URL | Performance | Acessibilidade | Boas práticas | SEO |',
               '|---|---|---|---|---|',
@@ -84,6 +100,7 @@ jobs:
               '',
               tabela,
               '',
+              ...(reprovadas.length ? ['**Auditorias de SEO reprovadas:**', ...reprovadas, ''] : []),
               process.env.HOUVE_FALHA === '1'
                 ? '⚠️ Alguma assertiva do `.lighthouserc.cjs` falhou ou ficou abaixo do piso configurado — veja o log da execução.'
                 : '✅ Nenhuma assertiva de erro falhou nesta execução.',
@@ -129,4 +146,5 @@ jobs:
         with:
           name: lighthouse-ci
           path: .lighthouseci
+          include-hidden-files: true
           retention-days: 14
