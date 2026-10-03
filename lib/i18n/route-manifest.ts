@@ -55,7 +55,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/fandoms': { tipo: 'listagem', ...pendente },
     '/positions': { tipo: 'listagem', ...pendente },
     '/loja': { tipo: 'listagem', ...pendente },
-    '/blog': { tipo: 'listagem', ...pendente },
+    '/blog': { tipo: 'listagem', estado: 'parcial', falta: 'só a listagem (artigos com selo PT abrindo no original); /en/blog/[slug] só quando o post tiver tradução, o que exige estender translations ao blog no WP' },
     '/guias': { tipo: 'listagem', ...pendente },
     '/trending': { tipo: 'listagem', ...pendente },
     '/calendario': { tipo: 'listagem', ...pendente },

@@ -85,5 +85,12 @@
   "fallback": {
     "notice": "This page isn't available in English yet. The content below is the original in Portuguese.",
     "readOriginal": "Read it on the Portuguese page"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Articles, reviews and guides about K-Drama, K-Pop and Korean culture.",
+    "note": "Articles are published in Portuguese and open in the original.",
+    "count": "{count, plural, one {# article} other {# articles}}",
+    "empty": "No articles here yet."
   }
 }
