@@ -4,6 +4,7 @@ import { getGroups } from '@/lib/wordpress/groups'
 import { CalendarPage } from '@/components/features/CalendarPage'
 import { SITE_URL } from '@/lib/constants/site'
 import { parseAcfDate, stripHtml, getWPImage } from '@/lib/utils'
+import type { CalendarEvent } from '@/lib/calendario/tipos'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 3600
@@ -12,21 +13,6 @@ export const metadata: Metadata = {
     title: 'Calendário K-Pop',
     description: 'Aniversários de idols e datas de debut de grupos K-Pop. Fique por dentro dos próximos eventos.',
     alternates: { canonical: `${SITE_URL}/calendario` },
-}
-
-export type CalendarEvent = {
-    id: number
-    day: number
-    month: number
-    year: number
-    date: string // YYYY-MM-DD (ano do evento, pode ser próximo ano)
-    daysUntil: number // 0 = hoje, negativo = passado (neste mês)
-    type: 'birthday' | 'debut'
-    name: string
-    slug: string
-    href: string
-    image: { src: string; alt: string } | null
-    extra?: string
 }
 
 export default async function CalendarioPage() {

@@ -40,6 +40,46 @@ export default defineConfig([
         },
     },
     {
+        // Fronteiras entre camadas (ver CONVENCOES.md). Dependência só desce:
+        // app -> components -> lib. Uma regra por camada, para a mensagem dizer o porquê.
+        files: ['components/**/*.{ts,tsx}', 'lib/**/*.{ts,tsx}'],
+        ignores: ['**/*.test.{ts,tsx}'],
+        rules: {
+            'no-restricted-imports': ['error', {
+                patterns: [{
+                    group: ['@/app/*', '**/app/(site)/*', '**/app/(intl)/*'],
+                    message: 'components/ e lib/ não importam de app/. Tipos e funções usados por páginas e componentes vão em lib/<dominio>/.',
+                }],
+            }],
+        },
+    },
+    {
+        files: ['components/ui/**/*.{ts,tsx}'],
+        ignores: ['**/*.test.{ts,tsx}'],
+        rules: {
+            'no-restricted-imports': ['error', {
+                patterns: [{
+                    group: ['@/app/*', ...['features', 'artists', 'groups', 'productions', 'blog', 'home', 'agency', 'fandoms', 'quiz', 'food'].map(d => `@/components/${d}/*`)],
+                    message: 'components/ui é o genérico: não pode depender de uma entidade. Se precisa de algo da entidade, receba por props.',
+                }],
+            }],
+        },
+    },
+    {
+        // Dívida registrada: estes arquivos de lib/ importam de components/. A regra vale
+        // para todo o resto de lib/; ao resolver um deles, tire-o desta lista.
+        files: ['lib/**/*.{ts,tsx}'],
+        ignores: ['**/*.test.{ts,tsx}', 'lib/artists/fichaC.ts', 'lib/artists/socials.ts', 'lib/i18n/language-links.ts'],
+        rules: {
+            'no-restricted-imports': ['error', {
+                patterns: [{
+                    group: ['@/app/*', '@/components/*'],
+                    message: 'lib/ não importa de components/ nem de app/ (a dependência só desce: app -> components -> lib).',
+                }],
+            }],
+        },
+    },
+    {
         files: ['**/*.{js,cjs}'],
         rules: {
             '@typescript-eslint/no-require-imports': 'off',
