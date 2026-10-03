@@ -77,6 +77,19 @@ export function buildLocalizedIndexNowUrls(type: WPPostType, slug: string, publi
         .map((locale) => `${SITE_URL}/${locale}${path}`)
 }
 
+/**
+ * URLs a expurgar na borda quando o item muda: a original e a de TODO idioma
+ * ativo, tenha ou não tradução publicada. Sem tradução, `/en/<slug>` serve a
+ * ficha em português com aviso (D10 em docs/I18N-V2.md); se a edição em
+ * português não expurgasse essa cópia, ela ficaria velha até o fim do TTL.
+ * Diferente do IndexNow, que só submete o que é indexável (traduzido).
+ */
+export function buildPurgeUrls(type: WPPostType, slug: string): string[] {
+    const base = buildIndexNowUrl(type, slug)
+    if (!base) return []
+    return [base, ...buildLocalizedIndexNowUrls(type, slug, ACTIVE_LOCALES)]
+}
+
 export type IndexNowOutcome =
     | { ok: true; submitted: string[]; status: number }
     | { ok: false; reason: 'disabled' | 'no-valid-urls' | 'http-error' | 'network-error'; detail?: string; status?: number }
