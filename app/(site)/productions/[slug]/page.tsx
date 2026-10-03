@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getProductions } from '@/lib/wordpress/productions'
 
-import { ProductionRoute, buildProductionMetadata } from '@/components/features/ProductionRoute'
+import { ProductionRoute, buildProductionMetadata } from '@/components/productions/ProductionRoute'
 // 6h (era 600s). O `s-maxage` da borda vem daqui, e com 600s a cauda longa quase nunca
 // acertava o cache (3 de 40 páginas, 2026-09-24; miss custa 0,8 a 2,2s contra 0,2s).
 // Seguro porque `/api/revalidate` expurga a cópia da borda deste item (lib/cloudflare-purge.ts).

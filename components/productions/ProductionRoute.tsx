@@ -11,7 +11,7 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
-import { ProductionDetailPage } from '@/components/features/ProductionDetailPage'
+import { ProductionDetailPage } from '@/components/productions/ProductionDetailPage'
 import { getHubsForProduction } from '@/lib/guias/hub-lookup'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 

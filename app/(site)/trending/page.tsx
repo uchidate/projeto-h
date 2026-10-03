@@ -7,7 +7,7 @@ import { getTrendingGroups } from '@/lib/wordpress/groups'
 import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistCard } from '@/components/artists/ArtistCard'
-import { GroupCard } from '@/components/features/GroupsPage'
+import { GroupCard } from '@/components/groups/GroupsPage'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 300

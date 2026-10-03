@@ -8,7 +8,7 @@ import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { stripHtml, getWPImage, getYear } from '@/lib/utils'
 import { JsonLd } from '@/components/seo/JsonLd'
 
-import { GroupRoute, buildGroupMetadata } from '@/components/features/GroupRoute'
+import { GroupRoute, buildGroupMetadata } from '@/components/groups/GroupRoute'
 // 6h (era 600s). O `s-maxage` da borda vem daqui, e com 600s a cauda longa quase nunca
 // acertava o cache (3 de 40 páginas, 2026-09-24; miss custa 0,8 a 2,2s contra 0,2s).
 // Seguro porque `/api/revalidate` expurga a cópia da borda deste item (lib/cloudflare-purge.ts).

@@ -9,7 +9,7 @@ import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { FandomDetailPage } from '@/components/features/FandomDetailPage'
+import { FandomDetailPage } from '@/components/fandoms/FandomDetailPage'
 
 export const revalidate = 600
 

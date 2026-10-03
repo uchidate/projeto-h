@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { googleAtivo } from '@/lib/auth/googleAtivo'
-import { LoginForm } from '@/components/features/LoginForm'
+import { LoginForm } from '@/components/auth/LoginForm'
 import type { Metadata } from 'next'
 
 // Dinâmica de propósito: decide se mostra o botão do Google lendo variáveis que
