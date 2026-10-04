@@ -91,8 +91,12 @@
   "blog": {
     "title": "Blog",
     "description": "Articles, reviews and guides about K-Drama, K-Pop and Korean culture.",
-    "note": "Articles are published in Portuguese and open in the original.",
+    "note": "Articles without a translation are published in Portuguese and open in the original.",
     "count": "{count, plural, one {# article} other {# articles}}",
-    "empty": "No articles here yet."
+    "empty": "No articles here yet.",
+    "back": "All articles",
+    "publishedOn": "Published {date}",
+    "translatedNote": "Translated from the original Portuguese article.",
+    "readOriginal": "Read the original in Portuguese"
   }
 }

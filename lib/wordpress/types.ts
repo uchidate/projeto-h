@@ -25,6 +25,8 @@ export type WPPost = {
     modified: string
     title: WPRendered
     content: WPRendered
+    /** Versões publicadas do mesmo grupo de tradução (D5-a): `{ pt: slug, en: slug }`. Vazio se o post não tem grupo. */
+    translations?: Record<string, string>
     article_blocks?: import('@/lib/blog/articleModel').WPArticleBlock[] | null
     excerpt: WPRendered
     featured_media: number

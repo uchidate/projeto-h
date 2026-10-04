@@ -41,7 +41,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/quiz/[categoria]': { tipo: 'detalhe', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
 
     // Editorial
-    '/blog/[slug]': { tipo: 'editorial', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
+    '/blog/[slug]': { tipo: 'editorial', estado: 'parcial', falta: 'artigo com tradução publicada (post próprio por idioma, D5-a) serve a versão traduzida, indexável; sem tradução, corpo em português com aviso e noindex; nenhum artigo traduzido ainda' },
     '/guias/[slug]': { tipo: 'editorial', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
 
     // Listagens e hubs
@@ -55,7 +55,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/fandoms': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/positions': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/loja': { tipo: 'listagem', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
-    '/blog': { tipo: 'listagem', estado: 'parcial', falta: 'só a listagem (artigos com selo PT abrindo no original); /en/blog/[slug] serve o original em português com aviso e noindex; tradução real exige estender translations ao blog no WP' },
+    '/blog': { tipo: 'listagem', estado: 'parcial', falta: 'só a listagem (artigos com selo PT abrindo no original); /en/blog/[slug] serve o original em português com aviso e noindex; artigos com tradução publicada aparecem traduzidos' },
     '/guias': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/trending': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/calendario': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },

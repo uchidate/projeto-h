@@ -12,6 +12,7 @@ import { RastreioDeLeitura } from '@/components/analytics/RastreioDeLeitura'
 import { BlogPostPage } from '@/components/blog/BlogPostPage'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescription } from '@/lib/seo/metaDescription'
+import { buildPostAlternates } from '@/lib/blog/translations'
 
 export const revalidate = 300
 
@@ -63,6 +64,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
             modifiedTime: post.modified,
         },
         ogImageOverride: buildOgImageUrl({ title, subtitle: description, image: image?.src, type: 'post' }),
+        languages: buildPostAlternates(post.translations, 'pt', slug).languages,
     })
 }
 

@@ -19,15 +19,18 @@ export type PostsQuery = {
     mentionsSlug?: string
     /** Listagens de cartões não precisam transferir o HTML integral do artigo. */
     includeContent?: boolean
+    /** Idioma dos posts (D5-a). Sem valor, o WP devolve só português: traduções nunca vazam em listagem. */
+    lang?: string
 }
 
 export async function getPosts(query: PostsQuery = {}) {
-    const { page = 1, perPage = 12, category, categoryId, tag, search, orderby = 'date', order = 'desc', slug, excludeId, includeIds, mentionsType, mentionsSlug, includeContent = true } = query
+    const { page = 1, perPage = 12, category, categoryId, tag, search, orderby = 'date', order = 'desc', slug, excludeId, includeIds, mentionsType, mentionsSlug, includeContent = true, lang } = query
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage, orderby, order, status: 'publish',
         _fields: includeContent
-            ? 'id,slug,title,date,excerpt,content,featured_image_url,acf,categories'
-            : 'id,slug,title,date,excerpt,featured_image_url,acf,categories',
+            ? 'id,slug,title,date,excerpt,content,featured_image_url,acf,categories,translations'
+            : 'id,slug,title,date,excerpt,featured_image_url,acf,categories,translations',
+        lang: lang ?? undefined,
         slug: slug ?? undefined, search: search ?? undefined,
         exclude: excludeId ?? undefined,
         include: includeIds?.length ? includeIds.join(',') : undefined,
@@ -49,12 +52,12 @@ export async function getPosts(query: PostsQuery = {}) {
     })
 }
 
-export async function getPostBySlug(slug: string): Promise<WPPost | null> {
+export async function getPostBySlug(slug: string, lang?: string): Promise<WPPost | null> {
     // wpFetchPorSlug e nao wpFetch: `[]` de um wpFetch com falha e
     // indistinguivel de "nao existe", e o notFound() da pagina transformava
     // um soluço do WordPress em 404 permanente aos olhos do Google.
     return wpFetchPorSlug<WPPost>(
-        `/wp/v2/posts${buildParams({ slug, status: 'publish', _embed: true })}`,
+        `/wp/v2/posts${buildParams({ slug, status: 'publish', _embed: true, lang })}`,
         { revalidate: 300, tags: [getWPItemTag('post', slug)] },
     )
 }
