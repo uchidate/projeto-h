@@ -16,7 +16,10 @@ export async function GET(_request: Request, context: { params: Promise<{ shard:
     const name = filename.slice(0, -4)
     const localized = resolveLocalizedShard(name)
     if (localized) {
-        return sitemapResponse(buildUrlSet(await getLocalizedSitemapEntries(localized.shard, localized.locale)))
+        const entries = await getLocalizedSitemapEntries(localized.shard, localized.locale)
+        // Sem artigo traduzido o sitemap de posts não existe (o índice também não o lista).
+        if (localized.shard === 'posts' && entries.length === 0) notFound()
+        return sitemapResponse(buildUrlSet(entries))
     }
     const shard = resolveSitemapShard(name)
     if (!shard || shard === 'posts') notFound()

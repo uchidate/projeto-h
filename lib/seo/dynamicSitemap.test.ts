@@ -34,8 +34,15 @@ describe('sitemap dinâmico', () => {
         expect(resolveLocalizedShard('artists-en')).not.toBeNull()
         expect(resolveLocalizedShard('artists-pt')).toBeNull()
         expect(resolveLocalizedShard('artists-es')).toBeNull()
-        expect(resolveLocalizedShard('posts-en')).toBeNull()
+        expect(resolveLocalizedShard('posts-en')).toEqual({ shard: 'posts', locale: 'en' })
+        expect(resolveLocalizedShard('posts-pt')).toBeNull()
+        expect(resolveLocalizedShard('agencies-en')).toBeNull()
         expect(buildSitemapIndex()).toContain('-en.xml')
+    })
+
+    it('posts traduzidos só entram no índice quando o idioma tem artigo publicado', () => {
+        expect(buildSitemapIndex()).not.toContain('posts-en.xml')
+        expect(buildSitemapIndex(['en'])).toContain('/sitemaps/posts-en.xml')
     })
 
     it('serializa hreflang alternativo com o namespace xhtml', () => {
