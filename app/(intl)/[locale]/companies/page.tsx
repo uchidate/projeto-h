@@ -12,7 +12,7 @@ export const revalidate = 600
 type Params = Promise<{ locale: string }>
 type SearchParams = Promise<{ search?: string; page?: string; industry?: string; chaebol?: string }>
 
-export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: SearchParams }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
     if (!isActiveLocale(locale) || locale === DEFAULT_LOCALE) return {}
     return comoFallback(await metadataEmPortugues())
