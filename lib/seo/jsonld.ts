@@ -52,11 +52,13 @@ type ArticleSchemaInput = {
     articleSection?: string
     keywords?: string[]
     wordCount?: number
+    /** Idioma do texto (BCP 47); o padrão do site vale quando ausente. */
+    inLanguage?: string
 }
 
 export function buildArticleSchema({
     type, headline, description, url, datePublished, dateModified,
-    image, author, publisher, articleSection, keywords, wordCount,
+    image, author, publisher, articleSection, keywords, wordCount, inLanguage,
 }: ArticleSchemaInput) {
     return {
         '@context': 'https://schema.org',
@@ -75,7 +77,7 @@ export function buildArticleSchema({
             ...(author.url && { url: author.url }),
         },
         publisher: { '@type': 'Organization', name: publisher.name, url: publisher.url },
-        inLanguage: htmlLang(),
+        inLanguage: inLanguage ?? htmlLang(),
         mainEntityOfPage: { '@type': 'WebPage', '@id': url },
         ...(articleSection && { articleSection }),
         ...(keywords && keywords.length > 0 && { keywords: keywords.join(', ') }),

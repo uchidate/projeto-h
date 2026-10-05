@@ -3,6 +3,8 @@ import { SITE_URL } from '@/lib/constants/site'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
 import { getAllFandoms } from '@/lib/wordpress/fandoms'
+import { href } from '@/lib/i18n/routes'
+import { buildPostAlternates } from '@/lib/blog/translations'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
 
 const SITEMAP_SHARDS = [
@@ -26,7 +28,9 @@ type WPEntry = { slug: string; date?: string; modified?: string; translations?: 
  * arquivo é `<shard>-<locale>.xml` e só lista fichas com tradução publicada.
  */
 const LOCALIZED_SHARDS = ['artists', 'groups', 'productions'] as const
-type LocalizedShard = (typeof LOCALIZED_SHARDS)[number]
+/** Posts traduzidos (D5-a) têm modelo próprio (um post por idioma) e só entram no índice quando existe algum. */
+const POSTS_SHARD = 'posts'
+type LocalizedShard = (typeof LOCALIZED_SHARDS)[number] | typeof POSTS_SHARD
 
 function localizedSitemapLocales(): Locale[] {
     return ACTIVE_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
@@ -63,7 +67,7 @@ export function resolveLocalizedShard(value: string): { shard: LocalizedShard; l
     const match = value.match(/^([a-z]+)-([a-z]{2})$/)
     if (!match) return null
     const [, shard, locale] = match
-    if (!(LOCALIZED_SHARDS as readonly string[]).includes(shard)) return null
+    if (shard !== POSTS_SHARD && !(LOCALIZED_SHARDS as readonly string[]).includes(shard)) return null
     if (locale === DEFAULT_LOCALE || !isActiveLocale(locale)) return null
     return { shard: shard as LocalizedShard, locale }
 }
@@ -84,7 +88,7 @@ function escapeXml(value: string) {
         .replace(/'/g, '&apos;')
 }
 
-function normalizedLastmod(entry: WPEntry) {
+function normalizedLastmod(entry: { date?: string; modified?: string }) {
     const value = entry.modified || entry.date
     return value ? value.slice(0, 10) : undefined
 }
@@ -154,7 +158,44 @@ async function fetchPages(): Promise<SitemapEntry[]> {
     ]
 }
 
+type WPTranslatedPost = { slug: string; date?: string; modified?: string; translations?: Record<string, string> | null }
+
+/** Posts publicados no idioma. Vazio é normal (nenhum artigo traduzido ainda), por isso não lança como as demais coleções. */
+async function fetchTranslatedPosts(locale: Locale): Promise<SitemapEntry[]> {
+    const fetchPage = (page: number) => wpFetchWithTotal<WPTranslatedPost>(
+        `/wp/v2/posts${buildParams({ page, per_page: 100, status: 'publish', lang: locale, _fields: 'slug,date,modified,translations', orderby: 'modified', order: 'desc' })}`,
+        { revalidate: 300, tags: [WP_CACHE_TAGS.posts] },
+    )
+    const first = await fetchPage(1)
+    const posts = [...first.items]
+    for (let page = 2; page <= first.totalPages; page++) posts.push(...(await fetchPage(page)).items)
+    if (posts.length !== first.total) throw new Error(`Sitemap posts-${locale} incompleto: ${posts.length}/${first.total}`)
+    return posts.map((post) => {
+        const { canonical, languages } = buildPostAlternates(post.translations, locale, post.slug)
+        return { loc: canonical, lastmod: normalizedLastmod(post), ...(languages ? { alternates: languages } : {}) }
+    })
+}
+
+/** Idiomas que já têm ao menos um artigo traduzido publicado; o índice só lista `posts-<idioma>` para eles. */
+export async function localesComPostsTraduzidos(): Promise<Locale[]> {
+    const tem = await Promise.all(localizedSitemapLocales().map(async (locale) => {
+        const { total } = await wpFetchWithTotal<WPTranslatedPost>(
+            `/wp/v2/posts${buildParams({ per_page: 1, status: 'publish', lang: locale, _fields: 'slug' })}`,
+            { revalidate: 300, tags: [WP_CACHE_TAGS.posts] },
+        )
+        return total > 0 ? locale : null
+    }))
+    return tem.filter((locale): locale is Locale => locale !== null)
+}
+
 export async function getLocalizedSitemapEntries(shard: LocalizedShard, locale: Locale): Promise<SitemapEntry[]> {
+    if (shard === POSTS_SHARD) {
+        const posts = await fetchTranslatedPosts(locale)
+        if (posts.length === 0) return []
+        const pt = `${SITE_URL}/blog`
+        const listing = `${SITE_URL}${href('blog', undefined, locale)}`
+        return [{ loc: listing, alternates: { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: pt, [LOCALE_META[locale].htmlLang]: listing, 'x-default': pt } }, ...posts]
+    }
     const items = await fetchCollection(shard, locale)
     // A home do idioma entra no primeiro shard do idioma, para nao repetir a
     // mesma URL em varios sitemaps — mesmo que esse shard nao tenha fichas.
@@ -190,9 +231,10 @@ export async function getSitemapEntries(shard: SitemapShard): Promise<SitemapEnt
     return fetchCollection(shard)
 }
 
-export function buildSitemapIndex() {
+export function buildSitemapIndex(localesComPosts: readonly Locale[] = []) {
     const localized = localizedSitemapLocales().flatMap((locale) => LOCALIZED_SHARDS.map((shard) => `${shard}-${locale}`))
-    const entries = [...SITEMAP_SHARDS, ...localized]
+    const posts = localesComPosts.map((locale) => `${POSTS_SHARD}-${locale}`)
+    const entries = [...SITEMAP_SHARDS, ...localized, ...posts]
         .map((shard) => `  <sitemap><loc>${SITE_URL}/sitemaps/${shard}.xml</loc></sitemap>`)
         .join('\n')
     return `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</sitemapindex>\n`
