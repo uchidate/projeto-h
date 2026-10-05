@@ -9,13 +9,14 @@ import { SITE_URL } from '@/lib/constants/site'
 import { paginaDe, paginaInvalida } from '@/lib/listagem'
 import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
+import { fatiaDaListagem } from '@/lib/blog/translations'
 
 /**
  * Listagem do blog em outro idioma. Artigo com tradução publicada (D5-a) aparece
  * com título e imagem da versão traduzida e abre nela; os demais mostram o selo
  * "PT" e abrem direto no original: uma página de artigo em inglês com o corpo em
  * português seria um beco sem saída (decisão em docs/I18N-V2.md). A listagem fica
- * fora do índice enquanto nenhum artigo tiver tradução publicada.
+ * fora do índice enquanto nenhum artigo tiver tradução publicada. Os traduzidos abrem a lista e a paginação soma traduzidos e português.
  */
 const POR_PAGINA = 12
 
@@ -45,14 +46,31 @@ export async function buildLocalizedBlogMetadata(locale: Locale, pageParam?: str
 
 export async function LocalizedBlogList({ locale, pageParam }: { locale: Locale; pageParam?: string }) {
     const page = paginaDe(pageParam)
-    const [t, tc, { items, total, totalPages }, traducoes] = await Promise.all([
+    const [t, tc, traducoes] = await Promise.all([
         getTranslations({ locale, namespace: 'entity.blog' }),
         getTranslations({ locale, namespace: 'entity.catalog' }),
-        getPosts({ page, perPage: POR_PAGINA, includeContent: false }),
         traducoesPorOriginal(locale),
     ])
+    // Traduzidos primeiro, depois o português sem os já traduzidos; total e páginas saem da soma.
+    const traduzidos = [...traducoes.values()]
+    const fatia = fatiaDaListagem(traduzidos.length, page, POR_PAGINA)
+    const originaisTraduzidos = traduzidos.length
+        ? await getPosts({ slug: [...traducoes.keys()].join(','), perPage: 100, includeContent: false })
+        : null
+    const resto = await getPosts({
+        perPage: Math.max(fatia.portugues.quantidade, 1),
+        offset: fatia.portugues.offset,
+        excludeIds: originaisTraduzidos?.items.map((post) => post.id),
+        includeContent: false,
+    })
+    const total = traduzidos.length + resto.total
+    const totalPages = Math.max(1, Math.ceil(total / POR_PAGINA))
     if (paginaInvalida(page, totalPages)) notFound()
     const data = new Intl.DateTimeFormat(LOCALE_META[locale].htmlLang, { dateStyle: 'medium', timeZone: 'America/Sao_Paulo' })
+    const cartoes = [
+        ...traduzidos.slice(fatia.traduzidos.inicio, fatia.traduzidos.fim).map((traduzido) => ({ traduzido, original: null })),
+        ...resto.items.slice(0, fatia.portugues.quantidade).map((original) => ({ traduzido: null, original })),
+    ]
     return (
         <div className="page-wrap py-10 sm:py-14">
             <header className="mb-8 border-b border-border pb-6">
@@ -62,13 +80,12 @@ export async function LocalizedBlogList({ locale, pageParam }: { locale: Locale;
                 {total > 0 && <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">{t('count', { count: total })}</p>}
             </header>
 
-            {items.length === 0 ? (
+            {cartoes.length === 0 ? (
                 <p className="text-[15px] text-muted">{t('empty')}</p>
             ) : (
                 <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {items.map((original) => {
-                        const traduzido = traducoes.get(original.slug)
-                        const post = traduzido ?? original
+                    {cartoes.map(({ original, traduzido }) => {
+                        const post = (traduzido ?? original)!
                         const titulo = stripHtml(post.title.rendered)
                         const imagem = getWPImage(post._embedded, post.featured_image_url, titulo)
                         return (

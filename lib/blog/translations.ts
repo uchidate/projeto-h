@@ -31,3 +31,20 @@ export function buildPostAlternates(
     if (versoes[DEFAULT_LOCALE]) languages['x-default'] = url(DEFAULT_LOCALE)
     return { canonical, languages }
 }
+
+/**
+ * Paginação da listagem em outro idioma com os artigos traduzidos primeiro: eles ocupam o começo da
+ * lista combinada e os originais em português (sem os já traduzidos) vêm depois. Devolve, para a
+ * página pedida, a fatia dos traduzidos e o trecho de português a buscar (`offset` e `quantidade`).
+ * Total e número de páginas saem de `traduzidos + total de português sem os traduzidos`, então a
+ * paginação fecha mesmo com várias traduções.
+ */
+export function fatiaDaListagem(traduzidos: number, pagina: number, porPagina: number) {
+    const inicio = (pagina - 1) * porPagina
+    const doTraduzidoIni = Math.min(inicio, traduzidos)
+    const doTraduzidoFim = Math.min(inicio + porPagina, traduzidos)
+    return {
+        traduzidos: { inicio: doTraduzidoIni, fim: doTraduzidoFim },
+        portugues: { offset: Math.max(0, inicio - traduzidos), quantidade: porPagina - (doTraduzidoFim - doTraduzidoIni) },
+    }
+}
