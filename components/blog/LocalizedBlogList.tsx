@@ -9,13 +9,14 @@ import { SITE_URL } from '@/lib/constants/site'
 import { paginaDe, paginaInvalida } from '@/lib/listagem'
 import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
+import { cartoesDaListagem } from '@/lib/blog/translations'
 
 /**
  * Listagem do blog em outro idioma. Artigo com tradução publicada (D5-a) aparece
  * com título e imagem da versão traduzida e abre nela; os demais mostram o selo
  * "PT" e abrem direto no original: uma página de artigo em inglês com o corpo em
  * português seria um beco sem saída (decisão em docs/I18N-V2.md). A listagem fica
- * fora do índice enquanto nenhum artigo tiver tradução publicada.
+ * fora do índice enquanto nenhum artigo tiver tradução publicada. Os traduzidos abrem a primeira página.
  */
 const POR_PAGINA = 12
 
@@ -53,6 +54,7 @@ export async function LocalizedBlogList({ locale, pageParam }: { locale: Locale;
     ])
     if (paginaInvalida(page, totalPages)) notFound()
     const data = new Intl.DateTimeFormat(LOCALE_META[locale].htmlLang, { dateStyle: 'medium', timeZone: 'America/Sao_Paulo' })
+    const cartoes = cartoesDaListagem(items, traducoes, page)
     return (
         <div className="page-wrap py-10 sm:py-14">
             <header className="mb-8 border-b border-border pb-6">
@@ -62,13 +64,12 @@ export async function LocalizedBlogList({ locale, pageParam }: { locale: Locale;
                 {total > 0 && <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">{t('count', { count: total })}</p>}
             </header>
 
-            {items.length === 0 ? (
+            {cartoes.length === 0 ? (
                 <p className="text-[15px] text-muted">{t('empty')}</p>
             ) : (
                 <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {items.map((original) => {
-                        const traduzido = traducoes.get(original.slug)
-                        const post = traduzido ?? original
+                    {cartoes.map(({ original, traduzido }) => {
+                        const post = (traduzido ?? original)!
                         const titulo = stripHtml(post.title.rendered)
                         const imagem = getWPImage(post._embedded, post.featured_image_url, titulo)
                         return (

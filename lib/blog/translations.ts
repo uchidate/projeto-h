@@ -31,3 +31,19 @@ export function buildPostAlternates(
     if (versoes[DEFAULT_LOCALE]) languages['x-default'] = url(DEFAULT_LOCALE)
     return { canonical, languages }
 }
+
+/**
+ * Cartões da listagem em outro idioma: na primeira página os artigos traduzidos vêm antes
+ * (senão um artigo antigo traduzido nunca teria link a partir da listagem); em toda página o
+ * original de um artigo traduzido sai da lista em português, para não aparecer duas vezes.
+ * Contagem e paginação continuam as do português: a primeira página pode passar de `porPagina`.
+ */
+export function cartoesDaListagem<T extends { slug: string }, U>(
+    originais: readonly T[],
+    traducoes: ReadonlyMap<string, U>,
+    pagina: number,
+): Array<{ original: T | null; traduzido: U | null }> {
+    const restantes = originais.filter((post) => !traducoes.has(post.slug)).map((original) => ({ original, traduzido: null }))
+    if (pagina > 1) return restantes
+    return [...[...traducoes.values()].map((traduzido) => ({ original: null, traduzido })), ...restantes]
+}
