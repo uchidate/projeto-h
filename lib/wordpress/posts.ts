@@ -13,6 +13,10 @@ export type PostsQuery = {
     order?: 'desc' | 'asc'
     slug?: string
     excludeId?: number
+    /** Vários ids de uma vez (o `exclude` da REST aceita lista). */
+    excludeIds?: number[]
+    /** Deslocamento em itens; na REST substitui `page`. */
+    offset?: number
     includeIds?: number[]
     /** posts que citam uma entidade específica (link no conteúdo ou meta related_*_slugs) — mais preciso que `search` por nome */
     mentionsType?: 'artist' | 'group' | 'production'
@@ -24,7 +28,7 @@ export type PostsQuery = {
 }
 
 export async function getPosts(query: PostsQuery = {}) {
-    const { page = 1, perPage = 12, category, categoryId, tag, search, orderby = 'date', order = 'desc', slug, excludeId, includeIds, mentionsType, mentionsSlug, includeContent = true, lang } = query
+    const { page = 1, perPage = 12, category, categoryId, tag, search, orderby = 'date', order = 'desc', slug, excludeId, excludeIds, offset, includeIds, mentionsType, mentionsSlug, includeContent = true, lang } = query
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage, orderby, order, status: 'publish',
         _fields: includeContent
@@ -32,7 +36,8 @@ export async function getPosts(query: PostsQuery = {}) {
             : 'id,slug,title,date,excerpt,featured_image_url,acf,categories,translations',
         lang: lang ?? undefined,
         slug: slug ?? undefined, search: search ?? undefined,
-        exclude: excludeId ?? undefined,
+        exclude: excludeIds?.length ? excludeIds.join(',') : (excludeId ?? undefined),
+        offset: offset || undefined,
         include: includeIds?.length ? includeIds.join(',') : undefined,
         oc_mentions_type: mentionsType ?? undefined,
         oc_mentions_slug: mentionsType ? mentionsSlug : undefined,

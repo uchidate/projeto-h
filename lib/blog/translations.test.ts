@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPostAlternates, cartoesDaListagem, versoesDoPost } from './translations'
+import { buildPostAlternates, fatiaDaListagem, versoesDoPost } from './translations'
 
 describe('versoesDoPost', () => {
     it('ignora idioma desconhecido, slug vazio e entrada ausente', () => {
@@ -26,17 +26,28 @@ describe('buildPostAlternates', () => {
     })
 })
 
-describe('cartoesDaListagem', () => {
-    const originais = [{ slug: 'a' }, { slug: 'b' }, { slug: 'c' }]
-    const traducoes = new Map([['b', { slug: 'b-en' }]])
-    it('página 1: traduzidos primeiro e o original traduzido não repete', () => {
-        const r = cartoesDaListagem(originais, traducoes, 1)
-        expect(r.map((c) => c.traduzido?.slug ?? c.original?.slug)).toEqual(['b-en', 'a', 'c'])
+describe('fatiaDaListagem', () => {
+    it('sem traduções, é a paginação normal do português', () => {
+        expect(fatiaDaListagem(0, 1, 12)).toEqual({ traduzidos: { inicio: 0, fim: 0 }, portugues: { offset: 0, quantidade: 12 } })
+        expect(fatiaDaListagem(0, 3, 12).portugues).toEqual({ offset: 24, quantidade: 12 })
     })
-    it('páginas seguintes: só os originais sem tradução', () => {
-        expect(cartoesDaListagem(originais, traducoes, 2).map((c) => c.original?.slug)).toEqual(['a', 'c'])
+    it('uma tradução: página 1 = 1 traduzido + 11 do português; página 2 continua de onde parou', () => {
+        expect(fatiaDaListagem(1, 1, 12)).toEqual({ traduzidos: { inicio: 0, fim: 1 }, portugues: { offset: 0, quantidade: 11 } })
+        expect(fatiaDaListagem(1, 2, 12)).toEqual({ traduzidos: { inicio: 1, fim: 1 }, portugues: { offset: 11, quantidade: 12 } })
     })
-    it('sem traduções, a lista não muda', () => {
-        expect(cartoesDaListagem(originais, new Map(), 1).map((c) => c.original?.slug)).toEqual(['a', 'b', 'c'])
+    it('mais traduções que uma página: cobre tudo sem repetir nem pular', () => {
+        const T = 30
+        const vistos: string[] = []
+        for (let pagina = 1; pagina <= 4; pagina++) {
+            const f = fatiaDaListagem(T, pagina, 12)
+            for (let i = f.traduzidos.inicio; i < f.traduzidos.fim; i++) vistos.push(`t${i}`)
+            for (let i = 0; i < f.portugues.quantidade; i++) vistos.push(`p${f.portugues.offset + i}`)
+        }
+        expect(vistos.slice(0, 30)).toEqual(Array.from({ length: 30 }, (_, i) => `t${i}`))
+        expect(vistos.slice(30, 48)).toEqual(Array.from({ length: 18 }, (_, i) => `p${i}`))
+        expect(new Set(vistos).size).toBe(vistos.length)
+    })
+    it('página só de português depois das traduções: quantidade cheia', () => {
+        expect(fatiaDaListagem(5, 2, 12).portugues).toEqual({ offset: 7, quantidade: 12 })
     })
 })

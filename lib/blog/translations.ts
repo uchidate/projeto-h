@@ -33,17 +33,18 @@ export function buildPostAlternates(
 }
 
 /**
- * Cartões da listagem em outro idioma: na primeira página os artigos traduzidos vêm antes
- * (senão um artigo antigo traduzido nunca teria link a partir da listagem); em toda página o
- * original de um artigo traduzido sai da lista em português, para não aparecer duas vezes.
- * Contagem e paginação continuam as do português: a primeira página pode passar de `porPagina`.
+ * Paginação da listagem em outro idioma com os artigos traduzidos primeiro: eles ocupam o começo da
+ * lista combinada e os originais em português (sem os já traduzidos) vêm depois. Devolve, para a
+ * página pedida, a fatia dos traduzidos e o trecho de português a buscar (`offset` e `quantidade`).
+ * Total e número de páginas saem de `traduzidos + total de português sem os traduzidos`, então a
+ * paginação fecha mesmo com várias traduções.
  */
-export function cartoesDaListagem<T extends { slug: string }, U>(
-    originais: readonly T[],
-    traducoes: ReadonlyMap<string, U>,
-    pagina: number,
-): Array<{ original: T | null; traduzido: U | null }> {
-    const restantes = originais.filter((post) => !traducoes.has(post.slug)).map((original) => ({ original, traduzido: null }))
-    if (pagina > 1) return restantes
-    return [...[...traducoes.values()].map((traduzido) => ({ original: null, traduzido })), ...restantes]
+export function fatiaDaListagem(traduzidos: number, pagina: number, porPagina: number) {
+    const inicio = (pagina - 1) * porPagina
+    const doTraduzidoIni = Math.min(inicio, traduzidos)
+    const doTraduzidoFim = Math.min(inicio + porPagina, traduzidos)
+    return {
+        traduzidos: { inicio: doTraduzidoIni, fim: doTraduzidoFim },
+        portugues: { offset: Math.max(0, inicio - traduzidos), quantidade: porPagina - (doTraduzidoFim - doTraduzidoIni) },
+    }
 }
