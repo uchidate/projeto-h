@@ -9,7 +9,7 @@ import { SITE_URL } from '@/lib/constants/site'
 import { paginaDe, paginaInvalida } from '@/lib/listagem'
 import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
-import { fatiaDaListagem } from '@/lib/blog/translations'
+import { fatiaDaListagem, slugPublicoDoPost } from '@/lib/blog/translations'
 
 /**
  * Listagem do blog em outro idioma. Artigo com tradução publicada (D5-a) aparece
@@ -90,7 +90,7 @@ export async function LocalizedBlogList({ locale, pageParam }: { locale: Locale;
                         const imagem = getWPImage(post._embedded, post.featured_image_url, titulo)
                         return (
                             <li key={post.id}>
-                                <Link href={traduzido ? href('post', { slug: post.slug }, locale) : `/blog/${post.slug}`} hrefLang={LOCALE_META[traduzido ? locale : DEFAULT_LOCALE].htmlLang} className="group block">
+                                <Link href={traduzido ? href('post', { slug: slugPublicoDoPost(post.translations, post.slug) }, locale) : `/blog/${post.slug}`} hrefLang={LOCALE_META[traduzido ? locale : DEFAULT_LOCALE].htmlLang} className="group block">
                                     <div className="relative aspect-16/10 overflow-hidden bg-surface">
                                         {imagem && (
                                             <Image src={imagem.src} alt={imagem.alt || titulo} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

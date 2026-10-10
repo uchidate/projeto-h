@@ -4,7 +4,7 @@ import { DEFAULT_LOCALE, isActiveLocale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { setPageLocale } from '@/lib/i18n/request-locale'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
-import { getPostBySlug } from '@/lib/wordpress/posts'
+import { resolverPostIntl } from '@/lib/blog/resolverPostIntl'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { LocalizedPost, buildLocalizedPostMetadata } from '@/components/blog/LocalizedPost'
 import PostPage, { generateMetadata as metadataEmPortugues } from '@/app/(site)/blog/[slug]/page'
@@ -22,8 +22,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     const { locale, slug } = await params
     if (!isActiveLocale(locale) || locale === DEFAULT_LOCALE) return {}
     // Post próprio no idioma (D5-a): indexável, canonical e hreflang da própria versão.
-    const traduzido = await getPostBySlug(slug, locale)
-    if (traduzido) return buildLocalizedPostMetadata(traduzido, locale)
+    const resolvido = await resolverPostIntl(slug, locale)
+    if (resolvido.tipo === 'traduzido') return buildLocalizedPostMetadata(resolvido.post, locale)
+    if (resolvido.tipo === 'redirecionar') return {}
     return comoFallback(await metadataEmPortugues({ params: Promise.resolve({ slug }) }))
 }
 
@@ -32,13 +33,10 @@ export default async function IntlPostPage({ params }: { params: Params }) {
     if (!isActiveLocale(locale) || locale === DEFAULT_LOCALE) notFound()
     setPageLocale(locale)
 
-    const traduzido = await getPostBySlug(slug, locale)
-    if (traduzido) return <LocalizedPost post={traduzido} locale={locale} />
-
-    // Slug do original em português que já tem tradução: vai para a versão traduzida.
-    const original = await getPostBySlug(slug)
-    const slugTraduzido = original?.translations?.[locale]
-    if (slugTraduzido && slugTraduzido !== slug) permanentRedirect(href('post', { slug: slugTraduzido }, locale))
+    const resolvido = await resolverPostIntl(slug, locale)
+    if (resolvido.tipo === 'traduzido') return <LocalizedPost post={resolvido.post} locale={locale} />
+    // Slug antigo da tradução (indexado antes do slug único): vai para o slug do original.
+    if (resolvido.tipo === 'redirecionar') permanentRedirect(href('post', { slug: resolvido.slug }, locale))
 
     return (
         <>

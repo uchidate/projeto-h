@@ -12,9 +12,18 @@ export function versoesDoPost(translations: Record<string, string> | undefined |
 }
 
 /**
+ * Slug público do post: o do original em português, em todos os idiomas, como nas fichas
+ * (`/artists/x` e `/en/artists/x`). O post traduzido segue com slug próprio no WordPress
+ * (o WP exige slug único), mas esse slug não aparece na URL. Sem original, vale o próprio.
+ */
+export function slugPublicoDoPost(translations: Record<string, string> | undefined | null, currentSlug: string): string {
+    return versoesDoPost(translations)[DEFAULT_LOCALE] ?? currentSlug
+}
+
+/**
  * `alternates` de um post (D7): canonical auto-referente e hreflang recíproco só
- * quando há mais de uma versão. Diferente das fichas, o slug muda por idioma,
- * então cada URL é montada com o slug da própria versão.
+ * quando há mais de uma versão. Todas as URLs usam o slug público (o do original),
+ * então a troca de idioma é só o prefixo `/en`.
  */
 export function buildPostAlternates(
     translations: Record<string, string> | undefined | null,
@@ -22,7 +31,8 @@ export function buildPostAlternates(
     currentSlug: string,
 ): { canonical: string; languages?: Record<string, string> } {
     const versoes = { ...versoesDoPost(translations), [current]: currentSlug }
-    const url = (locale: Locale) => `${SITE_URL}${href('post', { slug: versoes[locale]! }, locale)}`
+    const slug = slugPublicoDoPost(translations, currentSlug)
+    const url = (locale: Locale) => `${SITE_URL}${href('post', { slug }, locale)}`
     const canonical = url(current)
     const locales = Object.keys(versoes) as Locale[]
     if (locales.length < 2) return { canonical }

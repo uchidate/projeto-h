@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPostAlternates, fatiaDaListagem, versoesDoPost } from './translations'
+import { buildPostAlternates, fatiaDaListagem, slugPublicoDoPost, versoesDoPost } from './translations'
 
 describe('versoesDoPost', () => {
     it('ignora idioma desconhecido, slug vazio e entrada ausente', () => {
@@ -14,15 +14,28 @@ describe('buildPostAlternates', () => {
         expect(r.languages).toBeUndefined()
         expect(r.canonical).toMatch(/\/blog\/meu-post$/)
     })
-    it('versão EN: canonical auto-referente e hreflang recíproco com slugs próprios', () => {
+    it('versão EN: canonical e hreflang usam o slug do original em todos os idiomas', () => {
         const translations = { pt: 'meu-post', en: 'my-post' }
         const en = buildPostAlternates(translations, 'en', 'my-post')
         const pt = buildPostAlternates(translations, 'pt', 'meu-post')
-        expect(en.canonical).toMatch(/\/en\/blog\/my-post$/)
+        expect(en.canonical).toMatch(/\/en\/blog\/meu-post$/)
+        expect(pt.canonical).toMatch(/\/blog\/meu-post$/)
         expect(en.languages).toEqual(pt.languages)
         expect(en.languages?.['pt-BR']).toMatch(/\/blog\/meu-post$/)
-        expect(en.languages?.en).toMatch(/\/en\/blog\/my-post$/)
+        expect(en.languages?.en).toMatch(/\/en\/blog\/meu-post$/)
         expect(en.languages?.['x-default']).toMatch(/\/blog\/meu-post$/)
+    })
+    it('tradução sem original vinculado mantém o próprio slug', () => {
+        const r = buildPostAlternates({ en: 'only-en' }, 'en', 'only-en')
+        expect(r.canonical).toMatch(/\/en\/blog\/only-en$/)
+    })
+})
+
+describe('slugPublicoDoPost', () => {
+    it('usa o slug do original; sem ele, o próprio', () => {
+        expect(slugPublicoDoPost({ pt: 'meu-post', en: 'my-post' }, 'my-post')).toBe('meu-post')
+        expect(slugPublicoDoPost({ en: 'my-post' }, 'my-post')).toBe('my-post')
+        expect(slugPublicoDoPost(undefined, 'x')).toBe('x')
     })
 })
 
