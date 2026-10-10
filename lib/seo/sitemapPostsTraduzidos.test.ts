@@ -24,10 +24,10 @@ describe('sitemap de posts traduzidos', () => {
     it('lista a listagem e cada artigo com hreflang recíproco', async () => {
         wp.items = [{ slug: 'my-post', modified: '2026-10-05T10:00:00', translations: { pt: 'meu-post', en: 'my-post' } }]
         const entradas = await getLocalizedSitemapEntries('posts', 'en')
-        expect(entradas.map((e) => e.loc)).toEqual([`${SITE_URL}/en/blog`, `${SITE_URL}/en/blog/my-post`])
+        expect(entradas.map((e) => e.loc)).toEqual([`${SITE_URL}/en/blog`, `${SITE_URL}/en/blog/meu-post`])
         expect(entradas[1].alternates).toEqual({
             'pt-BR': `${SITE_URL}/blog/meu-post`,
-            en: `${SITE_URL}/en/blog/my-post`,
+            en: `${SITE_URL}/en/blog/meu-post`,
             'x-default': `${SITE_URL}/blog/meu-post`,
         })
         expect(entradas[1].lastmod).toBe('2026-10-05')
