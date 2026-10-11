@@ -38,6 +38,10 @@ declare global {
     }
 }
 
+const CLARITY_INIT =
+    'window.clarity=window.clarity||function(){(window.clarity.q=window.clarity.q||[]).push(arguments)};' +
+    'window.clarity("consentv2",{ad_Storage:"granted",analytics_Storage:"granted"});'
+
 function consentiu(): boolean {
     return readConsent()?.decision === 'granted'
 }
@@ -61,8 +65,18 @@ export function ClarityScript({ projectId }: { projectId: string }) {
     if (!ativo) return null
 
     return (
-        <Script id="clarity-init" strategy="lazyOnload">
-            {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script",${JSON.stringify(projectId)});window.clarity("consentv2",{ad_Storage:"granted",analytics_Storage:"granted"});`}
-        </Script>
+        <>
+            {/* Fila de comandos e consentimento: texto fixo, sem valor interpolado.
+                O ID do projeto entra só na URL da tag (abaixo); montar código com ele
+                disparava js/bad-code-sanitization no CodeQL. */}
+            <Script id="clarity-init" strategy="lazyOnload">
+                {CLARITY_INIT}
+            </Script>
+            <Script
+                id="clarity-tag"
+                src={`https://www.clarity.ms/tag/${encodeURIComponent(projectId)}`}
+                strategy="lazyOnload"
+            />
+        </>
     )
 }

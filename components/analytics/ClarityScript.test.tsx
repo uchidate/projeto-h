@@ -8,8 +8,8 @@ const rota = { atual: '/blog' as string | null }
 
 vi.mock('next/navigation', () => ({ usePathname: () => rota.atual }))
 vi.mock('next/script', () => ({
-    default: ({ children, strategy, id }: { children?: string; strategy?: string; id?: string }) => (
-        <script data-strategy={strategy} id={id}>{children}</script>
+    default: ({ children, strategy, id, src }: { children?: string; strategy?: string; id?: string; src?: string }) => (
+        <script data-strategy={strategy} id={id} src={src}>{children}</script>
     ),
 }))
 
@@ -40,10 +40,13 @@ describe('ClarityScript', () => {
 
     it('carrega com aceite e aponta para o projeto', () => {
         decidir('granted')
-        const s = montar('/blog').container.querySelector('script')!
-        expect(s.textContent).toContain('https://www.clarity.ms/tag/')
-        expect(s.textContent).toContain('"abc123"')
-        expect(s.getAttribute('data-strategy')).toBe('lazyOnload')
+        const { container } = montar('/blog')
+        const tag = container.querySelector('script#clarity-tag')!
+        expect(tag.getAttribute('src')).toBe('https://www.clarity.ms/tag/abc123')
+        expect(tag.getAttribute('data-strategy')).toBe('lazyOnload')
+        const init = container.querySelector('script#clarity-init')!
+        expect(init.textContent).toContain('consentv2')
+        expect(init.textContent).not.toContain('abc123')
     })
 
     it('não grava nas telas de senha mesmo com aceite', () => {
