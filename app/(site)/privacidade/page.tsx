@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 }
 
 export default function PrivacidadePage() {
-    const updated = '25 de agosto de 2026'
+    const updated = '11 de outubro de 2026'
     return (
         <>
         <div className="page-wrap py-12 max-w-2xl">
@@ -18,10 +18,12 @@ export default function PrivacidadePage() {
                 <section>
                     <h2 className="text-[18px] font-bold mb-2">1. Dados coletados</h2>
                     <p className="text-muted">Este site coleta dados de navegação (páginas visitadas, tempo de permanência) via Google Analytics para melhorar a experiência do usuário. Enquanto você não aceitar os cookies, essa medição roda sem armazenar identificadores no seu navegador. Não coletamos dados pessoais identificáveis sem consentimento explícito.</p>
+                    <p className="text-muted mt-3">Com o seu aceite, usamos também o Microsoft Clarity, uma ferramenta de análise de uso que registra como o site é navegado — cliques, rolagem e movimentos do cursor — em formato de gravação da sessão e de mapa de calor. O objetivo é encontrar páginas confusas ou com defeito. O conteúdo de campos de formulário é mascarado, e a ferramenta não é usada nas páginas de entrar e cadastrar. O Clarity é operado pela Microsoft, que trata esses dados conforme a própria <a href="https://privacy.microsoft.com/privacystatement" className="text-accent hover:underline" target="_blank" rel="noopener noreferrer">política de privacidade</a>.</p>
                 </section>
                 <section>
                     <h2 className="text-[18px] font-bold mb-2">2. Cookies</h2>
                     <p className="text-muted">Cookies essenciais — preferência de tema (claro/escuro), sessão de navegação e segurança — são sempre usados, porque sem eles o site não funciona. Cookies de medição de audiência e de anúncios personalizados só são gravados depois que você aceita. Sem esse aceite, os anúncios continuam aparecendo, porém não personalizados.</p>
+                    <p className="text-muted mt-3">O Microsoft Clarity grava os cookies <code>_clck</code> e <code>_clsk</code>, para reconhecer a mesma visita entre páginas e agrupar a sessão. Eles só são gravados depois que você aceita e deixam de ser usados se você recusar ou retirar o consentimento pelos controles da seção 4.</p>
                 </section>
                 <section>
                     <h2 className="text-[18px] font-bold mb-2">3. Anúncios</h2>
