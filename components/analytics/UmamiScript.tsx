@@ -3,6 +3,7 @@
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
 import { rotaSemMedicao, umamiAntesDeEnviar } from '@/lib/umami-filtro'
+import { useMedicaoPermitida } from '@/lib/ambiente-medicao'
 
 /**
  * Carrega o Umami — exceto nas rotas de autenticação.
@@ -76,8 +77,10 @@ type Props = {
 export function UmamiScript({ src, websiteId, hostUrl, domains }: Props) {
     const caminho = usePathname()
     const excluida = caminho !== null && rotaSemMedicao(caminho)
+    const permitida = useMedicaoPermitida()
 
-    if (excluida) return null
+    // Staging e desenvolvimento não medem: ver lib/ambiente-medicao.ts.
+    if (excluida || !permitida) return null
 
     return (
         <Script

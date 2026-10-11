@@ -5,6 +5,7 @@ import { useEffect, useSyncExternalStore } from 'react'
 import { usePathname } from 'next/navigation'
 import { readConsent, subscribeBanner } from '@/lib/consent'
 import { rotaSemMedicao } from '@/lib/umami-filtro'
+import { useMedicaoPermitida } from '@/lib/ambiente-medicao'
 
 /**
  * Microsoft Clarity — gravação de sessão e mapa de calor.
@@ -55,7 +56,9 @@ export function ClarityScript({ projectId }: { projectId: string }) {
     const caminho = usePathname()
     const aceitou = useSyncExternalStore(subscribeBanner, consentiu, noServidor)
     const excluida = caminho !== null && rotaSemMedicao(caminho)
-    const ativo = aceitou && !excluida
+    const permitida = useMedicaoPermitida()
+    // Staging e desenvolvimento não gravam sessão: ver lib/ambiente-medicao.ts.
+    const ativo = aceitou && !excluida && permitida
 
     useEffect(() => {
         // Só há o que desfazer se o script já carregou.

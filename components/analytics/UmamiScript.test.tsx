@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { UmamiScript } from './UmamiScript'
 import { umamiAntesDeEnviar } from '@/lib/umami-filtro'
@@ -15,6 +15,9 @@ import { umamiAntesDeEnviar } from '@/lib/umami-filtro'
  */
 
 const rota = { atual: '/blog' as string | null }
+const ambiente = { permitido: true }
+
+vi.mock('@/lib/ambiente-medicao', () => ({ useMedicaoPermitida: () => ambiente.permitido }))
 
 vi.mock('next/navigation', () => ({ usePathname: () => rota.atual }))
 vi.mock('next/script', () => ({
@@ -30,6 +33,15 @@ const montar = (caminho: string | null) => {
 }
 
 describe('UmamiScript', () => {
+    beforeEach(() => {
+        ambiente.permitido = true
+    })
+
+    it('não monta fora de produção (staging/desenvolvimento)', () => {
+        ambiente.permitido = false
+        expect(montar('/blog').container.querySelector('script')).toBeNull()
+    })
+
     it('mantém o rastreamento automático ligado: sem data-auto-track="false"', () => {
         const { container } = montar('/blog')
         const s = container.querySelector('script')!
