@@ -34,6 +34,17 @@ export const UMAMI = {
     domains: `${SITE_HOST},${SITE_DOMAIN}`,
 } as const
 
+/**
+ * Microsoft Clarity — gravação de sessão e mapa de calor (ver ClarityScript).
+ *
+ * O ID do projeto não é segredo (vai no HTML de qualquer forma), então é
+ * constante versionada, como o do Umami. Vazio = o script não é montado.
+ * Projeto em https://clarity.microsoft.com (ID em Settings > Overview).
+ */
+export const CLARITY = {
+    projectId: 'xz76k07h8y',
+} as const
+
 export const GOOGLE_PREFERRED_SOURCE_URL = `https://www.google.com/preferences/source?q=${encodeURIComponent(`${SITE_URL}/`)}`
 
 export function buildOgImageUrl(params: {
