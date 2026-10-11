@@ -5,6 +5,9 @@ import { ClarityScript } from './ClarityScript'
 import { CONSENT_STORAGE_KEY } from '@/lib/consent'
 
 const rota = { atual: '/blog' as string | null }
+const ambiente = { permitido: true }
+
+vi.mock('@/lib/ambiente-medicao', () => ({ useMedicaoPermitida: () => ambiente.permitido }))
 
 vi.mock('next/navigation', () => ({ usePathname: () => rota.atual }))
 vi.mock('next/script', () => ({
@@ -26,6 +29,13 @@ const montar = (caminho: string) => {
 describe('ClarityScript', () => {
     beforeEach(() => {
         delete window.clarity
+        ambiente.permitido = true
+    })
+
+    it('não grava fora de produção, mesmo com aceite', () => {
+        decidir('granted')
+        ambiente.permitido = false
+        expect(montar('/blog').container.querySelector('script')).toBeNull()
     })
 
     it('não carrega sem decisão: dado pessoal exige aceite explícito', () => {
