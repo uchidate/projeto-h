@@ -1,0 +1,54 @@
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { render } from '@testing-library/react'
+import { ClarityScript } from './ClarityScript'
+import { CONSENT_STORAGE_KEY } from '@/lib/consent'
+
+const rota = { atual: '/blog' as string | null }
+
+vi.mock('next/navigation', () => ({ usePathname: () => rota.atual }))
+vi.mock('next/script', () => ({
+    default: ({ children, strategy, id }: { children?: string; strategy?: string; id?: string }) => (
+        <script data-strategy={strategy} id={id}>{children}</script>
+    ),
+}))
+
+const decidir = (decision: 'granted' | 'denied' | null) => {
+    localStorage.clear()
+    if (decision) localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({ decision, at: Date.now() }))
+}
+
+const montar = (caminho: string) => {
+    rota.atual = caminho
+    return render(<ClarityScript projectId="abc123" />)
+}
+
+describe('ClarityScript', () => {
+    beforeEach(() => {
+        delete window.clarity
+    })
+
+    it('não carrega sem decisão: dado pessoal exige aceite explícito', () => {
+        decidir(null)
+        expect(montar('/blog').container.querySelector('script')).toBeNull()
+    })
+
+    it('não carrega para quem recusou', () => {
+        decidir('denied')
+        expect(montar('/blog').container.querySelector('script')).toBeNull()
+    })
+
+    it('carrega com aceite e aponta para o projeto', () => {
+        decidir('granted')
+        const s = montar('/blog').container.querySelector('script')!
+        expect(s.textContent).toContain('https://www.clarity.ms/tag/')
+        expect(s.textContent).toContain('"abc123"')
+        expect(s.getAttribute('data-strategy')).toBe('lazyOnload')
+    })
+
+    it('não grava nas telas de senha mesmo com aceite', () => {
+        decidir('granted')
+        expect(montar('/entrar').container.querySelector('script')).toBeNull()
+        expect(montar('/cadastro/etapa-2').container.querySelector('script')).toBeNull()
+    })
+})

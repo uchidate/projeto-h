@@ -7,7 +7,7 @@ import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { localizedFooterColumns, localizedNavigation } from '@/lib/i18n/navigation'
 import { Outfit, Inter, Sora, Playfair_Display } from 'next/font/google'
 import '@/styles/globals.css'
-import { SITE_URL, SITE_NAME, UMAMI } from '@/lib/constants/site'
+import { SITE_URL, SITE_NAME, UMAMI, CLARITY } from '@/lib/constants/site'
 import NavBar from '@/components/NavBar'
 import Footer from '@/components/ui/Footer'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -25,6 +25,7 @@ import { getMonetizationSettings } from '@/lib/wordpress/monetization'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { UmamiScript } from '@/components/analytics/UmamiScript'
 import { GoogleTagScript } from '@/components/analytics/GoogleTagScript'
+import { ClarityScript } from '@/components/analytics/ClarityScript'
 import { RastreioDeExperiencia } from '@/components/analytics/RastreioDeExperiencia'
 
 // Acima da dobra só aparecem Inter (corpo) e Playfair (título do hero). Outfit e
@@ -228,6 +229,10 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
                         domains={UMAMI.domains}
                     />
                 )}
+
+                {/* Microsoft Clarity — só com aceite explícito no banner e fora de
+                    /entrar e /cadastro. Ver o componente. */}
+                {CLARITY.projectId && <ClarityScript projectId={CLARITY.projectId} />}
 
                 {/* Google Tag — ID gerenciado pelo Site Kit no WordPress */}
                 {/* Carrega só para quem o GA consegue medir — 174 KB que iam
