@@ -241,6 +241,15 @@ const nextConfig = {
             { source: '/blog/tempest-yuehua-i-land-2-bad-blood-kpop', destination: '/blog/tempest-da-estreia-em-2022-a-turne-as-i-am', permanent: true },
             { source: '/blog/illit-belift-lab-magnetic-polemica-newjeans-kpop', destination: '/blog/illit-de-magnetic-a-pausa-de-moka', permanent: true },
             { source: '/en/blog/day6-closes-10-year-tour-with-3-sold-out-shows-at-kspo-dome', destination: '/en/blog/day6-closes-10-year-tour-with-3-shows-at-kspo-dome', permanent: true },
+            // Faixas que não existem no álbum ROSIE (tracklist: 12 faixas, 6/12/2024):
+            // os posts descreviam e 'traduziam' músicas inexistentes e foram despublicados.
+            // O álbum é tratado no post de análise abaixo.
+            { source: '/blog/dry-flowers-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/tell-me-what-to-do-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/dance-till-the-day-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/do-it-again-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/like-it-should-be-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/hard-to-love-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
             // Artistas duplicados mesclados em 2026-07-05 (mesmo artista, dois posts
             // no WP — slug "-2" era sempre o duplicado removido). Alguns já tinham
             // histórico real de busca no Google (ex: bona-2 com 568 impressões em
