@@ -256,6 +256,11 @@ const nextConfig = {
             { source: '/blog/stay-a-little-longer-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
             { source: '/blog/gameboy-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
             { source: '/blog/too-bad-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            // Páginas de faixas do ROSIE reescritas sem a letra (que não era verificável):
+            // o slug 'traducao-significado' não descreve mais o conteúdo.
+            { source: '/blog/toxic-till-the-end-rose-blackpink-traducao-significado', destination: '/blog/toxic-till-the-end-rose-creditos-clipe-paradas', permanent: true },
+            { source: '/blog/apt-rose-bruno-mars-traducao-significado', destination: '/blog/apt-rose-bruno-mars-creditos-jogo-paradas', permanent: true },
+            { source: '/blog/number-one-girl-rose-blackpink-traducao-significado', destination: '/blog/number-one-girl-rose-lancamento-creditos-paradas', permanent: true },
             // Artistas duplicados mesclados em 2026-07-05 (mesmo artista, dois posts
             // no WP — slug "-2" era sempre o duplicado removido). Alguns já tinham
             // histórico real de busca no Google (ex: bona-2 com 568 impressões em
