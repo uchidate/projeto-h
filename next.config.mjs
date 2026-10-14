@@ -250,6 +250,12 @@ const nextConfig = {
             { source: '/blog/do-it-again-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
             { source: '/blog/like-it-should-be-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
             { source: '/blog/hard-to-love-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            // Faixas de ROSIE sem fonte própria suficiente para uma página: o crédito de
+            // cada uma está nas páginas do álbum e dos singles; o post antigo reproduzia a letra.
+            { source: '/blog/not-the-same-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/stay-a-little-longer-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/gameboy-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/too-bad-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
             // Artistas duplicados mesclados em 2026-07-05 (mesmo artista, dois posts
             // no WP — slug "-2" era sempre o duplicado removido). Alguns já tinham
             // histórico real de busca no Google (ex: bona-2 com 568 impressões em
