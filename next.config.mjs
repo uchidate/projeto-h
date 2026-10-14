@@ -241,6 +241,14 @@ const nextConfig = {
             { source: '/blog/tempest-yuehua-i-land-2-bad-blood-kpop', destination: '/blog/tempest-da-estreia-em-2022-a-turne-as-i-am', permanent: true },
             { source: '/blog/illit-belift-lab-magnetic-polemica-newjeans-kpop', destination: '/blog/illit-de-magnetic-a-pausa-de-moka', permanent: true },
             { source: '/en/blog/day6-closes-10-year-tour-with-3-sold-out-shows-at-kspo-dome', destination: '/en/blog/day6-closes-10-year-tour-with-3-shows-at-kspo-dome', permanent: true },
+            // Faixas do EP AMORTAGE (Jisoo) sem conteúdo próprio: consolidadas no post do EP.
+            { source: '/blog/hugs-and-kisses-jisoo-traducao-significado', destination: '/blog/amortage-jisoo-album-completo-analise-traducao', permanent: true },
+            { source: '/blog/tears-jisoo-traducao-significado', destination: '/blog/amortage-jisoo-album-completo-analise-traducao', permanent: true },
+            { source: '/blog/your-love-jisoo-traducao-significado', destination: '/blog/amortage-jisoo-album-completo-analise-traducao', permanent: true },
+            // Posts de boato/opinião sem 2+ fontes de imprensa, despublicados (sem ação sobre ficha).
+            { source: '/blog/acusacoes-falsas-jennie-blackpink-ataques-bts-rm-kanye-west', destination: '/blog', permanent: true },
+            { source: '/blog/suga-bts-criticas-visuais-post-viral-netflix-bts-the-return', destination: '/blog', permanent: true },
+            { source: '/blog/jungkook-bts-acusacao-comportamento-improprio-tiktok-izna-jungeun', destination: '/blog', permanent: true },
             // Faixas que não existem no álbum ROSIE (tracklist: 12 faixas, 6/12/2024):
             // os posts descreviam e 'traduziam' músicas inexistentes e foram despublicados.
             // O álbum é tratado no post de análise abaixo.
