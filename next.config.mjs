@@ -248,6 +248,20 @@ const nextConfig = {
             // Posts de boato/opinião sem 2+ fontes de imprensa, despublicados (sem ação sobre ficha).
             { source: '/blog/acusacoes-falsas-jennie-blackpink-ataques-bts-rm-kanye-west', destination: '/blog', permanent: true },
             { source: '/blog/suga-bts-criticas-visuais-post-viral-netflix-bts-the-return', destination: '/blog', permanent: true },
+            // Posts de perfil sobre nomes que não constam no elenco do grupo (conferido na Wikipédia en/ko e no TMDB): despublicados.
+            { source: '/blog/joo-won-8turn-artigo', destination: '/groups/8turn', permanent: true },
+            { source: '/blog/myung-suk-8turn-artigo', destination: '/groups/8turn', permanent: true },
+            { source: '/blog/yong-geun-8turn-artigo', destination: '/groups/8turn', permanent: true },
+            { source: '/blog/yoon-dong-8turn-artigo', destination: '/groups/8turn', permanent: true },
+            { source: '/blog/kyung-ho-8turn-artigo', destination: '/groups/8turn', permanent: true },
+            { source: '/blog/sung-ji-min-just-b', destination: '/groups/just-b', permanent: true },
+            { source: '/blog/kim-da-bin-lapillus-artigo', destination: '/groups/lapillus', permanent: true },
+            { source: '/blog/oh-ha-dam-lapillus', destination: '/groups/lapillus', permanent: true },
+            { source: '/blog/lee-na-hyun-h1key', destination: '/groups/h1-key', permanent: true },
+            { source: '/blog/yang-ye-lin-h1key', destination: '/groups/h1-key', permanent: true },
+            { source: '/blog/jung-myung-hwa-classy', destination: '/groups/classy', permanent: true },
+            { source: '/blog/kim-se-bin-classy', destination: '/groups/classy', permanent: true },
+            { source: '/blog/shin-bo-eun-classy', destination: '/groups/classy', permanent: true },
             { source: '/blog/jungkook-bts-acusacao-comportamento-improprio-tiktok-izna-jungeun', destination: '/blog', permanent: true },
             // Faixas que não existem no álbum ROSIE (tracklist: 12 faixas, 6/12/2024):
             // os posts descreviam e 'traduziam' músicas inexistentes e foram despublicados.
