@@ -227,6 +227,48 @@ const nextConfig = {
             { source: '/blog/boynextdoor-abre-primeira-turne-mundial-com-shows-em-seul', destination: '/blog/boynextdoor-esgota-pre-venda-e-abre-primeira-turne-mundial-em-seul', permanent: true },
             { source: '/blog/mr-kim-com-so-ji-sub-bate-recorde-de-audiencia-e-lidera-o-netflix-global', destination: '/blog/chief-kim-com-so-ji-sub-bate-recorde-de-audiencia-e-chega-ao-top-10-em-73-paises', permanent: true },
             { source: '/blog/nct-127-firma-parceria-com-sm-apos-recontrato-de-todos-os-membros', destination: '/blog/todos-os-sete-integrantes-do-nct-127-renovam-contrato-com-a-sm-entertainment', permanent: true },
+            // Posts do blog reescritos em 2026-10 (i18n D5-a): o slug antigo afirmava
+            // fato que o texto corrigido não sustenta (nome errado, 'queda', 'sold-out'...).
+            // O slug novo reflete o título atual; o antigo continua indexado.
+            { source: '/blog/jisoo-blackpink-irmao-kim-jung-hoon-caso-2025', destination: '/blog/jisoo-blackpink-caso-do-irmao-reportagens-2025', permanent: true },
+            { source: '/blog/exo-a-geracao-que-vendeu-30-milhoes-de-albuns', destination: '/blog/exo-de-12-integrantes-em-2012-ao-reverxe-em-2026', permanent: true },
+            { source: '/blog/nct-dream-choro-palco-encerramento-tour-dream-the-future-seoul', destination: '/blog/nct-dream-encerra-the-dream-show-4-com-seis-shows-em-seul', permanent: true },
+            { source: '/blog/kwon-eunbi-nao-renova-woollim-entertainment-queda-agencia', destination: '/blog/kwon-eunbi-deixa-woollim-entertainment-anuncio-e-nova-agencia', permanent: true },
+            { source: '/blog/newjeans-ascensao-meteorica-futuro', destination: '/blog/newjeans-do-debut-a-2026-recordes-disputa-com-a-ador-e-volta', permanent: true },
+            { source: '/blog/blackpink-comeback-2026-o-que-esperar', destination: '/blog/blackpink-deadline-ep-2026-vendas-paradas-e-turne', permanent: true },
+            { source: '/blog/kim-chae-won-da-le-sserafim-suspende-atividades-por-dor-na-garganta', destination: '/blog/kim-chae-won-le-sserafim-suspende-atividades-por-dor-no-pescoco', permanent: true },
+            { source: '/blog/nuest-produce-101-pledis-hybe-relancamento', destination: '/blog/nuest-do-debut-em-2012-ao-fim-do-contrato-em-2022', permanent: true },
+            { source: '/blog/tempest-yuehua-i-land-2-bad-blood-kpop', destination: '/blog/tempest-da-estreia-em-2022-a-turne-as-i-am', permanent: true },
+            { source: '/blog/illit-belift-lab-magnetic-polemica-newjeans-kpop', destination: '/blog/illit-de-magnetic-a-pausa-de-moka', permanent: true },
+            { source: '/en/blog/day6-closes-10-year-tour-with-3-sold-out-shows-at-kspo-dome', destination: '/en/blog/day6-closes-10-year-tour-with-3-shows-at-kspo-dome', permanent: true },
+            // Faixas do EP AMORTAGE (Jisoo) sem conteúdo próprio: consolidadas no post do EP.
+            { source: '/blog/hugs-and-kisses-jisoo-traducao-significado', destination: '/blog/amortage-jisoo-album-completo-analise-traducao', permanent: true },
+            { source: '/blog/tears-jisoo-traducao-significado', destination: '/blog/amortage-jisoo-album-completo-analise-traducao', permanent: true },
+            { source: '/blog/your-love-jisoo-traducao-significado', destination: '/blog/amortage-jisoo-album-completo-analise-traducao', permanent: true },
+            // Posts de boato/opinião sem 2+ fontes de imprensa, despublicados (sem ação sobre ficha).
+            { source: '/blog/acusacoes-falsas-jennie-blackpink-ataques-bts-rm-kanye-west', destination: '/blog', permanent: true },
+            { source: '/blog/suga-bts-criticas-visuais-post-viral-netflix-bts-the-return', destination: '/blog', permanent: true },
+            { source: '/blog/jungkook-bts-acusacao-comportamento-improprio-tiktok-izna-jungeun', destination: '/blog', permanent: true },
+            // Faixas que não existem no álbum ROSIE (tracklist: 12 faixas, 6/12/2024):
+            // os posts descreviam e 'traduziam' músicas inexistentes e foram despublicados.
+            // O álbum é tratado no post de análise abaixo.
+            { source: '/blog/dry-flowers-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/tell-me-what-to-do-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/dance-till-the-day-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/do-it-again-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/like-it-should-be-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/hard-to-love-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            // Faixas de ROSIE sem fonte própria suficiente para uma página: o crédito de
+            // cada uma está nas páginas do álbum e dos singles; o post antigo reproduzia a letra.
+            { source: '/blog/not-the-same-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/stay-a-little-longer-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/gameboy-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            { source: '/blog/too-bad-rose-blackpink-traducao-significado', destination: '/blog/rosie-rose-blackpink-album-completo-analise', permanent: true },
+            // Páginas de faixas do ROSIE reescritas sem a letra (que não era verificável):
+            // o slug 'traducao-significado' não descreve mais o conteúdo.
+            { source: '/blog/toxic-till-the-end-rose-blackpink-traducao-significado', destination: '/blog/toxic-till-the-end-rose-creditos-clipe-paradas', permanent: true },
+            { source: '/blog/apt-rose-bruno-mars-traducao-significado', destination: '/blog/apt-rose-bruno-mars-creditos-jogo-paradas', permanent: true },
+            { source: '/blog/number-one-girl-rose-blackpink-traducao-significado', destination: '/blog/number-one-girl-rose-lancamento-creditos-paradas', permanent: true },
             // Artistas duplicados mesclados em 2026-07-05 (mesmo artista, dois posts
             // no WP — slug "-2" era sempre o duplicado removido). Alguns já tinham
             // histórico real de busca no Google (ex: bona-2 com 568 impressões em
