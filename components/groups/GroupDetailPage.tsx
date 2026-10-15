@@ -14,7 +14,6 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { GroupHero } from '@/components/groups/GroupHero'
 import { POSITION_LABELS } from '@/lib/constants/positions'
-import { GroupSidebarFicha } from '@/components/groups/GroupSidebarFicha'
 import { ScrollToTop } from '@/components/ui/ScrollToTop'
 import { ReadingBar } from '@/components/ui/ReadingBar'
 import { QuizWidget } from '@/components/ui/QuizWidget'
@@ -28,7 +27,6 @@ import { toRgba } from '@/lib/theme/color'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
 import { GroupFichaC } from '@/components/groups/GroupFichaC'
 import { isInterstitial } from '@/components/profiles/ProfileSection'
-import { variantePorId } from '@/lib/experimento'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
@@ -135,32 +133,29 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
     })
 
 
-    // Teste A/B por id (par = ficha nova): integrantes primeiro, cinco abas e o resto recolhido no mesmo HTML.
-    const emC = variantePorId(group.id) === 'b'
+    // Ficha "C" (venceu o teste A/B em 2026-09-27): integrantes primeiro, cinco abas e o resto recolhido no mesmo HTML.
     const magra = members.length === 0 && !model.hasBio
-    const { anchors: navLinks, nodes: sectionNodes } = renderProfileEntries(entries, { parentProvidesRail: true, medir: { prefixo: 'ficha-grupo', ids: ['membros', 'discografia', 'relacionados', 'artigos'] } })
+    const { nodes: sectionNodes } = renderProfileEntries(entries, { parentProvidesRail: true, medir: { prefixo: 'ficha-grupo', ids: ['membros', 'discografia', 'relacionados', 'artigos'] } })
 
     const nodesC: Record<string, React.ReactNode> = {}
     const restoC: React.ReactNode[] = []
-    if (emC) {
-        const DESENHADOS = new Set(['sobre', 'membros', 'videos', 'discografia', 'spotify', 'votacao', 'identidade', 'relacionados', 'artigos', 'faq'])
-        entries.forEach((e, i) => {
-            if (isInterstitial(e) || !e.present) return
-            nodesC[e.id] = sectionNodes[i]
-            if (!DESENHADOS.has(e.id) && !['analise', 'trajetoria', 'recordes'].includes(e.id)) restoC.push(sectionNodes[i])
-        })
-    }
-    const anchorsC = emC ? [
+    const DESENHADOS = new Set(['sobre', 'membros', 'videos', 'discografia', 'spotify', 'votacao', 'identidade', 'relacionados', 'artigos', 'faq'])
+    entries.forEach((e, i) => {
+        if (isInterstitial(e) || !e.present) return
+        nodesC[e.id] = sectionNodes[i]
+        if (!DESENHADOS.has(e.id) && !['analise', 'trajetoria', 'recordes'].includes(e.id)) restoC.push(sectionNodes[i])
+    })
+    const anchorsC = [
         activeMembers.length > 0 && { href: '#membros', label: tC('tabs.membros') },
         (model.videoList.length > 0 || discography.length > 0 || !!acf.spotify) && { href: '#musica', label: tC('tabs.musica') },
         ((acf.story_chapters ?? []).length > 0) && { href: '#carreira', label: tC('tabs.carreira') },
         (members.length > 1 || !!acf.color) && { href: '#fandom', label: tC('tabs.fandom') },
         relatedPosts.length > 0 && { href: '#ler', label: tC('tabs.ler') },
-    ].filter(Boolean) as { href: string; label: string }[] : navLinks
+    ].filter(Boolean) as { href: string; label: string }[]
 
     return (
         <>
-            <div hidden data-variante={emC ? 'grupo-c' : 'grupo-a'} />
+            <div hidden data-variante="grupo-c" />
             <RegistrarVisita item={{ slug: group.slug, nome: name, foto: image?.src ?? null, papel: acf.type ? labelsFor(locale).groupType(acf.type) : null, tipo: 'grupo' }} />
             <JsonLd
                 data={{
@@ -216,46 +211,15 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                 totalMembers={activeCount > 0 ? activeCount : members.length}
             />
 
-            {emC ? (
-                <>
-                <GroupFichaC
-                    group={group} model={model} activeMembers={activeMembers} formerMembers={formerMembers} formerSemFicha={formerSemFicha} memberPositions={memberPositions}
-                    relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography} soloReleases={soloReleases}
-                    agencyName={agencyName} generation={generation} magra={magra}
-                    nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />}
-                />
-                <ShopRelatedSection title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`} products={shopProducts}
-                    href={shopFallback ? '/loja' : `/loja/grupo/${group.slug}`} verTudoLabel={shopFallback ? 'Ver toda a loja' : `Ver tudo de ${name}`}
-                    contexto={shopFallback ? 'grupo:fallback' : `grupo:${group.slug}`} />
-                </>
-            ) : (
-                <>
-            <QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />
-            {/* Depois do quiz/estatísticas, não direto após o hero — ficava alto
-                demais e competia com a primeira impressão do perfil. */}
+            <GroupFichaC
+                group={group} model={model} activeMembers={activeMembers} formerMembers={formerMembers} formerSemFicha={formerSemFicha} memberPositions={memberPositions}
+                relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography} soloReleases={soloReleases}
+                agencyName={agencyName} generation={generation} magra={magra}
+                nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />}
+            />
             <ShopRelatedSection title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`} products={shopProducts}
                 href={shopFallback ? '/loja' : `/loja/grupo/${group.slug}`} verTudoLabel={shopFallback ? 'Ver toda a loja' : `Ver tudo de ${name}`}
                 contexto={shopFallback ? 'grupo:fallback' : `grupo:${group.slug}`} />
-            {/* Page body */}
-            <div className="page-wrap">
-                <div className="flex items-start gap-10">
-                    <main className="group-profile-stack min-w-0 max-w-[1020px] flex-1 xl:pl-32">
-                        {sectionNodes}
-                    </main>
-
-                    {/* Sidebar — desktop only */}
-                    <GroupSidebarFicha
-                        acf={acf}
-                        accent={accent}
-                        generation={generation}
-                        memberCount={activeCount}
-                        socialEntries={socialEntries}
-                        agencyName={agencyName}
-                    />
-                </div>
-            </div>
-                </>
-            )}
 
             {/* Guias só existem em português. */}
             {locale === DEFAULT_LOCALE && relatedHubs.length > 0 && (
