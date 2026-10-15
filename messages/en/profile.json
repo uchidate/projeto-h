@@ -46,6 +46,10 @@
     }
   },
   "production": {
+    "mapKicker": "Connections",
+    "mapTitle": "Who and what connects to {title}",
+    "mapAria": "Connection map for {title}",
+    "mapHint": "Cast with profiles in the catalog and related productions. Tap a name to open its page.",
     "nav": {
       "synopsis": "Synopsis",
       "trailer": "Trailer",
@@ -408,6 +412,10 @@
     "understandDetail": "{count, plural, one {# chapter, in a few minutes} other {# chapters, in a few minutes}}"
   },
   "groupC": {
+    "mapKicker": "Connections",
+    "mapTitle": "The universe of {name}",
+    "mapAria": "Connection map for {name}",
+    "mapHint": "Members and, on the outer ring, groups from the same agency. Tap a name to open its page.",
     "tabs": {
       "membros": "Members",
       "musica": "Music",

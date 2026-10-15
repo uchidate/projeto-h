@@ -8,6 +8,7 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ProfileSidebarAd } from '@/components/profiles/ProfileSidebarAd'
 import { CollapsibleProse } from '@/components/profiles/CollapsibleProse'
 import { highlightProse } from '@/lib/profiles/highlightProse'
+import { MapaConexoes, type NoMapa } from '@/components/artists/MapaConexoes'
 import { extractYoutubeId, getWPImage, stripHtml } from '@/lib/utils'
 import { POSITION_LABELS } from '@/lib/constants/positions'
 import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
@@ -56,7 +57,7 @@ function Anuncio({ placement, layout = 'content' }: { placement: string; layout?
  * Corpo da página de grupo na proposta "Página de grupo": integrantes primeiro, depois música, carreira,
  * sobre, fandom e leitura. O que a proposta não mostra fica recolhido no mesmo HTML.
  */
-export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, soloReleases, agencyName, generation, magra, nodes, resto , quiz }: Props) {
+export function GroupFichaC({ group, model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, soloReleases, agencyName, generation, magra, nodes, resto , quiz }: Props) {
     const t = useTranslations('profile.groupC')
     const labels = labelsFor(useLocale())
     const accent = model.accent
@@ -71,6 +72,11 @@ export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFich
     const linhaDe = (slug: string) => linhas.find(l => l.slug === slug)
     const citacao = capitulos.find(c => c.quote_text && c.quote_author)
     const semAnuncio = magra
+    const nomeDoGrupo = name
+    const nosMapa: NoMapa[] = [
+        ...activeMembers.slice(0, 7).map(m => ({ href: `/artists/${m.slug}`, label: stripHtml(m.title?.rendered ?? ''), img: getWPImage(m._embedded, m.featured_image_url)?.src ?? null, tipo: 'artista' as const })),
+        ...relatedGroups.slice(0, 3).map(g => ({ href: `/groups/${g.slug}`, label: stripHtml(g.title?.rendered ?? ''), img: getWPImage(g._embedded, g.featured_image_url)?.src ?? null, tipo: 'grupo' as const, anel: 'fora' as const })),
+    ]
     const clipes = videoList.map(v => ({ ...v, id: extractYoutubeId(v.url) })).filter((v): v is typeof v & { id: string } => !!v.id).slice(0, 3)
     const porIntegrante = activeMembers.filter(m => getWPImage(m._embedded, m.featured_image_url)).slice(0, 3)
     const hits = (acf.hits ?? []).map(h => ({ ...h, id: extractYoutubeId(h.url) })).filter((h): h is typeof h & { id: string } => !!h.id).slice(0, 3)
@@ -222,6 +228,21 @@ export function GroupFichaC({ model, activeMembers, formerMembers, formerSemFich
             )}
 
             {quiz}
+
+            {/* Conexões: integrantes (dentro) e grupos da mesma agência (fora; relatedGroups vem filtrado por agência) */}
+            {nosMapa.length >= 4 && (
+                <section id="conexoes" className="scroll-mt-28 py-10 sm:py-12" data-bloco="grupo-conexoes">
+                    <div className={COL}>
+                        <p className={`${KICKER} text-muted`}>{t('mapKicker')}</p>
+                        <h2 className={`mt-2 ${H2}`}>{t('mapTitle', { name: nomeDoGrupo })}</h2>
+                        <div className="mt-6 sm:mt-8">
+                            <MapaConexoes centro={{ label: nomeDoGrupo, img: getWPImage(group._embedded, group.featured_image_url)?.src ?? null }}
+                                nos={nosMapa} accent={accent} ariaLabel={t('mapAria', { name: nomeDoGrupo })} />
+                            <p className="mx-auto mt-4 max-w-[560px] text-center text-[13px] text-muted">{t('mapHint')}</p>
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Música */}
             {temMusica && (

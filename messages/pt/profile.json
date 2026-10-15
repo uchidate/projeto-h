@@ -46,6 +46,10 @@
     }
   },
   "production": {
+    "mapKicker": "Conexões",
+    "mapTitle": "Quem e o que se liga a {title}",
+    "mapAria": "Mapa de conexões de {title}",
+    "mapHint": "Elenco com ficha no catálogo e produções relacionadas. Toque num nome para abrir a página.",
     "nav": {
       "synopsis": "Sinopse",
       "trailer": "Trailer",
@@ -408,6 +412,10 @@
     "understandDetail": "{count, plural, one {# capítulo, em poucos minutos} other {# capítulos, em poucos minutos}}"
   },
   "groupC": {
+    "mapKicker": "Conexões",
+    "mapTitle": "O universo de {name}",
+    "mapAria": "Mapa de conexões de {name}",
+    "mapHint": "Integrantes e, no anel de fora, grupos da mesma agência. Toque num nome para abrir a página.",
     "tabs": {
       "membros": "Integrantes",
       "musica": "Música",

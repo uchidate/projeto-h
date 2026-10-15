@@ -10,6 +10,8 @@ export interface NoMapa {
     label: string
     img?: string | null
     tipo: 'grupo' | 'artista' | 'obra'
+    /** Anel do nó. Padrão: obras fora, o resto dentro. */
+    anel?: 'dentro' | 'fora'
 }
 
 interface Props {
@@ -19,28 +21,33 @@ interface Props {
     ariaLabel: string
 }
 
-/** Cada anel posiciona seus nós em ângulos iguais; o segundo anel gira meia fatia para não alinhar com o primeiro. */
+/** Anel de dentro em ângulos iguais; cada nó de fora cai no vão entre dois de dentro, para não colidir. */
 function posicionar(nos: NoMapa[]) {
-    const interno = nos.filter(n => n.tipo !== 'obra')
-    const externo = nos.filter(n => n.tipo === 'obra')
-    const passoInterno = 360 / Math.max(interno.length, 1)
-    // O anel de fora começa meia fatia depois, para cada obra ficar entre dois nós de dentro.
-    const colocar = (lista: NoMapa[], raio: number, fase: number) =>
-        lista.map((n, i) => ({ n, raio, graus: fase + (360 / lista.length) * i }))
-    return [...colocar(interno, 26, -90), ...colocar(externo, 40, -90 + passoInterno / 2)]
+    const fora = (n: NoMapa) => (n.anel ?? (n.tipo === 'obra' ? 'fora' : 'dentro')) === 'fora'
+    const interno = nos.filter(n => !fora(n))
+    const externo = nos.filter(fora)
+    const passo = 360 / Math.max(interno.length, 1)
+    const dentro = interno.map((n, i) => ({ n, raio: 26, graus: -90 + passo * i }))
+    // Cada nó de fora fica no meio do vão entre dois de dentro, espalhados pelo anel.
+    const fora2 = externo.map((n, i) => {
+        const vao = Math.floor((i * interno.length) / Math.max(externo.length, 1))
+        return { n, raio: 41, graus: -90 + passo * (vao + 0.5) }
+    })
+    return [...dentro, ...fora2]
 }
 
 /**
- * Mapa radial: o artista no centro, o grupo e os colegas no anel de dentro, as obras no de fora.
- * Só entram vínculos já confirmados no catálogo (integrantes do grupo e elenco de produções).
- * Tudo em CSS: cada nó vive num eixo girado (a linha é a própria régua do eixo), e o hover
- * acende a linha do nó sem JavaScript. `cqw` mantém as proporções em qualquer largura.
+ * Mapa radial: a entidade no centro (artista, grupo ou produção), os vínculos mais próximos no anel
+ * de dentro e os secundários no de fora. Só entram vínculos já confirmados no catálogo.
+ * Posição por trigonometria (left/top em %), linhas em SVG e `cqw` para manter as proporções
+ * em qualquer largura; o hover acende a linha do nó sem JavaScript.
  */
 export function MapaConexoes({ centro, nos, accent, ariaLabel }: Props) {
     const pathname = usePathname()
     const itens = posicionar(nos).map(it => {
         const rad = (it.graus * Math.PI) / 180
-        return { ...it, x: 50 + it.raio * Math.cos(rad), y: 50 + it.raio * Math.sin(rad) }
+        // Arredonda: Math.cos/sin diferem na última casa entre Node e navegador, e isso quebra a hidratação.
+        return { ...it, x: Math.round((50 + it.raio * Math.cos(rad)) * 100) / 100, y: Math.round((50 + it.raio * Math.sin(rad)) * 100) / 100 }
     })
     return (
         <nav aria-label={ariaLabel} data-bloco="mapa-conexoes"
