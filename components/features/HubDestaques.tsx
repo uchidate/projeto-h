@@ -12,7 +12,7 @@ interface Props {
 }
 
 /**
- * "Comece por aqui": as melhores avaliadas do guia, antes da grade de 48 itens.
+ * "Comece por aqui": o que está em alta no guia, com nota decente, antes da grade de 48 itens.
  * Medido em 2026-10 (Umami): guias têm ~12 mil px de rolagem no celular e 4% chegam ao
  * fim; quem não sabe por onde começar sai na primeira página (78% de saída em guias).
  * Os três primeiros viram cartas largas, com a nota e o porquê; o resto, uma fileira curta.

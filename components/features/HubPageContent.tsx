@@ -304,7 +304,7 @@ export function HubPageContent({
                     </nav>
                 )}
 
-                <HubDestaques items={destaques} eyebrow="Comece por aqui" title={`As mais bem avaliadas — ${hub.shortTitle}`} />
+                <HubDestaques items={destaques} eyebrow="Comece por aqui" title={`Em alta e bem avaliadas — ${hub.shortTitle}`} />
 
                 <section>
                     <SectionTitleBar
