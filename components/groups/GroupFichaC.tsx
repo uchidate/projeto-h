@@ -75,7 +75,7 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
     const nomeDoGrupo = name
     const nosMapa: NoMapa[] = [
         ...activeMembers.slice(0, 7).map(m => ({ href: `/artists/${m.slug}`, label: stripHtml(m.title?.rendered ?? ''), img: getWPImage(m._embedded, m.featured_image_url)?.src ?? null, tipo: 'artista' as const })),
-        ...relatedGroups.slice(0, 3).map(g => ({ href: `/groups/${g.slug}`, label: stripHtml(g.title?.rendered ?? ''), img: getWPImage(g._embedded, g.featured_image_url)?.src ?? null, tipo: 'grupo' as const, anel: 'fora' as const })),
+        ...relatedGroups.filter(g => g.acf?.active !== false && !g.acf?.disbandment_date).slice(0, 3).map(g => ({ href: `/groups/${g.slug}`, label: stripHtml(g.title?.rendered ?? ''), img: getWPImage(g._embedded, g.featured_image_url)?.src ?? null, tipo: 'grupo' as const, anel: 'fora' as const })),
     ]
     const clipes = videoList.map(v => ({ ...v, id: extractYoutubeId(v.url) })).filter((v): v is typeof v & { id: string } => !!v.id).slice(0, 3)
     const porIntegrante = activeMembers.filter(m => getWPImage(m._embedded, m.featured_image_url)).slice(0, 3)
@@ -229,7 +229,7 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
 
             {quiz}
 
-            {/* Conexões: integrantes (dentro) e grupos da mesma agência (fora; relatedGroups vem filtrado por agência) */}
+            {/* Conexões: integrantes (dentro) e grupos da mesma agência (fora; relatedGroups vem filtrado por agência, aqui só os ativos) */}
             {nosMapa.length >= 4 && (
                 <section id="conexoes" className="scroll-mt-28 py-10 sm:py-12" data-bloco="grupo-conexoes">
                     <div className={COL}>
