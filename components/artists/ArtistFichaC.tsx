@@ -16,6 +16,7 @@ import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
 import { GroupDiscography, type DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { GroupSpotifyEmbed } from '@/components/groups/GroupSpotifyEmbed'
 import { ArtistCarreira } from '@/components/artists/ArtistCarreira'
+import { MarcosFaixa, temMarcosSuficientes, type Marco } from '@/components/artists/MarcosFaixa'
 import { ArtistAtalhos } from '@/components/artists/ArtistAtalhos'
 
 interface Props {
@@ -116,6 +117,24 @@ export function ArtistFichaC({
         const periodo = anos.length > 0 ? (Math.min(...anos) === Math.max(...anos) ? String(anos[0]) : `${Math.min(...anos)}–${Math.max(...anos)}`) : cap[0].period
         return { periodo, titulo: cap[0].title, texto: cap[0].description }
     })
+
+    const anoDe4 = (v: unknown) => parseInt(String(v ?? '').match(/\d{4}/)?.[0] ?? '') || 0
+    const marcos: Marco[] = [
+        anoDe4(acf.debut_date) > 0 && { ano: anoDe4(acf.debut_date), tipo: 'estreia' as const, titulo: t('marcoEstreia') },
+        ...storyChapters.flatMap(c => {
+            const ano = anosDoPeriodo(c.period)[0]
+            return ano ? [{ ano, tipo: 'fase' as const, titulo: c.title, href: '#carreira' }] : []
+        }),
+        ...awards.flatMap(a => {
+            const ano = anoDe4(a.year)
+            return ano ? [{ ano, tipo: 'premio' as const, titulo: [a.category, a.title].filter(Boolean).join(' · ') }] : []
+        }),
+        ...productions.flatMap(p => {
+            const ano = anoDe(p)
+            return ano ? [{ ano, tipo: 'obra' as const, titulo: tituloDe(p), href: `/productions/${p.slug}` }] : []
+        }),
+    ].filter(Boolean) as Marco[]
+    const temMarcos = temMarcosSuficientes(marcos)
 
     const temUniverso = relatedArtists.filter(r => r.id !== artist.id).length > 0 || !!grupo
     const temLer = relatedPosts.length > 0
@@ -236,6 +255,23 @@ export function ArtistFichaC({
             {!semAnuncio && <Anuncio placement="artist_apos_visao" layout="leaderboard" />}
 
             {quiz}
+
+            {temMarcos && (
+                <section id="marcos" className="scroll-mt-28 border-t border-border py-12 sm:py-[72px]">
+                    <div className={COL}>
+                        <p className={`${KICKER} text-muted`}>{t('marcosKicker')}</p>
+                        <h2 className={`mt-2 ${H2}`}>{t('marcosTitle', { name })}</h2>
+                        <div className="mt-8">
+                            <MarcosFaixa
+                                marcos={marcos}
+                                accent={accent}
+                                ariaLabel={t('marcosAria', { name })}
+                                tipos={{ estreia: t('marcoTipoEstreia'), fase: t('marcoTipoFase'), obra: t('marcoTipoObra'), premio: t('marcoTipoPremio') }}
+                            />
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Carreira em fases (a linha do tempo completa fica recolhida logo abaixo) */}
             {fases.length > 0 && (
