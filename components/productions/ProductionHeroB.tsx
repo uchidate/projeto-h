@@ -3,7 +3,8 @@ import { useTranslations } from 'next-intl'
 import { Play, Star } from 'lucide-react'
 import type { WPTerm } from '@/lib/wordpress/types'
 import { ProductionActions } from '@/components/productions/ProductionActions'
-import { ShareBar } from '@/components/ui/ShareBar'
+import { CompartilharBotao } from '@/components/ui/CompartilharBotao'
+import { classeDoTituloHero } from '@/lib/profiles/tituloHero'
 
 interface Props {
     productionId: number
@@ -71,10 +72,10 @@ export function ProductionHeroB({
                             {year && <span className="text-accent">{year}</span>}
                             {genres.length > 0 && <span className="hidden text-white/75 sm:inline">{genres.map(g => g.name).join(' · ')}</span>}
                         </div>
-                        <h1 id="titulo-producao" className="font-serif text-[40px] font-bold leading-none tracking-tight text-white sm:text-[56px] lg:text-[76px]">{title}</h1>
+                        <h1 id="titulo-producao" className={`font-serif font-bold leading-[1.05] tracking-tight text-balance text-white ${classeDoTituloHero(title)}`}>{title}</h1>
                         {(originalTitle || subtitle) && (
                             <p className="mt-2 flex flex-wrap items-baseline gap-x-4 sm:mt-3">
-                                {originalTitle && <span className="text-[17px] font-bold text-accent sm:text-[22px]">{originalTitle}</span>}
+                                {originalTitle && <span className="break-keep text-[16px] font-bold text-balance text-accent sm:text-[20px]">{originalTitle}</span>}
                                 {subtitle && <span className="hidden text-[15px] italic text-white/75 sm:inline">&ldquo;{subtitle}&rdquo;</span>}
                             </p>
                         )}
@@ -89,13 +90,13 @@ export function ProductionHeroB({
                         </div>
                         <div className="mt-5 hidden flex-wrap items-center gap-3 sm:flex lg:mt-6">
                             {hasTrailer && (
-                                <a href="#trailer" className="inline-flex h-12 items-center gap-2.5 bg-accent px-6 text-[14px] font-bold text-[#0d0b0f] transition-colors hover:bg-accent-strong">
+                                <a href="#trailer" className="inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap bg-accent px-5 text-[14px] font-bold text-[#0d0b0f] transition-colors hover:bg-accent-strong">
                                     <Play size={15} fill="currentColor" /> {t('production.watchTrailer')}
                                 </a>
                             )}
-                            <ProductionActions productionId={productionId} mode="watch" variant="hero" />
-                            <ProductionActions productionId={productionId} mode="favorite" variant="hero" />
-                            <ShareBar url={productionUrl} title={title} horizontal showLabel={false} tone="photo" />
+                            <ProductionActions productionId={productionId} mode="watch" variant="heroB" />
+                            <ProductionActions productionId={productionId} mode="favorite" variant="heroB" />
+                            <CompartilharBotao url={productionUrl} title={title} tone="photo" menuSide="right" />
                         </div>
                     </div>
                 </div>
@@ -123,15 +124,17 @@ export function ProductionHeroBMobile({
                 )}
                 {episodes != null && episodes > 0 && <span>{episodes} ep.{durationMinutes ? ` · ${durationMinutes} min` : ''}</span>}
                 {status && <span className={`px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider ${status.color}`}>{status.label}</span>}
+                <span className="ml-auto"><CompartilharBotao url={productionUrl} title={title} menuAlign="end" size="sm" /></span>
             </div>
-            <div className="mt-4 flex items-center gap-2.5">
-                {hasTrailer && (
-                    <a href="#trailer" className="inline-flex h-12 flex-1 items-center justify-center gap-2 bg-accent text-[14px] font-bold text-[#0d0b0f]">
+            {/* Dois botões do mesmo tamanho, mesma altura e mesma fonte: o par "assistir trailer" /
+                "adicionar à lista" quebrava em duas linhas com larguras diferentes. */}
+            <div className="mt-4 grid grid-cols-2 gap-2.5">
+                {hasTrailer ? (
+                    <a href="#trailer" className="inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap bg-accent px-3 text-[13px] font-bold text-[#0d0b0f]">
                         <Play size={15} fill="currentColor" /> {t('production.watchTrailer')}
                     </a>
-                )}
-                <div className="flex-1"><ProductionActions productionId={productionId} mode="watch" variant="hero" /></div>
-                <ShareBar url={productionUrl} title={title} horizontal showLabel={false} />
+                ) : <span />}
+                <ProductionActions productionId={productionId} mode="watch" variant="heroB" />
             </div>
         </div>
     )

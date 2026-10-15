@@ -20,7 +20,7 @@ import {
 interface Props {
     productionId: number
     mode?: 'all' | 'favorite' | 'watch'
-    variant?: 'default' | 'hero'
+    variant?: 'default' | 'hero' | 'heroB'
 }
 
 export function ProductionActions({ productionId, mode = 'all', variant = 'default' }: Props) {
@@ -142,17 +142,18 @@ export function ProductionActions({ productionId, mode = 'all', variant = 'defau
     if (!ready && status !== 'unauthenticated') return null
 
     return (
-        <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 flex-wrap">
+        <div className={`flex flex-col gap-2 ${variant === 'heroB' ? 'max-sm:w-full' : ''}`}>
+            <div className={`flex items-center gap-2 ${variant === 'heroB' ? 'max-sm:w-full' : 'flex-wrap'}`}>
                 {mode !== 'watch' && <button
                     type="button"
                     onClick={handleFav}
                     disabled={isPending}
                     aria-label={isFav ? tc('production.removeFav') : tc('production.addFav')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold border transition-colors disabled:opacity-60
+                    className={`flex items-center gap-1.5 font-bold border transition-colors disabled:opacity-60
+                    ${variant === 'heroB' ? 'h-12 px-4 text-[14px]' : 'px-3 py-1.5 text-[12px]'}
                     ${isFav
                         ? 'bg-accent-a11y border-accent-a11y text-white'
-                        : variant === 'hero'
+                        : variant === 'hero' || variant === 'heroB'
                             ? 'border-white/30 bg-black/30 text-white backdrop-blur-xs hover:border-white hover:bg-black/50'
                             : 'border-border text-muted hover:border-accent hover:text-accent'
                     }`}
@@ -167,16 +168,18 @@ export function ProductionActions({ productionId, mode = 'all', variant = 'defau
                     disabled={isPending}
                     aria-label={isWatch ? tc('production.removeList') : tc('production.addList')}
                     className={`flex items-center gap-1.5 font-bold border transition-colors disabled:opacity-60
-                    ${variant === 'hero'
+                    ${variant === 'heroB'
+                        ? `h-12 justify-center whitespace-nowrap px-3 max-sm:w-full text-[13px] sm:px-5 sm:text-[14px] ${isWatch ? 'border-white bg-white text-black' : 'border-white/40 bg-black/30 text-white backdrop-blur-xs hover:border-white hover:bg-black/50'}`
+                        : variant === 'hero'
                         ? `rounded-lg px-5 py-3 text-[11px] ${isWatch ? 'border-white bg-white text-black' : 'border-white/25 bg-white/90 text-black hover:bg-white'}`
                         : `px-3 py-1.5 text-[12px] ${isWatch ? 'bg-foreground border-foreground text-background' : 'border-border text-muted hover:border-foreground hover:text-foreground'}`
                     }`}
                 >
                     <Bookmark size={13} fill={isWatch ? 'currentColor' : 'none'} />
-                    {isWatch ? tc('production.inList') : variant === 'hero' ? tc('production.addList') : tc('production.want')}
+                    {isWatch ? tc('production.inList') : variant === 'hero' || variant === 'heroB' ? tc('production.addList') : tc('production.want')}
                 </button>}
 
-                {status === 'unauthenticated' && variant !== 'hero' && (
+                {status === 'unauthenticated' && variant === 'default' && (
                     <Link href={`/entrar?callbackUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.pathname : '')}`}
                         className="flex items-center gap-1 text-[11px] text-muted hover:text-accent transition-colors">
                         <LogIn size={11} /> {tc('common.signInToSync')}
@@ -184,7 +187,7 @@ export function ProductionActions({ productionId, mode = 'all', variant = 'defau
                 )}
             </div>
 
-            {session?.user && variant !== 'hero' && (
+            {session?.user && variant === 'default' && (
                 <div className="flex flex-wrap items-center gap-1.5 border border-border bg-surface p-1.5">
                     {([
                         { id: 'want', label: tc('production.want'), icon: ListChecks },
@@ -212,7 +215,7 @@ export function ProductionActions({ productionId, mode = 'all', variant = 'defau
                 </div>
             )}
 
-            {notice && variant !== 'hero' && (
+            {notice && variant === 'default' && (
                 <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold text-muted" role="status" aria-live="polite">
                     <span className="inline-flex items-center gap-1 text-foreground">
                         <CheckCircle2 size={12} className="text-accent" /> {notice}
