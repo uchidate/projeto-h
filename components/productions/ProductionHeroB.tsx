@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 import { Play, Star } from 'lucide-react'
 import type { WPTerm } from '@/lib/wordpress/types'
 import { ProductionActions } from '@/components/productions/ProductionActions'
-import { ShareBar } from '@/components/ui/ShareBar'
+import { CompartilharBotao } from '@/components/ui/CompartilharBotao'
 import { classeDoTituloHero } from '@/lib/profiles/tituloHero'
 
 interface Props {
@@ -96,7 +96,7 @@ export function ProductionHeroB({
                             )}
                             <ProductionActions productionId={productionId} mode="watch" variant="heroB" />
                             <ProductionActions productionId={productionId} mode="favorite" variant="heroB" />
-                            <ShareBar url={productionUrl} title={title} horizontal showLabel={false} tone="photo" />
+                            <CompartilharBotao url={productionUrl} title={title} tone="photo" menuSide="right" />
                         </div>
                     </div>
                 </div>
@@ -124,7 +124,7 @@ export function ProductionHeroBMobile({
                 )}
                 {episodes != null && episodes > 0 && <span>{episodes} ep.{durationMinutes ? ` · ${durationMinutes} min` : ''}</span>}
                 {status && <span className={`px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider ${status.color}`}>{status.label}</span>}
-                <span className="ml-auto"><ShareBar url={productionUrl} title={title} horizontal showLabel={false} /></span>
+                <span className="ml-auto"><CompartilharBotao url={productionUrl} title={title} menuAlign="end" size="sm" /></span>
             </div>
             {/* Dois botões do mesmo tamanho, mesma altura e mesma fonte: o par "assistir trailer" /
                 "adicionar à lista" quebrava em duas linhas com larguras diferentes. */}
