@@ -30,6 +30,7 @@ import { StoreCard } from '@/components/ui/StoreCard'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { BlogContinuar } from '@/components/blog/BlogContinuar'
 import { BlogSugestaoMeio } from '@/components/blog/BlogSugestaoMeio'
+import { tituloQuaseIgual } from '@/lib/blog/tituloQuaseIgual'
 import { BlogTextShare } from '@/components/blog/BlogTextShare'
 import { BlogMobileReadMore } from '@/components/blog/BlogMobileReadMore'
 import { BlogDaysUntil } from '@/components/blog/BlogDaysUntil'
@@ -376,9 +377,12 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
     // Teste de sugestão no meio do texto: metade dos artigos, independente da paridade
     // dos outros testes (id/2 par). O restante é o controle, que segue só com o fechamento.
     // O candidato do meio sai da lista do fechamento para não se repetir.
-    const meioNovo = Math.floor(post.id / 2) % 2 === 0 && relatedPosts.length > 1
-    const moreRelatedPosts = relatedPosts.slice(meioNovo ? 2 : 1, 5)
-    const sugestaoMeio = meioNovo ? <BlogSugestaoMeio atual={post} candidato={relatedPosts[1]} /> : null
+    const tituloAtual = stripHtml(post.title.rendered)
+    // Pula gêmeos do artigo atual: o ranking de relacionados os põe no topo por compartilharem entidade.
+    const candidatoMeio = relatedPosts.slice(1).find(c => !tituloQuaseIgual(tituloAtual, stripHtml(c.title.rendered)))
+    const meioNovo = Math.floor(post.id / 2) % 2 === 0 && candidatoMeio !== undefined
+    const moreRelatedPosts = relatedPosts.slice(1, 6).filter(c => !meioNovo || c.id !== candidatoMeio?.id).slice(0, 4)
+    const sugestaoMeio = meioNovo ? <BlogSugestaoMeio atual={post} candidato={candidatoMeio} /> : null
     // Experimento: metade dos artigos (id par) recebe o fechamento novo, a outra metade
     // mantém o "Leia também". Por artigo e não por visitante: sem cookie e sem risco de
     // hidratação divergente numa página ISR. Cada bloco tem `data-bloco` próprio, então
