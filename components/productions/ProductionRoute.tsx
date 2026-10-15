@@ -13,6 +13,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ProductionDetailPage } from '@/components/productions/ProductionDetailPage'
 import { getHubsForProduction } from '@/lib/guias/hub-lookup'
+import { getCenas } from '@/lib/tmdb/imagens'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
@@ -79,6 +80,11 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         getTranslations({ locale, namespace: 'entity.switcher' }),
     ])
     const production = localizeEntity(sourceProduction, locale, 'production')
+    // Catálogo sem fotos: usa cenas do TMDB para a galeria (ambas as estruturas leem gallery_urls).
+    if (!(production.acf?.gallery_urls?.length)) {
+        const cenas = await getCenas(production.acf?.tmdb_id, production.acf?.type)
+        if (cenas.length > 0) production.acf = { ...production.acf, gallery_urls: cenas }
+    }
     if (production.acf?.adult_content) notFound()
 
     const castDetails = production.production_cast?.length
