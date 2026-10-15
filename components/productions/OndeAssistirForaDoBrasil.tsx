@@ -24,7 +24,7 @@ export function OndeAssistirForaDoBrasil({ disponibilidade, className = '' }: { 
     const regioes = new Intl.DisplayNames([locale], { type: 'region' })
 
     return (
-        <div data-bloco="ficha-producao-onde-assistir-fora" className={`min-w-0 border border-border bg-surface p-4 sm:p-6 ${className}`}>
+        <div data-bloco="ficha-producao-onde-assistir-fora" className={`min-w-0 max-w-[760px] border border-border bg-surface p-4 sm:p-6 ${className}`}>
             <h2 className="mb-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-muted">{t('whereToWatch')}</h2>
             <p className="text-[16px] font-bold leading-snug text-foreground">{t('notInBrazil')}</p>
             <p className="mt-3 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('availableAbroad')}</p>

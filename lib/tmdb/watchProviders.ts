@@ -19,10 +19,18 @@ type RespostaTmdb = {
     results?: Record<string, { flatrate?: { provider_name: string }[]; free?: { provider_name: string }[]; ads?: { provider_name: string }[] }>
 }
 
+/**
+ * Variantes do mesmo serviço que o TMDB lista à parte: "Amazon Prime Video with Ads" ao lado
+ * de "Amazon Prime Video", e "Channel K Amazon Channel" (assinatura avulsa dentro da Amazon).
+ * Para o leitor são o mesmo lugar ou ruído.
+ */
+const VARIANTE = /(\bwith ads$|\bamazon channel$|\bapple tv channel$)/i
+
 function nomes(r: NonNullable<RespostaTmdb['results']>[string] | undefined): string[] {
     if (!r) return []
     const todos = [...(r.flatrate ?? []), ...(r.free ?? []), ...(r.ads ?? [])].map(p => p.provider_name)
-    return [...new Set(todos)]
+    const principais = todos.filter(n => !VARIANTE.test(n))
+    return [...new Set(principais.length > 0 ? principais : todos)]
 }
 
 /** Puro e testável: transforma a resposta crua do TMDB em disponibilidade. Sem nenhuma região = sem informação (null). */

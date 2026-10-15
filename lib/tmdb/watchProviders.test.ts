@@ -20,6 +20,19 @@ describe('interpretarProvedores', () => {
         expect(d?.brasil).toEqual(['Netflix', 'Pluto TV'])
     })
 
+    it('descarta variantes do mesmo serviço (with Ads, Amazon Channel)', () => {
+        const d = interpretarProvedores({ results: { JP: { flatrate: [
+            { provider_name: 'Amazon Prime Video' }, { provider_name: 'Channel K Amazon Channel' },
+            { provider_name: 'Amazon Prime Video with Ads' }, { provider_name: 'FOD' },
+        ] } } })
+        expect(d?.fora[0].provedores).toEqual(['Amazon Prime Video', 'FOD'])
+    })
+
+    it('se só houver variantes, mantém em vez de apagar a região', () => {
+        const d = interpretarProvedores({ results: { US: { ads: [{ provider_name: 'Hulu with Ads' }] } } })
+        expect(d?.fora[0].provedores).toEqual(['Hulu with Ads'])
+    })
+
     it('TMDB sem nenhuma região = sem informação, não "indisponível"', () => {
         expect(interpretarProvedores({ results: {} })).toBeNull()
         expect(interpretarProvedores({})).toBeNull()
