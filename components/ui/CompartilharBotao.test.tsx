@@ -13,7 +13,7 @@ describe('CompartilharBotao', () => {
         expect(screen.queryByRole('menu')).toBeNull()
         fireEvent.click(screen.getByRole('button'))
         expect(screen.getByRole('menu')).toBeInTheDocument()
-        expect(screen.getByRole('menuitem', { name: /WhatsApp/ }).getAttribute('href')).toContain('utm_source=whatsapp')
+        expect(decodeURIComponent(screen.getByRole('menuitem', { name: /WhatsApp/ }).getAttribute('href') ?? '')).toContain('utm_source=whatsapp')
         expect(screen.getByRole('menuitem', { name: /Facebook/ })).toBeInTheDocument()
     })
 
