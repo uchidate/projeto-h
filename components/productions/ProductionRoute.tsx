@@ -13,6 +13,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ProductionDetailPage } from '@/components/productions/ProductionDetailPage'
 import { getHubsForProduction } from '@/lib/guias/hub-lookup'
+import { getDisponibilidade } from '@/lib/tmdb/watchProviders'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
@@ -74,6 +75,11 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
     const sourceProduction = await getProductionBySlug(slug)
     if (!sourceProduction) notFound()
     const emFallback = semTraducao(sourceProduction, locale)
+    // Só consulta quando o catálogo não tem plataforma: com dado nosso, o cartão normal já responde.
+    const semPlataforma = !(sourceProduction.acf?.platforms?.length)
+    const disponibilidadePromise = semPlataforma
+        ? getDisponibilidade(sourceProduction.acf?.tmdb_id, sourceProduction.acf?.type)
+        : Promise.resolve(null)
     const [languageLinks, tSwitcher] = await Promise.all([
         buildLanguageLinks('production', { slug }, locale, availableLocales(sourceProduction)),
         getTranslations({ locale, namespace: 'entity.switcher' }),
@@ -87,6 +93,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
     const castSlugs = castDetails.map(item => item.slug)
     const productionTitle = stripHtml(production.title.rendered)
 
+    const disponibilidade = await disponibilidadePromise
     const [castItems, related, { items: relatedPosts }, categories, allGenreTerms] = await Promise.all([
         castSlugs.length > 0
             ? getArtists({ slug: castSlugs.join(','), perPage: castSlugs.length }).then(r => r.items)
@@ -134,7 +141,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <ProductionDetailPage production={production} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} />
+            <ProductionDetailPage production={production} disponibilidade={disponibilidade} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} />
         </>
     )
 }

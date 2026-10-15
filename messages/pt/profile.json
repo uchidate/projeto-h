@@ -61,6 +61,8 @@
     "durationShort": "{count} min/ep.",
     "watchTrailer": "Assistir trailer",
     "summary": {
+        "notInBrazil": "Sem streaming oficial no Brasil no momento.",
+        "availableAbroad": "Disponível fora do país",
         "whereToWatch": "Onde assistir",
         "readFull": "Ler a sinopse completa",
         "mainCast": "Elenco principal",

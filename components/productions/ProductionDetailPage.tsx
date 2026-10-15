@@ -21,6 +21,8 @@ import { ProductionContent } from '@/components/productions/ProductionContent'
 import { ProductionCast } from '@/components/productions/ProductionCast'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { AtribuicaoJustWatch } from '@/components/productions/AtribuicaoJustWatch'
+import type { Disponibilidade } from '@/lib/tmdb/watchProviders'
+import { OndeAssistirForaDoBrasil } from '@/components/productions/OndeAssistirForaDoBrasil'
 import { ProductionPageB } from '@/components/productions/ProductionPageB'
 import { variantePorId } from '@/lib/experimento'
 import { ReadingBar } from '@/components/ui/ReadingBar'
@@ -34,14 +36,14 @@ import { buildProductionProfileModel } from '@/lib/profiles/productionProfile'
 import { BlockHeader } from '@/components/blocks/BlockHeader'
 import { NumberedList } from '@/components/blocks/NumberedList'
 
-interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }> }
+interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null }
 
 export function ProductionDetailPage(props: Props) {
     const pagina = <ProductionDetailPageConteudo {...props} />
     return producaoMagra(props.production) ? <SemAnuncios>{pagina}</SemAnuncios> : pagina
 }
 
-function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap }: Props) {
+function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const locale = useLocale()
@@ -129,7 +131,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
                 {jsonLd}
                 {readingBar}
                 <ProductionPageB production={production} model={model} productionUrl={productionUrl} cast={cast} related={related}
-                    relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} />
+                    relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} />
             </>
         )
     }
@@ -213,6 +215,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
 
             {/* ── INFO STRIP + AÇÕES ── */}
             <div className="page-wrap">
+                <OndeAssistirForaDoBrasil disponibilidade={disponibilidade} className="mt-6" />
                 <div className="border-b border-border py-3">
                     <div className="mx-auto  flex flex-wrap items-center justify-between gap-3">
                         {/* métricas rápidas */}
