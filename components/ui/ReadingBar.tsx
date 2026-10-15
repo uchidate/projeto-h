@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { Check, ChevronLeft, Share2 } from 'lucide-react'
-import { ShareBar } from '@/components/ui/ShareBar'
+import { CompartilharBotao } from '@/components/ui/CompartilharBotao'
 import { BarraAncorada } from '@/components/ui/BarraAncorada'
 
 interface Anchor { href: string; label: string }
@@ -228,7 +228,7 @@ export function ReadingBar({ backHref, backLabel, tagLabel, tagColor, tagHref, t
                 <div className="flex shrink-0 items-center gap-1">
                     {actions}
                     <div className="origin-right">
-                        <ShareBar url={pageUrl} title={title} showLabel={false} />
+                        <CompartilharBotao url={pageUrl} title={title} size="sm" menuAlign="end" />
                     </div>
                 </div>
             </div>
