@@ -20,7 +20,6 @@ import { ADSENSE } from '@/lib/config/ads'
 import { BlogReadingProgress } from '@/components/blog/BlogReadingProgress'
 import { BlogToc } from '@/components/blog/BlogToc'
 import { BlogEntityCard, type EntidadeDoCard } from '@/components/blog/BlogEntityCard'
-import { variantePorId } from '@/lib/experimento'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
@@ -335,14 +334,13 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
             : null
     const accentColor = primaryGroupColor ?? cs.color
 
-    // Teste A/B por id (par = variante B): sem a trava "Saiba mais" no celular, card do grupo no texto e lateral fixa só com índice + anúncio.
-    const emB = variantePorId(post.id) === 'b'
+    // Variante B (venceu o teste A/B em 2026-09-27): sem a trava "Saiba mais" no celular, card do grupo no texto e lateral fixa só com índice + anúncio.
     // Quem o texto cita, com foto: grupos primeiro, depois artistas (até 7). Menos de 2 com foto não vale um card.
     const citados: EntidadeDoCard[] = [
         ...(post.related_entities?.groups ?? []).filter(g => g.image).map(g => ({ name: g.name, href: `/groups/${g.slug}`, image: g.image, tipo: 'grupo' as const })),
         ...(post.related_entities?.artists ?? []).filter(x => x.image).map(x => ({ name: x.name, href: `/artists/${x.slug}`, image: x.image, tipo: 'artista' as const })),
     ].slice(0, 7)
-    const cardGrupo = emB && citados.length >= 2
+    const cardGrupo = citados.length >= 2
         ? <BlogEntityCard titulo="Perfis citados no texto" itens={citados} color={primaryGroupColor} />
         : null
 
@@ -428,7 +426,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
 
     return (
         <>
-            <div hidden data-variante={emB ? 'artigo-b' : 'artigo-a'} />
+            <div hidden data-variante="artigo-b" />
             <RegistrarVisita item={{ slug: post.slug, nome: title, foto: image?.src ?? null, papel: categories[0]?.name ?? null, tipo: 'artigo', ...(categories[0] ? { categoria: categories[0].slug } : {}) }} />
             <JsonLd
                 data={buildArticleSchema({
@@ -665,7 +663,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                             className="wp-article-content oc-article-reading-column w-full [&_[id]]:scroll-mt-[calc(var(--site-sticky-top,92px)+var(--section-bar-h,44px)+20px)]"
                             style={primaryGroupColor ? { '--color-accent': primaryGroupColor } as React.CSSProperties : undefined}
                         >
-                            <BlogMobileReadMore semTrava={emB} slug={post.slug}>
+                            <BlogMobileReadMore semTrava slug={post.slug}>
                                 {structuredModel ? (
                                     <>
                                         <GutenbergArticleRenderer model={structuredModel} cardGrupo={cardGrupo} sugestaoMeio={sugestaoMeio} />
@@ -854,61 +852,29 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                     </div>
 
                     {/* ── Sidebar ── */}
-                    {emB ? (
-                        <aside aria-label="Informações do artigo" className="hidden xl:flex xl:flex-col">
-                            {/* Só o índice e o anúncio acompanham a rolagem, sem caixa com rolagem interna; o índice vem primeiro. */}
-                            <div className="flex flex-col gap-4" style={{ position: 'sticky', top: 'calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 36px + 8px)' }}>
-                                {/* O topo fixo do site ocupa ~284px: índice (~210) + 300×250 só cabem com janela de 800px ou mais.
-                                    Abaixo disso o índice desce e o anúncio fica sozinho na parte fixa, como na variante A. */}
-                                {enhancedContent.headings.length > 2 && (
-                                    <div className="rounded-md border border-border bg-surface p-4 [@media(max-height:799px)]:hidden">
-                                        <BlogToc headings={enhancedContent.headings} />
-                                    </div>
-                                )}
-                                {ADSENSE.slots.article_sidebar && (
-                                    <ArticleSidebarAd slot={ADSENSE.slots.article_sidebar} readingMinutes={mins} alturaAlta={1150} />
-                                )}
-                            </div>
-                            <div className="mt-auto flex flex-col gap-4 pt-10">
-                                {enhancedContent.headings.length > 2 && (
-                                    <div className="hidden rounded-md border border-border bg-surface p-4 [@media(max-height:799px)]:block">
-                                        <BlogToc headings={enhancedContent.headings} />
-                                    </div>
-                                )}
-                                {blocosFinais}
-                            </div>
-                        </aside>
-                    ) : (
-                    <aside
-                        aria-label="Informações do artigo"
-                        className="hidden xl:flex xl:flex-col"
-                        style={{
-                            position: 'sticky',
-                            top: 'calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 36px + 8px)',
-                            height: 'calc(100vh - var(--site-sticky-top, 92px) - var(--section-bar-h, 44px) - 36px - 24px)',
-                        }}
-                    >
-                        <div className="flex min-h-0 flex-col gap-4 overflow-y-auto pr-1">
-                            {/* Artigos longos + viewport alta recebem inventário vertical;
-                                curtos e notebooks baixos preservam o retângulo 300×250. */}
-                            {ADSENSE.slots.article_sidebar && (
-                                <ArticleSidebarAd
-                                    slot={ADSENSE.slots.article_sidebar}
-                                    readingMinutes={mins}
-                                />
-                            )}
-
+                    <aside aria-label="Informações do artigo" className="hidden xl:flex xl:flex-col">
+                        {/* Só o índice e o anúncio acompanham a rolagem, sem caixa com rolagem interna; o índice vem primeiro. */}
+                        <div className="flex flex-col gap-4" style={{ position: 'sticky', top: 'calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 36px + 8px)' }}>
+                            {/* O topo fixo do site ocupa ~284px: índice (~210) + 300×250 só cabem com janela de 800px ou mais.
+                                Abaixo disso o índice desce e o anúncio fica sozinho na parte fixa. */}
                             {enhancedContent.headings.length > 2 && (
-                                <div className="rounded-md border border-border bg-surface p-4">
+                                <div className="rounded-md border border-border bg-surface p-4 [@media(max-height:799px)]:hidden">
                                     <BlogToc headings={enhancedContent.headings} />
                                 </div>
                             )}
-
+                            {ADSENSE.slots.article_sidebar && (
+                                <ArticleSidebarAd slot={ADSENSE.slots.article_sidebar} readingMinutes={mins} alturaAlta={1150} />
+                            )}
+                        </div>
+                        <div className="mt-auto flex flex-col gap-4 pt-10">
+                            {enhancedContent.headings.length > 2 && (
+                                <div className="hidden rounded-md border border-border bg-surface p-4 [@media(max-height:799px)]:block">
+                                    <BlogToc headings={enhancedContent.headings} />
+                                </div>
+                            )}
                             {blocosFinais}
-
                         </div>
                     </aside>
-                    )}
                     </div>
 
                 {/* Quiz CTA — categoria do artigo */}
