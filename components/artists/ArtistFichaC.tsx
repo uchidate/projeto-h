@@ -11,6 +11,7 @@ import { formatDate, getWPImage, stripHtml } from '@/lib/utils'
 import { intlLocale } from '@/lib/i18n/format'
 import type { WPAgency, WPArtist, WPGroup, WPPost, WPProduction } from '@/lib/wordpress/types'
 import type { ArtistProfileModel } from '@/lib/profiles/artistProfile'
+import { MapaConexoes, type NoMapa } from '@/components/artists/MapaConexoes'
 import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
 import { GroupDiscography, type DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { GroupSpotifyEmbed } from '@/components/groups/GroupSpotifyEmbed'
@@ -145,6 +146,15 @@ export function ArtistFichaC({
     ].filter(Boolean)) as [string, string][]
 
     const membros = relatedArtists.filter(r => r.id !== artist.id)
+    // Mapa de conexões: grupo + integrantes (anel de dentro) e obras com elenco confirmado (anel de fora).
+    const nosMapa: NoMapa[] = [
+        ...(grupo ? [{ href: `/groups/${grupo.slug}`, label: nomeGrupo ?? '', img: getWPImage(grupo._embedded, grupo.featured_image_url)?.src ?? null, tipo: 'grupo' as const }] : []),
+        ...(grupo ? membros.slice(0, 5) : membros.slice(0, 3)).map(r => ({
+            href: `/artists/${r.slug}`, label: stripHtml(r.title?.rendered ?? ''), img: getWPImage(r._embedded, r.featured_image_url)?.src ?? null, tipo: 'artista' as const,
+        })),
+        ...destaques.map(d => ({ href: `/productions/${d.p.slug}`, label: tituloDe(d.p), img: d.img?.src ?? null, tipo: 'obra' as const })),
+    ]
+    const temMapa = nosMapa.length >= 4
     const papelAtual = [...roleLabels.slice(0, 3), ...(nomeGrupo ? [nomeGrupo] : [])].join(' · ')
 
     return (
@@ -310,6 +320,13 @@ export function ArtistFichaC({
                         <summary className={`${BOTAO} list-none cursor-pointer`} style={{ borderColor: accent, color: accent }}>{t('seeAllWorks')}</summary>
                         <div className="mt-4">{nodes.filmografia}</div>
                     </details>
+                </Sec>
+            )}
+
+            {temMapa && (
+                <Sec id="mapa" kicker={t('mapKicker')} title={t('mapTitle', { name })}>
+                    <MapaConexoes centro={{ label: name, img: image?.src ?? null }} nos={nosMapa} accent={accent} ariaLabel={t('mapAria', { name })} />
+                    <p className="mx-auto mt-4 max-w-[560px] text-center text-[13px] text-muted">{t('mapHint')}</p>
                 </Sec>
             )}
 
