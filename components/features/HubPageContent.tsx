@@ -15,6 +15,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import type { ArchiveHub } from '@/lib/guias'
 import type { WPProduction, WPPost } from '@/lib/wordpress/types'
 import type { WPArtist, WPGroup } from '@/lib/wordpress/types'
+import { HubDestaques } from '@/components/features/HubDestaques'
 import { ProductionCard } from '@/components/productions/ProductionCard'
 import { ArtistCard } from '@/components/artists/ArtistCard'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
@@ -42,6 +43,7 @@ interface Props {
     hub: ArchiveHub
     relatedHubs: ArchiveHub[]
     productions?: WPProduction[]
+    destaques?: WPProduction[]
     artists?: WPArtist[]
     groups?: WPGroup[]
     total: number
@@ -100,7 +102,7 @@ const KNOWN_TYPES = ['drama', 'movie', 'special', 'variety']
 const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Globoplay', 'Max', 'Viki', 'WeTV']
 
 export function HubPageContent({
-    hub, relatedHubs, productions, artists, groups, total, blogPosts = [],
+    hub, relatedHubs, productions, destaques = [], artists, groups, total, blogPosts = [],
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -301,6 +303,8 @@ export function HubPageContent({
                         </div>
                     </nav>
                 )}
+
+                <HubDestaques items={destaques} eyebrow="Comece por aqui" title={`Em alta e bem avaliadas — ${hub.shortTitle}`} />
 
                 <section>
                     <SectionTitleBar
