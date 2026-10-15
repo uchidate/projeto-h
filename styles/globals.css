@@ -2465,3 +2465,12 @@ ins.adsbygoogle[data-ad-status^="unfill"] { display: none !important; }
 .prose .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; margin-bottom: 0; }
 .prose .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; margin-bottom: 0; }
 .prose .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; margin-bottom: 0; }
+
+/* Mapa de conexões (ficha de artista): linhas se desenham e nós aparecem em sequência. */
+@keyframes mapa-linha { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes mapa-no { from { opacity: 0; scale: 0.6; } to { opacity: 1; scale: 1; } }
+.mapa-linha { stroke-dasharray: 1; animation: mapa-linha 700ms ease-out both; animation-delay: var(--atraso, 0ms); }
+.mapa-no { animation: mapa-no 450ms ease-out both; animation-delay: calc(var(--atraso, 0ms) + 350ms); }
+@media (prefers-reduced-motion: reduce) {
+    .mapa-linha, .mapa-no { animation: none; }
+}

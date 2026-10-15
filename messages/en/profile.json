@@ -46,6 +46,10 @@
     }
   },
   "production": {
+    "mapKicker": "Connections",
+    "mapTitle": "Who and what connects to {title}",
+    "mapAria": "Connection map for {title}",
+    "mapHint": "Cast with profiles in the catalog and related productions. Tap a name to open its page.",
     "nav": {
       "synopsis": "Synopsis",
       "trailer": "Trailer",
@@ -380,6 +384,10 @@
     "workListKicker": "Full list",
     "seeFilmography": "See filmography ({count})",
     "seeAllWorks": "See all works →",
+    "mapKicker": "Connections",
+    "mapTitle": "Who is connected to {name}",
+    "mapAria": "Connection map for {name}",
+    "mapHint": "Group, groupmates and works with confirmed cast in the catalog. Tap a name to open its page.",
     "universeKicker": "Universe",
     "insideGroup": "Inside {group}",
     "exploreUniverse": "Explore the {group} universe →",
@@ -404,6 +412,10 @@
     "understandDetail": "{count, plural, one {# chapter, in a few minutes} other {# chapters, in a few minutes}}"
   },
   "groupC": {
+    "mapKicker": "Connections",
+    "mapTitle": "The universe of {name}",
+    "mapAria": "Connection map for {name}",
+    "mapHint": "Members and, on the outer ring, groups from the same agency. Tap a name to open its page.",
     "tabs": {
       "membros": "Members",
       "musica": "Music",

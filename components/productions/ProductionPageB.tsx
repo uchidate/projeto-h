@@ -7,7 +7,7 @@ import type { ArchiveHub } from '@/lib/guias/types'
 import type { ProductionProfileModel } from '@/lib/profiles/productionProfile'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { ADSENSE } from '@/lib/config/ads'
-import { getWPImage, extractYoutubeId } from '@/lib/utils'
+import { getWPImage, extractYoutubeId, stripHtml } from '@/lib/utils'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { BlockHeader } from '@/components/blocks/BlockHeader'
 import { NumberedList } from '@/components/blocks/NumberedList'
@@ -17,6 +17,7 @@ import { ProductionHeroB, ProductionHeroBMobile } from '@/components/productions
 import type { Disponibilidade } from '@/lib/tmdb/watchProviders'
 import { OndeAssistirForaDoBrasil } from '@/components/productions/OndeAssistirForaDoBrasil'
 import { ProductionResumo } from '@/components/productions/ProductionResumo'
+import { MapaConexoes, type NoMapa } from '@/components/artists/MapaConexoes'
 import { ProductionElencoB } from '@/components/productions/ProductionElencoB'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionBlogGrid } from '@/components/productions/ProductionBlogGrid'
@@ -58,6 +59,11 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
         facts, castRoles, statusInfo, hasTrailer,
     } = model
     const poster = getWPImage(production._embedded, production.featured_image_url)
+    // Mapa: elenco com ficha (dentro) e produções relacionadas (fora).
+    const nosMapa: NoMapa[] = [
+        ...cast.slice(0, 6).map(a => ({ href: `/artists/${a.slug}`, label: stripHtml(a.title.rendered), img: getWPImage(a._embedded, a.featured_image_url)?.src ?? null, tipo: 'artista' as const })),
+        ...related.slice(0, 3).map(r => ({ href: `/productions/${r.slug}`, label: stripHtml(r.title.rendered), img: getWPImage(r._embedded, r.featured_image_url)?.src ?? null, tipo: 'obra' as const })),
+    ]
     const trailerId = hasTrailer && acf.trailer_url ? extractYoutubeId(acf.trailer_url) : null
     const ficha = {
         type: acf.type, year: acf.year, episodes: acf.episodes, durationMinutes: acf.duration_minutes,
@@ -93,6 +99,14 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                         )}
 
                         <ProductionElencoB title={title} cast={cast} castRoles={castRoles} />
+
+                        {nosMapa.length >= 4 && (
+                            <section id="conexoes" className={ANCORA} data-bloco="producao-conexoes">
+                                <BlockHeader title={t('production.mapTitle', { title })} eyebrow={t('production.mapKicker')} tone="muted" size="lg" />
+                                <MapaConexoes centro={{ label: title, img: poster?.src ?? null }} nos={nosMapa} accent="#ff2d78" ariaLabel={t('production.mapAria', { title })} />
+                                <p className="mx-auto mt-4 max-w-[560px] text-center text-[13px] text-muted">{t('production.mapHint')}</p>
+                            </section>
+                        )}
 
                         {ADSENSE.slots.inline && (
                             <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="production_after_cast" />
