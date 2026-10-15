@@ -13,7 +13,7 @@ import { SITE_URL, SITE_NAME, buildOgImageUrl } from '@/lib/constants/site'
 import { splitContentForAd, splitContentForAds } from '@/lib/utils/injectAd'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildArticleSchema, buildVideoSchema, extractYoutubeIds } from '@/lib/seo/jsonld'
-import { ShareBar } from '@/components/ui/ShareBar'
+import { CompartilharBotao } from '@/components/ui/CompartilharBotao'
 import { EntityActionBar } from '@/components/ui/EntityActionBar'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
@@ -617,7 +617,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                             </div>
                             <EntityActionBar>
                                 <ContentStateButton objectId={post.id} objectType="post" state="saved" label="Salvar leitura" activeLabel="Salvo" />
-                                <ShareBar url={postUrl} title={title} />
+                                <CompartilharBotao url={postUrl} title={title} size="sm" />
                             </EntityActionBar>
                         </div>
                     </header>
@@ -807,7 +807,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                                     <p className="font-bold text-foreground mb-1">Gostou? Compartilhe com outros fãs.</p>
                                     <p className="text-[12px] text-muted mb-4">Cada compartilhamento ajuda a comunidade a descobrir mais conteúdo sobre cultura coreana.</p>
                                     <EntityActionBar>
-                                        <ShareBar url={postUrl} title={title} />
+                                        <CompartilharBotao url={postUrl} title={title} menuSide="up" />
                                         <span className="text-border/50 text-[11px] hidden sm:inline">·</span>
                                         <ContentStateButton objectId={post.id} objectType="post" state="saved" label="Salvar leitura" activeLabel="Salvo" />
                                         <ContentStateButton objectId={post.id} objectType="post" state="read" label="Marcar como lido" activeLabel="Lido" />

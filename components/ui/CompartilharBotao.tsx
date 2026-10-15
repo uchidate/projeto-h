@@ -93,7 +93,7 @@ export function CompartilharBotao({ url, title, tone = 'default', menuAlign = 's
                 <Share2 size={18} />
             </button>
             {aberto && (
-                <div role="menu" className={`absolute z-30 w-52 border border-border bg-surface shadow-xl ${menuSide === 'right' ? 'bottom-0 left-full ml-2' : `top-full mt-2 ${menuAlign === 'end' ? 'right-0' : 'left-0'}`}`}>
+                <div role="menu" className={`absolute z-30 w-52 border border-border bg-surface shadow-xl ${menuSide === 'right' ? 'bottom-0 left-full ml-2' : `${menuSide === 'up' ? 'bottom-full mb-2' : 'top-full mt-2'} ${menuAlign === 'end' ? 'right-0' : 'left-0'}`}`}>
                     <a role="menuitem" className={item} target="_blank" rel="noopener noreferrer"
                         href={`https://wa.me/?text=${encodeURIComponent(`${title}\n${linkPara('whatsapp')}`)}`}
                         onClick={() => { registrar('whatsapp'); setAberto(false) }}>
