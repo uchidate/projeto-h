@@ -298,7 +298,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
                                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                                     {galleryUrls.slice(0, 9).map((url: string, index: number) => (
                                         <a key={`${url}-${index}`} href={url} target="_blank" rel="noopener noreferrer"
-                                            className={`group relative aspect-video overflow-hidden bg-surface ${index === 0 ? 'col-span-2' : ''}`}>
+                                            className={`group relative overflow-hidden bg-surface ${index === 0 ? 'col-span-2 aspect-video sm:row-span-2 sm:aspect-auto' : 'aspect-video'} ${galleryUrls.length === 6 && index === 5 ? 'max-sm:hidden' : ''}`}>
                                             <Image src={url} alt={t('production.galleryImageAlt', { title, index: index + 1 })} fill
                                                 className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                                                 sizes={index === 0 ? '(max-width: 640px) 100vw, 66vw' : '(max-width: 640px) 50vw, 33vw'} />

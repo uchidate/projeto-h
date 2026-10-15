@@ -41,7 +41,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * Página de produção, estrutura "apresentação" (id par no teste).
  *
  * Ordem pensada para quem chega por busca: hero baixo → resumo (sinopse e onde assistir)
- * → elenco → anúncio → trailer → dossiê, com a ficha técnica na lateral (desktop) ou
+ * → trailer → elenco → anúncio → dossiê, com a ficha técnica na lateral (desktop) ou
  * em duas colunas (celular) → recomendações → blog → FAQ. O HTML indexável é o mesmo
  * da estrutura anterior (H1, sinopse, elenco, FAQ e dados estruturados): muda a ordem
  * e a apresentação, não o conteúdo.
@@ -85,6 +85,13 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
 
                 <div className="flex items-start gap-10 pt-10 lg:gap-16 lg:pt-14">
                     <div className="flex min-w-0 flex-1 flex-col gap-14 lg:gap-16">
+                        {trailerId && (
+                            <section id="trailer" className={ANCORA}>
+                                <BlockHeader title={t('ui.officialTrailer')} eyebrow={t('ui.video')} tone="muted" size="lg" />
+                                <ProductionTrailer videoId={trailerId} title={t('ui.trailerOf', { title })} playLabel={t('production.watchTrailer')} />
+                            </section>
+                        )}
+
                         <ProductionElencoB title={title} cast={cast} castRoles={castRoles} />
 
                         {ADSENSE.slots.inline && (
@@ -95,13 +102,6 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                             <section aria-labelledby="h-ficha" className="xl:hidden">
                                 <h2 id="h-ficha" className="font-serif text-[26px] font-semibold text-foreground">{t('ui.sidebar.technical')}</h2>
                                 <FichaLinhas {...ficha} grade />
-                            </section>
-                        )}
-
-                        {trailerId && (
-                            <section id="trailer" className={ANCORA}>
-                                <BlockHeader title={t('ui.officialTrailer')} eyebrow={t('ui.video')} tone="muted" size="lg" />
-                                <ProductionTrailer videoId={trailerId} title={t('ui.trailerOf', { title })} playLabel={t('production.watchTrailer')} />
                             </section>
                         )}
 
@@ -122,7 +122,7 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                                     {galleryUrls.slice(0, 9).map((url: string, index: number) => (
                                         <a key={`${url}-${index}`} href={url} target="_blank" rel="noopener noreferrer"
-                                            className={`group relative aspect-video overflow-hidden bg-surface ${index === 0 ? 'col-span-2' : ''}`}>
+                                            className={`group relative overflow-hidden bg-surface ${index === 0 ? 'col-span-2 aspect-video sm:row-span-2 sm:aspect-auto' : 'aspect-video'} ${galleryUrls.length === 6 && index === 5 ? 'max-sm:hidden' : ''}`}>
                                             <Image src={url} alt={t('production.galleryImageAlt', { title, index: index + 1 })} fill
                                                 className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                                                 sizes={index === 0 ? '(max-width: 640px) 100vw, 66vw' : '(max-width: 640px) 50vw, 33vw'} />
