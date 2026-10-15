@@ -236,8 +236,8 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                         <p className={`${KICKER} text-muted`}>{t('mapKicker')}</p>
                         <h2 className={`mt-2 ${H2}`}>{t('mapTitle', { name: nomeDoGrupo })}</h2>
                         <div className="mt-6 sm:mt-8">
-                            <MapaConexoes centro={{ label: nomeDoGrupo, img: getWPImage(group._embedded, group.featured_image_url)?.src ?? null }}
-                                nos={nosMapa} accent={accent} ariaLabel={t('mapAria', { name: nomeDoGrupo })} />
+                            <MapaConexoes centro={{ label: nomeDoGrupo, img: getWPImage(group._embedded, group.featured_image_url)?.src ?? null, href: `/groups/${group.slug}`, tipo: 'group' }}
+                                nos={nosMapa} accent={accent} ariaLabel={t('mapAria', { name: nomeDoGrupo })} textos={{ voltar: t('mapBack'), abrir: t('mapOpen', { name: '{name}' }) }} />
                             <p className="mx-auto mt-4 max-w-[560px] text-center text-[13px] text-muted">{t('mapHint')}</p>
                         </div>
                     </div>
