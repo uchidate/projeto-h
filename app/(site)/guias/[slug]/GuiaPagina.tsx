@@ -49,6 +49,15 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
         getPosts({ search: hub.keywords[0], perPage: 3, includeContent: false }),
         getProductionGenres(),
     ])
+    // "Comece por aqui": só na primeira página, sem filtro ativo. Sai da própria página de resultados
+    // (já ordenada por tendência): as de melhor nota entre as 48, sem uma segunda consulta ao WP.
+    const semFiltro = page === 1 && !genre && !platform && !network && !type && !year
+    const destaques = result.kind === 'productions' && semFiltro
+        ? result.items
+            .filter(p => Number(p.acf?.rating ?? 0) >= 7.5)
+            .sort((a, b) => Number(b.acf?.rating ?? 0) - Number(a.acf?.rating ?? 0))
+            .slice(0, 6)
+        : []
     const genreMap = Object.fromEntries(genres.map(g => [g.id, { name: g.name, slug: g.slug }]))
     const perPage = 48
     const totalPages = Math.ceil(result.total / perPage)
@@ -63,6 +72,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
                 artists={result.kind === 'artists' ? result.items : undefined}
                 groups={result.kind === 'groups' ? result.items : undefined}
                 blogPosts={blogPosts}
+                destaques={destaques}
                 genreMap={genreMap}
                 siteUrl={SITE_URL}
                 page={page}
