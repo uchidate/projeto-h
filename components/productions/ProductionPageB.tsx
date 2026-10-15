@@ -14,6 +14,8 @@ import { NumberedList } from '@/components/blocks/NumberedList'
 import { ProductionTrailer } from '@/components/productions/ProductionTrailer'
 import { EntityFAQ, type EntityFAQItem } from '@/components/seo/EntityFAQ'
 import { ProductionHeroB, ProductionHeroBMobile } from '@/components/productions/ProductionHeroB'
+import type { Disponibilidade } from '@/lib/tmdb/watchProviders'
+import { OndeAssistirForaDoBrasil } from '@/components/productions/OndeAssistirForaDoBrasil'
 import { ProductionResumo } from '@/components/productions/ProductionResumo'
 import { ProductionElencoB } from '@/components/productions/ProductionElencoB'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
@@ -30,6 +32,7 @@ interface Props {
     relatedHubs: ArchiveHub[]
     categoryMap?: Record<number, { name: string; slug: string }>
     faqItems: EntityFAQItem[]
+    disponibilidade?: Disponibilidade | null
 }
 
 const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
@@ -47,7 +50,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * elenco e outro depois das recomendações. O rodapé de página (`production_end_leaderboard`,
  * 27% de preenchimento) e o `production_discovery` da estrutura anterior saem.
  */
-export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems }: Props) {
+export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null }: Props) {
     const t = useTranslations('profile')
     const locale = useLocale()
     const {
@@ -78,6 +81,7 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
 
             <div className="page-wrap">
                 <ProductionResumo title={title} synopsis={sinopseResumo} genres={genres} platforms={platforms} />
+                {platforms.length === 0 && <OndeAssistirForaDoBrasil disponibilidade={disponibilidade} className="mt-6" />}
 
                 <div className="flex items-start gap-10 pt-10 lg:gap-16 lg:pt-14">
                     <div className="flex min-w-0 flex-1 flex-col gap-14 lg:gap-16">
