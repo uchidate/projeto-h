@@ -325,6 +325,8 @@
     "fandomFollows": "Uma história acompanhada pelo fandom"
   },
   "artistC": {
+    "mapBack": "← Voltar",
+    "mapOpen": "Abrir a página de {name} →",
     "tabs": { "visao": "Visão geral", "carreira": "Carreira", "musica": "Música", "obras": "Obras", "universo": "Universo", "ler": "Ler" },
     "navObras": "Obras",
     "navPerfil": "Perfil",
@@ -412,6 +414,8 @@
     "understandDetail": "{count, plural, one {# capítulo, em poucos minutos} other {# capítulos, em poucos minutos}}"
   },
   "groupC": {
+    "mapBack": "← Voltar",
+    "mapOpen": "Abrir a página de {name} →",
     "mapKicker": "Conexões",
     "mapTitle": "O universo de {name}",
     "mapAria": "Mapa de conexões de {name}",

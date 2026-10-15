@@ -325,6 +325,8 @@
     "fandomFollows": "A story followed by the fandom"
   },
   "artistC": {
+    "mapBack": "← Back",
+    "mapOpen": "Open {name}'s page →",
     "tabs": { "visao": "Overview", "carreira": "Career", "musica": "Music", "obras": "Works", "universo": "Universe", "ler": "Read" },
     "navObras": "Works",
     "navPerfil": "Profile",
@@ -412,6 +414,8 @@
     "understandDetail": "{count, plural, one {# chapter, in a few minutes} other {# chapters, in a few minutes}}"
   },
   "groupC": {
+    "mapBack": "← Back",
+    "mapOpen": "Open {name}'s page →",
     "mapKicker": "Connections",
     "mapTitle": "The universe of {name}",
     "mapAria": "Connection map for {name}",

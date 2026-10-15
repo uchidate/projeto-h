@@ -103,7 +103,7 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                         {nosMapa.length >= 4 && (
                             <section id="conexoes" className={ANCORA} data-bloco="producao-conexoes">
                                 <BlockHeader title={t('production.mapTitle', { title })} eyebrow={t('production.mapKicker')} tone="muted" size="lg" />
-                                <MapaConexoes centro={{ label: title, img: poster?.src ?? null }} nos={nosMapa} accent="#ff2d78" ariaLabel={t('production.mapAria', { title })} />
+                                <MapaConexoes centro={{ label: title, img: poster?.src ?? null, href: `/productions/${production.slug}`, tipo: 'production' }} nos={nosMapa} accent="#ff2d78" ariaLabel={t('production.mapAria', { title })} textos={{ voltar: t('artistC.mapBack'), abrir: t('artistC.mapOpen', { name: '{name}' }) }} />
                                 <p className="mx-auto mt-4 max-w-[560px] text-center text-[13px] text-muted">{t('production.mapHint')}</p>
                             </section>
                         )}
