@@ -19,6 +19,8 @@ import { OndeAssistirForaDoBrasil } from '@/components/productions/OndeAssistirF
 import { ProductionResumo } from '@/components/productions/ProductionResumo'
 import { MapaConexoes, type NoMapa } from '@/components/artists/MapaConexoes'
 import { ProductionElencoB } from '@/components/productions/ProductionElencoB'
+import { EpisodiosPainel } from '@/components/productions/EpisodiosPainel'
+import type { Episodio } from '@/lib/tmdb/episodios'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionBlogGrid } from '@/components/productions/ProductionBlogGrid'
 import { ProductionSidebar, FichaLinhas } from '@/components/productions/ProductionSidebar'
@@ -34,6 +36,7 @@ interface Props {
     categoryMap?: Record<number, { name: string; slug: string }>
     faqItems: EntityFAQItem[]
     disponibilidade?: Disponibilidade | null
+    episodios?: Episodio[]
 }
 
 const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
@@ -51,7 +54,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * elenco e outro depois das recomendações. O rodapé de página (`production_end_leaderboard`,
  * 27% de preenchimento) e o `production_discovery` da estrutura anterior saem.
  */
-export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null }: Props) {
+export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, episodios = [] }: Props) {
     const t = useTranslations('profile')
     const locale = useLocale()
     const {
@@ -99,6 +102,29 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                         )}
 
                         <ProductionElencoB title={title} cast={cast} castRoles={castRoles} />
+
+                        {episodios.length > 0 && (
+                            <section id="episodios" className={ANCORA} data-bloco="producao-episodios">
+                                <BlockHeader title={t('production.episodesTitle', { title })} eyebrow={t('production.episodesKicker')} tone="muted" size="lg" />
+                                <EpisodiosPainel
+                                    episodios={episodios}
+                                    accent="#ff2d78"
+                                    ariaLabel={t('production.episodesAria', { title })}
+                                    textos={{
+                                        episodio: t('production.episodeLabel', { n: '{n}' }),
+                                        votos: t('production.episodeVotes', { n: '{n}' }),
+                                        posicao: t('production.episodeRank', { n: '{n}', total: '{total}' }),
+                                        semSinopse: t('production.episodeNoSynopsis'),
+                                        fonte: t('production.episodeSource'),
+                                        pico: t('production.episodePeak', { n: '{n}', nota: '{nota}' }),
+                                        menor: t('production.episodeLow', { n: '{n}', nota: '{nota}' }),
+                                        estreia: t('production.episodeStart'),
+                                        final: t('production.episodeEnd'),
+                                        minutos: t('production.episodeMinutes', { min: '{min}' }),
+                                    }}
+                                />
+                            </section>
+                        )}
 
                         {nosMapa.length >= 4 && (
                             <section id="conexoes" className={ANCORA} data-bloco="producao-conexoes">
