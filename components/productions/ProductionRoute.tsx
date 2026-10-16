@@ -14,6 +14,7 @@ import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ProductionDetailPage } from '@/components/productions/ProductionDetailPage'
 import { getHubsForProduction } from '@/lib/guias/hub-lookup'
 import { getCenas } from '@/lib/tmdb/imagens'
+import { getEpisodios } from '@/lib/tmdb/episodios'
 import { getDisponibilidade } from '@/lib/tmdb/watchProviders'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
@@ -99,7 +100,10 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
     const castSlugs = castDetails.map(item => item.slug)
     const productionTitle = stripHtml(production.title.rendered)
 
-    const disponibilidade = await disponibilidadePromise
+    const [disponibilidade, episodios] = await Promise.all([
+        disponibilidadePromise,
+        getEpisodios(production.acf?.tmdb_id, production.acf?.type),
+    ])
     const [castItems, related, { items: relatedPosts }, categories, allGenreTerms] = await Promise.all([
         castSlugs.length > 0
             ? getArtists({ slug: castSlugs.join(','), perPage: castSlugs.length }).then(r => r.items)
@@ -147,7 +151,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <ProductionDetailPage production={production} disponibilidade={disponibilidade} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} />
+            <ProductionDetailPage production={production} disponibilidade={disponibilidade} episodios={episodios} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} />
         </>
     )
 }
