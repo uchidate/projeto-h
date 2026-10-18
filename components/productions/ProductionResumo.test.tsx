@@ -27,18 +27,30 @@ describe('ProductionResumo', () => {
         expect(screen.getByRole('link', { name: /summary.readFull/ })).toHaveAttribute('href', '#dossie')
     })
 
-    it('onde assistir: cada plataforma leva à listagem filtrada, em bloco medido próprio, com crédito ao JustWatch', () => {
-        const { container } = render(<ProductionResumo {...base} />)
-        const link = screen.getByRole('link', { name: /Netflix/ })
-        expect(link.getAttribute('href')).toMatch(/\?platform=netflix$/)
-        expect(link.closest('[data-bloco]')).toHaveAttribute('data-bloco', 'ficha-producao-onde-assistir')
+    it('onde assistir: serviço verificado abre a busca dele com o título; os demais, a busca do JustWatch', () => {
+        const { container } = render(<ProductionResumo {...base} platforms={[...base.platforms, termo(3, 'Prime Video', 'prime-video', 'production_platform')]} />)
+        const cartao = container.querySelector('[data-bloco="ficha-producao-onde-assistir"]')!
+        const netflix = screen.getByText('Netflix').closest('a')!
+        const prime = screen.getByText('Prime Video').closest('a')!
+        expect(netflix).toHaveAttribute('href', 'https://www.netflix.com/search?q=Snowdrop')
+        expect(prime).toHaveAttribute('href', 'https://www.justwatch.com/br/busca?q=Snowdrop')
+        for (const link of [netflix, prime]) {
+            expect(link).toHaveAttribute('target', '_blank')
+            expect(link.getAttribute('rel')).toContain('noopener')
+            expect(cartao.contains(link)).toBe(true)
+        }
         expect(container.querySelector('[data-bloco="ficha-producao-resumo"]')).not.toBeNull()
         expect(screen.getByRole('link', { name: 'sidebar.justWatch' })).toHaveAttribute('href', 'https://www.justwatch.com')
     })
 
+    it('mantém um caminho interno para navegar por plataforma', () => {
+        render(<ProductionResumo {...base} />)
+        expect(screen.getByRole('link', { name: /summary.browseByPlatform/ }).getAttribute('href')).toBe('/productions')
+    })
+
     it('no celular o cartão vem antes da sinopse (order-first), no desktop depois', () => {
         render(<ProductionResumo {...base} />)
-        const cartao = screen.getByRole('link', { name: /Netflix/ }).closest('[data-bloco]')!
+        const cartao = screen.getByText('Netflix').closest('[data-bloco]')!
         expect(cartao.className).toContain('order-first')
         expect(cartao.className).toContain('lg:order-none')
     })

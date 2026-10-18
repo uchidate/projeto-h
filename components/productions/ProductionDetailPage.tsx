@@ -13,16 +13,17 @@ import { ReadingBar } from '@/components/ui/ReadingBar'
 import type { ArchiveHub } from '@/lib/guias/types'
 import { type EntityFAQItem } from '@/components/seo/EntityFAQ'
 import type { Episodio } from '@/lib/tmdb/episodios'
+import type { Avaliacao } from '@/lib/tmdb/avaliacao'
 import { buildProductionProfileModel } from '@/lib/profiles/productionProfile'
 
-interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null; episodios?: Episodio[] }
+interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null; avaliacao?: Avaliacao | null; episodios?: Episodio[] }
 
 export function ProductionDetailPage(props: Props) {
     const pagina = <ProductionDetailPageConteudo {...props} />
     return producaoMagra(props.production) ? <SemAnuncios>{pagina}</SemAnuncios> : pagina
 }
 
-function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null, episodios = [] }: Props) {
+function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null, avaliacao = null, episodios = [] }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const locale = useLocale()
@@ -39,10 +40,10 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
         { href: '#sinopse', label: t('production.nav.synopsis'), visible: true },
         { href: '#trailer', label: t('production.nav.trailer'), visible: hasTrailer },
         { href: '#elenco', label: t('production.nav.cast'), visible: cast.length > 0 },
+        { href: '#relacionados', label: t('production.nav.related'), visible: related.length > 0 },
         { href: '#galeria', label: t('production.nav.gallery'), visible: galleryUrls.length > 0 },
         { href: '#curiosidades', label: t('production.nav.trivia'), visible: facts.length > 0 },
         { href: '#artigos', label: t('production.nav.articles'), visible: relatedPosts.length > 0 },
-        { href: '#relacionados', label: t('production.nav.related'), visible: related.length > 0 },
         { href: '#faq', label: t('production.nav.faq'), visible: true },
     ].filter(l => l.visible)
     const faqItems = [
@@ -106,7 +107,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
             {jsonLd}
             {readingBar}
             <ProductionPageB production={production} model={model} productionUrl={productionUrl} cast={cast} related={related}
-                relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} episodios={episodios} />
+                relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} />
         </>
     )
 }
