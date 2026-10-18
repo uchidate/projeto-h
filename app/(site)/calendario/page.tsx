@@ -132,7 +132,7 @@ export default async function CalendarioPage() {
         } catch { /* skip */ }
     }
 
-    const shopProducts = await getVitrineGeral('calendario', 6)
+    const shopProducts = await getVitrineGeral('calendario', 6, 'kpop')
     events.sort((a, b) => a.daysUntil - b.daysUntil || a.name.localeCompare(b.name))
 
     return (

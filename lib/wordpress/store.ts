@@ -112,7 +112,25 @@ export async function getStoreProductsByArtistId(artistId: number): Promise<Stor
     return products.filter(p => !p.acf.is_hidden && p.acf.related_artist === artistId)
 }
 
-export async function getFeaturedStoreProducts(limit = 5): Promise<StoreProduct[]> {
+/** Tipo de página para a vitrine de reserva: o que combina com quem está lendo. */
+export type TipoVitrine = 'kpop' | 'drama'
+
+const CATEGORIAS_POR_TIPO: Record<TipoVitrine, readonly string[]> = {
+    kpop: ['photocard', 'lightstick', 'kpop_album', 'kbeauty', 'clothing', 'acessorios'],
+    drama: ['alimenta', 'kbeauty', 'acessorios', 'outros'],
+}
+
+/**
+ * Vitrine de reserva (páginas sem produto próprio): só produto com preço e link, do tipo que combina
+ * com a página (K-pop → photocard, lightstick, álbum; drama → comida e K-beauty). Antes eram só os
+ * "destaques", que hoje estão quase todos sem preço, e o mesmo macarrão aparecia na ficha de qualquer artista.
+ * Se o filtro deixa menos de 3, completa com os demais com preço, para a vitrine não esvaziar.
+ */
+export async function getFeaturedStoreProducts(limit = 5, tipo?: TipoVitrine): Promise<StoreProduct[]> {
     const products = await getStoreProducts()
-    return products.filter(p => !p.acf.is_hidden && p.acf.featured).slice(0, limit)
+    const validos = products.filter(p => !p.acf.is_hidden && p.acf.affiliate_url && p.acf.price)
+    const doTipo = tipo ? validos.filter(p => CATEGORIAS_POR_TIPO[tipo].includes(p.acf.category ?? '')) : validos
+    const base = doTipo.length >= 3 ? doTipo : validos
+    const peso = (p: StoreProduct) => (p.acf.featured ? 2 : 0) + (calcularDesconto(p.acf.price, p.acf.original_price) !== null ? 1 : 0)
+    return [...base].sort((a, b) => peso(b) - peso(a) || (a.acf.position ?? 999) - (b.acf.position ?? 999)).slice(0, limit)
 }

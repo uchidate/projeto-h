@@ -152,7 +152,7 @@ export async function GroupsListagem({ searchParams }: { searchParams: SearchPar
     if (paginaInvalida(page, totalPages)) notFound()
 
     const shopProducts = inicio
-        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:grupos')
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'listagem:grupos')
         : []
 
     return (

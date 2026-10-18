@@ -127,7 +127,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
 
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio
-        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'grupo:fallback')
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'grupo:fallback')
         : []
 
     const relatedHubs = getHubsForGroup(group)
