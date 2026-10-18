@@ -212,15 +212,16 @@ export function ArtistFichaC({
                             {acf.debut_date && <span>{t('debutLabel')} <b className="text-foreground">{String(acf.debut_date).slice(0, 4)}</b></span>}
                             {nomeGrupo && <span>{t('groupFact')} <b className="text-foreground">{nomeGrupo}</b></span>}
                         </p>
-                        <div className="mt-5 grid grid-cols-[1fr_auto] gap-3 sm:mt-[22px] sm:flex sm:flex-wrap">
+                        <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-[22px] sm:gap-3">
                             {(() => {
-                                const primario = 'touch-target col-span-2 inline-flex h-12 items-center justify-center bg-accent px-7 text-[15px] font-extrabold text-[#0d0b0f] hover:opacity-90 sm:col-span-1'
-                                const secundario = 'touch-target inline-flex h-12 items-center justify-center border border-border-strong px-6 text-[15px] font-semibold hover:border-accent/60'
+                                const primario = 'touch-target inline-flex h-11 min-w-0 flex-1 items-center justify-center bg-accent px-3 text-[14px] font-extrabold text-[#0d0b0f] hover:opacity-90 sm:h-12 sm:flex-none sm:px-7 sm:text-[15px]'
+                                const secundario = 'touch-target inline-flex h-11 min-w-0 flex-1 items-center justify-center border border-border-strong px-3 text-[14px] font-semibold hover:border-accent/60 sm:h-12 sm:flex-none sm:px-6 sm:text-[15px]'
                                 const ouvir = (estilo: string) => temMusica && <a href="#musica" className={estilo}>{estilo === primario ? '▶ ' : ''}{t('listenNow')}</a>
-                                const assistir = (estilo: string) => productions.length > 0 && <a href="#obras" className={estilo}>{estilo === primario ? '▶ ' : ''}{t('watchWorks')}</a>
+                                // No celular o rótulo encurta para a 1ª palavra ("Assistir obras" -> "Assistir"), para os três botões caberem numa linha.
+                                const assistir = (estilo: string) => productions.length > 0 && <a href="#obras" className={estilo}>{estilo === primario ? '▶ ' : ''}<span className="sm:hidden">{t('watchWorks').split(' ')[0]}</span><span className="max-sm:hidden">{t('watchWorks')}</span></a>
                                 return obrasPrimeiro ? <>{assistir(primario)}{ouvir(secundario)}</> : <>{ouvir(primario)}{assistir(secundario)}</>
                             })()}
-                            <ContentStateButton objectId={artist.id} objectType="artist" label={t('follow')} activeLabel={tp('ui.following')} variant="outline" />
+                            <ContentStateButton objectId={artist.id} objectType="artist" label={t('follow')} activeLabel={tp('ui.following')} variant="outline" compactMobile />
                         </div>
                         {/* Celular e tablet: o aside "Em destaque" só existe a partir de xl; aqui vai um cartão compacto logo abaixo dos botões. */}
                         {(destaques[0] || awards[0]) && (
