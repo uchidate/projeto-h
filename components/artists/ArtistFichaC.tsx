@@ -174,6 +174,9 @@ export function ArtistFichaC({
         ...destaques.map(d => ({ href: `/productions/${d.p.slug}`, label: tituloDe(d.p), img: d.img?.src ?? null, tipo: 'obra' as const })),
     ]
     const temMapa = nosMapa.length >= 4
+    // O botão de destaque segue a atividade principal (1º papel cadastrado): ator leva às obras, não à música.
+    const atorPrincipal = acf.roles?.[0] === 'actor'
+    const obrasPrimeiro = productions.length > 0 && (atorPrincipal || !temMusica)
     const papelAtual = [...roleLabels.slice(0, 3), ...(nomeGrupo ? [nomeGrupo] : [])].join(' · ')
 
     return (
@@ -186,9 +189,9 @@ export function ArtistFichaC({
                     bytes — mesmo raciocínio aplicado ao hero de produção. */}
                 {image && <Image src={image.src} alt="" fill priority quality={20} sizes="(min-width: 1440px) 1440px, 100vw" aria-hidden className="-z-20 scale-125 object-cover object-[center_20%] opacity-40 blur-[40px] saturate-[1.3]" />}
                 <div aria-hidden className="absolute inset-0 -z-10" style={{ background: 'radial-gradient(60% 80% at 20% 30%, color-mix(in srgb, var(--color-accent) 30%, transparent), transparent 70%), linear-gradient(to bottom, transparent, var(--color-bg) 96%)' }} />
-                <div className={`${COL} grid grid-cols-[112px_minmax(0,1fr)] items-end gap-x-4 gap-y-4 py-8 sm:grid-cols-[300px_minmax(0,1fr)] sm:gap-x-12 sm:py-10`}>
+                <div className={`${COL} grid grid-cols-[132px_minmax(0,1fr)] items-end gap-x-4 gap-y-4 py-8 sm:grid-cols-[300px_minmax(0,1fr)] sm:gap-x-12 sm:py-10 xl:grid-cols-[300px_minmax(0,1fr)_300px]`}>
                     {image ? (
-                        <Image src={image.src} alt={image.alt || name} width={300} height={400} priority sizes="(min-width: 640px) 300px, 112px"
+                        <Image src={image.src} alt={image.alt || name} width={300} height={400} priority sizes="(min-width: 640px) 300px, 132px"
                             className="aspect-[3/4] w-full object-cover sm:row-span-2" style={{ boxShadow: `10px 10px 0 ${accent}, 0 30px 80px rgba(0,0,0,.7)` }} />
                     ) : (
                         <div className={`flex aspect-[3/4] w-full items-center justify-center border border-border bg-surface text-center text-muted sm:row-span-2 ${KICKER}`}>{t('noPhoto')}</div>
@@ -197,19 +200,46 @@ export function ArtistFichaC({
                         <p className={`${KICKER} text-muted`}>{papelAtual}</p>
                         <h1 className={`mt-2 ${SERIF} text-[34px] font-bold leading-[.96] sm:text-[88px]`}>{name}<span style={{ color: accent }}>.</span></h1>
                     </div>
-                    <div className="col-span-2 sm:col-span-1 sm:self-start">
+                    <div className="col-span-2 sm:col-span-1 sm:self-start xl:col-start-2">
                         {careerStatement && <p className={`${SERIF} max-w-[760px] text-[20px] leading-[1.2] sm:text-[28px]`}>{careerStatement}</p>}
                         <p className="mt-4 flex flex-wrap gap-x-7 gap-y-1 text-[14px] text-foreground-subtle sm:mt-5 sm:text-[15px]">
                             {idade != null && <span><b className="text-foreground">{t('ageYears', { count: idade })}</b>{cidade ? ` · ${cidade}` : ''}</span>}
                             {acf.debut_date && <span>{t('debutLabel')} <b className="text-foreground">{String(acf.debut_date).slice(0, 4)}</b></span>}
                             {nomeGrupo && <span>{t('groupFact')} <b className="text-foreground">{nomeGrupo}</b></span>}
                         </p>
-                        <div className="mt-5 flex flex-wrap gap-3 sm:mt-[22px]">
-                            {temMusica && <a href="#musica" className="touch-target inline-flex h-12 items-center bg-accent px-7 text-[15px] font-extrabold text-[#0d0b0f] hover:opacity-90">▶ {t('listenNow')}</a>}
-                            {productions.length > 0 && <a href="#obras" className="touch-target inline-flex h-12 items-center border border-border-strong px-6 text-[15px] font-semibold hover:border-accent/60">{t('watchWorks')}</a>}
+                        <div className="mt-5 grid grid-cols-[1fr_auto] gap-3 sm:mt-[22px] sm:flex sm:flex-wrap">
+                            {(() => {
+                                const primario = 'touch-target col-span-2 inline-flex h-12 items-center justify-center bg-accent px-7 text-[15px] font-extrabold text-[#0d0b0f] hover:opacity-90 sm:col-span-1'
+                                const secundario = 'touch-target inline-flex h-12 items-center justify-center border border-border-strong px-6 text-[15px] font-semibold hover:border-accent/60'
+                                const ouvir = (estilo: string) => temMusica && <a href="#musica" className={estilo}>{estilo === primario ? '▶ ' : ''}{t('listenNow')}</a>
+                                const assistir = (estilo: string) => productions.length > 0 && <a href="#obras" className={estilo}>{estilo === primario ? '▶ ' : ''}{t('watchWorks')}</a>
+                                return obrasPrimeiro ? <>{assistir(primario)}{ouvir(secundario)}</> : <>{ouvir(primario)}{assistir(secundario)}</>
+                            })()}
                             <ContentStateButton objectId={artist.id} objectType="artist" label={t('follow')} activeLabel={tp('ui.following')} variant="outline" />
                         </div>
                     </div>
+                    {/* Em telas largas a metade direita ficava vazia: obra de maior nota e prêmio mais recente, o que a pessoa procura primeiro. */}
+                    {(destaques[0] || awards[0]) && (
+                        <aside aria-label={t('heroHighlights')} className="hidden self-end border-l-[3px] bg-background/40 p-5 backdrop-blur-sm xl:col-start-3 xl:row-span-2 xl:row-start-1 xl:flex xl:flex-col xl:gap-5" style={{ borderColor: accent }}>
+                            <p className={`${KICKER} text-muted`}>{t('heroHighlights')}</p>
+                            {destaques[0] && (
+                                <Link href={`/productions/${destaques[0].p.slug}`} className="group flex items-center gap-4">
+                                    <Image src={destaques[0].img!.src} alt="" width={56} height={80} className="h-20 w-14 shrink-0 object-cover" />
+                                    <span className="min-w-0">
+                                        <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{t('heroTopWork')}</span>
+                                        <span className={`mt-1 block ${SERIF} text-[18px] font-bold leading-tight group-hover:underline`}>{tituloDe(destaques[0].p)}</span>
+                                        <span className="mt-1 block text-[12px] text-muted">{[anoDe(destaques[0].p) || null, nota(destaques[0].p) > 0 ? `★ ${nota(destaques[0].p).toFixed(1)}` : null].filter(Boolean).join(' · ')}</span>
+                                    </span>
+                                </Link>
+                            )}
+                            {awards[0] && (
+                                <div>
+                                    <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{t('heroAward')}</span>
+                                    <span className="mt-1 block text-[14px] leading-snug text-foreground">{[awards[0].title, awards[0].category].filter(Boolean).join(' · ')}{awards[0].year ? ` (${awards[0].year})` : ''}</span>
+                                </div>
+                            )}
+                        </aside>
+                    )}
                 </div>
             </header>
 
