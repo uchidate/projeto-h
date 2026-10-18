@@ -222,6 +222,31 @@ export function ArtistFichaC({
                             })()}
                             <ContentStateButton objectId={artist.id} objectType="artist" label={t('follow')} activeLabel={tp('ui.following')} variant="outline" />
                         </div>
+                        {/* Celular e tablet: o aside "Em destaque" só existe a partir de xl; aqui vai um cartão compacto logo abaixo dos botões. */}
+                        {(destaques[0] || awards[0]) && (
+                            <div data-bloco="ficha-destaque-compacto" className="mt-5 xl:hidden">
+                                {destaques[0] && (
+                                    <Link href={`/productions/${destaques[0].p.slug}`} data-posicao={1}
+                                        className="group flex items-center gap-3.5 border-l-[3px] bg-background/50 p-2.5 pr-3 backdrop-blur-sm" style={{ borderColor: accent }}>
+                                        <Image src={destaques[0].img!.src} alt="" width={48} height={68} sizes="48px" className="h-[68px] w-12 shrink-0 object-cover" style={{ boxShadow: `3px 3px 0 ${accent}` }} />
+                                        <span className="min-w-0 flex-1">
+                                            <span className="flex items-center gap-1.5 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">
+                                                <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />{t('heroTopWork')}
+                                            </span>
+                                            <span className={`mt-1 line-clamp-2 block ${SERIF} text-[17px] font-bold italic leading-[1.1]`}>{tituloDe(destaques[0].p)}</span>
+                                            {anoDe(destaques[0].p) > 0 && <span className="mt-0.5 block font-mono text-[11px] text-muted">{anoDe(destaques[0].p)}</span>}
+                                        </span>
+                                        <span aria-hidden className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[14px] font-black text-[#0d0b0f]" style={{ background: accent }}>→</span>
+                                    </Link>
+                                )}
+                                {awards[0] && (
+                                    <p className="mt-2 flex items-start gap-2 px-2.5 py-2 text-[12px] leading-snug" style={{ background: 'color-mix(in srgb, #f5b301 14%, transparent)', boxShadow: 'inset 3px 0 0 #f5b301' }}>
+                                        <span aria-hidden className="leading-none">🏆</span>
+                                        <span className="min-w-0 text-foreground"><span className="font-semibold">{[awards[0].title, awards[0].category].filter(Boolean).join(' · ')}</span>{awards[0].year ? ` (${awards[0].year})` : ''}</span>
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
                     {/* Em telas largas a metade direita ficava vazia: obra de maior nota e prêmio mais recente, o que a pessoa procura primeiro. */}
                     {(destaques[0] || awards[0]) && (
