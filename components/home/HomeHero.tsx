@@ -7,10 +7,11 @@ import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Play } from 'lucide-react'
+import { Play, Star } from 'lucide-react'
 import type { WPPost, WPProduction } from '@/lib/wordpress/types'
 import { getProductionBySlug } from '@/lib/wordpress/productions'
 import { getArtists } from '@/lib/wordpress/artists'
+import { getAvaliacao, confiancaDaNota } from '@/lib/tmdb/avaliacao'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
 import { homeCatName } from '@/lib/home/catStyle'
 
@@ -106,7 +107,12 @@ async function HeroProduction({ production, locale }: { production: WPProduction
     const imagem = acf.backdrop_url ? { src: acf.backdrop_url, alt: title } : getWPImage(production._embedded, production.featured_image_url)
     const destino = rota('production', { slug: production.slug }, locale)
     // A listagem não traz o texto; a sinopse vem da ficha (cache de 30 min). Sem ela, o painel segue sem o parágrafo.
-    const ficha = await getProductionBySlug(production.slug).catch(() => null)
+    const [ficha, avaliacao] = await Promise.all([
+        getProductionBySlug(production.slug).catch(() => null),
+        getAvaliacao(acf.tmdb_id, acf.type),
+    ])
+    // Nota só com amostra: com poucos votos ela é a opinião de poucas pessoas (ver lib/tmdb/avaliacao.ts).
+    const notaConfiavel = avaliacao && confiancaDaNota(avaliacao.votos) === 'confiavel' ? avaliacao : null
     const sinopse = stripHtml(ficha?.content?.rendered ?? '').slice(0, 220)
     // Elenco principal: até 4 artistas com ficha, na ordem do cadastro da produção.
     const slugsElenco = (ficha?.production_cast?.length ? ficha.production_cast.map(c => c.slug) : ficha?.artist_slugs ?? []).slice(0, 4)
@@ -118,7 +124,9 @@ async function HeroProduction({ production, locale }: { production: WPProduction
         .filter((a): a is NonNullable<typeof a> => a !== undefined)
     const plataformas = (acf.platforms ?? (acf.platform ? [acf.platform] : [])).filter(Boolean).slice(0, 3)
     const trailer = !!acf.trailer_url
-    const meta = [acf.year, acf.genre, acf.episodes ? `${acf.episodes} ep.` : null, acf.network].filter(Boolean).join(' · ')
+    const situacao = acf.status_production === 'airing' ? t('emExibicao') : acf.status_production === 'completed' ? t('concluida') : acf.status_production === 'upcoming' ? t('emBreve') : null
+    const classificacao = acf.age_rating ? (acf.age_rating === 'L' ? t('classificacaoLivre') : `${acf.age_rating}+`) : null
+    const meta = [acf.year, acf.genre, acf.episodes ? `${acf.episodes} ep.` : null, acf.network, situacao].filter(Boolean).join(' · ')
 
     // Mesma estrutura da capa de matéria (imagem à esquerda, texto ao lado): a produção
     // ocupava a largura toda, com o texto sobre a imagem, e destoava do resto da home.
@@ -139,8 +147,13 @@ async function HeroProduction({ production, locale }: { production: WPProduction
                         (tipo, onde assistir, trailer) e não repete o título, que está no painel ao lado. */}
                     <Link href={destino} aria-label={title} className="absolute inset-0" />
                     <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[70%] bg-linear-to-t from-black/90 via-black/55 to-transparent" />
-                    <span className="pointer-events-none absolute left-3 top-3 bg-black/60 px-2.5 py-1 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white backdrop-blur-sm sm:left-4 sm:top-4">
-                        {[acf.type === 'movie' ? t('tipoFilme') : t('tipoSerie'), acf.year].filter(Boolean).join(' · ')}
+                    <span className="pointer-events-none absolute left-3 top-3 flex items-center gap-2 sm:left-4 sm:top-4">
+                        <span className="bg-black/60 px-2.5 py-1 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white backdrop-blur-sm">
+                            {[acf.type === 'movie' ? t('tipoFilme') : t('tipoSerie'), acf.year].filter(Boolean).join(' · ')}
+                        </span>
+                        {classificacao && (
+                            <span title={t('classificacaoIndicativa')} className="border border-white/60 bg-black/60 px-2 py-1 font-mono text-[10px] font-black text-white backdrop-blur-sm">{classificacao}</span>
+                        )}
                     </span>
                     {trailer && (
                         <Link href={`${destino}#trailer`} aria-label={t('verTrailer', { title })}
@@ -199,7 +212,16 @@ async function HeroProduction({ production, locale }: { production: WPProduction
                 </Link>
                 {acf.original_title && <p className="mt-2 break-keep text-[15px] font-bold text-accent">{acf.original_title}</p>}
                 {meta && <p className="mt-3 text-[13px] text-muted">{meta}</p>}
-                {sinopse && <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.65] text-foreground/65 line-clamp-4 lg:text-[15px]">{sinopse}</p>}
+                {notaConfiavel && (
+                    <p className="mt-2 flex flex-wrap items-baseline gap-x-2 text-[13px]">
+                        <span className="inline-flex items-center gap-1.5 font-bold text-foreground">
+                            <Star size={13} className="text-amber-400" fill="currentColor" aria-hidden />
+                            {notaConfiavel.nota.toFixed(1).replace('.', ',')}<span className="font-normal text-muted">/10</span>
+                        </span>
+                        <span className="font-mono text-[11px] text-muted">{t('notaVotos', { count: notaConfiavel.votos })}</span>
+                    </p>
+                )}
+                {sinopse && <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.65] text-foreground/65 line-clamp-4 lg:line-clamp-3 lg:text-[15px]">{sinopse}</p>}
                 <div className="mt-auto flex items-center justify-end border-t border-border pt-4 lg:pt-5">
                     <Link href={destino}
                         className="inline-flex shrink-0 items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-accent-a11y/90">
