@@ -18,6 +18,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { RastreioDeFiltros } from '@/components/analytics/RastreioDeFiltros'
 import { ContinueDeOndeParou } from '@/components/artists/lista/ContinueDeOndeParou'
 import { EmAlta } from '@/components/artists/lista/EmAlta'
+import { grupoDe } from '@/components/artists/lista/GanchoArtista'
 import { AniversariosSemana } from '@/components/artists/lista/AniversariosSemana'
 import { SalvarContextoLista } from '@/components/artists/lista/SalvarContextoLista'
 import { labelsFor } from '@/lib/i18n/labels'
@@ -58,9 +59,11 @@ interface Props {
     perPage?: number
     aniversarios?: AniversarianteSemana[]
     shopProducts?: StoreProduct[]
+    /** Nome dos grupos dos artistas da página, por id (alimenta a linha "Do grupo X" do cartão). */
+    grupos?: Record<number, string>
 }
 
-export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [] }: Props) {
+export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [], grupos = {} }: Props) {
     const router = useRouter()
     const pathname = usePathname()
 
@@ -209,7 +212,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             </section>
 
             {inicio && <ContinueDeOndeParou />}
-            <EmAlta artistas={emAltaArtistas} verTodos="#diretorio" />
+            <EmAlta artistas={emAltaArtistas} verTodos="#diretorio" grupos={grupos} />
             {inicio && ADSENSE.slots.leaderboard && (
                 <div className="page-wrap pb-8">
                     <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="artists_apos_destaque" />
@@ -301,7 +304,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                                                 )}
                                                 <div className={`grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-6 md:grid-cols-4 lg:grid-cols-6 ${b > 0 && !comAnuncio ? 'mt-5 sm:mt-6' : ''}`}>
                                                     {fatia.map((a, i) => (
-                                                        <ArtistCard key={a.id} artist={a} priority={base + i < 8} variant="diretorio"
+                                                        <ArtistCard key={a.id} artist={a} priority={base + i < 8} variant="diretorio" grupoNome={grupoDe(a, grupos)}
                                                             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw" />
                                                     ))}
                                                 </div>

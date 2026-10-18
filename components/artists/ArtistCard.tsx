@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { WPArtist } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
+import { GanchoArtista, obraChaveDe } from '@/components/artists/lista/GanchoArtista'
 
 interface Props {
     artist: WPArtist
@@ -14,6 +15,8 @@ interface Props {
     variant?: 'default' | 'catalog' | 'diretorio'
     /** Some quando a própria ordenação já comunica destaque (aba "Em alta"). */
     showTrendingBadge?: boolean
+    /** Nome do grupo do artista (variante diretório): vira a linha "Do grupo X". */
+    grupoNome?: string
 }
 
 function nameToGradient(name: string): string {
@@ -23,15 +26,15 @@ function nameToGradient(name: string): string {
     return `linear-gradient(135deg, hsl(${hue},60%,18%) 0%, hsl(${(hue + 40) % 360},50%,12%) 100%)`
 }
 
-export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw, 20vw', aspectRatio = 'aspect-3/4', showRole = true, variant = 'default', showTrendingBadge = true }: Props) {
+export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw, 20vw', aspectRatio = 'aspect-3/4', showRole = true, variant = 'default', showTrendingBadge = true, grupoNome }: Props) {
     const labels = labelsFor(useLocale())
     const image = getWPImage(artist._embedded, artist.featured_image_url)
     const name = stripHtml(artist.title.rendered)
     const roles = (artist.acf?.roles as string[] | undefined)?.map(labels.role) ?? []
     const isTrending = showTrendingBadge && (artist.acf?.trending_score ?? 0) >= 50
 
-    // Diretório: só o rosto e o nome. A atuação ("Ator/Atriz") era a mesma em quase todos os cartões e o hangul
-    // segue na busca e na ficha; sem essas duas linhas, cabem mais artistas por tela.
+    // Diretório: rosto e nome, com um gancho curto sobre a foto (grupo em etiqueta e obra-chave do dossiê em destaque)
+    // para dar motivo de clicar. Só usa dados já na listagem; sem eles, o cartão volta a ser rosto e nome.
     if (variant === 'diretorio') {
         return (
             <Link href={`/artists/${artist.slug}`} className="group flex flex-col" data-slug={artist.slug}>
@@ -47,6 +50,7 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
                             </span>
                         </div>
                     )}
+                    <GanchoArtista obraChave={obraChaveDe(artist)} grupoNome={grupoNome} grupoNoTopo />
                 </div>
                 <span className="mt-2.5 block truncate text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[15px]">{name}</span>
             </Link>

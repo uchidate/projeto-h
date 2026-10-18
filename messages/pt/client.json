@@ -225,5 +225,8 @@
       "titulo": "Top 10 nos Streamings",
       "mostrarRanking": "Mostrar ranking da {plataforma}"
     }
+  },
+  "artistCard": {
+    "keyWork": "Obra-chave"
   }
 }
