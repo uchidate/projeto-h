@@ -82,6 +82,9 @@
     "durationShort": "{count} min/ep.",
     "watchTrailer": "Watch trailer",
     "summary": {
+      "openOnPlatform": "Open {platform} with a search for this title",
+      "searchOnJustWatch": "Search this title on JustWatch ({platform})",
+      "browseByPlatform": "Browse productions by platform",
         "notInBrazil": "No official streaming in Brazil right now.",
         "availableAbroad": "Available outside Brazil",
         "whereToWatch": "Where to watch",

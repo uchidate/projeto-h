@@ -3,6 +3,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import type { WPTerm } from '@/lib/wordpress/types'
 import { href } from '@/lib/i18n/routes'
 import { AtribuicaoJustWatch } from '@/components/productions/AtribuicaoJustWatch'
+import { linkDaPlataforma } from '@/lib/productions/plataformas'
 
 interface Props {
     title: string
@@ -56,14 +57,21 @@ export function ProductionResumo({ title, synopsis, genres, platforms }: Props) 
                     <div id="onde-assistir" data-bloco="ficha-producao-onde-assistir" className="order-first min-w-0 scroll-mt-28 self-start border border-border bg-surface p-4 sm:p-6 lg:order-none">
                         <h2 className="mb-3 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-muted lg:mb-4">{t('summary.whereToWatch')}</h2>
                         <div className="flex flex-col gap-2.5">
-                            {platforms.map(p => (
-                                <Link key={p.id} href={`${listagem}?platform=${p.slug}`}
-                                    className="flex items-center justify-between gap-4 border border-border-strong bg-background px-4 py-3.5 transition-colors hover:border-accent/60">
-                                    <span className="text-[16px] font-bold text-foreground">{p.name}</span>
-                                    <span aria-hidden="true" className="text-[18px] text-accent">→</span>
-                                </Link>
-                            ))}
+                            {platforms.map(p => {
+                                const { href: destino, direto } = linkDaPlataforma(p.slug, title)
+                                return (
+                                    <a key={p.id} href={destino} target="_blank" rel="noopener noreferrer nofollow"
+                                        aria-label={t(direto ? 'summary.openOnPlatform' : 'summary.searchOnJustWatch', { platform: p.name })}
+                                        className="flex items-center justify-between gap-4 border border-border-strong bg-background px-4 py-3.5 transition-colors hover:border-accent/60">
+                                        <span className="text-[16px] font-bold text-foreground">{p.name}</span>
+                                        <span aria-hidden="true" className="text-[18px] text-accent">↗</span>
+                                    </a>
+                                )
+                            })}
                         </div>
+                        <Link href={listagem} className="mt-3 inline-block font-mono text-[10px] font-black uppercase tracking-[0.12em] text-muted hover:text-accent">
+                            {t('summary.browseByPlatform')} →
+                        </Link>
                         <AtribuicaoJustWatch className="mt-3.5 block" />
                     </div>
                 )}

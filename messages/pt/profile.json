@@ -82,6 +82,9 @@
     "durationShort": "{count} min/ep.",
     "watchTrailer": "Assistir trailer",
     "summary": {
+      "openOnPlatform": "Abrir {platform} com a busca por este título",
+      "searchOnJustWatch": "Buscar este título no JustWatch ({platform})",
+      "browseByPlatform": "Ver produções por plataforma",
         "notInBrazil": "Sem streaming oficial no Brasil no momento.",
         "availableAbroad": "Disponível fora do país",
         "whereToWatch": "Onde assistir",
