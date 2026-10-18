@@ -217,7 +217,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                 agencyName={agencyName} generation={generation} magra={magra}
                 nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />}
             />
-            <ShopRelatedSection title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`} products={shopProducts}
+            <ShopRelatedSection bloco="ficha-grupo-loja" title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`} products={shopProducts}
                 href={shopFallback ? '/loja' : `/loja/grupo/${group.slug}`} verTudoLabel={shopFallback ? 'Ver toda a loja' : `Ver tudo de ${name}`}
                 contexto={shopFallback ? 'grupo:fallback' : `grupo:${group.slug}`} />
 
