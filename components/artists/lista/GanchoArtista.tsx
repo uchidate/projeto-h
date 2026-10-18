@@ -39,10 +39,12 @@ export function GanchoArtista({ destaque, grupoNome, grupoNoTopo = false }: { de
         <>
             {grupoNoTopo && etiqueta}
             {destaque && (
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/80 via-60% to-transparent px-3 pb-3 pt-20 text-white">
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 via-55% to-transparent px-3 pb-3 pt-9 text-white">
                     {!grupoNoTopo && etiqueta}
-                    <span className="block w-fit whitespace-nowrap bg-black/80 px-1.5 py-0.5 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-accent">{t(destaque.tipo)}</span>
-                    <span className={`mt-1 line-clamp-2 block pr-10 ${SERIF} text-[18px] font-bold italic leading-[1.08] drop-shadow-[0_1px_6px_rgba(0,0,0,.6)]`}>{destaque.titulo}</span>
+                    <span className="flex items-center gap-1.5 whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
+                        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />{t(destaque.tipo)}
+                    </span>
+                    <span className={`mt-1 line-clamp-2 block pr-10 ${SERIF} text-[18px] font-bold italic leading-[1.08] drop-shadow-[0_1px_3px_rgba(0,0,0,.9)] [text-shadow:0_0_8px_rgba(0,0,0,.6)]`}>{destaque.titulo}</span>
                     <span aria-hidden className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-[15px] font-black text-[#0d0b0f] shadow-lg transition-transform duration-300 group-hover:translate-x-0.5 group-hover:scale-110">→</span>
                 </div>
             )}
