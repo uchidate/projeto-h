@@ -103,6 +103,12 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
 
                         <ProductionElencoB title={title} cast={cast} castRoles={castRoles} />
 
+                        {/* Logo após o elenco: na 3ª posição do fim da página só ~19% dos visitantes chegavam
+                            às relacionadas, que convertem ~8% de quem as vê (Umami, 30d, 2026-10). */}
+                        <div id="relacionados" className={ANCORA}>
+                            <ProductionRelated related={related} genres={genres} naColuna />
+                        </div>
+
                         {episodios.length > 0 && (
                             <section id="episodios" className={ANCORA} data-bloco="producao-episodios">
                                 <BlockHeader title={t('production.episodesTitle', { title })} eyebrow={t('production.episodesKicker')} tone="muted" size="lg" />
@@ -181,10 +187,6 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                     </div>
 
                     <ProductionSidebar compacto rating={acf.rating} platforms={platforms} {...ficha} />
-                </div>
-
-                <div id="relacionados" className={`${ANCORA} mt-16 lg:mt-20`}>
-                    <ProductionRelated related={related} genres={genres} />
                 </div>
 
                 {ADSENSE.slots.inline && related.length > 0 && (

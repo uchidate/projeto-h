@@ -254,6 +254,14 @@ export function ArtistFichaC({
             </section>
             {!semAnuncio && <Anuncio placement="artist_apos_visao" layout="leaderboard" />}
 
+            {/* Mapa de conexões logo após a visão geral: converte ~21% de quem o vê, mas na 7ª seção só ~11% dos visitantes chegavam a ele (Umami, 30d, 2026-10). */}
+            {temMapa && (
+                <Sec id="mapa" kicker={t('mapKicker')} title={t('mapTitle', { name })}>
+                    <MapaConexoes centro={{ label: name, img: image?.src ?? null, href: `/artists/${artist.slug}`, tipo: 'artist' }} nos={nosMapa} accent={accent} ariaLabel={t('mapAria', { name })} textos={{ voltar: t('mapBack'), abrir: t('mapOpen', { name: '{name}' }) }} />
+                    <p className="mx-auto mt-4 max-w-[560px] text-center text-[13px] text-muted">{t('mapHint')}</p>
+                </Sec>
+            )}
+
             {quiz}
 
             {temMarcos && (
@@ -356,13 +364,6 @@ export function ArtistFichaC({
                         <summary className={`${BOTAO} list-none cursor-pointer`} style={{ borderColor: accent, color: accent }}>{t('seeAllWorks')}</summary>
                         <div className="mt-4">{nodes.filmografia}</div>
                     </details>
-                </Sec>
-            )}
-
-            {temMapa && (
-                <Sec id="mapa" kicker={t('mapKicker')} title={t('mapTitle', { name })}>
-                    <MapaConexoes centro={{ label: name, img: image?.src ?? null, href: `/artists/${artist.slug}`, tipo: 'artist' }} nos={nosMapa} accent={accent} ariaLabel={t('mapAria', { name })} textos={{ voltar: t('mapBack'), abrir: t('mapOpen', { name: '{name}' }) }} />
-                    <p className="mx-auto mt-4 max-w-[560px] text-center text-[13px] text-muted">{t('mapHint')}</p>
                 </Sec>
             )}
 

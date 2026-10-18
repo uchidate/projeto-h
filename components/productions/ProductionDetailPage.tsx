@@ -39,10 +39,10 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
         { href: '#sinopse', label: t('production.nav.synopsis'), visible: true },
         { href: '#trailer', label: t('production.nav.trailer'), visible: hasTrailer },
         { href: '#elenco', label: t('production.nav.cast'), visible: cast.length > 0 },
+        { href: '#relacionados', label: t('production.nav.related'), visible: related.length > 0 },
         { href: '#galeria', label: t('production.nav.gallery'), visible: galleryUrls.length > 0 },
         { href: '#curiosidades', label: t('production.nav.trivia'), visible: facts.length > 0 },
         { href: '#artigos', label: t('production.nav.articles'), visible: relatedPosts.length > 0 },
-        { href: '#relacionados', label: t('production.nav.related'), visible: related.length > 0 },
         { href: '#faq', label: t('production.nav.faq'), visible: true },
     ].filter(l => l.visible)
     const faqItems = [
