@@ -410,6 +410,8 @@
     "marcoTipoEstreia": "Estreia",
     "marcoTipoFase": "Fase",
     "marcoTipoObra": "Obra",
+    "premioVencedor": "Vencedor",
+    "premioIndicado": "Indicado",
     "marcoTipoPremio": "Prêmio",
     "marcosStatAnos": "{count, plural, one {# ano de trajetória} other {# anos de trajetória}}",
     "marcosStatObras": "{count, plural, one {# obra} other {# obras}}",

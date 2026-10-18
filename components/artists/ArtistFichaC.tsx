@@ -16,6 +16,7 @@ import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
 import { GroupDiscography, type DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { GroupSpotifyEmbed } from '@/components/groups/GroupSpotifyEmbed'
 import { ArtistCarreira } from '@/components/artists/ArtistCarreira'
+import { PremiosSelos } from '@/components/artists/PremiosSelos'
 import { MarcosFaixa, temMarcosSuficientes, type Marco } from '@/components/artists/MarcosFaixa'
 import { ArtistAtalhos } from '@/components/artists/ArtistAtalhos'
 
@@ -251,7 +252,7 @@ export function ArtistFichaC({
                     </div>
                     {/* Em telas largas a metade direita ficava vazia: obra de maior nota e prêmio mais recente, o que a pessoa procura primeiro. */}
                     {(destaques[0] || awards[0]) && (
-                        <aside aria-label={t('heroHighlights')} className="hidden self-end border-l-[3px] bg-background/40 p-5 backdrop-blur-sm xl:col-start-3 xl:row-span-2 xl:row-start-1 xl:flex xl:flex-col xl:gap-5" style={{ borderColor: accent }}>
+                        <aside aria-label={t('heroHighlights')} data-bloco="ficha-destaque" className="hidden self-end border-l-[3px] bg-background/40 p-5 backdrop-blur-sm xl:col-start-3 xl:row-span-2 xl:row-start-1 xl:flex xl:flex-col xl:gap-5" style={{ borderColor: accent }}>
                             <p className={`${KICKER} text-muted`}>{t('heroHighlights')}</p>
                             {destaques[0] && (
                                 <Link href={`/productions/${destaques[0].p.slug}`} className="group flex items-center gap-5">
@@ -331,7 +332,7 @@ export function ArtistFichaC({
             {quiz}
 
             {temMarcos && (
-                <section id="marcos" className="scroll-mt-28 border-t border-border py-12 sm:py-[72px]">
+                <section id="marcos" data-bloco="ficha-linha-do-tempo" className="scroll-mt-28 border-t border-border py-12 sm:py-[72px]">
                     <div className={COL}>
                         <p className={`${KICKER} text-muted`}>{t('marcosKicker')}</p>
                         <h2 className={`mt-2 ${H2}`}>{t('marcosTitle', { name })}</h2>
@@ -356,6 +357,8 @@ export function ArtistFichaC({
                 </section>
             )}
 
+            <PremiosSelos awards={awards} kicker={t('marcoTipoPremio')} title={titulos.awards} labels={{ won: t('premioVencedor'), nominated: t('premioIndicado') }} />
+
             {/* Carreira em fases (a linha do tempo completa fica recolhida logo abaixo) */}
             {fases.length > 0 && (
                 <section id="carreira" className="scroll-mt-28 border-t border-border py-12 sm:py-[72px]">
@@ -375,7 +378,7 @@ export function ArtistFichaC({
                         <details id="carreira-completa" className="mt-6 scroll-mt-28">
                             <summary className={`${BOTAO} list-none cursor-pointer`} style={{ borderColor: accent, color: accent }}>{t('timelineFull')}</summary>
                             <div className="mt-2">
-                                <ArtistCarreira id="capitulos" eyebrow={titulos.dossier} titulo={titulos.story} tituloPremios={titulos.awards} capitulos={storyChapters} metricas={keyMetrics} premios={awards} accent={accent} />
+                                <ArtistCarreira id="capitulos" eyebrow={titulos.dossier} titulo={titulos.story} tituloPremios={titulos.awards} capitulos={storyChapters} metricas={keyMetrics} premios={[]} accent={accent} />
                             </div>
                         </details>
                     </div>
