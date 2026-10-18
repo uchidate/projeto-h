@@ -35,6 +35,8 @@ interface Props {
     magra: boolean
     /** Faixa de loja no meio da ficha (após as obras). */
     lojaMeio?: ReactNode
+    /** Produtos em destaque na coluna lateral da visão geral (desktop), abaixo da ficha rápida. */
+    lojaLateral?: ReactNode
     /** Blocos originais já renderizados, por id: entram como estão onde a ficha C não tem versão própria. */
     nodes: Record<string, ReactNode>
     /** Mini-quiz da entidade, logo depois da visão geral. */
@@ -94,7 +96,7 @@ function fasesDe<T>(itens: T[]): T[][] {
  */
 export function ArtistFichaC({
     artist, name, image, roleLabels, groups, agency, productions, relatedPosts, relatedArtists, discography,
-    model, magra, nodes, resto, titulos, quiz, lojaMeio,
+    model, magra, nodes, resto, titulos, quiz, lojaMeio, lojaLateral,
 }: Props) {
     const accent = ROSA
     const locale = useLocale()
@@ -311,13 +313,17 @@ export function ArtistFichaC({
                                 </CollapsibleProse>
                             )}
                         </div>
-                        {fatos.length > 0 && (
-                            <dl className="self-start border-l-[3px] pl-5 text-[14px] leading-8 text-foreground-subtle" style={{ borderColor: accent }}>
-                                {fatos.map(([k, v]) => (
-                                    <div key={k}><dt className="inline font-bold text-foreground">{k} </dt><dd className="inline">{v}</dd></div>
-                                ))}
-                            </dl>
-                        )}
+                        <div className="flex min-w-0 flex-col gap-8 self-start">
+                            {fatos.length > 0 && (
+                                <dl className="border-l-[3px] pl-5 text-[14px] leading-8 text-foreground-subtle" style={{ borderColor: accent }}>
+                                    {fatos.map(([k, v]) => (
+                                        <div key={k}><dt className="inline font-bold text-foreground">{k} </dt><dd className="inline">{v}</dd></div>
+                                    ))}
+                                </dl>
+                            )}
+                            {/* A coluna fica vazia abaixo da ficha rápida em tela larga; o celular já tem a faixa de loja. */}
+                            {lojaLateral && <div className="hidden flex-col gap-4 lg:flex">{lojaLateral}</div>}
+                        </div>
                     </div>
                 </div>
             </section>

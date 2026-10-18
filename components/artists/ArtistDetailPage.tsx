@@ -29,6 +29,7 @@ import { renderProfileEntries, isInterstitial, CHAVE_DE_ANUNCIO, type ProfileEnt
 import { fichaMagra } from '@/lib/artists/fichaMagra'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
+import { LojaDestaque } from '@/components/ui/LojaDestaque'
 import { LojaDeslizante } from '@/components/ui/LojaDeslizante'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
@@ -190,6 +191,19 @@ export function ArtistDetailPage({
             contexto={shopFallback ? 'artista:fallback:meio' : `artista:${artist.slug}:meio`} />
     )
 
+    const poolLoja = shopProducts.length > 0 ? shopProducts : groupShopProducts
+    const destaqueA = poolLoja[3] ?? poolLoja[0]
+    const destaqueB = poolLoja[4] ?? poolLoja[1]
+    const lojaLateral = destaqueA ? (
+        <>
+            <LojaDestaque product={destaqueA} bloco="ficha-artista-loja-lateral" contexto={`artista:${artist.slug}:lateral`}
+                title={shopFallback ? 'Achado da loja' : `Para quem curte ${name}`} />
+            {destaqueB && destaqueB.id !== destaqueA.id && (
+                <LojaDestaque product={destaqueB} bloco="ficha-artista-loja-lateral-2" contexto={`artista:${artist.slug}:lateral2`} title="Mais da loja" />
+            )}
+        </>
+    ) : null
+
     const shopSection = (
         <ShopRelatedSection bloco="ficha-artista-loja"
             title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`}
@@ -250,7 +264,7 @@ export function ArtistDetailPage({
                 artist={artist} name={name} image={image} roleLabels={roleLabels}
                 groups={groups} agency={agency} productions={productions} relatedPosts={relatedPosts}
                 relatedArtists={relatedArtists} discography={discography} model={model} magra={magra}
-                lojaMeio={lojaMeio} nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />}
+                lojaMeio={lojaMeio} lojaLateral={lojaLateral} nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />}
                 titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
             />
             {shopSection}
