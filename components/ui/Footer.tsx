@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { BrandDot } from '@/components/ui/BrandDot'
+import { BrandMark } from '@/components/ui/BrandMark'
 import { Rss } from 'lucide-react'
 import { SITE_NAME } from '@/lib/constants/site'
 import type { FooterColumn, SiteLink } from '@/lib/wordpress/site-settings'
@@ -20,13 +21,17 @@ export default function Footer({ columns, tagline, labels, mostSearched = [] }: 
     return (
         <footer data-bloco="rodape" className="mt-16 border-t-2 border-accent bg-featured text-featured-fg">
             <div className="page-wrap py-10 sm:py-14">
-                <div className="grid gap-6 pb-9 lg:grid-cols-[minmax(0,1.5fr)_minmax(260px,0.5fr)] lg:items-end lg:gap-12">
+                <div className="grid gap-6 pb-9 lg:grid-cols-[minmax(0,1.5fr)_minmax(260px,0.5fr)] lg:items-center lg:gap-12">
+                    {/* Mesma proporção do cabeçalho: marca + nome em ~44 px, em vez do letreiro de 120 px. */}
                     <Link
                         href={labels.homeHref ?? "/"}
-                        className="min-w-0 wrap-anywhere font-sans text-[clamp(3rem,8vw,7.5rem)] font-black leading-[0.78] tracking-[-0.075em] text-featured-fg transition-colors hover:text-accent"
+                        className="flex min-w-0 items-center gap-4 text-featured-fg transition-colors hover:text-accent"
                         aria-label={labels.home}
                     >
-                        {SITE_NAME}<BrandDot />
+                        <BrandMark size={48} />
+                        <span className="min-w-0 wrap-anywhere font-sans text-[clamp(2rem,3.4vw,2.75rem)] font-black leading-none tracking-[-0.05em]">
+                            {SITE_NAME}<BrandDot />
+                        </span>
                     </Link>
                     <div className="border-l border-featured-border pl-5">
                         <p className="max-w-[34ch] text-[14px] leading-6 text-featured-muted sm:text-[15px]">{tagline}</p>
