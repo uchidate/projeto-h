@@ -85,7 +85,6 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         rights: layout.rights,
         privacy: layout.privacy,
         terms: layout.terms,
-        madeWith: layout.madeWith,
         home: layout.home.replace('{site}', SITE_NAME),
         nav: layout.footerNav,
         // Só no português: a lista aponta para fichas em PT.

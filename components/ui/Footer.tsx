@@ -9,7 +9,6 @@ export type FooterLabels = {
     rights: string
     privacy: string
     terms: string
-    madeWith: string
     home: string
     nav: string
     mostSearched?: string
@@ -83,7 +82,6 @@ export default function Footer({ columns, tagline, labels, mostSearched = [] }: 
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] text-featured-muted sm:text-[11px]">
                         <Link href="/privacidade" className="whitespace-nowrap transition-colors hover:text-featured-fg">{labels.privacy}</Link>
                         <Link href="/termos" className="whitespace-nowrap transition-colors hover:text-featured-fg">{labels.terms}</Link>
-                        <span className="whitespace-nowrap">{labels.madeWith}</span>
                     </div>
                 </div>
             </div>
