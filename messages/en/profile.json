@@ -410,6 +410,8 @@
     "marcoTipoEstreia": "Debut",
     "marcoTipoFase": "Era",
     "marcoTipoObra": "Work",
+    "premioVencedor": "Winner",
+    "premioIndicado": "Nominated",
     "marcoTipoPremio": "Award",
     "marcosStatAnos": "{count, plural, one {# year of career} other {# years of career}}",
     "marcosStatObras": "{count, plural, one {# work} other {# works}}",
