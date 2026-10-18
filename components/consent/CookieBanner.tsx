@@ -70,15 +70,16 @@ export function CookieBanner() {
     // atraso do script.
     return (
         <div className="relative z-2147483647">
-            <div aria-hidden="true" className="fixed inset-0 z-450 bg-black/55 backdrop-blur-[2px]" />
+            {/* No celular o fundo não escurece: o conteúdo continua visível atrás da folha inferior. A partir de sm o escurecimento fica como estava. */}
+            <div aria-hidden="true" className="fixed inset-0 z-450 hidden bg-black/55 backdrop-blur-[2px] sm:block" />
             <div
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="consentimento-titulo"
                 aria-describedby="consentimento-texto"
-                className="fixed inset-x-0 top-1/2 z-450 -translate-y-1/2 p-3 sm:top-auto sm:bottom-6 sm:translate-y-0 sm:p-0"
+                className="fixed inset-x-0 bottom-0 z-450 p-2 sm:bottom-6 sm:p-0"
             >
-                <div className="mx-auto max-w-xl rounded-2xl border border-border bg-surface p-5 shadow-2xl sm:p-7">
+                <div className="mx-auto max-w-xl rounded-2xl border border-border bg-surface p-4 shadow-2xl sm:p-7">
                     <p id="consentimento-titulo" className="text-[18px] sm:text-[20px] font-black leading-tight tracking-[-0.01em] text-foreground">
                         Antes de continuar: sua escolha sobre cookies
                     </p>
