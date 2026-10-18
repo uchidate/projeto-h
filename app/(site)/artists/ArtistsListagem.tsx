@@ -93,7 +93,7 @@ export async function ArtistsListagem({ searchParams }: { searchParams: SearchPa
     const grupos = Object.fromEntries((await getGroupsByIds(idsDeGrupo)).map(g => [g.id, stripHtml(g.title.rendered)]))
 
     const shopProducts = unfiltered && page === 1
-        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:artistas')
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'listagem:artistas')
         : []
 
     return (

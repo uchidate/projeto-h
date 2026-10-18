@@ -40,6 +40,9 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
     const type    = typeof sp.type     === 'string' ? sp.type     : undefined
     const year    = typeof sp.year     === 'string' ? Number(sp.year) || undefined : undefined
 
+    // Guia de dorama/filme/série pede comida e K-beauty; os demais, itens de K-pop.
+    const tipoVitrine = /dorama|drama|filme|serie|netflix|novela|romance|thriller|terror|comedia|acao/.test(slug) ? 'drama' : 'kpop'
+    const shopProducts = await getVitrineGeral(`guia:${slug}`, 6, tipoVitrine)
     const [relatedHubs, result, { items: blogPosts }, genres] = await Promise.all([
         getRelatedHubs(hub),
         getHubItems(hub, { page, genre, platform, network, type, year }),
@@ -49,7 +52,6 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
     // "Comece por aqui": só na primeira página, sem filtro ativo. Sai da própria página de resultados,
     // mantendo a ordem de tendência e exigindo nota decente. Não reordena por nota: acf.rating é o
     // vote_average do TMDB sem mínimo de votos, e títulos com poucos votos chegam a 9,7.
-    const shopProducts = await getVitrineGeral(`guia:${slug}`, 6)
     const semFiltro = page === 1 && !genre && !platform && !network && !type && !year
     const destaques = result.kind === 'productions' && semFiltro
         ? result.items

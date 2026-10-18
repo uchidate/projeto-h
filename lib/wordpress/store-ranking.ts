@@ -43,7 +43,7 @@ function scoreClique(produto: StoreProduct, contexto?: string): number {
 }
 
 /**
- * Ordem de exibição dentro de uma prateleira: destaque > desconto > CTR
+ * Ordem de exibição dentro de uma prateleira: com preço > destaque > desconto > CTR
  * recente (Umami, via `data/click-ranking.json`) > posição manual.
  *
  * `contexto` deixa o CTR responder "o que converte NESTA vitrine" (ex.:
@@ -53,6 +53,10 @@ function scoreClique(produto: StoreProduct, contexto?: string): number {
  */
 export function ordenarPrateleira(produtos: StoreProduct[], contexto?: string): StoreProduct[] {
     return [...produtos].sort((a, b) => {
+        // Sem preço o cartão converte pior: vai para o fim, mesmo sendo destaque.
+        const precoA = a.acf.price ? 1 : 0
+        const precoB = b.acf.price ? 1 : 0
+        if (precoA !== precoB) return precoB - precoA
         const destaqueA = a.acf.featured ? 1 : 0
         const destaqueB = b.acf.featured ? 1 : 0
         if (destaqueA !== destaqueB) return destaqueB - destaqueA

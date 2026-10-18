@@ -97,7 +97,7 @@ export async function ProductionsListagem({ searchParams }: { searchParams: Sear
     let plataformasTop: typeof platforms = []
     let generosTop: { slug: string; nome: string; fotos: typeof productionsResult.items }[] = []
     const shopProducts = inicio
-        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:producoes')
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8, 'drama'), 'listagem:producoes')
         : []
     if (inicio) {
         plataformasTop = [...platforms].sort((a, b) => b.count - a.count).slice(0, 6)

@@ -130,9 +130,11 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     // Nem artista nem grupo têm produto próprio ainda: cai na vitrine geral
     // em destaque em vez de esconder o bloco — a loja precisa aparecer em
     // toda página, não só onde já existe cobertura própria de produto.
+    // Quem é de grupo ou cantor recebe itens de K-pop; ator/apresentador, comida e K-beauty de dorama.
+    const tipoVitrine = !connectionGroup && (primaryRole === 'actor' || primaryRole === 'host') ? 'drama' : 'kpop'
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0 && groupShopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio
-        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'artista:fallback')
+        ? ordenarPrateleira(await getFeaturedStoreProducts(8, tipoVitrine), 'artista:fallback')
         : []
 
     const relatedHubs = getHubsForArtist(artist)

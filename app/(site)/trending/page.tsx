@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 }
 
 export default async function TrendingPage() {
-    const shopProducts = await getVitrineGeral('trending', 6)
+    const shopProducts = await getVitrineGeral('trending', 6, 'kpop')
     const [streamingArtists, trendingArtists, trendingGroups] = await Promise.all([
         getStreamingArtists(24),
         getTrendingArtists(24),
