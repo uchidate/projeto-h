@@ -138,7 +138,7 @@ async function HeroProduction({ production, locale }: { production: WPProduction
                     {/* A imagem inteira leva à ficha; o que fica sobre ela é informação que ajuda a decidir
                         (tipo, onde assistir, trailer) e não repete o título, que está no painel ao lado. */}
                     <Link href={destino} aria-label={title} className="absolute inset-0" />
-                    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/80 to-transparent" />
+                    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[70%] bg-linear-to-t from-black/90 via-black/55 to-transparent" />
                     <span className="pointer-events-none absolute left-3 top-3 bg-black/60 px-2.5 py-1 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white backdrop-blur-sm sm:left-4 sm:top-4">
                         {[acf.type === 'movie' ? t('tipoFilme') : t('tipoSerie'), acf.year].filter(Boolean).join(' · ')}
                     </span>
@@ -148,13 +148,42 @@ async function HeroProduction({ production, locale }: { production: WPProduction
                             <Play size={14} fill="currentColor" /> {t('trailer')}
                         </Link>
                     )}
-                    {plataformas.length > 0 && (
-                        <p className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-wrap items-center gap-2 sm:inset-x-4 sm:bottom-4">
-                            <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-white/70">{t('disponivelEm')}</span>
-                            {plataformas.map(nome => (
-                                <span key={nome} className="border border-white/40 bg-black/40 px-2.5 py-1 text-[12px] font-bold text-white backdrop-blur-sm">{nome}</span>
-                            ))}
-                        </p>
+                    {(plataformas.length > 0 || elenco.length > 0) && (
+                        <div className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-col gap-3 sm:inset-x-4 sm:bottom-4">
+                            {plataformas.length > 0 && (
+                                <p className="flex flex-wrap items-center gap-2">
+                                    <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-white/70">{t('disponivelEm')}</span>
+                                    {plataformas.map(nome => (
+                                        <span key={nome} className="border border-white/40 bg-black/40 px-2.5 py-1 text-[12px] font-bold text-white backdrop-blur-sm">{nome}</span>
+                                    ))}
+                                </p>
+                            )}
+                            {elenco.length > 0 && (
+                                <div className="pointer-events-auto relative z-10">
+                                    <p className="mb-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white/80">{t('elenco')}</p>
+                                    <ul className="flex items-start gap-3 sm:gap-5">
+                                        {elenco.map(a => {
+                                            const nome = stripHtml(a.title.rendered)
+                                            const foto = getWPImage(a._embedded, a.featured_image_url)
+                                            return (
+                                                <li key={a.id} className="w-[68px] min-w-0 sm:w-[92px]">
+                                                    <Link href={rota('artist', { slug: a.slug }, locale)} title={nome} className="group/ator flex flex-col items-center gap-1.5 text-center">
+                                                        <span className="relative block h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-white bg-surface shadow-[0_4px_14px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover/ator:scale-110 group-hover/ator:border-accent motion-reduce:transition-none sm:h-[68px] sm:w-[68px]">
+                                                            {foto ? (
+                                                                <Image src={foto.src} alt="" fill sizes="68px" className="object-cover object-top" />
+                                                            ) : (
+                                                                <span className="flex h-full w-full items-center justify-center text-[18px] font-black text-muted">{nome[0]}</span>
+                                                            )}
+                                                        </span>
+                                                        <span className="line-clamp-2 w-full wrap-anywhere text-[11px] font-bold leading-tight text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.9)] transition-colors group-hover/ator:text-accent sm:text-[12px]">{nome}</span>
+                                                    </Link>
+                                                </li>
+                                            )
+                                        })}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
                     )}
                 </div>
             </div>
@@ -170,32 +199,7 @@ async function HeroProduction({ production, locale }: { production: WPProduction
                 </Link>
                 {acf.original_title && <p className="mt-2 break-keep text-[15px] font-bold text-accent">{acf.original_title}</p>}
                 {meta && <p className="mt-3 text-[13px] text-muted">{meta}</p>}
-                {sinopse && <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.65] text-foreground/65 line-clamp-3 lg:text-[15px]">{sinopse}</p>}
-                {elenco.length > 0 && (
-                    <div className="mt-5 pb-4">
-                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('elenco')}</p>
-                        <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-3">
-                            {elenco.map(a => {
-                                const nome = stripHtml(a.title.rendered)
-                                const foto = getWPImage(a._embedded, a.featured_image_url)
-                                return (
-                                    <li key={a.id} className="min-w-0">
-                                        <Link href={rota('artist', { slug: a.slug }, locale)} className="group/ator flex items-center gap-2.5">
-                                            <span className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-surface">
-                                                {foto ? (
-                                                    <Image src={foto.src} alt="" fill sizes="40px" className="object-cover object-top" />
-                                                ) : (
-                                                    <span className="flex h-full w-full items-center justify-center text-[14px] font-black text-muted">{nome[0]}</span>
-                                                )}
-                                            </span>
-                                            <span className="max-w-[96px] truncate text-[13px] font-bold text-foreground transition-colors group-hover/ator:text-accent">{nome}</span>
-                                        </Link>
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </div>
-                )}
+                {sinopse && <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.65] text-foreground/65 line-clamp-4 lg:text-[15px]">{sinopse}</p>}
                 <div className="mt-auto flex items-center justify-end border-t border-border pt-4 lg:pt-5">
                     <Link href={destino}
                         className="inline-flex shrink-0 items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-accent-a11y/90">
