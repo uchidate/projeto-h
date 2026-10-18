@@ -218,8 +218,8 @@ export function ArtistFichaC({
                                 const primario = 'touch-target inline-flex h-11 min-w-0 flex-1 items-center justify-center bg-accent px-3 text-[14px] font-extrabold text-[#0d0b0f] hover:opacity-90 sm:h-12 sm:flex-none sm:px-7 sm:text-[15px]'
                                 const secundario = 'touch-target inline-flex h-11 min-w-0 flex-1 items-center justify-center border border-border-strong px-3 text-[14px] font-semibold hover:border-accent/60 sm:h-12 sm:flex-none sm:px-6 sm:text-[15px]'
                                 const ouvir = (estilo: string) => temMusica && <a href="#musica" className={estilo}>{estilo === primario ? '▶ ' : ''}{t('listenNow')}</a>
-                                // No celular o rótulo encurta para a 1ª palavra ("Assistir obras" -> "Assistir"), para os três botões caberem numa linha.
-                                const assistir = (estilo: string) => productions.length > 0 && <a href="#obras" className={estilo}>{estilo === primario ? '▶ ' : ''}<span className="sm:hidden">{t('watchWorks').split(' ')[0]}</span><span className="max-sm:hidden">{t('watchWorks')}</span></a>
+                                // No celular o rótulo encurta ("Ver obras" -> "Obras"), para os três botões caberem numa linha.
+                                const assistir = (estilo: string) => productions.length > 0 && <a href="#obras" className={estilo}><span className="sm:hidden">{t('worksShort')}</span><span className="max-sm:hidden">{t('watchWorks')}</span></a>
                                 return obrasPrimeiro ? <>{assistir(primario)}{ouvir(secundario)}</> : <>{ouvir(primario)}{assistir(secundario)}</>
                             })()}
                             <ContentStateButton objectId={artist.id} objectType="artist" label={t('follow')} activeLabel={tp('ui.following')} variant="outline" compactMobile />
@@ -426,7 +426,7 @@ export function ArtistFichaC({
                                     <span aria-hidden className="absolute right-2.5 -top-1.5 text-[88px] font-extrabold leading-none text-white/15 sm:text-[120px]">{String(i + 1).padStart(2, '0')}</span>
                                     <span className={`${KICKER} block text-[10px] sm:text-[11px]`} style={{ color: accent }}>{[anoDe(p) || null].filter(Boolean).join(' · ')}</span>
                                     <span className={`mt-1.5 block ${SERIF} text-[19px] font-bold leading-[1.1] text-white sm:text-[22px]`}>{tituloDe(p)}</span>
-                                    <span className="mt-2 block text-[12px] text-white/80">▶ {t('watch')}</span>
+                                    <span className="mt-2 block text-[12px] text-white/80">{t('watch')}</span>
                                 </Link>
                             </li>
                         ))}
