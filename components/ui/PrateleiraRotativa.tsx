@@ -36,7 +36,7 @@ function garantirLoja(selecionados: StoreProduct[], produtos: StoreProduct[], lo
     return [...selecionados.slice(0, -1), candidato]
 }
 
-export function PrateleiraRotativa({ produtos, contexto, quantidade = 4 }: Props) {
+export function PrateleiraRotativa({ produtos, contexto, quantidade = 5 }: Props) {
     const [exibidos, setExibidos] = useState(() => garantirLoja(produtos.slice(0, quantidade), produtos, 'shopee'))
 
     useEffect(() => {
@@ -67,8 +67,9 @@ export function PrateleiraRotativa({ produtos, contexto, quantidade = 4 }: Props
     }, [])
 
     return (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {exibidos.map(p => <StoreCard key={p.id} product={p} contexto={contexto} />)}
+        // 5 colunas no desktop (cartões ~250px, não 310px); o 5º some abaixo de lg para o celular e o tablet fecharem em 4.
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+            {exibidos.map((p, i) => <div key={p.id} className={`[&>*]:h-full ${i === 4 ? 'max-lg:hidden' : ''}`}><StoreCard product={p} contexto={contexto} /></div>)}
         </div>
     )
 }
