@@ -228,19 +228,24 @@ export function ArtistFichaC({
                         <aside aria-label={t('heroHighlights')} className="hidden self-end border-l-[3px] bg-background/40 p-5 backdrop-blur-sm xl:col-start-3 xl:row-span-2 xl:row-start-1 xl:flex xl:flex-col xl:gap-5" style={{ borderColor: accent }}>
                             <p className={`${KICKER} text-muted`}>{t('heroHighlights')}</p>
                             {destaques[0] && (
-                                <Link href={`/productions/${destaques[0].p.slug}`} className="group flex items-center gap-4">
-                                    <Image src={destaques[0].img!.src} alt="" width={56} height={80} className="h-20 w-14 shrink-0 object-cover" />
+                                <Link href={`/productions/${destaques[0].p.slug}`} className="group flex items-center gap-5">
+                                    <Image src={destaques[0].img!.src} alt="" width={72} height={104} sizes="72px" className="h-[104px] w-[72px] shrink-0 object-cover transition-transform duration-300 group-hover:-translate-y-0.5" style={{ boxShadow: `5px 5px 0 ${accent}, 0 14px 30px rgba(0,0,0,.5)` }} />
                                     <span className="min-w-0">
-                                        <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{t('heroTopWork')}</span>
-                                        <span className={`mt-1 block ${SERIF} text-[18px] font-bold leading-tight group-hover:underline`}>{tituloDe(destaques[0].p)}</span>
-                                        <span className="mt-1 block text-[12px] text-muted">{[anoDe(destaques[0].p) || null, nota(destaques[0].p) > 0 ? `★ ${nota(destaques[0].p).toFixed(1)}` : null].filter(Boolean).join(' · ')}</span>
+                                        <span className="flex items-center gap-1.5 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
+                                            <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />{t('heroTopWork')}
+                                        </span>
+                                        <span className={`mt-1.5 block ${SERIF} text-[22px] font-bold italic leading-[1.08] group-hover:underline`}>{tituloDe(destaques[0].p)}</span>
+                                        {anoDe(destaques[0].p) > 0 && <span className="mt-1.5 block font-mono text-[12px] text-muted">{anoDe(destaques[0].p)}</span>}
                                     </span>
                                 </Link>
                             )}
                             {awards[0] && (
-                                <div>
-                                    <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{t('heroAward')}</span>
-                                    <span className="mt-1 block text-[14px] leading-snug text-foreground">{[awards[0].title, awards[0].category].filter(Boolean).join(' · ')}{awards[0].year ? ` (${awards[0].year})` : ''}</span>
+                                <div className="flex items-start gap-3 p-3" style={{ background: 'color-mix(in srgb, #f5b301 14%, transparent)', boxShadow: 'inset 3px 0 0 #f5b301' }}>
+                                    <span aria-hidden className="text-[18px] leading-none">🏆</span>
+                                    <span className="min-w-0">
+                                        <span className="block font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('heroAward')}</span>
+                                        <span className="mt-1 block text-[14px] font-semibold leading-snug text-foreground">{[awards[0].title, awards[0].category].filter(Boolean).join(' · ')}{awards[0].year ? ` (${awards[0].year})` : ''}</span>
+                                    </span>
                                 </div>
                             )}
                         </aside>

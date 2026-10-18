@@ -100,23 +100,31 @@ export function MapaConexoes({ centro: centroInicial, nos: nosIniciais, accent, 
                             <Link href={n.href} onClick={e => recentrar(e, n, i + 1)}
                                 className="mapa-no pointer-events-auto absolute block -translate-x-1/2 -translate-y-1/2 outline-offset-4"
                                 style={{ left: `${x}%`, top: `${y}%` }}>
-                                <span className={`relative flex items-center justify-center overflow-hidden border-2 bg-surface text-[3.4cqw] font-bold transition-transform duration-200 group-hover/no:scale-110 ${n.tipo === 'obra' ? 'h-[12cqw] w-[8.5cqw] rounded-md' : 'h-[10cqw] w-[10cqw] rounded-full'}`}
-                                    style={{ borderColor: n.tipo === 'grupo' ? accent : 'var(--color-border)' }}>
+                                <span className={`relative flex items-center justify-center overflow-hidden bg-surface text-[3.4cqw] font-bold transition-transform duration-200 group-hover/no:scale-110 ${n.tipo === 'obra' ? 'h-[12cqw] w-[8.5cqw]' : 'h-[10cqw] w-[10cqw] rounded-full border-2'}`}
+                                    style={n.tipo === 'obra'
+                                        ? { boxShadow: `0.8cqw 0.8cqw 0 ${accent}, 0 1.2cqw 3cqw rgba(0,0,0,.45)` }
+                                        : { borderColor: n.tipo === 'grupo' ? accent : 'var(--color-border)', boxShadow: n.tipo === 'grupo' ? `0 0 0 0.7cqw color-mix(in srgb, ${accent} 22%, transparent)` : undefined }}>
                                     {n.img
                                         ? <Image src={n.img} alt="" fill sizes="96px" className="object-cover object-top" />
                                         : n.label.charAt(0)}
                                 </span>
-                                <span className="absolute left-1/2 top-full mt-1 line-clamp-2 w-[18cqw] -translate-x-1/2 text-center text-[2.5cqw] font-semibold leading-tight text-muted transition-colors group-hover/no:text-foreground sm:text-[1.9cqw]">
+                                <span className={`absolute left-1/2 top-full line-clamp-2 w-[18cqw] -translate-x-1/2 text-center leading-tight transition-colors ${
+                                    n.tipo === 'obra'
+                                        ? "mt-[1.6cqw] font-[family-name:var(--font-playfair)] text-[2.8cqw] font-bold italic text-foreground sm:text-[2.1cqw]"
+                                        : n.tipo === 'grupo'
+                                            ? 'mx-auto mt-[0.8cqw] w-fit max-w-[18cqw] bg-accent px-[1cqw] py-[0.3cqw] font-mono text-[2.1cqw] font-black uppercase tracking-[0.06em] text-[#0d0b0f] sm:text-[1.6cqw]'
+                                            : 'mt-1 text-[2.5cqw] font-semibold text-muted group-hover/no:text-foreground sm:text-[1.9cqw]'
+                                }`}>
                                     {n.label}
                                 </span>
                             </Link>
                         </div>
                     ))}
                     <div className="absolute left-1/2 top-1/2 flex w-[22cqw] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 text-center">
-                        <span className="relative block h-[17cqw] w-[17cqw] overflow-hidden rounded-full border-[3px] bg-surface" style={{ borderColor: accent }}>
+                        <span className="relative block h-[17cqw] w-[17cqw] overflow-hidden rounded-full border-[3px] bg-surface" style={{ borderColor: accent, boxShadow: `0 0 0 1.4cqw color-mix(in srgb, ${accent} 18%, transparent), 0 2cqw 6cqw rgba(0,0,0,.5)` }}>
                             {centro.img && <Image src={centro.img} alt="" fill sizes="160px" className="object-cover object-top" />}
                         </span>
-                        <span className="text-[3.2cqw] font-black leading-tight text-foreground sm:text-[2.4cqw]">{centro.label}</span>
+                        <span className="mt-[1cqw] font-[family-name:var(--font-playfair)] text-[3.6cqw] font-bold leading-tight text-foreground sm:text-[2.8cqw]">{centro.label}</span>
                     </div>
                 </div>
             </nav>
