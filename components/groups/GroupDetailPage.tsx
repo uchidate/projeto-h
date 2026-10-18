@@ -28,6 +28,7 @@ import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
 import { GroupFichaC } from '@/components/groups/GroupFichaC'
 import { isInterstitial } from '@/components/profiles/ProfileSection'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
+import { LojaDestaque } from '@/components/ui/LojaDestaque'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
 
@@ -153,6 +154,16 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
         relatedPosts.length > 0 && { href: '#ler', label: tC('tabs.ler') },
     ].filter(Boolean) as { href: string; label: string }[]
 
+    const destaqueA = shopProducts[0]
+    const destaqueB = shopProducts[1]
+    const lojaLateral = destaqueA ? (
+        <>
+            <LojaDestaque product={destaqueA} bloco="ficha-grupo-loja-lateral" contexto={`grupo:${group.slug}:lateral`}
+                title={shopFallback ? 'Achado da loja' : `Para quem curte ${name}`} />
+            {destaqueB && <LojaDestaque product={destaqueB} bloco="ficha-grupo-loja-lateral-2" contexto={`grupo:${group.slug}:lateral2`} title="Mais da loja" />}
+        </>
+    ) : null
+
     return (
         <>
             <div hidden data-variante="grupo-c" />
@@ -215,7 +226,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                 group={group} model={model} activeMembers={activeMembers} formerMembers={formerMembers} formerSemFicha={formerSemFicha} memberPositions={memberPositions}
                 relatedGroups={relatedGroups} relatedPosts={relatedPosts} discography={discography} soloReleases={soloReleases}
                 agencyName={agencyName} generation={generation} magra={magra}
-                nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />}
+                lojaLateral={lojaLateral} nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={group.id} entitySlug={group.slug} entityType="group" entityName={name} />}
             />
             <ShopRelatedSection bloco="ficha-grupo-loja" title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`} products={shopProducts}
                 href={shopFallback ? '/loja' : `/loja/grupo/${group.slug}`} verTudoLabel={shopFallback ? 'Ver toda a loja' : `Ver tudo de ${name}`}

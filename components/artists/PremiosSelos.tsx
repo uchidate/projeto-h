@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Award, Medal } from 'lucide-react'
 import type { ArtistAward } from '@/lib/profiles/structuredFields'
 
@@ -6,6 +7,8 @@ interface Props {
     kicker: string
     title: string
     labels: { won: string; nominated: string }
+    /** Preenche as células vazias da última fileira (desktop, 3 colunas); não aparece quando a grade fecha certinha. */
+    preencher?: ReactNode
 }
 
 /** Dourado para quem venceu, azul-acinzentado para indicação: a cor diz o resultado antes da leitura. */
@@ -26,7 +29,7 @@ export function foiIndicacao(a: ArtistAward): boolean {
  * Prêmios em selos: ano grande, resultado em cor (vencedor/indicado) e o evento
  * como etiqueta. Só aparece quando o artista tem prêmio cadastrado.
  */
-export function PremiosSelos({ awards, kicker, title, labels }: Props) {
+export function PremiosSelos({ awards, kicker, title, labels, preencher }: Props) {
     if (awards.length === 0) return null
     const ordenados = [...awards].sort((a, b) => Number(b.year) - Number(a.year) || 0)
     return (
@@ -56,6 +59,9 @@ export function PremiosSelos({ awards, kicker, title, labels }: Props) {
                             </li>
                         )
                     })}
+                {preencher && ordenados.length % 3 !== 0 && (
+                        <li className={`hidden lg:block ${ordenados.length % 3 === 1 ? 'col-span-2' : ''}`}>{preencher}</li>
+                    )}
                 </ul>
             </div>
         </section>

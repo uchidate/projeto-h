@@ -37,6 +37,8 @@ interface Props {
     lojaMeio?: ReactNode
     /** Produtos em destaque na coluna lateral da visão geral (desktop), abaixo da ficha rápida. */
     lojaLateral?: ReactNode
+    /** Produto que ocupa a célula vazia da grade de prêmios (desktop). */
+    lojaPremios?: ReactNode
     /** Blocos originais já renderizados, por id: entram como estão onde a ficha C não tem versão própria. */
     nodes: Record<string, ReactNode>
     /** Mini-quiz da entidade, logo depois da visão geral. */
@@ -96,7 +98,7 @@ function fasesDe<T>(itens: T[]): T[][] {
  */
 export function ArtistFichaC({
     artist, name, image, roleLabels, groups, agency, productions, relatedPosts, relatedArtists, discography,
-    model, magra, nodes, resto, titulos, quiz, lojaMeio, lojaLateral,
+    model, magra, nodes, resto, titulos, quiz, lojaMeio, lojaLateral, lojaPremios,
 }: Props) {
     const accent = ROSA
     const locale = useLocale()
@@ -365,7 +367,7 @@ export function ArtistFichaC({
                 </section>
             )}
 
-            <PremiosSelos awards={awards} kicker={t('marcoTipoPremio')} title={titulos.awards} labels={{ won: t('premioVencedor'), nominated: t('premioIndicado') }} />
+            <PremiosSelos awards={awards} kicker={t('marcoTipoPremio')} title={titulos.awards} labels={{ won: t('premioVencedor'), nominated: t('premioIndicado') }} preencher={lojaPremios} />
 
             {/* Carreira em fases (a linha do tempo completa fica recolhida logo abaixo) */}
             {fases.length > 0 && (

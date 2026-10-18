@@ -204,6 +204,11 @@ export function ArtistDetailPage({
         </>
     ) : null
 
+    const destaquePremios = poolLoja[5] ?? poolLoja[2]
+    const lojaPremios = destaquePremios ? (
+        <LojaDestaque product={destaquePremios} bloco="ficha-artista-loja-premios" contexto={`artista:${artist.slug}:premios`} title="Comemore com um achado" />
+    ) : null
+
     const shopSection = (
         <ShopRelatedSection bloco="ficha-artista-loja"
             title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`}
@@ -264,7 +269,7 @@ export function ArtistDetailPage({
                 artist={artist} name={name} image={image} roleLabels={roleLabels}
                 groups={groups} agency={agency} productions={productions} relatedPosts={relatedPosts}
                 relatedArtists={relatedArtists} discography={discography} model={model} magra={magra}
-                lojaMeio={lojaMeio} lojaLateral={lojaLateral} nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />}
+                lojaMeio={lojaMeio} lojaLateral={lojaLateral} lojaPremios={lojaPremios} nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />}
                 titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
             />
             {shopSection}
