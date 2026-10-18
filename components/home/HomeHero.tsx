@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { Play } from 'lucide-react'
 import type { WPPost, WPProduction } from '@/lib/wordpress/types'
 import { getProductionBySlug } from '@/lib/wordpress/productions'
+import { getArtists } from '@/lib/wordpress/artists'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
 import { homeCatName } from '@/lib/home/catStyle'
 
@@ -107,6 +108,14 @@ async function HeroProduction({ production, locale }: { production: WPProduction
     // A listagem não traz o texto; a sinopse vem da ficha (cache de 30 min). Sem ela, o painel segue sem o parágrafo.
     const ficha = await getProductionBySlug(production.slug).catch(() => null)
     const sinopse = stripHtml(ficha?.content?.rendered ?? '').slice(0, 220)
+    // Elenco principal: até 4 artistas com ficha, na ordem do cadastro da produção.
+    const slugsElenco = (ficha?.production_cast?.length ? ficha.production_cast.map(c => c.slug) : ficha?.artist_slugs ?? []).slice(0, 4)
+    const artistas = slugsElenco.length
+        ? await getArtists({ slug: slugsElenco.join(','), perPage: slugsElenco.length }).then(r => r.items).catch(() => [])
+        : []
+    const elenco = slugsElenco
+        .map(slug => artistas.find(a => a.slug === slug))
+        .filter((a): a is NonNullable<typeof a> => a !== undefined)
     const plataformas = (acf.platforms ?? (acf.platform ? [acf.platform] : [])).filter(Boolean).slice(0, 3)
     const trailer = !!acf.trailer_url
     const meta = [acf.year, acf.genre, acf.episodes ? `${acf.episodes} ep.` : null, acf.network].filter(Boolean).join(' · ')
@@ -162,6 +171,31 @@ async function HeroProduction({ production, locale }: { production: WPProduction
                 {acf.original_title && <p className="mt-2 break-keep text-[15px] font-bold text-accent">{acf.original_title}</p>}
                 {meta && <p className="mt-3 text-[13px] text-muted">{meta}</p>}
                 {sinopse && <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.65] text-foreground/65 line-clamp-3 lg:text-[15px]">{sinopse}</p>}
+                {elenco.length > 0 && (
+                    <div className="mt-5 pb-4">
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('elenco')}</p>
+                        <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-3">
+                            {elenco.map(a => {
+                                const nome = stripHtml(a.title.rendered)
+                                const foto = getWPImage(a._embedded, a.featured_image_url)
+                                return (
+                                    <li key={a.id} className="min-w-0">
+                                        <Link href={rota('artist', { slug: a.slug }, locale)} className="group/ator flex items-center gap-2.5">
+                                            <span className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-surface">
+                                                {foto ? (
+                                                    <Image src={foto.src} alt="" fill sizes="40px" className="object-cover object-top" />
+                                                ) : (
+                                                    <span className="flex h-full w-full items-center justify-center text-[14px] font-black text-muted">{nome[0]}</span>
+                                                )}
+                                            </span>
+                                            <span className="max-w-[96px] truncate text-[13px] font-bold text-foreground transition-colors group-hover/ator:text-accent">{nome}</span>
+                                        </Link>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </div>
+                )}
                 <div className="mt-auto flex items-center justify-end border-t border-border pt-4 lg:pt-5">
                     <Link href={destino}
                         className="inline-flex shrink-0 items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-accent-a11y/90">
