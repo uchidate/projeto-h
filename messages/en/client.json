@@ -228,7 +228,6 @@
   },
   "artistCard": {
     "producao": "Production",
-    "musica": "Music",
-    "obra": "Featured"
+    "musica": "Music"
   }
 }
