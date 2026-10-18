@@ -85,15 +85,19 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         rights: layout.rights,
         privacy: layout.privacy,
         terms: layout.terms,
-        madeWith: layout.madeWith,
         home: layout.home.replace('{site}', SITE_NAME),
         nav: layout.footerNav,
         // Só no português: a lista aponta para fichas em PT.
         mostSearched: isDefaultLocale ? 'Mais buscados' : undefined,
         homeHref: isDefaultLocale ? '/' : `/${locale}`,
     }
+    // A loja só existe em português; entra no fim da primeira coluna (Catálogo) se o WordPress ainda não a listar.
+    const comLoja = siteSettings.footerColumns.map((col, i) =>
+        i === 0 && !col.links.some(link => link.href.startsWith('/loja'))
+            ? { ...col, links: [...col.links, { label: 'Loja', href: '/loja' }] }
+            : col)
     const footerColumns = locale === DEFAULT_LOCALE
-        ? siteSettings.footerColumns
+        ? comLoja
         : localizedFooterColumns(locale, messages.entity.footer.catalog, navLabels)
 
     return (
