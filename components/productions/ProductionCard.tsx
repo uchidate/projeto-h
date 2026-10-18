@@ -15,6 +15,22 @@ interface Props {
     genreMap?: Record<number, string>
 }
 
+const SERIF = 'font-[family-name:var(--font-playfair)]'
+
+/** Valores que o WordPress grava no lugar de "sem rede". */
+const SEM_VALOR = /^(none|null|n\/?a|-|—)?$/i
+
+/**
+ * Gancho do cartão de catálogo: os dois primeiros nomes do elenco principal e a rede/plataforma.
+ * Só dados já presentes na listagem; sem elenco não há gancho.
+ */
+export function ganchoProducao(acf: WPProduction['acf'] | undefined): { elenco: string; rede?: string; noAr: boolean } | null {
+    const elenco = String(acf?.main_cast ?? '').split(',').map(n => n.replace(/\s*\([^)]*\)/g, '').trim()).filter(Boolean).slice(0, 2).join(', ')
+    if (!elenco) return null
+    const rede = String(acf?.network ?? '').trim()
+    return { elenco, rede: SEM_VALOR.test(rede) ? undefined : rede, noAr: ['airing', 'ongoing'].includes(String(acf?.status_production)) }
+}
+
 export function ProductionCard({ production, priority, sizes = '(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw', aspectRatio = 'aspect-2/3', variant = 'default', genreMap = {} }: Props) {
     const labels = labelsFor(useLocale())
     const image = getWPImage(production._embedded, production.featured_image_url)
@@ -22,6 +38,7 @@ export function ProductionCard({ production, priority, sizes = '(max-width: 640p
     const acf = production.acf ?? {}
 
     if (variant === 'catalog') {
+        const gancho = ganchoProducao(acf)
         const firstGenre = (production.production_genre ?? [])[0]
         return (
             <Link href={`/productions/${production.slug}`} className="group flex flex-col">
@@ -38,13 +55,26 @@ export function ProductionCard({ production, priority, sizes = '(max-width: 640p
                             <Star size={9} fill="currentColor" />{Number(acf.rating).toFixed(1)}
                         </div>
                     )}
-                    {acf.type && (
-                        <div className="absolute left-2 top-2 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 text-[10px] font-bold text-white/80 backdrop-blur-xs">
-                            {acf.type === 'movie' ? <Film size={10} /> : <Tv size={10} />}{labels.productionType(acf.type)}
+                    <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
+                        {acf.type && (
+                            <div className="flex items-center gap-1 bg-black/70 px-1.5 py-0.5 text-[10px] font-bold text-white/80 backdrop-blur-xs">
+                                {acf.type === 'movie' ? <Film size={10} /> : <Tv size={10} />}{labels.productionType(acf.type)}
+                            </div>
+                        )}
+                        {acf.age_rating && (
+                            <div className="rounded-sm bg-foreground/90 px-1 py-0.5 text-[9px] font-black text-background">{acf.age_rating}</div>
+                        )}
+                    </div>
+                    {gancho && (
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 via-55% to-transparent px-2.5 pb-2.5 pt-10 text-white">
+                            {(gancho.rede || gancho.noAr) && (
+                                <span className="flex items-center gap-1.5 whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
+                                    <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
+                                    {[gancho.rede, gancho.noAr ? labels.productionStatus('airing') : undefined].filter(Boolean).join(' · ')}
+                                </span>
+                            )}
+                            <span className={`mt-1 line-clamp-2 block ${SERIF} text-[14px] font-bold italic leading-[1.1] [text-shadow:0_0_8px_rgba(0,0,0,.6)]`}>{gancho.elenco}</span>
                         </div>
-                    )}
-                    {acf.age_rating && (
-                        <div className="absolute bottom-2 left-2 rounded-sm bg-foreground/90 px-1 py-0.5 text-[9px] font-black text-background">{acf.age_rating}</div>
                     )}
                 </div>
                 <h2 className="line-clamp-2 text-[13px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent">{title}</h2>
