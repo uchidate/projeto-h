@@ -16,6 +16,8 @@ interface Shelf {
 interface Props extends Shelf {
     /** Segunda prateleira dentro da mesma faixa (ex.: produtos do grupo na página do integrante). Evita duas faixas idênticas grudadas. */
     secondary?: Shelf
+    /** Nome do bloco para a medição (`data-bloco`): quem vê a vitrine e quem clica, por página. */
+    bloco?: string
 }
 
 function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo na loja', contexto = 'loja' }: Shelf) {
@@ -32,7 +34,7 @@ function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo 
     )
 }
 
-export function ShopRelatedSection({ title, products, href = '/loja', verTudoLabel = 'Ver tudo na loja', secondary }: Props) {
+export function ShopRelatedSection({ title, products, href = '/loja', verTudoLabel = 'Ver tudo na loja', secondary, bloco }: Props) {
     const hasPrimary = products.length > 0
     const hasSecondary = !!secondary && secondary.products.length > 0
     if (!hasPrimary && !hasSecondary) return null
@@ -42,7 +44,7 @@ export function ShopRelatedSection({ title, products, href = '/loja', verTudoLab
     const extraShelf = hasPrimary ? (hasSecondary ? secondary : undefined) : undefined
 
     return (
-        <div className="border-y border-accent/20 bg-accent-a11y/5 py-10">
+        <div data-bloco={bloco} className="border-y border-accent/20 bg-accent-a11y/5 py-10">
             <div className="page-wrap">
                 <p className="mb-1 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">
                     🛍️ Shop <span className="font-sans normal-case tracking-normal text-foreground-subtle">· links de afiliado</span>

@@ -808,7 +808,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                             </BlogMobileReadMore>
                         </article>
 
-                        <ShopRelatedSection title="Produtos relacionados" products={shopProducts} />
+                        <ShopRelatedSection bloco="artigo-loja" title="Produtos relacionados" products={shopProducts} />
 
                         {/* Sugerido para você — logo abaixo do botão SAIBA MAIS, vira sticky ao subir */}
                         {relatedPosts[0] && (

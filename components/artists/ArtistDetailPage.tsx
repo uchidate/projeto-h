@@ -182,7 +182,7 @@ export function ArtistDetailPage({
         ].filter(Boolean) as { href: string; label: string }[])
 
     const shopSection = (
-        <ShopRelatedSection
+        <ShopRelatedSection bloco="ficha-artista-loja"
             title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`}
             products={shopProducts}
             href={shopFallback ? '/loja' : `/loja/artista/${artist.slug}`}
