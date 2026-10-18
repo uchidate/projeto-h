@@ -206,6 +206,9 @@ export type WPArtist = {
         essencia_por_que_importa?: string
         essencia_gravadora?: string
         essencia_obra_chave?: string
+        /** Gancho do cartão de /artists: título curto da obra e seu tipo. */
+        card_destaque?: string
+        card_destaque_tipo?: 'producao' | 'musica' | ''
         essencia_marca?: string
         essencia_porta_entrada?: string
         essencia_tags?: string[]

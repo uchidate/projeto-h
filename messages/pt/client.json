@@ -227,6 +227,8 @@
     }
   },
   "artistCard": {
-    "keyWork": "Obra-chave"
+    "producao": "Produção",
+    "musica": "Música",
+    "obra": "Obra-chave"
   }
 }

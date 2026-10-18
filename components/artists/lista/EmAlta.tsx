@@ -4,7 +4,7 @@ import { useLocale } from 'next-intl'
 import type { WPArtist } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { labelsFor } from '@/lib/i18n/labels'
-import { GanchoArtista, grupoDe, obraChaveDe } from '@/components/artists/lista/GanchoArtista'
+import { GanchoArtista, grupoDe, destaqueDe } from '@/components/artists/lista/GanchoArtista'
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
 
@@ -30,7 +30,7 @@ export function EmAlta({ artistas, verTodos, grupos = {} }: { artistas: WPArtist
                                     {foto && <Image src={foto.src} alt={foto.alt || nome} fill priority={i < 3} sizes="(max-width: 640px) 150px, 16vw" className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" />}
                                     <span aria-hidden className="absolute inset-x-0 top-0 h-1/3 bg-linear-to-b from-black/60 to-transparent" />
                                     <span aria-hidden className={`absolute left-2 top-1 ${SERIF} text-[44px] font-bold leading-none text-transparent sm:left-3 sm:text-[58px]`} style={{ WebkitTextStroke: '1.5px rgba(255,255,255,.95)' }}>{String(i + 1).padStart(2, '0')}</span>
-                                    <GanchoArtista obraChave={obraChaveDe(a)} grupoNome={grupoDe(a, grupos)} />
+                                    <GanchoArtista destaque={destaqueDe(a)} grupoNome={grupoDe(a, grupos)} />
                                 </span>
                                 <span className="mt-2.5 block truncate text-[14px] font-bold sm:mt-3 sm:text-[16px]">{nome}</span>
                                 {papel && <span className="mt-0.5 block truncate font-mono text-[10px] uppercase tracking-[0.08em] text-muted sm:text-[11px]">{papel}</span>}

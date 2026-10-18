@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { WPArtist } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
-import { GanchoArtista, obraChaveDe } from '@/components/artists/lista/GanchoArtista'
+import { GanchoArtista, destaqueDe } from '@/components/artists/lista/GanchoArtista'
 
 interface Props {
     artist: WPArtist
@@ -50,7 +50,7 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
                             </span>
                         </div>
                     )}
-                    <GanchoArtista obraChave={obraChaveDe(artist)} grupoNome={grupoNome} grupoNoTopo />
+                    <GanchoArtista destaque={destaqueDe(artist)} grupoNome={grupoNome} grupoNoTopo />
                 </div>
                 <span className="mt-2.5 block truncate text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[15px]">{name}</span>
             </Link>
