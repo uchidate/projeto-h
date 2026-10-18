@@ -10,19 +10,7 @@ import {
 } from '@/lib/consent'
 import { trackConsentBannerExibido, trackConsentDecidido } from '@/lib/analytics'
 
-const QUERY_TELA_LARGA = '(min-width: 640px)'
-const temMatchMedia = () => typeof window.matchMedia === 'function'
-const assinarTela = (aviso: () => void) => {
-    if (!temMatchMedia()) return () => {}
-    const mq = window.matchMedia(QUERY_TELA_LARGA)
-    mq.addEventListener('change', aviso)
-    return () => mq.removeEventListener('change', aviso)
-}
-
 export function CookieBanner() {
-    // O fundo escurecido só existe a partir de sm; sem ele a página segue interativa, então só ali o diálogo é modal.
-    const modal = useSyncExternalStore(assinarTela, () => !temMatchMedia() || window.matchMedia(QUERY_TELA_LARGA).matches, () => true)
-
     // Decisão salva e chegada do CMP do Google são estado externo ao React;
     // o componente só lê o snapshot. Ver lib/consent.ts.
     const estado = useSyncExternalStore(subscribeBanner, getBannerState, getServerBannerState)
@@ -86,7 +74,7 @@ export function CookieBanner() {
             <div aria-hidden="true" className="fixed inset-0 z-450 hidden bg-black/55 backdrop-blur-[2px] sm:block" />
             <div
                 role="dialog"
-                aria-modal={modal}
+                aria-modal="true"
                 aria-labelledby="consentimento-titulo"
                 aria-describedby="consentimento-texto"
                 className="fixed inset-x-0 bottom-0 z-450 p-2 sm:bottom-6 sm:p-0"
