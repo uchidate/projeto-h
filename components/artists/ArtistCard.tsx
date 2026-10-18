@@ -30,7 +30,7 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
     const labels = labelsFor(useLocale())
     const image = getWPImage(artist._embedded, artist.featured_image_url)
     const name = stripHtml(artist.title.rendered)
-    const roles = (artist.acf?.roles as string[] | undefined)?.map(labels.role) ?? []
+    const roles = (artist.acf?.roles as string[] | undefined)?.map(r => labels.role(r, artist.acf?.gender)) ?? []
     const isTrending = showTrendingBadge && (artist.acf?.trending_score ?? 0) >= 50
 
     // Diretório: rosto e nome, com um gancho curto sobre a foto (grupo em etiqueta e obra-chave do dossiê em destaque)

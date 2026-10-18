@@ -22,7 +22,7 @@ export function EmAlta({ artistas, verTodos, grupos = {} }: { artistas: WPArtist
                 {artistas.map((a, i) => {
                     const foto = getWPImage(a._embedded, a.featured_image_url)
                     const nome = stripHtml(a.title.rendered)
-                    const papel = (a.acf?.roles as string[] | undefined)?.map(labels.role)[0]
+                    const papel = (a.acf?.roles as string[] | undefined)?.map(r => labels.role(r, a.acf?.gender))[0]
                     return (
                         <li key={a.id} className="w-[150px] shrink-0 sm:w-auto">
                             <Link href={`/artists/${a.slug}`} data-posicao={i + 1} className="group block">

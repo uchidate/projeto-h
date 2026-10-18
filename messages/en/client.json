@@ -126,6 +126,20 @@
       "host": "Host",
       "composer": "Composer"
     },
+    "roleM": {
+      "singer": "Singer",
+      "actor": "Actor",
+      "dancer": "Dancer",
+      "host": "Host",
+      "composer": "Composer"
+    },
+    "roleF": {
+      "singer": "Singer",
+      "actor": "Actor",
+      "dancer": "Dancer",
+      "host": "Host",
+      "composer": "Composer"
+    },
     "ageAtDeath": "Died at {age}",
     "age": "{age} years old"
   },

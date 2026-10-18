@@ -10,7 +10,7 @@ import type { WPArtist } from '@/lib/wordpress/types'
 export type MemberSummary = Pick<WPArtist, 'id' | 'slug' | 'featured_image_url' | 'blood_type'> & {
     title: { rendered: string }
     _embedded?: { 'wp:featuredmedia'?: Array<{ source_url: string; alt_text?: string }> }
-    acf?: Pick<NonNullable<WPArtist['acf']>, 'name_hangul' | 'birth_date' | 'death_date' | 'roles' | 'height'>
+    acf?: Pick<NonNullable<WPArtist['acf']>, 'name_hangul' | 'birth_date' | 'death_date' | 'roles' | 'gender' | 'height'>
 }
 
 export function toMemberSummary(member: WPArtist): MemberSummary {
@@ -23,6 +23,6 @@ export function toMemberSummary(member: WPArtist): MemberSummary {
         featured_image_url: member.featured_image_url,
         blood_type: member.blood_type,
         ...(media ? { _embedded: { 'wp:featuredmedia': [{ source_url: media.source_url, alt_text: media.alt_text }] } } : {}),
-        ...(acf ? { acf: { name_hangul: acf.name_hangul, birth_date: acf.birth_date, death_date: acf.death_date, roles: acf.roles, height: acf.height } } : {}),
+        ...(acf ? { acf: { name_hangul: acf.name_hangul, birth_date: acf.birth_date, death_date: acf.death_date, roles: acf.roles, gender: acf.gender, height: acf.height } } : {}),
     }
 }

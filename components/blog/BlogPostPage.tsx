@@ -33,7 +33,7 @@ import { tituloQuaseIgual } from '@/lib/blog/tituloQuaseIgual'
 import { BlogTextShare } from '@/components/blog/BlogTextShare'
 import { BlogMobileReadMore } from '@/components/blog/BlogMobileReadMore'
 import { BlogDaysUntil } from '@/components/blog/BlogDaysUntil'
-import { ROLE_LABELS } from '@/lib/artists/labels'
+import { labelsFor } from '@/lib/i18n/labels'
 import { FOOD_CATEGORY_LABELS, FOOD_CATEGORY_EMOJI } from '@/lib/wordpress/foods'
 import { COMPANY_INDUSTRY_LABELS, COMPANY_INDUSTRY_EMOJI } from '@/lib/wordpress/companies'
 import { buildArticleModel } from '@/lib/blog/articleModel'
@@ -101,7 +101,7 @@ function renderRelatedPreview(preview: RelatedPreview) {
 }
 
 function addArtistPreview(previews: RelatedPreviewMap, artist: RelatedArtist, keySlug: string) {
-    const roles = (artist.roles ?? []).slice(0, 2).map(role => artistRoleLabel(role, artist.gender))
+    const roles = (artist.roles ?? []).slice(0, 2).map(role => labelsFor('pt').role(role, artist.gender))
     previews[`artists/${keySlug.toLowerCase()}`] = {
         label: 'Artista',
         title: artist.name,
@@ -163,12 +163,6 @@ function buildRelatedPreviewMap(post: WPPost): RelatedPreviewMap {
         }
     })
     return previews
-}
-
-function artistRoleLabel(role: string, gender?: 'male' | 'female' | null) {
-    if (role === 'singer') return gender === 'female' ? 'Cantora' : gender === 'male' ? 'Cantor' : 'Cantor(a)'
-    if (role === 'actor') return gender === 'female' ? 'Atriz' : gender === 'male' ? 'Ator' : 'Ator/Atriz'
-    return ROLE_LABELS[role] ?? role
 }
 
 function headingId(text: string) {

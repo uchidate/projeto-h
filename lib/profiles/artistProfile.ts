@@ -38,7 +38,7 @@ export function buildArtistProfileModel(artist: WPArtist, today = new Date(), lo
     // Falecido: os anos de vida dizem mais do que uma idade congelada solta.
     const heroAgeMeta = buildHeroAgeMeta({ isDeceased, birthYear, deathYear, age }, labels)
     const zodiac = acf.birth_date ? getZodiac(acf.birth_date) : null
-    const roleLabels = (acf.roles ?? []).map(labels.role)
+    const roleLabels = (acf.roles ?? []).map(r => labels.role(r, acf.gender))
     const debutYear = acf.debut_date ? parseAcfDate(acf.debut_date).getUTCFullYear() : null
     const curiosidades = acf.curiosidades ?? []
     const awards = parseArtistAwards(acf.awards)
