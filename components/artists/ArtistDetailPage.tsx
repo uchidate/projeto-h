@@ -29,6 +29,7 @@ import { renderProfileEntries, isInterstitial, CHAVE_DE_ANUNCIO, type ProfileEnt
 import { fichaMagra } from '@/lib/artists/fichaMagra'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
 
@@ -181,6 +182,13 @@ export function ArtistDetailPage({
             relatedPosts.length > 0 && { href: '#ler', label: tC('tabs.ler') },
         ].filter(Boolean) as { href: string; label: string }[])
 
+    const lojaMeio = (
+        <LojaEmLinha bloco="ficha-artista-loja-meio" products={shopProducts.length > 0 ? shopProducts : groupShopProducts}
+            title={shopFallback ? 'Achados da loja' : `Para quem curte ${name}`}
+            href={shopFallback ? '/loja' : `/loja/artista/${artist.slug}`}
+            contexto={shopFallback ? 'artista:fallback:meio' : `artista:${artist.slug}:meio`} />
+    )
+
     const shopSection = (
         <ShopRelatedSection bloco="ficha-artista-loja"
             title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`}
@@ -241,7 +249,7 @@ export function ArtistDetailPage({
                 artist={artist} name={name} image={image} roleLabels={roleLabels}
                 groups={groups} agency={agency} productions={productions} relatedPosts={relatedPosts}
                 relatedArtists={relatedArtists} discography={discography} model={model} magra={magra}
-                nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />}
+                lojaMeio={lojaMeio} nodes={nodesC} resto={restoC} quiz={<QuizFacts entityId={artist.id} entitySlug={artist.slug} entityType="artist" entityName={name} />}
                 titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
             />
             {shopSection}

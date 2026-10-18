@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getProductionBySlug, getSmartRelatedProductions, getProductionGenres } from '@/lib/wordpress/productions'
 import { getArtists } from '@/lib/wordpress/artists'
+import { getVitrineDoElenco } from '@/lib/wordpress/vitrine'
 import { getPosts, getCategories } from '@/lib/wordpress/posts'
 import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
@@ -121,6 +122,10 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         getCategories(),
         getProductionGenres(),
     ])
+    // Maior tráfego do site e sem loja até aqui. A loja só existe em português.
+    const shopProducts = locale === DEFAULT_LOCALE
+        ? await getVitrineDoElenco(castItems.map(a => a.id), `producao:${slug}`)
+        : []
 
     const genreTermMap = Object.fromEntries(allGenreTerms.map(t => [t.id, { name: t.name, slug: t.slug }]))
     const genres = (production.production_genre ?? [])
@@ -153,7 +158,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} />
+            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} />
         </>
     )
 }

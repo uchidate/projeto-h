@@ -5,6 +5,8 @@ import { CalendarPage } from '@/components/features/CalendarPage'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { parseAcfDate, stripHtml, getWPImage } from '@/lib/utils'
 import type { CalendarEvent } from '@/lib/calendario/tipos'
+import { getVitrineGeral } from '@/lib/wordpress/vitrine'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 3600
@@ -130,12 +132,16 @@ export default async function CalendarioPage() {
         } catch { /* skip */ }
     }
 
+    const shopProducts = await getVitrineGeral('calendario', 6)
     events.sort((a, b) => a.daysUntil - b.daysUntil || a.name.localeCompare(b.name))
 
     return (
         <>
             <PageBreadcrumb items={[{ name: 'Calendário', path: '/calendario' }]} />
             <CalendarPage events={events} todayStr={todayStr} />
+            <div className="page-wrap pb-10">
+                <LojaEmLinha bloco="calendario-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="calendario:meio" />
+            </div>
         </>
     )
 }

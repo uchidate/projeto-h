@@ -33,6 +33,8 @@ interface Props {
     discography: DiscographyAlbum[]
     model: ArtistProfileModel
     magra: boolean
+    /** Faixa de loja no meio da ficha (após as obras). */
+    lojaMeio?: ReactNode
     /** Blocos originais já renderizados, por id: entram como estão onde a ficha C não tem versão própria. */
     nodes: Record<string, ReactNode>
     /** Mini-quiz da entidade, logo depois da visão geral. */
@@ -92,7 +94,7 @@ function fasesDe<T>(itens: T[]): T[][] {
  */
 export function ArtistFichaC({
     artist, name, image, roleLabels, groups, agency, productions, relatedPosts, relatedArtists, discography,
-    model, magra, nodes, resto, titulos, quiz,
+    model, magra, nodes, resto, titulos, quiz, lojaMeio,
 }: Props) {
     const accent = ROSA
     const locale = useLocale()
@@ -444,6 +446,8 @@ export function ArtistFichaC({
                     </details>
                 </Sec>
             )}
+
+            {lojaMeio && <div className="page-wrap my-8">{lojaMeio}</div>}
 
             {/* Universo: integrantes do grupo (quando há grupo) ou colegas do mesmo catálogo */}
             {temUniverso && (
