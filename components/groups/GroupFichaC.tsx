@@ -38,6 +38,8 @@ interface Props {
     nodes: Record<string, ReactNode>
     /** Mini-quiz da entidade, antes da música. */
     quiz?: ReactNode
+    /** Produtos na coluna lateral da seção "Quem é" (desktop). */
+    lojaLateral?: ReactNode
     /** Blocos sem lugar na ficha nova; ficam recolhidos, mas no HTML. */
     resto: ReactNode[]
 }
@@ -57,7 +59,7 @@ function Anuncio({ placement, layout = 'content' }: { placement: string; layout?
  * Corpo da página de grupo na proposta "Página de grupo": integrantes primeiro, depois música, carreira,
  * sobre, fandom e leitura. O que a proposta não mostra fica recolhido no mesmo HTML.
  */
-export function GroupFichaC({ group, model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, soloReleases, agencyName, generation, magra, nodes, resto , quiz }: Props) {
+export function GroupFichaC({ group, model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, soloReleases, agencyName, generation, magra, nodes, resto , quiz, lojaLateral }: Props) {
     const t = useTranslations('profile.groupC')
     const labels = labelsFor(useLocale())
     const accent = model.accent
@@ -392,6 +394,7 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                                     </div>
                                 ))}
                             </dl>
+                            {lojaLateral && <div className="mt-6 hidden flex-col gap-4 lg:flex">{lojaLateral}</div>}
                             {!semAnuncio && <div className="mt-5 hidden lg:block"><ProfileSidebarAd analyticsPlacement="group_lateral_fixa" /></div>}
                         </aside>
                     </div>

@@ -22,6 +22,8 @@ import { ProductionElencoB } from '@/components/productions/ProductionElencoB'
 import { EpisodiosPainel } from '@/components/productions/EpisodiosPainel'
 import type { Episodio } from '@/lib/tmdb/episodios'
 import type { Avaliacao } from '@/lib/tmdb/avaliacao'
+import { LojaDestaque } from '@/components/ui/LojaDestaque'
+import { LojaDeslizante } from '@/components/ui/LojaDeslizante'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
@@ -195,7 +197,9 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                         )}
                     </div>
 
-                    <ProductionSidebar compacto rating={acf.rating} platforms={platforms} {...ficha} />
+                    <ProductionSidebar compacto rating={acf.rating} platforms={platforms} {...ficha}
+                        extra={<LojaDestaque product={shopProducts[3] ?? shopProducts[0]} bloco="producao-loja-lateral" contexto={`producao:${production.slug}:lateral`} />} />
+                    <LojaDeslizante product={shopProducts[4] ?? shopProducts[1]} bloco="producao-loja-deslizante" mensagem={`Maratonou ${title}? Tem achado pra quem é fã 🍿`} contexto={`producao:${production.slug}:deslizante`} />
                 </div>
 
                 {ADSENSE.slots.inline && related.length > 0 && (
