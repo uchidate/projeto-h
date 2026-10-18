@@ -49,14 +49,14 @@ function AnimatedLogoLink({ subtitles, homeHref }: { subtitles: string[]; homeHr
     return (
         <Link href={homeHref} className="flex items-end gap-5">
             <div className="mb-1 shrink-0 text-foreground">
-                <BrandMark size={72} />
+                <BrandMark size={56} />
             </div>
             <div>
                 {/* leading-none + pb garante alinhamento sem style inline */}
-                <span className="block text-[52px] font-black leading-[0.86] tracking-[-0.055em] text-foreground">
+                <span className="block text-[40px] font-black leading-[0.86] tracking-[-0.055em] text-foreground">
                     {SITE_NAME}<BrandDot />
                 </span>
-                <span className="mt-2 block text-[14px] font-semibold tracking-[-0.02em] text-muted min-w-[300px]">
+                <span className="mt-1.5 block text-[13px] font-semibold tracking-[-0.02em] text-muted min-w-[300px]">
                     {text}<span className="opacity-60 animate-pulse">|</span>
                 </span>
             </div>
@@ -256,12 +256,12 @@ const NavBar = ({
                 {/* ── Desktop ── */}
                 <div className="hidden lg:block">
                     {/* Faixa de data */}
-                    <div className="flex h-9 items-center border-b border-border px-10 font-mono text-[12px] lowercase tracking-[0.02em] text-muted">
+                    <div className="flex h-8 items-center border-b border-border px-10 font-mono text-[12px] lowercase tracking-[0.02em] text-muted">
                         <span>{editionDate}</span>
                     </div>
 
                     {/* Logo + botões */}
-                    <div className="flex h-[112px] items-end justify-between border-b-2 border-foreground px-10 pb-5">
+                    <div className="flex h-[88px] items-end justify-between border-b-2 border-foreground px-10 pb-4">
                         <AnimatedLogoLink subtitles={logoSubtitles} homeHref={homeHref} />
                         <div className="flex items-center gap-2 pb-2">
                             <button

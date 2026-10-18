@@ -7,8 +7,9 @@ import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star } from 'lucide-react'
+import { Play } from 'lucide-react'
 import type { WPPost, WPProduction } from '@/lib/wordpress/types'
+import { getProductionBySlug } from '@/lib/wordpress/productions'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
 import { homeCatName } from '@/lib/home/catStyle'
 
@@ -99,33 +100,76 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
 
 async function HeroProduction({ production, locale }: { production: WPProduction; locale: Locale }) {
     const t = await getTranslations({ locale, namespace: 'home.hero' })
-    const image = getWPImage(production._embedded, production.featured_image_url)
-    const title = stripHtml(production.title.rendered)
     const acf = production.acf ?? {}
+    const title = stripHtml(production.title.rendered)
+    const imagem = acf.backdrop_url ? { src: acf.backdrop_url, alt: title } : getWPImage(production._embedded, production.featured_image_url)
+    const destino = rota('production', { slug: production.slug }, locale)
+    // A listagem não traz o texto; a sinopse vem da ficha (cache de 30 min). Sem ela, o painel segue sem o parágrafo.
+    const ficha = await getProductionBySlug(production.slug).catch(() => null)
+    const sinopse = stripHtml(ficha?.content?.rendered ?? '').slice(0, 220)
+    const plataformas = (acf.platforms ?? (acf.platform ? [acf.platform] : [])).filter(Boolean).slice(0, 3)
+    const trailer = !!acf.trailer_url
+    const meta = [acf.year, acf.genre, acf.episodes ? `${acf.episodes} ep.` : null, acf.network].filter(Boolean).join(' · ')
+
+    // Mesma estrutura da capa de matéria (imagem à esquerda, texto ao lado): a produção
+    // ocupava a largura toda, com o texto sobre a imagem, e destoava do resto da home.
     return (
-        <Link href={rota('production', { slug: production.slug }, locale)}
-            className="group relative flex items-end overflow-hidden min-h-[420px] lg:min-h-[420px]">
-            {image ? (
-                <Image src={image.src} alt={title} fill priority fetchPriority="high"
-                    className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
-                    sizes="(min-width: 1440px) 1440px, 100vw" />
-            ) : <div className="absolute inset-0 bg-surface" />}
-            <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-transparent" />
-            <div className="relative p-6 lg:p-12 max-w-3xl">
-                <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent mb-4">
+        <div className="lg:flex lg:h-[400px]">
+            <div className="group relative min-w-0 overflow-hidden border-b border-border lg:w-[50%] lg:shrink-0 lg:border-b-0 lg:border-r">
+                <div className="relative aspect-16/10 w-full sm:aspect-video lg:h-full lg:aspect-auto">
+                    {imagem ? (
+                        <Image src={imagem.src} alt="" fill priority fetchPriority="high"
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none" />
+                    ) : (
+                        <div className="absolute inset-0 flex items-center justify-center bg-surface">
+                            <span className="text-[100px] font-black leading-none text-accent/10">한류</span>
+                        </div>
+                    )}
+                    {/* A imagem inteira leva à ficha; o que fica sobre ela é informação que ajuda a decidir
+                        (tipo, onde assistir, trailer) e não repete o título, que está no painel ao lado. */}
+                    <Link href={destino} aria-label={title} className="absolute inset-0" />
+                    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/80 to-transparent" />
+                    <span className="pointer-events-none absolute left-3 top-3 bg-black/60 px-2.5 py-1 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white backdrop-blur-sm sm:left-4 sm:top-4">
+                        {[acf.type === 'movie' ? t('tipoFilme') : t('tipoSerie'), acf.year].filter(Boolean).join(' · ')}
+                    </span>
+                    {trailer && (
+                        <Link href={`${destino}#trailer`} aria-label={t('verTrailer', { title })}
+                            className="absolute right-3 top-3 z-10 inline-flex h-11 items-center gap-2 bg-accent px-4 text-[12px] font-black uppercase tracking-[0.08em] text-[#0d0b0f] transition-colors hover:bg-accent-strong sm:right-4 sm:top-4">
+                            <Play size={14} fill="currentColor" /> {t('trailer')}
+                        </Link>
+                    )}
+                    {plataformas.length > 0 && (
+                        <p className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-wrap items-center gap-2 sm:inset-x-4 sm:bottom-4">
+                            <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-white/70">{t('disponivelEm')}</span>
+                            {plataformas.map(nome => (
+                                <span key={nome} className="border border-white/40 bg-black/40 px-2.5 py-1 text-[12px] font-bold text-white backdrop-blur-sm">{nome}</span>
+                            ))}
+                        </p>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex min-w-0 flex-1 flex-col bg-background px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
                     {acf.type === 'movie' ? t('filmeEmDestaque') : t('doramaEmDestaque')}
                 </p>
-                <h1 className="font-serif text-home-hero-xl font-medium text-white group-hover:text-accent transition-colors">
-                    {title}
-                </h1>
-                {acf.rating != null && (
-                    <div className="flex items-center gap-1.5 mt-4 text-[13px] font-bold text-white/80">
-                        <Star size={12} fill="currentColor" className="text-yellow-400" />
-                        {Number(acf.rating).toFixed(1)} · {acf.year}
-                    </div>
-                )}
+                <Link href={destino} className="group mt-3 min-w-0">
+                    <h1 className="min-w-0 max-w-[20ch] wrap-anywhere font-serif text-[clamp(1.8rem,7.6vw,2.6rem)] font-medium leading-[1.03] tracking-[-0.035em] text-foreground transition-colors group-hover:text-accent lg:text-home-hero">
+                        {title}
+                    </h1>
+                </Link>
+                {acf.original_title && <p className="mt-2 break-keep text-[15px] font-bold text-accent">{acf.original_title}</p>}
+                {meta && <p className="mt-3 text-[13px] text-muted">{meta}</p>}
+                {sinopse && <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.65] text-foreground/65 line-clamp-3 lg:text-[15px]">{sinopse}</p>}
+                <div className="mt-auto flex items-center justify-end border-t border-border pt-4 lg:pt-5">
+                    <Link href={destino}
+                        className="inline-flex shrink-0 items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-accent-a11y/90">
+                        {`${t('verProducao')} `}<span aria-hidden>→</span>
+                    </Link>
+                </div>
             </div>
-        </Link>
+        </div>
     )
 }
 
