@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { SITE_NAME } from '@/lib/constants/site'
 
 import { htmlLang } from '@/lib/i18n/format'
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PageBreadcrumb } from '@/components/ui/PageBreadcrumb'
@@ -48,6 +48,8 @@ interface Props {
     groups?: WPGroup[]
     total: number
     blogPosts?: WPPost[]
+    /** Faixa de loja entre os resultados e os artigos (feita no servidor). */
+    lojaMeio?: ReactNode
     siteUrl?: string
     genreMap?: Record<number, { name: string; slug: string }>
     page?: number
@@ -102,7 +104,7 @@ const KNOWN_TYPES = ['drama', 'movie', 'special', 'variety']
 const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Globoplay', 'Max', 'Viki', 'WeTV']
 
 export function HubPageContent({
-    hub, relatedHubs, productions, destaques = [], artists, groups, total, blogPosts = [],
+    hub, relatedHubs, productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -426,6 +428,8 @@ export function HubPageContent({
                         </div>
                     </section>
                 )}
+
+                {page === 1 && lojaMeio && <div className="order-2">{lojaMeio}</div>}
 
                 {blogPosts.length > 0 && page === 1 && (
                     <section className="order-2">

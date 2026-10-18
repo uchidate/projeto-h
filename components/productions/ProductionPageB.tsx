@@ -22,6 +22,8 @@ import { ProductionElencoB } from '@/components/productions/ProductionElencoB'
 import { EpisodiosPainel } from '@/components/productions/EpisodiosPainel'
 import type { Episodio } from '@/lib/tmdb/episodios'
 import type { Avaliacao } from '@/lib/tmdb/avaliacao'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import type { StoreProduct } from '@/lib/wordpress/store'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionBlogGrid } from '@/components/productions/ProductionBlogGrid'
 import { ProductionSidebar, FichaLinhas } from '@/components/productions/ProductionSidebar'
@@ -39,6 +41,7 @@ interface Props {
     disponibilidade?: Disponibilidade | null
     avaliacao?: Avaliacao | null
     episodios?: Episodio[]
+    shopProducts?: StoreProduct[]
 }
 
 const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
@@ -56,7 +59,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * elenco e outro depois das recomendações. O rodapé de página (`production_end_leaderboard`,
  * 27% de preenchimento) e o `production_discovery` da estrutura anterior saem.
  */
-export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [] }: Props) {
+export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [] }: Props) {
     const t = useTranslations('profile')
     const locale = useLocale()
     const {
@@ -104,6 +107,10 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                         )}
 
                         <ProductionElencoB title={title} cast={cast} castRoles={castRoles} />
+
+                        {/* A ficha é a página de maior tráfego e não tinha loja: faixa curta logo após o elenco,
+                            onde o leitor ainda está no auge do interesse pela obra. */}
+                        <LojaEmLinha bloco="producao-loja-meio" products={shopProducts} title={`Para quem curte ${title}`} contexto={`producao:${production.slug}:meio`} />
 
                         {/* Logo após o elenco: na 3ª posição do fim da página só ~19% dos visitantes chegavam
                             às relacionadas, que convertem ~8% de quem as vê (Umami, 30d, 2026-10). */}

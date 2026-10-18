@@ -6,6 +6,8 @@ import { getHub, getRelatedHubs } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
 import { getPosts } from '@/lib/wordpress/posts'
 import { getProductionGenres } from '@/lib/wordpress/productions'
+import { getVitrineGeral } from '@/lib/wordpress/vitrine'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { HubPageContent } from '@/components/features/HubPageContent'
 
 export type SearchParamsGuia = Record<string, string | string[] | undefined>
@@ -47,6 +49,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
     // "Comece por aqui": só na primeira página, sem filtro ativo. Sai da própria página de resultados,
     // mantendo a ordem de tendência e exigindo nota decente. Não reordena por nota: acf.rating é o
     // vote_average do TMDB sem mínimo de votos, e títulos com poucos votos chegam a 9,7.
+    const shopProducts = await getVitrineGeral(`guia:${slug}`, 6)
     const semFiltro = page === 1 && !genre && !platform && !network && !type && !year
     const destaques = result.kind === 'productions' && semFiltro
         ? result.items
@@ -67,6 +70,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
                 artists={result.kind === 'artists' ? result.items : undefined}
                 groups={result.kind === 'groups' ? result.items : undefined}
                 blogPosts={blogPosts}
+                lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title="Para quem curte k-drama e k-pop" contexto={`guia:${slug}:meio`} />}
                 destaques={destaques}
                 genreMap={genreMap}
                 siteUrl={SITE_URL}

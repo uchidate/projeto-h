@@ -5,9 +5,13 @@ import type { ArticleModel } from '@/lib/blog/articleModel'
 
 /** `cardGrupo` (variante B do teste) entra na primeira quebra de anúncio, logo antes dela; em texto curto, sem quebra, vai ao fim do corpo. */
 /** `sugestaoMeio` entra após ~40% dos blocos, em artigo com pelo menos 8; nunca antes do 3º bloco. */
-export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio }: { model: ArticleModel; cardGrupo?: ReactNode; sugestaoMeio?: ReactNode }) {
+export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaMeio }: { model: ArticleModel; cardGrupo?: ReactNode; sugestaoMeio?: ReactNode; lojaMeio?: ReactNode }) {
     const idMeio = sugestaoMeio && model.blocks.length >= 8
         ? model.blocks[Math.max(2, Math.floor(model.blocks.length * 0.4))]?.id
+        : undefined
+    // Faixa de loja em ~70% do texto (artigo com 10+ blocos): longe da sugestão de leitura (40%) e dos anúncios.
+    const idLoja = lojaMeio && model.blocks.length >= 10
+        ? model.blocks[Math.max(4, Math.floor(model.blocks.length * 0.7))]?.id
         : undefined
     const primeiraQuebra = cardGrupo
         ? (model.blocks.find(b => model.adBreakAfter.has(b.id)) ?? model.blocks[model.blocks.length - 1])?.id
@@ -23,6 +27,7 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio }: { m
                     <div dangerouslySetInnerHTML={{ __html: block.html }} />
                     {block.id === primeiraQuebra && cardGrupo}
                     {block.id === idMeio && sugestaoMeio}
+                    {block.id === idLoja && <div className="not-prose my-8">{lojaMeio}</div>}
                     {model.adBreakAfter.has(block.id) && ADSENSE.slots.inline && (
                         <div className="not-prose my-8"><AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="article_body" /></div>
                     )}

@@ -8,6 +8,8 @@ import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistCard } from '@/components/artists/ArtistCard'
 import { GroupCard } from '@/components/groups/GroupsPage'
+import { getVitrineGeral } from '@/lib/wordpress/vitrine'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 300
@@ -21,6 +23,7 @@ export const metadata: Metadata = {
 }
 
 export default async function TrendingPage() {
+    const shopProducts = await getVitrineGeral('trending', 6)
     const [streamingArtists, trendingArtists, trendingGroups] = await Promise.all([
         getStreamingArtists(24),
         getTrendingArtists(24),
@@ -74,6 +77,8 @@ export default async function TrendingPage() {
                     </div>
                 </section>
             )}
+
+            <LojaEmLinha bloco="trending-loja-meio" products={shopProducts} title="Merch dos que estão em alta" contexto="trending:meio" className="mt-10" />
 
             {trendingArtists.length > 0 && (
                 <section className="mt-10">

@@ -25,6 +25,7 @@ import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
 import { BlogSuggestedNext } from '@/components/blog/BlogSuggestedNext'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { StoreCard } from '@/components/ui/StoreCard'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { BlogContinuar } from '@/components/blog/BlogContinuar'
@@ -374,6 +375,9 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
     const candidatoMeio = relatedPosts.slice(1).find(c => !tituloQuaseIgual(tituloAtual, stripHtml(c.title.rendered)))
     const meioNovo = Math.floor(post.id / 2) % 2 === 0 && candidatoMeio !== undefined
     const moreRelatedPosts = relatedPosts.slice(1, 6).filter(c => !meioNovo || c.id !== candidatoMeio?.id).slice(0, 4)
+    const lojaMeio = shopProducts.length > 0
+        ? <LojaEmLinha bloco="artigo-loja-meio" products={shopProducts} title="Achados para quem lê isso" contexto={`blog:${post.slug}:meio`} />
+        : null
     const sugestaoMeio = meioNovo ? <BlogSugestaoMeio atual={post} candidato={candidatoMeio} /> : null
     // Experimento: metade dos artigos (id par) recebe o fechamento novo, a outra metade
     // mantém o "Leia também". Por artigo e não por visitante: sem cookie e sem risco de
@@ -660,7 +664,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                             <BlogMobileReadMore semTrava slug={post.slug}>
                                 {structuredModel ? (
                                     <>
-                                        <GutenbergArticleRenderer model={structuredModel} cardGrupo={cardGrupo} sugestaoMeio={sugestaoMeio} />
+                                        <GutenbergArticleRenderer model={structuredModel} cardGrupo={cardGrupo} sugestaoMeio={sugestaoMeio} lojaMeio={lojaMeio} />
                                     </>
                                 ) : (
                                     <>
@@ -669,6 +673,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                                             <div key={i}>
                                                 {i === 1 && cardGrupo}
                                                 {i === Math.max(1, Math.ceil(contentSegments.length * 0.4)) && contentSegments.length >= 3 && sugestaoMeio}
+                                                {i === Math.max(2, Math.ceil(contentSegments.length * 0.75)) && contentSegments.length >= 4 && lojaMeio && <div className="my-8">{lojaMeio}</div>}
                                                 {i > 0 && ADSENSE.slots.inline && <div className="my-8"><AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="article_body" /></div>}
                                                 <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" dangerouslySetInnerHTML={{ __html: segment }} />
                                             </div>
