@@ -126,6 +126,20 @@
       "host": "Apresentador(a)",
       "composer": "Compositor(a)"
     },
+    "roleM": {
+      "singer": "Cantor",
+      "actor": "Ator",
+      "dancer": "Dançarino",
+      "host": "Apresentador",
+      "composer": "Compositor"
+    },
+    "roleF": {
+      "singer": "Cantora",
+      "actor": "Atriz",
+      "dancer": "Dançarina",
+      "host": "Apresentadora",
+      "composer": "Compositora"
+    },
     "ageAtDeath": "{age} anos ao morrer",
     "age": "{age} anos"
   },

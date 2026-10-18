@@ -21,7 +21,7 @@ function SpotlightCard({ item, labels, locale }: { item: SpotlightItem; labels: 
     const rawRole = (raw as WPArtist).acf?.roles?.[0]
     const sub = isGroup
         ? ((raw as WPGroup).acf?.debut_date?.slice(0, 4) ?? null)
-        : (rawRole ? labels.role(rawRole) : null)
+        : (rawRole ? labels.role(rawRole, (raw as WPArtist).acf?.gender) : null)
 
     return (
         <Link href={href} className="group flex shrink-0 flex-col items-center gap-2 w-[88px] sm:w-[100px] lg:w-[104px]">

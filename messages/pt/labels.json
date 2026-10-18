@@ -9,7 +9,26 @@
     "composer": "Compositor(a)",
     "idol": "Idol",
     "producer": "Produtor(a)",
-    "mc": "MC"
+    "mc": "MC",
+    "director": "Diretor(a)"
+  },
+  "roleM": {
+    "singer": "Cantor",
+    "actor": "Ator",
+    "dancer": "Dançarino",
+    "host": "Apresentador",
+    "composer": "Compositor",
+    "producer": "Produtor",
+    "director": "Diretor"
+  },
+  "roleF": {
+    "singer": "Cantora",
+    "actor": "Atriz",
+    "dancer": "Dançarina",
+    "host": "Apresentadora",
+    "composer": "Compositora",
+    "producer": "Produtora",
+    "director": "Diretora"
   },
   "groupType": {
     "girl_group": "Girl Group",

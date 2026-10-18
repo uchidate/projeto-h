@@ -20,7 +20,16 @@ export function labelsFor(locale: Locale = DEFAULT_LOCALE) {
     }
     return {
         t,
-        role: (role: string) => pick('role', role) ?? role,
+        /**
+         * Papel do artista. Com o sexo cadastrado ('male' | 'female') sai a forma certa: Cantor/Cantora,
+         * Ator/Atriz, Dançarino/Dançarina...; sem ele (ou com qualquer outro valor) cai na forma neutra
+         * ("Cantor(a)", "Ator/Atriz"). Valor que não é sexo é ignorado de propósito: `.map(labels.role)`
+         * passa o índice como 2º argumento.
+         */
+        role: (role: string, gender?: unknown) => {
+            const porSexo = gender === 'female' ? pick('roleF', role) : gender === 'male' ? pick('roleM', role) : undefined
+            return porSexo ?? pick('role', role) ?? role
+        },
         groupType: (type: string) => pick('groupType', type) ?? type,
         productionType: (type: string) => pick('productionType', type) ?? type,
         productionStatus: (status: string) => pick('productionStatus', status),

@@ -34,7 +34,7 @@ export async function HomeTrendingArtists({ artists, featuredArtist, featuredArt
                     const name = stripHtml(artist.title.rendered)
                     const acf = artist.acf ?? {}
                     const roles = (acf.roles as string[] | undefined)
-                        ?.slice(0, 2).map(r => labels.role(r)).join(', ')
+                        ?.slice(0, 2).map(r => labels.role(r, acf.gender)).join(', ')
                     return (
                         <Link key={artist.id} href={rota('artist', { slug: artist.slug }, locale)}
                             className={`grid-cols-[42px_44px_minmax(0,1fr)] items-center gap-3 border-b border-border py-3 transition-colors last:border-b-0 hover:bg-background/70 ${index >= 5 ? 'hidden lg:grid' : 'grid'}`}>
@@ -64,7 +64,7 @@ export async function HomeTrendingArtists({ artists, featuredArtist, featuredArt
                 const image = getWPImage(spotlight._embedded, spotlight.featured_image_url)
                 const isGroup = !spotlight.acf?.roles
                 const href = isGroup ? rota('group', { slug: spotlight.slug }, locale) : rota('artist', { slug: spotlight.slug }, locale)
-                const sub = featuredArtistNote || spotlight.acf?.name_hangul || (spotlight.acf?.roles?.[0] ? labels.role(spotlight.acf.roles[0]) : '') || t('perfilEmFoco')
+                const sub = featuredArtistNote || spotlight.acf?.name_hangul || (spotlight.acf?.roles?.[0] ? labels.role(spotlight.acf.roles[0], spotlight.acf.gender) : '') || t('perfilEmFoco')
                 const isCurated = !!featuredArtist
                 return (
                     <Link href={href}

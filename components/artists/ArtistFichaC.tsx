@@ -212,35 +212,66 @@ export function ArtistFichaC({
                             {acf.debut_date && <span>{t('debutLabel')} <b className="text-foreground">{String(acf.debut_date).slice(0, 4)}</b></span>}
                             {nomeGrupo && <span>{t('groupFact')} <b className="text-foreground">{nomeGrupo}</b></span>}
                         </p>
-                        <div className="mt-5 grid grid-cols-[1fr_auto] gap-3 sm:mt-[22px] sm:flex sm:flex-wrap">
+                        <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-[22px] sm:gap-3">
                             {(() => {
-                                const primario = 'touch-target col-span-2 inline-flex h-12 items-center justify-center bg-accent px-7 text-[15px] font-extrabold text-[#0d0b0f] hover:opacity-90 sm:col-span-1'
-                                const secundario = 'touch-target inline-flex h-12 items-center justify-center border border-border-strong px-6 text-[15px] font-semibold hover:border-accent/60'
+                                const primario = 'touch-target inline-flex h-11 min-w-0 flex-1 items-center justify-center bg-accent px-3 text-[14px] font-extrabold text-[#0d0b0f] hover:opacity-90 sm:h-12 sm:flex-none sm:px-7 sm:text-[15px]'
+                                const secundario = 'touch-target inline-flex h-11 min-w-0 flex-1 items-center justify-center border border-border-strong px-3 text-[14px] font-semibold hover:border-accent/60 sm:h-12 sm:flex-none sm:px-6 sm:text-[15px]'
                                 const ouvir = (estilo: string) => temMusica && <a href="#musica" className={estilo}>{estilo === primario ? '▶ ' : ''}{t('listenNow')}</a>
-                                const assistir = (estilo: string) => productions.length > 0 && <a href="#obras" className={estilo}>{estilo === primario ? '▶ ' : ''}{t('watchWorks')}</a>
+                                // No celular o rótulo encurta para a 1ª palavra ("Assistir obras" -> "Assistir"), para os três botões caberem numa linha.
+                                const assistir = (estilo: string) => productions.length > 0 && <a href="#obras" className={estilo}>{estilo === primario ? '▶ ' : ''}<span className="sm:hidden">{t('watchWorks').split(' ')[0]}</span><span className="max-sm:hidden">{t('watchWorks')}</span></a>
                                 return obrasPrimeiro ? <>{assistir(primario)}{ouvir(secundario)}</> : <>{ouvir(primario)}{assistir(secundario)}</>
                             })()}
-                            <ContentStateButton objectId={artist.id} objectType="artist" label={t('follow')} activeLabel={tp('ui.following')} variant="outline" />
+                            <ContentStateButton objectId={artist.id} objectType="artist" label={t('follow')} activeLabel={tp('ui.following')} variant="outline" compactMobile />
                         </div>
+                        {/* Celular e tablet: o aside "Em destaque" só existe a partir de xl; aqui vai um cartão compacto logo abaixo dos botões. */}
+                        {(destaques[0] || awards[0]) && (
+                            <div data-bloco="ficha-destaque-compacto" className="mt-5 xl:hidden">
+                                {destaques[0] && (
+                                    <Link href={`/productions/${destaques[0].p.slug}`} data-posicao={1}
+                                        className="group flex items-center gap-3.5 border-l-[3px] bg-background/50 p-2.5 pr-3 backdrop-blur-sm" style={{ borderColor: accent }}>
+                                        <Image src={destaques[0].img!.src} alt="" width={48} height={68} sizes="48px" className="h-[68px] w-12 shrink-0 object-cover" style={{ boxShadow: `3px 3px 0 ${accent}` }} />
+                                        <span className="min-w-0 flex-1">
+                                            <span className="flex items-center gap-1.5 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">
+                                                <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />{t('heroTopWork')}
+                                            </span>
+                                            <span className={`mt-1 line-clamp-2 block ${SERIF} text-[17px] font-bold italic leading-[1.1]`}>{tituloDe(destaques[0].p)}</span>
+                                            {anoDe(destaques[0].p) > 0 && <span className="mt-0.5 block font-mono text-[11px] text-muted">{anoDe(destaques[0].p)}</span>}
+                                        </span>
+                                        <span aria-hidden className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[14px] font-black text-[#0d0b0f]" style={{ background: accent }}>→</span>
+                                    </Link>
+                                )}
+                                {awards[0] && (
+                                    <p className="mt-2 flex items-start gap-2 px-2.5 py-2 text-[12px] leading-snug" style={{ background: 'color-mix(in srgb, #f5b301 14%, transparent)', boxShadow: 'inset 3px 0 0 #f5b301' }}>
+                                        <span aria-hidden className="leading-none">🏆</span>
+                                        <span className="min-w-0 text-foreground"><span className="font-semibold">{[awards[0].title, awards[0].category].filter(Boolean).join(' · ')}</span>{awards[0].year ? ` (${awards[0].year})` : ''}</span>
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
                     {/* Em telas largas a metade direita ficava vazia: obra de maior nota e prêmio mais recente, o que a pessoa procura primeiro. */}
                     {(destaques[0] || awards[0]) && (
                         <aside aria-label={t('heroHighlights')} className="hidden self-end border-l-[3px] bg-background/40 p-5 backdrop-blur-sm xl:col-start-3 xl:row-span-2 xl:row-start-1 xl:flex xl:flex-col xl:gap-5" style={{ borderColor: accent }}>
                             <p className={`${KICKER} text-muted`}>{t('heroHighlights')}</p>
                             {destaques[0] && (
-                                <Link href={`/productions/${destaques[0].p.slug}`} className="group flex items-center gap-4">
-                                    <Image src={destaques[0].img!.src} alt="" width={56} height={80} className="h-20 w-14 shrink-0 object-cover" />
+                                <Link href={`/productions/${destaques[0].p.slug}`} className="group flex items-center gap-5">
+                                    <Image src={destaques[0].img!.src} alt="" width={72} height={104} sizes="72px" className="h-[104px] w-[72px] shrink-0 object-cover transition-transform duration-300 group-hover:-translate-y-0.5" style={{ boxShadow: `5px 5px 0 ${accent}, 0 14px 30px rgba(0,0,0,.5)` }} />
                                     <span className="min-w-0">
-                                        <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{t('heroTopWork')}</span>
-                                        <span className={`mt-1 block ${SERIF} text-[18px] font-bold leading-tight group-hover:underline`}>{tituloDe(destaques[0].p)}</span>
-                                        <span className="mt-1 block text-[12px] text-muted">{[anoDe(destaques[0].p) || null, nota(destaques[0].p) > 0 ? `★ ${nota(destaques[0].p).toFixed(1)}` : null].filter(Boolean).join(' · ')}</span>
+                                        <span className="flex items-center gap-1.5 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
+                                            <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />{t('heroTopWork')}
+                                        </span>
+                                        <span className={`mt-1.5 block ${SERIF} text-[22px] font-bold italic leading-[1.08] group-hover:underline`}>{tituloDe(destaques[0].p)}</span>
+                                        {anoDe(destaques[0].p) > 0 && <span className="mt-1.5 block font-mono text-[12px] text-muted">{anoDe(destaques[0].p)}</span>}
                                     </span>
                                 </Link>
                             )}
                             {awards[0] && (
-                                <div>
-                                    <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{t('heroAward')}</span>
-                                    <span className="mt-1 block text-[14px] leading-snug text-foreground">{[awards[0].title, awards[0].category].filter(Boolean).join(' · ')}{awards[0].year ? ` (${awards[0].year})` : ''}</span>
+                                <div className="flex items-start gap-3 p-3" style={{ background: 'color-mix(in srgb, #f5b301 14%, transparent)', boxShadow: 'inset 3px 0 0 #f5b301' }}>
+                                    <span aria-hidden className="text-[18px] leading-none">🏆</span>
+                                    <span className="min-w-0">
+                                        <span className="block font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('heroAward')}</span>
+                                        <span className="mt-1 block text-[14px] font-semibold leading-snug text-foreground">{[awards[0].title, awards[0].category].filter(Boolean).join(' · ')}{awards[0].year ? ` (${awards[0].year})` : ''}</span>
+                                    </span>
                                 </div>
                             )}
                         </aside>

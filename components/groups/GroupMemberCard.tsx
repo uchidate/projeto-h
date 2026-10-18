@@ -12,6 +12,8 @@ import { POSITION_LABELS } from '@/lib/constants/positions'
 import { toRgba } from '@/lib/theme/color'
 
 const ROLE_KEYS = { singer: 1, actor: 1, rapper: 1, dancer: 1, model: 1, host: 1, composer: 1 } as const
+/** Papéis com forma feminina/masculina (member.roleM / member.roleF); rapper e model não variam. */
+const ROLE_GENERO = { singer: 1, actor: 1, dancer: 1, host: 1, composer: 1 } as const
 
 /** Data do ACF só quando parseável — evita "Invalid Date" e idade NaN na ficha. */
 function parseValidDate(value?: string) {
@@ -37,7 +39,11 @@ export function GroupMemberCard({ member, accent, positions, isFormer }: { membe
     const age = getAge(rawBirthDate, deathDate ?? undefined)
     const ageLabel = buildAgeLabel(age, deathDate != null, tc)
     const zodiac = rawBirthDate ? getZodiac(rawBirthDate) : null
-    const roles = (member.acf?.roles ?? []).slice(0, 2).map(role => (role in ROLE_KEYS ? tc(`member.role.${role as keyof typeof ROLE_KEYS}`) : role))
+    const bloco = member.acf?.gender === 'female' ? 'roleF' : member.acf?.gender === 'male' ? 'roleM' : null
+    const roles = (member.acf?.roles ?? []).slice(0, 2).map(role => {
+        if (bloco && role in ROLE_GENERO) return tc(`member.${bloco}.${role as keyof typeof ROLE_GENERO}`)
+        return role in ROLE_KEYS ? tc(`member.role.${role as keyof typeof ROLE_KEYS}`) : role
+    })
     // posições canônicas dentro do grupo (leader, visual, maknae, ...) têm prioridade sobre a profissão genérica
     const positionLabels = (positions ?? []).map(position => POSITION_LABELS[position] ?? position)
     const displayRole = positionLabels.length > 0 ? positionLabels.join(' · ') : (roles[0] ?? null)

@@ -1,4 +1,5 @@
 import type { SearchResult, SearchResultType } from '@/lib/search/types'
+import { labelsFor } from '@/lib/i18n/labels'
 import { stripHtml } from '@/lib/utils'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
@@ -36,6 +37,7 @@ type WPItem = {
     /** Os campos editoriais vivem em `acf`; `meta` so traz Rank Math. */
     acf?: {
         groups?: number[]
+        gender?: 'male' | 'female' | null
         trending_score?: number | null
         popularity_score?: number | null
         roles?: string[]
@@ -74,10 +76,8 @@ let entradas: Entrada[] | null = null
 let carregadoEm = 0
 let carregando: Promise<void> | null = null
 
-const PAPEL: Record<string, string> = {
-    actor: 'Ator/Atriz', singer: 'Cantor(a)', idol: 'Idol', model: 'Modelo', dancer: 'Dançarino(a)',
-    rapper: 'Rapper', director: 'Diretor(a)', writer: 'Roteirista', host: 'Apresentador(a)',
-}
+/** Papéis que o catálogo de rótulos não tem; os demais saem de `labelsFor().role`, já com Cantor/Cantora etc. */
+const PAPEL_EXTRA: Record<string, string> = { writer: 'Roteirista' }
 
 function anoDe(valor?: string | number | null): string | undefined {
     const m = String(valor ?? '').match(/^(\d{4})/)
@@ -88,7 +88,9 @@ function anoDe(valor?: string | number | null): string | undefined {
 function detalheDe(type: SearchResultType, acf?: Exclude<WPItem['acf'], unknown[] | undefined>): string | undefined {
     if (!acf) return undefined
     if (type === 'artist') {
-        const papel = PAPEL[acf.roles?.[0] ?? '']
+        const principal = acf.roles?.[0] ?? ''
+        const rotulos = labelsFor('pt')
+        const papel = PAPEL_EXTRA[principal] ?? (rotulos.role(principal) !== principal ? rotulos.role(principal, acf.gender) : undefined)
         return [papel, anoDe(acf.birth_date)].filter(Boolean).join(' · ') || undefined
     }
     if (type === 'production') {
@@ -107,7 +109,7 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
             // Ordem estavel: sem ela, itens com a mesma data repetem/somem entre paginas.
             orderby: 'id',
             order: 'asc',
-            _fields: 'id,slug,title,featured_image_url,acf.groups,acf.trending_score,acf.popularity_score,acf.roles,acf.birth_date,acf.name_hangul,acf.name_romanized,acf.original_title,acf.type,acf.year',
+            _fields: 'id,slug,title,featured_image_url,acf.groups,acf.trending_score,acf.popularity_score,acf.roles,acf.gender,acf.birth_date,acf.name_hangul,acf.name_romanized,acf.original_title,acf.type,acf.year',
         })}`,
         { revalidate: 300, tags: [c.tag] },
     )

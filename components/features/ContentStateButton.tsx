@@ -19,6 +19,8 @@ interface Props {
     activeLabel?: string
     signedOutLabel?: string
     variant?: 'light' | 'dark' | 'primary' | 'outline'
+    /** No celular, botão mais compacto (menos altura e margem) para caber numa linha com outros botões. */
+    compactMobile?: boolean
 }
 
 export function ContentStateButton({
@@ -31,6 +33,7 @@ export function ContentStateButton({
     // de um botão que só levava ao login.
     signedOutLabel: signedOutLabelProp,
     variant = 'light',
+    compactMobile = false,
 }: Props) {
     const tc = useTranslations('client')
     const label = labelProp ?? tc('follow.follow')
@@ -121,13 +124,13 @@ export function ContentStateButton({
     const Icon = state === 'favorite' ? Heart : state === 'saved' ? BookmarkPlus : BellPlus
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className={`flex flex-wrap items-center gap-2 ${compactMobile ? 'shrink-0' : ''}`}>
             <button
                 type="button"
                 onClick={handleClick}
                 disabled={isPending}
                 aria-pressed={active}
-                className={`touch-target inline-flex items-center gap-1.5 border transition-colors disabled:opacity-60 ${variant === 'primary' ? 'h-12 px-7 text-[15px] font-extrabold' : variant === 'outline' ? 'h-12 px-6 text-[15px] font-semibold' : 'px-3 py-2 text-[11px] font-black uppercase tracking-wider'} ${active
+                className={`touch-target inline-flex items-center gap-1.5 border transition-colors disabled:opacity-60 ${variant === 'primary' ? 'h-12 px-7 text-[15px] font-extrabold' : variant === 'outline' ? (compactMobile ? 'h-11 px-3 text-[14px] font-semibold sm:h-12 sm:px-6 sm:text-[15px]' : 'h-12 px-6 text-[15px] font-semibold') : 'px-3 py-2 text-[11px] font-black uppercase tracking-wider'} ${active
                     ? 'border-accent-a11y bg-accent-a11y text-white'
                     : variant === 'primary'
                         ? 'border-accent bg-accent text-[#0d0b0f] hover:opacity-90'

@@ -153,7 +153,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             slug: a.slug,
             nome: stripHtml(a.title.rendered),
             foto: getWPImage(a._embedded, a.featured_image_url)?.src ?? null,
-            papel: (a.acf?.roles as string[] | undefined)?.map(labels.role)[0] ?? null,
+            papel: (a.acf?.roles as string[] | undefined)?.map(r => labels.role(r, a.acf?.gender))[0] ?? null,
         })),
     }
 

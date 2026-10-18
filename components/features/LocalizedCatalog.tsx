@@ -153,7 +153,7 @@ export function EntityGrid({ items, kind, locale, limite, emPortugues = false, s
 
     const subtitle = (item: Entity): string | undefined => {
         const acf = (item.acf ?? {}) as Record<string, unknown>
-        if (kind === 'artists') return (acf.roles as string[] | undefined)?.slice(0, 2).map(labels.role).join(' · ')
+        if (kind === 'artists') return (acf.roles as string[] | undefined)?.slice(0, 2).map(r => labels.role(r, acf.gender)).join(' · ')
         if (kind === 'groups') return typeof acf.type === 'string' ? labels.groupType(acf.type) : undefined
         const type = typeof acf.type === 'string' ? labels.productionType(acf.type === 'drama' ? 'dramaDisplay' : acf.type) : undefined
         return [type, acf.year].filter(Boolean).join(' · ')
