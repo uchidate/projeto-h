@@ -46,6 +46,10 @@
     }
   },
   "production": {
+    "availableOn": "Available on",
+    "ratingVotes": "{count, plural, one {# vote} other {# votes}} · TMDB",
+    "ratingFewVotes": "{count, plural, one {only # vote} other {only # votes}} · TMDB",
+    "ratingFewVotesTitle": "Few ratings: the score doesn't represent the audience yet.",
     "mapKicker": "Connections",
     "episodesKicker": "Episode by episode",
     "episodesTitle": "How viewers rated each episode of {title}",
@@ -78,6 +82,9 @@
     "durationShort": "{count} min/ep.",
     "watchTrailer": "Watch trailer",
     "summary": {
+      "openOnPlatform": "Open {platform} with a search for this title",
+      "searchOnJustWatch": "Search this title on JustWatch ({platform})",
+      "browseByPlatform": "Browse productions by platform",
         "notInBrazil": "No official streaming in Brazil right now.",
         "availableAbroad": "Available outside Brazil",
         "whereToWatch": "Where to watch",
@@ -391,6 +398,9 @@
     "follow": "Follow",
     "listenNow": "Listen now",
     "watchWorks": "Watch works",
+    "heroHighlights": "Highlights",
+    "heroTopWork": "Highest-rated work",
+    "heroAward": "Award",
     "phasesTitle": "{count, plural, one {The career in one phase} other {The career in # phases}}",
     "phasesKicker": "Career",
     "marcosKicker": "Timeline",

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Clock, ChevronRight } from 'lucide-react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml, formatDatePt } from '@/lib/utils'
-import { catStyle, postReadingTime } from '@/lib/blog/catStyle'
+import { catStyleTema as catStyle, postReadingTime } from '@/lib/blog/catStyle'
 
 export function BlogPostCard({ post, priority, categoryMap }: { post: WPPost; priority?: boolean; categoryMap?: Record<number, { name: string; slug: string }> }) {
     const image = getWPImage(post._embedded, post.featured_image_url)

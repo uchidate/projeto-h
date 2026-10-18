@@ -28,6 +28,32 @@ export function catStyle(slug?: string): { bg: string; color: string } {
     return { bg: '#f5f5f5', color: '#555' }
 }
 
+/**
+ * Mesma paleta de `catStyle`, mas por tema: o fundo pastel claro virava um bloco de cor
+ * estranho no tema escuro (etiquetas "GUIA K-POP" e "WEBTOON" do artigo). `light-dark()`
+ * escolhe pelo `color-scheme` da página (`.dark` define `color-scheme: dark`): no claro é o
+ * par de `catStyle`; no escuro o fundo é a própria cor translúcida e o texto, a cor clareada.
+ */
+export function catStyleTema(slug?: string): { bg: string; color: string } {
+    const claro = catStyle(slug)
+    if (slug && CAT_PALETTE[slug]) {
+        return {
+            bg: `light-dark(${claro.bg}, color-mix(in srgb, ${claro.color} 20%, transparent))`,
+            color: `light-dark(${claro.color}, color-mix(in srgb, ${claro.color} 45%, white))`,
+        }
+    }
+    if (slug) {
+        let h = 0
+        for (let i = 0; i < slug.length; i++) h = slug.charCodeAt(i) + ((h << 5) - h)
+        const hue = Math.abs(h) % 360
+        return {
+            bg: `light-dark(${claro.bg}, hsl(${hue} 60% 50% / 0.18))`,
+            color: `light-dark(${claro.color}, hsl(${hue} 65% 78%))`,
+        }
+    }
+    return { bg: 'light-dark(#f5f5f5, rgb(255 255 255 / 0.1))', color: 'light-dark(#555, #c9c4d0)' }
+}
+
 export function isRecent(dateStr: string) {
     return Date.now() - new Date(dateStr).getTime() < 7 * 24 * 60 * 60 * 1000
 }

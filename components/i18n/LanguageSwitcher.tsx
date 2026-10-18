@@ -47,12 +47,14 @@ export function LanguageSwitcher({ availableIn, dismissLabel, links }: {
     if (preferred) {
         return (
             <div lang={preferred.htmlLang} role="note" className="page-wrap">
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border border-accent/40 bg-accent/5 px-4 py-2.5 text-[13px]">
-                    <span className="text-foreground">{preferred.prompt}</span>
-                    <a href={preferred.href} hrefLang={preferred.htmlLang} className="font-bold text-accent hover:underline">
+                {/* Uma linha só, também no celular: o convite entra depois da hidratação e
+                    empurra o hero, então precisa custar o mínimo de altura. */}
+                <div className="mt-2 flex items-center gap-3 border border-accent/40 bg-accent/5 px-3 py-1.5 text-[12px] sm:text-[13px]">
+                    <span className="min-w-0 truncate text-foreground">{preferred.prompt}</span>
+                    <a href={preferred.href} hrefLang={preferred.htmlLang} className="shrink-0 font-bold text-accent hover:underline">
                         {preferred.open} →
                     </a>
-                    <button type="button" onClick={dismiss} className="ml-auto font-mono text-[11px] text-muted hover:text-foreground">
+                    <button type="button" onClick={dismiss} className="ml-auto shrink-0 font-mono text-[11px] text-muted hover:text-foreground">
                         {dismissLabel}
                     </button>
                 </div>

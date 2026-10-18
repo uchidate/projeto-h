@@ -7,8 +7,11 @@ import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star } from 'lucide-react'
+import { Play, Star } from 'lucide-react'
 import type { WPPost, WPProduction } from '@/lib/wordpress/types'
+import { getProductionBySlug } from '@/lib/wordpress/productions'
+import { getArtists } from '@/lib/wordpress/artists'
+import { getAvaliacao, confiancaDaNota } from '@/lib/tmdb/avaliacao'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
 import { homeCatName } from '@/lib/home/catStyle'
 
@@ -99,33 +102,134 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
 
 async function HeroProduction({ production, locale }: { production: WPProduction; locale: Locale }) {
     const t = await getTranslations({ locale, namespace: 'home.hero' })
-    const image = getWPImage(production._embedded, production.featured_image_url)
-    const title = stripHtml(production.title.rendered)
     const acf = production.acf ?? {}
+    const title = stripHtml(production.title.rendered)
+    const imagem = acf.backdrop_url ? { src: acf.backdrop_url, alt: title } : getWPImage(production._embedded, production.featured_image_url)
+    const destino = rota('production', { slug: production.slug }, locale)
+    // A listagem não traz o texto; a sinopse vem da ficha (cache de 30 min). Sem ela, o painel segue sem o parágrafo.
+    const [ficha, avaliacao] = await Promise.all([
+        getProductionBySlug(production.slug).catch(() => null),
+        getAvaliacao(acf.tmdb_id, acf.type),
+    ])
+    // Nota só com amostra: com poucos votos ela é a opinião de poucas pessoas (ver lib/tmdb/avaliacao.ts).
+    const notaConfiavel = avaliacao && confiancaDaNota(avaliacao.votos) === 'confiavel' ? avaliacao : null
+    const sinopse = stripHtml(ficha?.content?.rendered ?? '').slice(0, 220)
+    // Elenco principal: até 4 artistas com ficha, na ordem do cadastro da produção.
+    const slugsElenco = (ficha?.production_cast?.length ? ficha.production_cast.map(c => c.slug) : ficha?.artist_slugs ?? []).slice(0, 4)
+    const artistas = slugsElenco.length
+        ? await getArtists({ slug: slugsElenco.join(','), perPage: slugsElenco.length }).then(r => r.items).catch(() => [])
+        : []
+    const elenco = slugsElenco
+        .map(slug => artistas.find(a => a.slug === slug))
+        .filter((a): a is NonNullable<typeof a> => a !== undefined)
+    const plataformas = (acf.platforms ?? (acf.platform ? [acf.platform] : [])).filter(Boolean).slice(0, 3)
+    const trailer = !!acf.trailer_url
+    const situacao = acf.status_production === 'airing' ? t('emExibicao') : acf.status_production === 'completed' ? t('concluida') : acf.status_production === 'upcoming' ? t('emBreve') : null
+    const classificacao = acf.age_rating ? (acf.age_rating === 'L' ? t('classificacaoLivre') : `${acf.age_rating}+`) : null
+    const meta = [acf.year, acf.genre, acf.episodes ? `${acf.episodes} ep.` : null, acf.network, situacao].filter(Boolean).join(' · ')
+
+    // Mesma estrutura da capa de matéria (imagem à esquerda, texto ao lado): a produção
+    // ocupava a largura toda, com o texto sobre a imagem, e destoava do resto da home.
     return (
-        <Link href={rota('production', { slug: production.slug }, locale)}
-            className="group relative flex items-end overflow-hidden min-h-[420px] lg:min-h-[420px]">
-            {image ? (
-                <Image src={image.src} alt={title} fill priority fetchPriority="high"
-                    className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
-                    sizes="(min-width: 1440px) 1440px, 100vw" />
-            ) : <div className="absolute inset-0 bg-surface" />}
-            <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-transparent" />
-            <div className="relative p-6 lg:p-12 max-w-3xl">
-                <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent mb-4">
+        <div className="lg:flex lg:h-[400px]">
+            <div className="group relative min-w-0 overflow-hidden border-b border-border lg:w-[50%] lg:shrink-0 lg:border-b-0 lg:border-r">
+                <div className="relative aspect-16/10 w-full sm:aspect-video lg:h-full lg:aspect-auto">
+                    {imagem ? (
+                        <Image src={imagem.src} alt="" fill priority fetchPriority="high"
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none" />
+                    ) : (
+                        <div className="absolute inset-0 flex items-center justify-center bg-surface">
+                            <span className="text-[100px] font-black leading-none text-accent/10">한류</span>
+                        </div>
+                    )}
+                    {/* A imagem inteira leva à ficha; o que fica sobre ela é informação que ajuda a decidir
+                        (tipo, onde assistir, trailer) e não repete o título, que está no painel ao lado. */}
+                    <Link href={destino} aria-label={title} className="absolute inset-0" />
+                    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[70%] bg-linear-to-t from-black/90 via-black/55 to-transparent" />
+                    <span className="pointer-events-none absolute left-3 top-3 flex items-center gap-2 sm:left-4 sm:top-4">
+                        <span className="bg-black/60 px-2.5 py-1 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white backdrop-blur-sm">
+                            {[acf.type === 'movie' ? t('tipoFilme') : t('tipoSerie'), acf.year].filter(Boolean).join(' · ')}
+                        </span>
+                        {classificacao && (
+                            <span title={t('classificacaoIndicativa')} className="border border-white/60 bg-black/60 px-2 py-1 font-mono text-[10px] font-black text-white backdrop-blur-sm">{classificacao}</span>
+                        )}
+                    </span>
+                    {trailer && (
+                        <Link href={`${destino}#trailer`} aria-label={t('verTrailer', { title })}
+                            className="absolute right-3 top-3 z-10 inline-flex h-11 items-center gap-2 bg-accent px-4 text-[12px] font-black uppercase tracking-[0.08em] text-[#0d0b0f] transition-colors hover:bg-accent-strong sm:right-4 sm:top-4">
+                            <Play size={14} fill="currentColor" /> {t('trailer')}
+                        </Link>
+                    )}
+                    {(plataformas.length > 0 || elenco.length > 0) && (
+                        <div className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-col gap-3 sm:inset-x-4 sm:bottom-4">
+                            {plataformas.length > 0 && (
+                                <p className="flex flex-wrap items-center gap-2">
+                                    <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-white/70">{t('disponivelEm')}</span>
+                                    {plataformas.map(nome => (
+                                        <span key={nome} className="border border-white/40 bg-black/40 px-2.5 py-1 text-[12px] font-bold text-white backdrop-blur-sm">{nome}</span>
+                                    ))}
+                                </p>
+                            )}
+                            {elenco.length > 0 && (
+                                <div className="pointer-events-auto relative z-10">
+                                    <p className="mb-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white/80">{t('elenco')}</p>
+                                    <ul className="flex items-start gap-3 sm:gap-5">
+                                        {elenco.map(a => {
+                                            const nome = stripHtml(a.title.rendered)
+                                            const foto = getWPImage(a._embedded, a.featured_image_url)
+                                            return (
+                                                <li key={a.id} className="w-[68px] min-w-0 sm:w-[92px]">
+                                                    <Link href={rota('artist', { slug: a.slug }, locale)} title={nome} className="group/ator flex flex-col items-center gap-1.5 text-center">
+                                                        <span className="relative block h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-white bg-surface shadow-[0_4px_14px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover/ator:scale-110 group-hover/ator:border-accent motion-reduce:transition-none sm:h-[68px] sm:w-[68px]">
+                                                            {foto ? (
+                                                                <Image src={foto.src} alt="" fill sizes="68px" className="object-cover object-top" />
+                                                            ) : (
+                                                                <span className="flex h-full w-full items-center justify-center text-[18px] font-black text-muted">{nome[0]}</span>
+                                                            )}
+                                                        </span>
+                                                        <span className="line-clamp-2 w-full wrap-anywhere text-[11px] font-bold leading-tight text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.9)] transition-colors group-hover/ator:text-accent sm:text-[12px]">{nome}</span>
+                                                    </Link>
+                                                </li>
+                                            )
+                                        })}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex min-w-0 flex-1 flex-col bg-background px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
                     {acf.type === 'movie' ? t('filmeEmDestaque') : t('doramaEmDestaque')}
                 </p>
-                <h1 className="font-serif text-home-hero-xl font-medium text-white group-hover:text-accent transition-colors">
-                    {title}
-                </h1>
-                {acf.rating != null && (
-                    <div className="flex items-center gap-1.5 mt-4 text-[13px] font-bold text-white/80">
-                        <Star size={12} fill="currentColor" className="text-yellow-400" />
-                        {Number(acf.rating).toFixed(1)} · {acf.year}
-                    </div>
+                <Link href={destino} className="group mt-3 min-w-0">
+                    <h1 className="min-w-0 max-w-[20ch] wrap-anywhere font-serif text-[clamp(1.8rem,7.6vw,2.6rem)] font-medium leading-[1.03] tracking-[-0.035em] text-foreground transition-colors group-hover:text-accent lg:text-home-hero">
+                        {title}
+                    </h1>
+                </Link>
+                {acf.original_title && <p className="mt-2 break-keep text-[15px] font-bold text-accent">{acf.original_title}</p>}
+                {meta && <p className="mt-3 text-[13px] text-muted">{meta}</p>}
+                {notaConfiavel && (
+                    <p className="mt-2 flex flex-wrap items-baseline gap-x-2 text-[13px]">
+                        <span className="inline-flex items-center gap-1.5 font-bold text-foreground">
+                            <Star size={13} className="text-amber-400" fill="currentColor" aria-hidden />
+                            {notaConfiavel.nota.toFixed(1).replace('.', ',')}<span className="font-normal text-muted">/10</span>
+                        </span>
+                        <span className="font-mono text-[11px] text-muted">{t('notaVotos', { count: notaConfiavel.votos })}</span>
+                    </p>
                 )}
+                {sinopse && <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.65] text-foreground/65 line-clamp-4 lg:line-clamp-3 lg:text-[15px]">{sinopse}</p>}
+                <div className="mt-auto flex items-center justify-end border-t border-border pt-4 lg:pt-5">
+                    <Link href={destino}
+                        className="inline-flex shrink-0 items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-accent-a11y/90">
+                        {`${t('verProducao')} `}<span aria-hidden>→</span>
+                    </Link>
+                </div>
             </div>
-        </Link>
+        </div>
     )
 }
 

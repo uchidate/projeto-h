@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { Play, Star } from 'lucide-react'
+import { MapPin, Play } from 'lucide-react'
 import type { WPTerm } from '@/lib/wordpress/types'
 import { ProductionActions } from '@/components/productions/ProductionActions'
 import { CompartilharBotao } from '@/components/ui/CompartilharBotao'
 import { classeDoTituloHero } from '@/lib/profiles/tituloHero'
+import { NotaProducao } from '@/components/productions/NotaProducao'
 
 interface Props {
     productionId: number
@@ -16,6 +17,10 @@ interface Props {
     typeLabel?: string
     genres: WPTerm[]
     rating?: number | null
+    /** Votos da nota no TMDB (null = desconhecido). */
+    votos?: number | null
+    /** Plataformas no Brasil: viram selos sob o título e levam ao cartão 'Onde assistir'. */
+    platforms?: WPTerm[]
     episodes?: number | null
     durationMinutes?: number | null
     status?: { label: string; color: string } | null
@@ -37,7 +42,7 @@ interface Props {
  */
 export function ProductionHeroB({
     productionId, productionUrl, title, originalTitle, subtitle, year, typeLabel, genres, rating,
-    episodes, durationMinutes, status, backdrop, poster, hasTrailer,
+    episodes, durationMinutes, status, backdrop, poster, hasTrailer, votos = null, platforms = [],
 }: Props) {
     const t = useTranslations('profile')
     const fundo = backdrop ?? poster?.src
@@ -80,17 +85,28 @@ export function ProductionHeroB({
                             </p>
                         )}
                         <div className="mt-4 hidden flex-wrap items-center gap-x-5 gap-y-2 text-[15px] text-white/80 sm:flex lg:mt-5">
-                            {rating != null && (
-                                <span className="flex items-center gap-1.5 font-bold text-white">
-                                    <Star size={16} className="text-amber-400" fill="currentColor" />{Number(rating).toFixed(1).replace('.', ',')}<span className="font-normal text-white/60">/10</span>
-                                </span>
-                            )}
+                            {rating != null && <NotaProducao nota={Number(rating)} votos={votos} tone="photo" />}
                             {episodes != null && episodes > 0 && <span>{episodes} ep.{durationMinutes ? ` · ${durationMinutes} min` : ''}</span>}
                             {status && <span className={`px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider ${status.color}`}>{status.label}</span>}
                         </div>
+                        {platforms.length > 0 && (
+                            <p className="mt-3 hidden flex-wrap items-center gap-2 sm:flex">
+                                <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-white/60">{t('production.availableOn')}</span>
+                                {platforms.slice(0, 4).map(p => (
+                                    <a key={p.id} href="#onde-assistir" className="border border-white/30 bg-black/30 px-2.5 py-1 text-[12px] font-bold text-white backdrop-blur-sm transition-colors hover:border-accent hover:text-accent">{p.name}</a>
+                                ))}
+                            </p>
+                        )}
                         <div className="mt-5 hidden flex-wrap items-center gap-3 sm:flex lg:mt-6">
+                            {platforms.length > 0 && (
+                                <a href="#onde-assistir" className="inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap bg-accent px-5 text-[14px] font-bold text-[#0d0b0f] transition-colors hover:bg-accent-strong">
+                                    <MapPin size={15} /> {t('production.summary.whereToWatch')}
+                                </a>
+                            )}
                             {hasTrailer && (
-                                <a href="#trailer" className="inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap bg-accent px-5 text-[14px] font-bold text-[#0d0b0f] transition-colors hover:bg-accent-strong">
+                                <a href="#trailer" className={platforms.length > 0
+                                    ? 'inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap border border-white/40 px-5 text-[14px] font-bold text-white transition-colors hover:border-accent hover:text-accent'
+                                    : 'inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap bg-accent px-5 text-[14px] font-bold text-[#0d0b0f] transition-colors hover:bg-accent-strong'}>
                                     <Play size={15} fill="currentColor" /> {t('production.watchTrailer')}
                                 </a>
                             )}
@@ -111,17 +127,14 @@ export function ProductionHeroB({
  * dentro do hero.
  */
 export function ProductionHeroBMobile({
-    productionId, productionUrl, title, rating, episodes, durationMinutes, status, hasTrailer,
-}: Pick<Props, 'productionId' | 'productionUrl' | 'title' | 'rating' | 'episodes' | 'durationMinutes' | 'status' | 'hasTrailer'>) {
+    productionId, productionUrl, title, rating, episodes, durationMinutes, status, hasTrailer, votos = null,
+}: Pick<Props, 'productionId' | 'productionUrl' | 'title' | 'rating' | 'episodes' | 'durationMinutes' | 'status' | 'hasTrailer' | 'votos'>) {
     const t = useTranslations('profile')
     return (
         <div className="page-wrap pt-4 sm:hidden">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[14px] text-muted">
-                {rating != null && (
-                    <span className="flex items-center gap-1.5 font-bold text-foreground">
-                        <Star size={15} className="text-amber-400" fill="currentColor" />{Number(rating).toFixed(1).replace('.', ',')}<span className="font-normal text-muted">/10</span>
-                    </span>
-                )}
+                {/* Com a contagem de votos a nota ocupa a própria linha: na mesma linha o botão de compartilhar caía sozinho para baixo. */}
+                {rating != null && <span className={votos != null ? 'w-full' : undefined}><NotaProducao nota={Number(rating)} votos={votos} size={15} /></span>}
                 {episodes != null && episodes > 0 && <span>{episodes} ep.{durationMinutes ? ` · ${durationMinutes} min` : ''}</span>}
                 {status && <span className={`px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider ${status.color}`}>{status.label}</span>}
                 <span className="ml-auto"><CompartilharBotao url={productionUrl} title={title} menuAlign="end" size="sm" /></span>

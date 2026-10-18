@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Clock } from 'lucide-react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
-import { catStyle } from '@/lib/blog/catStyle'
+import { catStyleTema as catStyle } from '@/lib/blog/catStyle'
 
 /**
  * Destaque em cartão de imagem com o texto sobre um degradê no rodapé: a foto é a protagonista e o

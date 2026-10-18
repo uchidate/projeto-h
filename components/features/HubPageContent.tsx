@@ -262,7 +262,7 @@ export function HubPageContent({
                 description={`${total} ${kindLabel}`}
             />
 
-            <div className="page-wrap py-8 space-y-12">
+            <div className="page-wrap flex flex-col gap-12 py-8">
 
                 {/* Header */}
                 <header className="border-b-2 border-foreground pb-6 space-y-3">
@@ -281,14 +281,14 @@ export function HubPageContent({
                 </header>
 
                 {hub.whatYouWillFind && (
-                    <div className="border-l-2 border-accent pl-4 py-1">
+                    <div className="order-1 border-l-2 border-accent pl-4 py-1">
                         <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent mb-1">O que você vai encontrar</p>
                         <p className="text-sm leading-7 text-muted">{hub.whatYouWillFind}</p>
                     </div>
                 )}
 
                 {hub.relatedSearches && hub.relatedSearches.length > 0 && page === 1 && (
-                    <nav className="border border-border bg-surface/40 p-4" aria-label="Buscas relacionadas">
+                    <nav className="order-1 border border-border bg-surface/40 p-4" aria-label="Buscas relacionadas">
                         <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted mb-3">Buscas relacionadas</p>
                         <div className="flex flex-wrap gap-2">
                             {hub.relatedSearches.map(item => (
@@ -304,6 +304,7 @@ export function HubPageContent({
                     </nav>
                 )}
 
+                {/* Ordem visual: lista antes do texto de apoio (`order-1`) e das seções finais (`order-2`). Medido: no celular a 1ª produção aparecia depois de ~1,6 telas de introdução, chips e "O que você vai encontrar"; o DOM segue na ordem original para o texto continuar indexável. */}
                 <HubDestaques items={destaques} eyebrow="Comece por aqui" title={`Em alta e bem avaliadas — ${hub.shortTitle}`} />
 
                 <section>
@@ -360,7 +361,7 @@ export function HubPageContent({
                                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="hub_grid" />
                                     </div>
                                 )}
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                                <div className={`grid ${hub.kind === 'productions' ? 'grid-cols-3' : 'grid-cols-2'} sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3`}>
                                     {pedaco}
                                 </div>
                             </Fragment>
@@ -411,7 +412,7 @@ export function HubPageContent({
                 </section>
 
                 {hub.faq.length > 0 && page === 1 && (
-                    <section itemScope itemType="https://schema.org/FAQPage">
+                    <section className="order-2" itemScope itemType="https://schema.org/FAQPage">
                         <SectionTitleBar eyebrow="Tire suas dúvidas" title="Perguntas frequentes" />
                         <div className="grid gap-px bg-border sm:grid-cols-2">
                             {hub.faq.map(item => (
@@ -427,7 +428,7 @@ export function HubPageContent({
                 )}
 
                 {blogPosts.length > 0 && page === 1 && (
-                    <section>
+                    <section className="order-2">
                         <SectionTitleBar eyebrow="Do blog" title="Artigos relacionados" href="/blog" linkText="ver todos →" />
                         <div className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-3">
                             {blogPosts.map(post => {
@@ -455,7 +456,7 @@ export function HubPageContent({
                 )}
 
                 {relatedHubs.length > 0 && page === 1 && (
-                    <section>
+                    <section className="order-2">
                         <SectionTitleBar eyebrow="Continue explorando" title="Guias relacionados" href="/guias" linkText="ver todos →" />
                         <ul className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-3">
                             {relatedHubs.map(related => (

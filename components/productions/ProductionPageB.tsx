@@ -21,6 +21,7 @@ import { MapaConexoes, type NoMapa } from '@/components/artists/MapaConexoes'
 import { ProductionElencoB } from '@/components/productions/ProductionElencoB'
 import { EpisodiosPainel } from '@/components/productions/EpisodiosPainel'
 import type { Episodio } from '@/lib/tmdb/episodios'
+import type { Avaliacao } from '@/lib/tmdb/avaliacao'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionBlogGrid } from '@/components/productions/ProductionBlogGrid'
 import { ProductionSidebar, FichaLinhas } from '@/components/productions/ProductionSidebar'
@@ -36,6 +37,7 @@ interface Props {
     categoryMap?: Record<number, { name: string; slug: string }>
     faqItems: EntityFAQItem[]
     disponibilidade?: Disponibilidade | null
+    avaliacao?: Avaliacao | null
     episodios?: Episodio[]
 }
 
@@ -54,7 +56,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * elenco e outro depois das recomendações. O rodapé de página (`production_end_leaderboard`,
  * 27% de preenchimento) e o `production_discovery` da estrutura anterior saem.
  */
-export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, episodios = [] }: Props) {
+export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [] }: Props) {
     const t = useTranslations('profile')
     const locale = useLocale()
     const {
@@ -80,11 +82,11 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
             <ProductionHeroB
                 productionId={production.id} productionUrl={productionUrl} title={title}
                 originalTitle={acf.original_title} subtitle={acf.subtitle} year={acf.year} typeLabel={displayType}
-                genres={genres} rating={acf.rating} episodes={acf.episodes} durationMinutes={acf.duration_minutes}
+                genres={genres} rating={avaliacao?.nota ?? acf.rating} votos={avaliacao?.votos ?? null} platforms={platforms} episodes={acf.episodes} durationMinutes={acf.duration_minutes}
                 status={statusInfo} backdrop={backdropUrl} poster={poster} hasTrailer={hasTrailer}
             />
             <ProductionHeroBMobile
-                productionId={production.id} productionUrl={productionUrl} title={title} rating={acf.rating}
+                productionId={production.id} productionUrl={productionUrl} title={title} rating={avaliacao?.nota ?? acf.rating} votos={avaliacao?.votos ?? null}
                 episodes={acf.episodes} durationMinutes={acf.duration_minutes} status={statusInfo} hasTrailer={hasTrailer}
             />
 
@@ -102,6 +104,12 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                         )}
 
                         <ProductionElencoB title={title} cast={cast} castRoles={castRoles} />
+
+                        {/* Logo após o elenco: na 3ª posição do fim da página só ~19% dos visitantes chegavam
+                            às relacionadas, que convertem ~8% de quem as vê (Umami, 30d, 2026-10). */}
+                        <div id="relacionados" className={ANCORA}>
+                            <ProductionRelated related={related} genres={genres} naColuna />
+                        </div>
 
                         {episodios.length > 0 && (
                             <section id="episodios" className={ANCORA} data-bloco="producao-episodios">
@@ -181,10 +189,6 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                     </div>
 
                     <ProductionSidebar compacto rating={acf.rating} platforms={platforms} {...ficha} />
-                </div>
-
-                <div id="relacionados" className={`${ANCORA} mt-16 lg:mt-20`}>
-                    <ProductionRelated related={related} genres={genres} />
                 </div>
 
                 {ADSENSE.slots.inline && related.length > 0 && (

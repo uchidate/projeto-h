@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Clock } from 'lucide-react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
-import { catStyle, postReadingTime } from '@/lib/blog/catStyle'
+import { catStyleTema as catStyle, postReadingTime } from '@/lib/blog/catStyle'
 
 function RecentPost({ post, index }: { post: WPPost; index: number }) {
     const image = getWPImage(post._embedded, post.featured_image_url)

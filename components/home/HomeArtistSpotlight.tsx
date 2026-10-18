@@ -24,7 +24,7 @@ function SpotlightCard({ item, labels, locale }: { item: SpotlightItem; labels: 
         : (rawRole ? labels.role(rawRole) : null)
 
     return (
-        <Link href={href} className="group flex shrink-0 flex-col items-center gap-2 w-[80px] sm:w-[96px] lg:w-[100px]">
+        <Link href={href} className="group flex shrink-0 flex-col items-center gap-2 w-[88px] sm:w-[100px] lg:w-[104px]">
             <div
                 className="relative w-[68px] h-[68px] sm:w-[80px] sm:h-[80px] lg:w-[84px] lg:h-[84px] overflow-hidden rounded-full border-2 border-border bg-surface transition-colors duration-300 group-hover:border-accent"
                 style={accent ? { borderColor: `${accent}60` } : undefined}
@@ -50,7 +50,7 @@ function SpotlightCard({ item, labels, locale }: { item: SpotlightItem; labels: 
                 )}
             </div>
             <div className="text-center min-w-0 w-full px-1">
-                <p className="truncate text-[11px] sm:text-[12px] font-bold text-foreground group-hover:text-accent transition-colors leading-tight">
+                <p className="line-clamp-2 wrap-anywhere text-[11px] sm:text-[12px] font-bold text-foreground group-hover:text-accent transition-colors leading-tight">
                     {name}
                 </p>
                 {sub && (

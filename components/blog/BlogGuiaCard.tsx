@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Clock } from 'lucide-react'
 import type { WPPost } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
-import { catStyle } from '@/lib/blog/catStyle'
+import { catStyleTema as catStyle } from '@/lib/blog/catStyle'
 
 /** Cartão de conteúdo-chave: com imagem mostra a foto; sem ela (muitos guias não têm) o texto ocupa o lugar, sem quadrado vazio. */
 export function BlogGuiaCard({ post, categoryMap }: { post: WPPost; categoryMap: Record<number, { name: string; slug: string }> }) {

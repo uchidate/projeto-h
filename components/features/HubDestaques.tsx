@@ -55,16 +55,16 @@ function Destaque({ producao, posicao }: { producao: WPProduction; posicao: numb
     const detalhes = [acf.year, acf.genre, acf.episodes ? `${acf.episodes} ep.` : null].filter(Boolean).join(' · ')
     return (
         <li>
-            <Link href={`/productions/${producao.slug}`} className="group grid grid-cols-[96px_minmax(0,1fr)] gap-4 border border-border bg-surface p-3 transition-colors hover:border-accent md:grid-cols-1 md:p-0">
+            <Link href={`/productions/${producao.slug}`} className="group grid grid-cols-[72px_minmax(0,1fr)] gap-3 border border-border bg-surface p-2.5 transition-colors hover:border-accent md:grid-cols-1 md:p-0">
                 <div className="relative aspect-2/3 w-full overflow-hidden bg-background md:aspect-video">
                     {img && (
-                        <Image src={img.src} alt="" fill priority={posicao === 1} sizes="(max-width: 768px) 96px, 33vw"
+                        <Image src={img.src} alt="" fill priority={posicao === 1} sizes="(max-width: 768px) 72px, 33vw"
                             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                     )}
                     <span className="absolute left-0 top-0 bg-accent px-2 py-1 font-mono text-[11px] font-black text-white">{posicao}</span>
                 </div>
                 <div className="flex min-w-0 flex-col justify-center md:p-4">
-                    <h3 className="font-serif text-[20px] font-semibold leading-tight text-foreground group-hover:text-accent">{nome}</h3>
+                    <h3 className="font-serif text-[17px] font-semibold leading-tight md:text-[20px] text-foreground group-hover:text-accent">{nome}</h3>
                     {detalhes && <p className="mt-1 text-[12px] text-muted">{detalhes}</p>}
                     {acf.rating != null && (
                         <p className="mt-2 flex items-center gap-1 text-[13px] font-bold text-gold">

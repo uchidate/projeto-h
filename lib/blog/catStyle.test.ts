@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { catStyle, isRecent, postReadingTime } from './catStyle'
+import { catStyle, catStyleTema, isRecent, postReadingTime } from './catStyle'
 
 /** Luminância relativa + contraste WCAG 2.1 — mesma fórmula usada no axe-core. */
 function luminance(hex: string): number {
@@ -109,5 +109,22 @@ describe('postReadingTime', () => {
         // todo post do site, contradizendo a grade ao lado.
         expect(postReadingTime({ acf: null })).toBeNull()
         expect(postReadingTime({ acf: { reading_time: 0 }, content: { rendered: '' } })).toBeNull()
+    })
+})
+
+describe('catStyleTema', () => {
+    it('no tema claro mantém exatamente o par de catStyle', () => {
+        const claro = catStyle('k-pop')
+        const tema = catStyleTema('k-pop')
+        expect(tema.bg).toContain(claro.bg)
+        expect(tema.color).toContain(claro.color)
+    })
+    it('no tema escuro usa fundo translúcido e texto clareado, nunca o pastel', () => {
+        for (const slug of ['k-pop', 'guias', 'webtoon', undefined]) {
+            const { bg, color } = catStyleTema(slug)
+            expect(bg).toMatch(/^light-dark\(.+,.+\)$/)
+            expect(color).toMatch(/^light-dark\(.+,.+\)$/)
+        }
+        expect(catStyleTema('webtoon').bg).toContain('/ 0.18')
     })
 })
