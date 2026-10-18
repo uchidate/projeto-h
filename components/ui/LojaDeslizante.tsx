@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { ExternalLink, X } from 'lucide-react'
 import type { StoreProduct } from '@/lib/wordpress/store'
@@ -11,6 +11,13 @@ const LOJAS: Record<string, string> = { shopee: 'Shopee', amazon: 'Amazon', merc
 const CHAVE = 'hh_loja_deslizante_fechada'
 const lerFechada = () => { try { return sessionStorage.getItem(CHAVE) === '1' } catch { return false } }
 
+type Retangulo = Pick<DOMRect, 'top' | 'bottom' | 'left' | 'right'>
+
+/** Dois retângulos se cruzam? Encostar nas bordas não conta. */
+export function sobrepoe(a: Retangulo, b: Retangulo): boolean {
+    return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
+}
+
 /**
  * Cartão que entra no canto inferior esquerdo depois de o leitor passar de ~45% da página.
  * Só no desktop (no celular o rodapé já tem o anúncio fixo e o banner de consentimento),
@@ -18,6 +25,8 @@ const lerFechada = () => { try { return sessionStorage.getItem(CHAVE) === '1' } 
  */
 export function LojaDeslizante({ product, bloco, contexto, mensagem = 'Gostou do que viu? Separei um achado pra fã 💗' }: { product?: StoreProduct; bloco: string; contexto: string; mensagem?: string }) {
     const [visivel, setVisivel] = useState(false)
+    const [sobreAnuncio, setSobreAnuncio] = useState(false)
+    const cartao = useRef<HTMLElement>(null)
 
     useEffect(() => {
         if (!product?.acf.affiliate_url || lerFechada()) return
@@ -30,6 +39,28 @@ export function LojaDeslizante({ product, bloco, contexto, mensagem = 'Gostou do
         return () => window.removeEventListener('scroll', aoRolar)
     }, [product])
 
+    // Política do AdSense: nada pode ficar por cima de um anúncio. Enquanto o cartão cruza um
+    // anúncio com conteúdo, ele se esconde (continua montado) e volta quando a página rola.
+    useEffect(() => {
+        if (!visivel) return
+        let quadro = 0
+        const verificar = () => {
+            quadro = 0
+            const caixa = cartao.current?.getBoundingClientRect()
+            if (!caixa) return
+            const cruza = [...document.querySelectorAll<HTMLElement>('ins.adsbygoogle')].some(ad => {
+                const r = ad.getBoundingClientRect()
+                return r.height > 1 && ad.getAttribute('data-ad-status') !== 'unfilled' && sobrepoe(caixa, r)
+            })
+            setSobreAnuncio(cruza)
+        }
+        const agendar = () => { if (!quadro) quadro = requestAnimationFrame(verificar) }
+        verificar()
+        window.addEventListener('scroll', agendar, { passive: true })
+        window.addEventListener('resize', agendar)
+        return () => { window.removeEventListener('scroll', agendar); window.removeEventListener('resize', agendar); if (quadro) cancelAnimationFrame(quadro) }
+    }, [visivel])
+
     const url = product?.acf.affiliate_url
     if (!visivel || !product || !url) return null
     const { acf } = product
@@ -38,8 +69,8 @@ export function LojaDeslizante({ product, bloco, contexto, mensagem = 'Gostou do
     const desconto = calcularDesconto(acf.price, acf.original_price)
     const loja = LOJAS[acf.store ?? ''] ?? 'Loja parceira'
     return (
-        <aside data-bloco={bloco} aria-label="Achado da loja"
-            className="fixed bottom-6 left-6 z-40 w-[340px] animate-in slide-in-from-bottom-6 overflow-hidden rounded-2xl border-2 border-accent bg-surface opacity-100 shadow-[0_24px_60px_-10px_rgba(0,0,0,0.9)] duration-300">
+        <aside ref={cartao} data-bloco={bloco} aria-label="Achado da loja" aria-hidden={sobreAnuncio || undefined} inert={sobreAnuncio || undefined}
+            className={`${sobreAnuncio ? 'pointer-events-none invisible' : ''} fixed bottom-6 left-6 z-40 w-[340px] animate-in slide-in-from-bottom-6 overflow-hidden rounded-2xl border-2 border-accent bg-surface opacity-100 shadow-[0_24px_60px_-10px_rgba(0,0,0,0.9)] duration-300`}>
             <span aria-hidden className="block h-1 bg-accent" />
             <button type="button" onClick={fechar} aria-label="Fechar" className="absolute right-2.5 top-3.5 z-10 rounded-full bg-surface p-1.5 text-foreground shadow ring-1 ring-border hover:text-foreground">
                 <X size={14} aria-hidden />
