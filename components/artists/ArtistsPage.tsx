@@ -24,6 +24,7 @@ import { SalvarContextoLista } from '@/components/artists/lista/SalvarContextoLi
 import { labelsFor } from '@/lib/i18n/labels'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import type { AniversarianteSemana } from '@/lib/artists/aniversarios'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { queryAtual } from '@/lib/listagem/query-atual'
@@ -297,6 +298,9 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                                         if (comAnuncio) anuncios++
                                         return (
                                             <Fragment key={`fatia-${b}`}>
+                                                {b === 2 && shopProducts.length > 0 && (
+                                                    <LojaEmLinha bloco="listagem-artistas-loja" products={shopProducts} title="Pra levar do seu bias" contexto="listagem:artistas:grade" className="my-7 sm:my-9" />
+                                                )}
                                                 {comAnuncio && (
                                                     <div className="my-7 sm:my-9">
                                                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="artists_grid" />

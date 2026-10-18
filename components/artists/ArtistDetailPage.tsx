@@ -29,6 +29,7 @@ import { renderProfileEntries, isInterstitial, CHAVE_DE_ANUNCIO, type ProfileEnt
 import { fichaMagra } from '@/lib/artists/fichaMagra'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
+import { LojaDeslizante } from '@/components/ui/LojaDeslizante'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
@@ -253,6 +254,7 @@ export function ArtistDetailPage({
                 titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
             />
             {shopSection}
+            <LojaDeslizante product={(shopProducts.length > 0 ? shopProducts : groupShopProducts)[2]} bloco="ficha-artista-loja-deslizante" contexto={`artista:${artist.slug}:deslizante`} />
             <ListaProxima slug={artist.slug} />
 
             {/* Guias só existem em português. */}

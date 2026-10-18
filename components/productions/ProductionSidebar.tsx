@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { ExternalLink, Tv, Film, Star, ShieldCheck } from 'lucide-react'
@@ -29,6 +30,8 @@ interface Props {
      * empurrava a ficha para baixo da dobra.
      */
     compacto?: boolean
+    /** Bloco extra antes do anúncio da lateral (ex.: produto em destaque). */
+    extra?: ReactNode
 }
 
 const AGE_COLORS: Record<string, string> = {
@@ -118,7 +121,7 @@ function GradeItem({ label, value }: { label: string; value: React.ReactNode }) 
 export function ProductionSidebar({
     rating, platforms, type, year, episodes, durationMinutes,
     ageRating, network, director, writer, statusProduction,
-    cast = [], castRoles, compacto = false,
+    cast = [], castRoles, compacto = false, extra,
 }: Props) {
     const t = useTranslations('profile.ui')
 
@@ -185,6 +188,8 @@ export function ProductionSidebar({
                     <AtribuicaoJustWatch className="mt-3 block" />
                 </SidebarSection>
             )}
+
+            {extra}
 
             <ProfileSidebarAd analyticsPlacement="production_profile_sidebar" />
         </aside>

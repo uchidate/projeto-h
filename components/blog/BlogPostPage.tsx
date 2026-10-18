@@ -25,6 +25,7 @@ import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
 import { BlogSuggestedNext } from '@/components/blog/BlogSuggestedNext'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import { LojaDeslizante } from '@/components/ui/LojaDeslizante'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { StoreCard } from '@/components/ui/StoreCard'
 import type { StoreProduct } from '@/lib/wordpress/store'
@@ -378,6 +379,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
     const lojaMeio = shopProducts.length > 0
         ? <LojaEmLinha bloco="artigo-loja-meio" products={shopProducts} title="Achados para quem lê isso" contexto={`blog:${post.slug}:meio`} />
         : null
+    const deslizante = shopProducts[3] ?? shopProducts[0]
     const sugestaoMeio = meioNovo ? <BlogSugestaoMeio atual={post} candidato={candidatoMeio} /> : null
     // Experimento: metade dos artigos (id par) recebe o fechamento novo, a outra metade
     // mantém o "Leia também". Por artigo e não por visitante: sem cookie e sem risco de
@@ -872,6 +874,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                                 </div>
                             )}
                             {blocosFinais}
+                            <LojaDeslizante product={deslizante} bloco="artigo-loja-deslizante" contexto={`blog:${post.slug}:deslizante`} />
                         </div>
                     </aside>
                     </div>
