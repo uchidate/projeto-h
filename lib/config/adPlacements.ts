@@ -70,7 +70,12 @@ export const AD_LAYOUT_POLICIES: Record<AdLayout, AdLayoutPolicy> = {
         fullWidthResponsive: false,
     },
     sidebar: {
-        format: 'rectangle',
+        // Era `rectangle` (300x250 fixo). Medido no Umami em 2026-10 (60 dias): `rectangle` teve 107 desfechos,
+        // 22% preenchidos e 33% de `timeout` (35); `auto` teve 2.562, 23% preenchidos e só 2,4% de `timeout`,
+        // e o `production_profile_sidebar` (o maior usuário) preenchia 22% com 11 de 18 estourando o tempo.
+        // Mesmo raciocínio do `leaderboard` abaixo: formato fixo restringe o leilão. A largura continua
+        // limitada pela coluna (300px), então o Google só escolhe entre as alturas que cabem nela.
+        format: 'auto',
         eager: true,
         containerClassName: 'w-full min-w-0 min-h-[250px]',
         maxWidthPx: 300,
