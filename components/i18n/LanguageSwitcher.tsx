@@ -9,6 +9,14 @@ export type { LanguageLink }
 
 const DISMISS_KEY = 'hh-language-notice-dismissed'
 
+function Globo() {
+    return (
+        <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.6 2.4 4 5.5 4 9s-1.4 6.6-4 9c-2.6-2.4-4-5.5-4-9s1.4-6.6 4-9z" />
+        </svg>
+    )
+}
+
 /**
  * Link para as outras versões da página — D1 em docs/I18N-ARQUITETURA.md.
  *
@@ -51,8 +59,8 @@ export function LanguageSwitcher({ availableIn, dismissLabel, links }: {
                     empurra o hero, então precisa custar o mínimo de altura. */}
                 <div className="mt-2 flex items-center gap-3 border border-accent/40 bg-accent/5 px-3 py-1.5 text-[12px] sm:text-[13px]">
                     <span className="min-w-0 truncate text-foreground">{preferred.prompt}</span>
-                    <a href={preferred.href} hrefLang={preferred.htmlLang} className="shrink-0 font-bold text-accent hover:underline">
-                        {preferred.open} →
+                    <a href={preferred.href} hrefLang={preferred.htmlLang} className="inline-flex shrink-0 items-center gap-1.5 bg-accent px-2.5 py-1 font-bold text-[#0d0b0f] hover:opacity-90">
+                        <Globo />{preferred.open} →
                     </a>
                     <button type="button" onClick={dismiss} className="ml-auto shrink-0 font-mono text-[11px] text-muted hover:text-foreground">
                         {dismissLabel}
@@ -64,17 +72,15 @@ export function LanguageSwitcher({ availableIn, dismissLabel, links }: {
 
     return (
         <div className="page-wrap">
-            <p className="mt-3 text-right font-mono text-[11px] text-muted">
-                {availableIn}{' '}
-                {links.map((link, index) => (
-                    <span key={link.locale}>
-                        {index > 0 && ' · '}
-                        <a href={link.href} hrefLang={link.htmlLang} lang={link.htmlLang} className="font-semibold text-foreground hover:text-accent">
-                            {link.name}
-                        </a>
-                    </span>
+            <nav aria-label={availableIn} className="mt-3 flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5 text-[12px]">
+                <span className="text-muted">{availableIn}</span>
+                {links.map((link) => (
+                    <a key={link.locale} href={link.href} hrefLang={link.htmlLang} lang={link.htmlLang}
+                        className="inline-flex items-center gap-1.5 border border-accent-a11y/60 bg-accent/5 px-2.5 py-1 font-bold text-accent-a11y transition-colors hover:bg-accent hover:text-[#0d0b0f]">
+                        <Globo />{link.name} →
+                    </a>
                 ))}
-            </p>
+            </nav>
         </div>
     )
 }

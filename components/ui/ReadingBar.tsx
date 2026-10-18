@@ -130,7 +130,9 @@ export function ReadingBar({ backHref, backLabel, tagLabel, tagColor, tagHref, t
         <BarraAncorada
             posicao="fixed"
             z={320}
-            className="left-1/2 -translate-x-1/2 w-full max-w-[1440px]"
+            // O invólucro fixo ocupa a altura da barra mesmo invisível; sem isto ele engolia o clique de
+            // quem estivesse por baixo (ex.: o link "Read in English" do aviso de idioma da ficha).
+            className="pointer-events-none left-1/2 -translate-x-1/2 w-full max-w-[1440px]"
         >
         <div
             ref={barraRef}
@@ -144,7 +146,7 @@ export function ReadingBar({ backHref, backLabel, tagLabel, tagColor, tagHref, t
                 flex flex-col
                 bg-white border-b border-border/50 dark:bg-background
                 transition-[opacity,transform] duration-200 ease-out
-                ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'}
+                ${visible ? 'pointer-events-auto opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'}
             `}
         >
             {/* Barra de progresso */}

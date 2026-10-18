@@ -399,7 +399,7 @@
     "listenNow": "Listen now",
     "watchWorks": "Watch works",
     "heroHighlights": "Highlights",
-    "heroTopWork": "Highest-rated work",
+    "heroTopWork": "Featured work",
     "heroAward": "Award",
     "phasesTitle": "{count, plural, one {The career in one phase} other {The career in # phases}}",
     "phasesKicker": "Career",
