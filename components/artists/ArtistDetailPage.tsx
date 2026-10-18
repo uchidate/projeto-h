@@ -268,7 +268,7 @@ export function ArtistDetailPage({
                 titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
             />
             {shopSection}
-            <LojaDeslizante product={(shopProducts.length > 0 ? shopProducts : groupShopProducts)[2]} bloco="ficha-artista-loja-deslizante" contexto={`artista:${artist.slug}:deslizante`} />
+            <LojaDeslizante product={(shopProducts.length > 0 ? shopProducts : groupShopProducts)[2]} bloco="ficha-artista-loja-deslizante" mensagem={`Curtiu ${name}? Leva um pedacinho pra casa 💗`} contexto={`artista:${artist.slug}:deslizante`} />
             <ListaProxima slug={artist.slug} />
 
             {/* Guias só existem em português. */}

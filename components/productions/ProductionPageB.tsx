@@ -199,7 +199,7 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
 
                     <ProductionSidebar compacto rating={acf.rating} platforms={platforms} {...ficha}
                         extra={<LojaDestaque product={shopProducts[3] ?? shopProducts[0]} bloco="producao-loja-lateral" contexto={`producao:${production.slug}:lateral`} />} />
-                    <LojaDeslizante product={shopProducts[4] ?? shopProducts[1]} bloco="producao-loja-deslizante" contexto={`producao:${production.slug}:deslizante`} />
+                    <LojaDeslizante product={shopProducts[4] ?? shopProducts[1]} bloco="producao-loja-deslizante" mensagem={`Maratonou ${title}? Tem achado pra quem é fã 🍿`} contexto={`producao:${production.slug}:deslizante`} />
                 </div>
 
                 {ADSENSE.slots.inline && related.length > 0 && (

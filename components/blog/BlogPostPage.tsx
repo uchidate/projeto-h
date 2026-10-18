@@ -874,7 +874,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                                 </div>
                             )}
                             {blocosFinais}
-                            <LojaDeslizante product={deslizante} bloco="artigo-loja-deslizante" contexto={`blog:${post.slug}:deslizante`} />
+                            <LojaDeslizante product={deslizante} bloco="artigo-loja-deslizante" mensagem="Curtiu a leitura? Achei isso pra você, fã 💗" contexto={`blog:${post.slug}:deslizante`} />
                         </div>
                     </aside>
                     </div>
