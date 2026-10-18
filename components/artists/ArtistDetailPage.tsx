@@ -196,10 +196,10 @@ export function ArtistDetailPage({
     const destaqueB = poolLoja[4] ?? poolLoja[1]
     const lojaLateral = destaqueA ? (
         <>
-            <LojaDestaque product={destaqueA} bloco="ficha-artista-loja-lateral" contexto={`artista:${artist.slug}:lateral`}
+            <LojaDestaque tamanho="grande" product={destaqueA} bloco="ficha-artista-loja-lateral" contexto={`artista:${artist.slug}:lateral`}
                 title={shopFallback ? 'Achado da loja' : `Para quem curte ${name}`} />
             {destaqueB && destaqueB.id !== destaqueA.id && (
-                <LojaDestaque product={destaqueB} bloco="ficha-artista-loja-lateral-2" contexto={`artista:${artist.slug}:lateral2`} title="Mais da loja" />
+                <LojaDestaque tamanho="grande" product={destaqueB} bloco="ficha-artista-loja-lateral-2" contexto={`artista:${artist.slug}:lateral2`} title="Mais da loja" />
             )}
         </>
     ) : null
