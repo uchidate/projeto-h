@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildOgImageUrl, baseOG, baseTwitter, SITE_URL, SITE_NAME, OG_IMAGE } from './site'
+import { buildOgImageUrl, baseOG, baseTwitter, compartilhamento, SITE_URL, SITE_NAME, OG_IMAGE } from './site'
 
 describe('buildOgImageUrl', () => {
     it('inclui apenas o title quando nenhum campo opcional é passado', () => {
@@ -40,5 +40,17 @@ describe('baseTwitter', () => {
             card: 'summary_large_image',
             images: [OG_IMAGE.url],
         })
+    })
+})
+
+describe('compartilhamento', () => {
+    it('monta og e twitter com a imagem gerada, título e URL da própria página', () => {
+        const c = compartilhamento({ titulo: 'Guias', descricao: 'Desc', caminho: '/guias' })
+        const imagem = buildOgImageUrl({ title: 'Guias', subtitle: 'Desc' })
+        expect(c.openGraph).toMatchObject({ url: `${SITE_URL}/guias`, title: 'Guias', description: 'Desc', images: [{ url: imagem, width: 1200, height: 630 }] })
+        expect(c.twitter).toMatchObject({ card: 'summary_large_image', images: [imagem] })
+    })
+    it('sem descrição não emite o campo', () => {
+        expect(compartilhamento({ titulo: 'T', caminho: '/t' }).openGraph).not.toHaveProperty('description')
     })
 })

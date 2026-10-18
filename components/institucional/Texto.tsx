@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
-import { SITE_URL } from '@/lib/constants/site'
+import { compartilhamento } from '@/lib/constants/site'
 import { DEFAULT_LOCALE, LOCALE_META, ACTIVE_LOCALES, type Locale } from '@/lib/i18n/config'
 import { buildAlternates } from '@/lib/i18n/alternates'
 import { href, type RouteName } from '@/lib/i18n/routes'
@@ -22,7 +22,10 @@ export async function metadataInstitucional(rota: PaginaInstitucional, locale: L
         title: t('metaTitle'),
         ...(descricao && { description: descricao }),
         alternates: buildAlternates(rota as RouteName, undefined, locale, ACTIVE_LOCALES),
-        ...(locale !== DEFAULT_LOCALE && { openGraph: { url: `${SITE_URL}${href(rota, undefined, locale)}`, locale: LOCALE_META[locale].ogLocale } }),
+        ...(() => {
+            const base = compartilhamento({ titulo: t('metaTitle'), descricao, caminho: href(rota, undefined, locale) })
+            return { ...base, openGraph: { ...base.openGraph, ...(locale !== DEFAULT_LOCALE && { locale: LOCALE_META[locale].ogLocale }) } }
+        })(),
     }
 }
 

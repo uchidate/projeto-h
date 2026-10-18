@@ -75,6 +75,34 @@ export function baseOG(url: string) {
     }
 }
 
+/**
+ * Pré-visualização de link para uma página que não tem imagem própria: usa a imagem gerada
+ * (`/api/og`, com o título) em vez da padrão e preenche título, descrição e URL.
+ *
+ * Existe porque `openGraph` definido numa página SUBSTITUI o do layout, imagem inclusa
+ * (guias, privacidade e termos saíam sem imagem), e uma página sem `openGraph` herda o título e a URL
+ * da home (/guias e /calendario eram compartilhados como a home).
+ */
+export function compartilhamento(p: { titulo: string; descricao?: string; caminho: string }) {
+    const imagem = buildOgImageUrl({ title: p.titulo, subtitle: p.descricao })
+    return {
+        openGraph: {
+            siteName: SITE_NAME,
+            type: 'website' as const,
+            url: `${SITE_URL}${p.caminho}`,
+            title: p.titulo,
+            ...(p.descricao && { description: p.descricao }),
+            images: [{ url: imagem, width: 1200, height: 630 }],
+        },
+        twitter: {
+            card: 'summary_large_image' as const,
+            title: p.titulo,
+            ...(p.descricao && { description: p.descricao }),
+            images: [imagem],
+        },
+    }
+}
+
 export function baseTwitter() {
     return {
         card: 'summary_large_image' as const,

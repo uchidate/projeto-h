@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
-import { SITE_NAME, SITE_URL } from '@/lib/constants/site'
+import { SITE_NAME, SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { ConsentPreferences } from '@/components/consent/ConsentPreferences'
 
 export const metadata: Metadata = {
     title: 'Política de Privacidade',
     alternates: { canonical: `${SITE_URL}/privacidade` },
+    ...compartilhamento({ titulo: 'Política de Privacidade', caminho: '/privacidade' }),
 }
 
 export default function PrivacidadePage() {

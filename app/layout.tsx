@@ -23,10 +23,6 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         images: [OG_IMAGE.url],
     },
-    icons: {
-        icon: '/icon-192.png',
-        apple: '/icon-192.png',
-    },
     robots: {
         index: true,
         follow: true,

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getArtists } from '@/lib/wordpress/artists'
 import { getGroups } from '@/lib/wordpress/groups'
 import { CalendarPage } from '@/components/features/CalendarPage'
-import { SITE_URL } from '@/lib/constants/site'
+import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { parseAcfDate, stripHtml, getWPImage } from '@/lib/utils'
 import type { CalendarEvent } from '@/lib/calendario/tipos'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
@@ -13,6 +13,11 @@ export const metadata: Metadata = {
     title: 'Calendário K-Pop',
     description: 'Aniversários de idols e datas de debut de grupos K-Pop. Fique por dentro dos próximos eventos.',
     alternates: { canonical: `${SITE_URL}/calendario` },
+    ...compartilhamento({
+        titulo: 'Calendário K-Pop',
+        descricao: 'Aniversários de idols e datas de debut de grupos K-Pop.',
+        caminho: '/calendario',
+    }),
 }
 
 export default async function CalendarioPage() {

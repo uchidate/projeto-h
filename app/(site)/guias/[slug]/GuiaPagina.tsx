@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
-import { SITE_URL } from '@/lib/constants/site'
+import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { getHub, getRelatedHubs } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
 import { getPosts } from '@/lib/wordpress/posts'
@@ -20,12 +20,7 @@ export async function buildGuiaMetadata({ params }: { params: Promise<{ slug: st
         description: hub.description,
         keywords: hub.keywords,
         alternates: { canonical: url },
-        openGraph: {
-            title: hub.title,
-            description: hub.description,
-            type: 'website',
-            url,
-        },
+        ...compartilhamento({ titulo: hub.title, descricao: hub.description, caminho: `/guias/${slug}` }),
     }
 }
 
