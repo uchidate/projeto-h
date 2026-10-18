@@ -131,10 +131,15 @@ export function ArtistFichaC({
         }),
         ...productions.flatMap(p => {
             const ano = anoDe(p)
-            return ano ? [{ ano, tipo: 'obra' as const, titulo: tituloDe(p), href: `/productions/${p.slug}` }] : []
+            const poster = getWPImage(p._embedded, p.featured_image_url)?.src
+            return ano ? [{ ano, tipo: 'obra' as const, titulo: tituloDe(p), href: `/productions/${p.slug}`, img: poster }] : []
         }),
     ].filter(Boolean) as Marco[]
     const temMarcos = temMarcosSuficientes(marcos)
+    const anosDosMarcos = marcos.map(m => m.ano)
+    const anosMarcos = anosDosMarcos.length > 0 ? new Date().getFullYear() - Math.min(...anosDosMarcos) : 0
+    const nObras = marcos.filter(m => m.tipo === 'obra').length
+    const nPremios = marcos.filter(m => m.tipo === 'premio').length
 
     const temUniverso = relatedArtists.filter(r => r.id !== artist.id).length > 0 || !!grupo
     const temLer = relatedPosts.length > 0
@@ -299,6 +304,15 @@ export function ArtistFichaC({
                     <div className={COL}>
                         <p className={`${KICKER} text-muted`}>{t('marcosKicker')}</p>
                         <h2 className={`mt-2 ${H2}`}>{t('marcosTitle', { name })}</h2>
+                        <ul className="mt-5 flex flex-wrap gap-2">
+                            {[
+                                anosMarcos > 0 && t('marcosStatAnos', { count: anosMarcos }),
+                                nObras > 0 && t('marcosStatObras', { count: nObras }),
+                                nPremios > 0 && t('marcosStatPremios', { count: nPremios }),
+                            ].filter(Boolean).map(txt => (
+                                <li key={String(txt)} className="border border-border px-3 py-1.5 font-mono text-[12px] font-bold" style={{ color: accent }}>{txt}</li>
+                            ))}
+                        </ul>
                         <div className="mt-8">
                             <MarcosFaixa
                                 marcos={marcos}

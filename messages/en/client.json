@@ -225,5 +225,9 @@
       "titulo": "Top 10 on streaming",
       "mostrarRanking": "Show the {plataforma} ranking"
     }
+  },
+  "artistCard": {
+    "producao": "Production",
+    "musica": "Music"
   }
 }

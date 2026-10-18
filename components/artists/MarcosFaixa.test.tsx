@@ -24,7 +24,7 @@ describe('MarcosFaixa', () => {
         ]} />)
         const anos = screen.getAllByText(/^20\d\d$/).map(e => e.textContent)
         expect(anos).toEqual(['2001', '2010'])
-        expect(screen.getByRole('link', { name: 'Depois' }).getAttribute('href')).toBe('/productions/depois')
+        expect(screen.getByRole('link', { name: /Depois/ }).getAttribute('href')).toBe('/productions/depois')
         expect(screen.getByText('Antes').closest('a')).toBeNull()
     })
     it('limita a 4 por ano e indica o restante', () => {

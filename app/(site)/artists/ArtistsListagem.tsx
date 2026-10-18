@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { exigirListagemComConteudo } from '@/lib/wordpress/client'
+import { stripHtml } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import { getArtists } from '@/lib/wordpress/artists'
+import { getGroupsByIds } from '@/lib/wordpress/groups'
 import { wpFetch } from '@/lib/wordpress/client'
 import { baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistsPage } from '@/components/artists/ArtistsPage'
@@ -86,6 +88,10 @@ export async function ArtistsListagem({ searchParams }: { searchParams: SearchPa
         aniversarios = aniversariosDaSemana(porMes.flat(), hoje)
     }
 
+    // Nome do grupo de cada artista para o cartão ("Do grupo BLACKPINK"). Falha do WP só tira essa linha.
+    const idsDeGrupo = [...new Set(items.flatMap(a => (a.acf?.groups as number[] | undefined) ?? []))]
+    const grupos = Object.fromEntries((await getGroupsByIds(idsDeGrupo)).map(g => [g.id, stripHtml(g.title.rendered)]))
+
     const shopProducts = unfiltered && page === 1
         ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:artistas')
         : []
@@ -107,6 +113,7 @@ export async function ArtistsListagem({ searchParams }: { searchParams: SearchPa
             perPage={48}
             aniversarios={aniversarios}
             shopProducts={shopProducts}
+            grupos={grupos}
         />
         </>
     )
