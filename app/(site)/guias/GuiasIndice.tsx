@@ -8,7 +8,7 @@ import { PageBreadcrumb } from '@/components/ui/PageBreadcrumb'
 import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import { BrandDot } from '@/components/ui/BrandDot'
-import { SITE_URL } from '@/lib/constants/site'
+import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { PageBreadcrumb as BreadcrumbSchemaLd } from '@/components/seo/PageBreadcrumb'
 
 export function buildGuiasMetadata(): Metadata {
@@ -16,6 +16,11 @@ export function buildGuiasMetadata(): Metadata {
         title: 'Guias de K-Drama, K-Pop e Cinema Coreano',
         description: 'Explore guias editoriais sobre produções, artistas e grupos do entretenimento coreano. Doramas por gênero, plataforma, artistas por agência e muito mais.',
         alternates: { canonical: `${SITE_URL}/guias` },
+        ...compartilhamento({
+            titulo: 'Guias de K-Drama, K-Pop e Cinema Coreano',
+            descricao: 'Doramas por gênero e plataforma, artistas por agência e muito mais.',
+            caminho: '/guias',
+        }),
     }
 }
 

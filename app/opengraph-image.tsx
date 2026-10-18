@@ -1,4 +1,5 @@
 import { SITE_DOMAIN } from '@/lib/constants/site'
+import { MarcaOg } from '@/lib/og/marca'
 import { ImageResponse } from 'next/og'
 import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants/site'
 
@@ -42,20 +43,13 @@ export default function OgImage() {
                     }}
                 />
 
-                {/* Logo / Nome */}
-                <div
-                    style={{
-                        fontSize: 72,
-                        fontWeight: 900,
-                        color: '#ffffff',
-                        letterSpacing: '-2px',
-                        textAlign: 'center',
-                        marginBottom: 16,
-                        display: 'flex',
-                    }}
-                >
-                    Onda{' '}
-                    <span style={{ color: '#e91e8c', marginLeft: 16 }}>Coreana</span>
+                {/* Marca + nome */}
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
+                    <MarcaOg tamanho={120} />
+                    <div style={{ fontSize: 96, fontWeight: 900, color: '#ffffff', letterSpacing: '-3px', marginLeft: 28, display: 'flex' }}>
+                        {SITE_NAME}
+                        <span style={{ color: '#ff2d78' }}>.</span>
+                    </div>
                 </div>
 
                 {/* Tagline */}

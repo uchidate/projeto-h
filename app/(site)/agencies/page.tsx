@@ -6,7 +6,7 @@ import { Building2, Calendar, Music2, Star, ArrowUpDown, SlidersHorizontal } fro
 import { getAgencies } from '@/lib/wordpress/agencies'
 import { getArtists } from '@/lib/wordpress/artists'
 import { getAllGroups } from '@/lib/wordpress/groups'
-import { SITE_URL } from '@/lib/constants/site'
+import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { agencyMark, optionalAccent, type CSSVariableProperties } from '@/lib/agencies/presentation'
@@ -37,12 +37,11 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
         description: AGENCY_DESCRIPTION,
         alternates: { canonical: `${SITE_URL}/agencies` },
         robots: hasFilters ? { index: false, follow: true } : undefined,
-        openGraph: {
-            title: 'Agências K-Pop',
-            description: 'As maiores agências de entretenimento da Coreia do Sul.',
-            url: `${SITE_URL}/agencies`,
-            type: 'website',
-        },
+        ...compartilhamento({
+            titulo: 'Agências K-Pop',
+            descricao: 'As maiores agências de entretenimento da Coreia do Sul.',
+            caminho: '/agencies',
+        }),
     }
 }
 

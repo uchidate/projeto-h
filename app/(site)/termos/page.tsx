@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import { SITE_NAME, SITE_URL } from '@/lib/constants/site'
+import { SITE_NAME, SITE_URL, compartilhamento } from '@/lib/constants/site'
 
 export const metadata: Metadata = {
     title: 'Termos de Uso',
     alternates: { canonical: `${SITE_URL}/termos` },
+    ...compartilhamento({ titulo: 'Termos de Uso', caminho: '/termos' }),
 }
 
 export default function TermosPage() {
