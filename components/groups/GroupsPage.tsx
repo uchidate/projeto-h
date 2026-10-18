@@ -157,18 +157,40 @@ const chip = (ativo: boolean) =>
 const aba = (ativo: boolean) =>
     `flex h-11 shrink-0 items-center border-b-2 text-[14px] font-semibold transition-colors ${ativo ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`
 
+/** Nome do fandom só quando é um nome: vazio, "N/A" e textos longos não viram gancho. */
+export function fandomValido(valor: unknown): string | undefined {
+    const nome = String(valor ?? '').trim()
+    return nome && nome.length <= 28 && !/^(n\/?a|-|—|desconhecido|unknown|nenhum)$/i.test(nome) ? nome : undefined
+}
+
 /** Card de diretório: foto quadrada, nome e uma linha de meta (tipo · ano). */
 function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?: boolean; integrantes?: { nome: string; foto: string }[] }) {
     const image = getWPImage(group._embedded, group.featured_image_url)
     const name = stripHtml(group.title.rendered)
     const acf = group.acf ?? {}
     const meta = [acf.type ? (TYPE_PT[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
+    const membros = acf.members?.length ?? 0
+    const fandom = fandomValido(acf.fandom_name)
     return (
         <Link href={`/groups/${group.slug}`} className="group block">
             <span className="relative block aspect-square overflow-hidden bg-surface">
                 {image
                     ? <Image src={image.src} alt={image.alt || name} fill priority={priority} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw" className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transition-none" />
                     : <span className="flex h-full w-full items-center justify-center" style={{ background: nameToGradient(name) }}><Users size={30} className="text-white/20" /></span>}
+                {/* Gancho sobre a foto: nome do fandom (o que o público do grupo se chama) e quantos integrantes. */}
+                {membros > 0 && (
+                    <span className="absolute left-2 top-2 flex items-center gap-1 bg-accent px-2 py-1 font-mono text-[10px] font-black uppercase tracking-[0.08em] text-[#0d0b0f] shadow-md">
+                        <Users size={11} aria-hidden /> {membros}
+                    </span>
+                )}
+                {fandom && (
+                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 via-55% to-transparent px-3 pb-3 pt-9 text-white">
+                        <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
+                            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />Fandom
+                        </span>
+                        <span className={`mt-1 line-clamp-1 block ${SERIF} text-[18px] font-bold italic leading-[1.08] [text-shadow:0_0_8px_rgba(0,0,0,.6)]`}>{fandom}</span>
+                    </span>
+                )}
                 {/* Só onde há mouse: mostra quem está no grupo. Enfeite (aria-hidden); o clique vai para a ficha do grupo. */}
                 {integrantes && (
                     <span aria-hidden className="pointer-events-none absolute inset-0 hidden grid-cols-2 grid-rows-2 gap-0.5 bg-background opacity-0 transition-opacity duration-200 group-hover:opacity-100 motion-reduce:transition-none [@media(hover:hover)]:grid">
