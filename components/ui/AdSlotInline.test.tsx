@@ -70,7 +70,7 @@ describe('AdSlotInline', () => {
         const aside = screen.getByRole('complementary')
         expect(aside).toHaveAttribute('data-ad-layout', 'sidebar')
         expect(aside).toHaveClass('my-0')
-        expect(container.querySelector('ins')).toHaveAttribute('data-ad-format', 'rectangle')
+        expect(container.querySelector('ins')).toHaveAttribute('data-ad-format', 'auto')
         expect(container.querySelector('ins')?.parentElement?.parentElement).toHaveStyle({ maxWidth: '300px' })
     })
 
