@@ -125,7 +125,7 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                         <div className="flex items-baseline justify-between gap-4">
                             <h2 className={H2}>{t('members')}<span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{activeMembers.length}</span></h2>
                         </div>
-                        <ul className={`mt-6 grid grid-cols-2 gap-x-3 gap-y-5 sm:mt-7 sm:gap-5 md:grid-cols-[repeat(auto-fill,minmax(168px,200px))]`}>
+                        <ul className={`mt-6 grid grid-cols-2 gap-x-3 gap-y-5 sm:mt-7 sm:gap-5 md:grid-cols-[repeat(auto-fill,minmax(144px,172px))]`}>
                             {activeMembers.map(m => {
                                 const foto = getWPImage(m._embedded, m.featured_image_url)
                                 const nome = stripHtml(m.title?.rendered ?? '')
@@ -135,7 +135,7 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                                 return (
                                     <li key={m.id}>
                                         <Link href={`/artists/${m.slug}`} className="group block">
-                                            <span className="relative block aspect-3/4 overflow-hidden bg-surface shadow-[0_18px_44px_rgba(0,0,0,.55)]">
+                                            <span className="relative block aspect-3/4 md:aspect-4/5 overflow-hidden bg-surface shadow-[0_18px_44px_rgba(0,0,0,.55)]">
                                                 {foto && <Image src={foto.src} alt={foto.alt || nome} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" />}
                                             </span>
                                             <span className="mt-3 flex items-baseline justify-between gap-2">
