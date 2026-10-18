@@ -53,7 +53,7 @@ export function ProductionResumo({ title, synopsis, genres, platforms }: Props) 
                 </div>
 
                 {temCartao && (
-                    <div data-bloco="ficha-producao-onde-assistir" className="order-first min-w-0 self-start border border-border bg-surface p-4 sm:p-6 lg:order-none">
+                    <div id="onde-assistir" data-bloco="ficha-producao-onde-assistir" className="order-first min-w-0 scroll-mt-28 self-start border border-border bg-surface p-4 sm:p-6 lg:order-none">
                         <h2 className="mb-3 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-muted lg:mb-4">{t('summary.whereToWatch')}</h2>
                         <div className="flex flex-col gap-2.5">
                             {platforms.map(p => (

@@ -46,6 +46,10 @@
     }
   },
   "production": {
+    "availableOn": "Disponível em",
+    "ratingVotes": "{count, plural, one {# voto} other {# votos}} · TMDB",
+    "ratingFewVotes": "{count, plural, one {só # voto} other {só # votos}} · TMDB",
+    "ratingFewVotesTitle": "Poucas avaliações: a nota ainda não representa o público.",
     "mapKicker": "Conexões",
     "episodesKicker": "Episódio a episódio",
     "episodesTitle": "Como a audiência avaliou cada capítulo de {title}",

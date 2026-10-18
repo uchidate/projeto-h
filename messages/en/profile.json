@@ -46,6 +46,10 @@
     }
   },
   "production": {
+    "availableOn": "Available on",
+    "ratingVotes": "{count, plural, one {# vote} other {# votes}} · TMDB",
+    "ratingFewVotes": "{count, plural, one {only # vote} other {only # votes}} · TMDB",
+    "ratingFewVotesTitle": "Few ratings: the score doesn't represent the audience yet.",
     "mapKicker": "Connections",
     "episodesKicker": "Episode by episode",
     "episodesTitle": "How viewers rated each episode of {title}",
