@@ -158,9 +158,9 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
     const destaqueB = shopProducts[1]
     const lojaLateral = destaqueA ? (
         <>
-            <LojaDestaque product={destaqueA} bloco="ficha-grupo-loja-lateral" contexto={`grupo:${group.slug}:lateral`}
+            <LojaDestaque tamanho="grande" product={destaqueA} bloco="ficha-grupo-loja-lateral" contexto={`grupo:${group.slug}:lateral`}
                 title={shopFallback ? 'Achado da loja' : `Para quem curte ${name}`} />
-            {destaqueB && <LojaDestaque product={destaqueB} bloco="ficha-grupo-loja-lateral-2" contexto={`grupo:${group.slug}:lateral2`} title="Mais da loja" />}
+            {destaqueB && <LojaDestaque tamanho="grande" product={destaqueB} bloco="ficha-grupo-loja-lateral-2" contexto={`grupo:${group.slug}:lateral2`} title="Mais da loja" />}
         </>
     ) : null
 
