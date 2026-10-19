@@ -13,6 +13,9 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/artists',
     useSearchParams: () => new URLSearchParams(searchParamsValue),
 }))
+
+// Troca de filtro é navegação completa (lib/listagem/navegar.ts); o teste confere só o destino.
+vi.mock('@/lib/listagem/navegar', async orig => ({ ...(await orig<typeof import('@/lib/listagem/navegar')>()), navegarListagem: (url: string) => pushMock(url) }))
 vi.mock('@/lib/listagem/query-atual', () => ({ queryAtual: () => new URLSearchParams(searchParamsValue) }))
 vi.mock('@/components/artists/ArtistCard', () => ({ ArtistCard: ({ artist }: { artist: WPArtist }) => <div>{artist.title.rendered}</div> }))
 vi.mock('@/components/ui/Pagination', () => ({ Pagination: () => <div data-testid="pagination" /> }))
