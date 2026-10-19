@@ -29,6 +29,27 @@ describe('getProductions', () => {
         expect(productionsCall?.[0]).toContain('production_genre=5')
     })
 
+    it('filtra plataforma pela taxonomia (ID do termo), não pelo ACF vazio', async () => {
+        fetchMock.mockImplementation(async (url: string) => {
+            if (url.includes('/production_platform')) return { ok: true, json: async () => [term(677, 'netflix')] }
+            return { ok: true, json: async () => [production(1, 'x')], headers: new Map([['X-WP-Total', '1'], ['X-WP-TotalPages', '1']]) }
+        })
+        await getProductions({ platform: 'netflix' })
+        const url = fetchMock.mock.calls.find(([u]) => u.includes('/wp/v2/production?'))?.[0] as string
+        expect(url).toContain('production_platform=677')
+        expect(url).not.toContain('oc_platform')
+    })
+
+    it('plataforma sem termo correspondente cai no filtro antigo (oc_platform)', async () => {
+        fetchMock.mockImplementation(async (url: string) => {
+            if (url.includes('/production_platform')) return { ok: true, json: async () => [term(677, 'netflix')] }
+            return { ok: true, json: async () => [], headers: new Map([['X-WP-Total', '0'], ['X-WP-TotalPages', '0']]) }
+        })
+        await getProductions({ platform: 'canal-x' })
+        const url = fetchMock.mock.calls.find(([u]) => u.includes('/wp/v2/production?'))?.[0] as string
+        expect(url).toContain('oc_platform=canal-x')
+    })
+
     it('não quebra quando a resolução do gênero falha (segue sem o filtro)', async () => {
         fetchMock.mockImplementation(async (url: string) => {
             if (url.includes('/production_genre')) throw new Error('falhou')
