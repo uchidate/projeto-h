@@ -1,8 +1,9 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useCallback } from 'react'
 import { queryAtual } from '@/lib/listagem/query-atual'
+import { navegarListagem } from '@/lib/listagem/navegar'
 
 export interface FilterOption {
     value: string
@@ -17,7 +18,6 @@ interface FilterGroupProps {
 }
 
 export function FilterBar({ groups }: { groups: FilterGroupProps[] }) {
-    const router = useRouter()
     const pathname = usePathname()
 
     const setParam = useCallback((param: string, value: string) => {
@@ -28,8 +28,8 @@ export function FilterBar({ groups }: { groups: FilterGroupProps[] }) {
             params.delete(param)
         }
         params.delete('page') // reset página ao filtrar
-        router.push(`${pathname}?${params.toString()}`)
-    }, [pathname, router])
+        navegarListagem(`${pathname}?${params.toString()}`)
+    }, [pathname])
 
     return (
         <div className="flex flex-wrap gap-3 mb-8">

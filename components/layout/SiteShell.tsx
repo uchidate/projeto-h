@@ -12,6 +12,7 @@ import NavBar from '@/components/NavBar'
 import Footer from '@/components/ui/Footer'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { CookieBanner } from '@/components/consent/CookieBanner'
+import { NavegacaoDeListagem } from '@/components/layout/NavegacaoDeListagem'
 import { RastreioDeRecirculacao } from '@/components/analytics/RastreioDeRecirculacao'
 import { SinalDeHumano } from '@/components/analytics/SinalDeHumano'
 import { AdSenseLoader } from '@/components/ui/AdSenseLoader'
@@ -206,6 +207,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
 
                 {/* LGPD / GDPR — ver lib/consent.ts */}
                 <CookieBanner />
+                <NavegacaoDeListagem />
                 <RastreioDeRecirculacao />
             <SinalDeHumano />
                 <RastreioDeExperiencia />

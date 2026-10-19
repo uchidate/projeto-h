@@ -2,7 +2,7 @@
 
 import { htmlLang, intlLocale } from '@/lib/i18n/format'
 import Link from 'next/link'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import { Mic2, Search, X } from 'lucide-react'
 import { useCallback, useRef, useState, useEffect } from 'react'
@@ -28,6 +28,7 @@ import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { queryAtual } from '@/lib/listagem/query-atual'
+import { consumirFocoBusca, navegarListagem } from '@/lib/listagem/navegar'
 
 const SORT_OPTIONS = [
     { value: 'trending', label: 'Em alta' },
@@ -65,7 +66,6 @@ interface Props {
 }
 
 export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [], grupos = {} }: Props) {
-    const router = useRouter()
     const pathname = usePathname()
 
     const [searchVal, setSearchVal] = useState(search ?? '')
@@ -96,29 +96,36 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
     }, [search, role, affiliation, letter, sortBy, pathname])
 
     const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const campoBusca = useRef<HTMLInputElement>(null)
+    // A busca recarrega a página (lib/listagem/navegar.ts): devolve o foco ao campo.
+    useEffect(() => {
+        if (!consumirFocoBusca() || !campoBusca.current) return
+        campoBusca.current.focus()
+        campoBusca.current.setSelectionRange(campoBusca.current.value.length, campoBusca.current.value.length)
+    }, [])
 
     useEffect(() => {
         if (searchVal === (search ?? '')) return
         if (searchRef.current) clearTimeout(searchRef.current)
-        searchRef.current = setTimeout(() => router.push(buildUrl(searchVal, sortVal, roleVal, affiliationVal)), 400)
+        searchRef.current = setTimeout(() => navegarListagem(buildUrl(searchVal, sortVal, roleVal, affiliationVal), { manterFocoBusca: true }), 400)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- debounce da busca: só o texto digitado dispara. Incluir os outros filtros faria cada troca de filtro esperar 400ms de novo
     }, [searchVal])
 
     useEffect(() => {
         if (sortVal === sortBy) return
-        router.push(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
+        navegarListagem(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
     // eslint-disable-next-line react-hooks/exhaustive-deps -- navega só quando a ordenação muda; os demais filtros entram na URL como valor atual, não como gatilho
     }, [sortVal])
 
     useEffect(() => {
         if (roleVal === (role ?? '')) return
-        router.push(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
+        navegarListagem(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
     // eslint-disable-next-line react-hooks/exhaustive-deps -- navega só quando o papel muda; os demais filtros entram na URL como valor atual, não como gatilho
     }, [roleVal])
 
     useEffect(() => {
         if (affiliationVal === (affiliation ?? '')) return
-        router.push(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
+        navegarListagem(buildUrl(searchVal, sortVal, roleVal, affiliationVal))
     // eslint-disable-next-line react-hooks/exhaustive-deps -- navega só quando a afiliação muda; os demais filtros entram na URL como valor atual, não como gatilho
     }, [affiliationVal])
 
@@ -190,6 +197,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                     <div className="flex h-12 w-full min-w-0 items-center gap-3 border border-border-strong bg-surface px-4 transition-colors focus-within:border-foreground lg:max-w-[560px] lg:flex-1">
                         <Search className="h-[18px] w-[18px] shrink-0 text-muted" />
                         <input
+                            ref={campoBusca}
                             type="text"
                             value={searchVal}
                             onChange={e => setSearchVal(e.target.value)}

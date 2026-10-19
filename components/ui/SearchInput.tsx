@@ -1,10 +1,11 @@
 'use client'
 /* eslint-disable react-hooks/set-state-in-effect -- controlled input follows external URL state */
 
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Search, X } from 'lucide-react'
 import { queryAtual } from '@/lib/listagem/query-atual'
+import { consumirFocoBusca, navegarListagem } from '@/lib/listagem/navegar'
 
 interface Props {
     placeholder?: string
@@ -14,12 +15,20 @@ interface Props {
 }
 
 export function SearchInput({ placeholder = 'Buscar...', param = 'search', current = '', className = '' }: Props) {
-    const router = useRouter()
     const pathname = usePathname()
     const [value, setValue] = useState(current)
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const inputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => setValue(current), [current])
+    // A busca recarrega a página (ver lib/listagem/navegar.ts): devolve o foco ao campo.
+    useEffect(() => {
+        if (!consumirFocoBusca()) return
+        const campo = inputRef.current
+        if (!campo) return
+        campo.focus()
+        campo.setSelectionRange(campo.value.length, campo.value.length)
+    }, [])
     useEffect(() => () => {
         if (timerRef.current) clearTimeout(timerRef.current)
     }, [])
@@ -29,8 +38,8 @@ export function SearchInput({ placeholder = 'Buscar...', param = 'search', curre
         if (q) { params.set(param, q) } else { params.delete(param) }
         params.delete('page')
         const qs = params.toString()
-        router.push(`${pathname}${qs ? `?${qs}` : ''}`)
-    }, [pathname, param, router])
+        navegarListagem(`${pathname}${qs ? `?${qs}` : ''}`, { manterFocoBusca: true })
+    }, [pathname, param])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const q = e.target.value
@@ -49,6 +58,7 @@ export function SearchInput({ placeholder = 'Buscar...', param = 'search', curre
         <div className={`flex h-9 w-full items-center gap-2 rounded-md border border-border bg-background px-2.5 transition-colors focus-within:border-foreground lg:h-8 lg:w-[280px] lg:shrink-0 ${className}`}>
             <Search className="h-4 w-4 shrink-0 text-muted pointer-events-none" />
             <input
+                ref={inputRef}
                 type="text"
                 value={value}
                 onChange={handleChange}

@@ -2,18 +2,20 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { navegarListagem } from '@/lib/listagem/navegar'
 import { SearchInput } from './SearchInput'
 
 vi.mock('next/navigation', () => ({
-    useRouter: vi.fn(),
     usePathname: vi.fn(),
 }))
 
-const mockPush = vi.fn()
+// Troca de listagem é navegação completa (lib/listagem/navegar.ts); aqui só se confere o destino.
+vi.mock('@/lib/listagem/navegar', async orig => ({ ...(await orig<typeof import('@/lib/listagem/navegar')>()), navegarListagem: vi.fn() }))
+
+const mockPush = vi.mocked(navegarListagem)
 
 function setup(searchParams = '') {
-    vi.mocked(useRouter).mockReturnValue({ push: mockPush } as unknown as ReturnType<typeof useRouter>)
     vi.mocked(usePathname).mockReturnValue('/productions')
     window.history.replaceState(null, '', `/productions${searchParams ? `?${searchParams}` : ''}`)
 }
@@ -41,7 +43,7 @@ describe('SearchInput', () => {
         render(<SearchInput />)
         await user.type(screen.getByRole('textbox'), 'bts')
         await vi.advanceTimersByTimeAsync(400)
-        expect(mockPush).toHaveBeenCalledWith('/productions?search=bts')
+        expect(mockPush).toHaveBeenCalledWith('/productions?search=bts', { manterFocoBusca: true })
     })
 
     it('reseta a paginação (remove ?page=) ao buscar', async () => {
@@ -60,7 +62,7 @@ describe('SearchInput', () => {
         render(<SearchInput param="q" />)
         await user.type(screen.getByRole('textbox'), 'x')
         await vi.advanceTimersByTimeAsync(400)
-        expect(mockPush).toHaveBeenCalledWith('/productions?q=x')
+        expect(mockPush).toHaveBeenCalledWith('/productions?q=x', { manterFocoBusca: true })
     })
 
     it('preserva outros query params já existentes na URL', async () => {
@@ -69,7 +71,7 @@ describe('SearchInput', () => {
         render(<SearchInput />)
         await user.type(screen.getByRole('textbox'), 'a')
         await vi.advanceTimersByTimeAsync(400)
-        expect(mockPush).toHaveBeenCalledWith('/productions?genre=drama&search=a')
+        expect(mockPush).toHaveBeenCalledWith('/productions?genre=drama&search=a', { manterFocoBusca: true })
     })
 
     it('digitar de novo antes do debounce cancela a navegação anterior', async () => {
@@ -84,7 +86,7 @@ describe('SearchInput', () => {
         expect(mockPush).not.toHaveBeenCalled()
         await vi.advanceTimersByTimeAsync(200)
         expect(mockPush).toHaveBeenCalledTimes(1)
-        expect(mockPush).toHaveBeenCalledWith('/productions?search=bt')
+        expect(mockPush).toHaveBeenCalledWith('/productions?search=bt', { manterFocoBusca: true })
     })
 
     it('não mostra o botão de limpar quando o campo está vazio', () => {
@@ -98,7 +100,7 @@ describe('SearchInput', () => {
         expect(screen.getByRole('button', { name: /limpar busca/i })).toBeInTheDocument()
 
         await user.click(screen.getByRole('button', { name: /limpar busca/i }))
-        expect(mockPush).toHaveBeenCalledWith('/productions')
+        expect(mockPush).toHaveBeenCalledWith('/productions', { manterFocoBusca: true })
         expect(screen.getByRole('textbox')).toHaveValue('')
     })
 
