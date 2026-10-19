@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { BrandMark } from '@/components/ui/BrandMark'
 import { Rss } from 'lucide-react'
+import { IconInstagram } from '@/components/ui/SocialIcons'
 import { SITE_NAME } from '@/lib/constants/site'
 import type { FooterColumn, SiteLink } from '@/lib/wordpress/site-settings'
 
@@ -38,9 +39,15 @@ export default function Footer({ columns, tagline, labels, mostSearched = [] }: 
                         </span>
                     </Link>
                     <p className="max-w-[44ch] text-[14px] leading-6 text-featured-muted sm:text-[15px] lg:flex-1 lg:border-l lg:border-featured-border lg:pl-8">{tagline}</p>
+                    <div className="flex shrink-0 flex-wrap gap-2 self-start">
+                    <a href="https://www.instagram.com/hallyuhub_br/" target="_blank" rel="noopener noreferrer me" data-bloco="rodape-instagram"
+                        className="inline-flex min-h-11 shrink-0 items-center gap-2 self-start whitespace-nowrap border border-featured-border px-4 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-featured-muted transition-colors hover:border-accent hover:text-accent">
+                        <IconInstagram size={13} /> Instagram
+                    </a>
                     <a href="/feed.xml" className="inline-flex min-h-11 shrink-0 items-center gap-2 self-start whitespace-nowrap border border-featured-border px-4 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-featured-muted transition-colors hover:border-accent hover:text-accent lg:self-auto">
                         <Rss size={13} aria-hidden="true" /> RSS Feed
                     </a>
+                    </div>
                 </div>
 
                 <nav aria-label={labels.nav} className="grid grid-cols-2 border-y border-featured-border md:grid-cols-4">
