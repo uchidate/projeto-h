@@ -30,6 +30,14 @@ async function resolveTermId(slug: string, fetchTerms: () => Promise<WPTerm[]>):
     } catch { return undefined }
 }
 
+async function resolvePlatformId(platform: string): Promise<number | undefined> {
+    try {
+        const alvo = platform.toLowerCase()
+        const terms = await getProductionPlatforms()
+        return terms.find(t => t.slug === alvo || t.name.toLowerCase() === alvo)?.id
+    } catch { return undefined }
+}
+
 export async function getProductions(query: ProductionsQuery = {}) {
     const {
         page = 1, perPage = 24, genre, tag, platform, network, type, search,
@@ -39,6 +47,11 @@ export async function getProductions(query: ProductionsQuery = {}) {
 
     // WP REST API exige ID inteiro para filtro de taxonomia — resolve slug → ID
     const genreId = genre ? await resolveTermId(genre, getProductionGenres) : undefined
+    // Plataforma: o dado confiável está na taxonomia production_platform (Netflix 417,
+    // Kocowa 583); o campo ACF `platforms` que o oc_platform lê está vazio na maioria
+    // das produções (o filtro mostrava 69 e 68). Sem termo correspondente, cai no
+    // oc_platform antigo, que também aceita nomes em texto.
+    const platformId = platform ? await resolvePlatformId(platform) : undefined
 
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage,
@@ -50,7 +63,8 @@ export async function getProductions(query: ProductionsQuery = {}) {
         oc_type: type, oc_year: year, oc_max_year: maxYear, oc_min_rating: minRating,
         production_genre: genreId,
         oc_tag: tag,
-        oc_platform: platform,   // filtra via acf.platforms[] (LIKE match no WP)
+        production_platform: platformId,
+        oc_platform: platformId ? undefined : platform,   // legado: acf.platforms[] (LIKE match no WP)
         oc_network: network,
         meta_key: metaKey,
         oc_exclude_adult: excludeAdult ? '1' : undefined,
