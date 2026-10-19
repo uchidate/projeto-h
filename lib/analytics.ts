@@ -557,6 +557,11 @@ export function trackFiltroListagem(params: { listagem: string; filtros: string;
  * página/vitrine onde apareceu (ex.: "artista:jisoo-kim", "loja"), pra medir
  * relevância por página e não só popularidade global.
  */
+/** Pedido de inscrição na newsletter (o cadastro só vale após a confirmação por e-mail). */
+export function trackNewsletterPedido() {
+    enviar('newsletter_pedido', {})
+}
+
 export function trackProductClick(params: { productId: number; store: string; contexto: string }) {
     enviar('product_click', {
         product_id: params.productId,
