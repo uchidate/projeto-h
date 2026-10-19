@@ -1,9 +1,10 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import type { WPTerm } from '@/lib/wordpress/types'
 import { FilterSelect } from '@/components/ui/FilterSelect'
 import { queryAtual } from '@/lib/listagem/query-atual'
+import { navegarListagem } from '@/lib/listagem/navegar'
 
 interface Props {
     categories: WPTerm[]
@@ -11,7 +12,6 @@ interface Props {
 }
 
 export function BlogCategorySelect({ categories, current }: Props) {
-    const router = useRouter()
     const pathname = usePathname()
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -22,7 +22,7 @@ export function BlogCategorySelect({ categories, current }: Props) {
             params.delete('category')
         }
         params.delete('page')
-        router.push(`${pathname}${params.toString() ? `?${params}` : ''}`)
+        navegarListagem(`${pathname}${params.toString() ? `?${params}` : ''}`)
     }
 
     return (

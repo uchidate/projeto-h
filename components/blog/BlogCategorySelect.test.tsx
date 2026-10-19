@@ -12,6 +12,9 @@ vi.mock('next/navigation', () => ({
     useRouter: () => ({ push: pushMock, replace: vi.fn() }),
     usePathname: () => '/blog',
 }))
+
+// Troca de filtro é navegação completa (lib/listagem/navegar.ts); o teste confere só o destino.
+vi.mock('@/lib/listagem/navegar', () => ({ navegarListagem: (url: string) => pushMock(url) }))
 vi.mock('@/lib/listagem/query-atual', () => ({ queryAtual: () => new URLSearchParams(searchParamsValue) }))
 
 function term(overrides: Partial<WPTerm> = {}): WPTerm {

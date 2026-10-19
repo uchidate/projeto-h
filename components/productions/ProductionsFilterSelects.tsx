@@ -1,9 +1,10 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import type { WPTerm } from '@/lib/wordpress/types'
 import { FilterSelect } from '@/components/ui/FilterSelect'
 import { queryAtual } from '@/lib/listagem/query-atual'
+import { navegarListagem } from '@/lib/listagem/navegar'
 
 interface Props {
     genres: WPTerm[]
@@ -13,14 +14,13 @@ interface Props {
 }
 
 export function ProductionsFilterSelects({ genres, platforms, currentGenre, currentPlatform }: Props) {
-    const router = useRouter()
     const pathname = usePathname()
 
     const navigate = (key: string, value: string) => {
         const params = queryAtual()
         if (value) { params.set(key, value) } else { params.delete(key) }
         params.delete('page')
-        router.push(`${pathname}${params.toString() ? `?${params}` : ''}`)
+        navegarListagem(`${pathname}${params.toString() ? `?${params}` : ''}`)
     }
 
     return (
