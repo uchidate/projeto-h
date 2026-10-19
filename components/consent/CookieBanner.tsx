@@ -34,6 +34,16 @@ export function CookieBanner() {
         trackConsentBannerExibido()
     }, [visible])
 
+    // Marca o <html> enquanto o banner está aberto. O anúncio de âncora do
+    // Google tem o mesmo z-index máximo do wrapper abaixo e, no empate, vence
+    // quem entra por último no DOM: ele. O CSS em styles/globals.css esconde
+    // âncora e vinheta até a decisão — ver [data-consent-pendente].
+    useEffect(() => {
+        if (!visible) return
+        document.documentElement.setAttribute('data-consent-pendente', '')
+        return () => document.documentElement.removeAttribute('data-consent-pendente')
+    }, [visible])
+
     if (!visible) return null
 
     // Banner em destaque, por decisão de produto (2026-09-13): o banner discreto
