@@ -35,6 +35,10 @@ export default function PrivacidadePage() {
                     <ConsentPreferences />
                 </section>
                 <section>
+                    <h2 className="text-[18px] font-bold mb-2">Newsletter</h2>
+                    <p className="text-muted">Se você se inscrever na newsletter, guardamos apenas o seu e-mail, depois de você confirmá-lo pelo link que enviamos. Usamos o endereço só para mandar as novidades do site e os achados da loja. O envio é feito pelo Resend, serviço de e-mail que armazena a lista de inscritos. Todo e-mail traz um link para cancelar a inscrição, e você também pode pedir a exclusão do seu e-mail pelo contato do site.</p>
+                </section>
+                <section>
                     <h2 className="text-[18px] font-bold mb-2">5. Seus direitos (LGPD)</h2>
                     <p className="text-muted">Conforme a Lei Geral de Proteção de Dados (LGPD), você tem direito de solicitar acesso, correção ou exclusão dos seus dados, e de retirar o consentimento a qualquer momento pelos controles acima. Entre em contato pelo nosso <a href="/contato" className="text-accent hover:underline">formulário</a>.</p>
                 </section>

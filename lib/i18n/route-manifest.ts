@@ -72,6 +72,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/corrections': { tipo: 'estatica', ...pronta },
     '/cultura-coreana-101': { tipo: 'estatica', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     // Textos legais exigem revisão humana por idioma (docs/I18N-V2.md, §7).
+    '/newsletter/confirmado': { tipo: 'estatica', estado: 'somentePt', motivo: 'destino do link de confirmação da newsletter (texto em português, noindex); a newsletter só existe em português' },
     '/privacidade': { tipo: 'estatica', ...pendente },
     '/termos': { tipo: 'estatica', ...pendente },
 

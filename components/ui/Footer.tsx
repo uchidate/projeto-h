@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { BrandMark } from '@/components/ui/BrandMark'
 import { Rss } from 'lucide-react'
+import { NewsletterForm } from '@/components/newsletter/NewsletterForm'
 import { SITE_NAME } from '@/lib/constants/site'
 import type { FooterColumn, SiteLink } from '@/lib/wordpress/site-settings'
 
@@ -14,7 +15,7 @@ export type FooterLabels = {
     mostSearched?: string
 }
 
-export default function Footer({ columns, tagline, labels, mostSearched = [] }: { columns: FooterColumn[]; tagline: string; labels: FooterLabels & { homeHref?: string }; mostSearched?: SiteLink[] }) {
+export default function Footer({ columns, tagline, labels, mostSearched = [], comNewsletter = false }: { columns: FooterColumn[]; tagline: string; labels: FooterLabels & { homeHref?: string }; mostSearched?: SiteLink[]; comNewsletter?: boolean }) {
     const year = new Date().getFullYear()
     // Privacidade e Termos já ficam na linha de baixo; repeti-los numa coluna só duplica o link.
     const jaNaLinhaFinal = new Set(['/privacidade', '/termos', '/privacy', '/terms'])
@@ -42,6 +43,8 @@ export default function Footer({ columns, tagline, labels, mostSearched = [] }: 
                         <Rss size={13} aria-hidden="true" /> RSS Feed
                     </a>
                 </div>
+
+                {comNewsletter && <NewsletterForm />}
 
                 <nav aria-label={labels.nav} className="grid grid-cols-2 border-y border-featured-border md:grid-cols-4">
                     {colunas.map((col, index) => (
