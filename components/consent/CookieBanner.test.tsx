@@ -164,5 +164,11 @@ describe('CookieBanner', () => {
         expect(dialogo).toHaveAttribute('aria-modal', 'true')
         expect(container.querySelector('[aria-hidden="true"].fixed.inset-0')).not.toBeNull()
     })
-})
 
+    it('marca o <html> enquanto aberto, para esconder o anúncio de âncora do Google, e limpa ao decidir', async () => {
+        render(<CookieBanner />)
+        expect(document.documentElement).toHaveAttribute('data-consent-pendente')
+        await userEvent.click(screen.getByRole('button', { name: /recusar/i }))
+        expect(document.documentElement).not.toHaveAttribute('data-consent-pendente')
+    })
+})

@@ -2474,3 +2474,15 @@ ins.adsbygoogle[data-ad-status^="unfill"] { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
     .mapa-linha, .mapa-no { animation: none; }
 }
+
+/* Banner de consentimento aberto: o anúncio de âncora e a vinheta dos Anúncios
+   automáticos do Google sobem com z-index 2147483647, igual ao do banner, e
+   vencem o empate por entrar depois no DOM — cobrindo os botões. Escondidos só
+   até a decisão (visibility, sem mexer no layout nem no código do anúncio). */
+html[data-consent-pendente] ins.adsbygoogle[data-anchor-status],
+html[data-consent-pendente] ins.adsbygoogle[data-vignette-loaded],
+html[data-consent-pendente] body > ins.adsbygoogle,
+html[data-consent-pendente] .google-anchor,
+html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
+    visibility: hidden !important;
+}
