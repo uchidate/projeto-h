@@ -3,7 +3,7 @@ import { SITE_NAME } from '@/lib/constants/site'
 
 import Image from 'next/image'
 import { ExternalLink, Star } from 'lucide-react'
-import { calcularDesconto, ehMenorPrecoEmDias, ehNovo, type StoreProduct } from '@/lib/wordpress/store'
+import { calcularDesconto, ehMenorPrecoEmDias, ehNovo, quedaDePreco, type StoreProduct } from '@/lib/wordpress/store'
 import { stripHtml } from '@/lib/utils'
 import { trackProductClick } from '@/lib/analytics'
 
@@ -31,6 +31,7 @@ export function StoreCard({ product, compact = false, contexto = 'loja' }: Store
     const cfg = STORE_CONFIG[store] ?? STORE_CONFIG.outro
     const desconto = calcularDesconto(acf.price, acf.original_price)
     const menorPreco = ehMenorPrecoEmDias(acf.price, acf.price_history, 30)
+    const queda = quedaDePreco(acf.price, acf.price_history, 30)
     const novo = ehNovo(product.date_gmt, 14)
     // Alguns produtos antigos têm `badge` preenchido à mão com o próprio
     // percentual (ex.: "-37") — dado legado que agora duplica o desconto
@@ -127,6 +128,11 @@ export function StoreCard({ product, compact = false, contexto = 'loja' }: Store
                     {acf.price && <span className="text-[17px] font-black tracking-tight text-foreground sm:text-[18px]">{acf.price}</span>}
                     {acf.original_price && <span className="text-[11px] text-muted line-through">{acf.original_price}</span>}
                 </div>
+            )}
+            {queda && (
+                <span className="mt-0.5 text-[11px] font-bold text-accent">
+                    Caiu {queda.percentual}% (era {queda.de.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})
+                </span>
             )}
             {menorPreco && (
                 <span className="mt-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">

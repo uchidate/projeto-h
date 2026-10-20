@@ -10,6 +10,8 @@ import { SITE_URL } from '@/lib/constants/site'
 import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { getVitrineGeral } from '@/lib/wordpress/vitrine'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 
 export const revalidate = 3600
 
@@ -91,6 +93,9 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
         byDay.set(artist.day, list)
     }
 
+    // Quem abre a página de aniversários está pensando em presente: a faixa vem antes da lista.
+    const shopProducts = await getVitrineGeral('aniversarios', 6, 'kpop')
+
     return (
         <>
             <PageBreadcrumb items={[{ name: 'Artistas', path: '/artists' }, { name: 'Aniversários', path: '/artists/birthdays' }]} />
@@ -145,6 +150,9 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
             </div>
 
             <div className="page-wrap py-8">
+                {withBirthday.length > 0 && (
+                    <LojaEmLinha bloco="aniversarios-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="aniversarios:topo" className="mb-8" />
+                )}
                 {withBirthday.length === 0 ? (
                     <div className="flex flex-col items-center py-20 text-center">
                         <Cake size={48} className="text-muted/20 mb-4" />
