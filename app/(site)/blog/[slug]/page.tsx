@@ -17,6 +17,22 @@ import { buildPostAlternates } from '@/lib/blog/translations'
 
 export const revalidate = 300
 
+/** Produtos citados por blocos `product` do artigo, só os que ainda podem ser exibidos (visíveis e com link). */
+async function getProdutosDosBlocos(post: Awaited<ReturnType<typeof getPostBySlug>>): Promise<StoreProduct[]> {
+    if (!post?.article_blocks?.length) return []
+    const ids = new Set<number>()
+    const varrer = (blocos: NonNullable<typeof post.article_blocks>) => {
+        for (const b of blocos) {
+            if (b.name.endsWith('/product') && Number(b.attrs?.productId) > 0) ids.add(Number(b.attrs.productId))
+            if (b.innerBlocks?.length) varrer(b.innerBlocks)
+        }
+    }
+    varrer(post.article_blocks)
+    if (ids.size === 0) return []
+    const todos = await getStoreProducts()
+    return todos.filter(p => ids.has(p.id) && !p.acf.is_hidden && p.acf.affiliate_url)
+}
+
 async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostBySlug>>, categorias: string[]): Promise<StoreProduct[]> {
     if (!post) return []
     const groups = post.related_entities?.groups ?? []
@@ -87,7 +103,10 @@ export default async function PostPage({ params }: { params: Params }) {
 
     const cats = getWPTerms(post._embedded, 'category')
     const relatedPosts = await getRelatedPosts(post)
-    const shopProducts = await getShopProductsForPost(post, cats.map(c => c.name))
+    const produtosNoTexto = await getProdutosDosBlocos(post)
+    const idsNoTexto = new Set(produtosNoTexto.map(p => p.id))
+    // O que já aparece dentro do texto não se repete nas faixas de loja do mesmo artigo.
+    const shopProducts = (await getShopProductsForPost(post, cats.map(c => c.name))).filter(p => !idsNoTexto.has(p.id))
 
     const title = stripHtml(post.title.rendered)
     const url = `${SITE_URL}/blog/${slug}`
@@ -107,7 +126,7 @@ export default async function PostPage({ params }: { params: Params }) {
                 tempo de atencao sem tornar o artigo inteiro um Client
                 Component, o que custaria desempenho e SEO. */}
             <RastreioDeLeitura slug={slug} caminho={`/blog/${slug}`} />
-            <BlogPostPage post={post} relatedPosts={relatedPosts} shopProducts={shopProducts} />
+            <BlogPostPage post={post} relatedPosts={relatedPosts} shopProducts={shopProducts} produtosNoTexto={produtosNoTexto} />
         </>
     )
 }
