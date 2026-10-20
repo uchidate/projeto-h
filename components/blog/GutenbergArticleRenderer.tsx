@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import type { ArticleModel } from '@/lib/blog/articleModel'
-import { ProdutoNoArtigo } from '@/components/blog/ProdutoNoArtigo'
+import { ProdutosNoArtigo, type ProdutoDoTexto } from '@/components/blog/ProdutoNoArtigo'
 import { BLOCK_ALT_PREFIX } from '@/lib/constants/identidade.mjs'
 import type { StoreProduct } from '@/lib/wordpress/store'
 
@@ -26,6 +26,16 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
     const primeiraQuebra = cardGrupo
         ? (model.blocks.find(b => model.adBreakAfter.has(b.id)) ?? model.blocks[model.blocks.length - 1])?.id
         : undefined
+    // Produtos em sequência saem juntos, numa prateleira; o primeiro bloco da sequência a desenha e os demais ficam vazios.
+    const prateleiras = new Map<string, ProdutoDoTexto[]>()
+    let atual: ProdutoDoTexto[] | null = null
+    for (const b of model.blocks) {
+        if (b.name !== BLOCO_PRODUTO) { atual = null; continue }
+        // Produto oculto, removido ou sem link some do texto em vez de deixar um buraco.
+        const produto = produtos?.get(Number(b.attrs.productId))
+        if (!atual) { atual = []; prateleiras.set(b.id, atual) }
+        if (produto) atual.push({ produto, legendaHtml: legendaDoBloco(b.html) })
+    }
     return (
         <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" data-article-model-version={model.version}>
             {model.blocks.map((block) => (
@@ -35,11 +45,7 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
                     data-article-block={block.name}
                 >
                     {block.name === BLOCO_PRODUTO
-                        ? (() => {
-                            // Produto oculto, removido ou sem link some do texto em vez de deixar um buraco.
-                            const produto = produtos?.get(Number(block.attrs.productId))
-                            return produto ? <ProdutoNoArtigo produto={produto} legendaHtml={legendaDoBloco(block.html)} contexto={contextoProduto} /> : null
-                        })()
+                        ? (prateleiras.get(block.id)?.length ? <ProdutosNoArtigo itens={prateleiras.get(block.id)!} contexto={contextoProduto} /> : null)
                         : <div dangerouslySetInnerHTML={{ __html: block.html }} />}
                     {block.id === primeiraQuebra && cardGrupo}
                     {block.id === idMeio && sugestaoMeio}

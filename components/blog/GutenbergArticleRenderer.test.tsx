@@ -48,5 +48,33 @@ describe('GutenbergArticleRenderer', () => {
             expect(container.querySelector('.oc-product')).toBeNull()
             expect(screen.getByText('Depois do produto, o texto continua.')).toBeInTheDocument()
         })
+
+        it('junta produtos em sequência numa prateleira e deixa o isolado como cartão único', () => {
+            const sequencia = buildArticleModel([
+                block('core/paragraph', '<p>Abertura do artigo com contexto suficiente.</p>'),
+                block(nome, '<div class="oc-product"><p class="oc-product__caption">Primeiro</p></div>', { productId: 1 }),
+                block(nome, '<div class="oc-product"><p class="oc-product__caption">Segundo</p></div>', { productId: 2 }),
+                block(nome, '<div class="oc-product"><p class="oc-product__caption">Terceiro</p></div>', { productId: 3 }),
+                block('core/paragraph', '<p>Texto entre as prateleiras do artigo.</p>'),
+                block(nome, '<div class="oc-product"><p class="oc-product__caption">Isolado</p></div>', { productId: 4 }),
+            ])
+            const produtos = new Map([1, 2, 3, 4].map(id => [id, produto(id)]))
+            const { container } = render(<GutenbergArticleRenderer model={sequencia} produtos={produtos} />)
+            const prateleiras = container.querySelectorAll('[data-produtos-no-artigo]')
+            expect(prateleiras).toHaveLength(1)
+            expect(prateleiras[0]).toHaveAttribute('data-produtos-no-artigo', '3')
+            expect(prateleiras[0].querySelectorAll('[data-produto-no-artigo]')).toHaveLength(3)
+            expect(container.querySelectorAll('[data-produto-no-artigo]')).toHaveLength(4)
+        })
+
+        it('na prateleira, o produto indisponível some e os demais continuam', () => {
+            const sequencia = buildArticleModel([
+                block('core/paragraph', '<p>Abertura do artigo com contexto suficiente.</p>'),
+                block(nome, '<div class="oc-product"></div>', { productId: 1 }),
+                block(nome, '<div class="oc-product"></div>', { productId: 2 }),
+            ])
+            const { container } = render(<GutenbergArticleRenderer model={sequencia} produtos={new Map([[2, produto(2)]])} />)
+            expect(container.querySelectorAll('[data-produto-no-artigo]')).toHaveLength(1)
+        })
     })
 })
