@@ -10,7 +10,7 @@ function Legenda({ html }: { html?: string }) {
     if (!html) return null
     // `<p>` e não `<figcaption>`: o estilo global de legenda de imagem (borda lateral, mono, itálico) não cabe num cartão de loja.
     // `!` porque o estilo global de parágrafo do artigo (tamanho de leitura, justificado) vence a classe sem ele.
-    return <p className="mt-2 !text-left !text-xs !leading-snug text-foreground-subtle" dangerouslySetInnerHTML={{ __html: html }} />
+    return <p className="mt-2 !text-left !text-xs !leading-snug !hyphens-none text-foreground-subtle" dangerouslySetInnerHTML={{ __html: html }} />
 }
 
 /**
@@ -36,7 +36,7 @@ export function ProdutosNoArtigo({ itens, contexto }: { itens: ProdutoDoTexto[];
     // Celular: faixa que rola de lado (um cartão e meio à vista indica que há mais), em vez de grade que deixa um cartão sozinho na última linha.
     return (
         <div
-            className={`not-prose -mx-4 my-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-auto sm:px-0 md:grid md:items-stretch md:gap-4 md:overflow-visible md:pb-0 md:mx-auto ${colunas}`}
+            className={`not-prose -mx-4 my-8 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 sm:mx-auto sm:scroll-px-0 sm:px-0 md:grid md:items-stretch md:gap-4 md:overflow-visible md:pb-0 md:mx-auto ${colunas}`}
             data-produtos-no-artigo={itens.length}
         >
             {itens.map(({ produto, legendaHtml }) => (
