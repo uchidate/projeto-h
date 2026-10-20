@@ -25,6 +25,7 @@ import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
 import { BlogSuggestedNext } from '@/components/blog/BlogSuggestedNext'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import { VitrineVista } from '@/components/ui/VitrineVista'
 import { StoreCard } from '@/components/ui/StoreCard'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { BlogContinuar } from '@/components/blog/BlogContinuar'
@@ -395,9 +396,9 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                                         <p className="text-caption font-black uppercase tracking-widest text-muted">Achados</p>
                                         <Link href="/loja" className="text-caption flex items-center gap-0.5 font-bold text-accent hover:underline">Ver tudo →</Link>
                                     </div>
-                                    <div className="flex flex-col gap-2 p-2.5">
+                                    <VitrineVista className="flex flex-col gap-2 p-2.5" contexto={`blog:${post.slug}`} produtoIds={shopProducts.slice(0, 3).map(p => p.id)}>
                                         {shopProducts.slice(0, 3).map(p => <StoreCard key={p.id} product={p} compact contexto={`blog:${post.slug}`} />)}
-                                    </div>
+                                    </VitrineVista>
                                     <p className="border border-x-0 border-t-0 border-accent/20 bg-accent/4 px-3 py-2 text-[10px] leading-relaxed text-muted">
                                         <strong className="text-foreground">Publicidade afiliada:</strong> podemos receber comissão por compras feitas por links desta vitrine, sem custo extra para você.
                                     </p>

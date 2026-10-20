@@ -5,12 +5,15 @@ import { useEffect, useState } from 'react'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { calcularDesconto } from '@/lib/wordpress/store'
 import { StoreCard } from '@/components/ui/StoreCard'
+import { useVitrineVista } from '@/components/ui/VitrineVista'
 
 interface Props {
     /** Já vem ordenado (destaque > desconto > CTR > posição) — só reembaralha aqui. */
     produtos: StoreProduct[]
     contexto: string
     quantidade?: number
+    /** Braço do teste de título (ou posição); vai nos eventos de vitrine e clique. */
+    variante?: string
 }
 
 /**
@@ -36,7 +39,7 @@ function garantirLoja(selecionados: StoreProduct[], produtos: StoreProduct[], lo
     return [...selecionados.slice(0, -1), candidato]
 }
 
-export function PrateleiraRotativa({ produtos, contexto, quantidade = 4 }: Props) {
+export function PrateleiraRotativa({ produtos, contexto, quantidade = 4, variante }: Props) {
     const [exibidos, setExibidos] = useState(() => garantirLoja(produtos.slice(0, quantidade), produtos, 'shopee'))
 
     useEffect(() => {
@@ -66,9 +69,11 @@ export function PrateleiraRotativa({ produtos, contexto, quantidade = 4 }: Props
     // eslint-disable-next-line react-hooks/exhaustive-deps -- sorteia uma vez por montagem (cada visualização da página), não a cada render
     }, [])
 
+    const ref = useVitrineVista<HTMLDivElement>(contexto, exibidos.map(p => p.id), variante)
+
     return (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {exibidos.map(p => <StoreCard key={p.id} product={p} contexto={contexto} />)}
+        <div ref={ref} className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {exibidos.map(p => <StoreCard key={p.id} product={p} contexto={contexto} variante={variante} />)}
         </div>
     )
 }

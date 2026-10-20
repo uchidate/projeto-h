@@ -553,14 +553,28 @@ export function trackFiltroListagem(params: { listagem: string; filtros: string;
 }
 
 /**
+ * Vitrine de produtos que entrou na tela (uma vez por montagem). Dá o denominador do CTR:
+ * sem impressão, o produto mais exibido sempre parece o melhor.
+ */
+export function trackVitrineVista(params: { contexto: string; produtoIds: number[]; variante?: string }) {
+    enviar('vitrine_view', {
+        click_context: params.contexto,
+        product_ids: params.produtoIds.join(','),
+        ...(params.variante ? { variante: params.variante } : {}),
+    })
+}
+
+/**
  * Clique em produto de afiliado. Base do ranking por CTR: `contexto` é a
  * página/vitrine onde apareceu (ex.: "artista:jisoo-kim", "loja"), pra medir
- * relevância por página e não só popularidade global.
+ * relevância por página e não só popularidade global. `variante` identifica o
+ * braço de um teste (posição ou título da vitrine).
  */
-export function trackProductClick(params: { productId: number; store: string; contexto: string }) {
+export function trackProductClick(params: { productId: number; store: string; contexto: string; variante?: string }) {
     enviar('product_click', {
         product_id: params.productId,
         product_store: params.store,
         click_context: params.contexto,
+        ...(params.variante ? { variante: params.variante } : {}),
     })
 }

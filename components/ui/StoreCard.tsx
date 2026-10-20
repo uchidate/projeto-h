@@ -21,10 +21,12 @@ interface StoreCardProps {
     compact?: boolean
     /** Página/vitrine onde o card aparece (ex.: "artista:jisoo-kim") — base do ranking por CTR. */
     contexto?: string
+    /** Braço do teste (título/posição da vitrine) — vai no evento de clique. */
+    variante?: string
 }
 
 
-export function StoreCard({ product, compact = false, contexto = 'loja' }: StoreCardProps) {
+export function StoreCard({ product, compact = false, contexto = 'loja', variante }: StoreCardProps) {
     const { acf, title } = product
     const name = stripHtml(title.rendered)
     const store = acf.store ?? 'outro'
@@ -39,7 +41,7 @@ export function StoreCard({ product, compact = false, contexto = 'loja' }: Store
 
     if (!acf.affiliate_url) return null
 
-    const registrarClique = () => trackProductClick({ productId: product.id, store, contexto })
+    const registrarClique = () => trackProductClick({ productId: product.id, store, contexto, variante })
 
     if (compact) {
         return (
