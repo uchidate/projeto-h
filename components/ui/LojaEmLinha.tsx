@@ -5,6 +5,7 @@ import type { StoreProduct } from '@/lib/wordpress/store'
 import { calcularDesconto } from '@/lib/wordpress/store'
 import { stripHtml } from '@/lib/utils'
 import { LojaClique } from '@/components/ui/LojaClique'
+import { VitrineVista } from '@/components/ui/VitrineVista'
 
 interface Props {
     products: StoreProduct[]
@@ -36,7 +37,7 @@ export function LojaEmLinha({ products, bloco, contexto, title = 'Achados da loj
                 </p>
                 <Link href={href} className="shrink-0 whitespace-nowrap text-[12px] font-bold text-accent hover:underline">{verTudoLabel} →</Link>
             </div>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <VitrineVista contexto={contexto} produtoIds={itens.map(p => p.id)} className="grid gap-3 sm:grid-cols-3">
                 {itens.map(p => {
                     const { acf } = p
                     const nome = stripHtml(p.title.rendered)
@@ -58,7 +59,7 @@ export function LojaEmLinha({ products, bloco, contexto, title = 'Achados da loj
                         </LojaClique>
                     )
                 })}
-            </div>
+            </VitrineVista>
         </aside>
     )
 }
