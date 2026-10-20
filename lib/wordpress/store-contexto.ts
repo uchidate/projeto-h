@@ -56,6 +56,11 @@ interface Opcoes {
  * destaque (+1). Sem nenhum sinal, devolve [] — quem chama decide o fallback.
  */
 export function escolherPorTema(produtos: StoreProduct[], opcoes: Opcoes = {}): StoreProduct[] {
+    return escolherPorTemaComAderencia(produtos, opcoes).map(x => x.p)
+}
+
+/** Igual a `escolherPorTema`, mas devolve junto a aderência de cada produto ao texto (palavras em comum e tema, sem contar destaque). */
+export function escolherPorTemaComAderencia(produtos: StoreProduct[], opcoes: Opcoes = {}): { p: StoreProduct; aderencia: number }[] {
     const { texto = '', limite = 8, excluirIds = [], maxPorCategoria = 3 } = opcoes
     const temas = [...new Set([...(opcoes.temas ?? []), ...detectarTemas(texto)])]
     const categoriasDoTema = new Set(temas.flatMap(t => TEMAS[t].categorias))
@@ -67,20 +72,20 @@ export function escolherPorTema(produtos: StoreProduct[], opcoes: Opcoes = {}): 
         .map(p => {
             const comum = palavrasEmComum(p, textoNorm)
             const tema = categoriasDoTema.has(p.acf.category ?? '') ? 1 : 0
-            return { p, score: comum * 3 + tema * 2 + (p.acf.featured ? 1 : 0), sinal: comum > 0 || tema > 0 }
+            return { p, aderencia: comum * 3 + tema * 2, score: comum * 3 + tema * 2 + (p.acf.featured ? 1 : 0), sinal: comum > 0 || tema > 0 }
         })
         .filter(x => x.sinal)
         .sort((a, b) => b.score - a.score || (a.p.acf.position ?? 999) - (b.p.acf.position ?? 999))
 
     const porCategoria = new Map<string, number>()
-    const escolhidos: StoreProduct[] = []
-    for (const { p } of pontuados) {
+    const escolhidos: { p: StoreProduct; aderencia: number }[] = []
+    for (const { p, aderencia } of pontuados) {
         const cat = p.acf.category ?? 'outros'
         const usados = porCategoria.get(cat) ?? 0
         // Um tema só (ex.: beleza) pode encher a prateleira; vários temas ou nenhum, não.
         if (!(temas.length === 1 && TEMAS_ABERTOS.has(temas[0])) && usados >= maxPorCategoria) continue
         porCategoria.set(cat, usados + 1)
-        escolhidos.push(p)
+        escolhidos.push({ p, aderencia })
         if (escolhidos.length >= limite) break
     }
     return escolhidos

@@ -16,6 +16,7 @@ export type StoreProduct = {
         badge: string | null
         rating: number | null
         sold_count: string | null
+        commission_rate?: string | null  // % de afiliado; só a Shopee preenche (API oficial)
         featured: boolean | null
         is_hidden: boolean | null
         position: number | null
