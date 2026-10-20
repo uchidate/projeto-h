@@ -10,7 +10,7 @@ const TEMAS: Record<Tema, { gatilhos: RegExp; categorias: string[] }> = {
     beleza:    { gatilhos: /\b(skincare|k-?beauty|beleza|pele|maquiagem|cosm[eé]tic|protetor solar|cabelo)\b/i, categorias: ['kbeauty'] },
     culinaria: { gatilhos: /\b(receita|culin[aá]ri|comida|lamen|ramyun|kimchi|tteokbokki|gastronomia|street food|snack)\b/i, categorias: ['snacks', 'alimenta'] },
     musica:    { gatilhos: /\b(comeback|[aá]lbum|lan[cç]amento|m[uú]sica|show|turn[eê]|lightstick|photocard|fandom|k-?pop)\b/i, categorias: ['kpop_album', 'lightstick', 'photocard'] },
-    drama:     { gatilhos: /\b(dorama|k-?drama|s[eé]rie|filme|elenco|atriz|ator|romance)\b/i, categorias: ['kbeauty', 'photocard', 'clothing', 'acessorios'] },
+    drama:     { gatilhos: /\b(dorama|k-?drama|s[eé]rie|filme|elenco|atriz|ator|romance)\b/i, categorias: ['kdrama', 'kbeauty', 'photocard', 'clothing', 'acessorios'] },
 }
 
 /** Temas de nicho único: a prateleira pode ser toda da mesma categoria. */
