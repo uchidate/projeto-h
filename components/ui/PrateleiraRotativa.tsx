@@ -3,12 +3,12 @@
 
 import { useEffect, useState } from 'react'
 import type { StoreProduct } from '@/lib/wordpress/store'
-import { calcularDesconto } from '@/lib/wordpress/store'
+import { sortearPrateleira } from '@/lib/wordpress/store-rotacao'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { useVitrineVista } from '@/components/ui/VitrineVista'
 
 interface Props {
-    /** Já vem ordenado (destaque > desconto > CTR > posição) — só reembaralha aqui. */
+    /** Já vem ordenado (aderência > destaque > desconto > CTR/comissão > posição) — o sorteio só escolhe quais aparecem. */
     produtos: StoreProduct[]
     contexto: string
     quantidade?: number
@@ -21,9 +21,10 @@ interface Props {
  * sorteio no servidor mostraria o mesmo resultado pra todo mundo até a
  * próxima geração).
  *
- * Destaque/desconto real são sinal editorial e comercial, não aleatorizado:
- * ficam fixos. Só o resto do pool concorre por sorteio PONDERADO pela posição
- * no ranking (que já embute CTR) — o melhor aparece mais, mas não sempre.
+ * Ninguém é fixo: o sorteio é PONDERADO pela posição na ordem recebida (que já embute
+ * aderência ao conteúdo, CTR e comissão), com bônus leve para destaque/desconto e
+ * desconto de peso para o que este visitante viu nas últimas visitas (localStorage).
+ * O mais aderente aparece mais, mas não sempre — e não repete a cada visita.
  *
  * Primeiro render usa a ordem recebida do servidor (idêntica ao HTML enviado,
  * sem mismatch de hidratação); o sorteio troca depois, no efeito — roda uma
@@ -37,33 +38,31 @@ function garantirLoja(selecionados: StoreProduct[], produtos: StoreProduct[], lo
     return [...selecionados.slice(0, -1), candidato]
 }
 
+const CHAVE_VISTOS = 'hh:loja:vistos'
+
+/** Últimos produtos mostrados a este visitante (só no navegador dele; sem rastreio nem envio). */
+function lerVistos(): number[] {
+    try {
+        const v = JSON.parse(localStorage.getItem(CHAVE_VISTOS) ?? '[]')
+        return Array.isArray(v) ? v.filter((x): x is number => typeof x === 'number').slice(0, 15) : []
+    } catch { return [] }
+}
+
+function guardarVistos(ids: number[]) {
+    try { localStorage.setItem(CHAVE_VISTOS, JSON.stringify([...new Set(ids)].slice(0, 15))) } catch { /* modo privado/sem storage */ }
+}
+
 export function PrateleiraRotativa({ produtos, contexto, quantidade = 5 }: Props) {
     const [exibidos, setExibidos] = useState(() => garantirLoja(produtos.slice(0, quantidade), produtos, 'shopee'))
 
     useEffect(() => {
-        const fixos = produtos.filter(p => p.acf.featured || calcularDesconto(p.acf.price, p.acf.original_price) !== null)
-        const resto = produtos.filter(p => !fixos.includes(p))
-        const fixosExibidos = fixos.slice(0, quantidade)
-        const vagas = quantidade - fixosExibidos.length
-
-        const pool = [...resto]
-        const sorteados: StoreProduct[] = []
-        for (let i = 0; i < vagas && pool.length > 0; i++) {
-            const pesos = pool.map((_, idx) => 1 / (idx + 1))
-            const total = pesos.reduce((a, b) => a + b, 0)
-            let alvo = Math.random() * total
-            let escolhido = 0
-            for (; escolhido < pesos.length; escolhido++) {
-                alvo -= pesos[escolhido]
-                if (alvo <= 0) break
-            }
-            sorteados.push(pool.splice(Math.min(escolhido, pool.length - 1), 1)[0])
-        }
-
+        const vistos = lerVistos()
+        const sorteados = sortearPrateleira(produtos, quantidade, new Set(vistos))
         // Regra de negócio: a prateleira sempre representa a Shopee quando ela
-        // tem produto disponível pro contexto — nunca some, mesmo que o
-        // sorteio por CTR não a tenha escolhido.
-        setExibidos(garantirLoja([...fixosExibidos, ...sorteados], produtos, 'shopee'))
+        // tem produto disponível pro contexto — nunca some, mesmo que o sorteio não a tenha escolhido.
+        const final = garantirLoja(sorteados, produtos, 'shopee')
+        guardarVistos([...final.map(p => p.id), ...vistos])
+        setExibidos(final)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- sorteia uma vez por montagem (cada visualização da página), não a cada render
     }, [])
 
