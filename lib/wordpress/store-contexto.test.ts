@@ -47,6 +47,10 @@ describe('escolherPorTema', () => {
     it('sem sinal nenhum devolve vazio', () => {
         expect(escolherPorTema(catalogo, { texto: 'Entrevista exclusiva' })).toEqual([])
     })
+    it('tema drama traz produtos da categoria kdrama', () => {
+        const kdrama = [produto(200, 'Jogo de dados', 'kdrama'), produto(201, 'Creme', 'kbeauty')]
+        expect(escolherPorTema(kdrama, { temas: ['drama'] }).map(p => p.id)).toContain(200)
+    })
     it('vários temas limitam por categoria', () => {
         const muitos = Array.from({ length: 10 }, (_, i) => produto(100 + i, `Item ${i}`, 'kbeauty'))
         const ids = escolherPorTema(muitos, { temas: ['drama'], maxPorCategoria: 3 })
