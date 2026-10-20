@@ -38,7 +38,7 @@ function carregarRankingCliques(): RankingCliques {
 }
 
 /** Score de cliques do produto: por contexto (mais específico) quando disponível, senão o global. */
-function scoreClique(produto: StoreProduct, contexto?: string): number {
+export function scoreClique(produto: StoreProduct, contexto?: string): number {
     const ranking = carregarRankingCliques()
     const porContexto = contexto ? ranking.porContexto[contexto]?.[produto.id] : undefined
     return porContexto ?? ranking.global[String(produto.id)] ?? ranking.neutro
@@ -70,4 +70,16 @@ export function ordenarPrateleira(produtos: StoreProduct[], contexto?: string): 
         if (cliqueA !== cliqueB) return cliqueB - cliqueA
         return (a.acf.position ?? 999) - (b.acf.position ?? 999)
     })
+}
+
+/**
+ * Ordem das categorias na página da loja: a que mais converte sobe. Soma, por categoria, o quanto cada
+ * produto está acima do neutro (CTR suavizado); empate (inclusive sem dado nenhum) fica com a categoria
+ * de mais produtos, depois a ordem alfabética, para a página não mudar de lugar à toa.
+ */
+export function ordenarCategorias(porCategoria: Record<string, StoreProduct[]>): string[] {
+    const { neutro } = carregarRankingCliques()
+    const pontos = (cat: string) => porCategoria[cat].reduce((soma, p) => soma + Math.max(0, scoreClique(p, `loja:categoria:${cat}`) - neutro), 0)
+    return Object.keys(porCategoria).sort((a, b) =>
+        pontos(b) - pontos(a) || porCategoria[b].length - porCategoria[a].length || a.localeCompare(b))
 }

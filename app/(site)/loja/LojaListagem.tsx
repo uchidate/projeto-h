@@ -3,8 +3,10 @@ import type { Metadata } from 'next'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
 import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto } from '@/lib/wordpress/store'
-import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
+import { ordenarPrateleira, ordenarCategorias } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
+import { LojaClique } from '@/components/ui/LojaClique'
+import { VitrineVista } from '@/components/ui/VitrineVista'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
@@ -52,7 +54,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
     }
 
     // Destaques (sempre do total, não filtrado)
-    const featured = products.filter(p => p.acf.featured).slice(0, 5)
+    const featured = ordenarPrateleira(products.filter(p => p.acf.featured), 'loja:destaques').slice(0, 8)
 
     // Agrupar por categoria para exibição — destaque e desconto primeiro dentro de cada uma
     const byCategory = filtered.reduce<Record<string, typeof filtered>>((acc, p) => {
@@ -132,7 +134,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                         {featured.slice(0, 8).map(p => {
                             const descontoMosaico = calcularDesconto(p.acf.price, p.acf.original_price)
                             return (
-                                <a key={p.id} href={p.acf.affiliate_url ?? '#'} target="_blank" rel="noopener noreferrer sponsored"
+                                <LojaClique key={p.id} href={p.acf.affiliate_url ?? '#'} productId={p.id} store={p.acf.store ?? 'outro'} contexto="loja:mosaico"
                                     className="group relative aspect-square overflow-hidden bg-surface">
                                     {p.acf.image_url && (
                                         <Image src={p.acf.image_url} alt="" fill
@@ -148,7 +150,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                             {p.acf.price}
                                         </span>
                                     )}
-                                </a>
+                                </LojaClique>
                             )
                         })}
                     </div>
@@ -209,9 +211,9 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                 <h2 className="font-[family-name:var(--font-playfair)] mb-4 text-[22px] font-semibold">
                                     Escolhas da curadoria
                                 </h2>
-                                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                                    {featured.map(p => <StoreCard key={p.id} product={p} contexto="loja:destaques" />)}
-                                </div>
+                                <VitrineVista contexto="loja:destaques" produtoIds={featured.slice(0, 5).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                                    {featured.slice(0, 5).map(p => <StoreCard key={p.id} product={p} contexto="loja:destaques" />)}
+                                </VitrineVista>
                             </section>
                         )}
 
@@ -222,14 +224,14 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                             ) : (
                                 <section>
                                     <p className="mb-4 text-[12px] text-muted">{filtered.length} produto{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}</p>
-                                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                                    <VitrineVista contexto="loja:filtro" produtoIds={filtered.slice(0, 8).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                                         {filtered.map(p => <StoreCard key={p.id} product={p} contexto="loja:filtro" />)}
-                                    </div>
+                                    </VitrineVista>
                                 </section>
                             )
                         ) : (
                             /* Agrupado por categoria */
-                            Object.entries(byCategory).map(([cat, items]) => (
+                            ordenarCategorias(byCategory).map(cat => [cat, byCategory[cat]] as const).map(([cat, items]) => (
                                 <section key={cat} id={`categoria-${cat}`}>
                                     <div className="mb-4 flex items-baseline justify-between">
                                         <h2 className="font-[family-name:var(--font-playfair)] text-[22px] font-semibold">
@@ -237,9 +239,9 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                         </h2>
                                         <span className="text-[12px] font-semibold text-muted">{items.length} produto{items.length !== 1 ? 's' : ''}</span>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                                    <VitrineVista contexto={`loja:categoria:${cat}`} produtoIds={items.slice(0, 8).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                                         {items.map(p => <StoreCard key={p.id} product={p} contexto={`loja:categoria:${cat}`} />)}
-                                    </div>
+                                    </VitrineVista>
                                 </section>
                             ))
                         )}
