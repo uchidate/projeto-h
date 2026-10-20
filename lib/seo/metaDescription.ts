@@ -19,3 +19,16 @@ export function metaDescription(text: string, max = 160): string {
     const base = (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:—–-]+$/, '')
     return `${base}…`
 }
+
+/**
+ * Descrição da ficha de comida: a primeira frase do texto (a definição do prato) mais os ingredientes
+ * principais, em vez do início cortado do resumo. Só usa o que a ficha já tem; cabe em `max`.
+ */
+export function metaDescriptionComida(resumo: string, ingredientes: string[] = [], max = 160): string {
+    const limpo = resumo.replace(/\s+/g, ' ').trim()
+    const primeira = limpo.match(/^(.+?[.!?])(\s|$)/)?.[1] ?? limpo
+    const base = metaDescription(primeira, 110)
+    const lista = ingredientes.slice(0, 3).join(', ')
+    const completo = lista ? `${base} Ingredientes: ${lista}.` : base
+    return completo.length <= max ? completo : base
+}

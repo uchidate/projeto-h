@@ -46,9 +46,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     // "CJ ENM (CJ ENM)": o nome coreano cadastrado às vezes repete o próprio nome.
     const showKorean = korean && !korean.toLowerCase().includes(name.toLowerCase())
     const title = `${name}${showKorean ? ` (${korean})` : ''} — ${industry}`
-    const description = company.excerpt?.rendered
-        ? metaDescription(stripHtml(company.excerpt.rendered))
-        : `Tudo sobre ${name}: história, produtos, fundadores e muito mais.`
+    const resumo = stripHtml(company.excerpt?.rendered || company.content?.rendered || '')
+    const description = resumo
+        ? metaDescription(resumo)
+        : `${name}: empresa sul-coreana de ${industry.toLowerCase()}${company.acf?.founded_year ? `, fundada em ${company.acf.founded_year}` : ''}. História, produtos e curiosidades.`
     const image = getWPImage(company._embedded, company.featured_image_url)
     const url = `${SITE_URL}/empresas/${slug}`
 
