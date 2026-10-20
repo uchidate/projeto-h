@@ -12,6 +12,8 @@ import path from 'node:path'
 import { calcularDesconto, type StoreProduct } from './store'
 
 type RankingCliques = {
+    /** Score de quem ainda não tem leitura (produto novo): neutro, para não ficar atrás de quem já provou ser ignorado. */
+    neutro: number
     global: Record<string, number>
     porContexto: Record<string, Record<string, number>>
 }
@@ -28,9 +30,9 @@ function carregarRankingCliques(): RankingCliques {
     try {
         const bruto = readFileSync(path.join(process.cwd(), 'data/click-ranking.json'), 'utf-8')
         const json = JSON.parse(bruto)
-        rankingCliques = { global: json.global ?? {}, porContexto: json.porContexto ?? {} }
+        rankingCliques = { neutro: json.neutro ?? 0, global: json.global ?? {}, porContexto: json.porContexto ?? {} }
     } catch {
-        rankingCliques = { global: {}, porContexto: {} }
+        rankingCliques = { neutro: 0, global: {}, porContexto: {} }
     }
     return rankingCliques
 }
@@ -39,7 +41,7 @@ function carregarRankingCliques(): RankingCliques {
 function scoreClique(produto: StoreProduct, contexto?: string): number {
     const ranking = carregarRankingCliques()
     const porContexto = contexto ? ranking.porContexto[contexto]?.[produto.id] : undefined
-    return porContexto ?? ranking.global[String(produto.id)] ?? 0
+    return porContexto ?? ranking.global[String(produto.id)] ?? ranking.neutro
 }
 
 /**

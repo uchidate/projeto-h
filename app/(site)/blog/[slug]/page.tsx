@@ -2,7 +2,8 @@ import { SITE_NAME } from '@/lib/constants/site'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getPostBySlug, getPosts, getRelatedPosts } from '@/lib/wordpress/posts'
-import { getStoreProductsByGroupId, getStoreProductsByArtistId, type StoreProduct } from '@/lib/wordpress/store'
+import { getStoreProducts, getStoreProductsByGroupId, getStoreProductsByArtistId, type StoreProduct } from '@/lib/wordpress/store'
+import { escolherPorTema } from '@/lib/wordpress/store-contexto'
 import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { stripHtml, getWPImage, getWPTerms } from '@/lib/utils'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
@@ -16,10 +17,10 @@ import { buildPostAlternates } from '@/lib/blog/translations'
 
 export const revalidate = 300
 
-async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostBySlug>>): Promise<StoreProduct[]> {
-    const groups = post?.related_entities?.groups ?? []
-    const artists = post?.related_entities?.artists ?? []
-    if (groups.length === 0 && artists.length === 0) return []
+async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostBySlug>>, categorias: string[]): Promise<StoreProduct[]> {
+    if (!post) return []
+    const groups = post.related_entities?.groups ?? []
+    const artists = post.related_entities?.artists ?? []
 
     const lists = await Promise.all([
         ...groups.slice(0, 2).map(g => getStoreProductsByGroupId(g.id)),
@@ -28,7 +29,18 @@ async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostByS
 
     const byId = new Map<number, StoreProduct>()
     for (const list of lists) for (const product of list) byId.set(product.id, product)
-    return [...byId.values()]
+    const daEntidade = [...byId.values()]
+    if (daEntidade.length >= 3) return daEntidade
+
+    // Pouco ou nenhum produto do grupo/artista citado (ou post sem entidade): completa pelo assunto
+    // do texto, em vez de deixar o artigo sem vitrine. Só casamento real, sem vitrine genérica.
+    const texto = `${stripHtml(post.title.rendered)} ${stripHtml(post.excerpt.rendered)} ${categorias.join(' ')}`
+    const tematicos = escolherPorTema(await getStoreProducts(), {
+        texto,
+        excluirIds: daEntidade.map(p => p.id),
+        limite: 6 - daEntidade.length,
+    })
+    return [...daEntidade, ...tematicos]
 }
 
 type Params = Promise<{ slug: string }>
@@ -75,7 +87,7 @@ export default async function PostPage({ params }: { params: Params }) {
 
     const cats = getWPTerms(post._embedded, 'category')
     const relatedPosts = await getRelatedPosts(post)
-    const shopProducts = await getShopProductsForPost(post)
+    const shopProducts = await getShopProductsForPost(post, cats.map(c => c.name))
 
     const title = stripHtml(post.title.rendered)
     const url = `${SITE_URL}/blog/${slug}`
