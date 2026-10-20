@@ -9,7 +9,8 @@ export interface ProdutoDoTexto {
 function Legenda({ html }: { html?: string }) {
     if (!html) return null
     // `<p>` e não `<figcaption>`: o estilo global de legenda de imagem (borda lateral, mono, itálico) não cabe num cartão de loja.
-    return <p className="mt-2 text-xs leading-snug text-foreground-subtle" dangerouslySetInnerHTML={{ __html: html }} />
+    // `!` porque o estilo global de parágrafo do artigo (tamanho de leitura, justificado) vence a classe sem ele.
+    return <p className="mt-2 !text-left !text-xs !leading-snug text-foreground-subtle" dangerouslySetInnerHTML={{ __html: html }} />
 }
 
 /**
@@ -32,10 +33,14 @@ export function ProdutoNoArtigo({ produto, legendaHtml, contexto }: ProdutoDoTex
 export function ProdutosNoArtigo({ itens, contexto }: { itens: ProdutoDoTexto[]; contexto: string }) {
     if (itens.length === 1) return <ProdutoNoArtigo {...itens[0]} contexto={contexto} />
     const colunas = itens.length === 2 || itens.length === 4 ? 'md:grid-cols-2 md:max-w-[34rem]' : 'md:grid-cols-3'
+    // Celular: faixa que rola de lado (um cartão e meio à vista indica que há mais), em vez de grade que deixa um cartão sozinho na última linha.
     return (
-        <div className={`not-prose my-8 mx-auto grid grid-cols-2 gap-3 sm:gap-4 ${colunas}`} data-produtos-no-artigo={itens.length}>
+        <div
+            className={`not-prose -mx-4 my-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-auto sm:px-0 md:grid md:items-stretch md:gap-4 md:overflow-visible md:pb-0 md:mx-auto ${colunas}`}
+            data-produtos-no-artigo={itens.length}
+        >
             {itens.map(({ produto, legendaHtml }) => (
-                <figure key={produto.id} className="min-w-0" data-produto-no-artigo={produto.id}>
+                <figure key={produto.id} className="flex w-[62%] shrink-0 snap-start flex-col sm:w-[45%] md:w-auto md:min-w-0 [&>a]:flex-1" data-produto-no-artigo={produto.id}>
                     <StoreCard product={produto} contexto={contexto} />
                     <Legenda html={legendaHtml} />
                 </figure>
