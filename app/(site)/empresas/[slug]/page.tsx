@@ -68,7 +68,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
     const companyUrl = `${SITE_URL}/empresas/${slug}`
 
     const [vitrine, posts] = await Promise.all([
-        getVitrinePorTermos([name], `empresa:${slug}`),
+        getVitrinePorTermos([name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])], `empresa:${slug}`),
         getPostsQueCitam(name),
     ])
 
