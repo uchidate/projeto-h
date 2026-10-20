@@ -29,7 +29,7 @@ function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo 
                     {verTudoLabel} →
                 </Link>
             </div>
-            <PrateleiraRotativa produtos={products.slice(0, 8)} contexto={contexto} />
+            <PrateleiraRotativa produtos={products.slice(0, 10)} contexto={contexto} />
         </div>
     )
 }

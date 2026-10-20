@@ -1,5 +1,5 @@
 import { getFeaturedStoreProducts, getStoreProducts, getStoreProductsByArtistId, type StoreProduct, type TipoVitrine } from '@/lib/wordpress/store'
-import { escolherPorTema, type Tema } from '@/lib/wordpress/store-contexto'
+import { escolherPorTemaComAderencia, type Tema } from '@/lib/wordpress/store-contexto'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 
 /** Vitrine geral em destaque, já ordenada por contexto. Base das faixas de loja em páginas sem produto próprio. */
@@ -14,8 +14,8 @@ export async function getVitrineGeral(contexto: string, limit = 6, tipo?: TipoVi
  */
 export async function getVitrineTematica(texto: string, contexto: string, opcoes: { limit?: number; tipo?: TipoVitrine; temas?: Tema[] } = {}): Promise<StoreProduct[]> {
     const { limit = 6, tipo, temas } = opcoes
-    const casados = escolherPorTema(await getStoreProducts(), { texto, temas, limite: limit })
-    if (casados.length >= 3) return ordenarPrateleira(casados, contexto)
+    const casados = escolherPorTemaComAderencia(await getStoreProducts(), { texto, temas, limite: limit })
+    if (casados.length >= 3) return ordenarPrateleira(casados.map(x => x.p), contexto, new Map(casados.map(x => [x.p.id, x.aderencia])))
     return getVitrineGeral(contexto, limit, tipo)
 }
 
