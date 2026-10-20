@@ -2,7 +2,7 @@ import { intlLocale } from '@/lib/i18n/format'
 import type { Metadata } from 'next'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
-import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto } from '@/lib/wordpress/store'
+import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto, quedaDePreco } from '@/lib/wordpress/store'
 import { ordenarPrateleira, ordenarCategorias } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { LojaClique } from '@/components/ui/LojaClique'
@@ -22,7 +22,7 @@ export const metadataLoja: Metadata = {
     twitter: { ...baseTwitter() },
 }
 
-export type SearchParams = Promise<{ categoria?: string; loja?: string; busca?: string; ofertas?: string }>
+export type SearchParams = Promise<{ categoria?: string; loja?: string; busca?: string; ofertas?: string; queda?: string }>
 
 export async function LojaListagem({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
@@ -35,6 +35,10 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
     const descontos = new Map(products.map(p => [p.id, calcularDesconto(p.acf.price, p.acf.original_price)]))
     const totalOfertas = products.filter(p => (descontos.get(p.id) ?? null) !== null).length
 
+    // Queda real de preço (histórico diário): produto cujo preço atual está abaixo do maior dos últimos 30 dias
+    const quedas = new Map(products.map(p => [p.id, quedaDePreco(p.acf.price, p.acf.price_history)]))
+    const totalQuedas = products.filter(p => quedas.get(p.id) !== null).length
+
     // Filtros do cliente
     let filtered = products
     if (sp.categoria) filtered = filtered.filter(p => p.acf.category === sp.categoria)
@@ -45,7 +49,11 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
             p.title.rendered.toLowerCase().includes(q)
         )
     }
-    if (sp.ofertas === '1') {
+    if (sp.queda === '1') {
+        filtered = filtered
+            .filter(p => quedas.get(p.id) != null)
+            .sort((a, b) => (quedas.get(b.id)?.percentual ?? 0) - (quedas.get(a.id)?.percentual ?? 0))
+    } else if (sp.ofertas === '1') {
         filtered = filtered
             .filter(p => (descontos.get(p.id) ?? null) !== null)
             .sort((a, b) => (descontos.get(b.id) ?? 0) - (descontos.get(a.id) ?? 0))
@@ -77,13 +85,14 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
         return acc
     }, {})
 
-    const hasActive = sp.categoria || sp.loja || sp.busca || sp.ofertas === '1'
+    const hasActive = sp.categoria || sp.loja || sp.busca || sp.ofertas === '1' || sp.queda === '1'
 
-    const setParam = (key: 'categoria' | 'loja' | 'ofertas', value: string) => {
+    const setParam = (key: 'categoria' | 'loja' | 'ofertas' | 'queda', value: string) => {
         const ps = new URLSearchParams()
         if (key !== 'categoria' && sp.categoria) ps.set('categoria', sp.categoria)
         if (key !== 'loja' && sp.loja) ps.set('loja', sp.loja)
         if (key !== 'ofertas' && sp.ofertas === '1') ps.set('ofertas', '1')
+        if (key !== 'queda' && sp.queda === '1') ps.set('queda', '1')
         if (sp.busca) ps.set('busca', sp.busca)
         if (value) ps.set(key, value)
         const qs = ps.toString()
@@ -111,6 +120,12 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                             <a href={setParam('ofertas', sp.ofertas === '1' ? '' : '1')}
                                 className={`shrink-0 whitespace-nowrap px-4 py-2 text-[13px] font-black transition-colors ${sp.ofertas === '1' ? 'border border-red-500 bg-red-500 text-white' : 'border border-red-500/50 text-red-500 hover:bg-red-500/10'}`}>
                                 🔥 Ofertas ({totalOfertas})
+                            </a>
+                        )}
+                        {totalQuedas > 0 && (
+                            <a href={setParam('queda', sp.queda === '1' ? '' : '1')}
+                                className={`shrink-0 whitespace-nowrap px-4 py-2 text-[13px] font-black transition-colors ${sp.queda === '1' ? 'border border-accent bg-accent text-white' : 'border border-accent/60 text-accent hover:bg-accent/10'}`}>
+                                📉 Baixou de preço ({totalQuedas})
                             </a>
                         )}
                         {Object.entries(categoryCount)
@@ -181,6 +196,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                         {sp.categoria && <input type="hidden" name="categoria" value={sp.categoria} />}
                         {sp.loja && <input type="hidden" name="loja" value={sp.loja} />}
                         {sp.ofertas === '1' && <input type="hidden" name="ofertas" value="1" />}
+                        {sp.queda === '1' && <input type="hidden" name="queda" value="1" />}
                         <label className="flex min-w-[220px] flex-col gap-1 lg:min-w-70">
                             <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Busca</span>
                             <input name="busca" type="text" defaultValue={sp.busca ?? ''} placeholder="Buscar produto…"

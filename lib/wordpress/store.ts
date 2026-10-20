@@ -34,21 +34,44 @@ export function calcularDesconto(price?: string | null, originalPrice?: string |
     return Math.round(((original - atual) / original) * 100)
 }
 
+const parsePrecoBR = (s: string) => Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'))
+
 /**
- * true só quando o preço atual é, de fato, o menor registrado no histórico
- * dentro da janela — nunca aproxima nem assume na ausência de dado.
- * Exige pelo menos 2 leituras no histórico (senão não há "histórico" real).
+ * Queda real de preço: o maior valor registrado na janela contra o atual. Só existe quando o
+ * histórico tem leituras na janela, o preço atual é menor que o maior delas e a queda passa de
+ * `minimoPercentual` — preço parado ou oscilação de centavos nunca vira "queda".
+ */
+export function quedaDePreco(
+    price: string | null,
+    history: { date: string; price: string }[] | null,
+    dias = 30,
+    minimoPercentual = 5,
+): { de: number; percentual: number } | null {
+    if (!price || !history || history.length < 2) return null
+    const atual = parsePrecoBR(price)
+    if (!Number.isFinite(atual) || atual <= 0) return null
+    const limite = Date.now() - dias * 24 * 60 * 60 * 1000
+    const janela = history.filter(h => new Date(h.date).getTime() >= limite).map(h => parsePrecoBR(h.price)).filter(Number.isFinite)
+    if (janela.length < 2) return null
+    const maior = Math.max(...janela)
+    if (maior <= atual) return null
+    const percentual = Math.round(((maior - atual) / maior) * 100)
+    return percentual >= minimoPercentual ? { de: maior, percentual } : null
+}
+
+/**
+ * true só quando o preço atual é o menor da janela E já foi mais alto nela (houve queda real).
+ * Preço que ficou igual o tempo todo não é "menor preço": antes do histórico diário isso passava
+ * despercebido, com leituras diárias todo produto estável ganharia o selo.
  */
 export function ehMenorPrecoEmDias(price: string | null, history: { date: string; price: string }[] | null, dias = 30): boolean {
     if (!price || !history || history.length < 2) return false
-    const parse = (s: string) => Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'))
-    const atual = parse(price)
+    const atual = parsePrecoBR(price)
     if (!Number.isFinite(atual)) return false
     const limite = Date.now() - dias * 24 * 60 * 60 * 1000
-    const janela = history.filter(h => new Date(h.date).getTime() >= limite)
+    const janela = history.filter(h => new Date(h.date).getTime() >= limite).map(h => parsePrecoBR(h.price)).filter(Number.isFinite)
     if (janela.length < 2) return false
-    const menor = Math.min(...janela.map(h => parse(h.price)).filter(Number.isFinite))
-    return Number.isFinite(menor) && atual <= menor
+    return atual <= Math.min(...janela) && Math.max(...janela) > atual
 }
 
 /** Data real de publicação do post — nunca "novo" fabricado. */
