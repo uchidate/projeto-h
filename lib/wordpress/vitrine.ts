@@ -35,3 +35,14 @@ export async function getVitrineDoElenco(artistIds: number[], contexto: string, 
     const geral = texto ? await getVitrineTematica(texto, contexto, { limit, tipo, temas: [tipo === 'drama' ? 'drama' : 'musica'] }) : await getVitrineGeral(contexto, limit, tipo)
     return [...new Map([...unicos, ...geral].map(p => [p.id, p])).values()].slice(0, limit)
 }
+
+/**
+ * Produtos que casam com o nome da ficha (comida, marca): palavra do título do produto no texto.
+ * `temas` soma uma categoria inteira (ex.: culinária numa ficha de comida). Sem casamento devolve [] —
+ * a ficha de uma empresa sem produto na loja não ganha prateleira alheia.
+ */
+export async function getVitrinePorTermos(termos: string[], contexto: string, opcoes: { limit?: number; temas?: Tema[] } = {}): Promise<StoreProduct[]> {
+    const { limit = 3, temas } = opcoes
+    const casados = escolherPorTemaComAderencia(await getStoreProducts(), { texto: termos.filter(Boolean).join(' '), temas, limite: limit })
+    return ordenarPrateleira(casados.map(x => x.p), contexto, new Map(casados.map(x => [x.p.id, x.aderencia]))).slice(0, limit)
+}

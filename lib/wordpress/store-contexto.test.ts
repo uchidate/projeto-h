@@ -53,3 +53,16 @@ describe('escolherPorTema', () => {
         expect(ids).toHaveLength(3)
     })
 })
+
+describe('ficha de empresa/comida (texto = nome, sem tema)', () => {
+    const lista = [
+        produto(1, 'Choco Pie Lotte 336g', 'snacks'),
+        produto(2, 'Pelúcia BT21', 'kpop_album'),
+    ]
+    it('marca no nome traz só o produto da marca', () => {
+        expect(escolherPorTema(lista, { texto: 'Lotte Group' }).map(p => p.id)).toEqual([1])
+    })
+    it('marca sem produto na loja não ganha prateleira alheia', () => {
+        expect(escolherPorTema(lista, { texto: 'Hyundai Motor' })).toEqual([])
+    })
+})

@@ -12,6 +12,9 @@ import { buildBreadcrumbSchema, buildOrganizationSchema } from '@/lib/seo/jsonld
 import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { Globe, Users, Calendar, TrendingUp, AtSign } from 'lucide-react'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
+import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { metaDescription } from '@/lib/seo/metaDescription'
 
 export const revalidate = 600
@@ -63,6 +66,11 @@ export default async function CompanyPage({ params }: { params: Params }) {
     const indLabel = rotuloDoSetor(acf.industry)
     const indEmoji = emojiDoSetor(acf.industry)
     const companyUrl = `${SITE_URL}/empresas/${slug}`
+
+    const [vitrine, posts] = await Promise.all([
+        getVitrinePorTermos([name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])], `empresa:${slug}`),
+        getPostsQueCitam(name),
+    ])
 
     const relatedCompanies = await getRelatedCompanies(company.id, acf.industry, 6)
 
@@ -264,6 +272,28 @@ export default async function CompanyPage({ params }: { params: Params }) {
                     )}
                 </aside>
             </div>
+
+
+            {/* Loja e blog */}
+            {(vitrine.length > 0 || posts.length > 0) && (
+                <div className="border-t border-border/40">
+                    <div className="page-wrap space-y-6 py-8">
+                        <LojaEmLinha products={vitrine} bloco="empresa-ficha" contexto="empresa:{slug}" title="Produtos da marca" />
+                        {posts.length > 0 && (
+                            <div>
+                                <h2 className="mb-3 text-[18px] font-black tracking-tight">No blog</h2>
+                                <ul className="space-y-2">
+                                    {posts.map(p => (
+                                        <li key={p.id}>
+                                            <Link href={`/blog/${p.slug}`} className="text-[14px] font-semibold hover:text-accent hover:underline">{stripHtml(p.title.rendered)}</Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* Relacionadas */}
             {relatedCompanies.length > 0 && (

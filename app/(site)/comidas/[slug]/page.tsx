@@ -14,6 +14,9 @@ import { buildBreadcrumbSchema, buildRecipeSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescription } from '@/lib/seo/metaDescription'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
+import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getReceita } from '@/lib/receitas'
 import { ReceitaPreparo } from '@/components/food/ReceitaPreparo'
 
@@ -67,6 +70,11 @@ export default async function FoodPage({ params }: { params: Params }) {
     const catEmoji = acf.category ? FOOD_CATEGORY_EMOJI[acf.category] : '🍽️'
     const spicy = acf.spicy_level ?? 0
     const foodUrl = `${SITE_URL}/comidas/${slug}`
+
+    const [vitrine, posts] = await Promise.all([
+        getVitrinePorTermos([name, ...(acf.main_ingredients ?? [])], `comida:${slug}`, { temas: ['culinaria'] }),
+        getPostsQueCitam(name),
+    ])
 
     const [relatedFoods, dramasInFood] = await Promise.all([
         getRelatedFoods(food.id, acf.category, 6),
@@ -356,6 +364,27 @@ export default async function FoodPage({ params }: { params: Params }) {
                                 ← Ver todas as comidas
                             </Link>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Loja e blog */}
+            {(vitrine.length > 0 || posts.length > 0) && (
+                <div className="border-t border-border/40">
+                    <div className="page-wrap space-y-6 py-8">
+                        <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto="comida:{slug}" title="Para provar em casa" />
+                        {posts.length > 0 && (
+                            <div>
+                                <h2 className="mb-3 text-[18px] font-black tracking-tight">No blog</h2>
+                                <ul className="space-y-2">
+                                    {posts.map(p => (
+                                        <li key={p.id}>
+                                            <Link href={`/blog/${p.slug}`} className="text-[14px] font-semibold hover:text-accent hover:underline">{stripHtml(p.title.rendered)}</Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
