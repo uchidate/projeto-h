@@ -1,3 +1,4 @@
+import type { StoreProduct } from '@/lib/wordpress/store'
 import { useLocale, useTranslations } from 'next-intl'
 import { href } from '@/lib/i18n/routes'
 import type { WPProduction, WPArtist, WPPost } from '@/lib/wordpress/types'
@@ -15,14 +16,14 @@ import { type EntityFAQItem } from '@/components/seo/EntityFAQ'
 import type { Episodio } from '@/lib/tmdb/episodios'
 import { buildProductionProfileModel } from '@/lib/profiles/productionProfile'
 
-interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null; episodios?: Episodio[] }
+interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null; episodios?: Episodio[]; shopProducts?: StoreProduct[] }
 
 export function ProductionDetailPage(props: Props) {
     const pagina = <ProductionDetailPageConteudo {...props} />
     return producaoMagra(props.production) ? <SemAnuncios>{pagina}</SemAnuncios> : pagina
 }
 
-function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null, episodios = [] }: Props) {
+function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null, episodios = [], shopProducts = [] }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const locale = useLocale()
@@ -106,7 +107,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
             {jsonLd}
             {readingBar}
             <ProductionPageB production={production} model={model} productionUrl={productionUrl} cast={cast} related={related}
-                relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} episodios={episodios} />
+                relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} episodios={episodios} shopProducts={shopProducts} />
         </>
     )
 }

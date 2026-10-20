@@ -16,6 +16,9 @@ import { getHubsForProduction } from '@/lib/guias/hub-lookup'
 import { getCenas } from '@/lib/tmdb/imagens'
 import { getEpisodios } from '@/lib/tmdb/episodios'
 import { getDisponibilidade } from '@/lib/tmdb/watchProviders'
+import { getStoreProducts } from '@/lib/wordpress/store'
+import { escolherPorTema } from '@/lib/wordpress/store-contexto'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
@@ -133,6 +136,18 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
 
     const relatedHubs = getHubsForProduction(production)
 
+    // Vitrine pelo assunto da obra (título, gêneros e sinopse): beleza para romance, merch do filme quando o título casa.
+    const shopProducts = locale === DEFAULT_LOCALE
+        ? ordenarPrateleira(
+            escolherPorTema(await getStoreProducts(), {
+                texto: `${productionTitle} ${genres.map(g => g.name).join(' ')} ${stripHtml(production.excerpt.rendered)}`,
+                temas: ['drama'],
+                limite: 8,
+            }),
+            `producao:${slug}`,
+        )
+        : []
+
     const title = stripHtml(production.title.rendered)
     const url = `${SITE_URL}${href('production', { slug }, locale)}`
 
@@ -151,7 +166,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <ProductionDetailPage production={production} disponibilidade={disponibilidade} episodios={episodios} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} />
+            <ProductionDetailPage production={production} disponibilidade={disponibilidade} episodios={episodios} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} />
         </>
     )
 }

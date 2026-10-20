@@ -23,6 +23,8 @@ import { EpisodiosPainel } from '@/components/productions/EpisodiosPainel'
 import type { Episodio } from '@/lib/tmdb/episodios'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionBlogGrid } from '@/components/productions/ProductionBlogGrid'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { StoreProduct } from '@/lib/wordpress/store'
 import { ProductionSidebar, FichaLinhas } from '@/components/productions/ProductionSidebar'
 
 interface Props {
@@ -37,6 +39,7 @@ interface Props {
     faqItems: EntityFAQItem[]
     disponibilidade?: Disponibilidade | null
     episodios?: Episodio[]
+    shopProducts?: StoreProduct[]
 }
 
 const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
@@ -54,7 +57,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * elenco e outro depois das recomendações. O rodapé de página (`production_end_leaderboard`,
  * 27% de preenchimento) e o `production_discovery` da estrutura anterior saem.
  */
-export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, episodios = [] }: Props) {
+export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, episodios = [], shopProducts = [] }: Props) {
     const t = useTranslations('profile')
     const locale = useLocale()
     const {
@@ -217,6 +220,11 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                     </div>
                 )}
             </div>
+            {locale === DEFAULT_LOCALE && shopProducts.length > 0 && (
+                <div data-bloco="producao-loja">
+                    <ShopRelatedSection title={`Pra maratonar ${title} com estilo`} products={shopProducts} verTudoLabel="Ver toda a loja" contexto={`producao:${production.slug}`} />
+                </div>
+            )}
         </>
     )
 }

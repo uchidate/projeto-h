@@ -32,13 +32,13 @@ function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo 
     )
 }
 
-export function ShopRelatedSection({ title, products, href = '/loja', verTudoLabel = 'Ver tudo na loja', secondary }: Props) {
+export function ShopRelatedSection({ title, products, href = '/loja', verTudoLabel = 'Ver tudo na loja', contexto, secondary }: Props) {
     const hasPrimary = products.length > 0
     const hasSecondary = !!secondary && secondary.products.length > 0
     if (!hasPrimary && !hasSecondary) return null
 
     // Sem produtos próprios mas com produtos do grupo: a prateleira do grupo assume o topo, não some.
-    const primaryShelf = hasPrimary ? { title, products, href, verTudoLabel } : secondary!
+    const primaryShelf = hasPrimary ? { title, products, href, verTudoLabel, contexto } : secondary!
     const extraShelf = hasPrimary ? (hasSecondary ? secondary : undefined) : undefined
 
     return (

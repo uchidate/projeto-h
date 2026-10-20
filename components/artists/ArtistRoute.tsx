@@ -12,7 +12,8 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ArtistDetailPage } from '@/components/artists/ArtistDetailPage'
 import { getHubsForArtist } from '@/lib/guias/hub-lookup'
-import { getStoreProductsByArtistId, getStoreProductsByGroupId, getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { getStoreProductsByArtistId, getStoreProductsByGroupId, getFeaturedStoreProducts, getStoreProducts } from '@/lib/wordpress/store'
+import { escolherPorTema } from '@/lib/wordpress/store-contexto'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { getMusicReleases } from '@/lib/wordpress/music'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
@@ -131,9 +132,19 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     // em destaque em vez de esconder o bloco — a loja precisa aparecer em
     // toda página, não só onde já existe cobertura própria de produto.
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0 && groupShopProducts.length === 0
-    const shopFallbackProducts = semProdutoProprio
-        ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'artista:fallback')
-        : []
+    // Antes de cair nos destaques gerais, tenta casar pelo perfil: quem tem produção
+    // na ficha é público de dorama; quem não tem, de música.
+    let shopFallbackProducts: Awaited<ReturnType<typeof getFeaturedStoreProducts>> = []
+    if (semProdutoProprio) {
+        const tematicos = escolherPorTema(await getStoreProducts(), {
+            texto: stripHtml(artist.title.rendered),
+            temas: [productions.length > 0 ? 'drama' : 'musica'],
+        })
+        shopFallbackProducts = ordenarPrateleira(
+            tematicos.length >= 3 ? tematicos : await getFeaturedStoreProducts(8),
+            'artista:fallback',
+        )
+    }
 
     const relatedHubs = getHubsForArtist(artist)
 
