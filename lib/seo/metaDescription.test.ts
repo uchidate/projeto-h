@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { metaDescription } from './metaDescription'
+import { metaDescription, metaDescriptionComida } from './metaDescription'
 
 describe('metaDescription', () => {
     it('mantém texto curto, só normalizando espaços e reticências finais', () => {
@@ -19,5 +19,15 @@ describe('metaDescription', () => {
         expect(out.endsWith('…')).toBe(true)
         expect(texto.startsWith(out.slice(0, -1))).toBe(true)
         expect(out.slice(0, -1).endsWith(' ')).toBe(false)
+    })
+})
+
+describe('metaDescriptionComida', () => {
+    it('usa a primeira frase e os 3 primeiros ingredientes', () => {
+        const r = metaDescriptionComida('Pepero é um palito de biscoito coberto de chocolate. A versão clássica é simples.', ['biscoito', 'chocolate', 'açúcar', 'leite'])
+        expect(r).toBe('Pepero é um palito de biscoito coberto de chocolate. Ingredientes: biscoito, chocolate, açúcar.')
+    })
+    it('nunca passa de 160 caracteres', () => {
+        expect(metaDescriptionComida('a'.repeat(300), ['x'.repeat(80)]).length).toBeLessThanOrEqual(160)
     })
 })

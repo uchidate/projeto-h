@@ -13,7 +13,7 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { buildBreadcrumbSchema, buildRecipeSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
-import { metaDescription } from '@/lib/seo/metaDescription'
+import { metaDescriptionComida } from '@/lib/seo/metaDescription'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
@@ -46,8 +46,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     const name = stripHtml(food.title.rendered)
     const korean = food.acf?.name_korean
     const title = `${name}${korean ? ` (${korean})` : ''} — Culinária Coreana`
-    const description = food.excerpt?.rendered
-        ? metaDescription(stripHtml(food.excerpt.rendered))
+    const resumo = stripHtml(food.excerpt?.rendered || food.content?.rendered || '')
+    const description = resumo
+        ? metaDescriptionComida(resumo, food.acf?.main_ingredients)
         : `Tudo sobre ${name}: ingredientes, onde comer, curiosidades e mais.`
     const image = getWPImage(food._embedded, food.featured_image_url)
     const url = `${SITE_URL}/comidas/${slug}`
@@ -112,7 +113,7 @@ export default async function FoodPage({ params }: { params: Params }) {
         <>
             <WpEditSetter postId={food.id} postType="food" />
             <JsonLd data={breadcrumbSchema} />
-            <JsonLd data={recipeSchema} />
+            {receita && <JsonLd data={recipeSchema} />}
 
             {/* Hero */}
             <div className="border-b border-border/40">
