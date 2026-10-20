@@ -582,22 +582,28 @@
   animation: gradient 3s linear infinite;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
+/* Custom Scrollbar
+   Só em ponteiro fino e fora da raiz (html). Estilizar a barra da raiz faz o WebKit reservar
+   8px de barra clássica: no Safari do iPhone, elementos fixos em tela cheia (a vinheta do
+   Google) ficam 382px num layout de 390px, deslocados do canto onde mora o botão de fechar.
+   Medido em WebKit móvel em 2026-10-20: com a regra global 382px; sem ela, 390px. */
+@media (hover: hover) and (pointer: fine) {
+  *:not(html)::-webkit-scrollbar {
+    width: 8px;
+  }
 
-::-webkit-scrollbar-track {
-  background: var(--color-surface);
-}
+  *:not(html)::-webkit-scrollbar-track {
+    background: var(--color-surface);
+  }
 
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 4px;
-}
+  *:not(html)::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-muted);
+  *:not(html)::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted);
+  }
 }
 
 /* Animations */
