@@ -137,3 +137,24 @@ export async function getSidebarPosts(currentPage = 1, perPage = 13) {
         { revalidate: 300, tags: [WP_CACHE_TAGS.posts] },
     )
 }
+
+function semAcento(s: string): string {
+    return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+}
+
+/** Mantém só os posts que citam o nome no título ou no resumo — a busca do WP também devolve acerto por palavra solta. */
+export function filtrarPostsQueCitam<T extends { title: { rendered: string }; excerpt?: { rendered: string } }>(posts: T[], nome: string): T[] {
+    const alvo = semAcento(nome).trim()
+    if (alvo.length < 3) return []
+    return posts.filter(p => semAcento(`${p.title.rendered} ${p.excerpt?.rendered ?? ''}`).includes(alvo))
+}
+
+/** Matérias do blog que citam o nome (ficha de comida ou empresa). Falha de rede não derruba a ficha. */
+export async function getPostsQueCitam(nome: string, limit = 3) {
+    try {
+        const { items } = await getPosts({ search: nome, perPage: 12, includeContent: false })
+        return filtrarPostsQueCitam(items, nome).slice(0, limit)
+    } catch {
+        return []
+    }
+}
