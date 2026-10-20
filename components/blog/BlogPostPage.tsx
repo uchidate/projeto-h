@@ -295,9 +295,11 @@ interface Props {
     post: WPPost
     relatedPosts?: WPPost[]
     shopProducts?: StoreProduct[]
+    /** Produtos escolhidos pelo redator dentro do texto (bloco `product`). */
+    produtosNoTexto?: StoreProduct[]
 }
 
-export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Props) {
+export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produtosNoTexto = [] }: Props) {
     /* Hallmark · macrostructure: Long Document · genre: editorial · theme: editorial tokens
      * audience: leitores de cultura coreana · use: leitura e descoberta · tone: editorial
      * pre-emit critique: P5 H4 E4 S5 R4 V4
@@ -666,7 +668,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [] }: Pro
                             <BlogMobileReadMore semTrava slug={post.slug}>
                                 {structuredModel ? (
                                     <>
-                                        <GutenbergArticleRenderer model={structuredModel} cardGrupo={cardGrupo} sugestaoMeio={sugestaoMeio} lojaMeio={lojaMeio} />
+                                        <GutenbergArticleRenderer model={structuredModel} cardGrupo={cardGrupo} sugestaoMeio={sugestaoMeio} lojaMeio={lojaMeio} produtos={new Map(produtosNoTexto.map(p => [p.id, p]))} contextoProduto={`artigo:${post.slug}:produto`} />
                                     </>
                                 ) : (
                                     <>

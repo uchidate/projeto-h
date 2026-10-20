@@ -17,6 +17,7 @@
     { "name": "core/button", "family": "navigation", "surfaces": ["article"], "adBoundary": false },
     { "name": "__bloco2__/stats", "family": "data", "surfaces": ["article", "artist", "group"], "adBoundary": false, "usage": "Dois ou três dados verificáveis que merecem comparação visual." },
     { "name": "__bloco2__/related-content", "family": "navigation", "surfaces": ["article", "artist", "group"], "adBoundary": false, "usage": "Relação interna confirmada que ajuda a continuar a leitura." },
+    { "name": "__bloco2__/product", "family": "commerce", "surfaces": ["article"], "adBoundary": false, "usage": "Mostra um produto da loja no ponto do texto em que ele é o assunto (foto, preço atual, botão). Poucas vezes por artigo e sempre depois de prosa que apresenta o produto." },
     { "name": "__bloco2__/highlight", "family": "evidence", "surfaces": ["article", "artist", "group"], "adBoundary": false, "usage": "Destaque editorial curto; não representar fala como citação." },
     { "name": "__bloco__/callout", "family": "context", "surfaces": ["article", "artist", "group"], "adBoundary": false, "usage": "Curiosidade factual que acrescenta compreensão." },
     { "name": "__bloco__/marker-list", "family": "data", "surfaces": ["article", "artist", "group"], "adBoundary": false, "usage": "Sequência curta de marcos, critérios ou itens comparáveis." },
