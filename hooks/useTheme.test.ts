@@ -1,82 +1,71 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useTheme } from './useTheme'
-
-function mockMatchMedia(matches: boolean) {
-    Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: vi.fn().mockImplementation((query: string) => ({
-            matches,
-            media: query,
-            addListener: vi.fn(),
-            removeListener: vi.fn(),
-        })),
-    })
-}
 
 describe('useTheme', () => {
     beforeEach(() => {
         localStorage.clear()
+        sessionStorage.clear()
         document.documentElement.classList.remove('dark')
-        mockMatchMedia(false)
     })
 
-    it('usa o tema salvo no localStorage quando presente', () => {
-        localStorage.setItem('portal_theme', 'light')
+    it('sem escolha salva abre no claro, mesmo com o sistema em tema escuro', () => {
+        Object.defineProperty(window, 'matchMedia', {
+            writable: true,
+            value: () => ({ matches: true, media: '', addListener() {}, removeListener() {} }),
+        })
         const { result } = renderHook(() => useTheme())
         expect(result.current.theme).toBe('light')
         expect(result.current.isLoaded).toBe(true)
-    })
-
-    it('migra a preferência salva pela chave legada', () => {
-        localStorage.setItem('portal_legado_theme', 'light')
-        const { result } = renderHook(() => useTheme())
-        expect(result.current.theme).toBe('light')
-        expect(localStorage.getItem('portal_theme')).toBe('light')
-        expect(localStorage.getItem('portal_legado_theme')).toBeNull()
-    })
-
-    it('sem tema salvo, usa prefers-color-scheme do sistema (dark)', () => {
-        mockMatchMedia(true)
-        const { result } = renderHook(() => useTheme())
-        expect(result.current.theme).toBe('dark')
-        expect(document.documentElement.classList.contains('dark')).toBe(true)
-    })
-
-    it('sem tema salvo e sem preferência dark do sistema, usa light', () => {
-        mockMatchMedia(false)
-        const { result } = renderHook(() => useTheme())
-        expect(result.current.theme).toBe('light')
         expect(document.documentElement.classList.contains('dark')).toBe(false)
     })
 
-    it('toggleTheme alterna entre dark e light, persiste e atualiza a classe do html', () => {
-        localStorage.setItem('portal_theme', 'light')
+    it('uma escolha feita em visita anterior (localStorage) não vale: abre no claro', () => {
+        localStorage.setItem('portal_theme_choice', 'dark')
+        const { result } = renderHook(() => useTheme())
+        expect(result.current.theme).toBe('light')
+    })
+
+    it('usa a escolha feita nesta visita (aba)', () => {
+        sessionStorage.setItem('portal_theme_choice', 'dark')
+        const { result } = renderHook(() => useTheme())
+        expect(result.current.theme).toBe('dark')
+        expect(document.documentElement.classList.contains('dark')).toBe(true)
+    })
+
+    it('descarta a chave antiga, que guardava o padrão e não a escolha', () => {
+        localStorage.setItem('portal_theme', 'dark')
+        localStorage.setItem('portal_legado_theme', 'dark')
+        const { result } = renderHook(() => useTheme())
+        expect(result.current.theme).toBe('light')
+        expect(localStorage.getItem('portal_theme')).toBeNull()
+        expect(localStorage.getItem('portal_legado_theme')).toBeNull()
+    })
+
+    it('toggleTheme alterna, persiste a escolha e atualiza a classe do html', () => {
         const { result } = renderHook(() => useTheme())
 
         act(() => result.current.toggleTheme())
         expect(result.current.theme).toBe('dark')
-        expect(localStorage.getItem('portal_theme')).toBe('dark')
+        expect(sessionStorage.getItem('portal_theme_choice')).toBe('dark')
         expect(document.documentElement.classList.contains('dark')).toBe(true)
 
         act(() => result.current.toggleTheme())
         expect(result.current.theme).toBe('light')
-        expect(localStorage.getItem('portal_theme')).toBe('light')
+        expect(sessionStorage.getItem('portal_theme_choice')).toBe('light')
         expect(document.documentElement.classList.contains('dark')).toBe(false)
     })
 
     it('setTheme define um tema específico e persiste', () => {
-        localStorage.setItem('portal_theme', 'light')
         const { result } = renderHook(() => useTheme())
-
         act(() => result.current.setTheme('dark'))
         expect(result.current.theme).toBe('dark')
-        expect(localStorage.getItem('portal_theme')).toBe('dark')
+        expect(sessionStorage.getItem('portal_theme_choice')).toBe('dark')
     })
 
     it('isDark/isLight refletem o tema atual', () => {
-        localStorage.setItem('portal_theme', 'dark')
+        sessionStorage.setItem('portal_theme_choice', 'dark')
         const { result } = renderHook(() => useTheme())
         expect(result.current.isDark).toBe(true)
         expect(result.current.isLight).toBe(false)

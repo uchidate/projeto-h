@@ -1,4 +1,4 @@
-import { storageKey, legacyStorageKey } from '@/lib/constants/identidade.mjs'
+import { storageKey } from '@/lib/constants/identidade.mjs'
 import { htmlLang } from '@/lib/i18n/format'
 import type { Locale } from '@/lib/i18n/config'
 import { NextIntlClientProvider } from 'next-intl'
@@ -111,7 +111,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
                   */}
                 <script
                     dangerouslySetInnerHTML={{
-                        __html: `(function(){try{var k='${storageKey('theme')}',l='${legacyStorageKey('theme')}',t=localStorage.getItem(k)||localStorage.getItem(l)||'dark';localStorage.setItem(k,t);localStorage.removeItem(l);document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})()`,
+                        __html: `(function(){try{var t=sessionStorage.getItem('${storageKey('theme_choice')}');document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})()`,
                     }}
                 />
 

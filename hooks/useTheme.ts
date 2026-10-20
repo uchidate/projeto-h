@@ -5,37 +5,43 @@ import { storageKey, legacyStorageKey } from '@/lib/constants/identidade.mjs'
 import { useEffect, useState } from 'react'
 
 type Theme = 'light' | 'dark'
-const THEME_STORAGE_KEY = storageKey('theme')
-const LEGACY_THEME_STORAGE_KEY = legacyStorageKey('theme')
+/**
+ * O site sempre ABRE no tema claro, qualquer que seja o tema do sistema ou a escolha da visita
+ * anterior. O visitante pode alternar; a escolha vale só enquanto a aba estiver aberta
+ * (sessionStorage), então uma nova visita volta ao claro. As chaves antigas (localStorage),
+ * que guardavam o padrão e não a escolha, são descartadas.
+ */
+const THEME_STORAGE_KEY = storageKey('theme_choice')
+const ANTIGAS = [storageKey('theme'), legacyStorageKey('theme')]
+
+function lerSessao(): string | null {
+    try { return sessionStorage.getItem(THEME_STORAGE_KEY) } catch { return null }
+}
+function gravarSessao(valor: Theme) {
+    try { sessionStorage.setItem(THEME_STORAGE_KEY, valor) } catch { /* modo privado: a escolha só não sobrevive ao recarregar */ }
+}
 
 export function useTheme() {
-    const [theme, setThemeState] = useState<Theme>('dark')
+    const [theme, setThemeState] = useState<Theme>('light')
     const [isLoaded, setIsLoaded] = useState(false)
 
     useEffect(() => {
-        const current = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null
-        const legacy = localStorage.getItem(LEGACY_THEME_STORAGE_KEY) as Theme | null
-        const saved = current ?? legacy
-        const initial = saved ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-        if (!current && legacy) localStorage.setItem(THEME_STORAGE_KEY, legacy)
-        localStorage.removeItem(LEGACY_THEME_STORAGE_KEY)
+        const saved = lerSessao()
+        const initial: Theme = saved === 'dark' ? 'dark' : 'light'
+        ANTIGAS.forEach(chave => localStorage.removeItem(chave))
+        localStorage.removeItem(THEME_STORAGE_KEY)
         setThemeState(initial)
         document.documentElement.classList.toggle('dark', initial === 'dark')
         setIsLoaded(true)
     }, [])
 
-    const toggleTheme = () => {
-        const next: Theme = theme === 'dark' ? 'light' : 'dark'
-        setThemeState(next)
-        localStorage.setItem(THEME_STORAGE_KEY, next)
-        document.documentElement.classList.toggle('dark', next === 'dark')
-    }
-
     const setTheme = (t: Theme) => {
         setThemeState(t)
-        localStorage.setItem(THEME_STORAGE_KEY, t)
+        gravarSessao(t)
         document.documentElement.classList.toggle('dark', t === 'dark')
     }
+
+    const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
 
     return { theme, toggleTheme, setTheme, isDark: theme === 'dark', isLight: theme === 'light', isLoaded }
 }

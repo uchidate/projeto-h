@@ -19,24 +19,25 @@ function mockMatchMedia(matches: boolean) {
 describe('ThemeToggle', () => {
     beforeEach(() => {
         localStorage.clear()
+        sessionStorage.clear()
         document.documentElement.classList.remove('dark')
         mockMatchMedia(false)
     })
 
     it('mostra ícone de lua e label "Mudar para modo escuro" quando o tema é light', () => {
-        localStorage.setItem('portal_theme', 'light')
+        sessionStorage.setItem('portal_theme_choice', 'light')
         render(<ThemeToggle />)
         expect(screen.getByRole('button', { name: /mudar para modo escuro/i })).toBeInTheDocument()
     })
 
     it('mostra ícone de sol e label "Mudar para modo claro" quando o tema é dark', () => {
-        localStorage.setItem('portal_theme', 'dark')
+        sessionStorage.setItem('portal_theme_choice', 'dark')
         render(<ThemeToggle />)
         expect(screen.getByRole('button', { name: /mudar para modo claro/i })).toBeInTheDocument()
     })
 
     it('clicar alterna o tema e atualiza o aria-label', async () => {
-        localStorage.setItem('portal_theme', 'light')
+        sessionStorage.setItem('portal_theme_choice', 'light')
         const user = userEvent.setup()
         render(<ThemeToggle />)
 
@@ -44,6 +45,6 @@ describe('ThemeToggle', () => {
         await user.click(button)
 
         expect(screen.getByRole('button', { name: /mudar para modo claro/i })).toBeInTheDocument()
-        expect(localStorage.getItem('portal_theme')).toBe('dark')
+        expect(sessionStorage.getItem('portal_theme_choice')).toBe('dark')
     })
 })
