@@ -1,5 +1,6 @@
 import { wpFetchWithTotal } from './client'
 import { WP_CACHE_TAGS } from './cache'
+import { garantirRankingRemoto } from './ranking-remoto'
 
 export type StoreProduct = {
     id: number
@@ -108,6 +109,9 @@ export function formatCategory(category: string): string {
 }
 
 export async function getStoreProducts(): Promise<StoreProduct[]> {
+    // Toda rota que ordena prateleira lê os produtos antes; aqui o ranking remoto já fica em memória
+    // para o ordenarPrateleira (síncrono) usar. Não lança: falha mantém o ranking anterior ou o arquivo.
+    await garantirRankingRemoto()
     const opts = { revalidate: 300, tags: [WP_CACHE_TAGS.storeProducts] }
     const first = await wpFetchWithTotal<StoreProduct>(
         '/wp/v2/store_products?per_page=100&page=1&orderby=id&order=asc&status=publish',

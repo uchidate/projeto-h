@@ -10,27 +10,23 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { calcularDesconto, type StoreProduct } from './store'
-
-type RankingCliques = {
-    /** Score de quem ainda não tem leitura (produto novo): neutro, para não ficar atrás de quem já provou ser ignorado. */
-    neutro: number
-    global: Record<string, number>
-    porContexto: Record<string, Record<string, number>>
-}
+import { rankingRemoto, parseRanking, type RankingCliques } from './ranking-remoto'
 
 /**
- * data/click-ranking.json é gerado offline (script `gerar-ranking-cliques.mjs`
- * do repo .operacao, que consulta o Umami) — o Next.js só lê. Lido uma vez por
- * processo; sem o arquivo (ainda não rodou, ou zero cliques), o ranking fica
- * vazio e a ordenação cai nos critérios de sempre, sem quebrar nada.
+ * Fonte principal: o ranking remoto (ranking-remoto.ts), que o servidor regenera todo dia.
+ * Reserva: data/click-ranking.json, gerado offline (`gerar-ranking-cliques.mjs` do repo .operacao)
+ * e lido uma vez por processo. Sem nenhum dos dois o ranking fica vazio e a ordenação cai nos
+ * critérios de sempre, sem quebrar nada.
  */
 let rankingCliques: RankingCliques | null = null
 function carregarRankingCliques(): RankingCliques {
+    // Remoto (atualizado todo dia pelo servidor) vence; o arquivo do deploy é a reserva.
+    const remoto = rankingRemoto()
+    if (remoto) return remoto
     if (rankingCliques) return rankingCliques
     try {
         const bruto = readFileSync(path.join(process.cwd(), 'data/click-ranking.json'), 'utf-8')
-        const json = JSON.parse(bruto)
-        rankingCliques = { neutro: json.neutro ?? 0, global: json.global ?? {}, porContexto: json.porContexto ?? {} }
+        rankingCliques = parseRanking(JSON.parse(bruto)) ?? { neutro: 0, global: {}, porContexto: {} }
     } catch {
         rankingCliques = { neutro: 0, global: {}, porContexto: {} }
     }
