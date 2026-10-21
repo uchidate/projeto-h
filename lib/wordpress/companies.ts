@@ -1,5 +1,6 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
+import { stripHtml } from '@/lib/utils'
 import type { WPCompany, CompanyIndustry } from './types'
 
 export type CompaniesQuery = {
@@ -60,6 +61,19 @@ export async function getCompaniesByIds(ids: number[]): Promise<WPCompany[]> {
             { revalidate: 1800, tags: [WP_CACHE_TAGS.companies] },
         )
     } catch { return [] }
+}
+
+/**
+ * `chaebol_group` é texto livre (ex: "Samsung Group"), não uma relação ACF —
+ * busca por título pra achar se o grupo também tem ficha própria no acervo.
+ * Falha silenciosa: sem ficha do grupo, o nome só aparece sem link.
+ */
+export async function findCompanyByName(name: string): Promise<{ slug: string; name: string } | null> {
+    try {
+        const { items } = await getCompanies({ search: name, perPage: 5 })
+        const match = items.find(c => stripHtml(c.title.rendered).toLowerCase() === name.toLowerCase())
+        return match ? { slug: match.slug, name: stripHtml(match.title.rendered) } : null
+    } catch { return null }
 }
 
 export async function getRelatedCompanies(excludeId: number, industry?: CompanyIndustry, perPage = 6): Promise<WPCompany[]> {

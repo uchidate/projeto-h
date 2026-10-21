@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getCompanyBySlug, getCompanies, getRelatedCompanies, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
+import { getCompanyBySlug, getCompanies, getRelatedCompanies, findCompanyByName, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
 import { SITE_URL } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
@@ -19,6 +19,7 @@ import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { ProfileSection } from '@/components/profiles/ProfileSection'
 import { GroupAnimatedStats } from '@/components/groups/GroupAnimatedStats'
+import { ConexoesChaebol } from '@/components/companies/ConexoesChaebol'
 
 export const revalidate = 600
 
@@ -77,6 +78,11 @@ export default async function CompanyPage({ params }: { params: Params }) {
     ])
 
     const relatedCompanies = await getRelatedCompanies(company.id, acf.industry, 6)
+    const hasOwnChaebolGroup = !!acf.chaebol_group && acf.chaebol_group.trim().toLowerCase() !== name.trim().toLowerCase()
+    const groupLink = hasOwnChaebolGroup ? await findCompanyByName(acf.chaebol_group!) : null
+    // Mesma blindagem contra autorreferência do ConexoesChaebol: sem isso, a
+    // seção renderiza vazia (só título) pra fichas como a da Abib.
+    const hasOtherGlobalBrands = (acf.global_brands ?? []).some(b => b.trim().toLowerCase() !== name.trim().toLowerCase())
 
     const stats = [
         acf.founded_year && { label: 'Fundação', value: String(acf.founded_year) },
@@ -197,6 +203,17 @@ export default async function CompanyPage({ params }: { params: Params }) {
                 </div>
             )}
 
+            {(hasOwnChaebolGroup || hasOtherGlobalBrands) && (
+                <ProfileSection id="conexoes" indented={false}>
+                    <ConexoesChaebol
+                        companyName={name}
+                        chaebolGroup={acf.chaebol_group}
+                        groupLink={groupLink}
+                        globalBrands={acf.global_brands}
+                    />
+                </ProfileSection>
+            )}
+
             <ProfileSection id="conteudo" indented={false}>
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10">
                     {/* Conteúdo */}
@@ -209,17 +226,6 @@ export default async function CompanyPage({ params }: { params: Params }) {
 
                     {/* Sidebar */}
                     <aside className="space-y-5">
-                        {/* Marcas do grupo */}
-                        {acf.global_brands && acf.global_brands.length > 0 && (
-                            <div className="rounded-xl border border-border bg-surface/40 p-5">
-                                <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">Marcas do Grupo</h3>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {acf.global_brands.map(b => (
-                                        <span key={b} className="px-2.5 py-1 rounded-full border border-border font-mono text-[11px] text-foreground/80 bg-background">{b}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
 
                         {/* Dados da empresa */}
                         {(acf.founder || acf.ceo || acf.chaebol_group) && (
