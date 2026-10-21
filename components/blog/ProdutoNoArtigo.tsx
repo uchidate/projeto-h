@@ -19,13 +19,14 @@ function Legenda({ html }: { html?: string }) {
  */
 export function ProdutoNoArtigo({ produto, legendaHtml, contexto }: ProdutoDoTexto & { contexto: string }) {
     return (
-        <figure className="not-prose my-8 mx-auto w-full max-w-[280px]" data-produto-no-artigo={produto.id}>
+        <figure className="not-prose !my-8 !mx-auto !items-stretch w-full max-w-[280px]" data-produto-no-artigo={produto.id}>
             <StoreCard product={produto} contexto={contexto} />
             <Legenda html={legendaHtml} />
         </figure>
     )
 }
 
+// `!m-0 !items-stretch`: o estilo global de `figure` do artigo (margem de 2,15rem e centralização) vazava e empurrava o 1º cartão 40 px para baixo, deixando a prateleira com alturas desiguais.
 /**
  * Blocos de produto em sequência viram uma prateleira: lado a lado no desktop (2 ou 3 colunas, conforme a
  * quantidade) e em 2 colunas no celular, em vez de uma coluna longa de cartões de 280 px.
@@ -40,7 +41,7 @@ export function ProdutosNoArtigo({ itens, contexto }: { itens: ProdutoDoTexto[];
             data-produtos-no-artigo={itens.length}
         >
             {itens.map(({ produto, legendaHtml }) => (
-                <figure key={produto.id} className="flex w-[62%] shrink-0 snap-start flex-col sm:w-[45%] md:w-auto md:min-w-0 [&>a]:flex-1" data-produto-no-artigo={produto.id}>
+                <figure key={produto.id} className="!m-0 !items-stretch flex w-[62%] shrink-0 snap-start flex-col sm:w-[45%] md:w-auto md:min-w-0 [&>a]:flex-1" data-produto-no-artigo={produto.id}>
                     <StoreCard product={produto} contexto={contexto} />
                     <Legenda html={legendaHtml} />
                 </figure>
