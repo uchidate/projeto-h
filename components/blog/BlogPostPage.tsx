@@ -857,6 +857,10 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
                     {/* ── Sidebar ── */}
                     <aside aria-label="Informações do artigo" className="hidden xl:flex xl:flex-col">
                         {/* Só o índice e o anúncio acompanham a rolagem, sem caixa com rolagem interna; o índice vem primeiro. */}
+                        {/* O invólucro `flex-1` é o limite da parte fixa: um sticky só para no fim do seu pai, e com o pai
+                            sendo a coluna inteira o anúncio descia por cima da vitrine de achados do rodapé da lateral
+                            (até 170px de sobreposição medidos em 1440×900). Com o invólucro, ele para onde o bloco final começa. */}
+                        <div className="flex-1">
                         <div className="flex flex-col gap-4" style={{ position: 'sticky', top: 'calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 36px + 8px)' }}>
                             {/* O topo fixo do site ocupa ~284px: índice (~210) + 300×250 só cabem com janela de 800px ou mais.
                                 Abaixo disso o índice desce e o anúncio fica sozinho na parte fixa. */}
@@ -868,6 +872,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
                             {ADSENSE.slots.article_sidebar && (
                                 <ArticleSidebarAd slot={ADSENSE.slots.article_sidebar} readingMinutes={mins} alturaAlta={1150} />
                             )}
+                        </div>
                         </div>
                         <div className="mt-auto flex flex-col gap-4 pt-10">
                             {enhancedContent.headings.length > 2 && (
