@@ -15,6 +15,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescriptionComida } from '@/lib/seo/metaDescription'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
 import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getReceita } from '@/lib/receitas'
@@ -374,18 +375,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                 <div className="border-t border-border/40">
                     <div className="page-wrap space-y-6 py-8">
                         <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto="comida:{slug}" title="Para provar em casa" />
-                        {posts.length > 0 && (
-                            <div>
-                                <h2 className="mb-3 text-[18px] font-black tracking-tight">No blog</h2>
-                                <ul className="space-y-2">
-                                    {posts.map(p => (
-                                        <li key={p.id}>
-                                            <Link href={`/blog/${p.slug}`} className="text-[14px] font-semibold hover:text-accent hover:underline">{stripHtml(p.title.rendered)}</Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+                        <CitadoNoBlog posts={posts} />
                     </div>
                 </div>
             )}

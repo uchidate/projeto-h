@@ -13,6 +13,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { Globe, Users, Calendar, TrendingUp, AtSign } from 'lucide-react'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
 import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { metaDescription } from '@/lib/seo/metaDescription'
@@ -280,18 +281,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                 <div className="border-t border-border/40">
                     <div className="page-wrap space-y-6 py-8">
                         <LojaEmLinha products={vitrine} bloco="empresa-ficha" contexto="empresa:{slug}" title="Produtos da marca" />
-                        {posts.length > 0 && (
-                            <div>
-                                <h2 className="mb-3 text-[18px] font-black tracking-tight">No blog</h2>
-                                <ul className="space-y-2">
-                                    {posts.map(p => (
-                                        <li key={p.id}>
-                                            <Link href={`/blog/${p.slug}`} className="text-[14px] font-semibold hover:text-accent hover:underline">{stripHtml(p.title.rendered)}</Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+                        <CitadoNoBlog posts={posts} />
                     </div>
                 </div>
             )}
