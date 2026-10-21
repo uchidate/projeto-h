@@ -17,6 +17,7 @@ import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
 import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { metaDescription } from '@/lib/seo/metaDescription'
+import { ProfileSection } from '@/components/profiles/ProfileSection'
 
 export const revalidate = 600
 
@@ -205,124 +206,123 @@ export default async function CompanyPage({ params }: { params: Params }) {
                 </div>
             )}
 
-            <div className="page-wrap py-8 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10">
-                {/* Conteúdo */}
-                <div>
-                    {company.content.rendered && (
-                        <div className="wp-article-content"
-                            dangerouslySetInnerHTML={{ __html: company.content.rendered }} />
-                    )}
-                </div>
+            <ProfileSection id="conteudo" indented={false}>
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10">
+                    {/* Conteúdo */}
+                    <div>
+                        {company.content.rendered && (
+                            <div className="wp-article-content"
+                                dangerouslySetInnerHTML={{ __html: company.content.rendered }} />
+                        )}
+                    </div>
 
-                {/* Sidebar */}
-                <aside className="space-y-5">
-                    {/* Marcas do grupo */}
-                    {acf.global_brands && acf.global_brands.length > 0 && (
-                        <div className="rounded-xl border border-border bg-surface/40 p-5">
-                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">Marcas do Grupo</h3>
-                            <div className="flex flex-wrap gap-1.5">
-                                {acf.global_brands.map(b => (
-                                    <span key={b} className="px-2.5 py-1 rounded-full border border-border font-mono text-[11px] text-foreground/80 bg-background">{b}</span>
-                                ))}
+                    {/* Sidebar */}
+                    <aside className="space-y-5">
+                        {/* Marcas do grupo */}
+                        {acf.global_brands && acf.global_brands.length > 0 && (
+                            <div className="rounded-xl border border-border bg-surface/40 p-5">
+                                <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">Marcas do Grupo</h3>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {acf.global_brands.map(b => (
+                                        <span key={b} className="px-2.5 py-1 rounded-full border border-border font-mono text-[11px] text-foreground/80 bg-background">{b}</span>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {/* Dados da empresa */}
-                    {(acf.founder || acf.ceo || acf.chaebol_group) && (
-                        <div className="rounded-xl border border-border bg-surface/40 p-5">
-                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">Ficha</h3>
-                            <dl className="space-y-2">
-                                {acf.founder && (
-                                    <div className="flex justify-between gap-2">
-                                        <dt className="font-mono text-[11px] text-muted">Fundador</dt>
-                                        <dd className="text-[12px] text-foreground/80 text-right">{acf.founder}</dd>
-                                    </div>
-                                )}
-                                {acf.ceo && (
-                                    <div className="flex justify-between gap-2">
-                                        <dt className="font-mono text-[11px] text-muted">CEO</dt>
-                                        <dd className="text-[12px] text-foreground/80 text-right">{acf.ceo}</dd>
-                                    </div>
-                                )}
-                                {acf.chaebol_group && (
-                                    <div className="flex justify-between gap-2">
-                                        <dt className="font-mono text-[11px] text-muted">Grupo</dt>
-                                        <dd className="text-[12px] text-foreground/80 text-right">{acf.chaebol_group}</dd>
-                                    </div>
-                                )}
-                                {acf.status && acf.status !== 'active' && (
-                                    <div className="flex justify-between gap-2">
-                                        <dt className="font-mono text-[11px] text-muted">Status</dt>
-                                        <dd className="text-[12px] text-foreground/80 text-right capitalize">{acf.status}</dd>
-                                    </div>
-                                )}
-                            </dl>
-                        </div>
-                    )}
+                        {/* Dados da empresa */}
+                        {(acf.founder || acf.ceo || acf.chaebol_group) && (
+                            <div className="rounded-xl border border-border bg-surface/40 p-5">
+                                <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">Ficha</h3>
+                                <dl className="space-y-2">
+                                    {acf.founder && (
+                                        <div className="flex justify-between gap-2">
+                                            <dt className="font-mono text-[11px] text-muted">Fundador</dt>
+                                            <dd className="text-[12px] text-foreground/80 text-right">{acf.founder}</dd>
+                                        </div>
+                                    )}
+                                    {acf.ceo && (
+                                        <div className="flex justify-between gap-2">
+                                            <dt className="font-mono text-[11px] text-muted">CEO</dt>
+                                            <dd className="text-[12px] text-foreground/80 text-right">{acf.ceo}</dd>
+                                        </div>
+                                    )}
+                                    {acf.chaebol_group && (
+                                        <div className="flex justify-between gap-2">
+                                            <dt className="font-mono text-[11px] text-muted">Grupo</dt>
+                                            <dd className="text-[12px] text-foreground/80 text-right">{acf.chaebol_group}</dd>
+                                        </div>
+                                    )}
+                                    {acf.status && acf.status !== 'active' && (
+                                        <div className="flex justify-between gap-2">
+                                            <dt className="font-mono text-[11px] text-muted">Status</dt>
+                                            <dd className="text-[12px] text-foreground/80 text-right capitalize">{acf.status}</dd>
+                                        </div>
+                                    )}
+                                </dl>
+                            </div>
+                        )}
 
-                    {/* Curiosidades */}
-                    {acf.curiosidades && acf.curiosidades.length > 0 && (
-                        <div className="rounded-xl border border-surface-editorial bg-surface-editorial/30 p-5">
-                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent mb-3">Curiosidades</h3>
-                            <ul className="space-y-2">
-                                {acf.curiosidades.map((c, i) => (
-                                    <li key={i} className="text-[13px] text-foreground/80 leading-relaxed">💡 {c}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </aside>
-            </div>
-
+                        {/* Curiosidades */}
+                        {acf.curiosidades && acf.curiosidades.length > 0 && (
+                            <div className="rounded-xl border border-surface-editorial bg-surface-editorial/30 p-5">
+                                <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent mb-3">Curiosidades</h3>
+                                <ul className="space-y-2">
+                                    {acf.curiosidades.map((c, i) => (
+                                        <li key={i} className="text-[13px] text-foreground/80 leading-relaxed">💡 {c}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </aside>
+                </div>
+            </ProfileSection>
 
             {/* Loja e blog */}
             {(vitrine.length > 0 || posts.length > 0) && (
-                <div className="border-t border-border/40">
-                    <div className="page-wrap space-y-6 py-8">
+                <ProfileSection id="loja-blog" indented={false}>
+                    <div className="space-y-6">
                         <LojaEmLinha products={vitrine} bloco="empresa-ficha" contexto="empresa:{slug}" title="Produtos da marca" />
                         <CitadoNoBlog posts={posts} />
                     </div>
-                </div>
+                </ProfileSection>
             )}
 
             {/* Relacionadas */}
             {relatedCompanies.length > 0 && (
-                <div className="border-t border-border/40">
-                    <div className="page-wrap py-8">
-                        <h2 className="text-[18px] font-black tracking-tight mb-5">Mais empresas sul-coreanas</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {relatedCompanies.map(c => {
-                                const cname = stripHtml(c.title.rendered)
-                                const cImg = c.featured_image_url
-                                const cEmoji = emojiDoSetor(c.acf?.industry)
-                                return (
-                                    <Link key={c.id} href={`/empresas/${c.slug}`}
-                                        className="group flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent transition-colors">
-                                        <div className="relative w-10 h-10 shrink-0 rounded-lg overflow-hidden bg-surface border border-border flex items-center justify-center">
-                                            {cImg ? (
-                                                <Image src={cImg} alt={cname} fill className="object-contain p-1" sizes="40px" />
-                                            ) : (
-                                                <span className="text-[18px]">{cEmoji}</span>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <p className="text-[13px] font-bold group-hover:text-accent transition-colors line-clamp-1">{cname}</p>
-                                            {rotuloDoSetor(c.acf?.industry) && (
-                                                <p className="font-mono text-[10px] text-muted">{rotuloDoSetor(c.acf?.industry)}</p>
-                                            )}
-                                        </div>
-                                    </Link>
-                                )
-                            })}
-                        </div>
-                        <div className="mt-6">
-                            <Link href="/empresas" className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
-                                ← Ver todas as empresas
-                            </Link>
-                        </div>
+                <ProfileSection id="relacionadas" indented={false}>
+                    <h2 className="text-[18px] font-black tracking-tight mb-5">Mais empresas sul-coreanas</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {relatedCompanies.map(c => {
+                            const cname = stripHtml(c.title.rendered)
+                            const cImg = c.featured_image_url
+                            const cEmoji = emojiDoSetor(c.acf?.industry)
+                            return (
+                                <Link key={c.id} href={`/empresas/${c.slug}`}
+                                    className="group flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent transition-colors">
+                                    <div className="relative w-10 h-10 shrink-0 rounded-lg overflow-hidden bg-surface border border-border flex items-center justify-center">
+                                        {cImg ? (
+                                            <Image src={cImg} alt={cname} fill className="object-contain p-1" sizes="40px" />
+                                        ) : (
+                                            <span className="text-[18px]">{cEmoji}</span>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <p className="text-[13px] font-bold group-hover:text-accent transition-colors line-clamp-1">{cname}</p>
+                                        {rotuloDoSetor(c.acf?.industry) && (
+                                            <p className="font-mono text-[10px] text-muted">{rotuloDoSetor(c.acf?.industry)}</p>
+                                        )}
+                                    </div>
+                                </Link>
+                            )
+                        })}
                     </div>
-                </div>
+                    <div className="mt-6">
+                        <Link href="/empresas" className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
+                            ← Ver todas as empresas
+                        </Link>
+                    </div>
+                </ProfileSection>
             )}
         </>
     )

@@ -16,6 +16,7 @@ import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescriptionComida } from '@/lib/seo/metaDescription'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
+import { ProfileSection } from '@/components/profiles/ProfileSection'
 import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getReceita } from '@/lib/receitas'
@@ -201,7 +202,8 @@ export default async function FoodPage({ params }: { params: Params }) {
                 </div>
             </div>
 
-            <div className="page-wrap py-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10">
+            <ProfileSection id="conteudo" indented={false}>
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10">
                 {/* Conteúdo principal */}
                 <div>
                     {food.content.rendered && (
@@ -327,57 +329,56 @@ export default async function FoodPage({ params }: { params: Params }) {
                         </div>
                     )}
                 </aside>
-            </div>
+                </div>
+            </ProfileSection>
 
             {/* Comidas relacionadas */}
             {relatedFoods.length > 0 && (
-                <div className="border-t border-border/40">
-                    <div className="page-wrap py-8">
-                        <h2 className="text-[18px] font-black tracking-tight mb-5">Mais da culinária coreana</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                            {relatedFoods.map(f => {
-                                const fname = stripHtml(f.title.rendered)
-                                const fImg = f.featured_image_url
-                                const fCatEmoji = f.acf?.category ? FOOD_CATEGORY_EMOJI[f.acf.category] : '🍽️'
-                                return (
-                                    <Link key={f.id} href={`/comidas/${f.slug}`}
-                                        className="group flex flex-col rounded-xl border border-border hover:border-accent transition-colors overflow-hidden">
-                                        <div className="relative aspect-square bg-surface overflow-hidden">
-                                            {fImg ? (
-                                                <Image src={fImg} alt={fname} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 50vw, 16vw" />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center">
-                                                    <span className="text-[32px]">{fCatEmoji}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="p-2.5">
-                                            <p className="text-[12px] font-bold leading-tight group-hover:text-accent transition-colors line-clamp-2">{fname}</p>
-                                            {f.acf?.name_korean && (
-                                                <p className="text-[10px] text-muted mt-0.5">{f.acf.name_korean}</p>
-                                            )}
-                                        </div>
-                                    </Link>
-                                )
-                            })}
-                        </div>
-                        <div className="mt-6">
-                            <Link href="/comidas" className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
-                                ← Ver todas as comidas
-                            </Link>
-                        </div>
+                <ProfileSection id="relacionadas" indented={false}>
+                    <h2 className="text-[18px] font-black tracking-tight mb-5">Mais da culinária coreana</h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        {relatedFoods.map(f => {
+                            const fname = stripHtml(f.title.rendered)
+                            const fImg = f.featured_image_url
+                            const fCatEmoji = f.acf?.category ? FOOD_CATEGORY_EMOJI[f.acf.category] : '🍽️'
+                            return (
+                                <Link key={f.id} href={`/comidas/${f.slug}`}
+                                    className="group flex flex-col rounded-xl border border-border hover:border-accent transition-colors overflow-hidden">
+                                    <div className="relative aspect-square bg-surface overflow-hidden">
+                                        {fImg ? (
+                                            <Image src={fImg} alt={fname} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 50vw, 16vw" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <span className="text-[32px]">{fCatEmoji}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="p-2.5">
+                                        <p className="text-[12px] font-bold leading-tight group-hover:text-accent transition-colors line-clamp-2">{fname}</p>
+                                        {f.acf?.name_korean && (
+                                            <p className="text-[10px] text-muted mt-0.5">{f.acf.name_korean}</p>
+                                        )}
+                                    </div>
+                                </Link>
+                            )
+                        })}
                     </div>
-                </div>
+                    <div className="mt-6">
+                        <Link href="/comidas" className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
+                            ← Ver todas as comidas
+                        </Link>
+                    </div>
+                </ProfileSection>
             )}
 
             {/* Loja e blog */}
             {(vitrine.length > 0 || posts.length > 0) && (
-                <div className="border-t border-border/40">
-                    <div className="page-wrap space-y-6 py-8">
+                <ProfileSection id="loja-blog" indented={false}>
+                    <div className="space-y-6">
                         <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto="comida:{slug}" title="Para provar em casa" />
                         <CitadoNoBlog posts={posts} />
                     </div>
-                </div>
+                </ProfileSection>
             )}
         </>
     )
