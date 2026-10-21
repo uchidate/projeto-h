@@ -31,11 +31,12 @@ export function LojaEmLinha({ products, bloco, contexto, title = 'Achados da loj
     return (
         <aside data-bloco={bloco} aria-label={title}
             className={`rounded-xl border border-accent/40 bg-linear-to-b from-accent/10 to-surface p-3 shadow-[0_0_28px_-12px_var(--color-accent)] sm:p-4 ${className}`}>
-            <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="font-mono text-[11px] font-black uppercase tracking-[0.14em] text-accent">
-                    🛍️ {title} <span className="font-sans normal-case tracking-normal text-foreground-subtle">· links de afiliado</span>
-                </p>
-                <Link href={href} className="shrink-0 whitespace-nowrap text-[12px] font-bold text-accent hover:underline">{verTudoLabel} →</Link>
+            <div className="mb-3">
+                <div className="flex items-center justify-between gap-3">
+                    <p className="min-w-0 truncate font-mono text-[11px] font-black uppercase tracking-[0.14em] text-accent">🛍️ {title}</p>
+                    <Link href={href} className="shrink-0 whitespace-nowrap text-[12px] font-bold text-accent hover:underline">{verTudoLabel} →</Link>
+                </div>
+                <p className="mt-1 text-[11px] leading-tight text-foreground-subtle">Links de afiliado: o HallyuHub pode receber comissão.</p>
             </div>
             <VitrineVista contexto={contexto} produtoIds={itens.map(p => p.id)} className="grid gap-3 sm:grid-cols-3">
                 {itens.map(p => {
@@ -44,16 +45,18 @@ export function LojaEmLinha({ products, bloco, contexto, title = 'Achados da loj
                     const desconto = calcularDesconto(acf.price, acf.original_price)
                     return (
                         <LojaClique key={p.id} href={acf.affiliate_url!} productId={p.id} store={acf.store ?? 'outro'} contexto={contexto}
-                            className="group flex gap-3 rounded-lg border border-border bg-background p-3 transition-colors hover:border-accent">
-                            <span className="relative h-24 w-24 shrink-0 overflow-hidden bg-surface">
-                                {acf.image_url && <Image src={acf.image_url} alt={nome} fill sizes="96px" className="object-cover transition-transform duration-300 group-hover:scale-105" />}
+                            className="group flex gap-3 rounded-lg border border-border bg-background p-2.5 transition-colors hover:border-accent sm:p-3">
+                            <span className="relative h-20 w-20 shrink-0 overflow-hidden bg-surface sm:h-24 sm:w-24">
+                                {acf.image_url && <Image src={acf.image_url} alt={nome} fill sizes="(min-width: 640px) 96px, 80px" className="object-cover transition-transform duration-300 group-hover:scale-105" />}
                                 {desconto !== null && <span className="absolute left-0 top-0 bg-accent px-1.5 py-0.5 text-[10px] font-black text-white">-{desconto}%</span>}
                             </span>
                             <span className="flex min-w-0 flex-1 flex-col">
                                 <span className="line-clamp-2 text-[13px] font-semibold leading-snug">{nome}</span>
-                                {acf.price && <span className="mt-1 text-lg font-black leading-none">{acf.price}</span>}
-                                <span className="mt-auto inline-flex items-center gap-1 pt-2 text-[12px] font-black text-accent">
-                                    Ver oferta <ExternalLink size={12} aria-hidden />
+                                <span className="mt-auto flex items-end justify-between gap-2 pt-1.5 sm:block sm:pt-0">
+                                    {acf.price && <span className="text-lg font-black leading-none sm:mt-1 sm:block">{acf.price}</span>}
+                                    <span className="inline-flex shrink-0 items-center gap-1 text-[12px] font-black text-accent sm:mt-auto sm:pt-2">
+                                        Ver oferta <ExternalLink size={12} aria-hidden />
+                                    </span>
                                 </span>
                             </span>
                         </LojaClique>
