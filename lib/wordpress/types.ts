@@ -455,6 +455,12 @@ export type WPCompany = {
         global_brands?: string[]
         famous_products?: string[]
         curiosidades?: string[]
+        milestones?: string[]              // "ANO|DESCRIÇÃO" — mesmo formato do artist/group
+        founder_quote_text?: string
+        founder_quote_author?: string      // default no front: founder ?? ceo
+        founder_quote_context?: string
+        gallery_urls?: string[]
+        linked_products?: number[]         // IDs de store_product vinculados direto
     }
 }
 
@@ -496,6 +502,7 @@ export type WPFood = {
         season?: string[]          // spring | summer | fall | winter | year_round
         curiosidades?: string[]
         featured_in_dramas?: number[]  // IDs de produções
+        linked_products?: number[]     // IDs de store_product vinculados direto
     }
 }
 

@@ -1,4 +1,4 @@
-import { getFeaturedStoreProducts, getStoreProducts, getStoreProductsByArtistId, type StoreProduct, type TipoVitrine } from '@/lib/wordpress/store'
+import { getFeaturedStoreProducts, getStoreProducts, getStoreProductsByArtistId, getStoreProductsByIds, type StoreProduct, type TipoVitrine } from '@/lib/wordpress/store'
 import { escolherPorTemaComAderencia, type Tema } from '@/lib/wordpress/store-contexto'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 
@@ -45,4 +45,19 @@ export async function getVitrinePorTermos(termos: string[], contexto: string, op
     const { limit = 3, temas } = opcoes
     const casados = escolherPorTemaComAderencia(await getStoreProducts(), { texto: termos.filter(Boolean).join(' '), temas, limite: limit })
     return ordenarPrateleira(casados.map(x => x.p), contexto, new Map(casados.map(x => [x.p.id, x.aderencia]))).slice(0, limit)
+}
+
+/**
+ * Vitrine de ficha (comida/empresa): prioriza `linked_products` (vínculo explícito, curado à mão)
+ * e só cai no matching textual (`getVitrinePorTermos`) quando a ficha não tem nenhum produto vinculado.
+ */
+export async function getVitrineVinculada(
+    linkedProductIds: number[] | undefined,
+    termos: string[],
+    contexto: string,
+    opcoes: { limit?: number; temas?: Tema[] } = {},
+): Promise<StoreProduct[]> {
+    const vinculados = await getStoreProductsByIds(linkedProductIds ?? [])
+    if (vinculados.length > 0) return ordenarPrateleira(vinculados, contexto).slice(0, opcoes.limit ?? 3)
+    return getVitrinePorTermos(termos, contexto, opcoes)
 }

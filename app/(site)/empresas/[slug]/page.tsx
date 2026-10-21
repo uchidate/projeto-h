@@ -14,7 +14,7 @@ import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { Globe, AtSign } from 'lucide-react'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
-import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
+import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { ProfileSection } from '@/components/profiles/ProfileSection'
@@ -73,7 +73,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
     const companyUrl = `${SITE_URL}/empresas/${slug}`
 
     const [vitrine, posts] = await Promise.all([
-        getVitrinePorTermos([name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])], `empresa:${slug}`),
+        getVitrineVinculada(acf.linked_products, [name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])], `empresa:${slug}`),
         getPostsQueCitam(name),
     ])
 

@@ -140,6 +140,14 @@ export async function getStoreProductsByArtistId(artistId: number): Promise<Stor
     return products.filter(p => !p.acf.is_hidden && p.acf.related_artist === artistId)
 }
 
+/** Vínculo explícito (campo `linked_products` de company/food) em vez do matching textual. */
+export async function getStoreProductsByIds(ids: number[]): Promise<StoreProduct[]> {
+    if (ids.length === 0) return []
+    const products = await getStoreProducts()
+    const byId = new Map(products.map(p => [p.id, p]))
+    return ids.map(id => byId.get(id)).filter((p): p is StoreProduct => !!p && !p.acf.is_hidden)
+}
+
 /** Tipo de página para a vitrine de reserva: o que combina com quem está lendo. */
 export type TipoVitrine = 'kpop' | 'drama'
 

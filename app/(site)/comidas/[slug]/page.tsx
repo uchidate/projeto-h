@@ -17,7 +17,7 @@ import { metaDescriptionComida } from '@/lib/seo/metaDescription'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
 import { ProfileSection } from '@/components/profiles/ProfileSection'
-import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
+import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getReceita } from '@/lib/receitas'
 import { ReceitaPreparo } from '@/components/food/ReceitaPreparo'
@@ -75,7 +75,7 @@ export default async function FoodPage({ params }: { params: Params }) {
     const foodUrl = `${SITE_URL}/comidas/${slug}`
 
     const [vitrine, posts] = await Promise.all([
-        getVitrinePorTermos([name, ...(acf.main_ingredients ?? [])], `comida:${slug}`, { temas: ['culinaria'] }),
+        getVitrineVinculada(acf.linked_products, [name, ...(acf.main_ingredients ?? [])], `comida:${slug}`, { temas: ['culinaria'] }),
         getPostsQueCitam(name),
     ])
 
