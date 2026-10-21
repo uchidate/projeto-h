@@ -161,11 +161,13 @@ export function ReadingBar({ backHref, backLabel, tagLabel, tagColor, tagHref, t
             <div className="page-wrap flex touch-target w-full min-w-0 items-center gap-2 lg:hidden">
                 <Link
                     href={backHref}
-                    className="touch-target flex min-w-0 items-center gap-1 text-[12px] font-bold text-foreground transition-colors hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
+                    // Sem seletor de seção, o título ocupa a faixa e o compartilhar fica no canto direito;
+                    // com seletor, o título encolhe e o seletor toma o espaço do meio.
+                    className={`touch-target flex min-w-0 items-center gap-1 text-[13px] font-bold text-foreground transition-colors hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent ${hasAnchors ? 'max-w-[40%] shrink-0' : 'flex-1'}`}
                     aria-label={tc('readingBar.back', { label: backLabel })}
                 >
-                    <ChevronLeft className="shrink-0" size={14} />
-                    <span className="max-w-20 truncate">{title}</span>
+                    <ChevronLeft className="shrink-0" size={16} />
+                    <span className="min-w-0 truncate">{title}</span>
                 </Link>
 
                 {hasAnchors && (
@@ -185,7 +187,7 @@ export function ReadingBar({ backHref, backLabel, tagLabel, tagColor, tagHref, t
                 <button
                     type="button"
                     onClick={sharePage}
-                    className="touch-target flex min-w-(--tap-target-min) shrink-0 items-center justify-center border border-border text-muted transition-colors hover:border-accent hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:bg-surface"
+                    className="touch-target ml-auto flex min-w-(--tap-target-min) shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:bg-surface"
                     aria-label={shared ? t('shared') : t('share')}
                 >
                     {shared ? <Check size={15} /> : <Share2 size={16} />}
