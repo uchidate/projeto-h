@@ -11,13 +11,14 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { buildBreadcrumbSchema, buildOrganizationSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
-import { Globe, Users, Calendar, TrendingUp, AtSign } from 'lucide-react'
+import { Globe, AtSign } from 'lucide-react'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
 import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { ProfileSection } from '@/components/profiles/ProfileSection'
+import { GroupAnimatedStats } from '@/components/groups/GroupAnimatedStats'
 
 export const revalidate = 600
 
@@ -76,6 +77,12 @@ export default async function CompanyPage({ params }: { params: Params }) {
     ])
 
     const relatedCompanies = await getRelatedCompanies(company.id, acf.industry, 6)
+
+    const stats = [
+        acf.founded_year && { label: 'Fundação', value: String(acf.founded_year) },
+        acf.employees && { label: 'Funcionários', value: acf.employees.toLocaleString(intlLocale()) },
+        acf.revenue && { label: 'Receita', value: acf.revenue },
+    ].filter((s): s is { label: string; value: string } => Boolean(s))
 
     // "Nome do produto|URL da imagem" — URL é opcional, mesmo padrão pipe-delimited de awards/milestones
     const products = (acf.famous_products ?? []).map(p => {
@@ -137,24 +144,6 @@ export default async function CompanyPage({ params }: { params: Params }) {
 
                             {/* Stats rápidos */}
                             <div className="flex flex-wrap gap-3 mt-5">
-                                {acf.founded_year && (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface font-mono text-[11px]">
-                                        <Calendar size={12} className="text-muted" />
-                                        <span className="text-muted">Fund. {acf.founded_year}</span>
-                                    </span>
-                                )}
-                                {acf.employees && (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface font-mono text-[11px]">
-                                        <Users size={12} className="text-muted" />
-                                        <span className="text-muted">{acf.employees.toLocaleString(intlLocale())} funcionários</span>
-                                    </span>
-                                )}
-                                {acf.revenue && (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface font-mono text-[11px]">
-                                        <TrendingUp size={12} className="text-muted" />
-                                        <span className="text-muted">{acf.revenue}</span>
-                                    </span>
-                                )}
                                 {acf.headquarters && (
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface font-mono text-[11px]">
                                         <span className="text-muted">📍 {acf.headquarters}</span>
@@ -182,6 +171,8 @@ export default async function CompanyPage({ params }: { params: Params }) {
                     </div>
                 </div>
             </div>
+
+            {stats.length > 0 && <GroupAnimatedStats stats={stats} accent="var(--color-accent)" />}
 
             {/* Produtos mais conhecidos — tira visual, imagem é o que gera reconhecimento */}
             {products.length > 0 && (
