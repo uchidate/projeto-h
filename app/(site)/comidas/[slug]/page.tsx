@@ -79,7 +79,7 @@ export default async function FoodPage({ params }: { params: Params }) {
     const [vitrine, posts, mentions] = await Promise.all([
         getVitrineVinculada(acf.linked_products, [name, ...(acf.main_ingredients ?? [])], `comida:${slug}`, { temas: ['culinaria'] }),
         getPostsQueCitam(name),
-        getMencoesNoAcervo(name),
+        getMencoesNoAcervo(name, 3, { excluirCpt: 'food', excluirSlug: slug }),
     ])
 
     const [relatedFoods, dramasInFood] = await Promise.all([

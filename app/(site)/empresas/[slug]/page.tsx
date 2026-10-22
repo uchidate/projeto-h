@@ -96,7 +96,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
     const [vitrine, posts, mentions] = await Promise.all([
         getVitrineVinculada(acf.linked_products, [name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])], `empresa:${slug}`),
         getPostsQueCitam(name),
-        getMencoesNoAcervo(name),
+        getMencoesNoAcervo(name, 3, { excluirCpt: 'company', excluirSlug: slug }),
     ])
 
     const hasOwnChaebolGroup = !!acf.chaebol_group && acf.chaebol_group.trim().toLowerCase() !== name.trim().toLowerCase()

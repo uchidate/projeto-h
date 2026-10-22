@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { User, Users, Clapperboard } from 'lucide-react'
+import { User, Users, Clapperboard, UtensilsCrossed, Building2 } from 'lucide-react'
 import type { MencaoAcervo } from '@/lib/wordpress/mentions'
 
-const ICON = { artist: User, group: Users, production: Clapperboard }
-const LABEL = { artist: 'Artista', group: 'Grupo', production: 'Produção' }
+const ICON = { artist: User, group: Users, production: Clapperboard, food: UtensilsCrossed, company: Building2 }
+const LABEL = { artist: 'Artista', group: 'Grupo', production: 'Produção', food: 'Comida', company: 'Empresa' }
 
 interface Props {
     mentions: MencaoAcervo[]
