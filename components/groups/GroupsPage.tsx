@@ -7,6 +7,7 @@ import { Fragment } from 'react'
 import { Users } from 'lucide-react'
 import type { WPGroup } from '@/lib/wordpress/types'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { getWPImage, getYear, stripHtml } from '@/lib/utils'
 import { SearchInput } from '@/components/ui/SearchInput'
@@ -425,6 +426,8 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
             {inicio && shopProducts.length > 0 && (
                 <ShopRelatedSection title="Merch de grupo K-pop" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:grupos" />
             )}
+
+            {inicio && <QuizWidget category="k-pop" title="Sabe o nome de todo mundo?" description="Teste seus conhecimentos sobre grupos K-Pop" />}
         </>
     )
 }

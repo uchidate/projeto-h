@@ -15,6 +15,7 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import type { WPArtist, WPGroup } from '@/lib/wordpress/types'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 
 export const revalidate = 3600
 
@@ -225,6 +226,12 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                     </div>
                 </div>
             </div>
+
+            {!search && type === 'all' && sortBy === 'roster' && (
+                <div className="page-wrap pt-6">
+                    <QuizWidget category="k-pop" title="Sabe de qual agência é cada grupo?" description="Teste seu conhecimento sobre as empresas do K-Pop" />
+                </div>
+            )}
 
             {/* ── Content ─────────────────────────────────────── */}
             <div className="page-wrap py-8 space-y-10">
