@@ -3,11 +3,13 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getCompaniesByChaebolGroup, getAllCompaniesRaw, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
+import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml, slugify } from '@/lib/utils'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 
 export const revalidate = 1800
 
@@ -44,6 +46,12 @@ export default async function ChaebolGroupPage({ params }: { params: Params }) {
     const result = await getCompaniesByChaebolGroup(slug)
     if (!result) notFound()
     const { groupName, companies } = result
+
+    const linkedProductIds = companies.flatMap(c => c.acf?.linked_products ?? [])
+    const keywords = [groupName, ...companies.flatMap(c => [stripHtml(c.title.rendered), ...(c.acf?.global_brands ?? [])])]
+    const vitrine = linkedProductIds.length > 0
+        ? await getVitrineVinculada(linkedProductIds, keywords, `empresas-grupo:${slug}`, { limit: 12 })
+        : []
 
     const url = `${SITE_URL}/empresas/grupo/${slug}`
     const breadcrumbSchema = buildBreadcrumbSchema([
@@ -94,6 +102,8 @@ export default async function ChaebolGroupPage({ params }: { params: Params }) {
                         )
                     })}
                 </div>
+                <LojaEmLinha products={vitrine} bloco="empresas-grupo-ficha" contexto={`empresas-grupo:${slug}`} title={`Produtos do ${groupName}`} />
+
                 <div className="mt-6">
                     <Link href="/empresas" className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
                         ← Ver todas as empresas
