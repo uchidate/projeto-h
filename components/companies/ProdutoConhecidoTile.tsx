@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { ChevronDown } from 'lucide-react'
 import { LojaClique } from '@/components/ui/LojaClique'
+import { STORE_CONFIG } from '@/components/ui/StoreCard'
 
 export interface OfertaResumo {
     id: number
@@ -90,7 +91,7 @@ export function ProdutoConhecidoTile({ name, image, emoji, ofertas, contexto }: 
                 className="group flex flex-col items-center gap-2 shrink-0 w-[120px] hover:opacity-90 transition-opacity">
                 {thumb}
                 {label}
-                <p className="text-[10px] font-bold text-accent">Ver oferta →</p>
+                <p className="text-[10px] font-bold text-accent">🛍️ Ver na {STORE_CONFIG[o.store]?.label ?? 'loja'}</p>
             </LojaClique>
         )
     }
@@ -102,7 +103,8 @@ export function ProdutoConhecidoTile({ name, image, emoji, ofertas, contexto }: 
                 {thumb}
                 {label}
                 <p className="flex items-center gap-0.5 text-[10px] font-bold text-accent">
-                    {ofertas.length} opções <ChevronDown size={11} className={`transition-transform ${aberto ? 'rotate-180' : ''}`} />
+                    🛍️ {new Set(ofertas.map(o => o.store)).size > 1 ? `Ver em ${new Set(ofertas.map(o => o.store)).size} lojas` : `${ofertas.length} ofertas`}
+                    <ChevronDown size={11} className={`transition-transform ${aberto ? 'rotate-180' : ''}`} />
                 </p>
             </button>
             {aberto && pos && typeof document !== 'undefined' && createPortal(
@@ -115,7 +117,7 @@ export function ProdutoConhecidoTile({ name, image, emoji, ofertas, contexto }: 
                                 {o.image && <Image src={o.image} alt={o.nome} fill sizes="44px" className="object-cover" />}
                             </span>
                             <span className="min-w-0 flex-1">
-                                <span className="block truncate font-mono text-[9px] uppercase tracking-wide text-muted">{o.store}</span>
+                                <span className="block truncate font-mono text-[9px] uppercase tracking-wide text-muted">{STORE_CONFIG[o.store]?.label ?? o.store}</span>
                                 <span className="block text-[12px] font-bold leading-tight group-hover:text-accent transition-colors">{o.price ?? 'Ver preço'}</span>
                             </span>
                         </LojaClique>

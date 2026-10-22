@@ -7,7 +7,7 @@ import { calcularDesconto, ehMenorPrecoEmDias, ehNovo, quedaDePreco, type StoreP
 import { stripHtml } from '@/lib/utils'
 import { trackProductClick } from '@/lib/analytics'
 
-const STORE_CONFIG: Record<string, { label: string; color: string; bg: string; textColor: string; stripe: string }> = {
+export const STORE_CONFIG: Record<string, { label: string; color: string; bg: string; textColor: string; stripe: string }> = {
     shopee:       { label: 'Shopee',        color: 'text-orange-500', bg: 'bg-orange-700',  textColor: 'text-white', stripe: 'bg-orange-600' },
     amazon:       { label: 'Amazon',        color: 'text-[#FF9900]',  bg: 'bg-[#232F3E]',  textColor: 'text-white', stripe: 'bg-[#FF9900]' },
     mercadolivre: { label: 'Mercado Livre', color: 'text-yellow-500', bg: 'bg-[#FFF159]',   textColor: 'text-[#333]', stripe: 'bg-[#FFE600]' },
