@@ -34,13 +34,19 @@ export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone(
     const [i, setI] = useState(0)
     const [picked, setPicked] = useState<number | null>(null)
     const [acertos, setAcertos] = useState(0)
+    const [sequencia, setSequencia] = useState(0)
     const fim = i >= items.length
     const q = items[i]
 
     function responder(idx: number) {
         if (picked !== null || !q) return
         setPicked(idx)
-        if (idx === q.correct) setAcertos(a => a + 1)
+        if (idx === q.correct) {
+            setAcertos(a => a + 1)
+            setSequencia(s => s + 1)
+        } else {
+            setSequencia(0)
+        }
     }
 
     const resultado = fim ? resultadoFinal(acertos, items.length, entityName) : null
@@ -61,16 +67,23 @@ export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone(
                     </Link>
                 </div>
             ) : (
-                <>
+                <div key={i} className="animate-in fade-in slide-in-from-right-2 duration-300">
                     <div className="flex items-center justify-between gap-3">
                         <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
                             Pergunta {i + 1} de {items.length}
                         </p>
-                        {acertos > 0 && (
-                            <p className={`font-mono text-[10px] font-black uppercase tracking-[0.14em] ${tone.text}`}>
-                                {acertos} acerto{acertos > 1 ? 's' : ''}
-                            </p>
-                        )}
+                        <div className="flex items-center gap-2">
+                            {sequencia >= 2 && (
+                                <p className="animate-pulse font-mono text-[10px] font-black uppercase tracking-[0.14em] text-amber-400">
+                                    🔥 {sequencia}x
+                                </p>
+                            )}
+                            {acertos > 0 && (
+                                <p className={`font-mono text-[10px] font-black uppercase tracking-[0.14em] ${tone.text}`}>
+                                    {acertos} acerto{acertos > 1 ? 's' : ''}
+                                </p>
+                            )}
+                        </div>
                     </div>
                     <div className="mt-1.5 h-1 w-full overflow-hidden bg-border/50">
                         <div
@@ -105,7 +118,7 @@ export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone(
                         })}
                     </div>
                     {picked !== null && (
-                        <div className="mt-3" aria-live="polite">
+                        <div className="mt-3 animate-in fade-in duration-200" aria-live="polite">
                             <p className="text-[13px] leading-relaxed text-muted">{q.explanation}</p>
                             <button type="button" onClick={() => { setI(i + 1); setPicked(null) }}
                                 className={`touch-target mt-2 inline-flex items-center gap-2 text-[13px] font-black hover:underline ${tone.text}`}>
@@ -113,7 +126,7 @@ export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone(
                             </button>
                         </div>
                     )}
-                </>
+                </div>
             )}
         </div>
     )
