@@ -88,6 +88,19 @@ export async function getRelatedFoods(excludeId: number, category?: FoodCategory
     } catch { return [] }
 }
 
+export async function getFoodsFeaturedInProduction(productionId: number, limit = 6): Promise<WPFood[]> {
+    try {
+        const { items, totalPages } = await getFoods({ perPage: 100 })
+        const pages = [items]
+        for (let p = 2; p <= totalPages; p++) {
+            pages.push((await getFoods({ perPage: 100, page: p })).items)
+        }
+        return pages.flat()
+            .filter(f => f.acf?.featured_in_dramas?.includes(productionId))
+            .slice(0, limit)
+    } catch { return [] }
+}
+
 export const FOOD_CATEGORY_LABELS: Record<string, string> = {
     rice:        'Arroz',
     noodles:     'Macarrão',

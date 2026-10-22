@@ -16,15 +16,16 @@ import type { Episodio } from '@/lib/tmdb/episodios'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import type { Avaliacao } from '@/lib/tmdb/avaliacao'
 import { buildProductionProfileModel } from '@/lib/profiles/productionProfile'
+import type { WPFood } from '@/lib/wordpress/types'
 
-interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null; avaliacao?: Avaliacao | null; episodios?: Episodio[]; shopProducts?: StoreProduct[] }
+interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null; avaliacao?: Avaliacao | null; episodios?: Episodio[]; shopProducts?: StoreProduct[]; foodsInProduction?: WPFood[] }
 
 export function ProductionDetailPage(props: Props) {
     const pagina = <ProductionDetailPageConteudo {...props} />
     return producaoMagra(props.production) ? <SemAnuncios>{pagina}</SemAnuncios> : pagina
 }
 
-function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [] }: Props) {
+function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [], foodsInProduction = [] }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const locale = useLocale()
@@ -108,7 +109,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
             {jsonLd}
             {readingBar}
             <ProductionPageB production={production} model={model} productionUrl={productionUrl} cast={cast} related={related}
-                relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} shopProducts={shopProducts} />
+                relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} shopProducts={shopProducts} foodsInProduction={foodsInProduction} />
         </>
     )
 }

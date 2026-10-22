@@ -26,6 +26,7 @@ import { LojaDestaque } from '@/components/ui/LojaDestaque'
 import { LojaDeslizante } from '@/components/ui/LojaDeslizante'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import type { WPFood } from '@/lib/wordpress/types'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionBlogGrid } from '@/components/productions/ProductionBlogGrid'
 import { ProductionSidebar, FichaLinhas } from '@/components/productions/ProductionSidebar'
@@ -44,6 +45,7 @@ interface Props {
     avaliacao?: Avaliacao | null
     episodios?: Episodio[]
     shopProducts?: StoreProduct[]
+    foodsInProduction?: WPFood[]
 }
 
 const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
@@ -61,7 +63,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * elenco e outro depois das recomendações. O rodapé de página (`production_end_leaderboard`,
  * 27% de preenchimento) e o `production_discovery` da estrutura anterior saem.
  */
-export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [] }: Props) {
+export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [], foodsInProduction = [] }: Props) {
     const t = useTranslations('profile')
     const locale = useLocale()
     const {
@@ -193,6 +195,31 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                             <section id="curiosidades" className={ANCORA}>
                                 <BlockHeader title={t('production.nav.trivia')} eyebrow={t('production.triviaEyebrow')} tone="muted" size="lg" />
                                 <NumberedList items={facts.map((fact, index) => ({ key: `${fact}-${index}`, content: fact }))} />
+                            </section>
+                        )}
+
+                        {foodsInProduction.length > 0 && (
+                            <section id="comidas" className={ANCORA} data-bloco="producao-comidas">
+                                <BlockHeader title={`Comidas de ${title}`} eyebrow="Gastronomia" tone="muted" size="lg" />
+                                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                    {foodsInProduction.map(food => {
+                                        const foodTitle = stripHtml(food.title.rendered)
+                                        const foodImg = getWPImage(undefined, food.featured_image_url, foodTitle)
+                                        return (
+                                            <Link key={food.id} href={`/comidas/${food.slug}`}
+                                                className="group flex items-center gap-3 rounded-xl border border-border bg-surface/40 p-3 transition-colors hover:border-accent">
+                                                {foodImg && (
+                                                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-surface">
+                                                        <Image src={foodImg.src} alt={foodTitle} fill className="object-cover" sizes="48px" />
+                                                    </div>
+                                                )}
+                                                <p className="line-clamp-2 text-[12px] font-semibold leading-tight transition-colors group-hover:text-accent">
+                                                    {foodTitle}
+                                                </p>
+                                            </Link>
+                                        )
+                                    })}
+                                </div>
                             </section>
                         )}
                     </div>

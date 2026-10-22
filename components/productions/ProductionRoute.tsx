@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getProductionBySlug, getSmartRelatedProductions, getProductionGenres } from '@/lib/wordpress/productions'
+import { getFoodsFeaturedInProduction } from '@/lib/wordpress/foods'
 import { getArtists } from '@/lib/wordpress/artists'
 import { getVitrineDoElenco } from '@/lib/wordpress/vitrine'
 import { getPosts, getCategories } from '@/lib/wordpress/posts'
@@ -107,7 +108,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         getEpisodios(production.acf?.tmdb_id, production.acf?.type),
         getAvaliacao(production.acf?.tmdb_id, production.acf?.type),
     ])
-    const [castItems, related, { items: relatedPosts }, categories, allGenreTerms] = await Promise.all([
+    const [castItems, related, { items: relatedPosts }, categories, allGenreTerms, foodsInProduction] = await Promise.all([
         castSlugs.length > 0
             ? getArtists({ slug: castSlugs.join(','), perPage: castSlugs.length }).then(r => r.items)
             : Promise.resolve([]),
@@ -121,6 +122,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         getPosts({ search: productionTitle, perPage: 4, orderby: 'date', includeContent: false }),
         getCategories(),
         getProductionGenres(),
+        getFoodsFeaturedInProduction(production.id),
     ])
     // Maior tráfego do site e sem loja até aqui. A loja só existe em português.
     const shopProducts = locale === DEFAULT_LOCALE
@@ -158,7 +160,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} />
+            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} foodsInProduction={foodsInProduction} />
         </>
     )
 }
