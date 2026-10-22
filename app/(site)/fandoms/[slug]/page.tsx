@@ -5,6 +5,8 @@ import { getAllFandoms, getFandomBySlug } from '@/lib/wordpress/fandoms'
 import { stripHtml } from '@/lib/utils'
 import { torcidasParecidas } from '@/lib/fandoms/afinidade'
 import { getArtistsByIds } from '@/lib/wordpress/artists'
+import { getStoreProductsByGroupId, type StoreProduct } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
@@ -46,7 +48,13 @@ export default async function FandomPage({ params }: { params: Params }) {
     if (!fandom) notFound()
 
     const memberIds = Array.from(new Set(fandom.groups.flatMap(g => g.acf?.members ?? [])))
-    const artists = await getArtistsByIds(memberIds)
+    const [artists, productsPorGrupo] = await Promise.all([
+        getArtistsByIds(memberIds),
+        Promise.all(fandom.groups.map(g => getStoreProductsByGroupId(g.id))),
+    ])
+    const produtosPorId = new Map<number, StoreProduct>()
+    productsPorGrupo.flat().forEach(p => { if (!produtosPorId.has(p.id)) produtosPorId.set(p.id, p) })
+    const shopProducts = ordenarPrateleira([...produtosPorId.values()], `fandom:${slug}`).slice(0, 8)
 
     // Torcidas parecidas (mesma agência, mesmo tipo de grupo, estreia próxima); a lista já está em cache.
     const todas = await getAllFandoms()
@@ -65,7 +73,7 @@ export default async function FandomPage({ params }: { params: Params }) {
         <>
             <JsonLd data={breadcrumbSchema} />
             <JsonLd data={{ '@context': 'https://schema.org', '@type': 'WebPage', name: `${fandom.name}: torcida do ${fandom.groups.map(g => stripHtml(g.title.rendered)).join(', ')}`, url: fandomUrl, inLanguage: 'pt-BR', about: fandom.groups.map(g => ({ '@type': 'MusicGroup', name: stripHtml(g.title.rendered), url: `${SITE_URL}/groups/${g.slug}` })) }} />
-            <FandomDetailPage fandom={fandom} artists={artists} outras={outras} />
+            <FandomDetailPage fandom={fandom} artists={artists} outras={outras} shopProducts={shopProducts} />
         </>
     )
 }

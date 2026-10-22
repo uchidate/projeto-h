@@ -11,6 +11,8 @@ import { type FactItem } from '@/components/blocks/FactGrid'
 import { type EntityFAQItem } from '@/components/seo/EntityFAQ'
 import { splitContentForAd } from '@/lib/utils/injectAd'
 import { entityBelongsToOrganizations, resolveAgencyNetwork } from '@/lib/agencies/network'
+import { getStoreProductsByGroupId, type StoreProduct } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { applyAgencyDirectoryManifestPreview, applyAgencyManifestPreview, applyEntityAffiliationsManifestPreview } from '@/lib/agencies/preview'
 import { agencyMark, accessibleAccent, countryLabel, normalizeAccent, toRgba, type CSSVariableProperties, AGENCY_TYPE_LABELS, ORGANIZATION_KIND_LABELS } from '@/lib/agencies/presentation'
 import { BIG4_SLUGS, GENERATIONS } from '@/app/(site)/agencies/[slug]/lib/helpers'
@@ -97,6 +99,11 @@ export async function carregarAgencia(slug: string) {
     const remainingActiveGroups = activeGroups.filter(group => !featuredGroupIds.has(group.id))
     const currentVisualGroup = featuredGroups.find(group => getWPImage(group._embedded, group.featured_image_url))
     const currentVisualImage = currentVisualGroup ? getWPImage(currentVisualGroup._embedded, currentVisualGroup.featured_image_url) : null
+    const productsPorGrupo = await Promise.all(allGroups.map(g => getStoreProductsByGroupId(g.id)))
+    const produtosPorId = new Map<number, StoreProduct>()
+    productsPorGrupo.flat().forEach(p => { if (!produtosPorId.has(p.id)) produtosPorId.set(p.id, p) })
+    const shopProducts = ordenarPrateleira([...produtosPorId.values()], `agencia:${slug}`).slice(0, 8)
+
     const agencyVideos = (acf.featured_videos?.length
         ? acf.featured_videos
         : activeGroups
@@ -291,6 +298,7 @@ export async function carregarAgencia(slug: string) {
         network,
         allArtists,
         allGroups,
+        shopProducts,
         relatedPosts,
         activeGroups,
         inactiveGroups,

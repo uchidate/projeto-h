@@ -26,6 +26,7 @@ import { AgencyCatalog } from './components/AgencyCatalog'
 import { AgencyArtists } from './components/AgencyArtists'
 import { AgencyMilestones } from './components/AgencyMilestones'
 import { AgencySources } from './components/AgencySources'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 
 export const revalidate = 3600
 
@@ -45,7 +46,7 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
         agency, name, logo, acf, accent, interfaceAccent, tierLabel, milestones, originYear, achievements,
         businessPillars, currentDevelopments, excerptText, pageUrl, network, allArtists, allGroups, relatedPosts,
         agencyVideos, narrativeChapters, keyMetrics, citedSources, sourcesByHost, breadcrumbSchema,
-        navLinks, pageStyle, faqItems, editorialVisualStories,
+        navLinks, pageStyle, faqItems, editorialVisualStories, shopProducts,
     } = view
 
     return (
@@ -116,6 +117,8 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
                 {narrativeChapters.length === 0 && achievements.length > 0 && <AgencyAchievements view={view} />}
 
                 <AgencyOrganizationMap agency={agency} network={network} groups={allGroups} artists={allArtists} />
+
+                <LojaEmLinha products={shopProducts} bloco="agencia-ficha" contexto={`agencia:${slug}`} title={`Produtos ligados à ${name}`} />
 
                 {ADSENSE.slots.leaderboard && (allGroups.length > 0 || allArtists.length > 0) && (
                     <AdSlotInline

@@ -19,6 +19,8 @@ import { FandomSidebarFicha } from '@/components/fandoms/FandomSidebarFicha'
 import { NomeDaTorcida } from '@/components/fandoms/EnriquecerTorcida'
 import { OutrasTorcidas, type TorcidaVizinha } from '@/components/fandoms/OutrasTorcidas'
 import { EntityFAQ, type EntityFAQItem } from '@/components/seo/EntityFAQ'
+import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import type { StoreProduct } from '@/lib/wordpress/store'
 
 const SITE_ACCENT = '#e91e8c'
 
@@ -26,6 +28,7 @@ interface Props {
     fandom: Fandom
     artists: WPArtist[]
     outras: TorcidaVizinha[]
+    shopProducts?: StoreProduct[]
 }
 
 /** Próximas datas que a torcida comemora (estreia do grupo e aniversário dos membros), a partir dos dados do site. */
@@ -82,7 +85,7 @@ async function NovidadesDaTorcida({ grupoSlugs, nome, cor, ink }: { grupoSlugs: 
     )
 }
 
-export function FandomDetailPage({ fandom, artists, outras }: Props) {
+export function FandomDetailPage({ fandom, artists, outras, shopProducts = [] }: Props) {
     const { name, color, lightstick, groups } = fandom
     const accent = color ?? SITE_ACCENT
     const ink = tinta(accent)
@@ -156,6 +159,8 @@ export function FandomDetailPage({ fandom, artists, outras }: Props) {
                                 {groups.map(group => <FandomGroupCard key={group.id} group={group} cor={accent} tinta={ink} />)}
                             </div>
                         </section>
+
+                        <LojaEmLinha products={shopProducts} bloco="fandom-ficha" contexto={`fandom:${fandom.slug}`} title={`O que a torcida ${name} compra`} />
 
                         {groups[0] && <NomeDaTorcida grupos={groups} nome={name} cor={accent} ink={ink} />}
 
