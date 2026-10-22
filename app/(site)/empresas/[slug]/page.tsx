@@ -20,6 +20,8 @@ import { metaDescription } from '@/lib/seo/metaDescription'
 import { ProfileSection } from '@/components/profiles/ProfileSection'
 import { GroupAnimatedStats } from '@/components/groups/GroupAnimatedStats'
 import { ConexoesChaebol } from '@/components/companies/ConexoesChaebol'
+import { CompanyFounderQuote } from '@/components/companies/CompanyFounderQuote'
+import { CompanyMilestonesTimeline } from '@/components/companies/CompanyMilestonesTimeline'
 
 export const revalidate = 600
 
@@ -205,6 +207,23 @@ export default async function CompanyPage({ params }: { params: Params }) {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {acf.founder_quote_text && (
+                <ProfileSection id="citacao" indented={false}>
+                    <CompanyFounderQuote
+                        quote={acf.founder_quote_text}
+                        author={acf.founder_quote_author || acf.founder || name}
+                        context={acf.founder_quote_context}
+                        accent="var(--color-accent)"
+                    />
+                </ProfileSection>
+            )}
+
+            {acf.milestones && acf.milestones.length > 0 && (
+                <ProfileSection id="historia" indented={false}>
+                    <CompanyMilestonesTimeline milestones={acf.milestones} accent="var(--color-accent)" />
+                </ProfileSection>
             )}
 
             {(hasOwnChaebolGroup || hasOtherGlobalBrands) && (
