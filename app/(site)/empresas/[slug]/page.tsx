@@ -30,6 +30,17 @@ function semAcento(s: string): string {
     return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 }
 
+/**
+ * Palavras-núcleo do nome do produto (sem parênteses, sem palavras curtas) — o
+ * título do anúncio na loja quase nunca é igual ao nome editorial ("Buldak (Hot
+ * Chicken Ramen)" vs "Caixa Lamen Coreano Super Apimentado Buldak 140g 40
+ * Pacotes"), então a correspondência exige que TODAS as palavras-núcleo
+ * apareçam no título, não substring completa.
+ */
+function nucleoProduto(nome: string): string[] {
+    return semAcento(nome.replace(/\(.*?\)/g, '')).split(/\s+/).filter(w => w.length >= 3)
+}
+
 export const revalidate = 600
 
 type Params = Promise<{ slug: string }>
@@ -201,10 +212,10 @@ export default async function CompanyPage({ params }: { params: Params }) {
                         <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-4">Produtos & Serviços mais conhecidos</h2>
                         <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
                             {products.map(p => {
-                                const alvo = semAcento(p.name)
+                                const nucleo = nucleoProduto(p.name)
                                 const oferta = vitrine.find(v => {
                                     const titulo = semAcento(stripHtml(v.title.rendered))
-                                    return titulo.includes(alvo) || alvo.includes(titulo)
+                                    return nucleo.length > 0 && nucleo.every(w => titulo.includes(w))
                                 })
                                 const href = oferta?.acf.affiliate_url ?? (vitrine.length > 0 ? '#loja-blog' : null)
                                 const Tile = (
