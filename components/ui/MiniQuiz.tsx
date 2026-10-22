@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Check, X, ArrowRight, Trophy, Star, Sparkles } from 'lucide-react'
 import { quizCategoryTone, type QuizCategoryTone } from '@/lib/quiz/categoryMeta'
@@ -50,9 +50,37 @@ export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone(
     }
 
     const resultado = fim ? resultadoFinal(acertos, items.length, entityName) : null
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    // Atalhos de teclado (A-F ou 1-6 pra responder, Enter/Espaço pra avançar) só
+    // quando o quiz está visível na tela — evita roubar teclas de outro widget
+    // da página enquanto o usuário rola o texto por perto.
+    useEffect(() => {
+        if (fim) return
+        const el = containerRef.current
+        if (!el || typeof IntersectionObserver === 'undefined') return
+        let visivel = false
+        const observer = new IntersectionObserver(([entry]) => { visivel = entry.isIntersecting }, { threshold: 0.5 })
+        observer.observe(el)
+
+        function handler(e: KeyboardEvent) {
+            if (!visivel) return
+            if ((e.target as Element)?.tagName?.match(/^(INPUT|TEXTAREA|SELECT)$/)) return
+            if (picked !== null) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setI(v => v + 1); setPicked(null) }
+                return
+            }
+            const letra: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 }
+            const idx = letra[e.key.toLowerCase()]
+            if (idx !== undefined && idx < (q?.options.length ?? 0)) responder(idx)
+        }
+        window.addEventListener('keydown', handler)
+        return () => { window.removeEventListener('keydown', handler); observer.disconnect() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- responder já lê picked/q por closure; só precisamos reanexar quando a pergunta ou a resposta mudam
+    }, [i, picked, fim])
 
     return (
-        <div className={`border-t-2 border-x border-b border-border bg-surface p-4 sm:p-5 ${tone.border}`}>
+        <div ref={containerRef} className={`border-t-2 border-x border-b border-border bg-surface p-4 sm:p-5 ${tone.border}`}>
             {fim && resultado ? (
                 <div className="flex flex-col items-center py-2 text-center animate-in fade-in duration-300">
                     <div className={`flex h-14 w-14 items-center justify-center border ${tone.border} ${tone.bg}`}>
@@ -100,8 +128,8 @@ export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone(
                                 <button
                                     key={idx} type="button" onClick={() => responder(idx)} disabled={picked !== null}
                                     className={`touch-target flex items-center gap-2.5 border px-3 py-2 text-left text-[14px] font-bold transition-colors ${
-                                        certa ? 'border-green-500 bg-green-500/10 text-foreground'
-                                        : errada ? 'border-red-500 bg-red-500/10 text-foreground'
+                                        certa ? `border-green-500 bg-green-500/10 text-foreground ${picked === idx ? 'animate-in zoom-in-95 duration-200' : ''}`
+                                        : errada ? 'animate-in zoom-in-95 duration-200 border-red-500 bg-red-500/10 text-foreground'
                                         : `border-border bg-background text-foreground ${tone.hoverBorder} disabled:opacity-70`
                                     }`}
                                 >
