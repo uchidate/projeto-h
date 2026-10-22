@@ -5,6 +5,8 @@ import { MiniQuiz } from './MiniQuiz'
 import { getQuizQuestions } from '@/lib/wordpress/quiz'
 import { quizCategoryTone } from '@/lib/quiz/categoryMeta'
 
+const diaDoAno = () => Math.floor(Date.now() / 86400000)
+
 interface Props {
     entitySlug: string   // ex: "iu", "bts", "my-misterious-girl"
     entityType: 'artist' | 'group' | 'production' | 'agency'
@@ -33,14 +35,22 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId, 
         const certa = norm(q.options[q.correct] ?? '')
         return certa.length >= 3 && (certa === nome || certa.includes(nome) || nome.includes(certa))
     }
-    const facts = allQuestions
+    const elegiveis = allQuestions
         .filter(q => !entregaResposta(q))
         .filter(q => entityType === 'agency'
             ? (groupIds?.some(id => q.links?.groups.includes(id)) ?? false) || (artistIds?.some(id => q.links?.artists.includes(id)) ?? false)
             : q.relatedHref?.includes(path!) || (entityId != null && q.links?.[chave].includes(entityId)))
-        .slice(0, 5)
 
-    if (facts.length === 0) return null
+    if (elegiveis.length === 0) return null
+
+    // Rotação determinística: mesmo resultado dentro do ciclo de cache (ISR), mas
+    // muda por entidade e a cada dia — quem revisita a ficha não vê sempre as
+    // mesmas 5 perguntas, sem precisar de aleatoriedade de verdade no servidor.
+    const semente = (entityId ?? entitySlug.split('').reduce((h, c) => h + c.charCodeAt(0), 0)) + diaDoAno()
+    const QUANTIDADE = 5
+    const facts = elegiveis.length <= QUANTIDADE
+        ? elegiveis
+        : Array.from({ length: QUANTIDADE }, (_, k) => elegiveis[(semente + k) % elegiveis.length])
 
     const categoria = facts[0]?.category
     const tone = quizCategoryTone(categoria)
