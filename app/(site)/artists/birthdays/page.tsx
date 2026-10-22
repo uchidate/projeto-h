@@ -12,6 +12,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 
 export const revalidate = 3600
 
@@ -216,6 +217,8 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                         })}
                     </div>
                 )}
+
+                <QuizWidget category="all" title="Sabe quem mais faz aniversário este mês?" description="Teste seu conhecimento sobre os artistas do acervo" />
             </div>
         </>
     )

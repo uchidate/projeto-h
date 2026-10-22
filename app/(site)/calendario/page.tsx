@@ -7,6 +7,7 @@ import { parseAcfDate, stripHtml, getWPImage } from '@/lib/utils'
 import type { CalendarEvent } from '@/lib/calendario/tipos'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 3600
@@ -141,6 +142,7 @@ export default async function CalendarioPage() {
             <CalendarPage events={events} todayStr={todayStr} />
             <div className="page-wrap pb-10">
                 <LojaEmLinha bloco="calendario-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="calendario:meio" />
+                <QuizWidget category="k-pop" />
             </div>
         </>
     )

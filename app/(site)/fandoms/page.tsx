@@ -4,6 +4,7 @@ import { stripHtml } from '@/lib/utils'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { FandomsPage } from '@/components/fandoms/FandomsPage'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 
 export const revalidate = 600
 
@@ -38,6 +39,7 @@ export default async function FandomsListPage({ searchParams }: { searchParams: 
         <>
             <PageBreadcrumb items={[{ name: 'Fandoms', path: '/fandoms' }]} />
             <FandomsPage fandoms={filtered} search={sp.search} />
+            <QuizWidget category="k-pop" title="Sabe de qual grupo é cada torcida?" description="Teste seu conhecimento sobre fandoms e grupos" />
         </>
     )
 }

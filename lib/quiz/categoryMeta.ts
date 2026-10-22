@@ -23,3 +23,18 @@ const FALLBACK: QuizCategoryTone = { label: 'Hallyu', text: 'text-accent', borde
 export function quizCategoryTone(category?: string | null): QuizCategoryTone {
     return (category && QUIZ_CATEGORY_META[category as QuizCategorySlug]) || FALLBACK
 }
+
+/** Categoria do blog (slug do CPT category) → categoria do quiz, pro banner da listagem/artigo usar a cor certa. */
+const BLOG_TO_QUIZ_CATEGORY: Record<string, QuizCategorySlug> = {
+    'k-pop':       'k-pop',
+    'k-drama':     'k-drama',
+    'dorama':      'k-drama',
+    'cultura':     'cultura',
+    'gastronomia': 'cultura',
+    'historia':    'historia',
+    'k-film':      'k-drama',
+}
+
+export function quizCategoryFromBlog(categorySlug?: string | null): QuizCategorySlug {
+    return BLOG_TO_QUIZ_CATEGORY[categorySlug ?? ''] ?? 'k-pop'
+}
