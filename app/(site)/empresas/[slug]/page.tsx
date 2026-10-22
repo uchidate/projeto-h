@@ -26,6 +26,10 @@ import { CompanyFounderQuote } from '@/components/companies/CompanyFounderQuote'
 import { CompanyMilestonesTimeline } from '@/components/companies/CompanyMilestonesTimeline'
 import { CompanyGallery } from '@/components/companies/CompanyGallery'
 
+function semAcento(s: string): string {
+    return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+}
+
 export const revalidate = 600
 
 type Params = Promise<{ slug: string }>
@@ -190,24 +194,43 @@ export default async function CompanyPage({ params }: { params: Params }) {
 
             {stats.length > 0 && <GroupAnimatedStats stats={stats} accent="var(--color-accent)" />}
 
-            {/* Produtos mais conhecidos — tira visual, imagem é o que gera reconhecimento */}
+            {/* Produtos mais conhecidos — clicável quando a loja já tem a oferta correspondente */}
             {products.length > 0 && (
                 <div className="border-b border-border/40 bg-surface/20">
                     <div className="page-wrap py-6">
                         <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-4">Produtos & Serviços mais conhecidos</h2>
                         <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
-                            {products.map(p => (
-                                <div key={p.name} className="flex flex-col items-center gap-2 shrink-0 w-[120px]">
-                                    <div className="relative w-[120px] h-[120px] rounded-xl overflow-hidden bg-surface border border-border flex items-center justify-center">
-                                        {p.image ? (
-                                            <Image src={p.image} alt={p.name} fill className="object-cover" sizes="120px" />
-                                        ) : (
-                                            <span className="text-[32px] opacity-40">{indEmoji}</span>
-                                        )}
+                            {products.map(p => {
+                                const alvo = semAcento(p.name)
+                                const oferta = vitrine.find(v => {
+                                    const titulo = semAcento(stripHtml(v.title.rendered))
+                                    return titulo.includes(alvo) || alvo.includes(titulo)
+                                })
+                                const href = oferta?.acf.affiliate_url ?? (vitrine.length > 0 ? '#loja-blog' : null)
+                                const Tile = (
+                                    <>
+                                        <div className="relative w-[120px] h-[120px] rounded-xl overflow-hidden bg-surface border border-border flex items-center justify-center">
+                                            {p.image ? (
+                                                <Image src={p.image} alt={p.name} fill className="object-cover" sizes="120px" />
+                                            ) : (
+                                                <span className="text-[32px] opacity-40">{indEmoji}</span>
+                                            )}
+                                        </div>
+                                        <p className="text-[11px] text-center leading-tight text-foreground/80 line-clamp-2">{p.name}</p>
+                                        {oferta && <p className="text-[10px] font-bold text-accent">Ver oferta →</p>}
+                                    </>
+                                )
+                                return href ? (
+                                    <a key={p.name} href={href} target={oferta ? '_blank' : undefined} rel={oferta ? 'noopener noreferrer' : undefined}
+                                        className="group flex flex-col items-center gap-2 shrink-0 w-[120px] hover:opacity-90 transition-opacity">
+                                        {Tile}
+                                    </a>
+                                ) : (
+                                    <div key={p.name} className="flex flex-col items-center gap-2 shrink-0 w-[120px]">
+                                        {Tile}
                                     </div>
-                                    <p className="text-[11px] text-center leading-tight text-foreground/80 line-clamp-2">{p.name}</p>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </div>
                 </div>
