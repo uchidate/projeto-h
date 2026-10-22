@@ -22,6 +22,7 @@ import { GroupAnimatedStats } from '@/components/groups/GroupAnimatedStats'
 import { ConexoesChaebol } from '@/components/companies/ConexoesChaebol'
 import { CompanyFounderQuote } from '@/components/companies/CompanyFounderQuote'
 import { CompanyMilestonesTimeline } from '@/components/companies/CompanyMilestonesTimeline'
+import { CompanyGallery } from '@/components/companies/CompanyGallery'
 
 export const revalidate = 600
 
@@ -223,6 +224,12 @@ export default async function CompanyPage({ params }: { params: Params }) {
             {acf.milestones && acf.milestones.length > 0 && (
                 <ProfileSection id="historia" indented={false}>
                     <CompanyMilestonesTimeline milestones={acf.milestones} accent="var(--color-accent)" />
+                </ProfileSection>
+            )}
+
+            {acf.gallery_urls && acf.gallery_urls.length > 0 && (
+                <ProfileSection id="galeria" indented={false}>
+                    <CompanyGallery name={name} urls={acf.gallery_urls} />
                 </ProfileSection>
             )}
 
