@@ -17,7 +17,7 @@ import { metaDescriptionComida } from '@/lib/seo/metaDescription'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
 import { ProfileSection } from '@/components/profiles/ProfileSection'
-import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
+import { getVitrineVinculada, buildVitrineMatcher } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getReceita } from '@/lib/receitas'
 import { ReceitaPreparo } from '@/components/food/ReceitaPreparo'
@@ -82,11 +82,12 @@ export default async function FoodPage({ params }: { params: Params }) {
         getMencoesNoAcervo(name, 3, { excluirCpt: 'food', excluirSlug: slug }),
     ])
 
-    const [relatedFoods, dramasInFood] = await Promise.all([
+    const [relatedFoods, dramasInFood, naLojaMatcher] = await Promise.all([
         getRelatedFoods(food.id, acf.category, 6),
         acf.featured_in_dramas?.length
             ? getProductionsByIds(acf.featured_in_dramas)
             : Promise.resolve([]),
+        buildVitrineMatcher(),
     ])
 
     const breadcrumbSchema = buildBreadcrumbSchema([
@@ -360,6 +361,9 @@ export default async function FoodPage({ params }: { params: Params }) {
                                         <p className="text-[12px] font-bold leading-tight group-hover:text-accent transition-colors line-clamp-2">{fname}</p>
                                         {f.acf?.name_korean && (
                                             <p className="text-[10px] text-muted mt-0.5">{f.acf.name_korean}</p>
+                                        )}
+                                        {naLojaMatcher([fname, ...(f.acf?.main_ingredients ?? [])]) && (
+                                            <p className="font-mono text-[10px] font-semibold text-accent mt-0.5">🛍️ Na loja</p>
                                         )}
                                     </div>
                                 </Link>

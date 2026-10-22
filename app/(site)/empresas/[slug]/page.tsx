@@ -14,7 +14,7 @@ import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { Globe, AtSign } from 'lucide-react'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
-import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
+import { getVitrineVinculada, buildVitrineMatcher } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
@@ -100,9 +100,10 @@ export default async function CompanyPage({ params }: { params: Params }) {
     ])
 
     const hasOwnChaebolGroup = !!acf.chaebol_group && acf.chaebol_group.trim().toLowerCase() !== name.trim().toLowerCase()
-    const [relatedCompanies, siblingCount] = await Promise.all([
+    const [relatedCompanies, siblingCount, naLojaMatcher] = await Promise.all([
         getRelatedCompanies(company.id, acf.industry, 6, hasOwnChaebolGroup ? acf.chaebol_group : null),
         hasOwnChaebolGroup ? countCompaniesInChaebolGroup(acf.chaebol_group!) : Promise.resolve(0),
+        buildVitrineMatcher(),
     ])
     // Hub só vale a pena com pelo menos mais uma empresa do mesmo grupo no acervo.
     const groupHubHref = hasOwnChaebolGroup && siblingCount > 1 ? `/empresas/grupo/${slugify(acf.chaebol_group!)}` : null
@@ -372,6 +373,9 @@ export default async function CompanyPage({ params }: { params: Params }) {
                                         <p className="text-[13px] font-bold group-hover:text-accent transition-colors line-clamp-1">{cname}</p>
                                         {rotuloDoSetor(c.acf?.industry) && (
                                             <p className="font-mono text-[10px] text-muted">{rotuloDoSetor(c.acf?.industry)}</p>
+                                        )}
+                                        {naLojaMatcher([cname, ...(c.acf?.global_brands ?? [])]) && (
+                                            <p className="font-mono text-[10px] font-semibold text-accent">🛍️ Na loja</p>
                                         )}
                                     </div>
                                 </Link>
