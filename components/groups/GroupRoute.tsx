@@ -32,6 +32,7 @@ import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
 import { metaDescription } from '@/lib/seo/metaDescription'
+import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 
 /**
  * Ficha de grupo, compartilhada entre idiomas — mesmo padrão de ArtistRoute.
@@ -131,6 +132,9 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
         : []
 
     const relatedHubs = getHubsForGroup(group)
+    const companyMentions = locale === DEFAULT_LOCALE
+        ? await getMencoesNoAcervo(groupName, 3, { excluirCpt: 'group', excluirSlug: slug, tipos: ['company'] })
+        : []
     const t = await getTranslations({ locale, namespace: 'entity' })
 
     const groupUrl = `${SITE_URL}${href('group', { slug }, locale)}`
@@ -147,7 +151,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('group', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={semProdutoProprio ? shopFallbackProducts : (locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `grupo:${slug}`) : [])} shopFallback={semProdutoProprio} />
+            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={semProdutoProprio ? shopFallbackProducts : (locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `grupo:${slug}`) : [])} shopFallback={semProdutoProprio} companyMentions={companyMentions} />
         </>
     )
 }

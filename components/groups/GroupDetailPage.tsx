@@ -31,6 +31,8 @@ import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { LojaDestaque } from '@/components/ui/LojaDestaque'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import type { MencaoAcervo } from '@/lib/wordpress/mentions'
+import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
 
 interface Props {
     group: WPGroup
@@ -45,9 +47,11 @@ interface Props {
     shopProducts?: StoreProduct[]
     /** true quando shopProducts é a vitrine geral (o grupo ainda não tem produto próprio). */
     shopFallback?: boolean
+    /** Empresas que o acervo já associa a este grupo. */
+    companyMentions?: MencaoAcervo[]
 }
 
-export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], soloReleases = {}, relatedHubs = [], shopProducts = [], shopFallback = false }: Props) {
+export function GroupDetailPage({ group, members = [], relatedPosts = [], agency, organizationContext, relatedGroups = [], discography = [], soloReleases = {}, relatedHubs = [], shopProducts = [], shopFallback = false, companyMentions = [] }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const tC = useTranslations('profile.groupC')
@@ -231,6 +235,11 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
             <ShopRelatedSection bloco="ficha-grupo-loja" title={shopFallback ? 'Recomendados pra você' : `Curtiu ${name}? Leva pra casa`} products={shopProducts}
                 href={shopFallback ? '/loja' : `/loja/grupo/${group.slug}`} verTudoLabel={shopFallback ? 'Ver toda a loja' : `Ver tudo de ${name}`}
                 contexto={shopFallback ? 'grupo:fallback' : `grupo:${group.slug}`} />
+            {companyMentions.length > 0 && (
+                <div className="page-wrap py-6">
+                    <MencionadoAcervo mentions={companyMentions} title="Marcas associadas no acervo" />
+                </div>
+            )}
 
             {/* Guias só existem em português. */}
             {locale === DEFAULT_LOCALE && relatedHubs.length > 0 && (
