@@ -76,19 +76,41 @@ export async function findCompanyByName(name: string): Promise<{ slug: string; n
     } catch { return null }
 }
 
-export async function getRelatedCompanies(excludeId: number, industry?: CompanyIndustry, perPage = 6): Promise<WPCompany[]> {
+/**
+ * Mesmo grupo primeiro (ex: na ficha da Samsung Electronics, mostrar Samsung
+ * C&T antes de uma empresa de tech qualquer) — `chaebol_group` não tem filtro
+ * na REST API, então busca um pool maior sem filtro de setor e compara no
+ * cliente. Completa com o pool por setor quando o grupo não dá os `perPage`.
+ */
+export async function getRelatedCompanies(excludeId: number, industry?: CompanyIndustry, perPage = 6, chaebolGroup?: string | null): Promise<WPCompany[]> {
     try {
-        const pool = await wpBuscarOpcional<WPCompany[]>(
-            `/wp/v2/company${buildParams({
-                per_page: 24, status: 'publish',
-                _fields: 'id,slug,title,featured_image_url,acf',
-                orderby: 'date', order: 'desc', exclude: excludeId,
-                oc_industry: industry ?? undefined,
-            })}`,
-            { revalidate: 1800, tags: [WP_CACHE_TAGS.companies] },
-        )
+        const [pool, groupPool] = await Promise.all([
+            wpBuscarOpcional<WPCompany[]>(
+                `/wp/v2/company${buildParams({
+                    per_page: 24, status: 'publish',
+                    _fields: 'id,slug,title,featured_image_url,acf',
+                    orderby: 'date', order: 'desc', exclude: excludeId,
+                    oc_industry: industry ?? undefined,
+                })}`,
+                { revalidate: 1800, tags: [WP_CACHE_TAGS.companies] },
+            ),
+            chaebolGroup
+                ? wpBuscarOpcional<WPCompany[]>(
+                    `/wp/v2/company${buildParams({
+                        per_page: 50, status: 'publish',
+                        _fields: 'id,slug,title,featured_image_url,acf',
+                        orderby: 'date', order: 'desc', exclude: excludeId,
+                    })}`,
+                    { revalidate: 1800, tags: [WP_CACHE_TAGS.companies] },
+                )
+                : Promise.resolve([]),
+        ])
+        const sameGroup = chaebolGroup
+            ? groupPool.filter(c => c.acf?.chaebol_group?.trim().toLowerCase() === chaebolGroup.trim().toLowerCase())
+            : []
         const seed = excludeId % (pool.length || 1)
-        return [...pool.slice(seed), ...pool.slice(0, seed)].slice(0, perPage)
+        const resto = [...pool.slice(seed), ...pool.slice(0, seed)].filter(c => !sameGroup.some(g => g.id === c.id))
+        return [...sameGroup, ...resto].slice(0, perPage)
     } catch { return [] }
 }
 

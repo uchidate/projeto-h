@@ -2,6 +2,23 @@ import { getFeaturedStoreProducts, getStoreProducts, getStoreProductsByArtistId,
 import { escolherPorTemaComAderencia, type Tema } from '@/lib/wordpress/store-contexto'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 
+/**
+ * Selo "disponível na loja" nos cards de listagem: um fetch de produtos
+ * reaproveitado pra todos os cards da página (`buildVitrineMatcher`), em vez
+ * de uma busca por card — o mesmo matching textual de `getVitrinePorTermos`,
+ * só sem reordenar por ranking (a listagem só precisa saber "tem ou não tem").
+ */
+export async function buildVitrineMatcher(): Promise<(termos: (string | undefined)[]) => boolean> {
+    const produtos = await getStoreProducts()
+    const titulos = produtos
+        .filter(p => !p.acf.is_hidden && p.acf.affiliate_url && p.acf.price)
+        .map(p => p.title.rendered.toLowerCase())
+    return (termos: (string | undefined)[]) => {
+        const palavras = termos.filter((t): t is string => !!t && t.length >= 4).map(t => t.toLowerCase())
+        return palavras.length > 0 && titulos.some(titulo => palavras.some(p => titulo.includes(p)))
+    }
+}
+
 /** Vitrine geral em destaque, já ordenada por contexto. Base das faixas de loja em páginas sem produto próprio. */
 export async function getVitrineGeral(contexto: string, limit = 6, tipo?: TipoVitrine): Promise<StoreProduct[]> {
     return ordenarPrateleira(await getFeaturedStoreProducts(limit, tipo), contexto)

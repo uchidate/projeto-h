@@ -10,6 +10,7 @@ import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml } from '@/lib/utils'
 import { KoreaRegionMap } from '@/components/food/KoreaRegionMap'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { buildVitrineMatcher } from '@/lib/wordpress/vitrine'
 
 export type SearchParams = Promise<{ search?: string; page?: string; category?: string; vegetarian?: string; occasion?: string; season?: string; maxSpicy?: string; region?: string }>
 
@@ -82,19 +83,22 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
         (c.params.maxSpicy ?? undefined) === sp.maxSpicy,
     )
 
-    const { items: foods, total, totalPages } = await getFoods({
-        page,
-        perPage: 48,
-        search: sp.search,
-        category,
-        vegetarian,
-        occasion: sp.occasion,
-        season: sp.season,
-        maxSpicy,
-        region,
-        orderby: 'date',
-        order: 'desc',
-    })
+    const [{ items: foods, total, totalPages }, temVitrine] = await Promise.all([
+        getFoods({
+            page,
+            perPage: 48,
+            search: sp.search,
+            category,
+            vegetarian,
+            occasion: sp.occasion,
+            season: sp.season,
+            maxSpicy,
+            region,
+            orderby: 'date',
+            order: 'desc',
+        }),
+        buildVitrineMatcher(),
+    ])
     if (page > Math.max(1, totalPages)) notFound()
 
     return (
@@ -118,7 +122,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
             <div className="border-b border-border/40 bg-surface/30">
                 <div className="page-wrap py-3 flex flex-wrap gap-2">
                     <Link
-                        href="/comidas"
+                        href={buildComidasPath({ ...sp, category: undefined })}
                         scroll={false}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
                             !category
@@ -131,7 +135,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                     {VALID_CATEGORIES.map(cat => (
                         <Link
                             key={cat}
-                            href={`/comidas?category=${cat}`}
+                            href={buildComidasPath({ ...sp, category: cat, page: undefined })}
                             scroll={false}
                             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
                                 category === cat
@@ -202,6 +206,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                 const catLabel = acf.category ? FOOD_CATEGORY_LABELS[acf.category] : null
                                 const catEmoji = acf.category ? FOOD_CATEGORY_EMOJI[acf.category] : '🍽️'
                                 const spicy = acf.spicy_level ?? 0
+                                const naLoja = temVitrine([name, ...(acf.main_ingredients ?? [])])
 
                                 return (
                                     <Link
@@ -243,6 +248,9 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                             )}
                                             {catLabel && (
                                                 <p className="font-mono text-[10px] text-muted/60 mt-1">{catLabel}</p>
+                                            )}
+                                            {naLoja && (
+                                                <p className="font-mono text-[10px] font-semibold text-accent mt-1">🛍️ Na loja</p>
                                             )}
                                         </div>
                                     </Link>

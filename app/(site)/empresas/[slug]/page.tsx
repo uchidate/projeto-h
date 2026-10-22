@@ -77,9 +77,11 @@ export default async function CompanyPage({ params }: { params: Params }) {
         getPostsQueCitam(name),
     ])
 
-    const relatedCompanies = await getRelatedCompanies(company.id, acf.industry, 6)
     const hasOwnChaebolGroup = !!acf.chaebol_group && acf.chaebol_group.trim().toLowerCase() !== name.trim().toLowerCase()
-    const groupLink = hasOwnChaebolGroup ? await findCompanyByName(acf.chaebol_group!) : null
+    const [relatedCompanies, groupLink] = await Promise.all([
+        getRelatedCompanies(company.id, acf.industry, 6, hasOwnChaebolGroup ? acf.chaebol_group : null),
+        hasOwnChaebolGroup ? findCompanyByName(acf.chaebol_group!) : Promise.resolve(null),
+    ])
     // Mesma blindagem contra autorreferência do ConexoesChaebol: sem isso, a
     // seção renderiza vazia (só título) pra fichas como a da Abib.
     const hasOtherGlobalBrands = (acf.global_brands ?? []).some(b => b.trim().toLowerCase() !== name.trim().toLowerCase())

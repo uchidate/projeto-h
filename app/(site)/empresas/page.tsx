@@ -4,6 +4,7 @@ import { ADSENSE } from '@/lib/config/ads'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getCompanies, COMPANY_INDUSTRY_LABELS, COMPANY_INDUSTRY_EMOJI, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
+import { buildVitrineMatcher } from '@/lib/wordpress/vitrine'
 import type { CompanyIndustry } from '@/lib/wordpress/types'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml } from '@/lib/utils'
@@ -32,10 +33,13 @@ export default async function EmpresasPage({ searchParams }: { searchParams: Sea
     const industry = VALID_INDUSTRIES.includes(sp.industry as CompanyIndustry) ? (sp.industry as CompanyIndustry) : undefined
     const chaebol = sp.chaebol === 'true' ? true : undefined
 
-    const { items: companies, total, totalPages } = await getCompanies({
-        page, perPage: 48, search: sp.search, industry, chaebol,
-        orderby: 'date', order: 'desc',
-    })
+    const [{ items: companies, total, totalPages }, temVitrine] = await Promise.all([
+        getCompanies({
+            page, perPage: 48, search: sp.search, industry, chaebol,
+            orderby: 'date', order: 'desc',
+        }),
+        buildVitrineMatcher(),
+    ])
 
     return (
         <>
@@ -98,6 +102,7 @@ export default async function EmpresasPage({ searchParams }: { searchParams: Sea
                                 const img = company.featured_image_url
                                 const indLabel = rotuloDoSetor(acf.industry)
                                 const indEmoji = emojiDoSetor(acf.industry)
+                                const naLoja = temVitrine([name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])])
 
                                 return (
                                     <Link key={company.id} href={`/empresas/${company.slug}`}
@@ -137,6 +142,9 @@ export default async function EmpresasPage({ searchParams }: { searchParams: Sea
                                                 <p className="text-[11px] text-muted/60 mt-1 line-clamp-1">
                                                     {acf.famous_products.slice(0, 3).join(' · ')}
                                                 </p>
+                                            )}
+                                            {naLoja && (
+                                                <p className="font-mono text-[10px] font-semibold text-accent mt-1">🛍️ Na loja</p>
                                             )}
                                         </div>
                                     </Link>
