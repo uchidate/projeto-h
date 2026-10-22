@@ -50,6 +50,8 @@ interface Props {
     blogPosts?: WPPost[]
     /** Faixa de loja entre os resultados e os artigos (feita no servidor). */
     lojaMeio?: ReactNode
+    /** Banner do quiz da categoria do guia (feito no servidor). */
+    quiz?: ReactNode
     siteUrl?: string
     genreMap?: Record<number, { name: string; slug: string }>
     page?: number
@@ -104,7 +106,7 @@ const KNOWN_TYPES = ['drama', 'movie', 'special', 'variety']
 const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Globoplay', 'Max', 'Viki', 'WeTV']
 
 export function HubPageContent({
-    hub, relatedHubs, productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio,
+    hub, relatedHubs, productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -458,6 +460,8 @@ export function HubPageContent({
                         </div>
                     </section>
                 )}
+
+                {page === 1 && quiz && <div className="order-2">{quiz}</div>}
 
                 {relatedHubs.length > 0 && page === 1 && (
                     <section className="order-2">

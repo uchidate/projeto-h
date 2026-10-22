@@ -12,6 +12,10 @@ import type { WPAgency, WPArtist, WPGroup } from '@/lib/wordpress/types'
 const notFound = vi.fn(() => { throw new Error('NEXT_NOT_FOUND') })
 vi.mock('next/navigation', () => ({ notFound }))
 
+// QuizFacts é async (Server Component) — o render síncrono do RTL não suporta
+// componente async que não seja a própria raiz: precisa de um stub síncrono aqui.
+vi.mock('@/components/ui/QuizFacts', () => ({ QuizFacts: () => null }))
+
 // jsdom não implementa IntersectionObserver — ReadingBar observa seções da
 // página para destacar o item ativo do nav; sem isso o teste quebra no efeito.
 class IntersectionObserverStub {

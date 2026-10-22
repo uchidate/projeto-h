@@ -7,16 +7,20 @@ import { quizCategoryTone } from '@/lib/quiz/categoryMeta'
 
 interface Props {
     entitySlug: string   // ex: "iu", "bts", "my-misterious-girl"
-    entityType: 'artist' | 'group' | 'production'
+    entityType: 'artist' | 'group' | 'production' | 'agency'
     entityName: string
     entityId?: number
+    /** Só para entityType="agency": junta as perguntas de todos os grupos/artistas do roster. */
+    groupIds?: number[]
+    artistIds?: number[]
 }
 
-export async function QuizFacts({ entitySlug, entityType, entityName, entityId }: Props) {
+export async function QuizFacts({ entitySlug, entityType, entityName, entityId, groupIds, artistIds }: Props) {
     const t = await getTranslations('profile.ui')
     const path = entityType === 'artist' ? `/artists/${entitySlug}`
         : entityType === 'group' ? `/groups/${entitySlug}`
-        : `/productions/${entitySlug}`
+        : entityType === 'production' ? `/productions/${entitySlug}`
+        : null
 
     const allQuestions = await getQuizQuestions()
 
@@ -31,7 +35,9 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId }
     }
     const facts = allQuestions
         .filter(q => !entregaResposta(q))
-        .filter(q => q.relatedHref?.includes(path) || (entityId != null && q.links?.[chave].includes(entityId)))
+        .filter(q => entityType === 'agency'
+            ? (groupIds?.some(id => q.links?.groups.includes(id)) ?? false) || (artistIds?.some(id => q.links?.artists.includes(id)) ?? false)
+            : q.relatedHref?.includes(path!) || (entityId != null && q.links?.[chave].includes(entityId)))
         .slice(0, 5)
 
     if (facts.length === 0) return null
