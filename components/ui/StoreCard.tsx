@@ -2,10 +2,12 @@
 import { SITE_NAME } from '@/lib/constants/site'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { ExternalLink, Star } from 'lucide-react'
 import { calcularDesconto, ehMenorPrecoEmDias, ehNovo, quedaDePreco, type StoreProduct } from '@/lib/wordpress/store'
 import { stripHtml } from '@/lib/utils'
 import { trackProductClick } from '@/lib/analytics'
+import type { ProductLink } from '@/lib/wordpress/productLinks'
 
 export const STORE_CONFIG: Record<string, { label: string; color: string; bg: string; textColor: string; stripe: string }> = {
     shopee:       { label: 'Shopee',        color: 'text-orange-500', bg: 'bg-orange-700',  textColor: 'text-white', stripe: 'bg-orange-600' },
@@ -21,10 +23,12 @@ interface StoreCardProps {
     compact?: boolean
     /** Página/vitrine onde o card aparece (ex.: "artista:jisoo-kim") — base do ranking por CTR. */
     contexto?: string
+    /** Ficha de empresa/comida que linkou este produto via `linked_products` — fecha o loop loja→acervo. */
+    link?: ProductLink
 }
 
 
-export function StoreCard({ product, compact = false, contexto = 'loja' }: StoreCardProps) {
+export function StoreCard({ product, compact = false, contexto = 'loja', link }: StoreCardProps) {
     const { acf, title } = product
     const name = stripHtml(title.rendered)
     const store = acf.store ?? 'outro'
@@ -69,6 +73,7 @@ export function StoreCard({ product, compact = false, contexto = 'loja' }: Store
     }
 
     return (
+        <div className="flex flex-col">
         <a href={acf.affiliate_url} target="_blank" rel="noopener noreferrer sponsored"
             title={`Ver no ${cfg.label} (link externo)`}
             onClick={registrarClique}
@@ -143,5 +148,12 @@ export function StoreCard({ product, compact = false, contexto = 'loja' }: Store
                 {acf.sold_count ? `${acf.sold_count} vendidos` : `Curadoria ${SITE_NAME}`}
             </span>
         </a>
+        {link && (
+            <Link href={link.type === 'company' ? `/empresas/${link.slug}` : `/comidas/${link.slug}`}
+                className="mt-1 truncate px-1 text-[11px] font-semibold text-accent hover:underline">
+                {link.type === 'company' ? '🏢' : '🍽️'} Sobre {link.title}
+            </Link>
+        )}
+        </div>
     )
 }

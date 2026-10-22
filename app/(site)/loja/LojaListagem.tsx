@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto, quedaDePreco } from '@/lib/wordpress/store'
 import { ordenarPrateleira, ordenarCategorias } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
+import { getProductLinksMap } from '@/lib/wordpress/productLinks'
 import { LojaClique } from '@/components/ui/LojaClique'
 import { VitrineVista } from '@/components/ui/VitrineVista'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
@@ -26,7 +27,7 @@ export type SearchParams = Promise<{ categoria?: string; loja?: string; busca?: 
 
 export async function LojaListagem({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
-    const allProducts = await getStoreProducts()
+    const [allProducts, productLinks] = await Promise.all([getStoreProducts(), getProductLinksMap()])
 
     // Filtrar ocultos
     const products = allProducts.filter(p => !p.acf.is_hidden)
@@ -228,7 +229,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                     Escolhas da curadoria
                                 </h2>
                                 <VitrineVista contexto="loja:destaques" produtoIds={featured.slice(0, 5).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                                    {featured.slice(0, 5).map(p => <StoreCard key={p.id} product={p} contexto="loja:destaques" />)}
+                                    {featured.slice(0, 5).map(p => <StoreCard key={p.id} product={p} contexto="loja:destaques" link={productLinks.get(p.id)} />)}
                                 </VitrineVista>
                             </section>
                         )}
@@ -241,7 +242,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                 <section>
                                     <p className="mb-4 text-[12px] text-muted">{filtered.length} produto{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}</p>
                                     <VitrineVista contexto="loja:filtro" produtoIds={filtered.slice(0, 8).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                        {filtered.map(p => <StoreCard key={p.id} product={p} contexto="loja:filtro" />)}
+                                        {filtered.map(p => <StoreCard key={p.id} product={p} contexto="loja:filtro" link={productLinks.get(p.id)} />)}
                                     </VitrineVista>
                                 </section>
                             )
@@ -256,7 +257,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                         <span className="text-[12px] font-semibold text-muted">{items.length} produto{items.length !== 1 ? 's' : ''}</span>
                                     </div>
                                     <VitrineVista contexto={`loja:categoria:${cat}`} produtoIds={items.slice(0, 8).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                        {items.map(p => <StoreCard key={p.id} product={p} contexto={`loja:categoria:${cat}`} />)}
+                                        {items.map(p => <StoreCard key={p.id} product={p} contexto={`loja:categoria:${cat}`} link={productLinks.get(p.id)} />)}
                                     </VitrineVista>
                                 </section>
                             ))
