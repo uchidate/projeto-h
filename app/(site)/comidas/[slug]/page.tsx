@@ -21,6 +21,8 @@ import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getReceita } from '@/lib/receitas'
 import { ReceitaPreparo } from '@/components/food/ReceitaPreparo'
+import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
+import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
 
 export const revalidate = 600
 
@@ -74,9 +76,10 @@ export default async function FoodPage({ params }: { params: Params }) {
     const spicy = acf.spicy_level ?? 0
     const foodUrl = `${SITE_URL}/comidas/${slug}`
 
-    const [vitrine, posts] = await Promise.all([
+    const [vitrine, posts, mentions] = await Promise.all([
         getVitrineVinculada(acf.linked_products, [name, ...(acf.main_ingredients ?? [])], `comida:${slug}`, { temas: ['culinaria'] }),
         getPostsQueCitam(name),
+        getMencoesNoAcervo(name),
     ])
 
     const [relatedFoods, dramasInFood] = await Promise.all([
@@ -372,11 +375,12 @@ export default async function FoodPage({ params }: { params: Params }) {
             )}
 
             {/* Loja e blog */}
-            {(vitrine.length > 0 || posts.length > 0) && (
+            {(vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
                 <ProfileSection id="loja-blog" indented={false}>
                     <div className="space-y-6">
                         <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto="comida:{slug}" title="Para provar em casa" />
                         <CitadoNoBlog posts={posts} />
+                        <MencionadoAcervo mentions={mentions} />
                     </div>
                 </ProfileSection>
             )}
