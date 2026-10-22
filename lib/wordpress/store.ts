@@ -140,6 +140,19 @@ export async function getStoreProductsByArtistId(artistId: number): Promise<Stor
     return products.filter(p => !p.acf.is_hidden && p.acf.related_artist === artistId)
 }
 
+/** IDs de artista/grupo com pelo menos um produto visível vinculado — para o selo "Na loja" nas listagens. */
+export async function getEntityIdsWithProducts(): Promise<{ artistIds: Set<number>; groupIds: Set<number> }> {
+    const products = await getStoreProducts()
+    const artistIds = new Set<number>()
+    const groupIds = new Set<number>()
+    for (const p of products) {
+        if (p.acf.is_hidden) continue
+        if (p.acf.related_artist) artistIds.add(p.acf.related_artist)
+        if (p.acf.related_group) groupIds.add(p.acf.related_group)
+    }
+    return { artistIds, groupIds }
+}
+
 /** Vínculo explícito (campo `linked_products` de company/food) em vez do matching textual. */
 export async function getStoreProductsByIds(ids: number[]): Promise<StoreProduct[]> {
     if (ids.length === 0) return []

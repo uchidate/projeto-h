@@ -3,7 +3,14 @@ import { labelsFor } from '@/lib/i18n/labels'
 import { stripHtml } from '@/lib/utils'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
+import { getStoreProducts } from '@/lib/wordpress/store'
 import { foldAccents, fuzzyThreshold, levenshtein, scoreTitle, stripSeparators } from '@/lib/search/scoring'
+
+/** Rótulo curto do marketplace, só para o subtítulo do resultado — duplicado de STORE_CONFIG
+ * (components/ui/StoreCard.tsx) porque aquele arquivo é 'use client' e este índice é código de servidor. */
+const STORE_LABELS: Record<string, string> = {
+    shopee: 'Shopee', amazon: 'Amazon', mercadolivre: 'Mercado Livre', magalu: 'Magalu', shein: 'Shein',
+}
 
 /**
  * Indice de busca em memoria: todos os titulos do acervo (~8 mil fichas, ~1 MB)
@@ -70,6 +77,8 @@ type Entrada = {
     grupos: number[]
     palavras: string[]
     justo: string
+    /** Só em store_product: marketplace do link, pro clique alimentar a mesma métrica da loja. */
+    store?: string
 }
 
 let entradas: Entrada[] | null = null
@@ -148,11 +157,47 @@ async function buscarColecao(c: Colecao): Promise<Entrada[]> {
     })
 }
 
+/**
+ * Produtos da loja: reaproveita `getStoreProducts` (já pagina e cacheia) em vez do
+ * endpoint genérico — o shape de `store_products` não tem slug/rota própria, o link
+ * é o `affiliate_url` direto, então não cabe em `buscarColecao`.
+ */
+async function buscarColecaoProdutos(): Promise<Entrada[]> {
+    const produtos = await getStoreProducts()
+    return produtos
+        .filter(p => !p.acf.is_hidden && p.acf.affiliate_url && p.acf.price)
+        .map(p => {
+            const titulo = stripHtml(p.title.rendered)
+            const storeLabel = p.acf.store ? STORE_LABELS[p.acf.store] : undefined
+            return {
+                id: p.id,
+                title: titulo,
+                grafias: [],
+                alternativas: [],
+                detalhe: [p.acf.price, storeLabel].filter(Boolean).join(' · '),
+                contexto: [],
+                href: p.acf.affiliate_url!,
+                type: 'store_product' as const,
+                thumbnail: p.acf.image_url ?? undefined,
+                weight: 0.9,
+                fuzzy: false,
+                trending: (p.acf.featured ? 20 : 0) + (p.acf.sold_count ? parseInt(p.acf.sold_count, 10) || 0 : 0),
+                grupos: [],
+                palavras: foldAccents(titulo).split(/[\s\-]+/).filter(Boolean),
+                justo: stripSeparators(titulo),
+                store: p.acf.store ?? undefined,
+            }
+        })
+}
+
 async function carregar(): Promise<void> {
-    const partes = await Promise.all(COLECOES.map(buscarColecao))
+    const [partes, produtos] = await Promise.all([
+        Promise.all(COLECOES.map(buscarColecao)),
+        buscarColecaoProdutos().catch(() => []),
+    ])
     // Colecao vazia = WP falhou (ou build): nao substitui um indice bom por um pela metade.
     if (partes.some(p => p.length === 0)) throw new Error('indice de busca incompleto')
-    const todas = partes.flat()
+    const todas = [...partes.flat(), ...produtos]
     const nomeGrupo = new Map(todas.filter(e => e.type === 'group').map(g => [g.id, g.title]))
     for (const e of todas) {
         if (e.type === 'artist') e.contexto = e.grupos.map(id => nomeGrupo.get(id)).filter((n): n is string => !!n)
@@ -291,6 +336,7 @@ export async function searchIndex(query: string, limit: number): Promise<SearchR
         } else if (e.detalhe) {
             r.subtitle = e.detalhe
         }
+        if (e.type === 'store_product' && e.store) r.store = e.store
         return r
     })
 }

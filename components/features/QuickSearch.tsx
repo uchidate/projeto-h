@@ -6,11 +6,11 @@ import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Search, X, Command, Film, Mic2, Users, BookOpen, Loader2, TrendingUp, Building2, UtensilsCrossed } from 'lucide-react'
+import { Search, X, Command, Film, Mic2, Users, BookOpen, Loader2, TrendingUp, Building2, UtensilsCrossed, ShoppingBag } from 'lucide-react'
 import { useQuickSearch } from '@/lib/hooks/useQuickSearch'
 import { useWPSearch } from '@/hooks/useWPSearch'
 import type { SearchResult } from '@/lib/search/types'
-import { trackSearch, trackSearchClick } from '@/lib/analytics'
+import { trackSearch, trackSearchClick, trackProductClick } from '@/lib/analytics'
 import { trechosDestacados } from '@/lib/search/destaque'
 
 // Atalhos de navegação rápida — guiam o usuário sem precisar digitar
@@ -29,6 +29,7 @@ const TYPE_LABEL: Record<SearchResult['type'], { label: string; plural: string; 
     group:      { label: 'Grupo', plural: 'Grupos',     icon: <Users size={14} /> },
     company:    { label: 'Empresa', plural: 'Empresas',   icon: <Building2 size={14} /> },
     food:       { label: 'Comida', plural: 'Comidas',    icon: <UtensilsCrossed size={14} /> },
+    store_product: { label: 'Produto', plural: 'Na loja', icon: <ShoppingBag size={14} /> },
 }
 
 function groupByType(results: SearchResult[]): { type: SearchResult['type']; items: SearchResult[] }[] {
@@ -96,11 +97,17 @@ export function QuickSearch() {
 
     if (!isOpen) return null
 
-    const handleSelect = (href: string) => { close(); router.push(href) }
+    const handleSelect = (href: string) => {
+        close()
+        // Produto da loja: href é o link de afiliado (externo), não uma rota do site.
+        if (/^https?:\/\//.test(href)) { window.location.href = href; return }
+        router.push(href)
+    }
     const selecionarResultado = (index: number) => {
         const r = results[index]
         if (!r) return
         trackSearchClick({ query: query.trim(), position: index + 1, type: r.type, href: r.href })
+        if (r.type === 'store_product' && r.store) trackProductClick({ productId: r.id, store: r.store, contexto: 'busca_rapida' })
         handleSelect(r.href)
     }
 

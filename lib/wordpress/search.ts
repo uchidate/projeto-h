@@ -4,6 +4,30 @@ import { buildParams, wpBuscarOpcional } from './client'
 import { WP_CACHE_TAGS } from './cache'
 import { fuzzyDistance, fuzzyThreshold, scoreTitle } from '@/lib/search/scoring'
 import { searchIndex } from '@/lib/search/index'
+import { getStoreProducts } from './store'
+
+const STORE_LABELS: Record<string, string> = {
+    shopee: 'Shopee', amazon: 'Amazon', mercadolivre: 'Mercado Livre', magalu: 'Magalu', shein: 'Shein',
+}
+
+/** Produtos da loja não cabem no TypeConfig genérico: sem slug/rota própria, o link é o affiliate_url direto. */
+async function buscarProdutos(q: string): Promise<ScoredCandidate[]> {
+    const produtos = await getStoreProducts()
+    const alvo = q.toLowerCase()
+    return produtos
+        .filter(p => !p.acf.is_hidden && p.acf.affiliate_url && p.acf.price)
+        .filter(p => stripHtml(p.title.rendered).toLowerCase().includes(alvo))
+        .map(p => ({
+            id: p.id,
+            title: stripHtml(p.title.rendered),
+            href: p.acf.affiliate_url!,
+            type: 'store_product' as const,
+            thumbnail: p.acf.image_url ?? undefined,
+            subtitle: [p.acf.price, p.acf.store ? STORE_LABELS[p.acf.store] : undefined].filter(Boolean).join(' · '),
+            store: p.acf.store ?? undefined,
+            _trendingScore: p.acf.featured ? 20 : 0,
+        }))
+}
 
 type WPItem = {
     id: number
@@ -39,6 +63,7 @@ const TYPE_WEIGHT: Record<SearchResultType, number> = {
     company: 0.8,
     food: 0.8,
     post: 0.6,
+    store_product: 0.9,
 }
 
 async function fetchPool(cfg: TypeConfig, q: string, fields: string, revalidate: number, tags: string[]) {
@@ -121,9 +146,12 @@ export async function searchWordPress(query: string, limit = 10): Promise<Search
     ]
     const fields = 'id,slug,title,featured_image_url,acf.groups,acf.trending_score'
 
-    const pools = await Promise.allSettled(TYPES.map(cfg => fetchPool(cfg, q, fields, revalidate, tags)))
+    const [pools, produtos] = await Promise.all([
+        Promise.allSettled(TYPES.map(cfg => fetchPool(cfg, q, fields, revalidate, tags))),
+        buscarProdutos(q).catch(() => []),
+    ])
 
-    const candidates: ScoredCandidate[] = []
+    const candidates: ScoredCandidate[] = [...produtos]
     const emptyFuzzyCandidates: TypeConfig[] = []
 
     TYPES.forEach((cfg, i) => {

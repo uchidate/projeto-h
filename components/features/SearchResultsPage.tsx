@@ -4,14 +4,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
-import { Search, Film, Mic2, BookOpen, Users, X, Building2, UtensilsCrossed } from 'lucide-react'
+import { Search, Film, Mic2, BookOpen, Users, X, Building2, UtensilsCrossed, ShoppingBag } from 'lucide-react'
 import type { SearchResult, SearchResultType } from '@/lib/search/types'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
-import { trackSearch } from '@/lib/analytics'
+import { trackSearch, trackSearchClick, trackProductClick } from '@/lib/analytics'
 import { EmptyState } from '@/components/ui/EmptyState'
 
-function ResultCard({ result }: { result: SearchResult }) {
+function ResultCard({ result, query, position }: { result: SearchResult; query: string; position: number }) {
     const icons: Record<SearchResultType, React.ReactNode> = {
         production: <Film size={18} className="text-muted/40" />,
         artist:     <Mic2 size={18} className="text-muted/40" />,
@@ -19,6 +19,7 @@ function ResultCard({ result }: { result: SearchResult }) {
         post:       <BookOpen size={18} className="text-muted/40" />,
         company:    <Building2 size={18} className="text-muted/40" />,
         food:       <UtensilsCrossed size={18} className="text-muted/40" />,
+        store_product: <ShoppingBag size={18} className="text-muted/40" />,
     }
     const typeLabels: Record<SearchResultType, string> = {
         production: 'Produção',
@@ -27,10 +28,18 @@ function ResultCard({ result }: { result: SearchResult }) {
         post:       'Artigo',
         company:    'Empresa',
         food:       'Comida',
+        store_product: 'Loja',
+    }
+    const registrarClique = () => {
+        trackSearchClick({ query, position, type: result.type, href: result.href })
+        if (result.type === 'store_product' && result.store) {
+            trackProductClick({ productId: result.id, store: result.store, contexto: 'busca' })
+        }
     }
 
     return (
-        <Link href={result.href}
+        <Link href={result.href} onClick={registrarClique} target={result.type === 'store_product' ? '_blank' : undefined}
+            rel={result.type === 'store_product' ? 'noopener noreferrer sponsored' : undefined}
             className="group flex items-center gap-3 p-3 border border-border hover:border-accent transition-colors bg-background">
             <div className="relative w-12 h-16 shrink-0 overflow-hidden bg-surface">
                 {result.thumbnail ? (
@@ -65,6 +74,7 @@ const RESULT_SECTIONS: Array<{
     { type: 'group',      label: 'Grupos',    icon: <Users size={14} className="text-accent" /> },
     { type: 'company',    label: 'Empresas',  icon: <Building2 size={14} className="text-accent" /> },
     { type: 'food',       label: 'Comidas',   icon: <UtensilsCrossed size={14} className="text-accent" /> },
+    { type: 'store_product', label: 'Na loja', icon: <ShoppingBag size={14} className="text-accent" /> },
     { type: 'post',       label: 'Artigos',   icon: <BookOpen size={14} className="text-accent" /> },
 ]
 
@@ -136,8 +146,8 @@ export function SearchResultsPage({ query, results, suggestions = [] }: Props) {
                                 Em alta agora
                             </p>
                             <div data-bloco="busca-sugestoes" className="grid sm:grid-cols-2 gap-2">
-                                {suggestions.map(result => (
-                                    <ResultCard key={`${result.type}-${result.id}`} result={result} />
+                                {suggestions.map((result, i) => (
+                                    <ResultCard key={`${result.type}-${result.id}`} result={result} query={query} position={i + 1} />
                                 ))}
                             </div>
                         </div>
@@ -163,7 +173,7 @@ export function SearchResultsPage({ query, results, suggestions = [] }: Props) {
                             </div>
                             <div data-bloco="busca-resultados" className="grid sm:grid-cols-2 gap-2">
                                 {sectionResults.map(result => (
-                                    <ResultCard key={`${result.type}-${result.id}`} result={result} />
+                                    <ResultCard key={`${result.type}-${result.id}`} result={result} query={query} position={results.indexOf(result) + 1} />
                                 ))}
                             </div>
                         </section>
