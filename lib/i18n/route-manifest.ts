@@ -39,6 +39,8 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/positions/[position]': { tipo: 'detalhe', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/loja/artista/[slug]': { tipo: 'detalhe', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
     '/loja/grupo/[slug]': { tipo: 'detalhe', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
+    '/loja/empresa/[slug]': { tipo: 'detalhe', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
+    '/loja/comida/[slug]': { tipo: 'detalhe', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
     '/quiz/[categoria]': { tipo: 'detalhe', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
 
     // Editorial
