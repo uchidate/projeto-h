@@ -1,6 +1,6 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
-import { stripHtml } from '@/lib/utils'
+import { stripHtml, slugify } from '@/lib/utils'
 import type { WPCompany, CompanyIndustry } from './types'
 
 export type CompaniesQuery = {
@@ -74,6 +74,33 @@ export async function findCompanyByName(name: string): Promise<{ slug: string; n
         const match = items.find(c => stripHtml(c.title.rendered).toLowerCase() === name.toLowerCase())
         return match ? { slug: match.slug, name: stripHtml(match.title.rendered) } : null
     } catch { return null }
+}
+
+/**
+ * Todas as empresas com o mesmo `chaebol_group` (texto livre, sem taxonomia) —
+ * fetch único de até 100 e filtro no cliente, mesmo truque de findCompanyByName
+ * já que a REST API não tem query param pra esse campo.
+ */
+export async function getAllCompaniesRaw(): Promise<WPCompany[]> {
+    try {
+        const { items } = await getCompanies({ perPage: 100 })
+        return items
+    } catch { return [] }
+}
+
+/** Quantas empresas do acervo têm esse `chaebol_group` — pra decidir se vale linkar o hub `/empresas/grupo/{slug}`. */
+export async function countCompaniesInChaebolGroup(groupName: string): Promise<number> {
+    const all = await getAllCompaniesRaw()
+    return all.filter(c => c.acf?.chaebol_group?.trim().toLowerCase() === groupName.trim().toLowerCase()).length
+}
+
+export async function getCompaniesByChaebolGroup(groupSlug: string): Promise<{ groupName: string; companies: WPCompany[] } | null> {
+    const all = await getAllCompaniesRaw()
+    const match = all.find(c => c.acf?.chaebol_group && slugify(c.acf.chaebol_group) === groupSlug)
+    if (!match?.acf?.chaebol_group) return null
+    const groupName = match.acf.chaebol_group
+    const companies = all.filter(c => c.acf?.chaebol_group?.trim().toLowerCase() === groupName.trim().toLowerCase())
+    return { groupName, companies }
 }
 
 /**

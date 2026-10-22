@@ -33,6 +33,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/productions/[slug]': { tipo: 'detalhe', ...pronta },
     '/agencies/[slug]': { tipo: 'detalhe', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/empresas/[slug]': { tipo: 'detalhe', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
+    '/empresas/grupo/[slug]': { tipo: 'detalhe', estado: 'pendente' },
     '/comidas/[slug]': { tipo: 'detalhe', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/fandoms/[slug]': { tipo: 'detalhe', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/positions/[position]': { tipo: 'detalhe', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },

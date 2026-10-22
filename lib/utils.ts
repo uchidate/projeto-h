@@ -1,6 +1,7 @@
 import { intlLocale } from '@/lib/i18n/format'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { SITE_DOMAIN } from '@/lib/constants/identidade.mjs'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -97,6 +98,24 @@ function decodeHtmlEntities(value: string): string {
         const number = parseInt(code.slice(radix === 16 ? 2 : 1), radix)
         return Number.isFinite(number) ? String.fromCodePoint(number) : entity
     })
+}
+
+/**
+ * URLs de imagem digitadas à mão em campos de texto livre (famous_products,
+ * milestones, gallery_urls) às vezes carregam o domínio legado
+ * (ondacoreana.com.br) em vez do atual — o `next/image` rejeita hosts fora do
+ * `remotePatterns` com um 500, mesmo quando o domínio legado só redireciona
+ * pro mesmo arquivo no domínio certo. Normaliza antes de passar pro `<Image>`.
+ */
+export function normalizeWPImageHost(url: string): string {
+    try {
+        const parsed = new URL(url)
+        if (parsed.hostname.endsWith('ondacoreana.com.br')) {
+            parsed.hostname = SITE_DOMAIN
+            return parsed.toString()
+        }
+        return url
+    } catch { return url }
 }
 
 /** Extrai imagem destacada — usa featured_image_url direto (preferencial) ou _embedded como fallback */

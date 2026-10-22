@@ -4,9 +4,9 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getCompanyBySlug, getCompanies, getRelatedCompanies, findCompanyByName, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
+import { getCompanyBySlug, getCompanies, getRelatedCompanies, countCompaniesInChaebolGroup, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
 import { SITE_URL } from '@/lib/constants/site'
-import { stripHtml, getWPImage } from '@/lib/utils'
+import { stripHtml, getWPImage, slugify, normalizeWPImageHost } from '@/lib/utils'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { buildBreadcrumbSchema, buildOrganizationSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -78,10 +78,12 @@ export default async function CompanyPage({ params }: { params: Params }) {
     ])
 
     const hasOwnChaebolGroup = !!acf.chaebol_group && acf.chaebol_group.trim().toLowerCase() !== name.trim().toLowerCase()
-    const [relatedCompanies, groupLink] = await Promise.all([
+    const [relatedCompanies, siblingCount] = await Promise.all([
         getRelatedCompanies(company.id, acf.industry, 6, hasOwnChaebolGroup ? acf.chaebol_group : null),
-        hasOwnChaebolGroup ? findCompanyByName(acf.chaebol_group!) : Promise.resolve(null),
+        hasOwnChaebolGroup ? countCompaniesInChaebolGroup(acf.chaebol_group!) : Promise.resolve(0),
     ])
+    // Hub só vale a pena com pelo menos mais uma empresa do mesmo grupo no acervo.
+    const groupHubHref = hasOwnChaebolGroup && siblingCount > 1 ? `/empresas/grupo/${slugify(acf.chaebol_group!)}` : null
     // Mesma blindagem contra autorreferência do ConexoesChaebol: sem isso, a
     // seção renderiza vazia (só título) pra fichas como a da Abib.
     const hasOtherGlobalBrands = (acf.global_brands ?? []).some(b => b.trim().toLowerCase() !== name.trim().toLowerCase())
@@ -95,7 +97,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
     // "Nome do produto|URL da imagem" — URL é opcional, mesmo padrão pipe-delimited de awards/milestones
     const products = (acf.famous_products ?? []).map(p => {
         const [prodName, prodImage] = p.split('|').map(s => s.trim())
-        return { name: prodName, image: prodImage || null }
+        return { name: prodName, image: prodImage ? normalizeWPImageHost(prodImage) : null }
     })
 
     const breadcrumbSchema = buildBreadcrumbSchema([
@@ -210,7 +212,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                     <ConexoesChaebol
                         companyName={name}
                         chaebolGroup={acf.chaebol_group}
-                        groupLink={groupLink}
+                        groupHubHref={groupHubHref}
                         globalBrands={acf.global_brands}
                     />
                 </ProfileSection>

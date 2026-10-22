@@ -3,17 +3,18 @@ import Link from 'next/link'
 interface Props {
     companyName: string
     chaebolGroup?: string | null
-    groupLink?: { slug: string; name: string } | null
+    groupHubHref?: string | null
     globalBrands?: string[]
 }
 
 /**
  * Diagrama estático (sem JS) grupo → empresa → marcas. Diferente do
  * MapaConexoes de artista/grupo: aqui `chaebol_group` e `global_brands` são
- * texto livre, não entidades navegáveis — só o grupo, às vezes, tem ficha
- * própria no acervo (ver findCompanyByName). Por isso não há recentrar.
+ * texto livre, não entidades navegáveis — por isso o nó do grupo linka pro
+ * hub `/empresas/grupo/{slug}` (todas as empresas com o mesmo chaebol_group),
+ * não pra uma ficha própria do grupo (rara) nem recentra como o MapaConexoes.
  */
-export function ConexoesChaebol({ companyName, chaebolGroup, groupLink, globalBrands = [] }: Props) {
+export function ConexoesChaebol({ companyName, chaebolGroup, groupHubHref, globalBrands = [] }: Props) {
     // Dado inválido no WP já visto (ex: ficha da Abib com chaebol_group = "Abib"
     // — a própria empresa): sem esse guard, o diagrama liga o nó a ele mesmo.
     const group = chaebolGroup && chaebolGroup.trim().toLowerCase() !== companyName.trim().toLowerCase()
@@ -28,8 +29,8 @@ export function ConexoesChaebol({ companyName, chaebolGroup, groupLink, globalBr
             <div className="flex flex-col items-center gap-3">
                 {group && (
                     <>
-                        {groupLink ? (
-                            <Link href={`/empresas/${groupLink.slug}`}
+                        {groupHubHref ? (
+                            <Link href={groupHubHref}
                                 className="rounded-full border-2 border-accent bg-surface px-4 py-2 font-mono text-[12px] font-bold text-accent hover:bg-accent/10 transition-colors">
                                 {group}
                             </Link>
