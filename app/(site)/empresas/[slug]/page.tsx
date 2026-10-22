@@ -341,7 +341,8 @@ export default async function CompanyPage({ params }: { params: Params }) {
             {(vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
                 <ProfileSection id="loja-blog" indented={false}>
                     <div className="space-y-6">
-                        <LojaEmLinha products={vitrine} bloco="empresa-ficha" contexto="empresa:{slug}" title="Produtos da marca" />
+                        <LojaEmLinha products={vitrine} bloco="empresa-ficha" contexto={`empresa:${slug}`} title="Produtos da marca"
+                            href={`/loja/empresa/${slug}`} verTudoLabel="Ver tudo" />
                         <CitadoNoBlog posts={posts} />
                         <MencionadoAcervo mentions={mentions} />
                     </div>

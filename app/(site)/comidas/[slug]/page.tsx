@@ -378,7 +378,8 @@ export default async function FoodPage({ params }: { params: Params }) {
             {(vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
                 <ProfileSection id="loja-blog" indented={false}>
                     <div className="space-y-6">
-                        <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto="comida:{slug}" title="Para provar em casa" />
+                        <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto={`comida:${slug}`} title="Para provar em casa"
+                            href={`/loja/comida/${slug}`} verTudoLabel="Ver tudo" />
                         <CitadoNoBlog posts={posts} />
                         <MencionadoAcervo mentions={mentions} />
                     </div>
