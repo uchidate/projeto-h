@@ -24,6 +24,7 @@ import { GroupAnimatedStats } from '@/components/groups/GroupAnimatedStats'
 import { ConexoesChaebol } from '@/components/companies/ConexoesChaebol'
 import { CompanyFounderQuote } from '@/components/companies/CompanyFounderQuote'
 import { CompanyMilestonesTimeline } from '@/components/companies/CompanyMilestonesTimeline'
+import { ProdutoConhecidoTile } from '@/components/companies/ProdutoConhecidoTile'
 import { CompanyGallery } from '@/components/companies/CompanyGallery'
 
 function semAcento(s: string): string {
@@ -205,41 +206,31 @@ export default async function CompanyPage({ params }: { params: Params }) {
 
             {stats.length > 0 && <GroupAnimatedStats stats={stats} accent="var(--color-accent)" />}
 
-            {/* Produtos mais conhecidos — clicável quando a loja já tem a oferta correspondente */}
+            {/* Produtos mais conhecidos — abre as ofertas da loja sem sair da página */}
             {products.length > 0 && (
                 <div className="border-b border-border/40 bg-surface/20">
                     <div className="page-wrap py-6">
                         <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-4">Produtos & Serviços mais conhecidos</h2>
-                        <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
+                        <div className="flex gap-3 overflow-x-auto overflow-y-visible pb-1 scrollbar-none">
                             {products.map(p => {
                                 const nucleo = nucleoProduto(p.name)
-                                const oferta = vitrine.find(v => {
-                                    const titulo = semAcento(stripHtml(v.title.rendered))
-                                    return nucleo.length > 0 && nucleo.every(w => titulo.includes(w))
-                                })
-                                const href = oferta?.acf.affiliate_url ?? (vitrine.length > 0 ? '#loja-blog' : null)
-                                const Tile = (
-                                    <>
-                                        <div className="relative w-[120px] h-[120px] rounded-xl overflow-hidden bg-surface border border-border flex items-center justify-center">
-                                            {p.image ? (
-                                                <Image src={p.image} alt={p.name} fill className="object-cover" sizes="120px" />
-                                            ) : (
-                                                <span className="text-[32px] opacity-40">{indEmoji}</span>
-                                            )}
-                                        </div>
-                                        <p className="text-[11px] text-center leading-tight text-foreground/80 line-clamp-2">{p.name}</p>
-                                        {oferta && <p className="text-[10px] font-bold text-accent">Ver oferta →</p>}
-                                    </>
-                                )
-                                return href ? (
-                                    <a key={p.name} href={href} target={oferta ? '_blank' : undefined} rel={oferta ? 'noopener noreferrer' : undefined}
-                                        className="group flex flex-col items-center gap-2 shrink-0 w-[120px] hover:opacity-90 transition-opacity">
-                                        {Tile}
-                                    </a>
-                                ) : (
-                                    <div key={p.name} className="flex flex-col items-center gap-2 shrink-0 w-[120px]">
-                                        {Tile}
-                                    </div>
+                                const ofertas = vitrine
+                                    .filter(v => {
+                                        const titulo = semAcento(stripHtml(v.title.rendered))
+                                        return nucleo.length > 0 && nucleo.every(w => titulo.includes(w))
+                                    })
+                                    .filter(v => v.acf.affiliate_url)
+                                    .map(v => ({
+                                        id: v.id,
+                                        nome: stripHtml(v.title.rendered),
+                                        image: v.acf.image_url,
+                                        price: v.acf.price,
+                                        store: v.acf.store ?? 'outro',
+                                        href: v.acf.affiliate_url!,
+                                    }))
+                                return (
+                                    <ProdutoConhecidoTile key={p.name} name={p.name} image={p.image} emoji={indEmoji}
+                                        ofertas={ofertas} contexto={`empresa:${slug}`} />
                                 )
                             })}
                         </div>
