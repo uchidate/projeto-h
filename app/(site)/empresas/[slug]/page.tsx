@@ -1,5 +1,5 @@
 import { SITE_NAME } from '@/lib/constants/site'
-import { intlLocale } from '@/lib/i18n/format'
+import { intlLocale, formatDate } from '@/lib/i18n/format'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
@@ -16,6 +16,8 @@ import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { CitadoNoBlog } from '@/components/ui/CitadoNoBlog'
 import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
+import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
+import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { ProfileSection } from '@/components/profiles/ProfileSection'
 import { GroupAnimatedStats } from '@/components/groups/GroupAnimatedStats'
@@ -75,9 +77,10 @@ export default async function CompanyPage({ params }: { params: Params }) {
     const indEmoji = emojiDoSetor(acf.industry)
     const companyUrl = `${SITE_URL}/empresas/${slug}`
 
-    const [vitrine, posts] = await Promise.all([
+    const [vitrine, posts, mentions] = await Promise.all([
         getVitrineVinculada(acf.linked_products, [name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])], `empresa:${slug}`),
         getPostsQueCitam(name),
+        getMencoesNoAcervo(name),
     ])
 
     const hasOwnChaebolGroup = !!acf.chaebol_group && acf.chaebol_group.trim().toLowerCase() !== name.trim().toLowerCase()
@@ -301,16 +304,21 @@ export default async function CompanyPage({ params }: { params: Params }) {
                                 </ul>
                             </div>
                         )}
+
+                        {company.modified && (
+                            <p className="font-mono text-[10px] text-muted/70">Atualizado em {formatDate(company.modified)}</p>
+                        )}
                     </aside>
                 </div>
             </ProfileSection>
 
             {/* Loja e blog */}
-            {(vitrine.length > 0 || posts.length > 0) && (
+            {(vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
                 <ProfileSection id="loja-blog" indented={false}>
                     <div className="space-y-6">
                         <LojaEmLinha products={vitrine} bloco="empresa-ficha" contexto="empresa:{slug}" title="Produtos da marca" />
                         <CitadoNoBlog posts={posts} />
+                        <MencionadoAcervo mentions={mentions} />
                     </div>
                 </ProfileSection>
             )}
