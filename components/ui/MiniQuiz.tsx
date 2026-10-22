@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Check, X, ArrowRight, Trophy, Star, Sparkles } from 'lucide-react'
+import { Check, X, ArrowRight, Trophy, Star, Sparkles, BookOpen } from 'lucide-react'
 import { quizCategoryTone, type QuizCategoryTone } from '@/lib/quiz/categoryMeta'
 
 const LETRAS = ['A', 'B', 'C', 'D', 'E', 'F']
@@ -20,6 +20,8 @@ interface MiniQuizItem {
     options: string[]
     correct: number
     explanation: string
+    relatedHref?: string
+    relatedLabel?: string
 }
 
 interface Props {
@@ -148,6 +150,11 @@ export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone(
                     {picked !== null && (
                         <div className="mt-3 animate-in fade-in duration-200" aria-live="polite">
                             <p className="text-[13px] leading-relaxed text-muted">{q.explanation}</p>
+                            {q.relatedHref && (
+                                <Link href={q.relatedHref} className={`mt-1.5 inline-flex items-center gap-1.5 text-[12px] font-bold hover:underline ${tone.text}`}>
+                                    <BookOpen className="h-3.5 w-3.5" />{q.relatedLabel || 'Saiba mais'}
+                                </Link>
+                            )}
                             <button type="button" onClick={() => { setI(i + 1); setPicked(null) }}
                                 className={`touch-target mt-2 inline-flex items-center gap-2 text-[13px] font-black hover:underline ${tone.text}`}>
                                 {i + 1 < items.length ? 'Próxima' : 'Ver resultado'} <ArrowRight className="h-4 w-4" />

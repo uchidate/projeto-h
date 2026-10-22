@@ -35,22 +35,38 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId, 
         const certa = norm(q.options[q.correct] ?? '')
         return certa.length >= 3 && (certa === nome || certa.includes(nome) || nome.includes(certa))
     }
+    // "Direta": a pergunta fala da própria entidade (relatedHref apontando pra
+    // esta página, ou vínculo explícito no admin do quiz). "Indireta" (só pra
+    // agência): pergunta sobre QUALQUER artista/grupo do roster, não sobre a
+    // agência em si — menos familiar ao que a página está mostrando.
+    const direta = (q: (typeof allQuestions)[number]) =>
+        q.relatedHref?.includes(path!) || (entityId != null && q.links?.[chave].includes(entityId))
+    const indiretaAgencia = (q: (typeof allQuestions)[number]) =>
+        (groupIds?.some(id => q.links?.groups.includes(id)) ?? false) || (artistIds?.some(id => q.links?.artists.includes(id)) ?? false)
+
     const elegiveis = allQuestions
         .filter(q => !entregaResposta(q))
-        .filter(q => entityType === 'agency'
-            ? (groupIds?.some(id => q.links?.groups.includes(id)) ?? false) || (artistIds?.some(id => q.links?.artists.includes(id)) ?? false)
-            : q.relatedHref?.includes(path!) || (entityId != null && q.links?.[chave].includes(entityId)))
+        .filter(q => entityType === 'agency' ? indiretaAgencia(q) : direta(q))
+        // Perguntas diretas sobre a própria entidade vêm primeiro — mais familiares
+        // ao que a ficha já mostra do que uma pergunta genérica do roster da agência.
+        .sort((a, b) => Number(direta(b)) - Number(direta(a)))
 
     if (elegiveis.length === 0) return null
 
-    // Rotação determinística: mesmo resultado dentro do ciclo de cache (ISR), mas
-    // muda por entidade e a cada dia — quem revisita a ficha não vê sempre as
-    // mesmas 5 perguntas, sem precisar de aleatoriedade de verdade no servidor.
+    // Rotação determinística dentro de cada grupo de relevância (direta vs.
+    // indireta) — mesmo resultado dentro do ciclo de cache (ISR), muda por
+    // entidade e a cada dia, mas nunca empurra uma pergunta direta pra fora
+    // da seleção só por causa do rodízio.
+    const diretas = elegiveis.filter(direta)
+    const indiretas = elegiveis.filter(q => !direta(q))
     const semente = (entityId ?? entitySlug.split('').reduce((h, c) => h + c.charCodeAt(0), 0)) + diaDoAno()
     const QUANTIDADE = 5
-    const facts = elegiveis.length <= QUANTIDADE
-        ? elegiveis
-        : Array.from({ length: QUANTIDADE }, (_, k) => elegiveis[(semente + k) % elegiveis.length])
+    const rotacionar = <T,>(lista: T[], n: number) =>
+        lista.length <= n ? lista : Array.from({ length: n }, (_, k) => lista[(semente + k) % lista.length])
+
+    const facts = diretas.length >= QUANTIDADE
+        ? rotacionar(diretas, QUANTIDADE)
+        : [...diretas, ...rotacionar(indiretas, QUANTIDADE - diretas.length)]
 
     const categoria = facts[0]?.category
     const tone = quizCategoryTone(categoria)
@@ -67,7 +83,15 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId, 
                 </p>
             </div>
 
-            <MiniQuiz items={facts.map(({ id, question, options, correct, explanation }) => ({ id, question, options, correct, explanation }))} entityName={entityName} quizHref={quizHref} tone={tone} />
+            <MiniQuiz
+                items={facts.map(({ id, question, options, correct, explanation, relatedHref, relatedLabel }) => ({
+                    id, question, options, correct, explanation,
+                    // Sem link pra própria página: a ficha que já está aberta não é "saiba mais".
+                    relatedHref: relatedHref && relatedHref !== path ? relatedHref : undefined,
+                    relatedLabel: relatedLabel ?? undefined,
+                }))}
+                entityName={entityName} quizHref={quizHref} tone={tone}
+            />
 
             <Link href={quizHref}
                 className={`mt-4 inline-flex items-center gap-2 text-[11px] font-black hover:underline ${tone.text}`}>
