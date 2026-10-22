@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Trophy, ArrowRight, Lightbulb } from 'lucide-react'
 import { MiniQuiz } from './MiniQuiz'
 import { getQuizQuestions } from '@/lib/wordpress/quiz'
+import { quizCategoryTone } from '@/lib/quiz/categoryMeta'
 
 interface Props {
     entitySlug: string   // ex: "iu", "bts", "my-misterious-girl"
@@ -35,21 +36,25 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId }
 
     if (facts.length === 0) return null
 
+    const categoria = facts[0]?.category
+    const tone = quizCategoryTone(categoria)
+    const quizHref = `/quiz/${categoria ?? 'k-pop'}`
+
     return (
         <section className="border-t border-border/40 page-wrap py-8">
             <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-6 w-6 items-center justify-center bg-accent/10">
-                    <Lightbulb className="w-3.5 h-3.5 text-accent" />
+                <div className={`flex h-6 w-6 items-center justify-center ${tone.bg}`}>
+                    <Lightbulb className={`w-3.5 h-3.5 ${tone.text}`} />
                 </div>
                 <p className="font-mono text-[9px] font-black uppercase tracking-[0.15em] text-muted">
                     Teste o que você sabe · {entityName}
                 </p>
             </div>
 
-            <MiniQuiz items={facts.map(({ id, question, options, correct, explanation }) => ({ id, question, options, correct, explanation }))} entityName={entityName} quizHref={`/quiz/${facts[0]?.category ?? 'k-pop'}`} />
+            <MiniQuiz items={facts.map(({ id, question, options, correct, explanation }) => ({ id, question, options, correct, explanation }))} entityName={entityName} quizHref={quizHref} tone={tone} />
 
-            <Link href={`/quiz/${facts[0]?.category ?? 'k-pop'}`}
-                className="mt-4 inline-flex items-center gap-2 text-[11px] font-black text-accent hover:underline">
+            <Link href={quizHref}
+                className={`mt-4 inline-flex items-center gap-2 text-[11px] font-black hover:underline ${tone.text}`}>
                 <Trophy className="w-3.5 h-3.5" />
                 {t('quiz.testKnowledge')}
                 <ArrowRight className="w-3.5 h-3.5" />

@@ -30,6 +30,7 @@ import type { WPFood } from '@/lib/wordpress/types'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionBlogGrid } from '@/components/productions/ProductionBlogGrid'
 import { ProductionSidebar, FichaLinhas } from '@/components/productions/ProductionSidebar'
+import { QuizFacts } from '@/components/ui/QuizFacts'
 
 interface Props {
     production: WPProduction
@@ -222,6 +223,8 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                                 </div>
                             </section>
                         )}
+
+                        <QuizFacts entitySlug={production.slug} entityType="production" entityName={title} entityId={production.id} />
                     </div>
 
                     <ProductionSidebar compacto rating={acf.rating} platforms={platforms} {...ficha}

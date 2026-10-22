@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Check, X, ArrowRight } from 'lucide-react'
+import { quizCategoryTone, type QuizCategoryTone } from '@/lib/quiz/categoryMeta'
 
 interface MiniQuizItem {
     id: number
@@ -16,9 +17,11 @@ interface Props {
     items: MiniQuizItem[]
     entityName: string
     quizHref: string
+    /** Cor da categoria das perguntas (K-Pop rosa, K-Drama azul...), em vez do acento genérico do site. */
+    tone?: QuizCategoryTone
 }
 
-export function MiniQuiz({ items, entityName, quizHref }: Props) {
+export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone() }: Props) {
     const [i, setI] = useState(0)
     const [picked, setPicked] = useState<number | null>(null)
     const [acertos, setAcertos] = useState(0)
@@ -32,13 +35,13 @@ export function MiniQuiz({ items, entityName, quizHref }: Props) {
     }
 
     return (
-        <div className="border border-border bg-surface p-4 sm:p-5">
+        <div className={`border-t-2 border-x border-b border-border bg-surface p-4 sm:p-5 ${tone.border}`}>
             {fim ? (
                 <div>
                     <p className="text-[16px] font-black leading-tight text-foreground">
                         {acertos} de {items.length} sobre {entityName}
                     </p>
-                    <Link href={quizHref} className="touch-target mt-3 inline-flex items-center gap-2 text-[13px] font-black text-accent hover:underline">
+                    <Link href={quizHref} className={`touch-target mt-3 inline-flex items-center gap-2 text-[13px] font-black hover:underline ${tone.text}`}>
                         Mais perguntas no quiz <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
@@ -58,7 +61,7 @@ export function MiniQuiz({ items, entityName, quizHref }: Props) {
                                     className={`touch-target flex items-center justify-between gap-2 border px-3 py-2 text-left text-[14px] font-bold transition-colors ${
                                         certa ? 'border-green-500 bg-green-500/10 text-foreground'
                                         : errada ? 'border-red-500 bg-red-500/10 text-foreground'
-                                        : 'border-border bg-background text-foreground hover:border-accent/60 disabled:opacity-70'
+                                        : `border-border bg-background text-foreground ${tone.hoverBorder} disabled:opacity-70`
                                     }`}
                                 >
                                     <span>{op}</span>
@@ -72,7 +75,7 @@ export function MiniQuiz({ items, entityName, quizHref }: Props) {
                         <div className="mt-3" aria-live="polite">
                             <p className="text-[13px] leading-relaxed text-muted">{q.explanation}</p>
                             <button type="button" onClick={() => { setI(i + 1); setPicked(null) }}
-                                className="touch-target mt-2 inline-flex items-center gap-2 text-[13px] font-black text-accent hover:underline">
+                                className={`touch-target mt-2 inline-flex items-center gap-2 text-[13px] font-black hover:underline ${tone.text}`}>
                                 {i + 1 < items.length ? 'Próxima' : 'Ver resultado'} <ArrowRight className="h-4 w-4" />
                             </button>
                         </div>

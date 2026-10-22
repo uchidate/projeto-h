@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { Trophy, ArrowRight, Sparkles } from 'lucide-react'
 import type { QuizCategory } from '@/lib/wordpress/quiz'
+import { quizCategoryTone } from '@/lib/quiz/categoryMeta'
 
 interface Props {
     category?: QuizCategory | 'all'
@@ -9,17 +10,9 @@ interface Props {
     description?: string
 }
 
-const CATEGORY_META: Record<string, { label: string; color: string }> = {
-    'k-pop':    { label: 'K-Pop',   color: 'text-pink-400' },
-    'k-drama':  { label: 'K-Drama', color: 'text-blue-400' },
-    'cultura':  { label: 'Cultura', color: 'text-purple-400' },
-    'historia': { label: 'História',color: 'text-amber-400' },
-    'all':      { label: 'Hallyu',  color: 'text-accent' },
-}
-
 export function QuizWidget({ category = 'all', title, description }: Props) {
     const t = useTranslations('profile.ui')
-    const meta = CATEGORY_META[category] ?? CATEGORY_META.all
+    const meta = quizCategoryTone(category === 'all' ? undefined : category)
     const href = category !== 'all' ? `/quiz/${category}` : '/quiz'
     const defaultTitle = title ?? t('quiz.title', { topic: meta.label })
     const defaultDesc = description ?? t('quiz.desc', { topic: meta.label })
@@ -39,7 +32,7 @@ export function QuizWidget({ category = 'all', title, description }: Props) {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                        <p className={`font-mono text-[9px] font-black uppercase tracking-[0.18em] mb-0.5 ${meta.color}`}>
+                        <p className={`font-mono text-[9px] font-black uppercase tracking-[0.18em] mb-0.5 ${meta.text}`}>
                             Quiz {meta.label}
                         </p>
                         <p className="text-[15px] font-black leading-tight tracking-[-0.02em] text-foreground group-hover:text-accent transition-colors">
