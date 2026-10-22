@@ -28,6 +28,7 @@ import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
 import { metaDescription } from '@/lib/seo/metaDescription'
+import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 
 /**
  * Ficha de artista, compartilhada entre idiomas — ver D2 em
@@ -86,6 +87,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
         getTranslations({ locale, namespace: 'entity.switcher' }),
     ])
     const artist = localizeEntity(await applyArtistManifestPreview(sourceArtist), locale, 'artist')
+    const name = stripHtml(artist.title.rendered)
 
     const groupIds = artist.acf?.groups ?? []
 
@@ -138,6 +140,9 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
         : []
 
     const relatedHubs = getHubsForArtist(artist)
+    const companyMentions = locale === DEFAULT_LOCALE
+        ? await getMencoesNoAcervo(name, 3, { excluirCpt: 'artist', excluirSlug: slug, tipos: ['company'] })
+        : []
 
     return (
         <>
@@ -159,6 +164,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
             shopProducts={semProdutoProprio ? shopFallbackProducts : (locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `artista:${slug}`) : [])}
             groupShopProducts={groupShopProducts}
             shopFallback={semProdutoProprio}
+            companyMentions={companyMentions}
         />
         </>
     )

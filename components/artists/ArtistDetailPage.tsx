@@ -34,6 +34,8 @@ import { LojaDeslizante } from '@/components/ui/LojaDeslizante'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import type { MencaoAcervo } from '@/lib/wordpress/mentions'
+import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
 
 interface Props {
     artist: WPArtist
@@ -50,6 +52,8 @@ interface Props {
     groupShopProducts?: StoreProduct[]
     /** true quando shopProducts na verdade é a vitrine geral (nem artista nem grupo tinham produto próprio ainda). */
     shopFallback?: boolean
+    /** Empresas que o acervo já associa a este artista (ex.: garoto-propaganda de uma marca). */
+    companyMentions?: MencaoAcervo[]
 }
 
 
@@ -67,6 +71,7 @@ export function ArtistDetailPage({
     shopProducts = [],
     groupShopProducts = [],
     shopFallback = false,
+    companyMentions = [],
 }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
@@ -273,6 +278,11 @@ export function ArtistDetailPage({
                 titulos={{ dossier: t('blocks.dossier'), story: t('blocks.artistStoryTitle', { name }), awards: t('ui.awardsTitle') }}
             />
             {shopSection}
+            {companyMentions.length > 0 && (
+                <div className="page-wrap py-6">
+                    <MencionadoAcervo mentions={companyMentions} title="Marcas associadas no acervo" />
+                </div>
+            )}
             <LojaDeslizante product={(shopProducts.length > 0 ? shopProducts : groupShopProducts)[2]} bloco="ficha-artista-loja-deslizante" mensagem={`Curtiu ${name}? Leva um pedacinho pra casa 💗`} contexto={`artista:${artist.slug}:deslizante`} />
             <ListaProxima slug={artist.slug} />
 

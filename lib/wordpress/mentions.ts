@@ -11,7 +11,7 @@ export type MencaoAcervo =
 type RawItem = { id: number; slug: string; title: { rendered: string }; content: { rendered: string }; featured_image_url?: string | null }
 
 const CPT = ['artist', 'group', 'production', 'food', 'company'] as const
-type Cpt = typeof CPT[number]
+export type Cpt = typeof CPT[number]
 const HREF_BASE: Record<Cpt, string> = {
     artist: '/artists', group: '/groups', production: '/productions', food: '/comidas', company: '/empresas',
 }
@@ -47,14 +47,15 @@ async function buscarECitar(cpt: Cpt, nome: string, limite: number, excluirSlug?
 export async function getMencoesNoAcervo(
     nome: string,
     limitPorTipo = 3,
-    opts?: { excluirCpt?: Cpt; excluirSlug?: string },
+    opts?: { excluirCpt?: Cpt; excluirSlug?: string; tipos?: Cpt[] },
 ): Promise<MencaoAcervo[]> {
     if (nome.trim().length < 3) return []
+    const tipos = opts?.tipos ?? CPT
     try {
         const resultados = await Promise.all(
-            CPT.map(cpt => buscarECitar(cpt, nome, limitPorTipo, opts?.excluirCpt === cpt ? opts.excluirSlug : undefined)),
+            tipos.map(cpt => buscarECitar(cpt, nome, limitPorTipo, opts?.excluirCpt === cpt ? opts.excluirSlug : undefined)),
         )
-        return CPT.flatMap((cpt, i) =>
+        return tipos.flatMap((cpt, i) =>
             resultados[i].map(item => ({
                 type: cpt,
                 href: `${HREF_BASE[cpt]}/${item.slug}`,
