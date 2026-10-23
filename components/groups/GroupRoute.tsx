@@ -12,6 +12,7 @@ import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { stripHtml, getWPImage } from '@/lib/utils'
 import { getMusicReleases } from '@/lib/wordpress/music'
+import { getArtigosDeAlbum, ligarArtigosAosAlbuns } from '@/lib/blog/albumArticles'
 import { parseFormerMembers } from '@/lib/profiles/groupProfile'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
@@ -113,7 +114,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
         }))
     }))
 
-    const discography: DiscographyAlbum[] = wpReleases.map(r => ({
+    const discographyBase: DiscographyAlbum[] = wpReleases.map(r => ({
         id: String(r.id),
         title: r.title,
         type: r.release_type === 'album' ? 'ALBUM'
@@ -125,6 +126,10 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
         spotifyUrl: r.spotify_url ?? group.acf?.spotify ?? '',
         tracks: [],
     }))
+    // Álbum com artigo no site ganha o link na discografia (só em PT: os artigos EN usam outra rota).
+    const artigosDeAlbum = locale === DEFAULT_LOCALE && discographyBase.length > 0 ? await getArtigosDeAlbum('group', group.slug) : []
+    const ligacoesDeAlbum = ligarArtigosAosAlbuns(discographyBase, artigosDeAlbum)
+    const discography: DiscographyAlbum[] = discographyBase.map(album => ({ ...album, articleHref: ligacoesDeAlbum[album.id] }))
 
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio

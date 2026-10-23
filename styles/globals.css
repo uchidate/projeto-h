@@ -2608,7 +2608,8 @@ html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
   margin: 1.5rem 0;
   padding: 1.1rem 1.25rem;
   border-radius: 0.75rem;
-  background: linear-gradient(135deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 55%, #000));
+  /* Escurecido para o texto branco pequeno passar de 4,5:1 (rosa puro dá ~3,6:1). */
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 78%, #000), color-mix(in srgb, var(--color-accent) 42%, #000));
   color: #fff;
 }
 .wp-article-content .oc-album-hero .oc-stats {
@@ -2631,7 +2632,7 @@ html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
   font-size: 0.65rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgb(255 255 255 / 0.8);
+  color: #fff;
 }
 .wp-article-content .oc-album-hero .oc-stats dd { margin: 0; padding: 0; font-size: clamp(1.1rem, 2.2vw + 0.6rem, 1.6rem); font-weight: 800; line-height: 1.2; color: #fff; }
 @media (max-width: 640px) {

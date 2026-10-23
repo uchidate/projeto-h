@@ -8,6 +8,8 @@ import type { StoreProduct } from '@/lib/wordpress/store'
 import { CompartilharFaixa } from '@/components/blog/CompartilharFaixa'
 import { IndiceDeFaixas, type FaixaDoIndice } from '@/components/blog/IndiceDeFaixas'
 import { stripHtml } from '@/lib/utils'
+import { EmbedsSobDemanda } from '@/components/blog/EmbedsSobDemanda'
+import { adiarEmbedsSpotify } from '@/lib/blog/embedsSobDemanda'
 
 const BLOCO_PRODUTO = `${BLOCK_ALT_PREFIX}/product`
 
@@ -59,6 +61,7 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
     const idPrimeiraFaixa = faixas.length >= 3 ? faixas[0].id : undefined
     return (
         <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" data-article-model-version={model.version}>
+            <EmbedsSobDemanda />
             {model.blocks.map((block) => (
                 <div
                     key={block.id}
@@ -73,11 +76,11 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
                         : faixaDoBloco(block.id)
                             ? (
                                 <div className="relative flow-root">
-                                    <div dangerouslySetInnerHTML={{ __html: block.html }} />
+                                    <div dangerouslySetInnerHTML={{ __html: adiarEmbedsSpotify(block.html) }} />
                                     <CompartilharFaixa id={block.id} titulo={faixaDoBloco(block.id)!.titulo} />
                                 </div>
                             )
-                            : <div dangerouslySetInnerHTML={{ __html: block.html }} />}
+                            : <div dangerouslySetInnerHTML={{ __html: adiarEmbedsSpotify(block.html) }} />}
                     {block.id === primeiraQuebra && cardGrupo}
                     {block.id === idMeio && sugestaoMeio}
                     {block.id === idLoja && <div className="not-prose my-8">{lojaMeio}</div>}
