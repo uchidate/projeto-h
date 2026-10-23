@@ -14,6 +14,8 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { GutenbergArticleRenderer } from '@/components/blog/GutenbergArticleRenderer'
+import { getProdutosDosBlocos } from '@/lib/blog/produtosDosBlocos'
+import type { StoreProduct } from '@/lib/wordpress/store'
 
 /**
  * Artigo traduzido (D5-a): um post próprio por idioma, publicado no WordPress
@@ -47,10 +49,10 @@ export function buildLocalizedPostMetadata(post: WPPost, locale: Locale): Metada
     })
 }
 
-function corpo(post: WPPost) {
+function corpo(post: WPPost, produtos: StoreProduct[]) {
     if (post.article_blocks?.length) {
         try {
-            return <GutenbergArticleRenderer model={buildArticleModel(post.article_blocks)} />
+            return <GutenbergArticleRenderer model={buildArticleModel(post.article_blocks)} produtos={new Map(produtos.map(p => [p.id, p]))} contextoProduto={`artigo:${post.slug}:produto`} />
         } catch {
             // bloco ainda sem suporte no renderizador: cai no HTML do WordPress
         }
@@ -60,6 +62,7 @@ function corpo(post: WPPost) {
 
 export async function LocalizedPost({ post, locale }: { post: WPPost; locale: Locale }) {
     const t = await getTranslations({ locale, namespace: 'entity.blog' })
+    const produtos = await getProdutosDosBlocos(post)
     const { titulo, descricao } = tituloEDescricao(post)
     const subtitulo = post.acf?.subtitle?.trim()
     const imagem = getWPImage(post._embedded, post.featured_image_url, titulo)
@@ -99,7 +102,7 @@ export async function LocalizedPost({ post, locale }: { post: WPPost; locale: Lo
                         <Image src={imagem.src} alt={imagem.alt || titulo} fill priority sizes="(max-width: 768px) 100vw, 768px" className="object-cover" />
                     </div>
                 )}
-                {corpo(post)}
+                {corpo(post, produtos)}
                 <footer className="mt-10 border-t border-border pt-4 text-[13px] text-muted">
                     <p>{t('translatedNote')}</p>
                     {slugPt && (
