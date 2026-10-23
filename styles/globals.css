@@ -2557,3 +2557,83 @@ html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
   text-transform: uppercase;
   color: var(--color-muted);
 }
+
+/* Linha do tempo: lista com data em destaque e trilho lateral (list className oc-timeline-list). */
+.wp-article-content ul.oc-timeline-list {
+  position: relative;
+  margin: 1.75rem 0;
+  padding: 0 0 0 1.5rem;
+  list-style: none;
+  border-left: 2px solid var(--color-border);
+}
+.wp-article-content ul.oc-timeline-list > li {
+  position: relative;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  line-height: 1.5;
+}
+.wp-article-content ul.oc-timeline-list > li:last-child { margin-bottom: 0; }
+.wp-article-content ul.oc-timeline-list > li::before {
+  content: '';
+  position: absolute;
+  left: calc(-1.5rem - 6px);
+  top: 0.4rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-background);
+}
+.wp-article-content ul.oc-timeline-list > li > strong {
+  display: block;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* Barras de venda (group oc-sales-bars com blocos oc-stat-bar): cartão com as barras alinhadas. */
+.wp-article-content .oc-sales-bars {
+  margin: 1.25rem 0 1.75rem;
+  padding: 0.5rem 1.1rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+}
+.wp-article-content .oc-sales-bars .oc-stat-bar-track { background: var(--color-border); height: 12px; }
+
+/* Ficha do disco: faixa de destaque no topo, com os três números em linha. */
+.wp-article-content .oc-album-hero {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.25rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 55%, #000));
+  color: #fff;
+}
+.wp-article-content .oc-album-hero .oc-stats {
+  margin: 0;
+  border: 0;
+  background: transparent;
+}
+.wp-article-content .oc-album-hero .oc-stats dl { display: grid; grid-template-columns: repeat(3, auto); justify-content: space-between; gap: 1rem 2rem; }
+.wp-article-content .oc-album-hero .oc-stats dl > div,
+.wp-article-content .oc-album-hero .oc-stats dl > div:nth-child(even) {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0;
+  background: transparent;
+}
+.wp-article-content .oc-album-hero .oc-stats dt {
+  width: auto;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.8);
+}
+.wp-article-content .oc-album-hero .oc-stats dd { margin: 0; padding: 0; font-size: clamp(1.1rem, 2.2vw + 0.6rem, 1.6rem); font-weight: 800; line-height: 1.2; color: #fff; }
+@media (max-width: 640px) {
+  .wp-article-content .oc-album-hero .oc-stats dl { grid-template-columns: 1fr; }
+}
