@@ -5,6 +5,7 @@ import type { ArticleModel } from '@/lib/blog/articleModel'
 import { ProdutosNoArtigo, type ProdutoDoTexto } from '@/components/blog/ProdutoNoArtigo'
 import { BLOCK_ALT_PREFIX } from '@/lib/constants/identidade.mjs'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import { CompartilharFaixa } from '@/components/blog/CompartilharFaixa'
 import { IndiceDeFaixas, type FaixaDoIndice } from '@/components/blog/IndiceDeFaixas'
 import { stripHtml } from '@/lib/utils'
 
@@ -51,20 +52,32 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
         if (!atual) { atual = []; prateleiras.set(b.id, atual) }
         if (produto) atual.push({ produto, legendaHtml: legendaDoBloco(b.html) })
     }
+    // Player do álbum inteiro (o das faixas é `/embed/track/`): fica à mão no celular enquanto o fã lê as faixas.
+    const idPlayerDoAlbum = model.blocks.find(b => b.name.endsWith('/spotify') && String(b.attrs.url ?? '').includes('/embed/album/'))?.id
     const faixas = faixasDoIndice(model.blocks)
+    const faixaDoBloco = (id: string) => faixas.find(f => f.id === id)
     const idPrimeiraFaixa = faixas.length >= 3 ? faixas[0].id : undefined
     return (
         <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" data-article-model-version={model.version}>
             {model.blocks.map((block) => (
                 <div
                     key={block.id}
-                    id={block.name === 'core/heading' && !/\sid=/.test(block.html) ? block.id : undefined}
+                    id={block.name === 'core/heading' && !/\sid=/.test(block.html) ? block.id : block.id === idPlayerDoAlbum ? block.id : undefined}
                     data-article-block={block.name}
+                    // Player do álbum: no celular acompanha a leitura logo abaixo do cabeçalho (o pai é o corpo do artigo, por isso o sticky vai no próprio bloco).
+                    className={block.id === idPlayerDoAlbum && faixas.length >= 3 ? 'oc-player-fixo' : undefined}
                 >
-                    {block.id === idPrimeiraFaixa && <IndiceDeFaixas faixas={faixas} />}
+                    {block.id === idPrimeiraFaixa && <IndiceDeFaixas faixas={faixas} idPlayerDoAlbum={faixas.length >= 3 ? idPlayerDoAlbum : undefined} />}
                     {block.name === BLOCO_PRODUTO
                         ? (prateleiras.get(block.id)?.length ? <ProdutosNoArtigo itens={prateleiras.get(block.id)!} contexto={contextoProduto} /> : null)
-                        : <div dangerouslySetInnerHTML={{ __html: block.html }} />}
+                        : faixaDoBloco(block.id)
+                            ? (
+                                <div className="relative flow-root">
+                                    <div dangerouslySetInnerHTML={{ __html: block.html }} />
+                                    <CompartilharFaixa id={block.id} titulo={faixaDoBloco(block.id)!.titulo} />
+                                </div>
+                            )
+                            : <div dangerouslySetInnerHTML={{ __html: block.html }} />}
                     {block.id === primeiraQuebra && cardGrupo}
                     {block.id === idMeio && sugestaoMeio}
                     {block.id === idLoja && <div className="not-prose my-8">{lojaMeio}</div>}
