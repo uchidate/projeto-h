@@ -5,12 +5,27 @@ import type { ArticleModel } from '@/lib/blog/articleModel'
 import { ProdutosNoArtigo, type ProdutoDoTexto } from '@/components/blog/ProdutoNoArtigo'
 import { BLOCK_ALT_PREFIX } from '@/lib/constants/identidade.mjs'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import { IndiceDeFaixas, type FaixaDoIndice } from '@/components/blog/IndiceDeFaixas'
+import { stripHtml } from '@/lib/utils'
 
 const BLOCO_PRODUTO = `${BLOCK_ALT_PREFIX}/product`
 
 /** Texto da legenda do bloco de produto (o `<p class="oc-product__caption">` salvo pelo editor). */
 function legendaDoBloco(html: string) {
     return html.match(/<p[^>]*oc-product__caption[^>]*>([\s\S]*?)<\/p>/i)?.[1]?.trim() || undefined
+}
+
+const CLASSE_FAIXA = 'oc-track'
+
+/** Faixas de álbum: blocos `group` com a classe `oc-track` e âncora própria; o rótulo é o primeiro título do bloco. */
+function faixasDoIndice(blocks: ArticleModel['blocks']): FaixaDoIndice[] {
+    const faixas: FaixaDoIndice[] = []
+    for (const b of blocks) {
+        if (b.name !== 'core/group' || !String(b.attrs.className ?? '').split(/\s+/).includes(CLASSE_FAIXA)) continue
+        const titulo = b.html.match(/<h[2-4][^>]*>([\s\S]*?)<\/h[2-4]>/i)?.[1]
+        if (titulo) faixas.push({ id: b.id, titulo: stripHtml(titulo).replace(/"|&quot;|“|”/g, '') })
+    }
+    return faixas
 }
 
 /** `cardGrupo` (variante B do teste) entra na primeira quebra de anúncio, logo antes dela; em texto curto, sem quebra, vai ao fim do corpo. */
@@ -36,6 +51,8 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
         if (!atual) { atual = []; prateleiras.set(b.id, atual) }
         if (produto) atual.push({ produto, legendaHtml: legendaDoBloco(b.html) })
     }
+    const faixas = faixasDoIndice(model.blocks)
+    const idPrimeiraFaixa = faixas.length >= 3 ? faixas[0].id : undefined
     return (
         <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" data-article-model-version={model.version}>
             {model.blocks.map((block) => (
@@ -44,6 +61,7 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
                     id={block.name === 'core/heading' && !/\sid=/.test(block.html) ? block.id : undefined}
                     data-article-block={block.name}
                 >
+                    {block.id === idPrimeiraFaixa && <IndiceDeFaixas faixas={faixas} />}
                     {block.name === BLOCO_PRODUTO
                         ? (prateleiras.get(block.id)?.length ? <ProdutosNoArtigo itens={prateleiras.get(block.id)!} contexto={contextoProduto} /> : null)
                         : <div dangerouslySetInnerHTML={{ __html: block.html }} />}
