@@ -41,6 +41,7 @@
     { "id": "interview", "label": "Entrevista", "description": "Entrevista editada com contexto, falas atribuídas e principais conclusões.", "keywords": ["entrevista", "perguntas", "declarações"], "sequence": ["narrative", "data", "structure", "evidence", "context", "navigation"] },
     { "id": "faq-explainer", "label": "Explicador e FAQ", "description": "Resposta direta a uma dúvida de busca, seguida de explicação e perguntas relacionadas.", "keywords": ["faq", "explicador", "perguntas frequentes"], "sequence": ["narrative", "context", "structure", "narrative", "data", "navigation"] },
     { "id": "lyrics-translation", "label": "Letra e tradução", "description": "Contexto musical, trechos estruturados e análise de tradução.", "keywords": ["letra", "tradução", "romanização"], "sequence": ["narrative", "data", "structure", "translation", "evidence", "navigation"] },
+    { "id": "album-guide", "label": "Álbum", "description": "Guia de um álbum ou EP: contexto, faixa a faixa com links para cada música, créditos, clipes, paradas, recepção e edição física.", "keywords": ["álbum", "EP", "faixas", "discografia", "tracklist"], "sequence": ["narrative", "data", "media", "structure", "media", "evidence", "data", "evaluation", "navigation"] },
     { "id": "artist-bio", "label": "Bio de artista", "postTypes": ["artist"], "sequence": ["narrative", "data", "structure", "narrative", "media"] },
     { "id": "group-profile", "label": "Perfil de grupo", "postTypes": ["group"], "sequence": ["narrative", "data", "structure", "narrative", "navigation"] }
   ],
