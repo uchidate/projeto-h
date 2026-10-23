@@ -5,12 +5,30 @@ import type { ArticleModel } from '@/lib/blog/articleModel'
 import { ProdutosNoArtigo, type ProdutoDoTexto } from '@/components/blog/ProdutoNoArtigo'
 import { BLOCK_ALT_PREFIX } from '@/lib/constants/identidade.mjs'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import { CompartilharFaixa } from '@/components/blog/CompartilharFaixa'
+import { IndiceDeFaixas, type FaixaDoIndice } from '@/components/blog/IndiceDeFaixas'
+import { stripHtml } from '@/lib/utils'
+import { EmbedsSobDemanda } from '@/components/blog/EmbedsSobDemanda'
+import { adiarEmbedsSpotify } from '@/lib/blog/embedsSobDemanda'
 
 const BLOCO_PRODUTO = `${BLOCK_ALT_PREFIX}/product`
 
 /** Texto da legenda do bloco de produto (o `<p class="oc-product__caption">` salvo pelo editor). */
 function legendaDoBloco(html: string) {
     return html.match(/<p[^>]*oc-product__caption[^>]*>([\s\S]*?)<\/p>/i)?.[1]?.trim() || undefined
+}
+
+const CLASSE_FAIXA = 'oc-track'
+
+/** Faixas de álbum: blocos `group` com a classe `oc-track` e âncora própria; o rótulo é o primeiro título do bloco. */
+function faixasDoIndice(blocks: ArticleModel['blocks']): FaixaDoIndice[] {
+    const faixas: FaixaDoIndice[] = []
+    for (const b of blocks) {
+        if (b.name !== 'core/group' || !String(b.attrs.className ?? '').split(/\s+/).includes(CLASSE_FAIXA)) continue
+        const titulo = b.html.match(/<h[2-4][^>]*>([\s\S]*?)<\/h[2-4]>/i)?.[1]
+        if (titulo) faixas.push({ id: b.id, titulo: stripHtml(titulo).replace(/"|&quot;|“|”/g, '') })
+    }
+    return faixas
 }
 
 /** `cardGrupo` (variante B do teste) entra na primeira quebra de anúncio, logo antes dela; em texto curto, sem quebra, vai ao fim do corpo. */
@@ -36,17 +54,33 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
         if (!atual) { atual = []; prateleiras.set(b.id, atual) }
         if (produto) atual.push({ produto, legendaHtml: legendaDoBloco(b.html) })
     }
+    // Player do álbum inteiro (o das faixas é `/embed/track/`): fica à mão no celular enquanto o fã lê as faixas.
+    const idPlayerDoAlbum = model.blocks.find(b => b.name.endsWith('/spotify') && String(b.attrs.url ?? '').includes('/embed/album/'))?.id
+    const faixas = faixasDoIndice(model.blocks)
+    const faixaDoBloco = (id: string) => faixas.find(f => f.id === id)
+    const idPrimeiraFaixa = faixas.length >= 3 ? faixas[0].id : undefined
     return (
         <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" data-article-model-version={model.version}>
+            <EmbedsSobDemanda />
             {model.blocks.map((block) => (
                 <div
                     key={block.id}
-                    id={block.name === 'core/heading' && !/\sid=/.test(block.html) ? block.id : undefined}
+                    id={block.name === 'core/heading' && !/\sid=/.test(block.html) ? block.id : block.id === idPlayerDoAlbum ? block.id : undefined}
                     data-article-block={block.name}
+                    // Player do álbum: no celular acompanha a leitura logo abaixo do cabeçalho (o pai é o corpo do artigo, por isso o sticky vai no próprio bloco).
+                    className={block.id === idPlayerDoAlbum && faixas.length >= 3 ? 'oc-player-fixo' : undefined}
                 >
+                    {block.id === idPrimeiraFaixa && <IndiceDeFaixas faixas={faixas} idPlayerDoAlbum={faixas.length >= 3 ? idPlayerDoAlbum : undefined} />}
                     {block.name === BLOCO_PRODUTO
                         ? (prateleiras.get(block.id)?.length ? <ProdutosNoArtigo itens={prateleiras.get(block.id)!} contexto={contextoProduto} /> : null)
-                        : <div dangerouslySetInnerHTML={{ __html: block.html }} />}
+                        : faixaDoBloco(block.id)
+                            ? (
+                                <div className="relative flow-root">
+                                    <div dangerouslySetInnerHTML={{ __html: adiarEmbedsSpotify(block.html) }} />
+                                    <CompartilharFaixa id={block.id} titulo={faixaDoBloco(block.id)!.titulo} />
+                                </div>
+                            )
+                            : <div dangerouslySetInnerHTML={{ __html: adiarEmbedsSpotify(block.html) }} />}
                     {block.id === primeiraQuebra && cardGrupo}
                     {block.id === idMeio && sugestaoMeio}
                     {block.id === idLoja && <div className="not-prose my-8">{lojaMeio}</div>}

@@ -6,6 +6,7 @@ import { Clock, Calendar, Eye, Tag, Film, User } from 'lucide-react'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import { QuizEmbedLoader } from '@/components/blog/QuizEmbedLoader'
 import type { QuizCategory } from '@/lib/wordpress/quiz'
+import { quizCategoryFromBlog } from '@/lib/quiz/categoryMeta'
 import type { WPPost } from '@/lib/wordpress/types'
 import { formatDateTime, getWPImage, getWPTerms, stripHtml, readingTime } from '@/lib/utils'
 import { catStyleTema as catStyle } from '@/lib/blog/catStyle'
@@ -358,16 +359,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
         minTailChars: 600,
     })
 
-    const BLOG_TO_QUIZ_CATEGORY: Record<string, QuizCategory> = {
-        'k-pop':    'k-pop',
-        'k-drama':  'k-drama',
-        'dorama':   'k-drama',
-        'cultura':  'cultura',
-        'gastronomia': 'cultura',
-        'historia': 'historia',
-        'k-film':   'k-drama',
-    }
-    const quizCategory: QuizCategory = BLOG_TO_QUIZ_CATEGORY[cat?.slug ?? ''] ?? 'k-pop'
+    const quizCategory: QuizCategory = quizCategoryFromBlog(cat?.slug)
     // O primeiro item já aparece como sugestão individual logo após a leitura.
     // Evitar repeti-lo mantém o encerramento editorial útil e menos mecânico.
     // Teste de sugestão no meio do texto: metade dos artigos, independente da paridade

@@ -15,6 +15,7 @@ import { getHubsForArtist } from '@/lib/guias/hub-lookup'
 import { getStoreProductsByArtistId, getStoreProductsByGroupId, getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { getMusicReleases } from '@/lib/wordpress/music'
+import { getArtigosDeAlbum, ligarArtigosAosAlbuns } from '@/lib/blog/albumArticles'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { applyArtistManifestPreview, applyArtistProductionsPreview } from '@/lib/agencies/preview'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
@@ -103,7 +104,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     const productions = await applyArtistProductionsPreview(slug, productionsRaw)
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
 
-    const discography: DiscographyAlbum[] = wpReleases.map(r => ({
+    const discographyBase: DiscographyAlbum[] = wpReleases.map(r => ({
         id: String(r.id),
         title: r.title,
         type: r.release_type === 'album' ? 'ALBUM'
@@ -115,6 +116,10 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
         spotifyUrl: r.spotify_url ?? '',
         tracks: [],
     }))
+    // Álbum com artigo no site ganha o link na discografia (só em PT: os artigos EN usam outra rota).
+    const artigosDeAlbum = locale === DEFAULT_LOCALE && discographyBase.length > 0 ? await getArtigosDeAlbum('artist', slug) : []
+    const ligacoesDeAlbum = ligarArtigosAosAlbuns(discographyBase, artigosDeAlbum)
+    const discography: DiscographyAlbum[] = discographyBase.map(album => ({ ...album, articleHref: ligacoesDeAlbum[album.id] }))
 
     const connectionGroup = groups.find(group => group.acf?.active !== false) ?? groups[0]
     const groupMemberIds = (connectionGroup?.acf?.members ?? []).filter(id => id !== artist.id)

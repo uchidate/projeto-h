@@ -8,6 +8,7 @@ import { getPosts } from '@/lib/wordpress/posts'
 import { getProductionGenres } from '@/lib/wordpress/productions'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 import { HubPageContent } from '@/components/features/HubPageContent'
 
 export type SearchParamsGuia = Record<string, string | string[] | undefined>
@@ -73,6 +74,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
                 groups={result.kind === 'groups' ? result.items : undefined}
                 blogPosts={blogPosts}
                 lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title="Para quem curte k-drama e k-pop" contexto={`guia:${slug}:meio`} />}
+                quiz={<QuizWidget category={tipoVitrine === 'drama' ? 'k-drama' : 'k-pop'} />}
                 destaques={destaques}
                 genreMap={genreMap}
                 siteUrl={SITE_URL}

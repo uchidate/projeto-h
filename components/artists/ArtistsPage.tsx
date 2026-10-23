@@ -26,6 +26,7 @@ import { getWPImage, stripHtml } from '@/lib/utils'
 import type { AniversarianteSemana } from '@/lib/artists/aniversarios'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { queryAtual } from '@/lib/listagem/query-atual'
 import { consumirFocoBusca, navegarListagem } from '@/lib/listagem/navegar'
@@ -342,6 +343,8 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             {inicio && shopProducts.length > 0 && (
                 <ShopRelatedSection title="Pra levar do seu bias" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:artistas" />
             )}
+
+            {inicio && <QuizWidget category="k-pop" title="Sabe tudo sobre os artistas favoritos?" description="Teste seus conhecimentos sobre o acervo de artistas" />}
 
             {/* ── Continue explorando ─────────────────────────────── */}
             <section className="border-t border-border bg-surface/60 py-9 sm:py-11" data-bloco="lista-explorar">

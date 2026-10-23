@@ -15,6 +15,7 @@ import { ProductionCard } from '@/components/productions/ProductionCard'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { RastreioDeFiltros } from '@/components/analytics/RastreioDeFiltros'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 import type { StoreProduct } from '@/lib/wordpress/store'
 
 interface GeneroResumo { slug: string; nome: string; fotos: WPProduction[] }
@@ -223,6 +224,8 @@ export function ProductionsPage({
             {inicio && shopProducts.length > 0 && (
                 <ShopRelatedSection title="K-drama merch pra maratonar" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:producoes" />
             )}
+
+            {inicio && <QuizWidget category="k-drama" title="Sabe mais doramas do que acha?" description="Teste seus conhecimentos sobre K-Drama" />}
         </>
     )
 }

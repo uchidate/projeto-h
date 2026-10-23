@@ -56,6 +56,8 @@ const STATIC_PAGES = [
     'agencies', 'fandoms', 'blog', 'guias', 'quiz',
     'quiz/k-pop', 'quiz/k-drama', 'quiz/cultura', 'quiz/historia',
     'about', 'contato', 'privacidade', 'termos',
+    'comidas', 'empresas', 'loja', 'calendario', 'trending', 'positions',
+    'cultura-coreana-101', 'editorial-standards', 'ethics', 'corrections',
 ]
 
 export function isSitemapShard(value: string): value is SitemapShard {

@@ -27,6 +27,7 @@ import { AgencyArtists } from './components/AgencyArtists'
 import { AgencyMilestones } from './components/AgencyMilestones'
 import { AgencySources } from './components/AgencySources'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { QuizFacts } from '@/components/ui/QuizFacts'
 
 export const revalidate = 3600
 
@@ -136,6 +137,8 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
                         <GroupPosts posts={relatedPosts} name={name} accent={interfaceAccent} />
                     </section>
                 )}
+
+                <QuizFacts entitySlug={slug} entityType="agency" entityName={name} groupIds={allGroups.map(g => g.id)} artistIds={allArtists.map(a => a.id)} />
 
                 {narrativeChapters.length === 0 && milestones.length > 0 && (
                     <AgencyMilestones milestones={milestones} interfaceAccent={interfaceAccent} />

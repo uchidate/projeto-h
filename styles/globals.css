@@ -2492,3 +2492,149 @@ html[data-consent-pendente] .google-anchor,
 html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
     visibility: hidden !important;
 }
+
+/* Faixa de álbum: título, texto e player agrupados num cartão (pattern album-guide). */
+.wp-article-content .oc-track {
+  margin: 1.75rem 0;
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  scroll-margin-top: calc(var(--site-header-h, 64px) + 1rem);
+}
+.wp-article-content .oc-track > :first-child { margin-top: 0; }
+.wp-article-content .oc-track > :last-child { margin-bottom: 0; }
+.wp-article-content .oc-track h3 { margin-bottom: 0.5rem; }
+.wp-article-content .oc-track .oc-embed { margin: 1rem 0 0; }
+.wp-article-content .oc-track figure.wp-block-image { margin: 1rem 0 0; }
+@media (max-width: 640px) {
+  .wp-article-content .oc-track { padding: 0.85rem 0.85rem 0.95rem; }
+}
+
+/* Player compacto do Spotify (bloco ondacoreana/spotify): sem isso o iframe herda 150 px e deixa um vazio sob a faixa. */
+.wp-article-content .ondacoreana-spotify--compact { margin: 1rem 0; }
+.wp-article-content .ondacoreana-spotify--compact iframe { display: block; width: 100%; height: 80px; border: 0; border-radius: 12px; }
+
+/* Título do cartão de faixa: espaço para o botão de compartilhar. */
+.wp-article-content .oc-track h3 { padding-right: 7.5rem; }
+
+/* Player do álbum acompanha a leitura no celular, logo abaixo do cabeçalho fixo. */
+@media (max-width: 767px) {
+  .wp-article-content .oc-player-fixo {
+    position: sticky;
+    top: calc(var(--site-header-h, 64px) + 0.25rem);
+    z-index: 20;
+    padding: 0.25rem 0;
+    background: var(--color-background);
+  }
+  .wp-article-content .oc-player-fixo .ondacoreana-spotify--compact { margin: 0; box-shadow: 0 6px 16px rgb(0 0 0 / 0.12); border-radius: 12px; }
+}
+
+/* Galeria de fotos dentro do cartão de faixa: miniaturas verticais lado a lado. */
+.wp-article-content .oc-track .wp-block-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+}
+.wp-article-content .oc-track .wp-block-gallery figure.wp-block-image { margin: 0; }
+.wp-article-content .oc-track .wp-block-gallery img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 0.5rem; display: block; }
+.wp-article-content .oc-track .wp-block-gallery figcaption { grid-column: 1 / -1; margin: 0.25rem 0 0; }
+@media (max-width: 640px) {
+  .wp-article-content .oc-track .wp-block-gallery { grid-template-columns: repeat(2, 1fr); }
+  .wp-article-content .oc-track h3 { padding-right: 0; padding-top: 2.75rem; }
+}
+
+/* Citação com autoria: o <cite> vira legenda discreta sob a frase. */
+.wp-article-content blockquote cite {
+  display: block;
+  margin-top: 0.6rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Linha do tempo: lista com data em destaque e trilho lateral (list className oc-timeline-list). */
+.wp-article-content ul.oc-timeline-list {
+  position: relative;
+  margin: 1.75rem 0;
+  padding: 0 0 0 1.5rem;
+  list-style: none;
+  border-left: 2px solid var(--color-border);
+}
+.wp-article-content ul.oc-timeline-list > li {
+  position: relative;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  line-height: 1.5;
+}
+.wp-article-content ul.oc-timeline-list > li:last-child { margin-bottom: 0; }
+.wp-article-content ul.oc-timeline-list > li::before {
+  content: '';
+  position: absolute;
+  left: calc(-1.5rem - 6px);
+  top: 0.4rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-background);
+}
+.wp-article-content ul.oc-timeline-list > li > strong {
+  display: block;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* Barras de venda (group oc-sales-bars com blocos oc-stat-bar): cartão com as barras alinhadas. */
+.wp-article-content .oc-sales-bars {
+  margin: 1.25rem 0 1.75rem;
+  padding: 0.5rem 1.1rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+}
+.wp-article-content .oc-sales-bars .oc-stat-bar-track { background: var(--color-border); height: 12px; }
+
+/* Ficha do disco: faixa de destaque no topo, com os três números em linha. */
+.wp-article-content .oc-album-hero {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.25rem;
+  border-radius: 0.75rem;
+  /* Escurecido para o texto branco pequeno passar de 4,5:1 (rosa puro dá ~3,6:1). */
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 78%, #000), color-mix(in srgb, var(--color-accent) 42%, #000));
+  color: #fff;
+}
+.wp-article-content .oc-album-hero .oc-stats {
+  margin: 0;
+  border: 0;
+  background: transparent;
+}
+.wp-article-content .oc-album-hero .oc-stats dl { display: grid; grid-template-columns: repeat(3, auto); justify-content: space-between; gap: 1rem 2rem; }
+.wp-article-content .oc-album-hero .oc-stats dl > div,
+.wp-article-content .oc-album-hero .oc-stats dl > div:nth-child(even) {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0;
+  background: transparent;
+}
+.wp-article-content .oc-album-hero .oc-stats dt {
+  width: auto;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.wp-article-content .oc-album-hero .oc-stats dd { margin: 0; padding: 0; font-size: clamp(1.1rem, 2.2vw + 0.6rem, 1.6rem); font-weight: 800; line-height: 1.2; color: #fff; }
+@media (max-width: 640px) {
+  .wp-article-content .oc-album-hero .oc-stats dl { grid-template-columns: 1fr; }
+}

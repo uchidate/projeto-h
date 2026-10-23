@@ -10,6 +10,7 @@ import { ArtistCard } from '@/components/artists/ArtistCard'
 import { GroupCard } from '@/components/groups/GroupsPage'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { QuizWidget } from '@/components/ui/QuizWidget'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export const revalidate = 300
@@ -90,6 +91,8 @@ export default async function TrendingPage() {
                     </div>
                 </section>
             )}
+
+            <QuizWidget category="k-pop" title="Testou seu conhecimento hoje?" description="Veja se você acompanha de verdade quem está em alta" />
         </div>
         </>
     )

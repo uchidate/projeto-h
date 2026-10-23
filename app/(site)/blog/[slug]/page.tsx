@@ -14,24 +14,9 @@ import { BlogPostPage } from '@/components/blog/BlogPostPage'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { buildPostAlternates } from '@/lib/blog/translations'
+import { getProdutosDosBlocos } from '@/lib/blog/produtosDosBlocos'
 
 export const revalidate = 300
-
-/** Produtos citados por blocos `product` do artigo, só os que ainda podem ser exibidos (visíveis e com link). */
-async function getProdutosDosBlocos(post: Awaited<ReturnType<typeof getPostBySlug>>): Promise<StoreProduct[]> {
-    if (!post?.article_blocks?.length) return []
-    const ids = new Set<number>()
-    const varrer = (blocos: NonNullable<typeof post.article_blocks>) => {
-        for (const b of blocos) {
-            if (b.name.endsWith('/product') && Number(b.attrs?.productId) > 0) ids.add(Number(b.attrs.productId))
-            if (b.innerBlocks?.length) varrer(b.innerBlocks)
-        }
-    }
-    varrer(post.article_blocks)
-    if (ids.size === 0) return []
-    const todos = await getStoreProducts()
-    return todos.filter(p => ids.has(p.id) && !p.acf.is_hidden && p.acf.affiliate_url)
-}
 
 async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostBySlug>>, categorias: string[]): Promise<StoreProduct[]> {
     if (!post) return []

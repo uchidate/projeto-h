@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 
 import { useMemo, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { CalendarDays, ExternalLink, LayoutGrid, List, Music, Play } from 'lucide-react'
 import { BlockHeader } from '@/components/blocks/BlockHeader'
 
@@ -14,6 +15,8 @@ export interface DiscographyAlbum {
     releaseYear: number | null
     coverUrl: string | null
     spotifyUrl: string
+    /** Artigo de álbum do site que cobre este lançamento (quando existe). */
+    articleHref?: string
     tracks: { id: string; title: string; trackNumber: number; durationMs: number; spotifyUrl: string }[]
 }
 
@@ -115,6 +118,11 @@ export function GroupDiscography({ albums, accent }: Props) {
                             </div>
                             <div className="p-2">
                                 <p className="text-xs font-bold leading-snug line-clamp-1">{album.title}</p>
+                                {album.articleHref && (
+                                    <Link href={album.articleHref} className="mt-0.5 inline-block font-mono text-[10px] font-bold uppercase tracking-wide text-accent hover:underline">
+                                        Ler o artigo
+                                    </Link>
+                                )}
                                 <p className="mt-0.5 font-mono text-[10px] text-muted">
                                     {TYPE_LABEL[album.type]}{album.releaseYear ? ` · ${album.releaseYear}` : ''}
                                 </p>
@@ -169,6 +177,11 @@ export function GroupDiscography({ albums, accent }: Props) {
                                             </a>
                                         </div>
                                         <h4 className="text-base font-bold leading-snug">{album.title}</h4>
+                                        {album.articleHref && (
+                                            <Link href={album.articleHref} className="mt-1 inline-block text-xs font-bold text-accent hover:underline">
+                                                Ler o artigo sobre o álbum
+                                            </Link>
+                                        )}
 
                                         {album.tracks.length > 0 && (
                                             <div className="mt-3 border-t border-border pt-2.5 space-y-0.5">
