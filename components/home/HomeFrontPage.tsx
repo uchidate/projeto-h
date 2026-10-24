@@ -6,6 +6,7 @@ import { HomeQuizBanner } from '@/components/home/HomeQuizBanner'
 import { ADSENSE } from '@/lib/config/ads'
 import { HomeHero } from '@/components/home/HomeHero'
 import { escolherCapas } from '@/lib/home/frescor'
+import { HomeComecePorAqui } from '@/components/home/HomeComecePorAqui'
 import { HomeEditorialHubs } from '@/components/home/HomeEditorialHubs'
 import { HomeHighlightGrid } from '@/components/home/HomeHighlightGrid'
 import { HomeLongreads } from '@/components/home/HomeLongreads'
@@ -17,7 +18,7 @@ import { HomeStreamingTop } from '@/components/home/HomeStreamingTop'
 import { HomeArtistSpotlight } from '@/components/home/HomeArtistSpotlight'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
-import type { HomeSettings } from '@/lib/wordpress/site-settings'
+import type { BestOfList, HomeSettings } from '@/lib/wordpress/site-settings'
 import type { ShowsByPlatform } from '@/lib/tmdb/streaming'
 
 /* Hallmark · pre-emit critique: P4 H5 E4 S5 R5 V4
@@ -34,13 +35,14 @@ type Props = {
     featuredArtistNote?: string
     trendingGroups?: WPGroup[]
     homeSettings: HomeSettings
+    cultureGuides?: BestOfList[]
     streamingByPlatform: ShowsByPlatform
     categoryMap?: Record<number, { name: string; slug: string }>
     featuredProducts?: StoreProduct[]
     locale?: Locale
 }
 
-export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, streamingByPlatform, categoryMap, featuredProducts = [] }: Props) {
+export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], streamingByPlatform, categoryMap, featuredProducts = [] }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
@@ -64,6 +66,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
         <section className="bg-background" aria-label={t('rotulo')}>
             <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
                 <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
+                {soPt && <div data-bloco="home-comece-por-aqui" className="contents"><HomeComecePorAqui guides={cultureGuides} locale={locale} /></div>}
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} locale={locale} /></div>
                 <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} locale={locale} /></div>

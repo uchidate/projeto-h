@@ -82,6 +82,7 @@ export default async function HomePage() {
                 featuredArtistNote={featuredSpotlight?.note ?? ''}
                 trendingGroups={trendingGroupsList}
                 homeSettings={siteSettings.home}
+                cultureGuides={siteSettings.cultureGuides}
                 streamingByPlatform={streamingByPlatform}
                 categoryMap={categoryMap}
                 featuredProducts={featuredProducts}
@@ -90,7 +91,7 @@ export default async function HomePage() {
                 <PerguntaDoDiaServer />
             </Suspense>
             <Suspense fallback={null}>
-                <HomeBelowFold homeSettings={siteSettings.home} cultureGuides={siteSettings.cultureGuides} />
+                <HomeBelowFold homeSettings={siteSettings.home} />
             </Suspense>
         </>
     )

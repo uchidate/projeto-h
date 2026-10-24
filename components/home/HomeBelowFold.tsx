@@ -10,22 +10,9 @@ import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
-import type { HomeSettings, BestOfList } from '@/lib/wordpress/site-settings'
+import type { HomeSettings } from '@/lib/wordpress/site-settings'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
-
-/* ── Culture guide chip (link curado, editável no WP admin) ── */
-function CultureGuideChip({ guide }: { guide: BestOfList }) {
-    return (
-        <Link
-            href={guide.href}
-            className="group flex items-center gap-3 p-4 border border-border bg-background transition-colors hover:border-accent hover:bg-surface/60"
-        >
-            <span className="text-[22px] leading-none shrink-0" aria-hidden="true">{guide.emoji}</span>
-            <span className="text-[13px] font-bold leading-snug text-foreground group-hover:text-accent transition-colors">{guide.label}</span>
-        </Link>
-    )
-}
 
 /* ── Group chip ── */
 async function GroupChip({ group, className = '', locale }: { group: WPGroup; className?: string; locale: Locale }) {
@@ -112,7 +99,7 @@ async function BirthdayChip({ artist, today, locale }: { artist: WPArtist; today
 }
 
 /* ── Main (Server Component) ── */
-export async function HomeBelowFold({ homeSettings, cultureGuides, locale = DEFAULT_LOCALE }: { homeSettings: HomeSettings; cultureGuides: BestOfList[]; locale?: Locale }) {
+export async function HomeBelowFold({ homeSettings, locale = DEFAULT_LOCALE }: { homeSettings: HomeSettings; locale?: Locale }) {
     const t = await getTranslations({ locale, namespace: 'home.abaixoDaDobra' })
     const tc = await getTranslations({ locale, namespace: 'home.comum' })
     const now = new Date()
@@ -140,7 +127,7 @@ export async function HomeBelowFold({ homeSettings, cultureGuides, locale = DEFA
     const birthdays = (birthdaysResult.status === 'fulfilled' ? birthdaysResult.value.items : [])
         .filter(artist => !artist.acf?.death_date)
 
-    const hasContent = cultureGuides.length > 0 || groups.length > 0 || productions.length > 0
+    const hasContent = groups.length > 0 || productions.length > 0
     if (!hasContent) return null
 
     return (
@@ -148,16 +135,6 @@ export async function HomeBelowFold({ homeSettings, cultureGuides, locale = DEFA
             {/* Ad leaderboard */}
             {/* auto: em mobile vira retângulo grande (rende bem mais que banner fino) */}
             {ADSENSE.slots.inline && <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="home_below_fold" />}
-
-            {/* Comece por aqui: cultura coreana — bloco fixo, curado no WP admin */}
-            {cultureGuides.length > 0 && (
-                <section>
-                    <SectionTitleBar title={t('guiasTitulo')} eyebrow={t('guiasEyebrow')} href="/cultura-coreana-101" linkText={tc('verTodos')} />
-                    <div className="-mx-4 grid auto-cols-[minmax(240px,78vw)] grid-flow-col gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid-flow-row sm:grid-cols-2 sm:px-0 lg:grid-cols-3">
-                        {cultureGuides.slice(0, 6).map(g => <CultureGuideChip key={g.href} guide={g} />)}
-                    </div>
-                </section>
-            )}
 
             {/* Grupos em destaque */}
             {groups.length > 0 && (
