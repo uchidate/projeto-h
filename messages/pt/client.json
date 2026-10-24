@@ -244,5 +244,23 @@
   "artistCard": {
     "producao": "Produção",
     "musica": "Música"
+  },
+  "playerDock": {
+    "region": "Player da faixa",
+    "album": "Álbum",
+    "goTo": "Ir para a faixa {title}",
+    "playing": "Tocando agora",
+    "paused": "Pausado",
+    "play": "Tocar",
+    "pause": "Pausar",
+    "close": "Fechar player",
+    "trackOf": "Faixa {n} de {total}",
+    "previous": "Faixa anterior",
+    "next": "Próxima faixa",
+    "seek": "Posição da faixa"
+  },
+  "trackIndex": {
+    "label": "Faixas do álbum",
+    "listenAlbum": "Ouvir o álbum"
   }
 }

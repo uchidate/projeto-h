@@ -2518,17 +2518,15 @@ html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
 /* Título do cartão de faixa: espaço para o botão de compartilhar. */
 .wp-article-content .oc-track h3 { padding-right: 7.5rem; }
 
-/* Player do álbum acompanha a leitura no celular, logo abaixo do cabeçalho fixo. */
-@media (max-width: 767px) {
-  .wp-article-content .oc-player-fixo {
-    position: sticky;
-    top: calc(var(--site-header-h, 64px) + 0.25rem);
-    z-index: 20;
-    padding: 0.25rem 0;
-    background: var(--color-background);
-  }
-  .wp-article-content .oc-player-fixo .ondacoreana-spotify--compact { margin: 0; box-shadow: 0 6px 16px rgb(0 0 0 / 0.12); border-radius: 12px; }
-}
+/* Faixa que está tocando: destaque no cartão e equalizador na barra fixa (PlayerDock). */
+.wp-article-content .oc-track[data-tocando] { border-color: var(--color-accent); box-shadow: 0 0 0 2px var(--color-accent); }
+.oc-eq { display: inline-flex; align-items: flex-end; gap: 2px; width: 18px; height: 16px; flex: none; }
+.oc-eq i { flex: 1; background: var(--color-accent); border-radius: 1px; height: 100%; transform-origin: bottom; animation: oc-eq 0.9s ease-in-out infinite; }
+.oc-eq i:nth-child(2) { animation-delay: -0.3s; }
+.oc-eq i:nth-child(3) { animation-delay: -0.6s; }
+.oc-eq--pausado i { animation-play-state: paused; transform: scaleY(0.3); }
+@keyframes oc-eq { 0%, 100% { transform: scaleY(0.25); } 50% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .oc-eq i { animation: none; transform: scaleY(0.6); } }
 
 /* Galeria de fotos dentro do cartão de faixa: miniaturas verticais lado a lado. */
 .wp-article-content .oc-track .wp-block-gallery {

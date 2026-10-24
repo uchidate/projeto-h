@@ -67,8 +67,6 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
                     key={block.id}
                     id={block.name === 'core/heading' && !/\sid=/.test(block.html) ? block.id : block.id === idPlayerDoAlbum ? block.id : undefined}
                     data-article-block={block.name}
-                    // Player do álbum: no celular acompanha a leitura logo abaixo do cabeçalho (o pai é o corpo do artigo, por isso o sticky vai no próprio bloco).
-                    className={block.id === idPlayerDoAlbum && faixas.length >= 3 ? 'oc-player-fixo' : undefined}
                 >
                     {block.id === idPrimeiraFaixa && <IndiceDeFaixas faixas={faixas} idPlayerDoAlbum={faixas.length >= 3 ? idPlayerDoAlbum : undefined} />}
                     {block.name === BLOCO_PRODUTO
