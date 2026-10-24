@@ -150,7 +150,8 @@
     "label": "Compartilhar",
     "on": "Compartilhar no {network}",
     "copy": "Copiar link",
-    "copied": "Link copiado!"
+    "copied": "Link copiado!",
+    "copyTrack": "Copiar o link da faixa {title}"
   },
   "anniversary": {
     "today": "{years} anos de estreia — hoje!",
