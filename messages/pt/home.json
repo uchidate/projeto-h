@@ -50,6 +50,13 @@
     "selecaoEditorial": "seleção editorial",
     "verTodosArtigos": "Ver todos os artigos"
   },
+  "editorias": {
+    "rotulo": "Editorias",
+    "kpop": "K-Pop",
+    "doramas": "Doramas e filmes",
+    "cultura": "Cultura e K-Beauty",
+    "verMais": "ver mais →"
+  },
   "ultimas": {
     "titulo": "Últimas publicações",
     "verFeed": "ver feed →"

@@ -6,6 +6,7 @@ import { getTrendingGroups } from '@/lib/wordpress/groups'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getStreamingTopShows } from '@/lib/tmdb/streaming'
+import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
 
 /**
  * Dados da `HomeFrontPage`, comuns à home em português e às de outros idiomas.
@@ -19,7 +20,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         ...siteSettings.home.highlightPostIds,
     ].filter(Boolean)
 
-    const [postsResult, curatedPostsResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, featuredProductsResult] = await Promise.allSettled([
+    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, featuredProductsResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
@@ -27,6 +28,8 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         curatedIds.length
             ? getPosts({ perPage: curatedIds.length, includeIds: curatedIds })
             : Promise.resolve({ items: [], total: 0, totalPages: 0 }),
+        // Uma busca por editoria: o feed geral é dominado pelo assunto da semana e deixaria colunas vazias.
+        Promise.allSettled(COLUNAS_EDITORIAS.map(c => getPosts({ category: c.categoria, perPage: 16, includeContent: false }))),
         getProductions({ perPage: 6, orderby: 'date' }),
         getMostAccessedArtists(8),
         getTrendingGroups(8),
@@ -42,6 +45,12 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
     const posts = [...curatedPosts, ...latestPosts].filter(
         (post, index, all) => all.findIndex(item => item.id === post.id) === index,
     )
+    const postsEditorias: PostsPorEditoria = editoriasResult.status === 'fulfilled'
+        ? Object.fromEntries(COLUNAS_EDITORIAS.map((c, i) => {
+            const r = editoriasResult.value[i]
+            return [c.chave, r.status === 'fulfilled' ? r.value.items : []]
+        }))
+        : {}
     const productions = productionsResult.status === 'fulfilled' ? productionsResult.value.items : []
     const artists = trendingArtists.status === 'fulfilled' ? trendingArtists.value : []
     const featuredSpotlight = featuredSpotlightResult.status === 'fulfilled' ? featuredSpotlightResult.value : null
@@ -54,5 +63,5 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
     const featuredProducts = featuredProductsResult.status === 'fulfilled' ? featuredProductsResult.value : []
 
-    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, featuredProducts }
+    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, featuredProducts, postsEditorias }
 }

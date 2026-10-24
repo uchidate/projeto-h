@@ -7,7 +7,9 @@ import { HomeQuizBanner } from '@/components/home/HomeQuizBanner'
 import { ADSENSE } from '@/lib/config/ads'
 import { HomeHero } from '@/components/home/HomeHero'
 import { escolherCapas } from '@/lib/home/frescor'
+import { montarEditorias, type PostsPorEditoria } from '@/lib/home/editorias'
 import { HomeComecePorAqui } from '@/components/home/HomeComecePorAqui'
+import { HomeEditorias } from '@/components/home/HomeEditorias'
 import { HomeEditorialHubs } from '@/components/home/HomeEditorialHubs'
 import { HomeHighlightGrid } from '@/components/home/HomeHighlightGrid'
 import { HomeLongreads } from '@/components/home/HomeLongreads'
@@ -42,10 +44,11 @@ type Props = {
     streamingByPlatform: ShowsByPlatform
     categoryMap?: Record<number, { name: string; slug: string }>
     featuredProducts?: StoreProduct[]
+    postsEditorias?: PostsPorEditoria
     locale?: Locale
 }
 
-export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, featuredProducts = [] }: Props) {
+export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, featuredProducts = [], postsEditorias = {} }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
@@ -64,6 +67,11 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     const rest = posts.filter(post => !usedIds.has(post.id))
     const longreads = rest.slice(0, 4)
     const latest = rest.slice(4, 14)
+    // Cada matéria aparece em uma só vitrine: as editorias pulam o que já está no carrossel, nos destaques e nos longreads,
+    // e o que foi para elas sai de "Últimas publicações".
+    const editorias = montarEditorias(postsEditorias, new Set([...usedIds, ...longreads.map(post => post.id)]))
+    const editoriasIds = new Set(editorias.flatMap(c => c.posts.map(post => post.id)))
+    const latestRestantes = latest.filter(post => !editoriasIds.has(post.id))
 
     return (
         <section className="bg-background" aria-label={t('rotulo')}>
@@ -72,6 +80,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 {soPt && <div data-bloco="home-comece-por-aqui" className="contents"><HomeComecePorAqui guides={cultureGuides} locale={locale} /></div>}
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} locale={locale} /></div>
+                <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} locale={locale} /></div>
                 {soPt && <div data-bloco="home-loja" className="contents"><ShopRelatedSection title={t('lojaTitulo')} products={featuredProducts} /></div>}
                 {ADSENSE.slots.inline && (
                     <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">
@@ -108,7 +117,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 </div>
                 {trendingGroups.length > 0 && (
                     <div className="cv-auto [--cv-h:1100px] lg:[--cv-h:920px] grid border-t border-border bg-background lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
-                        <div data-bloco="home-ultimos" className="contents"><HomeLatestPosts posts={latest.slice(0, 8)} categoryMap={categoryMap} locale={locale} /></div>
+                        <div data-bloco="home-ultimos" className="contents"><HomeLatestPosts posts={latestRestantes.slice(0, 8)} categoryMap={categoryMap} locale={locale} /></div>
                         <div data-bloco="home-grupos-em-alta" className="contents"><HomeTrendingGroups groups={trendingGroups} locale={locale} /></div>
                     </div>
                 )}
