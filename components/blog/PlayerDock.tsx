@@ -42,13 +42,13 @@ export function PlayerDock({ titulo, pausado, capa, numero, total, posicao, dura
             role="region"
             aria-label={t('region')}
             data-player-dock
-            className="fixed bottom-[calc(var(--bottom-nav-h,0px)+8px)] left-3 right-16 z-[210] overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_8px_30px_rgb(0_0_0/0.28)] ring-1 ring-[var(--color-accent)]/30 lg:bottom-6 lg:left-6 lg:right-auto lg:w-[28rem]"
+            className="not-prose fixed bottom-[calc(var(--bottom-nav-h,0px)+8px)] left-3 right-16 z-[210] overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_8px_30px_rgb(0_0_0/0.28)] ring-1 ring-[var(--color-accent)]/30 lg:bottom-6 lg:left-6 lg:right-auto lg:w-[28rem]"
         >
             <div className="flex items-center gap-3 p-2 pr-1">
                 <button type="button" onClick={onIr} aria-label={t('goTo', { title: titulo })} className="flex min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]">
-                    <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-[var(--color-border)]">
+                    <span className="relative block h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-[var(--color-border)]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        {capa && <img src={capa} alt="" className="h-full w-full object-cover" />}
+                        {capa && <img src={capa} alt="" className="!m-0 block h-full w-full max-w-none object-cover" />}
                         <span className={`oc-eq absolute bottom-1 left-1 ${pausado ? 'oc-eq--pausado' : ''}`} aria-hidden="true"><i /><i /><i /></span>
                     </span>
                     <span className="min-w-0">
