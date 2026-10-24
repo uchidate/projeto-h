@@ -9,6 +9,7 @@ import { HomeHero } from '@/components/home/HomeHero'
 import { escolherCapas } from '@/lib/home/frescor'
 import { montarEditorias, type PostsPorEditoria } from '@/lib/home/editorias'
 import { HomeComecePorAqui } from '@/components/home/HomeComecePorAqui'
+import { HomeCalendario } from '@/components/home/HomeCalendario'
 import { HomeEditorias } from '@/components/home/HomeEditorias'
 import { HomeEditorialHubs } from '@/components/home/HomeEditorialHubs'
 import { HomeHighlightGrid } from '@/components/home/HomeHighlightGrid'
@@ -20,6 +21,7 @@ import { HomeLatestPosts } from '@/components/home/HomeLatestPosts'
 import { HomeStreamingTop } from '@/components/home/HomeStreamingTop'
 import { HomeArtistSpotlight } from '@/components/home/HomeArtistSpotlight'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { AniversariosHome } from '@/lib/home/aniversarios'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import type { BestOfList, HomeSettings } from '@/lib/wordpress/site-settings'
 import type { ShowsByPlatform } from '@/lib/tmdb/streaming'
@@ -45,10 +47,11 @@ type Props = {
     categoryMap?: Record<number, { name: string; slug: string }>
     featuredProducts?: StoreProduct[]
     postsEditorias?: PostsPorEditoria
+    aniversarios?: AniversariosHome
     locale?: Locale
 }
 
-export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, featuredProducts = [], postsEditorias = {} }: Props) {
+export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, featuredProducts = [], postsEditorias = {}, aniversarios }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
@@ -76,7 +79,10 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     return (
         <section className="bg-background" aria-label={t('rotulo')}>
             <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
-                <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
+                <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px]">
+                    <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
+                    {soPt && aniversarios && <div data-bloco="home-calendario" className="contents"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
+                </div>
                 {soPt && <div data-bloco="home-comece-por-aqui" className="contents"><HomeComecePorAqui guides={cultureGuides} locale={locale} /></div>}
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} locale={locale} /></div>

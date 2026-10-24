@@ -50,6 +50,15 @@
     "selecaoEditorial": "editors' selection",
     "verTodosArtigos": "See all articles"
   },
+"calendario": {
+    "rotulo": "Calendar",
+    "titulo": "Today on the calendar",
+    "tag": "Birthdays",
+    "hoje": "Today",
+    "aSeguir": "Coming up",
+    "abrir": "7 days →",
+    "anos": "years"
+},
   "editorias": {
     "rotulo": "Sections",
     "kpop": "K-Pop",

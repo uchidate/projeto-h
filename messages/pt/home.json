@@ -50,6 +50,15 @@
     "selecaoEditorial": "seleção editorial",
     "verTodosArtigos": "Ver todos os artigos"
   },
+"calendario": {
+    "rotulo": "Calendário",
+    "titulo": "Hoje no calendário",
+    "tag": "Aniversários",
+    "hoje": "Hoje",
+    "aSeguir": "A seguir",
+    "abrir": "7 dias →",
+    "anos": "anos"
+},
   "editorias": {
     "rotulo": "Editorias",
     "kpop": "K-Pop",
