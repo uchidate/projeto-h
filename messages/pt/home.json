@@ -8,7 +8,8 @@
     "minutos": "{mins} min",
     "minutosDeLeitura": "{mins} min de leitura",
     "capa": "Capa",
-    "artigo": "Artigo"
+    "artigo": "Artigo",
+    "emDestaque": "Em destaque"
   },
   "hero": {
     "lerAgora": "Ler agora",

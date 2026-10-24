@@ -5,7 +5,7 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { HomeQuizBanner } from '@/components/home/HomeQuizBanner'
 import { ADSENSE } from '@/lib/config/ads'
 import { HomeHero } from '@/components/home/HomeHero'
-import { escolherCapa } from '@/lib/home/frescor'
+import { escolherCapas } from '@/lib/home/frescor'
 import { HomeEditorialHubs } from '@/components/home/HomeEditorialHubs'
 import { HomeHighlightGrid } from '@/components/home/HomeHighlightGrid'
 import { HomeLongreads } from '@/components/home/HomeLongreads'
@@ -46,14 +46,16 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
     const soPt = locale === DEFAULT_LOCALE
     // Capa só com matéria fresca (ver lib/home/frescor.ts); sem nenhuma, o hero é uma produção.
-    const heroPost = escolherCapa(posts, homeSettings.heroPostId)
-    const withoutHero = posts.filter(post => post.id !== heroPost?.id)
+    // Os slides extras nunca tomam as matérias escolhidas à mão para os destaques (nada some nem se repete).
+    const heroPosts = escolherCapas(posts, homeSettings.heroPostId, 4, new Date(), new Set(homeSettings.highlightPostIds))
+    const heroIds = new Set(heroPosts.map(post => post.id))
+    const withoutHero = posts.filter(post => !heroIds.has(post.id))
     const selectedHighlights = homeSettings.highlightPostIds
         .map(id => posts.find(post => post.id === id))
         .filter((post): post is WPPost => post !== undefined)
-        .filter(post => post.id !== heroPost?.id)
+        .filter(post => !heroIds.has(post.id))
     const highlighted = selectedHighlights.length ? selectedHighlights.slice(0, 6) : withoutHero.slice(0, 6)
-    const usedIds = new Set([heroPost?.id, ...highlighted.map(post => post.id)])
+    const usedIds = new Set([...heroIds, ...highlighted.map(post => post.id)])
     const rest = posts.filter(post => !usedIds.has(post.id))
     const longreads = rest.slice(0, 4)
     const latest = rest.slice(4, 14)
@@ -61,7 +63,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     return (
         <section className="bg-background" aria-label={t('rotulo')}>
             <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
-                <div data-bloco="home-hero" className="contents"><HomeHero post={heroPost} production={!heroPost ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
+                <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} locale={locale} /></div>
                 <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} locale={locale} /></div>
