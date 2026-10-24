@@ -65,6 +65,9 @@
       "verTodos": "All guides",
       "titulos": "{total} titles"
   },
+  "assuntos": {
+    "rotulo": "Topics"
+  },
   "editorias": {
     "rotulo": "Sections",
     "kpop": "K-Pop",

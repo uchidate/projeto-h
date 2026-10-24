@@ -65,6 +65,9 @@
       "verTodos": "Ver todos os guias",
       "titulos": "{total} títulos"
   },
+  "assuntos": {
+    "rotulo": "Assuntos"
+  },
   "editorias": {
     "rotulo": "Editorias",
     "kpop": "K-Pop",

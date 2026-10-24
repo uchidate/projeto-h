@@ -9,6 +9,7 @@ import { HomeHero } from '@/components/home/HomeHero'
 import { escolherCapas } from '@/lib/home/frescor'
 import { montarEditorias, type PostsPorEditoria } from '@/lib/home/editorias'
 import { HomeGuias } from '@/components/home/HomeGuias'
+import { HomeAssuntos } from '@/components/home/HomeAssuntos'
 import { HomeCalendario } from '@/components/home/HomeCalendario'
 import { HomeEditorias } from '@/components/home/HomeEditorias'
 import { HomeEditorialHubs } from '@/components/home/HomeEditorialHubs'
@@ -81,6 +82,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     return (
         <section className="bg-background" aria-label={t('rotulo')}>
             <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
+                {soPt && <div data-bloco="home-assuntos" className="contents"><HomeAssuntos hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div className="lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)]">
                     <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
                     <div data-bloco="home-destaques" className="contents"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
