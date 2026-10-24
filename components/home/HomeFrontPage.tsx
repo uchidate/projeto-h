@@ -68,7 +68,6 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
                 {soPt && <div data-bloco="home-comece-por-aqui" className="contents"><HomeComecePorAqui guides={cultureGuides} locale={locale} /></div>}
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
-                <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} locale={locale} /></div>
                 <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} locale={locale} /></div>
                 {soPt && <div data-bloco="home-loja" className="contents"><ShopRelatedSection title={t('lojaTitulo')} products={featuredProducts} /></div>}
                 {ADSENSE.slots.inline && (
@@ -89,6 +88,9 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 <div className="cv-auto [--cv-h:1800px] lg:[--cv-h:1180px] grid border-t border-border bg-surface/55 lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
                     <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} locale={locale} /></div>
                     <div data-bloco="home-artistas-em-alta" className="contents"><HomeTrendingArtists artists={artists} featuredArtist={featuredArtist} featuredArtistNote={featuredArtistNote} locale={locale} /></div>
+                </div>
+                <div className="cv-auto [--cv-h:230px] lg:[--cv-h:208px]">
+                    <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} locale={locale} /></div>
                 </div>
                 <div className="cv-auto [--cv-h:620px] sm:[--cv-h:720px] lg:[--cv-h:490px]">
                     <div data-bloco="home-producoes" className="contents"><HomeProductionsRail productions={productions} locale={locale} /></div>
