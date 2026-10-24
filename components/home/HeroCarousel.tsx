@@ -4,14 +4,18 @@ import { Children, useCallback, useEffect, useRef, useState, type ReactNode } fr
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-const INTERVALO_MS = 8000
+const INTERVALO_MS = 7000
+/** Depois de a pessoa usar setas, pontos ou deslizar, o avanço automático volta sozinho após este tempo parado. */
+const RETOMADA_MS = 10000
 
 /**
  * Carrossel do card principal da home. Todos os slides saem no HTML do servidor (o crawler vê as
  * matérias todas) e a rolagem é `scroll-snap` nativa: deslizar com o dedo funciona sem JS. O JS só
  * acrescenta setas, pontos, avanço automático e o botão de pausa. O avanço automático para com
  * mouse ou foco em cima, aba em segundo plano, carrossel fora da tela e preferência por menos
- * movimento, e some de vez quando a pessoa usa os controles.
+ * movimento. Usar setas, pontos ou deslizar só adia o avanço (ele volta sozinho depois de uns
+ * segundos); só o botão de pausa o desliga até a pessoa retomar. Mouse e foco só pausam quando são
+ * mouse de verdade e foco de teclado: toque e clique deixavam o carrossel parado para sempre.
  */
 export function HeroCarousel({ children }: { children: ReactNode }) {
     const t = useTranslations('client.heroCarousel')
@@ -21,10 +25,19 @@ export function HeroCarousel({ children }: { children: ReactNode }) {
     const raiz = useRef<HTMLDivElement>(null)
     const [atual, setAtual] = useState(0)
     const [pausadoPelaPessoa, setPausadoPelaPessoa] = useState(false)
+    const [ocupado, setOcupado] = useState(false)
+    const retomada = useRef<number | undefined>(undefined)
     const [suspenso, setSuspenso] = useState(false)
     const [visivel, setVisivel] = useState(true)
     const [reduzido, setReduzido] = useState(false)
 
+    // Interação manual (setas, pontos, gesto): adia o avanço e o retoma sozinho depois de um tempo.
+    const adiar = useCallback(() => {
+        setOcupado(true)
+        window.clearTimeout(retomada.current)
+        retomada.current = window.setTimeout(() => setOcupado(false), RETOMADA_MS)
+    }, [])
+    useEffect(() => () => window.clearTimeout(retomada.current), [])
     const ir = useCallback((i: number) => {
         const el = trilho.current
         if (!el) return
@@ -50,8 +63,10 @@ export function HeroCarousel({ children }: { children: ReactNode }) {
             quadro = requestAnimationFrame(() => setAtual(Math.round(el.scrollLeft / Math.max(1, el.clientWidth))))
         }
         el.addEventListener('scroll', aoRolar, { passive: true })
-        return () => { el.removeEventListener('scroll', aoRolar); cancelAnimationFrame(quadro) }
-    }, [])
+        el.addEventListener('touchstart', adiar, { passive: true })
+        el.addEventListener('wheel', adiar, { passive: true })
+        return () => { el.removeEventListener('scroll', aoRolar); el.removeEventListener('touchstart', adiar); el.removeEventListener('wheel', adiar); cancelAnimationFrame(quadro) }
+    }, [adiar])
 
     useEffect(() => {
         const el = raiz.current
@@ -67,14 +82,14 @@ export function HeroCarousel({ children }: { children: ReactNode }) {
         return () => document.removeEventListener('visibilitychange', aoMudarAba)
     }, [])
 
-    const rodando = !pausadoPelaPessoa && !suspenso && visivel && !reduzido
+    const rodando = !pausadoPelaPessoa && !ocupado && !suspenso && visivel && !reduzido
     useEffect(() => {
         if (!rodando) return
         const id = window.setInterval(() => ir(atual + 1), INTERVALO_MS)
         return () => window.clearInterval(id)
     }, [rodando, atual, ir])
 
-    const manual = (i: number) => { setPausadoPelaPessoa(true); ir(i) }
+    const manual = (i: number) => { adiar(); ir(i) }
 
     return (
         <div
@@ -82,9 +97,9 @@ export function HeroCarousel({ children }: { children: ReactNode }) {
             role="region"
             aria-roledescription="carousel"
             aria-label={t('label')}
-            onMouseEnter={() => setSuspenso(true)}
-            onMouseLeave={() => setSuspenso(document.hidden)}
-            onFocus={() => setSuspenso(true)}
+            onPointerEnter={(e) => { if (e.pointerType === 'mouse') setSuspenso(true) }}
+            onPointerLeave={(e) => { if (e.pointerType === 'mouse') setSuspenso(document.hidden) }}
+            onFocus={(e) => { if (e.target.matches(':focus-visible')) setSuspenso(true) }}
             onBlur={() => setSuspenso(document.hidden)}
         >
             <div ref={trilho} className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-live={rodando ? 'off' : 'polite'}>
