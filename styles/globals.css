@@ -2518,6 +2518,11 @@ html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
 /* Título do cartão de faixa: espaço para o botão de compartilhar. */
 .wp-article-content .oc-track h3 { padding-right: 7.5rem; }
 
+/* Entrada suave do player fixo. */
+@keyframes oc-dock-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.oc-dock-in { animation: oc-dock-in 0.22s ease-out; }
+@media (prefers-reduced-motion: reduce) { .oc-dock-in { animation: none; } }
+
 /* Mini player aberto: o botão de voltar ao topo sobe para não ficar atrás dele. */
 html[data-player-dock] .oc-back-to-top { bottom: calc(var(--bottom-nav-h, 62px) + 88px); }
 @media (min-width: 1024px) { html[data-player-dock] .oc-back-to-top { bottom: 6.5rem; } }
