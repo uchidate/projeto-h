@@ -83,13 +83,11 @@ export default async function HomePage() {
                 trendingGroups={trendingGroupsList}
                 homeSettings={siteSettings.home}
                 cultureGuides={siteSettings.cultureGuides}
+                pergunta={<Suspense fallback={null}><PerguntaDoDiaServer /></Suspense>}
                 streamingByPlatform={streamingByPlatform}
                 categoryMap={categoryMap}
                 featuredProducts={featuredProducts}
             />
-            <Suspense fallback={null}>
-                <PerguntaDoDiaServer />
-            </Suspense>
             <Suspense fallback={null}>
                 <HomeBelowFold homeSettings={siteSettings.home} />
             </Suspense>
