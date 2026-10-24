@@ -28,7 +28,7 @@ export function CompartilharFaixa({ id, titulo }: { id: string; titulo: string }
             type="button"
             onClick={compartilhar}
             aria-label={t('copyTrack', { title: titulo })}
-            className="absolute right-3 top-[2.5rem] inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-background)] px-3 text-xs font-semibold text-[var(--color-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
+            className="absolute right-3 top-[2.5rem] inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-xs font-semibold text-[var(--color-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
         >
             <span aria-live="polite">{copiado ? t('copied') : t('label')}</span>
         </button>
