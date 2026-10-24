@@ -6,10 +6,13 @@ import { href as rota } from '@/lib/i18n/routes'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
 import { getWPImage, stripHtml, formatDatePt } from '@/lib/utils'
+import { HomeProdutoMini } from '@/components/home/HomeProdutoMini'
 import type { EditoriaMontada } from '@/lib/home/editorias'
+import type { PrateleirasEditorias } from '@/lib/home/editorias-loja'
 
 type Props = {
     editorias: EditoriaMontada[]
+    prateleiras?: PrateleirasEditorias
     locale?: Locale
 }
 
@@ -18,7 +21,7 @@ type Props = {
  * escolhe o assunto em vez de percorrer um feed único. Cada coluna é uma barra
  * colorida, uma matéria de abertura e uma lista curta. Coluna com poucos posts some.
  */
-export async function HomeEditorias({ editorias: colunas, locale = DEFAULT_LOCALE }: Props) {
+export async function HomeEditorias({ editorias: colunas, prateleiras = {}, locale = DEFAULT_LOCALE }: Props) {
     if (!colunas.length) return null
     const t = await getTranslations({ locale, namespace: 'home.editorias' })
     const data = (date: string) => formatDatePt(date, intlLocale(locale))
@@ -61,6 +64,14 @@ export async function HomeEditorias({ editorias: colunas, locale = DEFAULT_LOCAL
                                     )
                                 })}
                             </div>
+                            {(prateleiras[coluna.chave]?.length ?? 0) > 0 && (
+                                <div className="mx-4 mb-4 mt-auto border-2 p-3" style={{ borderColor: coluna.cor }}>
+                                    <p className="mb-2 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">{t('loja.naLoja', { assunto: t(`loja.${coluna.chave}`) })}</p>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {prateleiras[coluna.chave]!.map(p => <HomeProdutoMini key={p.id} product={p} contexto={`home_editoria_${coluna.chave}`} />)}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )
                 })}

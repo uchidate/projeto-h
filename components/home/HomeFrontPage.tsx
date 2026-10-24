@@ -24,6 +24,7 @@ import { HomeProductionsRail } from '@/components/home/HomeProductionsRail'
 import { HomeLatestPosts } from '@/components/home/HomeLatestPosts'
 import { HomeStreamingTop } from '@/components/home/HomeStreamingTop'
 import { HomeArtistSpotlight } from '@/components/home/HomeArtistSpotlight'
+import type { PrateleirasEditorias } from '@/lib/home/editorias-loja'
 import type { CartaoExplore } from '@/lib/home/explore'
 import type { TemaHome } from '@/lib/home/temas'
 import type { GuiaDaHome } from '@/lib/home/guias'
@@ -56,11 +57,12 @@ type Props = {
     aniversarios?: AniversariosHome
     guiasPorTema?: GuiaDaHome[]
     explore?: CartaoExplore[]
+    prateleirasEditorias?: PrateleirasEditorias
     temas?: { gastronomia: TemaHome; beleza: TemaHome } | null
     locale?: Locale
 }
 
-export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, produtosMaisVendidos = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null, explore = [] }: Props) {
+export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, produtosMaisVendidos = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null, explore = [], prateleirasEditorias = {} }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
@@ -96,7 +98,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 </div>
                 {soPt && <div data-bloco="home-guias" className="contents"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
-                <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} locale={locale} /></div>
+                <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>
                 {soPt && <div data-bloco="home-loja" className="contents"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
                 {ADSENSE.slots.inline && (
                     <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">

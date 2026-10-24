@@ -8,6 +8,7 @@ import { maisVendidos } from '@/lib/home/mais-vendidos'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getStreamingTopShows } from '@/lib/tmdb/streaming'
 import { hojeEmBrasilia, mesesParaBuscar, montarAniversarios, type AniversariosHome } from '@/lib/home/aniversarios'
+import { carregarPrateleirasEditorias } from '@/lib/home/editorias-loja'
 import { carregarExplore } from '@/lib/home/explore'
 import { carregarTemas } from '@/lib/home/temas'
 import { carregarGuiasPorTema } from '@/lib/home/guias'
@@ -26,7 +27,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         ...siteSettings.home.highlightPostIds,
     ].filter(Boolean)
 
-    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult] = await Promise.allSettled([
+    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult, prateleirasResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
@@ -51,6 +52,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         comercio ? carregarGuiasPorTema() : Promise.resolve([]),
         comercio ? carregarTemas() : Promise.resolve(null),
         comercio ? carregarExplore() : Promise.resolve([]),
+        comercio ? carregarPrateleirasEditorias() : Promise.resolve({}),
     ])
 
     const latestPosts = postsResult.status === 'fulfilled' ? postsResult.value.items : []
@@ -84,5 +86,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
 
     const explore = exploreResult.status === 'fulfilled' ? exploreResult.value : []
 
-    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore }
+    const prateleirasEditorias = prateleirasResult.status === 'fulfilled' ? prateleirasResult.value : {}
+
+    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias }
 }
