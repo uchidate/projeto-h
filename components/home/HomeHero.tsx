@@ -14,8 +14,9 @@ import { getArtists } from '@/lib/wordpress/artists'
 import { getAvaliacao, confiancaDaNota } from '@/lib/tmdb/avaliacao'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
 import { homeCatName } from '@/lib/home/catStyle'
+import { HeroCarousel } from '@/components/home/HeroCarousel'
 
-async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
+async function HeroPost({ post, locale, primeiro = true }: { post: WPPost; locale: Locale; primeiro?: boolean }) {
     const t = await getTranslations({ locale, namespace: 'home.hero' })
     const tc = await getTranslations({ locale, namespace: 'home.comum' })
     const data = formatDatePt(post.date, intlLocale(locale))
@@ -24,13 +25,15 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
     const excerpt = stripHtml(post.excerpt?.rendered ?? '').slice(0, 160)
     const mins = readingTime(post.content?.rendered ?? '')
 
+    const Titulo = primeiro ? 'h1' : 'h2'
+
     return (
         <div className="lg:flex lg:h-[400px]">
             <Link {...postLink(post.slug, locale)}
                 className="group relative block min-w-0 overflow-hidden border-b border-border lg:w-[50%] lg:shrink-0 lg:border-b-0 lg:border-r">
                 <div className="relative aspect-16/10 w-full sm:aspect-video lg:h-full lg:aspect-auto">
                     {image ? (
-                        <Image src={image.src} alt={image.alt || title} fill priority fetchPriority="high"
+                        <Image src={image.src} alt={image.alt || title} fill priority={primeiro} fetchPriority={primeiro ? 'high' : 'auto'}
                             sizes="(max-width: 1024px) 100vw, 50vw"
                             className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none" />
                     ) : (
@@ -43,7 +46,7 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
 
             <div className="flex min-w-0 flex-col border-b border-border bg-background px-4 py-5 sm:px-6 sm:py-6 lg:hidden">
                 <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.14em]">
-                    <span className="text-accent">{tc('capa')}</span>
+                    <span className="text-accent">{primeiro ? tc('capa') : tc('emDestaque')}</span>
                     <span className="text-muted/45" aria-hidden="true">·</span>
                     <span className="text-muted">{homeCatName(post, undefined, tc('artigo'))}</span>
                     <span className="text-muted/45" aria-hidden="true">·</span>
@@ -54,7 +57,7 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
                     {/* Variante mobile do mesmo título: como <h1>, formava par com o
                         hero desktop e o crawler (que não aplica breakpoint) via dois H1.
                         role/aria-level preserva o cabeçalho para leitor de tela. */}
-                    <p role="heading" aria-level={1} className="min-w-0 max-w-[22ch] wrap-anywhere font-serif text-[clamp(1.8rem,7.6vw,2.6rem)] font-medium leading-[1.03] tracking-[-0.035em] text-foreground transition-colors group-hover:text-accent">
+                    <p role="heading" aria-level={primeiro ? 1 : 2} className="min-w-0 max-w-[22ch] wrap-anywhere font-serif text-[clamp(1.8rem,7.6vw,2.6rem)] font-medium leading-[1.03] tracking-[-0.035em] text-foreground transition-colors group-hover:text-accent">
                         {title}
                     </p>
                 </Link>
@@ -73,7 +76,7 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
                     <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em]">
                         <span className="inline-flex items-center gap-1.5 bg-accent/10 px-2.5 py-1 text-accent">
                             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                            {tc('capa')}
+                            {primeiro ? tc('capa') : tc('emDestaque')}
                         </span>
                         <span className="text-muted/45">·</span>
                         <span className="text-muted">{homeCatName(post, undefined, tc('artigo'))}</span>
@@ -83,9 +86,9 @@ async function HeroPost({ post, locale }: { post: WPPost; locale: Locale }) {
                     </div>
                 </div>
                 <Link {...postLink(post.slug, locale)} className="group relative">
-                    <h1 className="min-w-0 max-w-[20ch] wrap-anywhere font-serif text-home-hero font-medium text-foreground transition-colors group-hover:text-accent">
+                    <Titulo className="min-w-0 max-w-[20ch] wrap-anywhere font-serif text-home-hero font-medium text-foreground transition-colors group-hover:text-accent">
                         {title}
-                    </h1>
+                    </Titulo>
                 </Link>
                 {excerpt && <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.65] text-foreground/65 line-clamp-3">{excerpt}</p>}
                 <div className="mt-auto pt-5 border-t border-border flex items-center justify-between">
@@ -261,13 +264,21 @@ async function HeroFallback({ locale }: { locale: Locale }) {
 }
 
 interface Props {
-    post?: WPPost
+    /** Matérias do carrossel: a capa primeiro. Uma só vira o card único. */
+    posts?: WPPost[]
     production?: WPProduction
     locale?: Locale
 }
 
-export function HomeHero({ post, production, locale = DEFAULT_LOCALE }: Props) {
-    if (post) return <HeroPost post={post} locale={locale} />
+export function HomeHero({ posts = [], production, locale = DEFAULT_LOCALE }: Props) {
+    if (posts.length === 1) return <HeroPost post={posts[0]} locale={locale} />
+    if (posts.length > 1) {
+        return (
+            <HeroCarousel>
+                {posts.map((post, i) => <HeroPost key={post.id} post={post} locale={locale} primeiro={i === 0} />)}
+            </HeroCarousel>
+        )
+    }
     if (production) return <HeroProduction production={production} locale={locale} />
     return <HeroFallback locale={locale} />
 }

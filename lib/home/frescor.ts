@@ -26,3 +26,19 @@ export function escolherCapa(posts: WPPost[], capaFixadaId: number | undefined, 
     if (fixada) return fixada
     return [...frescos].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0]
 }
+
+/**
+ * Slides do carrossel da home: a capa (`escolherCapa`) primeiro e, depois dela, as matérias frescas
+ * mais recentes, até `max`. Só entra o que ainda está dentro do limite de frescor, então o
+ * carrossel nunca mostra matéria velha; com uma só fresca ele vira o card único de antes.
+ * `reservados` são matérias escolhidas à mão para outro bloco da home (os destaques): os slides
+ * extras nunca as tomam, para a matéria não sumir da grade nem aparecer duas vezes.
+ */
+export function escolherCapas(posts: WPPost[], capaFixadaId: number | undefined, max = 4, agora: Date = new Date(), reservados: ReadonlySet<number> = new Set()): WPPost[] {
+    const capa = escolherCapa(posts, capaFixadaId, agora)
+    if (!capa) return []
+    const outras = posts
+        .filter(p => p.id !== capa.id && !reservados.has(p.id) && idadeEmDias(p.date, agora) <= DIAS_CAPA_FRESCA)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    return [capa, ...outras.slice(0, Math.max(0, max - 1))]
+}

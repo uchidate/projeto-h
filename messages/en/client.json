@@ -262,5 +262,15 @@
   "trackIndex": {
     "label": "Album tracks",
     "listenAlbum": "Listen to the album"
+  },
+  "heroCarousel": {
+    "label": "Home highlights",
+    "slide": "{n} of {total}",
+    "anterior": "Previous highlight",
+    "proximo": "Next highlight",
+    "pausar": "Pause autoplay",
+    "retomar": "Resume autoplay",
+    "slides": "Choose highlight",
+    "irPara": "Go to highlight {n}"
   }
 }

@@ -20,10 +20,10 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
     ].filter(Boolean)
 
     const [postsResult, curatedPostsResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, featuredProductsResult] = await Promise.allSettled([
-        // A composição acima da dobra usa no máximo 19 posts (hero + 6
+        // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
-        getPosts({ perPage: 20, includeContent: false }),
+        getPosts({ perPage: 22, includeContent: false }),
         curatedIds.length
             ? getPosts({ perPage: curatedIds.length, includeIds: curatedIds })
             : Promise.resolve({ items: [], total: 0, totalPages: 0 }),

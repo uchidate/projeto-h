@@ -262,5 +262,15 @@
   "trackIndex": {
     "label": "Faixas do álbum",
     "listenAlbum": "Ouvir o álbum"
+  },
+  "heroCarousel": {
+    "label": "Destaques da home",
+    "slide": "{n} de {total}",
+    "anterior": "Destaque anterior",
+    "proximo": "Próximo destaque",
+    "pausar": "Pausar o avanço automático",
+    "retomar": "Retomar o avanço automático",
+    "slides": "Escolher destaque",
+    "irPara": "Ir para o destaque {n}"
   }
 }
