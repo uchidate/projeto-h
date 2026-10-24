@@ -33,6 +33,8 @@ export function EmbedsSobDemanda() {
     const t = useTranslations('client.playerDock')
     const [atual, setAtual] = useState<Tocando | null>(null)
     const controles = useRef(new Map<string, SpotifyController>())
+    const capas = useRef(new Map<string, string>())
+    const urls = useRef(new Map<string, string>())
 
     useEffect(() => {
         const mapa = controles.current
@@ -55,6 +57,7 @@ export function EmbedsSobDemanda() {
             const bloco = iframe.closest<HTMLElement>('[data-article-block]')
             const id = cartao?.id || bloco?.id || `player-${indice}`
             const titulo = cartao?.querySelector('h3')?.textContent?.replace(/\s+/g, ' ').trim().replace(/^\d+\.\s*/, '') || t('album')
+            urls.current.set(id, src)
             const altura = Number(iframe.getAttribute('height')) || 80
             const lugar = document.createElement('div')
             iframe.replaceWith(lugar)
@@ -67,7 +70,7 @@ export function EmbedsSobDemanda() {
                         mapa.forEach((outro, chave) => { if (chave !== id) outro.pause() })
                         const faixas = ordem()
                         setAtual((prev) => ({
-                            id, titulo, pausado: false, capa: capaDoArtigo(),
+                            id, titulo, pausado: false, capa: capas.current.get(id) ?? capaDoArtigo(),
                             numero: faixas.indexOf(id) >= 0 ? faixas.indexOf(id) + 1 : undefined,
                             total: faixas.length || undefined,
                             posicao: d.position ?? (prev?.id === id ? prev.posicao : 0),
@@ -112,6 +115,25 @@ export function EmbedsSobDemanda() {
             mapa.clear()
         }
     }, [t])
+
+    // Arte quadrada da faixa: o oEmbed do Spotify devolve a capa do álbum em 300 px (a imagem de destaque do artigo é 16:9 e cortava a arte).
+    const idTocando = atual?.id
+    useEffect(() => {
+        if (!idTocando || capas.current.has(idTocando)) return
+        const src = urls.current.get(idTocando)
+        if (!src) return
+        let vivo = true
+        const alvo = src.replace('/embed/', '/').split('?')[0]
+        fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(alvo)}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((j: { thumbnail_url?: string } | null) => {
+                if (!vivo || !j?.thumbnail_url) return
+                capas.current.set(idTocando, j.thumbnail_url)
+                setAtual((prev) => (prev?.id === idTocando ? { ...prev, capa: j.thumbnail_url } : prev))
+            })
+            .catch(() => {})
+        return () => { vivo = false }
+    }, [idTocando])
 
     // Destaca o cartão e o atalho da faixa que está tocando.
     useEffect(() => {
