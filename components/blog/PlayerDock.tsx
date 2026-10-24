@@ -8,6 +8,8 @@ export interface DadosDoDock {
     titulo: string
     pausado: boolean
     capa?: string
+    /** Artista e álbum (do título do artigo), ex.: "ILLIT, bomb". */
+    rotulo?: string
     numero?: number
     total?: number
     posicao: number
@@ -39,7 +41,7 @@ const FECHAR = 'M6.4 5 12 10.6 17.6 5 19 6.4 13.4 12 19 17.6 17.6 19 12 13.4 6.4
  * espelha o player nos dois sentidos (play/pausa/posição do Spotify → nativo, e usar o nativo → Spotify).
  * Fica `fixed` fora do fluxo do texto, então não treme com a rolagem.
  */
-export function PlayerDock({ titulo, pausado, capa, numero, total, posicao, duracao, onAlternar, onIr, onFechar, onAnterior, onProxima, onBuscar }: Props) {
+export function PlayerDock({ titulo, pausado, capa, rotulo, numero, total, posicao, duracao, onAlternar, onIr, onFechar, onAnterior, onProxima, onBuscar }: Props) {
     const t = useTranslations('client.playerDock')
     const audio = useRef<HTMLAudioElement>(null)
     const url = useRef<string | null>(null)
@@ -93,25 +95,34 @@ export function PlayerDock({ titulo, pausado, capa, numero, total, posicao, dura
             role="region"
             aria-label={t('region')}
             data-player-dock
-            className="not-prose fixed bottom-[calc(var(--bottom-nav-h,0px)+8px)] left-2 right-2 z-[210] lg:bottom-6 lg:left-6 lg:right-auto lg:w-[26rem]"
+            className="oc-dock-in not-prose fixed bottom-[calc(var(--bottom-nav-h,0px)+8px)] left-2 right-2 z-[210] rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[0_12px_40px_rgb(0_0_0/0.28)] lg:bottom-6 lg:left-6 lg:right-auto lg:w-[25rem]"
         >
-            <div className="mb-1 flex items-center gap-1">
-                <button type="button" onClick={onIr} aria-label={t('goTo', { title: titulo })} className="flex min-w-0 items-center gap-2 rounded-full bg-[var(--color-surface)] py-1 pl-1 pr-3 text-left shadow-md ring-1 ring-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]">
-                    <span className="block h-6 w-6 shrink-0 overflow-hidden rounded-full bg-[var(--color-border)]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        {capa && <img src={capa} alt="" className="!m-0 block h-full w-full max-w-none object-cover" />}
-                    </span>
-                    <span className="min-w-0 truncate text-xs font-semibold text-[var(--color-foreground)]" aria-live="polite">
-                        {titulo}{numero && total ? <span className="font-normal text-[var(--color-muted)]"> · {t('trackOf', { n: numero, total })}</span> : null}
-                    </span>
+            <div className="flex items-center gap-3">
+                <button type="button" onClick={onIr} aria-label={t('goTo', { title: titulo })} className="relative block h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-[var(--color-border)] shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] max-lg:h-12 max-lg:w-12">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {capa && <img src={capa} alt="" className="!m-0 block h-full w-full max-w-none object-cover" />}
                 </button>
-                <span className="flex-1" />
-                {onAnterior && <button type="button" onClick={onAnterior} className={`${BOTAO} h-8 w-8 bg-[var(--color-surface)] shadow-md ring-1 ring-black/10`} aria-label={t('previous')}><Icone d={ANTERIOR} /></button>}
-                {onProxima && <button type="button" onClick={onProxima} className={`${BOTAO} h-8 w-8 bg-[var(--color-surface)] shadow-md ring-1 ring-black/10`} aria-label={t('next')}><Icone d={PROXIMA} /></button>}
-                <button type="button" onClick={onFechar} className={`${BOTAO} h-8 w-8 bg-[var(--color-surface)] shadow-md ring-1 ring-black/10`} aria-label={t('close')}><Icone d={FECHAR} /></button>
+                <div className="min-w-0 flex-1">
+                    <p className="!m-0 truncate text-[15px] font-semibold leading-snug text-[var(--color-foreground)]" aria-live="polite">{titulo}</p>
+                    <p className="!m-0 mt-0.5 flex items-center gap-2 truncate text-xs text-[var(--color-muted)]">
+                        <span className={`oc-eq ${pausado ? 'oc-eq--pausado' : ''}`} aria-hidden="true"><i /><i /><i /></span>
+                        <span className="min-w-0 truncate">{rotulo ?? t('album')}</span>
+                        {numero && total ? (
+                            <span className="shrink-0 tabular-nums" title={t('trackOf', { n: numero, total })}>
+                                <span aria-hidden="true">· {numero}/{total}</span>
+                                <span className="sr-only">{t('trackOf', { n: numero, total })}</span>
+                            </span>
+                        ) : null}
+                    </p>
+                </div>
+                <div className="flex shrink-0 items-center">
+                    {onAnterior && <button type="button" onClick={onAnterior} className={`${BOTAO} h-9 w-9`} aria-label={t('previous')}><Icone d={ANTERIOR} /></button>}
+                    {onProxima && <button type="button" onClick={onProxima} className={`${BOTAO} h-9 w-9`} aria-label={t('next')}><Icone d={PROXIMA} /></button>}
+                    <button type="button" onClick={onFechar} className={`${BOTAO} h-9 w-9 text-[var(--color-muted)]`} aria-label={t('close')}><Icone d={FECHAR} /></button>
+                </div>
             </div>
-            <div className="overflow-hidden rounded-full bg-[var(--color-surface)] shadow-[0_4px_16px_rgb(0_0_0/0.3)] ring-1 ring-black/10">
-                <audio ref={audio} controls preload="auto" className="block h-12 w-full [color-scheme:light] dark:[color-scheme:dark]" aria-label={titulo} />
+            <div className="mt-3 overflow-hidden rounded-full bg-[var(--color-background,var(--color-surface))] ring-1 ring-black/10">
+                <audio ref={audio} controls preload="auto" className="block h-11 w-full [color-scheme:light] dark:[color-scheme:dark]" aria-label={titulo} />
             </div>
         </div>
     )

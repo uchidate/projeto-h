@@ -15,6 +15,12 @@ function capaDoArtigo() {
     try { return (og && new URL(og).searchParams.get('image')) || undefined } catch { return undefined }
 }
 
+/** "ILLIT, bomb" a partir do título do artigo ("ILLIT, bomb: faixa a faixa, ..."). */
+function rotuloDoArtigo() {
+    const h1 = document.querySelector('h1')?.textContent?.trim()
+    return h1 ? h1.split(':')[0].trim() : undefined
+}
+
 /** Ids dos cartões de faixa, na ordem do texto. */
 function ordem() {
     return Array.from(document.querySelectorAll<HTMLElement>('.oc-track[id]')).map((el) => el.id)
@@ -70,7 +76,7 @@ export function EmbedsSobDemanda() {
                         mapa.forEach((outro, chave) => { if (chave !== id) outro.pause() })
                         const faixas = ordem()
                         setAtual((prev) => ({
-                            id, titulo, pausado: false, capa: capas.current.get(id) ?? capaDoArtigo(),
+                            id, titulo, pausado: false, capa: capas.current.get(id) ?? capaDoArtigo(), rotulo: rotuloDoArtigo(),
                             numero: faixas.indexOf(id) >= 0 ? faixas.indexOf(id) + 1 : undefined,
                             total: faixas.length || undefined,
                             posicao: d.position ?? (prev?.id === id ? prev.posicao : 0),
