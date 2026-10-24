@@ -57,6 +57,14 @@
     "abrir": "7 dias →",
     "anos": "anos"
   },
+  "guias": {
+      "titulo": "Guias",
+      "tag": "Atemporal",
+      "comece": "Comece aqui",
+      "porTema": "Guias por tema",
+      "verTodos": "Ver todos os guias",
+      "titulos": "{total} títulos"
+  },
   "editorias": {
     "rotulo": "Editorias",
     "kpop": "K-Pop",
@@ -111,8 +119,6 @@
     "acao": "Fazer o quiz"
   },
   "abaixoDaDobra": {
-    "guiasTitulo": "Comece por aqui",
-    "guiasTag": "Atemporal",
     "gruposTitulo": "Grupos K-Pop",
     "gruposEyebrow": "seleção editorial",
     "aniversariantesTitulo": "Aniversariantes — {mes}",

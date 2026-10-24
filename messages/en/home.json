@@ -57,6 +57,14 @@
     "abrir": "7 days →",
     "anos": "years"
   },
+  "guias": {
+      "titulo": "Guides",
+      "tag": "Timeless",
+      "comece": "Start here",
+      "porTema": "Guides by theme",
+      "verTodos": "All guides",
+      "titulos": "{total} titles"
+  },
   "editorias": {
     "rotulo": "Sections",
     "kpop": "K-Pop",
@@ -111,8 +119,6 @@
     "acao": "Take the quiz"
   },
   "abaixoDaDobra": {
-    "guiasTitulo": "Start here",
-    "guiasTag": "Timeless",
     "gruposTitulo": "K-Pop Groups",
     "gruposEyebrow": "editors' selection",
     "aniversariantesTitulo": "Birthdays — {mes}",
