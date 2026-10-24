@@ -28,7 +28,7 @@ async function HeroPost({ post, locale, primeiro = true }: { post: WPPost; local
     const Titulo = primeiro ? 'h1' : 'h2'
 
     return (
-        <div>
+        <div className="relative">
             <Link {...postLink(post.slug, locale)}
                 className="group relative block min-w-0 overflow-hidden border-b border-border">
                 <div className="relative aspect-16/10 w-full sm:aspect-video">
@@ -45,22 +45,21 @@ async function HeroPost({ post, locale, primeiro = true }: { post: WPPost; local
             </Link>
 
             <div className="flex min-w-0 flex-col border-b border-border bg-background px-4 py-5 sm:px-6 sm:py-6 lg:px-5">
+                <div className="lg:pointer-events-none lg:absolute lg:inset-x-0 lg:top-0 lg:flex lg:aspect-video lg:flex-col lg:justify-end lg:bg-linear-to-t lg:from-black/85 lg:via-black/35 lg:to-transparent lg:px-5 lg:pb-5">
                 <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.14em]">
-                    <span className="text-accent">{primeiro ? tc('capa') : tc('emDestaque')}</span>
-                    <span className="text-muted/45" aria-hidden="true">·</span>
-                    <span className="text-muted">{homeCatName(post, undefined, tc('artigo'))}</span>
-                    <span className="text-muted/45" aria-hidden="true">·</span>
-                    <span className="text-muted">{tc('minutosDeLeitura', { mins })}</span>
+                    <span className="text-accent lg:text-white">{primeiro ? tc('capa') : tc('emDestaque')}</span>
+                    <span className="text-muted/45 lg:text-white/50" aria-hidden="true">·</span>
+                    <span className="text-muted lg:text-white/80">{homeCatName(post, undefined, tc('artigo'))}</span>
+                    <span className="text-muted/45 lg:text-white/50" aria-hidden="true">·</span>
+                    <span className="text-muted lg:text-white/80">{tc('minutosDeLeitura', { mins })}</span>
                     <HomePtBadge locale={locale} />
                 </div>
-                <Link {...postLink(post.slug, locale)} className="group mt-3 min-w-0">
-                    {/* Variante mobile do mesmo título: como <h1>, formava par com o
-                        hero desktop e o crawler (que não aplica breakpoint) via dois H1.
-                        role/aria-level preserva o cabeçalho para leitor de tela. */}
-                    <Titulo className="min-w-0 max-w-[22ch] wrap-anywhere font-serif text-[clamp(1.8rem,7.6vw,2.6rem)] font-medium lg:text-[2.1rem] leading-[1.03] tracking-[-0.035em] text-foreground transition-colors group-hover:text-accent">
+                <Link {...postLink(post.slug, locale)} className="group mt-3 min-w-0 lg:pointer-events-auto">
+                    <Titulo className="min-w-0 max-w-[22ch] wrap-anywhere font-serif text-[clamp(1.8rem,7.6vw,2.6rem)] font-medium lg:text-[2.1rem] leading-[1.03] tracking-[-0.035em] text-foreground transition-colors group-hover:text-accent lg:text-white lg:group-hover:text-white">
                         {title}
                     </Titulo>
                 </Link>
+                </div>
                 {excerpt && <p className="mt-3 max-w-[58ch] text-[13px] leading-5 text-muted line-clamp-2">{excerpt}</p>}
                 <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-4">
                     <span className="min-w-0 truncate text-[11px] text-muted">{data}</span>
