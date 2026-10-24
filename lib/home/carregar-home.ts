@@ -7,6 +7,7 @@ import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getStreamingTopShows } from '@/lib/tmdb/streaming'
 import { hojeEmBrasilia, mesesParaBuscar, montarAniversarios, type AniversariosHome } from '@/lib/home/aniversarios'
+import { carregarTemas } from '@/lib/home/temas'
 import { carregarGuiasPorTema } from '@/lib/home/guias'
 import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
 
@@ -23,7 +24,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         ...siteSettings.home.highlightPostIds,
     ].filter(Boolean)
 
-    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, featuredProductsResult, aniversariosResult, guiasResult] = await Promise.allSettled([
+    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, featuredProductsResult, aniversariosResult, guiasResult, temasResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
@@ -46,6 +47,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
             ? Promise.all(mesesParaBuscar(hoje).map(birthMonth => getArtists({ birthMonth, perPage: 100 }))).then(r => r.flatMap(x => x.items))
             : Promise.resolve([]),
         comercio ? carregarGuiasPorTema() : Promise.resolve([]),
+        comercio ? carregarTemas() : Promise.resolve(null),
     ])
 
     const latestPosts = postsResult.status === 'fulfilled' ? postsResult.value.items : []
@@ -75,5 +77,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
 
     const guiasPorTema = guiasResult.status === 'fulfilled' ? guiasResult.value : []
 
-    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, featuredProducts, postsEditorias, aniversarios, guiasPorTema }
+    const temas = temasResult.status === 'fulfilled' ? temasResult.value : null
+
+    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, featuredProducts, postsEditorias, aniversarios, guiasPorTema, temas }
 }

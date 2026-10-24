@@ -68,6 +68,36 @@
   "assuntos": {
     "rotulo": "Topics"
   },
+  "temas": {
+      "gastronomia": {
+          "titulo": "Korean food",
+          "caixa": "Theme of the week",
+          "contaPratos": "{n} dishes",
+          "contaMarcas": "{n} companies",
+          "contaArtigos": "{n} articles",
+          "abrir": "Open the theme",
+          "paraLer": "To read",
+          "pratos": "Dishes",
+          "marcas": "Brands",
+          "naLoja": "{n} in the shop",
+          "prateleira": "In the shop · Korean food · affiliate",
+          "verPrateleira": "See the shelf →"
+      },
+      "beleza": {
+          "titulo": "Korean beauty",
+          "caixa": "In focus",
+          "contaPratos": "{n} dishes",
+          "contaMarcas": "{n} brands",
+          "contaArtigos": "{n} articles on skincare, makeup and sunscreen",
+          "abrir": "Open the theme",
+          "paraLer": "To read",
+          "pratos": "Dishes",
+          "marcas": "Brands",
+          "naLoja": "{n} in the shop",
+          "prateleira": "In the shop · K-Beauty · affiliate",
+          "verPrateleira": "See the shelf →"
+      }
+  },
   "editorias": {
     "rotulo": "Sections",
     "kpop": "K-Pop",

@@ -68,6 +68,36 @@
   "assuntos": {
     "rotulo": "Assuntos"
   },
+  "temas": {
+      "gastronomia": {
+          "titulo": "Gastronomia coreana",
+          "caixa": "Tema da semana",
+          "contaPratos": "{n} pratos",
+          "contaMarcas": "{n} empresas",
+          "contaArtigos": "{n} artigos",
+          "abrir": "Abrir o tema",
+          "paraLer": "Para ler",
+          "pratos": "Pratos",
+          "marcas": "Marcas",
+          "naLoja": "{n} na loja",
+          "prateleira": "Na loja · comida coreana · afiliado",
+          "verPrateleira": "Ver prateleira →"
+      },
+      "beleza": {
+          "titulo": "Beleza coreana",
+          "caixa": "Em foco",
+          "contaPratos": "{n} pratos",
+          "contaMarcas": "{n} marcas",
+          "contaArtigos": "{n} artigos sobre skincare, maquiagem e protetor solar",
+          "abrir": "Abrir o tema",
+          "paraLer": "Para ler",
+          "pratos": "Pratos",
+          "marcas": "Marcas",
+          "naLoja": "{n} na loja",
+          "prateleira": "Na loja · K-Beauty · afiliado",
+          "verPrateleira": "Ver prateleira →"
+      }
+  },
   "editorias": {
     "rotulo": "Editorias",
     "kpop": "K-Pop",
