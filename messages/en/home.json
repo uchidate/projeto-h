@@ -46,11 +46,9 @@
     "grupos": "Groups →"
   },
   "destaques": {
-    "titulo": "Featured",
-    "selecaoEditorial": "editors' selection",
-    "verTodosArtigos": "See all articles"
+    "titulo": "Featured"
   },
-"calendario": {
+  "calendario": {
     "rotulo": "Calendar",
     "titulo": "Today on the calendar",
     "tag": "Birthdays",
@@ -58,7 +56,7 @@
     "aSeguir": "Coming up",
     "abrir": "7 days →",
     "anos": "years"
-},
+  },
   "editorias": {
     "rotulo": "Sections",
     "kpop": "K-Pop",

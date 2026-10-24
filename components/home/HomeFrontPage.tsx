@@ -12,7 +12,7 @@ import { HomeComecePorAqui } from '@/components/home/HomeComecePorAqui'
 import { HomeCalendario } from '@/components/home/HomeCalendario'
 import { HomeEditorias } from '@/components/home/HomeEditorias'
 import { HomeEditorialHubs } from '@/components/home/HomeEditorialHubs'
-import { HomeHighlightGrid } from '@/components/home/HomeHighlightGrid'
+import { HomeDestaquesColuna } from '@/components/home/HomeDestaquesColuna'
 import { HomeLongreads } from '@/components/home/HomeLongreads'
 import { HomeTrendingArtists } from '@/components/home/HomeTrendingArtists'
 import { HomeTrendingGroups } from '@/components/home/HomeTrendingGroups'
@@ -79,13 +79,13 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     return (
         <section className="bg-background" aria-label={t('rotulo')}>
             <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
-                <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px]">
+                <div className="lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)]">
                     <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
+                    <div data-bloco="home-destaques" className="contents"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
                     {soPt && aniversarios && <div data-bloco="home-calendario" className="contents"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {soPt && <div data-bloco="home-comece-por-aqui" className="contents"><HomeComecePorAqui guides={cultureGuides} locale={locale} /></div>}
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
-                <div data-bloco="home-destaques" className="contents"><HomeHighlightGrid posts={highlighted} categoryMap={categoryMap} locale={locale} /></div>
                 <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} locale={locale} /></div>
                 {soPt && <div data-bloco="home-loja" className="contents"><ShopRelatedSection title={t('lojaTitulo')} products={featuredProducts} /></div>}
                 {ADSENSE.slots.inline && (

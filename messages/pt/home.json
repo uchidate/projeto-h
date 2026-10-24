@@ -46,11 +46,9 @@
     "grupos": "Grupos →"
   },
   "destaques": {
-    "titulo": "Em destaque",
-    "selecaoEditorial": "seleção editorial",
-    "verTodosArtigos": "Ver todos os artigos"
+    "titulo": "Destaques"
   },
-"calendario": {
+  "calendario": {
     "rotulo": "Calendário",
     "titulo": "Hoje no calendário",
     "tag": "Aniversários",
@@ -58,7 +56,7 @@
     "aSeguir": "A seguir",
     "abrir": "7 dias →",
     "anos": "anos"
-},
+  },
   "editorias": {
     "rotulo": "Editorias",
     "kpop": "K-Pop",
