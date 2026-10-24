@@ -171,6 +171,40 @@ export function EmbedsSobDemanda() {
         }, 250)
     }, [atual])
 
+    // Media Session: teclas de mídia, tela de bloqueio e painel de mídia do navegador mostram a faixa e controlam o player.
+    const idAtual = atual?.id
+    const tituloAtual = atual?.titulo
+    const capaAtual = atual?.capa
+    const pausadoAtual = atual?.pausado
+    const duracaoAtual = atual?.duracao
+    const posicaoAtual = atual?.posicao
+    useEffect(() => {
+        if (!idAtual || !('mediaSession' in navigator)) return
+        const ms = navigator.mediaSession
+        ms.metadata = new MediaMetadata({
+            title: tituloAtual ?? '',
+            artist: document.querySelector('h1')?.textContent?.trim() ?? 'HallyuHub',
+            album: 'HallyuHub',
+            artwork: capaAtual ? [{ src: capaAtual, sizes: '300x300' }] : [],
+        })
+        ms.playbackState = pausadoAtual ? 'paused' : 'playing'
+        const faixas = ordem()
+        const i = faixas.indexOf(idAtual)
+        const acoes: Array<[MediaSessionAction, MediaSessionActionHandler | null]> = [
+            ['play', () => controles.current.get(idAtual)?.play()],
+            ['pause', () => controles.current.get(idAtual)?.pause()],
+            ['seekto', (d) => { if (d.seekTime != null) controles.current.get(idAtual)?.seek(d.seekTime) }],
+            ['previoustrack', i > 0 ? () => vizinha(-1) : null],
+            ['nexttrack', i >= 0 && i < faixas.length - 1 ? () => vizinha(1) : null],
+        ]
+        for (const [acao, fn] of acoes) { try { ms.setActionHandler(acao, fn) } catch { /* ação não suportada */ } }
+        return () => { for (const [acao] of acoes) { try { ms.setActionHandler(acao, null) } catch { /* idem */ } } }
+    }, [idAtual, tituloAtual, capaAtual, pausadoAtual, vizinha])
+    useEffect(() => {
+        if (!idAtual || !duracaoAtual || !('mediaSession' in navigator)) return
+        try { navigator.mediaSession.setPositionState({ duration: duracaoAtual / 1000, position: Math.min((posicaoAtual ?? 0) / 1000, duracaoAtual / 1000), playbackRate: 1 }) } catch { /* valores inválidos */ }
+    }, [idAtual, duracaoAtual, posicaoAtual])
+
     if (!atual) return null
     const faixas = ordem()
     const i = faixas.indexOf(atual.id)

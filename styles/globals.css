@@ -2518,6 +2518,10 @@ html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
 /* Título do cartão de faixa: espaço para o botão de compartilhar. */
 .wp-article-content .oc-track h3 { padding-right: 7.5rem; }
 
+/* Mini player aberto: o botão de voltar ao topo sobe para não ficar atrás dele. */
+html[data-player-dock] .oc-back-to-top { bottom: calc(var(--bottom-nav-h, 62px) + 88px); }
+@media (min-width: 1024px) { html[data-player-dock] .oc-back-to-top { bottom: 6.5rem; } }
+
 /* Faixa que está tocando: destaque no cartão e equalizador na barra fixa (PlayerDock). */
 .wp-article-content .oc-track[data-tocando] { border-color: var(--color-accent); box-shadow: 0 0 0 2px var(--color-accent); }
 .oc-eq { display: inline-flex; align-items: flex-end; gap: 2px; width: 18px; height: 16px; flex: none; }
