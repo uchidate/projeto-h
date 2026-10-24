@@ -1,7 +1,6 @@
 {
   "pagina": {
-    "rotulo": "__SITE__ home page",
-    "lojaTitulo": "Editors' picks"
+    "rotulo": "__SITE__ home page"
   },
   "comum": {
     "verTodos": "see all →",
@@ -121,6 +120,15 @@
       "apoio": {
           "agencias": "SM, JYP, HYBE, YG and the other agencies"
       }
+  },
+  "loja": {
+      "titulo": "Liked it? Take it home.",
+      "caixa": "Best sellers",
+      "verLoja": "See the whole shop →",
+      "aviso": "When you buy through these links, HallyuHub earns a commission at no extra cost to you.",
+      "vendidos": "{n} sold",
+      "comprar": "Buy in the shop →",
+      "precoCaiu": "Price drop"
   },
   "editorias": {
     "rotulo": "Sections",

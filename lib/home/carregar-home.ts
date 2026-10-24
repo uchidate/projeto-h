@@ -3,7 +3,8 @@ import { getProductions } from '@/lib/wordpress/productions'
 import { getArtists, getMostAccessedArtists, getStreamingArtists } from '@/lib/wordpress/artists'
 import { getFeaturedSpotlight } from '@/lib/wordpress/spotlight'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
-import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { getStoreProducts } from '@/lib/wordpress/store'
+import { maisVendidos } from '@/lib/home/mais-vendidos'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getStreamingTopShows } from '@/lib/tmdb/streaming'
 import { hojeEmBrasilia, mesesParaBuscar, montarAniversarios, type AniversariosHome } from '@/lib/home/aniversarios'
@@ -25,7 +26,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         ...siteSettings.home.highlightPostIds,
     ].filter(Boolean)
 
-    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, featuredProductsResult, aniversariosResult, guiasResult, temasResult, exploreResult] = await Promise.allSettled([
+    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
@@ -42,7 +43,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         getFeaturedSpotlight(),
         comercio ? getStreamingTopShows() : Promise.resolve({}),
         getCategories(),
-        comercio ? getFeaturedStoreProducts() : Promise.resolve([]),
+        comercio ? getStoreProducts().then(todos => maisVendidos(todos)) : Promise.resolve([]),
         // Só o calendário em português existe; a busca é por mês de nascimento, ordenada por popularidade.
         comercio
             ? Promise.all(mesesParaBuscar(hoje).map(birthMonth => getArtists({ birthMonth, perPage: 100 }))).then(r => r.flatMap(x => x.items))
@@ -73,7 +74,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
     const streamingByPlatform = streamingShows.status === 'fulfilled' ? streamingShows.value : {}
     const categories = categoriesResult.status === 'fulfilled' ? categoriesResult.value : []
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
-    const featuredProducts = featuredProductsResult.status === 'fulfilled' ? featuredProductsResult.value : []
+    const produtosMaisVendidos = maisVendidosResult.status === 'fulfilled' ? maisVendidosResult.value : []
 
     const aniversarios: AniversariosHome = montarAniversarios(aniversariosResult.status === 'fulfilled' ? aniversariosResult.value : [], hoje)
 
@@ -83,5 +84,5 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
 
     const explore = exploreResult.status === 'fulfilled' ? exploreResult.value : []
 
-    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, featuredProducts, postsEditorias, aniversarios, guiasPorTema, temas, explore }
+    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore }
 }

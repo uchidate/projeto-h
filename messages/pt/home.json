@@ -1,7 +1,6 @@
 {
   "pagina": {
-    "rotulo": "Página inicial __SITE__",
-    "lojaTitulo": "Gostou? Leve para casa."
+    "rotulo": "Página inicial __SITE__"
   },
   "comum": {
     "verTodos": "ver todos →",
@@ -121,6 +120,15 @@
       "apoio": {
           "agencias": "SM, JYP, HYBE, YG e as demais agências"
       }
+  },
+  "loja": {
+      "titulo": "Gostou? Leve para casa.",
+      "caixa": "Mais vendidos",
+      "verLoja": "Ver a loja toda →",
+      "aviso": "Comprando pelos links, o HallyuHub recebe comissão, sem custo extra.",
+      "vendidos": "{n} vendidos",
+      "comprar": "Comprar na loja →",
+      "precoCaiu": "Preço caiu"
   },
   "editorias": {
     "rotulo": "Editorias",
