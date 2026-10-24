@@ -40,9 +40,8 @@
     "verTodas": "ver todas →"
   },
   "spotlight": {
-    "eyebrow": "● charts & buzz coreano",
     "titulo": "Populares na Coreia agora",
-    "descricao": "Baseado em charts, streams e redes sociais na Coreia",
+    "tag": "Ranking",
     "artistas": "Artistas →",
     "grupos": "Grupos →"
   },
@@ -56,7 +55,8 @@
     "verFeed": "ver feed →"
   },
   "longreads": {
-    "titulo": "Para ler com calma",
+    "titulo": "Em profundidade",
+    "tag": "Leitura longa",
     "arquivo": "arquivo →"
   },
   "artistasEmAlta": {
@@ -97,8 +97,8 @@
     "acao": "Fazer o quiz"
   },
   "abaixoDaDobra": {
-    "guiasTitulo": "Comece por Aqui",
-    "guiasEyebrow": "cultura coreana 101",
+    "guiasTitulo": "Comece por aqui",
+    "guiasTag": "Atemporal",
     "gruposTitulo": "Grupos K-Pop",
     "gruposEyebrow": "seleção editorial",
     "aniversariantesTitulo": "Aniversariantes — {mes}",

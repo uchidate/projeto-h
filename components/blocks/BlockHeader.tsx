@@ -4,6 +4,9 @@ import { BrandDot } from '@/components/ui/BrandDot'
 type BlockHeaderProps = {
     title: ReactNode
     eyebrow?: ReactNode
+    // Caixa depois do título: diz o papel do bloco (ex.: "Leitura longa"), o que o título sozinho não diz.
+    tag?: ReactNode
+    tagColor?: string
     action?: ReactNode
     icon?: ReactNode
     meta?: ReactNode
@@ -27,6 +30,8 @@ const TITLE_SIZE = {
 export function BlockHeader({
     title,
     eyebrow,
+    tag,
+    tagColor,
     action,
     icon: _icon,
     meta,
@@ -51,9 +56,17 @@ export function BlockHeader({
                             {eyebrow}
                         </p>
                     )}
-                    <Heading className={`mt-2 max-w-[22ch] font-serif font-medium tracking-[-0.02em] text-foreground sm:max-w-none ${TITLE_SIZE[size]}`}>
-                        {title}{brandDot && <BrandDot />}
-                    </Heading>
+                    <div className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5`}>
+                        <Heading className={`max-w-[22ch] font-serif font-medium tracking-[-0.02em] text-foreground sm:max-w-none ${TITLE_SIZE[size]}`}>
+                            {title}{brandDot && <BrandDot />}
+                        </Heading>
+                        {tag && (
+                            <span className={`inline-block whitespace-nowrap border border-current px-[7px] py-1 font-mono text-[10px] font-bold uppercase leading-none tracking-[0.12em] ${tagColor ? '' : 'text-accent'}`}
+                                style={tagColor ? { color: tagColor } : undefined}>
+                                {tag}
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
             {(action || meta) && <div className="shrink-0">{action ?? meta}</div>}

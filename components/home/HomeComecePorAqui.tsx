@@ -28,7 +28,7 @@ export async function HomeComecePorAqui({ guides, locale = DEFAULT_LOCALE }: { g
     const tc = await getTranslations({ locale, namespace: 'home.comum' })
     return (
         <section className="border-t border-border px-4 py-5 sm:px-6 lg:px-5">
-            <SectionTitleBar title={t('guiasTitulo')} eyebrow={t('guiasEyebrow')} href="/cultura-coreana-101" linkText={tc('verTodos')} className="mb-3" />
+            <SectionTitleBar title={t('guiasTitulo')} tag={t('guiasTag')} href="/cultura-coreana-101" linkText={tc('verTodos')} className="mb-3" />
             <div className="-mx-4 grid auto-cols-[minmax(240px,78vw)] grid-flow-col gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid-flow-row sm:grid-cols-2 sm:px-0 lg:grid-cols-3">
                 {guides.slice(0, 6).map(g => <CultureGuideChip key={g.href} guide={g} />)}
             </div>

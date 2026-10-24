@@ -40,9 +40,8 @@
     "verTodas": "see all →"
   },
   "spotlight": {
-    "eyebrow": "● Korean charts & buzz",
     "titulo": "Popular in Korea right now",
-    "descricao": "Based on charts, streams and social media in Korea",
+    "tag": "Ranking",
     "artistas": "Artists →",
     "grupos": "Groups →"
   },
@@ -56,7 +55,8 @@
     "verFeed": "see feed →"
   },
   "longreads": {
-    "titulo": "Longer reads",
+    "titulo": "In depth",
+    "tag": "Long read",
     "arquivo": "archive →"
   },
   "artistasEmAlta": {
@@ -97,8 +97,8 @@
     "acao": "Take the quiz"
   },
   "abaixoDaDobra": {
-    "guiasTitulo": "Start Here",
-    "guiasEyebrow": "Korean culture 101",
+    "guiasTitulo": "Start here",
+    "guiasTag": "Timeless",
     "gruposTitulo": "K-Pop Groups",
     "gruposEyebrow": "editors' selection",
     "aniversariantesTitulo": "Birthdays — {mes}",
