@@ -98,6 +98,30 @@
           "verPrateleira": "Ver prateleira →"
       }
   },
+  "explore": {
+      "titulo": "Explore por tema",
+      "caixa": "{n} assuntos",
+      "verTodos": "Ver todos os temas",
+      "artigos": "artigos",
+      "fichas": "fichas",
+      "ultimo": "Último",
+      "novo": "Novo",
+      "temas": {
+          "kpop": "K-Pop",
+          "cultura": "Cultura",
+          "gastronomia": "Gastronomia",
+          "kbeauty": "K-Beauty",
+          "guias": "Guias para iniciantes",
+          "kdrama": "K-Drama",
+          "kfilm": "K-Film",
+          "reality": "Reality shows",
+          "webtoons": "Webtoons",
+          "agencias": "Agências"
+      },
+      "apoio": {
+          "agencias": "SM, JYP, HYBE, YG e as demais agências"
+      }
+  },
   "editorias": {
     "rotulo": "Editorias",
     "kpop": "K-Pop",

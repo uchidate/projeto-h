@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-    const { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, featuredProducts, postsEditorias, aniversarios, guiasPorTema, temas } = await carregarHome({ comercio: true })
+    const { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, featuredProducts, postsEditorias, aniversarios, guiasPorTema, temas, explore } = await carregarHome({ comercio: true })
 
     // Sem posts a home não é "home vazia", é home quebrada: wpFetch devolve []
     // quando o WordPress falha, e o resultado sairia com HTTP 200. Em 2026-08-06
@@ -91,6 +91,7 @@ export default async function HomePage() {
                 aniversarios={aniversarios}
                 guiasPorTema={guiasPorTema}
                 temas={temas}
+                explore={explore}
             />
             <Suspense fallback={null}>
                 <HomeBelowFold homeSettings={siteSettings.home} />

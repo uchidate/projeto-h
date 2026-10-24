@@ -8,6 +8,7 @@ import { ADSENSE } from '@/lib/config/ads'
 import { HomeHero } from '@/components/home/HomeHero'
 import { escolherCapas } from '@/lib/home/frescor'
 import { montarEditorias, type PostsPorEditoria } from '@/lib/home/editorias'
+import { HomeExplore } from '@/components/home/HomeExplore'
 import { HomeTema } from '@/components/home/HomeTema'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HomeAssuntos } from '@/components/home/HomeAssuntos'
@@ -23,6 +24,7 @@ import { HomeLatestPosts } from '@/components/home/HomeLatestPosts'
 import { HomeStreamingTop } from '@/components/home/HomeStreamingTop'
 import { HomeArtistSpotlight } from '@/components/home/HomeArtistSpotlight'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import type { CartaoExplore } from '@/lib/home/explore'
 import type { TemaHome } from '@/lib/home/temas'
 import type { GuiaDaHome } from '@/lib/home/guias'
 import type { AniversariosHome } from '@/lib/home/aniversarios'
@@ -53,11 +55,12 @@ type Props = {
     postsEditorias?: PostsPorEditoria
     aniversarios?: AniversariosHome
     guiasPorTema?: GuiaDaHome[]
+    explore?: CartaoExplore[]
     temas?: { gastronomia: TemaHome; beleza: TemaHome } | null
     locale?: Locale
 }
 
-export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, featuredProducts = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null }: Props) {
+export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, featuredProducts = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null, explore = [] }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
@@ -123,6 +126,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-10">
                             <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
                         </div>
+                        <div data-bloco="home-explore" className="contents"><HomeExplore cartoes={explore} locale={locale} /></div>
                         {temas && (
                             <>
                                 <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href="/comidas" bloco="home-gastronomia" locale={locale} />
