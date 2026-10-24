@@ -59,7 +59,7 @@ export function PlayerDock({ titulo, pausado, capa, numero, total, posicao, dura
                     </span>
                 </button>
                 {onAnterior && <button type="button" onClick={onAnterior} className={`${BOTAO} hidden sm:inline-flex`} aria-label={t('previous')}><span aria-hidden="true">⏮</span></button>}
-                <button type="button" onClick={onAlternar} className={`${BOTAO} h-11 w-11 bg-[var(--color-accent)] !text-white hover:!bg-[var(--color-accent)] hover:opacity-90`} aria-label={pausado ? t('play') : t('pause')}>
+                <button type="button" onClick={onAlternar} className={`${BOTAO} h-11 w-11 bg-[var(--color-accent-a11y,var(--color-accent))] !text-white hover:!bg-[var(--color-accent-a11y,var(--color-accent))] hover:opacity-90`} aria-label={pausado ? t('play') : t('pause')}>
                     <span aria-hidden="true">{pausado ? '▶' : '❚❚'}</span>
                 </button>
                 {onProxima && <button type="button" onClick={onProxima} className={`${BOTAO} hidden sm:inline-flex`} aria-label={t('next')}><span aria-hidden="true">⏭</span></button>}
