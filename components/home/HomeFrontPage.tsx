@@ -14,6 +14,7 @@ import { HomeTema } from '@/components/home/HomeTema'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HomeAssuntos } from '@/components/home/HomeAssuntos'
 import { HomeCalendario } from '@/components/home/HomeCalendario'
+import { HomeSeguindo } from '@/components/home/HomeSeguindo'
 import { HomeEditorias } from '@/components/home/HomeEditorias'
 import { HomeEditorialHubs } from '@/components/home/HomeEditorialHubs'
 import { HomeDestaquesColuna } from '@/components/home/HomeDestaquesColuna'
@@ -98,6 +99,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     <div data-bloco="home-destaques" className="contents"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
                     {soPt && aniversarios && <div data-bloco="home-calendario" className="contents"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
+                {soPt && <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>}
                 {soPt && <div data-bloco="home-guias" className="contents"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>

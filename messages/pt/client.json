@@ -272,5 +272,14 @@
     "retomar": "Retomar o avanço automático",
     "slides": "Escolher destaque",
     "irPara": "Ir para o destaque {n}"
+  },
+  "homeSeguindo": {
+      "titulo": "Novidades de quem você segue",
+      "caixa": "Para você",
+      "seguirMais": "+ Seguir mais",
+      "novo": "Novo",
+      "hoje": "hoje",
+      "ontem": "ontem",
+      "sobre": "Sobre {nome}"
   }
 }
