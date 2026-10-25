@@ -6,6 +6,7 @@ import { getAllHubs, getHub, getRelatedHubs } from '@/lib/guias'
 import { findAgencyId, getHubItems } from '@/lib/guias/hub-items'
 import { getGroups } from '@/lib/wordpress/groups'
 import { GruposDaAgencia } from '@/components/guias/GruposDaAgencia'
+import { SolistaDestaque } from '@/components/guias/SolistaDestaque'
 import { getPosts } from '@/lib/wordpress/posts'
 import { getProductionGenres } from '@/lib/wordpress/productions'
 import { getVitrineGeral, getVitrinePorTermos } from '@/lib/wordpress/vitrine'
@@ -79,6 +80,10 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
     let shopProducts = hub.kind === 'productions' ? [] : await getVitrinePorTermos(termosDoGuia, `guia:${slug}`, { limit: 6 }).catch(() => [])
     const tematica = shopProducts.length >= 3
     if (!tematica) shopProducts = await getVitrineGeral(`guia:${slug}`, 6, tipoVitrine)
+    // Guia de um artista: ele abre a página e a lista traz só os demais nomes (do grupo, se houver).
+    const solista = result.kind === 'artists' && hub.filter.artistSlug ? result.items.find(a => a.slug === hub.filter.artistSlug) : undefined
+    const demaisDoSolista = solista && result.kind === 'artists' ? result.items.filter(a => a.id !== solista.id) : undefined
+    const resumoDoSolista = solista ? hub.description.replace(/^Perfil completo d[eo] [^:]+:\s*/i, '').replace(/^./, c => c.toUpperCase()) : undefined
     const genreMap = Object.fromEntries(genres.map(g => [g.id, { name: g.name, slug: g.slug }]))
     const perPage = 48
     const totalPages = Math.ceil(result.total / perPage)
@@ -88,11 +93,13 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
             <HubPageContent
                 hub={hub}
                 relatedHubs={relatedHubs}
-                abertura={gruposDaAgencia.length > 0 ? <GruposDaAgencia agencia={hub.shortTitle} grupos={gruposDaAgencia} /> : undefined}
+                abertura={solista ? <SolistaDestaque artist={solista} grupo={demaisDoSolista?.length ? 'do grupo' : undefined} resumo={resumoDoSolista} /> : gruposDaAgencia.length > 0 ? <GruposDaAgencia agencia={hub.shortTitle} grupos={gruposDaAgencia} /> : undefined}
+                semLista={!!solista && demaisDoSolista?.length === 0}
+                listaTitulo={solista ? { eyebrow: `${demaisDoSolista?.length ?? 0} artistas`, title: 'Do mesmo grupo' } : undefined}
                 itensBusca={todosGuias.map(h => ({ rotulo: h.shortTitle, href: `/guias/${h.slug}`, tipo: h.kind === 'productions' ? 'Produções' : h.kind === 'artists' ? 'Artistas' : 'Grupos', palavras: h.keywords.join(' ') }))}
-                total={result.total}
+                total={demaisDoSolista ? demaisDoSolista.length : result.total}
                 productions={result.kind === 'productions' ? result.items : undefined}
-                artists={result.kind === 'artists' ? result.items : undefined}
+                artists={result.kind === 'artists' ? (demaisDoSolista ?? result.items) : undefined}
                 groups={result.kind === 'groups' ? result.items : undefined}
                 blogPosts={blogPosts}
                 lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title={tematica ? `Na loja: ${hub.shortTitle}` : tipoVitrine === 'drama' ? 'Para quem curte k-drama' : 'Para quem curte k-pop'} contexto={`guia:${slug}:meio`} />}

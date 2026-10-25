@@ -54,6 +54,10 @@ interface Props {
     lojaMeio?: ReactNode
     /** Bloco específico do tipo de guia, antes da lista (ex.: grupos de uma agência). */
     abertura?: ReactNode
+    /** Guia de um artista sem outros nomes para listar: só a abertura. */
+    semLista?: boolean
+    /** Título da lista quando ela não é "Explorar" (ex.: "Do mesmo grupo"). */
+    listaTitulo?: { eyebrow: string; title: string }
     /** Banner do quiz da categoria do guia (feito no servidor). */
     quiz?: ReactNode
     siteUrl?: string
@@ -113,7 +117,7 @@ const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Glob
 const textoDoGuia = (intro: string[]) => intro.filter(p => !/^Este guia reúne/i.test(p.trim()))
 
 export function HubPageContent({
-    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz, abertura,
+    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz, abertura, semLista = false, listaTitulo,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -279,7 +283,7 @@ export function HubPageContent({
                         ))}
                     </nav>
                 </div>
-                <p className="mt-3 text-[13px] text-muted">{total} {kindLabel} · {hub.description}</p>
+                <p className="mt-3 text-[13px] text-muted">{!semLista && !listaTitulo && `${total} ${kindLabel} · `}{hub.description}</p>
             </section>
 
             <div className="page-wrap flex flex-col gap-12 py-8">
@@ -319,10 +323,10 @@ export function HubPageContent({
 
                 {abertura}
 
-                <section>
+                {!semLista && <section>
                     <SectionTitleBar
-                        eyebrow={`${total} ${kindLabel}`}
-                        title={page > 1 ? `Explorar — página ${page}` : 'Explorar'}
+                        eyebrow={listaTitulo?.eyebrow ?? `${total} ${kindLabel}`}
+                        title={listaTitulo?.title ?? (page > 1 ? `Explorar — página ${page}` : 'Explorar')}
                         action={
                             hasActiveFilter
                                 ? <Link href={baseUrl} className="text-[10px] font-mono font-black uppercase tracking-widest text-muted hover:text-accent transition-colors">Limpar ×</Link>
@@ -330,8 +334,7 @@ export function HubPageContent({
                         }
                     />
 
-                    {ADSENSE.slots.inline && <div className="mb-6"><AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="hub_feed" /></div>}
-
+                    {/* Sem anúncio entre o título e a primeira fileira: ele empurrava o conteúdo que a pessoa veio ver. O primeiro entra depois de 12 cartões (abaixo). */}
                     {displayCount === 0 ? (
                         <EmptyState description="Nenhum resultado encontrado." layout="compact" className="border border-border bg-surface" />
                     ) : (
@@ -421,7 +424,7 @@ export function HubPageContent({
                             )}
                         </nav>
                     )}
-                </section>
+                </section>}
 
                 {hub.faq.length > 0 && page === 1 && (
                     <section className="order-2" itemScope itemType="https://schema.org/FAQPage">

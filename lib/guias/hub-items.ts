@@ -89,6 +89,17 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
         }
 
         if (hub.kind === 'artists') {
+            if (f.artistSlug) {
+                // Guia de um artista: ele primeiro; depois, se houver grupo, os demais integrantes.
+                const [{ items: principal }, memberIds] = await Promise.all([
+                    getArtists({ slug: f.artistSlug, perPage: 1 }),
+                    f.groupSlug ? getGroupMemberIds(f.groupSlug) : Promise.resolve([] as number[]),
+                ])
+                const membros = memberIds.length ? await getArtistsByIds(memberIds) : []
+                const items = [...principal, ...membros.filter(m => m.slug !== f.artistSlug)]
+                return { kind: 'artists', items, total: items.length }
+            }
+
             if (f.groupSlug) {
                 const memberIds = await getGroupMemberIds(f.groupSlug)
                 if (!memberIds.length) return { kind: 'artists', items: [], total: 0 }
