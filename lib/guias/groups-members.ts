@@ -47,7 +47,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'TWICE',
         description: 'Conheça as integrantes do TWICE com perfis em português, carreira, músicas, grupos relacionados e curiosidades.',
         intro: [
-            'TWICE é um dos girl groups mais importantes da terceira geração, com forte presença no K-Pop, no J-Pop e em turnês globais.',
+            'TWICE é um girl group da JYP Entertainment que estreou em 2015 e também lança músicas no Japão.',
             `Este guia reúne as integrantes públicas na ${SITE_NAME} para facilitar a navegação por perfis, carreira individual e conteúdos relacionados.`,
         ],
         keywords: ['integrantes do twice', 'membros twice', 'twice kpop', 'nayeon jihyo momo sana'],
@@ -144,7 +144,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'EXO',
         description: 'Conheça os integrantes do EXO com perfis em português, carreira, músicas, sub-unidades e curiosidades.',
         intro: [
-            'EXO é um dos grupos mais premiados da história do K-Pop, com um impacto enorme sobre toda a terceira geração e uma base de fãs global chamada EXO-L.',
+            'EXO estreou em 2012 pela SM Entertainment e seu fandom se chama EXO-L.',
             `Este guia reúne os membros cadastrados na ${SITE_NAME} para navegar por perfis, sub-unidades e atividades individuais.`,
         ],
         keywords: ['integrantes do exo', 'membros exo', 'exo kpop', 'exo-l baekhyun kai sehun chanyeol'],

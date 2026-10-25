@@ -10,6 +10,8 @@ export type ArchiveHubFilter = {
     role?: string        // 'singer' | 'actor' | 'idol' | 'model' | 'girl_group' | 'boy_group'
     gender?: 'male' | 'female'
     groupSlug?: string
+    /** Guia de um artista: slug do perfil. O artista abre a página e os demais (do grupo, se houver) vêm depois. */
+    artistSlug?: string
     agencyName?: string
     /** Ano de estreia (inclusive). Guias por geração/época; ver lib/constants/generations.ts. */
     debutYearMin?: number

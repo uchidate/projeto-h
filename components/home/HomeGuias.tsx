@@ -45,7 +45,7 @@ function CartaoGuia({ guia, titulos }: { guia: GuiaDaHome; titulos: string }) {
 }
 
 /** Faixa escura de Guias: a trilha "Comece aqui" (editável no WP) e seis guias por tema com capas. */
-export async function HomeGuias({ passos, guias, locale = DEFAULT_LOCALE }: { passos: BestOfList[]; guias: GuiaDaHome[]; locale?: Locale }) {
+export async function HomeGuias({ passos, guias, locale = DEFAULT_LOCALE, naIndice = false }: { passos: BestOfList[]; guias: GuiaDaHome[]; locale?: Locale; /** dentro de /guias: o título e o "ver todos" repetiriam a própria página */ naIndice?: boolean }) {
     if (passos.length === 0 && guias.length === 0) return null
     const t = await getTranslations({ locale, namespace: 'home.guias' })
     const trilha = passos.slice(0, 6)
@@ -54,7 +54,7 @@ export async function HomeGuias({ passos, guias, locale = DEFAULT_LOCALE }: { pa
             {trilha.length > 0 && (
                 <div>
                     <div className="mb-5 flex flex-wrap items-center gap-3">
-                        <h2 className="font-serif text-[32px] font-medium leading-none tracking-[-0.02em] lg:text-[40px]">{t('titulo')}</h2>
+                        <h2 className={naIndice ? 'sr-only' : 'font-serif text-[32px] font-medium leading-none tracking-[-0.02em] lg:text-[40px]'}>{t('titulo')}</h2>
                         <span className={`border border-[#7be0d4] px-[7px] py-1 leading-none text-[#7be0d4] ${MONO}`}>{t('tag')}</span>
                     </div>
                     <p className={`mb-4 text-[#7be0d4] ${MONO}`}>{t('comece')}</p>
@@ -65,12 +65,12 @@ export async function HomeGuias({ passos, guias, locale = DEFAULT_LOCALE }: { pa
                 <div className="mt-8 min-w-0 lg:mt-0">
                     <div className="mb-4 flex items-baseline justify-between">
                         <p className={`text-[#ff7aa6] ${MONO}`}>{t('porTema')}</p>
-                        <Link href="/guias" className={`hidden border-b border-[#ff7aa6] pb-0.5 text-white lg:inline-block ${MONO}`}>{t('verTodos')}</Link>
+                        {!naIndice && <Link href="/guias" className={`hidden border-b border-[#ff7aa6] pb-0.5 text-white lg:inline-block ${MONO}`}>{t('verTodos')}</Link>}
                     </div>
                     <div className="-mx-4 grid auto-cols-[210px] grid-flow-col gap-3.5 overflow-x-auto px-4 pb-2 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:grid-flow-row lg:auto-cols-auto lg:grid-cols-3 lg:overflow-visible lg:px-0">
                         {guias.map(g => <CartaoGuia key={g.slug} guia={g} titulos={t('titulos', { total: g.total.toLocaleString(locale === 'en' ? 'en-US' : 'pt-BR') })} />)}
                     </div>
-                    <Link href="/guias" className={`mt-4 inline-block border-b border-[#ff7aa6] pb-0.5 text-white lg:hidden ${MONO}`}>{t('verTodos')}</Link>
+                    {!naIndice && <Link href="/guias" className={`mt-4 inline-block border-b border-[#ff7aa6] pb-0.5 text-white lg:hidden ${MONO}`}>{t('verTodos')}</Link>}
                 </div>
             )}
         </section>

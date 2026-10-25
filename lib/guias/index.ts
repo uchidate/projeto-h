@@ -46,9 +46,43 @@ export async function getHub(slug: string): Promise<ArchiveHub | undefined> {
 
 export async function getRelatedHubs(hub: ArchiveHub, limit = 6): Promise<ArchiveHub[]> {
     const all = await getAllHubs()
-    return all.filter(h => h.slug !== hub.slug && h.kind === hub.kind).slice(0, limit)
+    const mesmoTipo = all.filter(h => h.slug !== hub.slug && h.kind === hub.kind)
+    // Primeiro os irmãos da mesma lista (outras agências para um guia de agência, outros anos para um de ano); só depois o resto do tipo.
+    const irmaos = new Set(GRUPOS_DE_GUIAS.flatMap(g => g.grupos).find(g => g.hubs.some(h => h.slug === hub.slug))?.hubs.map(h => h.slug) ?? [])
+    return [...mesmoTipo.filter(h => irmaos.has(h.slug)), ...mesmoTipo.filter(h => !irmaos.has(h.slug))].slice(0, limit)
 }
 
 // Manter compat com código síncrono existente (será removido após migração completa)
 export const ALL_HUBS = STATIC_HUBS
 export const HUB_BY_SLUG = Object.fromEntries(STATIC_HUBS.map(h => [h.slug, h]))
+
+export type GrupoDeGuias = { titulo: string; hubs: ArchiveHub[] }
+
+/** Como a página /guias organiza os guias: por tipo (kind) e, dentro dele, pela lista de origem de cada guia. */
+export const GRUPOS_DE_GUIAS: { kind: ArchiveHub['kind']; grupos: GrupoDeGuias[] }[] = [
+    {
+        kind: 'productions',
+        grupos: [
+            { titulo: 'Por gênero e tema', hubs: productionsGenreHubs },
+            { titulo: 'Por plataforma', hubs: productionsPlatformHubs },
+            { titulo: 'Por emissora', hubs: productionsNetworkHubs },
+            { titulo: 'Por ano', hubs: productionsYearHubs },
+        ],
+    },
+    {
+        kind: 'artists',
+        grupos: [
+            { titulo: 'Por perfil', hubs: artistsCategoriesHubs },
+            { titulo: 'Por agência', hubs: artistsAgenciesHubs },
+            { titulo: 'Solistas', hubs: artistsSoloHubs },
+            { titulo: 'Integrantes de grupos', hubs: groupsMembersHubs },
+        ],
+    },
+    {
+        kind: 'groups',
+        grupos: [
+            { titulo: 'Por tipo', hubs: groupsCategoriesHubs },
+            { titulo: 'Por agência', hubs: groupsAgenciesHubs },
+        ],
+    },
+]

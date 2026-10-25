@@ -72,30 +72,32 @@ export const productionsGenreHubs: ArchiveHub[] = [
         shortTitle: 'Doramas thriller',
         description: 'Os melhores doramas coreanos de thriller e suspense com sinopse, elenco, plataformas e avaliações em português.',
         intro: [
-            'O thriller coreano é um dos gêneros mais elogiados pelos críticos internacionais — com reviravoltas calculadas, personagens complexos e atmosferas que mantêm a tensão do início ao fim.',
-            `Este guia reúne produções coreanas de thriller e suspense cadastradas na ${SITE_NAME} para ajudar você a encontrar o próximo dorama que vai te deixar sem dormir.`,
+            'Thriller reúne suspense psicológico, crime, mistério e terror de clima pesado, e muitas produções aparecem também nos guias de policial, terror e mistério.',
+            'A lista mistura séries e filmes, na ordem de interesse recente; o filtro Tipo, no topo, separa os formatos. Para começar, Stranger (tvN, 2017) e Signal (tvN, 2016) estão no catálogo.',
         ],
         keywords: ['doramas thriller coreanos', 'kdramas suspense', 'dorama coreano thriller', 'suspense coreano netflix', 'k-drama mystery'],
         faq: [
-            { question: 'O que torna os thrillers coreanos únicos?', answer: 'Os thrillers coreanos se destacam pela precisão narrativa, reviravoltas bem construídas e uma atenção ao detalhe psicológico que poucos países conseguem replicar. "Stranger", "Signal" e "My Name" são exemplos emblemáticos.' },
-            { question: 'Onde assistir thrillers coreanos?', answer: 'Netflix tem a maior concentração de K-Dramas thriller com legendas em português. Disney+ e Viki também têm títulos de destaque no gênero.' },
+            { question: 'O que entra na lista de thriller?', answer: 'Produções marcadas com o gênero thriller no catálogo: suspense psicológico, crime, mistério e terror, entre outros. Muitas têm também outro marcador de gênero.' },
+            { question: 'Dá para ver só as séries?', answer: 'Sim. O filtro Tipo, no topo da página, separa séries, filmes, especiais e programas de variedade.' },
+            { question: 'Qual a diferença entre thriller e policial?', answer: 'O policial tem a investigação como eixo. O thriller pode dispensar a polícia e apostar na tensão e na ameaça; os dois se misturam com frequência.' },
         ],
     },
     {
         slug: 'doramas-acao-coreanos',
         kind: 'productions',
-        filter: { genre: 'acao' },
+        filter: { genre: 'acao', type: 'drama' },
         title: 'Doramas coreanos de ação',
         shortTitle: 'Doramas de ação',
         description: 'Os melhores doramas coreanos de ação com cenas de luta, espionagem, perseguição e avaliações em português.',
         intro: [
-            'Os doramas de ação coreanos impressionam pela qualidade das cenas de luta, produção cinematográfica e histórias que misturam espionagem, crime e conflitos pessoais intensos.',
-            `Este guia reúne produções coreanas de ação cadastradas na ${SITE_NAME} para ajudar você a encontrar o próximo dorama cheio de adrenalina.`,
+            'No catálogo, ação reúne histórias de espionagem, crime, artes marciais e vingança, e boa parte também aparece nos guias de thriller e de policial.',
+            'A lista abre só com séries, na ordem de interesse recente; o filtro Tipo, no topo, inclui os filmes.',
         ],
         keywords: ['doramas ação coreanos', 'kdramas ação', 'dorama coreano espionagem', 'ação coreana netflix', 'k-drama action'],
         faq: [
-            { question: 'Os doramas de ação coreanos têm cenas de qualidade cinematográfica?', answer: 'Sim. A indústria coreana investiu muito em coreografia de luta e produção de ação. Séries como "Bloodhounds", "Vincenzo" e "My Name" são exemplos de produção de nível cinema.' },
-            { question: 'Qual é o melhor dorama de ação coreano?', answer: '"Vincenzo", "Bloodhounds", "My Name", "Doctor Slump" e "Gyeongseong Creature" estão entre os mais elogiados do gênero nos últimos anos.' },
+            { question: 'O que entra na lista de ação?', answer: 'Produções marcadas com o gênero ação no catálogo, de espionagem e crime a artes marciais. Muitas têm também o marcador de thriller ou de crime.' },
+            { question: 'Dá para ver os filmes de ação?', answer: 'Sim. A lista abre só com séries; no filtro Tipo, no topo, escolha Filme (ou Todos) para incluir os longas.' },
+            { question: 'Qual a diferença entre ação e thriller?', answer: 'Ação põe o movimento em primeiro plano: lutas, perseguições, missões. O thriller aposta na tensão e na ameaça, e os dois se misturam com frequência.' },
         ],
     },
     {
@@ -303,8 +305,8 @@ export const productionsGenreHubs: ArchiveHub[] = [
         shortTitle: 'Doramas policiais',
         description: 'Doramas policiais coreanos com investigação, crime, detetives, promotores e suspense em português.',
         intro: [
-            'Doramas policiais coreanos se destacam por investigações complexas, crimes em camadas e personagens que enfrentam corrupção, traumas e dilemas morais.',
-            `Este guia reúne produções coreanas de investigação, crime e polícia cadastradas na ${SITE_NAME} para quem quer histórias tensas e bem amarradas.`,
+            'No policial coreano, o caso da vez divide espaço com o que a investigação cobra de quem a faz: equipes de detetives, promotores e repórteres dividem o papel de protagonista, e a corrupção dentro da própria instituição pesa tanto quanto o crime. Signal (tvN, 2016), em que um rádio liga detetives de duas épocas, é um dos títulos mais citados do formato.',
+            'Há dois ritmos: séries que fecham um caso por episódio e as que conduzem um único caso ao longo da temporada. A lista abaixo segue a ordem de interesse recente, com as mais bem avaliadas em destaque.',
         ],
         keywords: ['doramas policiais coreanos', 'kdramas policiais', 'dorama coreano investigação', 'crime coreano série'],
         whatYouWillFind: 'Histórias de investigação, crime, delegacias, promotores, detetives e suspense criminal, com links para produções e artistas relacionados.',
@@ -314,8 +316,9 @@ export const productionsGenreHubs: ArchiveHub[] = [
             { label: 'Doramas thriller', href: '/guias/doramas-thriller-coreanos' },
         ],
         faq: [
-            { question: 'Doramas policiais coreanos são parecidos com thrillers?', answer: 'Muitas vezes sim, mas o hub policial prioriza investigação, delegacias, promotores, crimes e detetives como eixo principal da história.' },
-            { question: 'O hub inclui séries de serial killer?', answer: 'Pode incluir quando a produção está marcada com crime, investigação, thriller policial ou temas semelhantes no catálogo.' },
+            { question: 'Qual a diferença entre dorama policial e thriller?', answer: 'O policial tem a investigação como eixo: delegacias, detetives, promotores e o caso a ser resolvido. O thriller pode prescindir de polícia e apostar na tensão e na ameaça; os dois se misturam com frequência.' },
+            { question: 'Os doramas policiais têm casos por episódio?', answer: 'Alguns fecham um caso por episódio; outros seguem um único caso por toda a temporada. Muitos combinam os dois formatos, com um caso maior ao fundo.' },
+            { question: 'Por onde começar?', answer: 'Signal (tvN, 2016), que está no catálogo, é um ponto de partida comum: mistura casos de arquivo, viagem entre épocas e investigação em equipe.' },
         ],
     },
     {
@@ -335,23 +338,6 @@ export const productionsGenreHubs: ArchiveHub[] = [
             { question: 'O que define um dorama de mistério?', answer: 'Um dorama de mistério tem no centro um segredo, enigma ou crime que precisa ser resolvido ao longo da história. Pode misturar romance, terror ou thriller na trama principal.' },
             { question: 'Doramas de mistério costumam ter final revelador?', answer: 'A maioria tem sim, embora alguns deixem pontas soltas propositalmente. O K-Drama de mistério é conhecido por giros de roteiro e revelações no final dos episódios.' },
             { question: 'Mistério e thriller são a mesma coisa em doramas?', answer: 'Não exatamente. Thriller foca em tensão e perigo iminente; mistério foca em descobrir a verdade por trás de algo oculto. Muitos K-Dramas misturam os dois.' },
-        ],
-    },
-    {
-        slug: 'doramas-sobrevivencia-coreanos',
-        kind: 'productions',
-        filter: { genre: 'thriller' },
-        title: 'Doramas coreanos de sobrevivência',
-        shortTitle: 'Doramas de sobrevivência',
-        description: 'Doramas coreanos de sobrevivência, apocalipse, pandemia, game show de vida ou morte e lutas extremas pela existência.',
-        intro: [
-            '"Squid Game" popularizou globalmente o conceito de survival game coreano — mas o K-Drama trabalha esse tema muito antes, com produções que exploram sobrevivência em sentidos literal e metafórico.',
-            `Este guia reúne produções coreanas com sobrevivência, jogo de vida ou morte, apocalipse e situações extremas catalogadas na ${SITE_NAME}.`,
-        ],
-        keywords: ['doramas sobrevivencia coreanos', 'kdramas survival', 'squid game tipo', 'doramas apocalipse coreano', 'survival game dorama'],
-        faq: [
-            { question: 'Doramas de sobrevivência são sempre violentos?', answer: 'Nem sempre. Alguns são mais psicológicos, focados em dilemas morais e decisões extremas. O nível de violência varia bastante entre os títulos.' },
-            { question: 'Quais são os melhores doramas de sobrevivência?', answer: '"Squid Game", "Sweet Home", "All of Us Are Dead", "Hellbound" e "The Silent Sea" são destaques do subgênero de sobrevivência e apocalipse coreano.' },
         ],
     },
     {

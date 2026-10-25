@@ -6,7 +6,7 @@ import { htmlLang } from '@/lib/i18n/format'
 import { useEffect, type ReactNode } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { PageBreadcrumb } from '@/components/ui/PageBreadcrumb'
+import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
 import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import { BrandDot } from '@/components/ui/BrandDot'
@@ -42,6 +42,8 @@ interface ActiveFilters {
 interface Props {
     hub: ArchiveHub
     relatedHubs: ArchiveHub[]
+    /** Todos os guias para a busca do topo (montado no servidor). */
+    itensBusca?: ItemBusca[]
     productions?: WPProduction[]
     destaques?: WPProduction[]
     artists?: WPArtist[]
@@ -50,6 +52,14 @@ interface Props {
     blogPosts?: WPPost[]
     /** Faixa de loja entre os resultados e os artigos (feita no servidor). */
     lojaMeio?: ReactNode
+    /** Bloco específico do tipo de guia, antes da lista (ex.: grupos de uma agência). */
+    abertura?: ReactNode
+    /** Guia de um artista sem outros nomes para listar: só a abertura. */
+    semLista?: boolean
+    /** Guia de um artista ou grupo: a ficha vem antes do texto de apoio e a contagem do topo some. */
+    introDepois?: boolean
+    /** Título da lista quando ela não é "Explorar" (ex.: "Do mesmo grupo"). */
+    listaTitulo?: { eyebrow: string; title: string }
     /** Banner do quiz da categoria do guia (feito no servidor). */
     quiz?: ReactNode
     siteUrl?: string
@@ -105,8 +115,11 @@ const KNOWN_YEARS = Array.from({ length: new Date().getFullYear() - 1999 }, (_, 
 const KNOWN_TYPES = ['drama', 'movie', 'special', 'variety']
 const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Globoplay', 'Max', 'Viki', 'WeTV']
 
+/** Tira o parágrafo que só descreve o próprio guia ("Este guia reúne… cadastrados na Portal"): é bastidor, não informação. */
+const textoDoGuia = (intro: string[]) => intro.filter(p => !/^Este guia reúne/i.test(p.trim()))
+
 export function HubPageContent({
-    hub, relatedHubs, productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz,
+    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz, abertura, semLista = false, introDepois = false, listaTitulo,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -153,7 +166,8 @@ export function HubPageContent({
     const showType     = hub.kind === 'productions'
     const hasFilters   = showYear || showPlatform || showType
 
-    const hasActiveFilter = !!(activeGenre || activePlatform || activeNetwork || activeType || activeYear)
+    const tipoFoiEscolhido = !!activeType && activeType !== hub.filter.type
+    const hasActiveFilter = !!(activeGenre || activePlatform || activeNetwork || tipoFoiEscolhido || activeYear)
 
     const activeFilterLabel = [
         activeGenre,
@@ -166,6 +180,13 @@ export function HubPageContent({
     const displayCount = productions?.length ?? artists?.length ?? groups?.length ?? 0
 
     const canonical = `${siteUrl}/guias/${hub.slug}`
+    // Guia de um artista: a ficha vem primeiro e o texto de apoio depois dela.
+    const soloGuia = introDepois
+    const introBloco = textoDoGuia(hub.intro).length > 0 && (
+        <div className="grid gap-3 border-b border-border pb-6 text-sm leading-7 text-muted md:grid-cols-2">
+            {textoDoGuia(hub.intro).map((p, i) => <p key={i}>{p}</p>)}
+        </div>
+    )
     const kindLabel = hub.kind === 'productions' ? 'produções' : hub.kind === 'artists' ? 'artistas' : 'grupos'
 
     const allItems = [
@@ -229,7 +250,7 @@ export function HubPageContent({
                         {showType && (
                             <div className="flex items-center gap-1.5 shrink-0">
                                 <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted shrink-0">Tipo</span>
-                                <FilterChip label="Todos" href={buildHref({ type: '' })} active={!activeType} />
+                                <FilterChip label="Todos" href={buildHref({ type: hub.filter.type ? 'all' : '' })} active={hub.filter.type ? activeType === 'all' : !activeType} />
                                 {KNOWN_TYPES.map(t => (
                                     <FilterChip key={t} label={TYPE_LABELS[t]} href={buildHref({ type: t })} active={activeType === t} />
                                 ))}
@@ -257,32 +278,27 @@ export function HubPageContent({
                 </ResponsiveFilterBar>
             )}
 
-            <PageBreadcrumb
-                crumbs={[
-                    { label: 'Início', href: '/' },
-                    { label: 'Guias', href: '/guias' },
-                    { label: hub.shortTitle },
-                ]}
-                description={`${total} ${kindLabel}`}
-            />
+            {/* Topo no mesmo padrão de /guias: título, busca e atalhos numa faixa só. */}
+            <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
+                <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
+                    <h1 className="font-[family-name:var(--font-playfair)] text-[28px] font-bold leading-[1.05] sm:text-[34px] lg:max-w-[420px]">
+                        {hub.shortTitle}<BrandDot />
+                        <span className="sr-only"> — {hub.title}</span>
+                    </h1>
+                    {itensBusca.length > 0 && <HubBusca itens={itensBusca} placeholder="Buscar outro guia" />}
+                    <nav aria-label="Outros guias" className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0">
+                        <Link href="/guias" className="touch-target flex h-10 shrink-0 items-center border border-border-strong px-4 text-[14px] font-semibold text-foreground transition-colors hover:border-accent/60">← Guias</Link>
+                        {relatedHubs.slice(0, 3).map(r => (
+                            <Link key={r.slug} href={`/guias/${r.slug}`} className="touch-target flex h-10 shrink-0 items-center border border-border-strong px-4 text-[14px] font-semibold text-foreground transition-colors hover:border-accent/60">{r.shortTitle}</Link>
+                        ))}
+                    </nav>
+                </div>
+                <p className="mt-3 text-[13px] text-muted">{!introDepois && `${total} ${kindLabel} · `}{hub.description}</p>
+            </section>
 
             <div className="page-wrap flex flex-col gap-12 py-8">
 
-                {/* Header */}
-                <header className="border-b-2 border-foreground pb-6 space-y-3">
-                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">
-                        {hub.kind === 'productions' ? 'Guia de produções' : hub.kind === 'artists' ? 'Guia de artistas' : 'Guia de grupos'}
-                    </p>
-                    <h1 className="text-[32px] font-black leading-[0.95] tracking-[-0.04em] sm:text-[44px]">
-                        {hub.title}<BrandDot />
-                    </h1>
-                    <p className="text-[14px] leading-7 text-muted max-w-2xl">{hub.description}</p>
-                    {hub.intro.length > 0 && (
-                        <div className="pt-2 grid gap-3 text-sm leading-7 text-muted md:grid-cols-2 border-t border-border/40">
-                            {hub.intro.map((p, i) => <p key={i}>{p}</p>)}
-                        </div>
-                    )}
-                </header>
+                {!soloGuia && introBloco}
 
                 {hub.whatYouWillFind && (
                     <div className="order-1 border-l-2 border-accent pl-4 py-1">
@@ -311,10 +327,13 @@ export function HubPageContent({
                 {/* Ordem visual: lista antes do texto de apoio (`order-1`) e das seções finais (`order-2`). Medido: no celular a 1ª produção aparecia depois de ~1,6 telas de introdução, chips e "O que você vai encontrar"; o DOM segue na ordem original para o texto continuar indexável. */}
                 <HubDestaques items={destaques} eyebrow="Comece por aqui" title={`Em alta e bem avaliadas — ${hub.shortTitle}`} />
 
-                <section>
+                {abertura}
+                {soloGuia && introBloco}
+
+                {!semLista && <section>
                     <SectionTitleBar
-                        eyebrow={`${total} ${kindLabel}`}
-                        title={page > 1 ? `Explorar — página ${page}` : 'Explorar'}
+                        eyebrow={listaTitulo?.eyebrow ?? `${total} ${kindLabel}`}
+                        title={listaTitulo?.title ?? (page > 1 ? `Explorar — página ${page}` : 'Explorar')}
                         action={
                             hasActiveFilter
                                 ? <Link href={baseUrl} className="text-[10px] font-mono font-black uppercase tracking-widest text-muted hover:text-accent transition-colors">Limpar ×</Link>
@@ -322,8 +341,7 @@ export function HubPageContent({
                         }
                     />
 
-                    {ADSENSE.slots.inline && <div className="mb-6"><AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="hub_feed" /></div>}
-
+                    {/* Sem anúncio entre o título e a primeira fileira: ele empurrava o conteúdo que a pessoa veio ver. O primeiro entra depois de 12 cartões (abaixo). */}
                     {displayCount === 0 ? (
                         <EmptyState description="Nenhum resultado encontrado." layout="compact" className="border border-border bg-surface" />
                     ) : (
@@ -413,14 +431,14 @@ export function HubPageContent({
                             )}
                         </nav>
                     )}
-                </section>
+                </section>}
 
                 {hub.faq.length > 0 && page === 1 && (
                     <section className="order-2" itemScope itemType="https://schema.org/FAQPage">
                         <SectionTitleBar eyebrow="Tire suas dúvidas" title="Perguntas frequentes" />
                         <div className="grid gap-px bg-border sm:grid-cols-2">
-                            {hub.faq.map(item => (
-                                <div key={item.question} className="bg-background p-5" itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+                            {hub.faq.map((item, i) => (
+                                <div key={item.question} className={`bg-background p-5${hub.faq.length % 2 === 1 && i === hub.faq.length - 1 ? ' sm:col-span-2' : ''}`} itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
                                     <h3 className="text-[13px] font-black text-foreground leading-snug" itemProp="name">{item.question}</h3>
                                     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
                                         <p className="mt-2 text-[13px] leading-6 text-muted" itemProp="text">{item.answer}</p>

@@ -10,7 +10,7 @@ export const groupsAgenciesHubs: ArchiveHub[] = [
         shortTitle: 'Grupos JYP',
         description: 'Os grupos da JYP Entertainment, de Wonder Girls e 2PM a TWICE, Stray Kids, ITZY e NMIXX, com integrantes, carreira e discografia em português.',
         intro: [
-            'A JYP Entertainment revelou alguns dos grupos mais populares do K-Pop, com forte presença em girl groups, boy groups e bandas que alcançaram públicos internacionais.',
+            'A JYP Entertainment tem girl groups, boy groups e bandas, entre eles TWICE, Stray Kids e ITZY.',
             `Este guia reúne grupos da JYP cadastrados na ${SITE_NAME} para facilitar a navegação por integrantes, carreira, músicas e conteúdos relacionados.`,
         ],
         keywords: ['grupos jyp entertainment', 'jyp grupos kpop', 'twice stray kids itzy', 'grupos da jyp'],

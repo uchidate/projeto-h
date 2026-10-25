@@ -32,7 +32,7 @@ export type HubItems =
 
 type WPAgency = { id: number; title: { rendered: string } }
 
-async function findAgencyId(name: string): Promise<number | null> {
+export async function findAgencyId(name: string): Promise<number | null> {
     try {
         const agencies = await wpFetch<WPAgency[]>(
             `/wp/v2/agency${buildParams({ search: name, per_page: 5 })}`,
@@ -74,7 +74,8 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
     const tag      = opts.tag      ?? f.tag
     const platform = opts.platform ?? f.platform
     const network  = opts.network  ?? f.network
-    const type     = (opts.type    ?? f.type) as 'drama' | 'movie' | 'special' | 'variety' | undefined
+    // type=all (chip "Todos") desliga o tipo padrão do guia, que senão voltaria sozinho.
+    const type     = (opts.type === 'all' ? undefined : (opts.type ?? f.type)) as 'drama' | 'movie' | 'special' | 'variety' | undefined
     const year     = opts.year     ?? f.year
 
     try {
@@ -89,6 +90,17 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
         }
 
         if (hub.kind === 'artists') {
+            if (f.artistSlug) {
+                // Guia de um artista: ele primeiro; depois, se houver grupo, os demais integrantes.
+                const [{ items: principal }, memberIds] = await Promise.all([
+                    getArtists({ slug: f.artistSlug, perPage: 1 }),
+                    f.groupSlug ? getGroupMemberIds(f.groupSlug) : Promise.resolve([] as number[]),
+                ])
+                const membros = memberIds.length ? await getArtistsByIds(memberIds) : []
+                const items = [...principal, ...membros.filter(m => m.slug !== f.artistSlug)]
+                return { kind: 'artists', items, total: items.length }
+            }
+
             if (f.groupSlug) {
                 const memberIds = await getGroupMemberIds(f.groupSlug)
                 if (!memberIds.length) return { kind: 'artists', items: [], total: 0 }

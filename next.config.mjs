@@ -214,6 +214,8 @@ const nextConfig = {
             // no Google (posição 6-9 em 28 dias). O post do blog é o conteúdo mais
             // forte (2785 vs 958 palavras); o guia virou redirect.
             { source: '/guias/grupos-4a-geracao-kpop', destination: '/blog/melhores-grupos-kpop-4a-geracao', permanent: true },
+            // O guia de sobrevivência usava o mesmo filtro do de thriller (mesma lista de 428 itens) e foi tirado do índice (2026-10-25).
+            { source: '/guias/doramas-sobrevivencia-coreanos', destination: '/guias/doramas-thriller-coreanos', permanent: true },
             // Artigo despublicado em 2026-09-15: todo o texto partia da premissa de
             // que o MEOVV era da HYBE (e comparava o grupo com ILLIT e LE SSERAFIM
             // "dentro da empresa"). O MEOVV e da The Black Label. A ficha do grupo,

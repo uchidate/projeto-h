@@ -59,7 +59,7 @@ export const artistsAgenciesHubs: ArchiveHub[] = [
         shortTitle: 'HYBE',
         description: 'Conheça artistas e grupos da HYBE Entertainment com perfis em português, carreira, músicas e curiosidades.',
         intro: [
-            'HYBE (antiga Big Hit Entertainment) é a empresa por trás do BTS, o maior fenômeno do K-Pop global, e hoje abriga subsidiárias como BELIFT LAB, SOURCE MUSIC, ADOR e Pledis.',
+            'HYBE (antiga Big Hit Entertainment) é a empresa por trás do BTS e hoje abriga subsidiárias como BELIFT LAB, SOURCE MUSIC, ADOR e Pledis.',
             `Este guia reúne artistas e grupos vinculados à HYBE cadastrados na ${SITE_NAME} para facilitar a navegação por perfis e conteúdos relacionados.`,
         ],
         keywords: ['artistas hybe', 'grupos hybe kpop', 'big hit entertainment', 'hybe kpop artistas'],

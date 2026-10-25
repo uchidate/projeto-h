@@ -94,10 +94,11 @@ describe('HubPageContent', () => {
     it('mostra guias relacionados apenas na página 1', () => {
         const related = [hub({ slug: 'outro', shortTitle: 'Outro Guia' })]
         const { rerender } = render(<HubPageContent hub={hub()} relatedHubs={related} productions={[production()]} total={1} page={1} />)
-        expect(screen.getByText('Outro Guia')).toBeInTheDocument()
+        expect(screen.getByText('Guias relacionados')).toBeInTheDocument()
 
+        // O atalho no topo da página continua em qualquer página; some só a seção "Guias relacionados".
         rerender(<HubPageContent hub={hub()} relatedHubs={related} productions={[production()]} total={1} page={2} />)
-        expect(screen.queryByText('Outro Guia')).not.toBeInTheDocument()
+        expect(screen.queryByText('Guias relacionados')).not.toBeInTheDocument()
     })
 
     it('mostra a paginação apenas quando totalPages > 1', () => {
