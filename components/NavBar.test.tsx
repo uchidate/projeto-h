@@ -23,7 +23,7 @@ class MockResizeObserver {
 
 const navLinks = [
     { label: 'Artistas', href: '/artists' },
-    { label: 'Produções', href: '/productions' },
+    { label: 'Doramas e Filmes', href: '/productions' },
 ]
 
 describe('NavBar', () => {
@@ -37,7 +37,7 @@ describe('NavBar', () => {
     it('renderiza todos os links de navegação (mobile + desktop)', () => {
         render(<NavBar navLinks={navLinks} logoSubtitles={['Hallyu']} />)
         expect(screen.getAllByRole('link', { name: 'Artistas' }).length).toBeGreaterThan(0)
-        expect(screen.getAllByRole('link', { name: 'Produções' }).length).toBeGreaterThan(0)
+        expect(screen.getAllByRole('link', { name: 'Doramas e Filmes' }).length).toBeGreaterThan(0)
     })
 
     it('marca o link ativo via correspondência exata do pathname', () => {
@@ -64,7 +64,7 @@ describe('NavBar', () => {
     it('não marca outros links como ativos', () => {
         pathnameValue = '/artists'
         render(<NavBar navLinks={navLinks} logoSubtitles={['Hallyu']} />)
-        const links = screen.getAllByRole('link', { name: 'Produções' })
+        const links = screen.getAllByRole('link', { name: 'Doramas e Filmes' })
         // Desktop marca com classe; as abas do celular, com aria-current.
         expect(links.every(l => !l.classList.contains('is-active') && !l.hasAttribute('aria-current'))).toBe(true)
     })
