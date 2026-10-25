@@ -171,6 +171,15 @@
     "grupoDaSemana": "Group of the week",
     "verTodos": "See all groups"
   },
+  "populares": {
+      "titulo": "Popular in Korea right now",
+      "tag": "Ranking",
+      "artistas": "Artists on the rise",
+      "grupos": "Groups on the rise",
+      "producoes": "Productions on the rise",
+      "verTodos": "See all →",
+      "membros": "{n} members"
+  },
   "tipoDeGrupo": {
     "girl_group": "Girl group",
     "boy_group": "Boy group",

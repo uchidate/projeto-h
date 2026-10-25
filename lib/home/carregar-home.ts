@@ -29,6 +29,9 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         ...siteSettings.home.highlightPostIds,
     ].filter(Boolean)
 
+    // Começa já, em paralelo com o resto; sem ela o ranking de produções simplesmente não aparece.
+    const producoesEmAltaP = getProductions({ perPage: 3, orderby: 'trending_score' }).then(r => r.items).catch(() => [])
+
     const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult, prateleirasResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
@@ -100,5 +103,5 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
 
     const prateleirasEditorias = prateleirasResult.status === 'fulfilled' ? prateleirasResult.value : {}
 
-    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum }
+    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum, producoesEmAlta: await producoesEmAltaP, hoje }
 }
