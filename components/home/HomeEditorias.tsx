@@ -28,7 +28,7 @@ export async function HomeEditorias({ editorias: colunas, prateleiras = {}, loca
     const blog = rota('blog', undefined, locale)
 
     return (
-        <section aria-label={t('rotulo')} className="border-t border-border px-4 py-7 sm:px-6 sm:py-8 lg:px-0">
+        <section aria-label={t('rotulo')} className="border-t border-border px-4 py-7 sm:px-6 sm:py-8 lg:border-t-0 lg:px-0 lg:py-0">
             <div className={`grid gap-5 lg:gap-6 ${colunas.length === 3 ? 'lg:grid-cols-3' : colunas.length === 2 ? 'lg:grid-cols-2' : ''}`}>
                 {colunas.map(({ coluna, posts: itens }) => {
                     const [abertura, ...resto] = itens
