@@ -71,9 +71,9 @@ export const artistsCategoriesHubs: ArchiveHub[] = [
         slug: 'kpop-idols-famosos',
         kind: 'artists',
         filter: { role: 'idol' },
-        title: 'Idols de K-Pop mais famosos',
-        shortTitle: 'Idols famosos',
-        description: 'Conheça os idols de K-Pop mais famosos do mundo com perfis em português, carreira, grupos, músicas e curiosidades.',
+        title: 'Idols de K-Pop',
+        shortTitle: 'Idols de K-Pop',
+        description: 'Conheça idols de K-Pop com perfis em português, carreira, grupos, músicas e curiosidades.',
         intro: [
             'O fenômeno idol coreano vai além da música: envolve treinamento rigoroso, conceitos visuais únicos, fandoms globais e uma indústria que gera bilhões por ano.',
             `Este guia reúne os idols com maior destaque na ${SITE_NAME} para facilitar a descoberta de perfis, grupos relacionados e conteúdos editoriais.`,
@@ -81,7 +81,7 @@ export const artistsCategoriesHubs: ArchiveHub[] = [
         keywords: ['idols kpop famosos', 'idols coreanos', 'kpop idols mais famosos', 'kpop artistas'],
         faq: [
             { question: 'O que é um idol coreano?', answer: 'Um idol coreano é um artista formado por uma agência de entretenimento que passou por anos de treinamento em canto, dança e performance antes de debutar em um grupo ou solo.' },
-            { question: 'Quais são os idols mais famosos do mundo?', answer: 'Internacionalmente, os membros do BTS têm o maior alcance global, mas outros como Jennie (BLACKPINK), Karina (aespa), IU e Lisa também estão entre os mais reconhecidos fora da Coreia.' },
+            { question: 'Quais idols estão neste guia?', answer: 'Os perfis de idols do catálogo, em ordem alfabética. Para um grupo específico, use o guia de integrantes do grupo ou a busca no topo.' },
         ],
     },
     {

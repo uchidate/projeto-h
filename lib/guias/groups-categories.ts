@@ -79,16 +79,16 @@ export const groupsCategoriesHubs: ArchiveHub[] = [
         slug: 'grupos-kpop-boy-groups-famosos',
         kind: 'groups',
         filter: { role: 'boy_group' },
-        title: 'Boy groups de K-Pop mais famosos',
-        shortTitle: 'Boy groups famosos',
-        description: 'Os boy groups de K-Pop mais famosos do mundo: BTS, EXO, BIGBANG, Stray Kids, ATEEZ, TXT e os maiores nomes do K-Pop masculino.',
+        title: 'Boy groups de K-Pop',
+        shortTitle: 'Boy groups de K-Pop',
+        description: 'Boy groups de K-Pop com integrantes, discografia e carreira: BTS, EXO, BIGBANG, Stray Kids, ATEEZ, TXT e outros.',
         intro: [
-            'Os boy groups são o coração do K-Pop internacional: BTS abriu caminho, EXO dominou a Ásia, Big Bang foi pioneiro — e hoje Stray Kids, ATEEZ, TXT e NCT continuam expandindo o alcance global do K-Pop.',
+            'O catálogo reúne boy groups de várias gerações, de BIGBANG (2006) e EXO (2012) a BTS (2013), Stray Kids e ATEEZ (2018) e TXT (2019).',
             `Este guia reúne os grupos masculinos mais reconhecidos da ${SITE_NAME}.`,
         ],
         keywords: ['boy groups kpop famosos', 'grupos masculinos kpop', 'bts exo bigbang', 'melhores boy groups kpop'],
         faq: [
-            { question: 'Quais são os boy groups de K-Pop mais famosos?', answer: 'BTS lidera globalmente, mas EXO, BIGBANG, Stray Kids, ATEEZ, MONSTA X, Super Junior e NCT têm fandoms imensos internacionalmente.' },
+            { question: 'Que boy groups estão no catálogo?', answer: 'Entre outros, Super Junior (2005), BIGBANG (2006), EXO (2012), BTS (2013), MONSTA X (2015), NCT (2016), Stray Kids e ATEEZ (2018) e TXT (2019). A lista da página mostra os demais.' },
         ],
     },
 ]
