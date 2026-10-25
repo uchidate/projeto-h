@@ -36,7 +36,7 @@ export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts:
             <SectionTitleBar title={t('titulo')} tag={t('tag')} tagColor="#6d3fc0" href={rota('blog', undefined, locale)} linkText={t('arquivo')} className="mb-4" />
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-8">
                 <Link {...postLink(destaque.slug, locale)} className="group block min-w-0">
-                    <div className="relative aspect-16/10 overflow-hidden bg-surface">
+                    <div className="relative aspect-video overflow-hidden bg-surface">
                         {lead.image && <Image src={lead.image.src} alt={lead.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover object-top" />}
                     </div>
                     <span className={`${TAG} mt-4`}>{lead.categoria}</span>
