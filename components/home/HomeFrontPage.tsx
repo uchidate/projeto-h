@@ -92,7 +92,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
 
     return (
         <section className="bg-background" aria-label={t('rotulo')}>
-            <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
+            <div className="mx-auto max-w-[1440px] border-y border-border bg-background lg:px-6">
                 {soPt && <div data-bloco="home-assuntos" className="contents"><HomeAssuntos hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div className="lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)]">
                     <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
@@ -100,7 +100,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     {soPt && aniversarios && <div data-bloco="home-calendario" className="contents"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {ADSENSE.slots.leaderboard && (
-                    <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">
+                    <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-4">
                         <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_hero_leaderboard" />
                     </div>
                 )}
@@ -110,7 +110,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>
                 {soPt && <div data-bloco="home-loja" className="contents"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
                 {ADSENSE.slots.inline && (
-                    <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">
+                    <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-4">
                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="home_feed" />
                     </div>
                 )}
@@ -134,7 +134,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 {soPt && (
                     <>
                         {pergunta}
-                        <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-10">
+                        <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-4">
                             <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
                         </div>
                         <div data-bloco="home-explore" className="contents"><HomeExplore cartoes={explore} locale={locale} /></div>

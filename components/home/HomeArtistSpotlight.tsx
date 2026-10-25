@@ -82,7 +82,7 @@ export async function HomeArtistSpotlight({ artists = [], groups = [], locale = 
     const capped = items.slice(0, 12)
 
     return (
-        <div className="border-t border-border bg-surface/40 px-4 py-5 sm:px-6 lg:px-10">
+        <div className="border-t border-border bg-surface/40 px-4 py-5 sm:px-6 lg:px-4">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                     <h2 className="font-sans text-[14px] sm:text-[15px] font-black tracking-[-0.02em] text-foreground">

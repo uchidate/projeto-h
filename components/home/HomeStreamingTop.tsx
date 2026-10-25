@@ -34,7 +34,7 @@ export function HomeStreamingTop({ showsByPlatform }: Props) {
     return (
         <div className="border-t border-border">
             {/* Header */}
-            <div className="flex items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-10">
+            <div className="flex items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-4">
                 <Link
                     href={`/productions?platform=${PLATFORM_FILTER_SLUG[active] ?? active}`}
                     className="shrink-0 font-mono text-[9px] font-black uppercase tracking-[0.15em] text-foreground/50 transition-colors hover:text-foreground"
@@ -70,7 +70,7 @@ export function HomeStreamingTop({ showsByPlatform }: Props) {
             </div>
 
             {/* Mobile: trilho legível; desktop: panorama completo das dez posições. */}
-            <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-5 scrollbar-none [&::-webkit-scrollbar]:hidden sm:px-6 lg:grid lg:grid-cols-10 lg:gap-2 lg:overflow-visible lg:px-10 lg:pb-4">
+            <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-5 scrollbar-none [&::-webkit-scrollbar]:hidden sm:px-6 lg:grid lg:grid-cols-10 lg:gap-2 lg:overflow-visible lg:px-4 lg:pb-4">
                 {shows.slice(0, 10).map(show => {
                     const inner = (
                         <div className="group flex w-[112px] flex-col items-center gap-1.5 sm:w-[124px] lg:w-auto">

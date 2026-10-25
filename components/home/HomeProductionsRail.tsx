@@ -12,7 +12,7 @@ export async function HomeProductionsRail({ productions, locale = DEFAULT_LOCALE
     if (!productions.length) return null
     const t = await getTranslations({ locale, namespace: 'home.producoes' })
     return (
-        <div className="border-t border-border px-4 py-8 sm:px-6 lg:px-10">
+        <div className="border-t border-border px-4 py-8 sm:px-6 lg:px-4">
             <SectionTitleBar title={t('titulo')} eyebrow={t('eyebrow')} href={rota('productions', undefined, locale)} linkText={t('verTodos')} />
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                 {productions.slice(0, 6).map((prod) => {

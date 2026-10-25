@@ -23,7 +23,7 @@ export async function HomeLatestPosts({ posts, categoryMap, locale = DEFAULT_LOC
     const t = await getTranslations({ locale, namespace: 'home.ultimas' })
     const tc = await getTranslations({ locale, namespace: 'home.comum' })
     return (
-        <div className="border-t border-border px-4 py-8 sm:px-6 lg:px-10">
+        <div className="border-t border-border px-4 py-8 sm:px-6 lg:px-4">
             <SectionTitleBar title={t('titulo')} href={rota('blog', undefined, locale)} linkText={t('verFeed')} />
             <div>
                 {posts.map((post, i) => {
