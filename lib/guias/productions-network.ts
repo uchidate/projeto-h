@@ -1,4 +1,3 @@
-import { SITE_NAME } from '@/lib/constants/site'
 import type { ArchiveHub } from './types'
 
 export const productionsNetworkHubs: ArchiveHub[] = [
