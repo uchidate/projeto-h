@@ -28,8 +28,8 @@ function Coluna({ titulo, verTodos, href, linhas, escala }: { titulo: string; ve
                                 {l.imagem && <Image src={l.imagem} alt="" fill sizes="64px" className="object-cover object-top" />}
                             </span>
                             <span className="min-w-0 flex-1">
-                                <span className={`block truncate font-extrabold leading-snug text-foreground group-hover:text-accent ${i === 0 ? 'font-serif text-[19px] font-medium' : 'text-[15px]'}`}>{l.nome}</span>
-                                {l.sub && <span className="mt-0.5 block truncate text-[12px] leading-snug text-muted">{l.sub}</span>}
+                                <span className={`block font-extrabold leading-snug text-foreground group-hover:text-accent ${i === 0 ? 'line-clamp-2 font-serif text-[17px] font-medium lg:text-[19px]' : 'truncate text-[15px]'}`}>{l.nome}</span>
+                                {l.sub && <span className={`mt-0.5 block text-[12px] leading-snug text-muted ${i === 0 ? 'line-clamp-2' : 'truncate'}`}>{l.sub}</span>}
                             </span>
                             {l.valor !== null && (
                                 <span className="w-14 shrink-0 text-right">
