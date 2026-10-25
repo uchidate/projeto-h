@@ -105,6 +105,9 @@ const KNOWN_YEARS = Array.from({ length: new Date().getFullYear() - 1999 }, (_, 
 const KNOWN_TYPES = ['drama', 'movie', 'special', 'variety']
 const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Globoplay', 'Max', 'Viki', 'WeTV']
 
+/** Tira o parágrafo que só descreve o próprio guia ("Este guia reúne… cadastrados na Portal"): é bastidor, não informação. */
+const textoDoGuia = (intro: string[]) => intro.filter(p => !/^Este guia reúne/i.test(p.trim()))
+
 export function HubPageContent({
     hub, relatedHubs, productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
@@ -277,9 +280,9 @@ export function HubPageContent({
                         {hub.title}<BrandDot />
                     </h1>
                     <p className="text-[14px] leading-7 text-muted max-w-2xl">{hub.description}</p>
-                    {hub.intro.length > 0 && (
+                    {textoDoGuia(hub.intro).length > 0 && (
                         <div className="pt-2 grid gap-3 text-sm leading-7 text-muted md:grid-cols-2 border-t border-border/40">
-                            {hub.intro.map((p, i) => <p key={i}>{p}</p>)}
+                            {textoDoGuia(hub.intro).map((p, i) => <p key={i}>{p}</p>)}
                         </div>
                     )}
                 </header>

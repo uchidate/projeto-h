@@ -46,7 +46,10 @@ export async function getHub(slug: string): Promise<ArchiveHub | undefined> {
 
 export async function getRelatedHubs(hub: ArchiveHub, limit = 6): Promise<ArchiveHub[]> {
     const all = await getAllHubs()
-    return all.filter(h => h.slug !== hub.slug && h.kind === hub.kind).slice(0, limit)
+    const mesmoTipo = all.filter(h => h.slug !== hub.slug && h.kind === hub.kind)
+    // Primeiro os irmãos da mesma lista (outras agências para um guia de agência, outros anos para um de ano); só depois o resto do tipo.
+    const irmaos = new Set(GRUPOS_DE_GUIAS.flatMap(g => g.grupos).find(g => g.hubs.some(h => h.slug === hub.slug))?.hubs.map(h => h.slug) ?? [])
+    return [...mesmoTipo.filter(h => irmaos.has(h.slug)), ...mesmoTipo.filter(h => !irmaos.has(h.slug))].slice(0, limit)
 }
 
 // Manter compat com código síncrono existente (será removido após migração completa)
