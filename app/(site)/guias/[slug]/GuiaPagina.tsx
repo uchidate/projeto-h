@@ -95,7 +95,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
                 artists={result.kind === 'artists' ? result.items : undefined}
                 groups={result.kind === 'groups' ? result.items : undefined}
                 blogPosts={blogPosts}
-                lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title={tematica ? `Na loja: ${hub.shortTitle}` : 'Para quem curte k-pop'} contexto={`guia:${slug}:meio`} />}
+                lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title={tematica ? `Na loja: ${hub.shortTitle}` : tipoVitrine === 'drama' ? 'Para quem curte k-drama' : 'Para quem curte k-pop'} contexto={`guia:${slug}:meio`} />}
                 quiz={<QuizWidget category={tipoVitrine === 'drama' ? 'k-drama' : 'k-pop'} />}
                 destaques={destaques}
                 genreMap={genreMap}
