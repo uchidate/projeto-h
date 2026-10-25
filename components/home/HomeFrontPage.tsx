@@ -99,6 +99,11 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     <div data-bloco="home-destaques" className="contents"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
                     {soPt && aniversarios && <div data-bloco="home-calendario" className="contents"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
+                {ADSENSE.slots.leaderboard && (
+                    <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">
+                        <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_hero_leaderboard" />
+                    </div>
+                )}
                 {soPt && <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>}
                 {soPt && <div data-bloco="home-guias" className="contents"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
                 {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
@@ -148,11 +153,6 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     <div className="cv-auto [--cv-h:1100px] lg:[--cv-h:920px] grid border-t border-border bg-background lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)]">
                         <div data-bloco="home-ultimos" className="contents"><HomeLatestPosts posts={latestRestantes.slice(0, 8)} categoryMap={categoryMap} locale={locale} /></div>
                         <div data-bloco="home-grupos-em-alta" className="contents"><HomeTrendingGroups groups={trendingGroups} locale={locale} /></div>
-                    </div>
-                )}
-                {ADSENSE.slots.leaderboard && (
-                    <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-10">
-                        <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_mid_leaderboard" />
                     </div>
                 )}
                 {soPt && (
