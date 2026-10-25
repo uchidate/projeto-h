@@ -29,7 +29,7 @@ export async function HomeEditorias({ editorias: colunas, prateleiras = {}, loca
 
     return (
         <section aria-label={t('rotulo')} className="px-0 py-0">
-            <div className={`grid gap-5 lg:gap-6 ${colunas.length === 3 ? 'lg:grid-cols-3' : colunas.length === 2 ? 'lg:grid-cols-2' : ''}`}>
+            <div className={`grid gap-3.5 lg:gap-6 ${colunas.length === 3 ? 'lg:grid-cols-3' : colunas.length === 2 ? 'lg:grid-cols-2' : ''}`}>
                 {colunas.map(({ coluna, posts: itens }) => {
                     const [abertura, ...resto] = itens
                     const imagem = getWPImage(abertura._embedded, abertura.featured_image_url)
@@ -52,13 +52,13 @@ export async function HomeEditorias({ editorias: colunas, prateleiras = {}, loca
                                     const img = getWPImage(post._embedded, post.featured_image_url)
                                     const nome = stripHtml(post.title.rendered)
                                     return (
-                                        <Link key={post.id} {...postLink(post.slug, locale)} className="group flex items-start gap-3 border-t border-border py-3">
-                                            <div className="relative aspect-video w-24 shrink-0 overflow-hidden bg-surface">
+                                        <Link key={post.id} {...postLink(post.slug, locale)} className="group flex items-start gap-3 border-t border-border py-3.5 lg:py-3">
+                                            <div className="relative hidden aspect-video w-24 shrink-0 overflow-hidden bg-surface lg:block">
                                                 {img && <Image src={img.src} alt={img.alt || nome} fill sizes="96px" className="object-cover" />}
                                             </div>
                                             <div className="min-w-0">
-                                                <h3 className="text-[13px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent line-clamp-3">{nome}</h3>
-                                                <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">{data(post.date)}</p>
+                                                <h3 className="text-[15px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent line-clamp-3 lg:text-[13px]">{nome}</h3>
+                                                <p className="mt-1 hidden font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted lg:block">{data(post.date)}</p>
                                             </div>
                                         </Link>
                                     )

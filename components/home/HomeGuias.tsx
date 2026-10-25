@@ -10,12 +10,12 @@ const MONO = 'font-mono text-[10px] font-bold uppercase tracking-[0.12em]'
 function Passo({ numero, guia, ultimo }: { numero: number; guia: BestOfList; ultimo: boolean }) {
     const apoio = APOIO_DOS_PASSOS[guia.label]
     return (
-        <li className="relative flex gap-3.5">
-            <div className="flex flex-col items-center">
+        <li className="relative flex w-[200px] shrink-0 flex-col gap-3 border border-[#2c2c38] bg-[#18181f] p-3.5 lg:w-auto lg:flex-row lg:gap-3.5 lg:border-0 lg:bg-transparent lg:p-0">
+            <div className="flex flex-col items-start lg:items-center">
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7be0d4] text-[13px] font-extrabold text-[#0b0b0e]">{numero}</span>
-                {!ultimo && <span aria-hidden className="mt-1 min-h-5 w-0.5 flex-1 bg-[#2c4a47]" />}
+                {!ultimo && <span aria-hidden className="mt-1 hidden min-h-5 w-0.5 flex-1 bg-[#2c4a47] lg:block" />}
             </div>
-            <Link href={guia.href} className={`group min-w-0 ${ultimo ? '' : 'pb-4'}`}>
+            <Link href={guia.href} className={`group min-w-0 ${ultimo ? '' : 'lg:pb-4'}`}>
                 <span className="block text-[15px] font-semibold leading-tight text-white group-hover:text-[#7be0d4]">{guia.label}</span>
                 {apoio && <span className="mt-1 block text-[12px] text-[#a8a8bc]">{apoio}</span>}
             </Link>
@@ -58,18 +58,19 @@ export async function HomeGuias({ passos, guias, locale = DEFAULT_LOCALE }: { pa
                         <span className={`border border-[#7be0d4] px-[7px] py-1 leading-none text-[#7be0d4] ${MONO}`}>{t('tag')}</span>
                     </div>
                     <p className={`mb-4 text-[#7be0d4] ${MONO}`}>{t('comece')}</p>
-                    <ol>{trilha.map((g, i) => <Passo key={g.href} numero={i + 1} guia={g} ultimo={i === trilha.length - 1} />)}</ol>
+                    <ol className="-mx-4 flex gap-2.5 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:block lg:overflow-visible lg:px-0 lg:pb-0">{trilha.map((g, i) => <Passo key={g.href} numero={i + 1} guia={g} ultimo={i === trilha.length - 1} />)}</ol>
                 </div>
             )}
             {guias.length > 0 && (
                 <div className="mt-8 min-w-0 lg:mt-0">
                     <div className="mb-4 flex items-baseline justify-between">
                         <p className={`text-[#ff7aa6] ${MONO}`}>{t('porTema')}</p>
-                        <Link href="/guias" className={`border-b border-[#ff7aa6] pb-0.5 text-white ${MONO}`}>{t('verTodos')}</Link>
+                        <Link href="/guias" className={`hidden border-b border-[#ff7aa6] pb-0.5 text-white lg:inline-block ${MONO}`}>{t('verTodos')}</Link>
                     </div>
                     <div className="-mx-4 grid auto-cols-[210px] grid-flow-col gap-3.5 overflow-x-auto px-4 pb-2 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:grid-flow-row lg:auto-cols-auto lg:grid-cols-3 lg:overflow-visible lg:px-0">
                         {guias.map(g => <CartaoGuia key={g.slug} guia={g} titulos={t('titulos', { total: g.total.toLocaleString(locale === 'en' ? 'en-US' : 'pt-BR') })} />)}
                     </div>
+                    <Link href="/guias" className={`mt-4 inline-block border-b border-[#ff7aa6] pb-0.5 text-white lg:hidden ${MONO}`}>{t('verTodos')}</Link>
                 </div>
             )}
         </section>

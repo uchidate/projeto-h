@@ -15,7 +15,7 @@ export async function HomeLoja({ produtos, locale = DEFAULT_LOCALE }: { produtos
             <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
                 <h2 className="font-serif text-[28px] font-medium leading-none tracking-[-0.02em] sm:text-[34px]">{t('titulo')}</h2>
                 <span className="bg-white px-[7px] py-1 font-mono text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-[#ff246e]">{t('caixa')}</span>
-                <Link href="/loja" className="ml-auto shrink-0 bg-white px-4 py-3 font-mono text-[11px] font-black uppercase leading-none tracking-[0.1em] text-[#ff246e]">{t('verLoja')}</Link>
+                <Link href="/loja" className="ml-auto hidden shrink-0 bg-white px-4 py-3 font-mono text-[11px] font-black uppercase leading-none tracking-[0.1em] text-[#ff246e] lg:block">{t('verLoja')}</Link>
                 <p className="w-full text-[13px] text-white/90">{t('aviso')}</p>
             </div>
             <div className="-mx-4 grid auto-cols-[190px] grid-flow-col gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-5 lg:overflow-visible lg:px-0">
@@ -24,6 +24,7 @@ export async function HomeLoja({ produtos, locale = DEFAULT_LOCALE }: { produtos
                         selo={quedaDePreco(p.acf.price, p.acf.price_history, 30) ? t('precoCaiu') : undefined} />
                 ))}
             </div>
+            <Link href="/loja" className="mt-3 block bg-white px-4 py-3.5 text-center font-mono text-[11px] font-black uppercase leading-none tracking-[0.1em] text-[#ff246e] lg:hidden">{t('verLoja')}</Link>
         </section>
     )
 }

@@ -71,43 +71,41 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
     }
 
     return (
-        <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="page-wrap py-6">
-            <div className="border border-border bg-surface p-4 sm:p-6 lg:flex lg:gap-9">
-                <div className="lg:w-[240px] lg:shrink-0">
-                    <p className="font-mono text-[11px] font-black uppercase tracking-[0.16em] text-accent">Pergunta do dia</p>
-                    <h2 id="dia-titulo" className={`${SERIF} mt-1 text-[26px] font-bold leading-none lg:text-[34px]`}>{dataExtenso}</h2>
-                    <p className="mt-2 text-[14px] text-muted">
-                        {sequencia > 0
-                            ? respondida ? `🔥 ${sequencia} ${sequencia === 1 ? 'dia seguido' : 'dias seguidos'}. Volte amanhã para manter.` : `🔥 ${sequencia} ${sequencia === 1 ? 'dia seguido' : 'dias seguidos'}. Responda hoje para continuar.`
-                            : 'Responda hoje e comece sua sequência.'}
-                    </p>
-                </div>
-                <div className="mt-4 flex-1 lg:mt-0">
-                    <p className={`${SERIF} text-[21px] font-semibold leading-tight lg:text-[24px]`}>{pergunta.question}</p>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                        {pergunta.options.map((op, i) => {
-                            const certa = respondida && i === pergunta.correct
-                            const errada = marcada === i && i !== pergunta.correct
-                            return (
-                                <button key={i} type="button" onClick={() => responder(i)} disabled={respondida}
-                                    className={`touch-target flex items-center justify-between gap-2 border px-4 py-3 text-left text-[15px] font-bold transition-colors ${
-                                        certa ? 'border-green-500 bg-green-500/10' : errada ? 'border-red-500 bg-red-500/10' : 'border-border bg-background hover:border-accent/60 disabled:opacity-70'
-                                    }`}>
-                                    <span>{op}</span>
-                                    {certa && <span className="text-[12px] text-green-500">Certo</span>}
-                                </button>
-                            )
-                        })}
+        <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="min-w-0 border border-l-[3px] border-border border-l-[#8a5a00] bg-[var(--color-home-card)] p-4 sm:p-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+                <div className="min-w-0 lg:flex-1">
+                    <p className={`${SERIF} text-[21px] font-semibold leading-tight lg:text-[22px]`}>{pergunta.question}</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-2.5">
+                        <span className="border border-[#8a5a00] px-1.5 py-1 font-mono text-[9px] font-black uppercase leading-none tracking-[0.12em] text-[#8a5a00]">Pergunta do dia</span>
+                        <h2 id="dia-titulo" className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a5a00]">{dataExtenso}</h2>
                     </div>
-                    {respondida && (
-                        <div aria-live="polite" className="mt-3">
-                            <p className="text-[14px] leading-relaxed text-muted">{pergunta.explanation}</p>
-                            <Link href="/quiz" className="touch-target mt-1 inline-flex items-center text-[14px] font-black text-accent hover:underline">Jogar o quiz completo →</Link>
-                            <AvisoConsentimento recurso="sua sequência de dias" className="mt-2 text-muted" />
-                        </div>
-                    )}
+                </div>
+                <div className="grid grid-cols-2 gap-2 lg:w-[250px] lg:shrink-0">
+                    {pergunta.options.map((op, i) => {
+                        const certa = respondida && i === pergunta.correct
+                        const errada = marcada === i && i !== pergunta.correct
+                        return (
+                            <button key={i} type="button" onClick={() => responder(i)} disabled={respondida}
+                                className={`touch-target flex items-center justify-center gap-2 border px-3 py-2.5 text-center text-[14px] font-bold transition-colors ${
+                                    certa ? 'border-green-500 bg-green-500/10' : errada ? 'border-red-500 bg-red-500/10' : 'border-border bg-background hover:border-accent/60 disabled:opacity-70'
+                                }`}>
+                                <span>{op}</span>
+                                {certa && <span className="text-[11px] text-green-500">Certo</span>}
+                            </button>
+                        )
+                    })}
                 </div>
             </div>
+            {respondida && (
+                <div aria-live="polite" className="mt-3">
+                    <p className="text-[14px] leading-relaxed text-muted">{pergunta.explanation}</p>
+                    <p className="mt-1 text-[13px] text-muted">
+                        {sequencia > 0 ? `🔥 ${sequencia} ${sequencia === 1 ? 'dia seguido' : 'dias seguidos'}. Volte amanhã para manter.` : 'Volte amanhã para começar sua sequência.'}
+                    </p>
+                    <Link href="/quiz" className="touch-target mt-1 inline-flex items-center text-[14px] font-black text-accent hover:underline">Jogar o quiz completo →</Link>
+                    <AvisoConsentimento recurso="sua sequência de dias" className="mt-2 text-muted" />
+                </div>
+            )}
         </section>
     )
 }

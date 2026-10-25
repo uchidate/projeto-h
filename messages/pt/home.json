@@ -52,7 +52,7 @@
   "calendario": {
     "rotulo": "Calendário",
     "titulo": "Hoje no calendário",
-    "tag": "Aniversários",
+    "estaSemana": "Esta semana", "tag": "Aniversários",
     "hoje": "Hoje",
     "aSeguir": "A seguir",
     "abrir": "7 dias →",

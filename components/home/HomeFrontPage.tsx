@@ -14,6 +14,7 @@ import { HomeTema } from '@/components/home/HomeTema'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HomeAssuntos } from '@/components/home/HomeAssuntos'
 import { HomeCalendario } from '@/components/home/HomeCalendario'
+import { HomeEstaSemana } from '@/components/home/HomeEstaSemana'
 import { HomeSeguindo } from '@/components/home/HomeSeguindo'
 import { HomeEditorias } from '@/components/home/HomeEditorias'
 import { HomeDestaquesColuna } from '@/components/home/HomeDestaquesColuna'
@@ -96,19 +97,19 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 <div className="flex flex-col gap-3.5 pt-3.5 lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-5 lg:pt-5">
                     <div data-bloco="home-hero" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
                     <div data-bloco="home-destaques" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
-                    {soPt && aniversarios && <div data-bloco="home-calendario" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
+                    {soPt && aniversarios && <div data-bloco="home-calendario" className="hidden min-w-0 bg-[var(--color-home-card)] border border-border lg:block"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {ADSENSE.slots.leaderboard && (
-                    <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-4">
+                    <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 sm:px-6 lg:px-4">
                         <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_hero_leaderboard" />
                     </div>
                 )}
-                {soPt && <div data-bloco="home-seguindo" className="empty:hidden bg-[var(--color-home-card)]"><HomeSeguindo /></div>}
-                {soPt && <div data-bloco="home-guias" className="contents"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
+                {soPt && <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>}
+                {soPt && <div data-bloco="home-guias" className="-mx-3.5 lg:mx-0"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
                 <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>
-                {soPt && <div data-bloco="home-loja" className="contents"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
+                {soPt && <div data-bloco="home-loja" className="-mx-3.5 lg:mx-0"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
                 {ADSENSE.slots.inline && (
-                    <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-4">
+                    <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 sm:px-6 lg:px-4">
                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="home_feed" />
                     </div>
                 )}
@@ -131,12 +132,12 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 </div>
                 {soPt && (
                     <>
-                        {pergunta}
-                        <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-4 bg-[var(--color-home-card)]">
+                        <div className="grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.5fr)] lg:gap-5">
+                            {pergunta}
                             <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
                         </div>
                         {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href="/comidas" bloco="home-gastronomia" locale={locale} />}
-                        <div data-bloco="home-explore" className="bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>
+                        <div data-bloco="home-explore" className="border border-border bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>
                         {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#c61153" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />}
                     </>
                 )}
@@ -156,6 +157,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         </div>
                     </>
                 )}
+                {soPt && aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}
             </div>
         </section>
     )
