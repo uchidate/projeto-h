@@ -135,7 +135,13 @@
     "kpop": "K-Pop",
     "doramas": "Dramas & films",
     "cultura": "Culture & K-Beauty",
-    "verMais": "see more →"
+    "verMais": "see more →",
+    "loja": {
+        "kpop": "K-Pop",
+        "doramas": "Korean food",
+        "cultura": "K-Beauty",
+        "naLoja": "In the shop · {assunto} · affiliate"
+    }
   },
   "ultimas": {
     "titulo": "Latest posts",
