@@ -129,7 +129,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         </div>
                         {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href="/comidas" bloco="home-gastronomia" locale={locale} />}
                         <div data-bloco="home-explore" className="border border-border bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>
-                        {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#c61153" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />}
+                        {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#0e7490" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />}
                     </>
                 )}
                 {soPt && aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}
