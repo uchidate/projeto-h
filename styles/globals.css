@@ -2650,7 +2650,7 @@ html[data-player-dock] .oc-back-to-top { bottom: calc(var(--bottom-nav-h, 62px) 
   .wp-article-content .oc-album-hero .oc-stats dl { grid-template-columns: 1fr; }
 }
 
-/* Home no desktop: escala proporcional (fontes, imagens, espaços e menu juntos). Ajustar só este número. */
+/* Site todo no desktop: escala proporcional (fontes, imagens, espaços e menu juntos). Ajustar só este número. */
 @media (min-width: 1024px) {
-  body:has([data-bloco="home-hero"]) { zoom: 1.12; }
+  body { zoom: 1.12; }
 }
