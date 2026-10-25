@@ -24,7 +24,7 @@ export async function HomeDestaquesColuna({ posts, categoryMap, locale = DEFAULT
     const estiloLead = homeCatStyle(lead, categoryMap)
 
     return (
-        <section aria-label={t('titulo')} className="min-w-0 border-t border-border px-4 py-4 sm:px-6 lg:border-l lg:border-t-0 lg:px-4">
+        <section aria-label={t('titulo')} className="min-w-0 border-t border-border px-4 py-4 sm:px-6 lg:border lg:px-4">
             <div className="flex items-center justify-between">
                 <h2 className={`${ROTULO} text-accent`}>{t('titulo')}</h2>
                 <Link href={rota('blog', undefined, locale)} className={`${ROTULO} text-muted hover:text-accent`}>{tc('verTodos')}</Link>
