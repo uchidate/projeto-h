@@ -48,8 +48,8 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
 
     return (
         <section data-bloco={bloco} aria-label={t('titulo')}
-            className="border-t border-border px-4 py-5 sm:px-6 lg:px-5"
-            style={{ backgroundColor: `color-mix(in srgb, ${cor} 6%, var(--background))` }}>
+            className="border border-border px-4 py-5 sm:px-6 lg:px-5"
+            style={{ backgroundColor: `color-mix(in srgb, ${cor} 7%, var(--color-home-card))` }}>
             <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
                 <h2 className="font-serif text-[26px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[32px]">{t('titulo')}</h2>
                 <span className={`border px-[7px] py-1 leading-none ${MONO}`} style={{ color: cor, borderColor: cor }}>{t('caixa')}</span>
@@ -85,7 +85,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                 {pratos.length > 0 && (
                     <div>
                         <p className={`mb-2 ${MONO} text-[9px]`} style={{ color: cor }}>{t('pratos')}</p>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="-mx-4 grid auto-cols-[44%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0">
                             {pratos.map(f => <Ficha key={f.slug} ficha={f} base="/comidas" cor={cor} naLoja={t('naLoja', { n: f.naLoja })} />)}
                         </div>
                     </div>
@@ -93,7 +93,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                 {marcas.length > 0 && (
                     <div className={chave === 'beleza' ? 'lg:col-span-2' : ''}>
                         <p className={`mb-2 ${MONO} text-[9px]`} style={{ color: cor }}>{t('marcas')}</p>
-                        <div className={`grid grid-cols-2 gap-3 ${chave === 'beleza' ? 'sm:grid-cols-4' : ''}`}>
+                        <div className={`-mx-4 grid auto-cols-[44%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 ${chave === 'beleza' ? 'lg:grid-cols-4' : ''}`}>
                             {marcas.map(f => <Ficha key={f.slug} ficha={f} base="/empresas" cor={cor} naLoja={t('naLoja', { n: f.naLoja })} />)}
                         </div>
                     </div>

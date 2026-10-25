@@ -40,7 +40,7 @@ export function HomeSeguindo() {
 
     if (!dados || dados.novidades.length === 0) return null
     return (
-        <section aria-label={t('titulo')} className="border-t border-border bg-background px-4 py-5 sm:px-6 lg:px-5">
+        <section aria-label={t('titulo')} className="border border-border border-t-2 border-t-accent bg-[var(--color-home-card)] px-4 py-5 sm:px-6 lg:px-5">
             <div className="mb-3 flex flex-wrap items-center gap-3">
                 <h2 className="font-serif text-[26px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[32px]">{t('titulo')}</h2>
                 <span className={`border border-accent px-[7px] py-1 leading-none text-accent ${MONO}`}>{t('caixa')}</span>
