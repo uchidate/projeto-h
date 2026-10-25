@@ -179,7 +179,10 @@ export default async function CulturaCoreanaPage() {
     ]
     const receitas = escolherReceitas(fo.items)
     const festas = proximasFestas()
-    const marcas = escolherFichas(ec.items, 6)
+    const marcas = escolherFichas(ec.items, 12)
+    // Marcas ainda sem logo não viram cartão, mas aparecem como atalho: a lista mostra todas as que existem no acervo.
+    const comLogo = new Set(marcas.map(m => m.slug))
+    const marcasSemLogo = ec.items.filter(c => !comLogo.has(c.slug)).map(c => ({ slug: c.slug, nome: stripHtml(c.title.rendered) }))
 
     const jsonLd = {
         '@context': 'https://schema.org',
@@ -415,6 +418,15 @@ export default async function CulturaCoreanaPage() {
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
                             {marcas.map(f => <Ficha key={f.slug} ficha={f} base="/empresas" cor={COR_COMIDA} />)}
                         </div>
+                        {marcasSemLogo.length > 0 && (
+                            <ul className="flex flex-wrap gap-2" aria-label="Outras marcas">
+                                {marcasSemLogo.map(m => (
+                                    <li key={m.slug}>
+                                        <Link href={`/empresas/${m.slug}`} className="touch-target flex h-10 items-center border border-border-strong px-4 text-[14px] font-semibold text-foreground transition-colors hover:border-accent/60">{m.nome}</Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                         <VerTodos href="/empresas" cor={COR_COMIDA}>Ver todas as empresas →</VerTodos>
                     </section>
                 )}
