@@ -80,13 +80,13 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
                         <h2 id="dia-titulo" className="font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-[#8a5a00]">{dataExtenso}</h2>
                     </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2 lg:w-[250px] lg:shrink-0">
+                <div className="grid grid-cols-2 gap-2 lg:w-[400px] lg:shrink-0">
                     {pergunta.options.map((op, i) => {
                         const certa = respondida && i === pergunta.correct
                         const errada = marcada === i && i !== pergunta.correct
                         return (
                             <button key={i} type="button" onClick={() => responder(i)} disabled={respondida}
-                                className={`touch-target flex items-center justify-center gap-2 border-2 px-3 py-3.5 text-center text-[16px] font-bold transition-colors ${
+                                className={`touch-target flex items-center justify-center gap-2 border-2 px-3 py-3.5 text-center text-[15px] font-bold leading-snug transition-colors ${
                                     certa ? 'border-green-500 bg-green-500/10' : errada ? 'border-red-500 bg-red-500/10' : 'border-border bg-background hover:border-accent/60 hover:bg-accent/5 disabled:opacity-70'
                                 }`}>
                                 <span>{op}</span>

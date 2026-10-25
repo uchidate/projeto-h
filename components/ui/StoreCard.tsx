@@ -61,7 +61,7 @@ export function StoreCard({ product, compact = false, contexto = 'loja', link }:
                     )}
                 </div>
                 <div className="min-w-0 flex-1">
-                    <p className="line-clamp-2 text-xs font-semibold leading-snug text-foreground">{name}</p>
+                    <p className="line-clamp-3 text-[13px] font-semibold leading-snug text-foreground">{name}</p>
                     {acf.price && <p className="mt-1 text-sm font-black text-foreground">{acf.price}</p>}
                     <span className={`mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wide ${cfg.bg} ${cfg.textColor}`}>
                         {cfg.label}
