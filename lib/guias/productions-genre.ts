@@ -72,13 +72,14 @@ export const productionsGenreHubs: ArchiveHub[] = [
         shortTitle: 'Doramas thriller',
         description: 'Os melhores doramas coreanos de thriller e suspense com sinopse, elenco, plataformas e avaliações em português.',
         intro: [
-            'O thriller coreano é um dos gêneros mais elogiados pelos críticos internacionais — com reviravoltas calculadas, personagens complexos e atmosferas que mantêm a tensão do início ao fim.',
-            `Este guia reúne produções coreanas de thriller e suspense cadastradas na ${SITE_NAME} para ajudar você a encontrar o próximo dorama que vai te deixar sem dormir.`,
+            'Thriller reúne suspense psicológico, crime, mistério e terror de clima pesado, e muitas produções aparecem também nos guias de policial, terror e mistério.',
+            'A lista mistura séries e filmes, na ordem de interesse recente; o filtro de tipo, no topo, separa os formatos. Para começar por série, Stranger (tvN, 2017) e Signal (tvN, 2016) estão no catálogo.',
         ],
         keywords: ['doramas thriller coreanos', 'kdramas suspense', 'dorama coreano thriller', 'suspense coreano netflix', 'k-drama mystery'],
         faq: [
-            { question: 'O que torna os thrillers coreanos únicos?', answer: 'Os thrillers coreanos se destacam pela precisão narrativa, reviravoltas bem construídas e uma atenção ao detalhe psicológico que poucos países conseguem replicar. "Stranger", "Signal" e "My Name" são exemplos emblemáticos.' },
-            { question: 'Onde assistir thrillers coreanos?', answer: 'Netflix tem a maior concentração de K-Dramas thriller com legendas em português. Disney+ e Viki também têm títulos de destaque no gênero.' },
+            { question: 'O que entra na lista de thriller?', answer: 'Produções marcadas com o gênero thriller no catálogo: suspense psicológico, crime, mistério e terror, entre outros. Muitas têm também outro marcador de gênero.' },
+            { question: 'Dá para ver só as séries?', answer: 'Sim. O filtro Tipo, no topo da página, separa séries, filmes, especiais e programas de variedade, e o filtro Plataforma mostra onde cada uma está.' },
+            { question: 'Qual a diferença entre thriller e policial?', answer: 'O policial tem a investigação como eixo. O thriller pode dispensar a polícia e apostar na tensão e na ameaça; os dois se misturam com frequência.' },
         ],
     },
     {
@@ -89,13 +90,14 @@ export const productionsGenreHubs: ArchiveHub[] = [
         shortTitle: 'Doramas de ação',
         description: 'Os melhores doramas coreanos de ação com cenas de luta, espionagem, perseguição e avaliações em português.',
         intro: [
-            'Os doramas de ação coreanos impressionam pela qualidade das cenas de luta, produção cinematográfica e histórias que misturam espionagem, crime e conflitos pessoais intensos.',
-            `Este guia reúne produções coreanas de ação cadastradas na ${SITE_NAME} para ajudar você a encontrar o próximo dorama cheio de adrenalina.`,
+            'No catálogo, ação reúne histórias de espionagem, crime, artes marciais e vingança, e boa parte também aparece nos guias de thriller e de policial.',
+            'A lista mistura séries e filmes e segue a ordem de interesse recente; o filtro de tipo, no topo, separa os formatos.',
         ],
         keywords: ['doramas ação coreanos', 'kdramas ação', 'dorama coreano espionagem', 'ação coreana netflix', 'k-drama action'],
         faq: [
-            { question: 'Os doramas de ação coreanos têm cenas de qualidade cinematográfica?', answer: 'Sim. A indústria coreana investiu muito em coreografia de luta e produção de ação. Séries como "Bloodhounds", "Vincenzo" e "My Name" são exemplos de produção de nível cinema.' },
-            { question: 'Qual é o melhor dorama de ação coreano?', answer: '"Vincenzo", "Bloodhounds", "My Name", "Doctor Slump" e "Gyeongseong Creature" estão entre os mais elogiados do gênero nos últimos anos.' },
+            { question: 'O que entra na lista de ação?', answer: 'Produções marcadas com o gênero ação no catálogo, de espionagem e crime a artes marciais. Muitas têm também o marcador de thriller ou de crime.' },
+            { question: 'Dá para ver só as séries?', answer: 'Sim. O filtro Tipo, no topo da página, separa séries, filmes, especiais e programas de variedade, e o filtro Plataforma mostra onde cada uma está.' },
+            { question: 'Qual a diferença entre ação e thriller?', answer: 'Ação põe o movimento em primeiro plano: lutas, perseguições, missões. O thriller aposta na tensão e na ameaça, e os dois se misturam com frequência.' },
         ],
     },
     {
