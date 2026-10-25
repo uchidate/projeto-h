@@ -11,7 +11,7 @@ export const artistsCategoriesHubs: ArchiveHub[] = [
         description: 'Conheça cantoras de K-Pop, idols e solistas coreanas com perfis em português, carreira, grupos, músicas e curiosidades.',
         intro: [
             'As cantoras de K-Pop movimentam boa parte da cultura Hallyu: de vocalistas de grupos femininos a solistas com discografias próprias, elas conectam música, performance, moda e fandom.',
-            'Este guia reúne perfis em português de artistas que cantam, com atalhos para grupos relacionados e encontrar trajetórias que merecem uma leitura mais profunda. Quem divide a carreira entre música e atuação também aparece aqui.',
+            'Este guia reúne perfis em português de artistas que cantam, com atalhos para grupos relacionados e trajetórias que merecem uma leitura mais profunda. Quem divide a carreira entre música e atuação também aparece aqui.',
         ],
         keywords: ['cantoras kpop', 'idols femininas', 'solistas kpop', 'cantora coreana'],
         faq: [
@@ -29,7 +29,7 @@ export const artistsCategoriesHubs: ArchiveHub[] = [
         description: 'Conheça cantores de K-Pop, idols e solistas coreanos com perfis em português, carreira, grupos, músicas e curiosidades.',
         intro: [
             'Os cantores de K-Pop — de vocalistas a rappers, de idols a solistas — representam uma diversidade enorme de estilos, trajetórias e histórias.',
-            'Este guia reúne perfis em português de artistas masculinos que cantam, com atalhos para grupos relacionados e encontrar trajetórias que merecem atenção. Quem divide a carreira entre música e atuação também aparece aqui.',
+            'Este guia reúne perfis em português de artistas masculinos que cantam, com atalhos para grupos relacionados e trajetórias que merecem atenção. Quem divide a carreira entre música e atuação também aparece aqui.',
         ],
         keywords: ['cantores kpop', 'idols masculinos', 'solistas kpop masculino', 'cantor coreano'],
         faq: [
