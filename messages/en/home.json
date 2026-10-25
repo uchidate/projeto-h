@@ -12,7 +12,7 @@
   },
   "hero": {
     "asFaixas": "The {n} tracks",
-    "maisFaixas": "+ {n} more tracks",
+    "clipe": "Video", "maisFaixas": "+ {n} more tracks",
     "lerAgora": "Read now",
     "continuarLeitura": "Keep reading",
     "filmeEmDestaque": "Featured film",

@@ -12,7 +12,7 @@
   },
   "hero": {
     "asFaixas": "As {n} faixas",
-    "maisFaixas": "+ {n} faixas",
+    "clipe": "Clipe", "maisFaixas": "+ {n} faixas",
     "lerAgora": "Ler agora",
     "continuarLeitura": "Continuar a leitura",
     "filmeEmDestaque": "Filme em Destaque",
