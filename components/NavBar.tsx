@@ -101,6 +101,10 @@ const NavBar = ({
        item fora da lista mesmo enquanto o WordPress ainda o devolve — sem ele,
        "Loja" apareceria duas vezes até a configuração remota ser atualizada. */
     const contentLinks = navLinks.filter(link => link.href !== '/loja')
+    // Desktop: Calendário e Quiz vão para a direita da barra; o restante segue à esquerda.
+    const vaiParaDireita = (href: string) => /\/(calendario|calendar|quiz)\/?$/.test(href)
+    const linksDireita = contentLinks.filter(link => vaiParaDireita(link.href))
+    const linksEsquerda = contentLinks.filter(link => !vaiParaDireita(link.href))
 
     useEffect(() => {
         const tick = () => setEditionDate(formatEditionDate())
@@ -256,8 +260,9 @@ const NavBar = ({
                 {/* ── Desktop ── */}
                 <div className="hidden lg:block">
                     {/* Faixa de data */}
-                    <div className="flex h-8 items-center border-b border-border px-10 font-mono text-[12px] lowercase tracking-[0.02em] text-muted">
-                        <span>{editionDate}</span>
+                    <div className="navbar-dark-strip flex h-8 items-center justify-between border-b border-border px-10 font-mono text-[12px] lowercase tracking-[0.02em]">
+                        <span className="text-white/80">{editionDate}</span>
+                        <SeletorIdioma tom="escuro" className="shrink-0" />
                     </div>
 
                     {/* Logo + botões */}
@@ -299,7 +304,7 @@ const NavBar = ({
                     {/* Nav links desktop */}
                     <div className="navbar-dark-strip flex h-12 items-center border-b-2 border-foreground px-10">
                         <div className="flex h-full flex-1 items-center gap-5 overflow-x-auto xl:gap-8">
-                            {contentLinks.map((link) => (
+                            {linksEsquerda.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
@@ -310,9 +315,19 @@ const NavBar = ({
                                 </Link>
                             ))}
                         </div>
-                        {/* A linha do logo some ao rolar; esta faixa fica. O seletor
-                            repete aqui para continuar ao alcance depois de rolar. */}
-                        <SeletorIdioma tom="escuro" className="ml-4 shrink-0" />
+                        {/* Calendário e Quiz ficam à direita da barra, como no mockup */}
+                        <div className="ml-4 flex h-full shrink-0 items-center gap-5 xl:gap-8">
+                            {linksDireita.map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    aria-current={isActive(link.href) ? 'page' : undefined}
+                                    className={`nav-link-underline flex h-full shrink-0 items-center text-[15px] font-bold tracking-[-0.02em] transition-colors ${isActive(link.href) ? 'is-active nav-link-active' : 'is-inactive nav-link-inactive'}`}
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
