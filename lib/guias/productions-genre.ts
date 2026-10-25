@@ -67,18 +67,18 @@ export const productionsGenreHubs: ArchiveHub[] = [
     {
         slug: 'doramas-thriller-coreanos',
         kind: 'productions',
-        filter: { genre: 'thriller', type: 'drama' },
+        filter: { genre: 'thriller' },
         title: 'Doramas coreanos de thriller',
         shortTitle: 'Doramas thriller',
         description: 'Os melhores doramas coreanos de thriller e suspense com sinopse, elenco, plataformas e avaliações em português.',
         intro: [
             'Thriller reúne suspense psicológico, crime, mistério e terror de clima pesado, e muitas produções aparecem também nos guias de policial, terror e mistério.',
-            'A lista abre só com séries, na ordem de interesse recente; o filtro Tipo, no topo, inclui os filmes. Para começar, Stranger (tvN, 2017) e Signal (tvN, 2016) estão no catálogo.',
+            'A lista mistura séries e filmes, na ordem de interesse recente; o filtro Tipo, no topo, separa os formatos. Para começar, Stranger (tvN, 2017) e Signal (tvN, 2016) estão no catálogo.',
         ],
         keywords: ['doramas thriller coreanos', 'kdramas suspense', 'dorama coreano thriller', 'suspense coreano netflix', 'k-drama mystery'],
         faq: [
             { question: 'O que entra na lista de thriller?', answer: 'Produções marcadas com o gênero thriller no catálogo: suspense psicológico, crime, mistério e terror, entre outros. Muitas têm também outro marcador de gênero.' },
-            { question: 'Dá para ver os filmes de thriller?', answer: 'Sim. A lista abre só com séries; no filtro Tipo, no topo, escolha Filme (ou Todos) para incluir os longas.' },
+            { question: 'Dá para ver só as séries?', answer: 'Sim. O filtro Tipo, no topo da página, separa séries, filmes, especiais e programas de variedade.' },
             { question: 'Qual a diferença entre thriller e policial?', answer: 'O policial tem a investigação como eixo. O thriller pode dispensar a polícia e apostar na tensão e na ameaça; os dois se misturam com frequência.' },
         ],
     },
