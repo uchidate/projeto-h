@@ -65,7 +65,7 @@ export async function HomeEditorias({ editorias: colunas, prateleiras = {}, loca
                                 })}
                             </div>
                             {(prateleiras[coluna.chave]?.length ?? 0) > 0 && (
-                                <div className="mx-4 mb-4 mt-auto border-2 p-3" style={{ borderColor: coluna.cor }}>
+                                <div className="mx-4 mb-4 mt-auto border-2 border-[#ff246e] bg-[#fff0f5] p-3 dark:bg-[#2a1018]">
                                     <p className="mb-2 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">{t('loja.naLoja', { assunto: t(`loja.${coluna.chave}`) })}</p>
                                     <div className="grid grid-cols-2 gap-3">
                                         {prateleiras[coluna.chave]!.map(p => <HomeProdutoMini key={p.id} product={p} contexto={`home_editoria_${coluna.chave}`} />)}
