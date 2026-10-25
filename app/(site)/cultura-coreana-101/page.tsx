@@ -76,9 +76,13 @@ const FESTAS: { nome: string; hangul: string; data: string; nota: string; guia?:
     { nome: 'Gwangbokjeol', hangul: '광복절', data: '2027-08-15', nota: 'Dia da Libertação' },
     { nome: 'Chuseok', hangul: '추석', data: '2027-09-15', nota: 'Festa da colheita', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
     { nome: 'Hangeul-nal', hangul: '한글날', data: '2027-10-09', nota: 'Dia do alfabeto coreano', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
+    { nome: 'Seollal', hangul: '설날', data: '2028-01-26', nota: 'Ano-Novo lunar', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
+    { nome: 'Samiljeol', hangul: '삼일절', data: '2028-03-01', nota: 'Movimento de 1º de março' },
+    { nome: 'Gwangbokjeol', hangul: '광복절', data: '2028-08-15', nota: 'Dia da Libertação' },
+    { nome: 'Hangeul-nal', hangul: '한글날', data: '2028-10-09', nota: 'Dia do alfabeto coreano', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
 ]
 
-/** Datas lunares (Seollal, Daeboreum, Dano, Chuseok) conferidas no calendário oficial de 2027; ao virar o ano a lista esvazia e o bloco some até ser atualizada. */
+/** Datas lunares de 2027 (Seollal, Daeboreum, Dano, Chuseok) conferidas no calendário oficial e o Seollal de 2028 em duas fontes; as demais de 2028 são datas fixas. Chuseok, Daeboreum e Dano de 2028 ficam de fora até haver fonte. Ao esgotar a lista, o bloco some até ser atualizada. */
 function proximasFestas(agora = new Date()) {
     const hoje = Date.UTC(agora.getFullYear(), agora.getMonth(), agora.getDate())
     return FESTAS
