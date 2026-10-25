@@ -6,7 +6,6 @@ import { Suspense } from 'react'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { HomeFrontPage } from '@/components/home/HomeFrontPage'
 import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
-import { HomeBelowFold } from '@/components/home/HomeBelowFold'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
 import { IS_BUILD } from '@/lib/wordpress/config'
@@ -47,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-    const { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum } = await carregarHome({ comercio: true })
+    const { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum, producoesEmAlta, hoje } = await carregarHome({ comercio: true })
 
     // Sem posts a home não é "home vazia", é home quebrada: wpFetch devolve []
     // quando o WordPress falha, e o resultado sairia com HTTP 200. Em 2026-08-06
@@ -94,10 +93,9 @@ export default async function HomePage() {
                 explore={explore}
                 prateleirasEditorias={prateleirasEditorias}
                 capasAlbum={capasAlbum}
+                producoesEmAlta={producoesEmAlta}
+                hoje={hoje}
             />
-            <Suspense fallback={null}>
-                <HomeBelowFold homeSettings={siteSettings.home} />
-            </Suspense>
         </>
     )
 }

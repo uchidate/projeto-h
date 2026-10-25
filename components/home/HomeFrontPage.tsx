@@ -19,12 +19,7 @@ import { HomeSeguindo } from '@/components/home/HomeSeguindo'
 import { HomeEditorias } from '@/components/home/HomeEditorias'
 import { HomeDestaquesColuna } from '@/components/home/HomeDestaquesColuna'
 import { HomeLongreads } from '@/components/home/HomeLongreads'
-import { HomeTrendingArtists } from '@/components/home/HomeTrendingArtists'
-import { HomeTrendingGroups } from '@/components/home/HomeTrendingGroups'
-import { HomeProductionsRail } from '@/components/home/HomeProductionsRail'
-import { HomeLatestPosts } from '@/components/home/HomeLatestPosts'
-import { HomeStreamingTop } from '@/components/home/HomeStreamingTop'
-import { HomeArtistSpotlight } from '@/components/home/HomeArtistSpotlight'
+import { HomePopulares } from '@/components/home/HomePopulares'
 import type { PrateleirasEditorias } from '@/lib/home/editorias-loja'
 import type { CapaAlbum } from '@/lib/home/capa-album'
 import type { CartaoExplore } from '@/lib/home/explore'
@@ -61,11 +56,13 @@ type Props = {
     explore?: CartaoExplore[]
     prateleirasEditorias?: PrateleirasEditorias
     capasAlbum?: Record<number, CapaAlbum>
+    producoesEmAlta?: WPProduction[]
+    hoje?: string
     temas?: { gastronomia: TemaHome; beleza: TemaHome } | null
     locale?: Locale
 }
 
-export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, produtosMaisVendidos = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null, explore = [], prateleirasEditorias = {}, capasAlbum = {} }: Props) {
+export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, categoryMap, produtosMaisVendidos = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null, explore = [], prateleirasEditorias = {}, capasAlbum = {}, producoesEmAlta = [], hoje }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
@@ -83,12 +80,9 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     const usedIds = new Set([...heroIds, ...highlighted.map(post => post.id)])
     const rest = posts.filter(post => !usedIds.has(post.id))
     const longreads = rest.slice(0, 4)
-    const latest = rest.slice(4, 14)
     // Cada matéria aparece em uma só vitrine: as editorias pulam o que já está no carrossel, nos destaques e nos longreads,
     // e o que foi para elas sai de "Últimas publicações".
     const editorias = montarEditorias(postsEditorias, new Set([...usedIds, ...longreads.map(post => post.id)]))
-    const editoriasIds = new Set(editorias.flatMap(c => c.posts.map(post => post.id)))
-    const latestRestantes = latest.filter(post => !editoriasIds.has(post.id))
 
     return (
         <section className="bg-[var(--color-home-page)]" aria-label={t('rotulo')}>
@@ -123,13 +117,10 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                   * mede visibilidade com IntersectionObserver, e a mudança não
                   * deve mexer em como o AdSense enxerga a página.
                   */}
-                <div className="cv-auto [--cv-h:1800px] lg:[--cv-h:1180px] grid border border-border bg-surface/55 lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)] bg-[var(--color-home-card)]">
+                <div className="cv-auto [--cv-h:1500px] lg:[--cv-h:640px] border border-border bg-[var(--color-home-card)]">
                     <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} locale={locale} /></div>
-                    <div data-bloco="home-artistas-em-alta" className="contents"><HomeTrendingArtists artists={artists} featuredArtist={featuredArtist} featuredArtistNote={featuredArtistNote} locale={locale} /></div>
                 </div>
-                <div className="cv-auto [--cv-h:230px] lg:[--cv-h:208px] bg-[var(--color-home-card)]">
-                    <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} locale={locale} /></div>
-                </div>
+                <div data-bloco="home-populares" className="contents"><HomePopulares artistas={artists} grupos={trendingGroups} producoes={producoesEmAlta} hoje={hoje} locale={locale} /></div>
                 {soPt && (
                     <>
                         <div className="grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.5fr)] lg:gap-5">
@@ -139,22 +130,6 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href="/comidas" bloco="home-gastronomia" locale={locale} />}
                         <div data-bloco="home-explore" className="border border-border bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>
                         {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#c61153" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />}
-                    </>
-                )}
-                <div className="cv-auto [--cv-h:620px] sm:[--cv-h:720px] lg:[--cv-h:490px] bg-[var(--color-home-card)]">
-                    <div data-bloco="home-producoes" className="contents"><HomeProductionsRail productions={productions} locale={locale} /></div>
-                </div>
-                {trendingGroups.length > 0 && (
-                    <div className="cv-auto [--cv-h:1100px] lg:[--cv-h:920px] grid border border-border bg-background lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)] bg-[var(--color-home-card)]">
-                        <div data-bloco="home-ultimos" className="contents"><HomeLatestPosts posts={latestRestantes.slice(0, 8)} categoryMap={categoryMap} locale={locale} /></div>
-                        <div data-bloco="home-grupos-em-alta" className="contents"><HomeTrendingGroups groups={trendingGroups} locale={locale} /></div>
-                    </div>
-                )}
-                {soPt && (
-                    <>
-                        <div className="cv-auto [--cv-h:266px] sm:[--cv-h:284px] lg:[--cv-h:250px] bg-[var(--color-home-card)]">
-                            <div data-bloco="home-streaming" className="contents"><HomeStreamingTop showsByPlatform={streamingByPlatform} /></div>
-                        </div>
                     </>
                 )}
                 {soPt && aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}

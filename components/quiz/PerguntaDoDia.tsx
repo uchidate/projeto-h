@@ -71,7 +71,7 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
     }
 
     return (
-        <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="min-w-0 border border-l-[3px] border-border border-l-[#8a5a00] bg-[var(--color-home-card)] p-4 sm:p-5">
+        <section aria-labelledby="dia-titulo" data-bloco="pergunta-do-dia" className="flex min-w-0 flex-col justify-center border border-l-[3px] border-border border-l-[#8a5a00] bg-[var(--color-home-card)] p-4 sm:p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
                 <div className="min-w-0 lg:flex-1">
                     <p className={`${SERIF} text-[21px] font-semibold leading-tight lg:text-[22px]`}>{pergunta.question}</p>

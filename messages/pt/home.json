@@ -171,6 +171,15 @@
     "grupoDaSemana": "Grupo da semana",
     "verTodos": "Ver todos os grupos"
   },
+  "populares": {
+      "titulo": "Populares na Coreia agora",
+      "tag": "Ranking",
+      "artistas": "Artistas em alta",
+      "grupos": "Grupos em alta",
+      "producoes": "Produções em alta",
+      "verTodos": "Ver todos →",
+      "membros": "{n} membros"
+  },
   "tipoDeGrupo": {
     "girl_group": "Girl Group",
     "boy_group": "Boy Group",
