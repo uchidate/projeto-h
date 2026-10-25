@@ -6,8 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { WPPost } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
+import { homeCatName } from '@/lib/home/catStyle'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
-import { Clock } from 'lucide-react'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
 
@@ -23,7 +23,7 @@ export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts:
                     const image = getWPImage(post._embedded, post.featured_image_url)
                     const title = stripHtml(post.title.rendered)
                     const excerpt = stripHtml(post.excerpt?.rendered ?? '').slice(0, 120)
-                    const mins = post.acf?.reading_time ?? readingTime(post.content?.rendered ?? '')
+                    const mins = post.acf?.reading_time ?? (post.content?.rendered ? readingTime(post.content.rendered) : null)
                     const isLead = index === 0
                     return (
                         <Link key={post.id} {...postLink(post.slug, locale)}
@@ -40,15 +40,15 @@ export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts:
                                 )}
                             </div>
                             <div className="flex flex-col justify-center min-w-0">
-                                <span className="inline-flex items-center gap-1.5 w-fit rounded-xs bg-accent/8 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-accent">
-                                    <Clock size={8} /> {tc('minutos', { mins })}
+                                <span className="inline-flex w-fit items-center border border-[#6d3fc0] px-1.5 py-1 font-mono text-[9px] font-black uppercase leading-none tracking-[0.12em] text-[#6d3fc0]">
+                                    {homeCatName(post, undefined, tc('artigo'))}
                                 </span>
                                 {locale !== DEFAULT_LOCALE && <span className="mt-1 w-fit"><HomePtBadge locale={locale} /></span>}
                                 <h3 className={`mt-2 font-serif font-medium text-foreground transition-colors group-hover:text-accent ${isLead ? 'text-[clamp(1.45rem,4vw,2rem)] leading-[1.08]' : 'text-home-title line-clamp-3 sm:line-clamp-2'}`}>
                                     {title}
                                 </h3>
                                 {excerpt && <p className={`mt-1.5 line-clamp-2 text-home-body-lg text-muted ${isLead ? 'block' : 'hidden sm:block'}`}>{excerpt}</p>}
-                                {isLead && <span className="mt-4 text-[10px] font-bold uppercase tracking-[0.12em] text-muted">{data(post.date)}</span>}
+                                {isLead && <span className="mt-4 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">{mins ? `${tc('minutosDeLeitura', { mins })} · ` : ''}{data(post.date)}</span>}
                             </div>
                             {!isLead && (
                                 <span className="hidden self-start pt-1 text-right text-[11px] font-bold uppercase tracking-[0.12em] text-muted sm:block">
