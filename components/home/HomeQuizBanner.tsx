@@ -11,7 +11,7 @@ export async function HomeQuizBanner({ locale = DEFAULT_LOCALE }: { locale?: Loc
             className="group flex h-full flex-col justify-center gap-3 bg-[#0b0b0e] px-5 py-4 text-white transition-colors hover:bg-[#15151c]"
         >
             <div className="min-w-0">
-                <p className="inline-block border border-[#ff7aa6] px-1.5 py-1 font-mono text-[9px] font-black uppercase leading-none tracking-[0.18em] text-[#ff7aa6]">{t('eyebrow')}</p>
+                <p className="inline-block border border-[#ff7aa6] px-1.5 py-1 font-mono text-[11px] font-black uppercase leading-none tracking-[0.18em] text-[#ff7aa6]">{t('eyebrow')}</p>
                 <h2 className="mt-2 font-serif text-[20px] font-medium leading-tight tracking-[-0.01em] text-white">
                     {t('titulo')}
                 </h2>

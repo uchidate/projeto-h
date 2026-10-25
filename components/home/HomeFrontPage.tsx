@@ -91,7 +91,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 <div className="flex flex-col gap-3.5 pt-3.5 lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-5 lg:pt-5">
                     <div data-bloco="home-hero" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
                     <div data-bloco="home-destaques" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
-                    {soPt && aniversarios && <div data-bloco="home-calendario" className="hidden min-w-0 bg-[var(--color-home-card)] border border-border lg:block"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
+                    {soPt && aniversarios && <div data-bloco="home-calendario" className="hidden min-w-0 bg-[var(--color-home-card)] border border-border border-t-[3px] border-t-[#8a5a00] lg:block"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {ADSENSE.slots.leaderboard && (
                     <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 empty:hidden sm:px-6 lg:px-4">
@@ -117,7 +117,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                   * mede visibilidade com IntersectionObserver, e a mudança não
                   * deve mexer em como o AdSense enxerga a página.
                   */}
-                <div className="cv-auto [--cv-h:1500px] lg:[--cv-h:640px] border border-border bg-[var(--color-home-card)]">
+                <div className="cv-auto [--cv-h:1500px] lg:[--cv-h:640px] border border-border border-t-[3px] border-t-[#6d3fc0] bg-[var(--color-home-card)]">
                     <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} locale={locale} /></div>
                 </div>
                 <div data-bloco="home-populares" className="contents"><HomePopulares artistas={artists} grupos={trendingGroups} producoes={producoesEmAlta} hoje={hoje} locale={locale} /></div>

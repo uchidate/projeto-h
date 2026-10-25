@@ -7,33 +7,33 @@ import { labelsFor } from '@/lib/i18n/labels'
 import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
 import type { WPArtist, WPGroup, WPProduction } from '@/lib/wordpress/types'
 
-const ROTULO = 'font-mono text-[9px] font-black uppercase tracking-[0.14em]'
+const ROTULO = 'font-mono text-[11px] font-black uppercase tracking-[0.12em]'
 
 type Linha = { chave: string; href: string; imagem: string | null; nome: string; sub: string; valor: number | null; texto: string }
 
 function Coluna({ titulo, verTodos, href, linhas, escala }: { titulo: string; verTodos: string; href: string; linhas: Linha[]; escala: number }) {
     if (linhas.length === 0) return null
     return (
-        <section aria-label={titulo} className="min-w-0 border border-border bg-[var(--color-home-card)] px-4 pb-2 pt-3.5">
-            <div className="mb-1 flex items-baseline justify-between">
+        <section aria-label={titulo} className="min-w-0 border border-border border-t-[3px] border-t-accent bg-[var(--color-home-card)] px-5 pb-2 pt-4">
+            <div className="mb-1.5 flex items-baseline justify-between">
                 <h3 className={`${ROTULO} text-accent`}>{titulo}</h3>
                 <Link href={href} className={`${ROTULO} text-muted hover:text-accent`}>{verTodos}</Link>
             </div>
             <ol>
                 {linhas.map((l, i) => (
                     <li key={l.chave} className="border-b border-border last:border-b-0">
-                        <Link href={l.href} className="group flex items-center gap-3 py-2.5">
-                            <span className="w-4 shrink-0 font-serif text-[18px] font-bold leading-none text-accent">{i + 1}</span>
-                            <span className="relative h-11 w-11 shrink-0 overflow-hidden bg-surface">
-                                {l.imagem && <Image src={l.imagem} alt="" fill sizes="44px" className="object-cover object-top" />}
+                        <Link href={l.href} className="group flex items-center gap-3.5 py-3">
+                            <span className="w-5 shrink-0 font-serif text-[22px] font-bold leading-none text-accent">{i + 1}</span>
+                            <span className="relative h-12 w-12 shrink-0 overflow-hidden bg-surface">
+                                {l.imagem && <Image src={l.imagem} alt="" fill sizes="48px" className="object-cover object-top" />}
                             </span>
                             <span className="min-w-0 flex-1">
-                                <span className="block truncate text-[14px] font-black leading-tight text-foreground group-hover:text-accent">{l.nome}</span>
-                                {l.sub && <span className="mt-0.5 block truncate text-[11px] text-muted">{l.sub}</span>}
+                                <span className="block truncate text-[15px] font-extrabold leading-snug text-foreground group-hover:text-accent">{l.nome}</span>
+                                {l.sub && <span className="mt-0.5 block truncate text-[12px] leading-snug text-muted">{l.sub}</span>}
                             </span>
                             {l.valor !== null && (
-                                <span className="w-12 shrink-0 text-right">
-                                    <span className="block font-mono text-[12px] font-black text-accent">{l.texto}</span>
+                                <span className="w-14 shrink-0 text-right">
+                                    <span className="block font-mono text-[13px] font-black text-accent">{l.texto}</span>
                                     <span aria-hidden className="mt-1 block h-[3px] bg-accent/15">
                                         <span className="block h-full bg-accent" style={{ width: `${Math.max(8, Math.min(100, (l.valor / escala) * 100))}%` }} />
                                     </span>
@@ -103,9 +103,9 @@ export async function HomePopulares({ artistas, grupos, producoes, hoje, locale 
     if (linhasArtistas.length + linhasGrupos.length + linhasProducoes.length === 0) return null
     return (
         <section aria-label={t('titulo')}>
-            <div className="mb-3 flex flex-wrap items-center gap-3">
-                <h2 className="font-sans text-[15px] font-black tracking-[-0.02em] text-foreground">{t('titulo')}</h2>
-                <span className="border border-accent px-[7px] py-1 font-mono text-[9px] font-black uppercase leading-none tracking-[0.12em] text-accent">{t('tag')}</span>
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+                <h2 className="font-serif text-[26px] font-medium leading-[1.1] tracking-[-0.01em] text-foreground lg:text-[30px]">{t('titulo')}</h2>
+                <span className="border border-accent px-2 py-1 font-mono text-[11px] font-black uppercase leading-none tracking-[0.12em] text-accent">{t('tag')}</span>
             </div>
             <div className="grid gap-3.5 lg:grid-cols-3 lg:gap-5">
                 <Coluna titulo={t('artistas')} verTodos={t('verTodos')} href={rota('artists', undefined, locale)} linhas={linhasArtistas} escala={150} />

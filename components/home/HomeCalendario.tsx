@@ -5,7 +5,7 @@ import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import type { AniversariosHome } from '@/lib/home/aniversarios'
 
 const MARROM = 'text-[#8a5a00]'
-const ROTULO = 'font-mono text-[10px] font-bold uppercase tracking-[0.12em]'
+const ROTULO = 'font-mono text-[11px] font-bold uppercase tracking-[0.12em]'
 
 function partes(data: string, locale: Locale) {
     const d = new Date(`${data}T12:00:00Z`)
@@ -30,7 +30,7 @@ export async function HomeCalendario({ aniversarios, locale = DEFAULT_LOCALE }: 
                     const p = partes(data, locale)
                     return (
                         <li key={data} className={`flex flex-col items-center border py-1 leading-none ${i === 0 ? 'border-[#8a5a00] bg-[#8a5a00] text-white' : 'border-border text-foreground'}`}>
-                            <span className="font-mono text-[8px] font-bold uppercase tracking-[0.06em] opacity-80">{p.semana}</span>
+                            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.06em] opacity-80">{p.semana}</span>
                             <span className="mt-1 text-[14px] font-black">{p.dia}</span>
                             <span aria-hidden className={`mt-1 h-1 w-1 rounded-full ${comAniversario.has(data) && i !== 0 ? 'bg-[#8a5a00]' : 'bg-transparent'}`} />
                         </li>
@@ -57,7 +57,7 @@ export async function HomeCalendario({ aniversarios, locale = DEFAULT_LOCALE }: 
                                     </span>
                                     <span className="shrink-0 text-right leading-none">
                                         <span className={`block text-[22px] font-black ${MARROM}`}>{a.idade}</span>
-                                        <span className="mt-1 block font-mono text-[8px] font-bold uppercase tracking-[0.12em] text-muted">{t('anos')}</span>
+                                        <span className="mt-1 block font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted">{t('anos')}</span>
                                     </span>
                                 </Link>
                             </li>

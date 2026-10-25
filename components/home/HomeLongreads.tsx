@@ -11,8 +11,8 @@ import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
 
-const TAG = 'inline-flex w-fit items-center border border-[#6d3fc0] px-1.5 py-1 font-mono text-[9px] font-black uppercase leading-none tracking-[0.12em] text-[#6d3fc0]'
-const META = 'font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted'
+const TAG = 'inline-flex w-fit items-center border border-[#6d3fc0] px-2 py-1 font-mono text-[11px] font-black uppercase leading-none tracking-[0.12em] text-[#6d3fc0]'
+const META = 'font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted'
 
 export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts: WPPost[]; locale?: Locale }) {
     const t = await getTranslations({ locale, namespace: 'home.longreads' })
@@ -42,7 +42,7 @@ export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts:
                     <span className={`${TAG} mt-4`}>{lead.categoria}</span>
                     {locale !== DEFAULT_LOCALE && <span className="mt-1 block w-fit"><HomePtBadge locale={locale} /></span>}
                     <h3 className="mt-2.5 font-serif text-[clamp(1.5rem,4vw,2.1rem)] font-medium leading-[1.1] tracking-[-0.01em] text-foreground transition-colors group-hover:text-accent">{lead.title}</h3>
-                    {lead.excerpt && <p className="mt-2 line-clamp-3 text-[14px] leading-6 text-muted">{lead.excerpt}</p>}
+                    {lead.excerpt && <p className="mt-2.5 line-clamp-3 text-[15px] leading-[1.6] text-[#4a4a5a] dark:text-muted">{lead.excerpt}</p>}
                     <p className={`mt-2.5 ${META}`}>{lead.meta}</p>
                 </Link>
                 <div className="min-w-0 border-t border-border">
@@ -56,7 +56,7 @@ export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts:
                                 <div className="min-w-0">
                                     <span className={TAG}>{d.categoria}</span>
                                     <h3 className="mt-2 text-[15px] font-extrabold leading-snug text-foreground transition-colors group-hover:text-accent sm:text-[16px]">{d.title}</h3>
-                                    {d.excerpt && <p className="mt-1 line-clamp-3 hidden text-[13px] leading-5 text-muted sm:block">{d.excerpt}</p>}
+                                    {d.excerpt && <p className="mt-1 line-clamp-3 hidden text-[14px] leading-[1.5] text-[#4a4a5a] dark:text-muted sm:block">{d.excerpt}</p>}
                                     <p className={`mt-1.5 ${META}`}>{d.meta}</p>
                                 </div>
                             </Link>
