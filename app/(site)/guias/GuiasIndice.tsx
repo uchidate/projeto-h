@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { ALL_HUBS, GRUPOS_DE_GUIAS, type ArchiveHub } from '@/lib/guias'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
-import { porDemanda, resumoDoGuia } from '@/lib/guias/demanda'
+import { VISITAS_POR_GUIA, porDemanda, resumoDoGuia } from '@/lib/guias/demanda'
 import { carregarGuiasPorTema } from '@/lib/home/guias'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
@@ -106,9 +106,12 @@ export async function GuiasIndice({ kind }: { kind?: string }) {
     const guiasDeCultura = settings?.cultureGuides ?? []
 
     const itensBusca: ItemBusca[] = [
-        ...ALL_HUBS.map(h => ({ rotulo: h.shortTitle, href: `/guias/${h.slug}`, tipo: KIND_LABELS[h.kind] ?? 'Guia' })),
+        ...ALL_HUBS.map(h => ({ rotulo: h.shortTitle, href: `/guias/${h.slug}`, tipo: KIND_LABELS[h.kind] ?? 'Guia', palavras: h.keywords.join(' ') })),
         ...guiasDeCultura.map(g => ({ rotulo: g.label, href: g.href, tipo: 'Cultura' })),
     ]
+
+    const maisLidos = porDemanda(ALL_HUBS).filter(h => VISITAS_POR_GUIA[h.slug]).slice(0, 6)
+    const sugestoes: ItemBusca[] = maisLidos.slice(0, 3).map(h => ({ rotulo: h.shortTitle, href: `/guias/${h.slug}`, tipo: KIND_LABELS[h.kind] ?? 'Guia' }))
 
     let n = 0
     return (
@@ -121,7 +124,7 @@ export async function GuiasIndice({ kind }: { kind?: string }) {
                     <h1 className="whitespace-nowrap font-[family-name:var(--font-playfair)] text-[34px] font-bold leading-none sm:text-[44px]">
                         Guias<span className="sr-only"> de K-Drama, K-Pop e cultura coreana</span><span className="text-accent">.</span>
                     </h1>
-                    <HubBusca itens={itensBusca} placeholder="Buscar guia, gênero, plataforma ou agência" />
+                    <HubBusca itens={itensBusca} sugestoes={sugestoes} placeholder="Buscar guia, gênero, plataforma ou agência" />
                     <nav aria-label="Categorias de guias" className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0">
                         {FILTROS.map(f => {
                             const ativo = f.value === activeKind
@@ -160,7 +163,7 @@ export async function GuiasIndice({ kind }: { kind?: string }) {
             <div className="page-wrap space-y-10 py-8">
                 {!activeKind && (guiasPorTema.length > 0 || guiasDeCultura.length > 0) && (
                     <div data-bloco="guias-entrada" className="-mx-3.5 lg:mx-0">
-                        <HomeGuias passos={guiasDeCultura} guias={guiasPorTema} />
+                        <HomeGuias passos={guiasDeCultura} guias={guiasPorTema} naIndice />
                     </div>
                 )}
 
@@ -180,6 +183,8 @@ export async function GuiasIndice({ kind }: { kind?: string }) {
                                 <Capitulo n={++n} id={k} titulo={KIND_LABELS[k]} sub={`${totalByKind[k]} guias · ${KIND_SUB[k]}`} cor={cor} />
                                 <div className="grid gap-x-6 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
                                     {grupos.map(g => <GrupoDeGuias key={g.titulo} titulo={g.titulo} hubs={g.hubs} cor={cor} />)}
+                                    {/* Grupos tem só duas colunas de guias; o espaço sobrando vira o atalho para o que mais se lê. */}
+                                    {k === 'groups' && !activeKind && <GrupoDeGuias titulo="Mais lidos" hubs={maisLidos} cor={cor} />}
                                 </div>
                             </section>
                         </Fragment>
