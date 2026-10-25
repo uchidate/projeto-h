@@ -4,13 +4,13 @@ import Link from 'next/link'
 import { useMemo, useRef, useState } from 'react'
 import { Search } from 'lucide-react'
 
-export type ItemBusca = { rotulo: string; href: string; tipo: 'Guia' | 'Prato' | 'Marca' }
+export type ItemBusca = { rotulo: string; href: string; tipo: string }
 
 const semAcento = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 const MAX = 8
 
-/** Busca ao vivo do hub: filtra guias, pratos e marcas já carregados na página; sem JS cai na busca do site. */
-export function HubBusca({ itens }: { itens: ItemBusca[] }) {
+/** Busca ao vivo dos hubs: filtra os itens já carregados na página; sem JS cai na busca do site. */
+export function HubBusca({ itens, placeholder = 'Buscar guia, prato ou marca' }: { itens: ItemBusca[]; placeholder?: string }) {
     const [q, setQ] = useState('')
     const [aberto, setAberto] = useState(false)
     const campo = useRef<HTMLInputElement>(null)
@@ -38,8 +38,8 @@ export function HubBusca({ itens }: { itens: ItemBusca[] }) {
                 onChange={e => { setQ(e.target.value); setAberto(true) }}
                 onFocus={() => setAberto(true)}
                 onKeyDown={e => { if (e.key === 'Escape') { setAberto(false); campo.current?.blur() } }}
-                placeholder="Buscar guia, prato ou marca"
-                aria-label="Buscar guia, prato ou marca"
+                placeholder={placeholder}
+                aria-label={placeholder}
                 className="min-w-0 flex-1 input-embutido border-0 bg-transparent p-0 text-[15px] text-foreground shadow-none placeholder:text-muted focus:outline-hidden"
             />
             {aberto && termo.length >= 2 && (
