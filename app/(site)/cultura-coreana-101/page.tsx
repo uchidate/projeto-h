@@ -12,7 +12,7 @@ import { escolherFichas, type FichaDoTema } from '@/lib/home/temas'
 import { dataRelativa } from '@/lib/home/data-relativa'
 import { getCompanies } from '@/lib/wordpress/companies'
 import { getFoods } from '@/lib/wordpress/foods'
-import { getPosts } from '@/lib/wordpress/posts'
+import { getPostBySlug, getPosts } from '@/lib/wordpress/posts'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getWPImage, stripHtml } from '@/lib/utils'
@@ -80,14 +80,14 @@ function Capitulo({ n, titulo, sub, cor, id }: { n: number; titulo: string; sub:
     )
 }
 
-function Ficha({ ficha, base, cor }: { ficha: FichaDoTema; base: string; cor: string }) {
+function Ficha({ ficha, base, cor, destaque = false }: { ficha: FichaDoTema; base: string; cor: string; destaque?: boolean }) {
     return (
-        <Link href={`${base}/${ficha.slug}`} className="group block border border-border bg-background transition-colors hover:border-foreground">
-            <span className="relative block aspect-[16/10] overflow-hidden bg-white">
+        <Link href={`${base}/${ficha.slug}`} className={`group flex flex-col border border-border bg-background transition-colors hover:border-foreground ${destaque ? 'col-span-2 row-span-2' : ''}`}>
+            <span className={`relative block overflow-hidden bg-white ${destaque ? 'min-h-0 flex-1 aspect-[16/10] sm:aspect-auto' : 'aspect-[16/10]'}`}>
                 <Image src={ficha.imagem} alt={ficha.nome} fill sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 16vw" className="object-contain p-2 transition-transform group-hover:scale-[1.03]" />
             </span>
             <span className="block px-3 py-2.5">
-                <span className="block text-[14px] font-bold leading-tight text-foreground group-hover:text-accent">{ficha.nome}</span>
+                <span className={`block font-bold leading-tight text-foreground group-hover:text-accent ${destaque ? 'font-serif text-[22px] font-medium' : 'text-[14px]'}`}>{ficha.nome}</span>
                 {ficha.naLoja > 0 && <span className={`mt-1 block ${MONO} text-[9px]`} style={{ color: cor }}>{ficha.naLoja} na loja</span>}
             </span>
         </Link>
@@ -101,12 +101,13 @@ function VerTodos({ href, children, cor }: { href: string; children: React.React
 }
 
 export default async function CulturaCoreanaPage() {
-    const [settings, comidas, empresas, artigos, prateleira] = await Promise.allSettled([
+    const [settings, comidas, empresas, artigos, prateleira, ...capasInicio] = await Promise.allSettled([
         getSiteSettings(),
         getFoods({ perPage: 100 }),
         getCompanies({ industry: 'food_beverage', perPage: 100 }),
         getPosts({ tag: 'comida-coreana', perPage: 3, includeContent: false }),
         getVitrinePorTermos([], 'hub_cultura', { limit: 5, temas: ['culinaria'] }),
+        ...INICIO.map(slug => getPostBySlug(slug)),
     ])
     const guias = ou<Awaited<ReturnType<typeof getSiteSettings>> | null>(null)(settings)?.cultureGuides ?? []
     const fo = ou<Awaited<ReturnType<typeof getFoods>>>(lista)(comidas)
@@ -114,7 +115,13 @@ export default async function CulturaCoreanaPage() {
     const posts = ou<Awaited<ReturnType<typeof getPosts>>>(lista)(artigos)
     const produtos = ou<Awaited<ReturnType<typeof getVitrinePorTermos>>>([])(prateleira).filter(p => p.acf.affiliate_url).slice(0, 5)
     const { inicio, trilhas } = agruparGuias(guias)
-    const pratos = escolherFichas(fo.items, 8)
+    const capas = new Map<string, string>()
+    capasInicio.forEach((r, i) => {
+        const post = ou<Awaited<ReturnType<typeof getPostBySlug>>>(null)(r as PromiseSettledResult<Awaited<ReturnType<typeof getPostBySlug>>>)
+        const imagem = post && getWPImage(post._embedded, post.featured_image_url)
+        if (imagem) capas.set(INICIO[i], imagem.src)
+    })
+    const pratos = escolherFichas(fo.items, 5)
     const marcas = escolherFichas(ec.items, 6)
 
     const jsonLd = {
@@ -165,15 +172,25 @@ export default async function CulturaCoreanaPage() {
                         <Capitulo n={++n} id="guias" titulo="Cultura" sub={`${guias.length} guias para entender a Coreia`} cor={COR_CULTURA} />
                         {inicio.length > 0 && (
                             <div className="grid gap-3 sm:grid-cols-2">
-                                {inicio.map(g => (
-                                    <Link key={g.href} href={g.href} className="group flex items-center gap-4 border-2 px-5 py-5 transition-colors hover:bg-surface" style={{ borderColor: COR_CULTURA }}>
-                                        <span className="shrink-0 text-[40px] leading-none" aria-hidden="true">{g.emoji}</span>
-                                        <span className="min-w-0">
-                                            <span className={`block text-[9px] ${MONO}`} style={{ color: COR_CULTURA }}>Comece por aqui</span>
-                                            <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">{g.label}</span>
-                                        </span>
-                                    </Link>
-                                ))}
+                                {inicio.map(g => {
+                                    const capa = capas.get(g.href.replace('/blog/', ''))
+                                    return (
+                                        <Link key={g.href} href={g.href} className="group block border-2 transition-colors hover:bg-surface" style={{ borderColor: COR_CULTURA }}>
+                                            {capa && (
+                                                <span className="relative block aspect-video overflow-hidden sm:aspect-[21/9] bg-surface">
+                                                    <Image src={capa} alt="" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover transition-transform group-hover:scale-[1.02]" />
+                                                </span>
+                                            )}
+                                            <span className="flex items-center gap-4 px-5 py-4">
+                                                <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">{g.emoji}</span>
+                                                <span className="min-w-0">
+                                                    <span className={`block text-[9px] ${MONO}`} style={{ color: COR_CULTURA }}>Comece por aqui</span>
+                                                    <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">{g.label}</span>
+                                                </span>
+                                            </span>
+                                        </Link>
+                                    )
+                                })}
                             </div>
                         )}
                         <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -225,7 +242,7 @@ export default async function CulturaCoreanaPage() {
                             {pratos.length > 0 && (
                                 <div>
                                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                        {pratos.map(f => <Ficha key={f.slug} ficha={f} base="/comidas" cor={COR_COMIDA} />)}
+                                        {pratos.map((f, i) => <Ficha key={f.slug} ficha={f} base="/comidas" cor={COR_COMIDA} destaque={i === 0} />)}
                                     </div>
                                     <div className="mt-4 flex flex-wrap items-center gap-2">
                                         <span className={`mr-1 text-[9px] text-muted ${MONO}`}>Explorar por tipo</span>
