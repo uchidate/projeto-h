@@ -348,13 +348,13 @@ export const productionsGenreHubs: ArchiveHub[] = [
         shortTitle: 'Doramas de sobrevivência',
         description: 'Doramas coreanos de sobrevivência, apocalipse, pandemia, game show de vida ou morte e lutas extremas pela existência.',
         intro: [
-            '"Squid Game" popularizou globalmente o conceito de survival game coreano — mas o K-Drama trabalha esse tema muito antes, com produções que exploram sobrevivência em sentidos literal e metafórico.',
-            `Este guia reúne produções coreanas com sobrevivência, jogo de vida ou morte, apocalipse e situações extremas catalogadas na ${SITE_NAME}.`,
+            'Sobrevivência reúne histórias de apocalipse, epidemia, jogos de vida ou morte e situações extremas, como Sweet Home (Netflix, 2020) e All of Us Are Dead (Netflix, 2022), que estão no catálogo.',
+            'A lista abaixo segue o marcador de thriller do catálogo e a ordem de interesse recente; o filtro de tipo, no topo, separa séries e filmes.',
         ],
         keywords: ['doramas sobrevivencia coreanos', 'kdramas survival', 'squid game tipo', 'doramas apocalipse coreano', 'survival game dorama'],
         faq: [
             { question: 'Doramas de sobrevivência são sempre violentos?', answer: 'Nem sempre. Alguns são mais psicológicos, focados em dilemas morais e decisões extremas. O nível de violência varia bastante entre os títulos.' },
-            { question: 'Quais são os melhores doramas de sobrevivência?', answer: '"Squid Game", "Sweet Home", "All of Us Are Dead", "Hellbound" e "The Silent Sea" são destaques do subgênero de sobrevivência e apocalipse coreano.' },
+            { question: 'Que produções de sobrevivência estão no catálogo?', answer: 'Entre outras, Sweet Home (Netflix, 2020) e All of Us Are Dead (Netflix, 2022). A lista da página mostra as demais.' },
         ],
     },
     {
