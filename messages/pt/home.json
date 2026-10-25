@@ -210,5 +210,15 @@
     "encerradoCapitalizado": "Encerrado",
     "emAtividade": "Em atividade",
     "dia": "dia {dia}"
+  },
+  "capitulos": {
+    "agora": { "titulo": "Agora", "sub": "o que está acontecendo" },
+    "aprenda": { "titulo": "Aprenda", "sub": "comece por aqui" },
+    "editoria": { "titulo": "Por editoria", "sub": "o que mudou em cada assunto" },
+    "reportagem": { "titulo": "Reportagem", "sub": "leitura longa" },
+    "dados": { "titulo": "Dados", "sub": "populares na Coreia agora" },
+    "jogue": { "titulo": "Jogue", "sub": "um minuto por dia" },
+    "temas": { "titulo": "Temas", "sub": "assuntos para acompanhar" },
+    "loja": { "titulo": "Loja", "sub": "mais vendidos" }
   }
 }

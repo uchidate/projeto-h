@@ -21,7 +21,7 @@ export async function HomeQuizBanner({ locale = DEFAULT_LOCALE }: { locale?: Loc
             </div>
 
             <div>
-                <span className="inline-flex items-center gap-2 bg-white px-4 py-2.5 text-[12px] font-black uppercase tracking-[0.08em] text-[#0b0b0e]">
+                <span className="inline-flex items-center gap-2 bg-[#ff246e] px-5 py-3 text-[13px] font-black uppercase tracking-[0.08em] text-white">
                     {t('acao')}
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </span>

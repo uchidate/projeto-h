@@ -2654,3 +2654,6 @@ html[data-player-dock] .oc-back-to-top { bottom: calc(var(--bottom-nav-h, 62px) 
 @media (min-width: 1024px) {
   body { zoom: 1.12; }
 }
+
+/* Home: o fundo cinza vai até o rodapé, sem a faixa clara de margem entre a loja e o rodapé. */
+body:has([data-bloco="home-hero"]) footer[data-bloco="rodape"] { margin-top: 0; }

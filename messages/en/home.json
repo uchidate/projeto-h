@@ -210,5 +210,15 @@
     "encerradoCapitalizado": "Disbanded",
     "emAtividade": "Active",
     "dia": "day {dia}"
+  },
+  "capitulos": {
+    "agora": { "titulo": "Now", "sub": "what is happening" },
+    "aprenda": { "titulo": "Learn", "sub": "start here" },
+    "editoria": { "titulo": "By section", "sub": "what changed in each topic" },
+    "reportagem": { "titulo": "Feature", "sub": "long read" },
+    "dados": { "titulo": "Data", "sub": "popular in Korea now" },
+    "jogue": { "titulo": "Play", "sub": "one minute a day" },
+    "temas": { "titulo": "Topics", "sub": "subjects to follow" },
+    "loja": { "titulo": "Shop", "sub": "best sellers" }
   }
 }
