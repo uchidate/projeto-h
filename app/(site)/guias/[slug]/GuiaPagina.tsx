@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { getAllHubs, getHub, getRelatedHubs } from '@/lib/guias'
-import { getHubItems } from '@/lib/guias/hub-items'
+import { findAgencyId, getHubItems } from '@/lib/guias/hub-items'
+import { getGroups } from '@/lib/wordpress/groups'
+import { GruposDaAgencia } from '@/components/guias/GruposDaAgencia'
 import { getPosts } from '@/lib/wordpress/posts'
 import { getProductionGenres } from '@/lib/wordpress/productions'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
@@ -60,6 +62,13 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
             .filter(p => Number(p.acf?.rating ?? 0) >= 7.5)
             .slice(0, 6)
         : []
+    // Guia de agência: os grupos vêm antes da grade de artistas (ordem de popularidade; grupo sem leitura fica no fim).
+    let gruposDaAgencia: Awaited<ReturnType<typeof getGroups>>['items'] = []
+    if (hub.kind === 'artists' && hub.filter.agencyName && semFiltro) {
+        const agencyId = await findAgencyId(hub.filter.agencyName)
+        if (agencyId) gruposDaAgencia = (await getGroups({ agency: agencyId, perPage: 24, orderby: 'popularity', order: 'desc' }).catch(() => ({ items: [] }))).items
+        if (gruposDaAgencia.length === 0 && agencyId) gruposDaAgencia = (await getGroups({ agency: agencyId, perPage: 24, orderby: 'title', order: 'asc' }).catch(() => ({ items: [] }))).items
+    }
     const genreMap = Object.fromEntries(genres.map(g => [g.id, { name: g.name, slug: g.slug }]))
     const perPage = 48
     const totalPages = Math.ceil(result.total / perPage)
@@ -69,6 +78,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
             <HubPageContent
                 hub={hub}
                 relatedHubs={relatedHubs}
+                abertura={gruposDaAgencia.length > 0 ? <GruposDaAgencia agencia={hub.shortTitle} grupos={gruposDaAgencia} /> : undefined}
                 itensBusca={todosGuias.map(h => ({ rotulo: h.shortTitle, href: `/guias/${h.slug}`, tipo: h.kind === 'productions' ? 'Produções' : h.kind === 'artists' ? 'Artistas' : 'Grupos', palavras: h.keywords.join(' ') }))}
                 total={result.total}
                 productions={result.kind === 'productions' ? result.items : undefined}

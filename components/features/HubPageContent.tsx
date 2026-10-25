@@ -52,6 +52,8 @@ interface Props {
     blogPosts?: WPPost[]
     /** Faixa de loja entre os resultados e os artigos (feita no servidor). */
     lojaMeio?: ReactNode
+    /** Bloco específico do tipo de guia, antes da lista (ex.: grupos de uma agência). */
+    abertura?: ReactNode
     /** Banner do quiz da categoria do guia (feito no servidor). */
     quiz?: ReactNode
     siteUrl?: string
@@ -111,7 +113,7 @@ const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Glob
 const textoDoGuia = (intro: string[]) => intro.filter(p => !/^Este guia reúne/i.test(p.trim()))
 
 export function HubPageContent({
-    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz,
+    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz, abertura,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -314,6 +316,8 @@ export function HubPageContent({
 
                 {/* Ordem visual: lista antes do texto de apoio (`order-1`) e das seções finais (`order-2`). Medido: no celular a 1ª produção aparecia depois de ~1,6 telas de introdução, chips e "O que você vai encontrar"; o DOM segue na ordem original para o texto continuar indexável. */}
                 <HubDestaques items={destaques} eyebrow="Comece por aqui" title={`Em alta e bem avaliadas — ${hub.shortTitle}`} />
+
+                {abertura}
 
                 <section>
                     <SectionTitleBar

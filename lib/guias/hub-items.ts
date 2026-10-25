@@ -32,7 +32,7 @@ export type HubItems =
 
 type WPAgency = { id: number; title: { rendered: string } }
 
-async function findAgencyId(name: string): Promise<number | null> {
+export async function findAgencyId(name: string): Promise<number | null> {
     try {
         const agencies = await wpFetch<WPAgency[]>(
             `/wp/v2/agency${buildParams({ search: name, per_page: 5 })}`,
