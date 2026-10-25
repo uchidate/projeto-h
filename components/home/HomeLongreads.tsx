@@ -16,7 +16,7 @@ export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts:
     const tc = await getTranslations({ locale, namespace: 'home.comum' })
     const data = (date: string) => formatDatePt(date, intlLocale(locale))
     return (
-        <div className="border-b border-border px-4 py-8 sm:px-6 lg:border-b-0 lg:border-r lg:px-10">
+        <div className="border-b border-border px-4 py-8 sm:px-6 lg:border-b-0 lg:border-r lg:px-4">
             <SectionTitleBar title={t('titulo')} tag={t('tag')} tagColor="#6d3fc0" href={rota('blog', undefined, locale)} linkText={t('arquivo')} className="mb-3" />
             <div>
                 {posts.map((post, index) => {
