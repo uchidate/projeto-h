@@ -146,12 +146,13 @@ function VerTodos({ href, children, cor }: { href: string; children: React.React
 }
 
 export default async function CulturaCoreanaPage() {
-    const [settings, comidas, empresas, artigos, prateleira, ...capasInicio] = await Promise.allSettled([
+    const [settings, comidas, empresas, artigos, prateleira, culturaPosts, ...capasInicio] = await Promise.allSettled([
         getSiteSettings(),
         getFoods({ perPage: 100 }),
         getCompanies({ industry: 'food_beverage', perPage: 100 }),
         getPosts({ tag: 'comida-coreana', perPage: 3, includeContent: false }),
         getVitrinePorTermos([], 'hub_cultura', { limit: 5, temas: ['culinaria'] }),
+        getPosts({ category: 'cultura', perPage: 12, includeContent: false }),
         ...INICIO.map(slug => getPostBySlug(slug)),
     ])
     const guias = ou<Awaited<ReturnType<typeof getSiteSettings>> | null>(null)(settings)?.cultureGuides ?? []
@@ -160,6 +161,10 @@ export default async function CulturaCoreanaPage() {
     const posts = ou<Awaited<ReturnType<typeof getPosts>>>(lista)(artigos)
     const produtos = ou<Awaited<ReturnType<typeof getVitrinePorTermos>>>([])(prateleira).filter(p => p.acf.affiliate_url).slice(0, 5)
     const { inicio, trilhas } = agruparGuias(guias)
+    const slugsGuias = new Set(guias.map(g => g.href.replace('/blog/', '')))
+    const reportagens = ou<Awaited<ReturnType<typeof getPosts>>>(lista)(culturaPosts).items
+        .filter(p => !slugsGuias.has(p.slug) && getWPImage(p._embedded, p.featured_image_url))
+        .slice(0, 4)
     const capas = new Map<string, string>()
     capasInicio.forEach((r, i) => {
         const post = ou<Awaited<ReturnType<typeof getPostBySlug>>>(null)(r as PromiseSettledResult<Awaited<ReturnType<typeof getPostBySlug>>>)
@@ -275,7 +280,31 @@ export default async function CulturaCoreanaPage() {
                                 )
                             })}
                         </div>
-                        <VerTodos href="/guias" cor={COR_CULTURA}>Ver todos os guias →</VerTodos>
+                        {reportagens.length > 0 && (
+                            <div className="border-t border-border pt-5">
+                                <p className={`mb-3 text-[9px] ${MONO}`} style={{ color: COR_CULTURA }}>Reportagens e análises</p>
+                                <ul className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+                                    {reportagens.map(post => {
+                                        const imagem = getWPImage(post._embedded, post.featured_image_url)
+                                        return (
+                                            <li key={post.id}>
+                                                <Link href={`/blog/${post.slug}`} className="group block">
+                                                    <span className="relative block aspect-video overflow-hidden bg-surface">
+                                                        {imagem && <Image src={imagem.src} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition-transform group-hover:scale-[1.03]" />}
+                                                    </span>
+                                                    <span className="mt-2 line-clamp-3 block font-serif text-[17px] font-medium leading-snug text-foreground group-hover:text-accent">{stripHtml(post.title.rendered)}</span>
+                                                    <span className={`mt-1 block text-[9px] text-muted ${MONO}`}>{dataRelativa(post.date, 'pt')}</span>
+                                                </Link>
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                            </div>
+                        )}
+                        <div className="flex flex-wrap gap-x-6 gap-y-2">
+                            <VerTodos href="/guias" cor={COR_CULTURA}>Ver todos os guias →</VerTodos>
+                            <VerTodos href="/blog?category=cultura" cor={COR_CULTURA}>Mais reportagens de cultura →</VerTodos>
+                        </div>
                     </section>
                 )}
 
@@ -288,7 +317,7 @@ export default async function CulturaCoreanaPage() {
                 {festas.length > 0 && (
                     <section aria-label="Próximas festas" className="space-y-5">
                         <Capitulo n={++n} id="festas" titulo="Calendário" sub="Próximas datas da Coreia" cor={COR_FESTA} />
-                        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <ul className="-mx-4 grid auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:mx-0 sm:auto-cols-auto sm:grid-flow-row sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
                             {festas.map(f => {
                                 const corpo = (
                                     <>
@@ -367,7 +396,7 @@ export default async function CulturaCoreanaPage() {
                                                     <Image src={r.imagem} alt="" fill sizes="56px" className="object-cover" />
                                                 </span>
                                                 <span className="min-w-0">
-                                                    <span className="block text-[14px] font-bold leading-tight text-foreground group-hover:text-accent">{r.nome}</span>
+                                                    <span className="block text-[14px] font-bold leading-tight text-foreground [overflow-wrap:anywhere] group-hover:text-accent">{r.nome}</span>
                                                     {r.tempo && <span className={`mt-1 block text-[9px] text-muted ${MONO}`}>{r.tempo}</span>}
                                                 </span>
                                             </Link>
