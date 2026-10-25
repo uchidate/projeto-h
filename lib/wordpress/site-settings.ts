@@ -79,13 +79,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     ],
     tickerEnabled: true,
     /*
-     * Ordem por acervo e intenção, não por hábito. Produções (3.973) e Artistas
-     * (3.322) são quase todo o catálogo e a maior porta de entrada da busca —
-     * estavam em 6º e 4º.
+     * Segue o menu do mockup da home. Artistas e Grupos continuam separados:
+     * são os dois maiores acervos e a maior porta de entrada da busca.
      *
      * Fora da lista, de propósito:
-     * - "Guias": é índice de índices, meta-navegação ocupando lugar de destino.
-     *   Virou faixa no topo de /blog, onde a intenção de descoberta já está.
      * - "Loja": comércio, não conteúdo. Virou botão próprio no cabeçalho, ao
      *   lado do login (ver NavBar) — a NavBar filtra /loja desta lista para o
      *   item não aparecer duas vezes.
@@ -95,10 +92,12 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
      */
     navigation: [
         { label: 'Início', href: '/' },
-        { label: 'Produções', href: '/productions' },
+        { label: 'Doramas e Filmes', href: '/productions' },
         { label: 'Artistas', href: '/artists' },
         { label: 'Grupos', href: '/groups' },
-        { label: 'Artigos', href: '/blog' },
+        { label: 'Notícias', href: '/blog' },
+        { label: 'Guias', href: '/guias' },
+        { label: 'Cultura e Gastronomia', href: '/cultura-coreana-101' },
         { label: 'Fandoms', href: '/fandoms' },
         { label: 'Calendário', href: '/calendario' },
         { label: 'Quiz', href: '/quiz' },
