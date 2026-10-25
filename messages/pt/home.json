@@ -11,6 +11,8 @@
     "emDestaque": "Em destaque"
   },
   "hero": {
+    "asFaixas": "As {n} faixas",
+    "maisFaixas": "+ {n} faixas",
     "lerAgora": "Ler agora",
     "continuarLeitura": "Continuar a leitura",
     "filmeEmDestaque": "Filme em Destaque",

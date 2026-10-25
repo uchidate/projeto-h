@@ -9,6 +9,8 @@ import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getStreamingTopShows } from '@/lib/tmdb/streaming'
 import { hojeEmBrasilia, mesesParaBuscar, montarAniversarios, type AniversariosHome } from '@/lib/home/aniversarios'
 import { carregarPrateleirasEditorias } from '@/lib/home/editorias-loja'
+import { extrairCapaAlbum, type CapaAlbum } from '@/lib/home/capa-album'
+import { escolherCapas } from '@/lib/home/frescor'
 import { carregarExplore } from '@/lib/home/explore'
 import { carregarTemas } from '@/lib/home/temas'
 import { carregarGuiasPorTema } from '@/lib/home/guias'
@@ -66,6 +68,16 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
             return [c.chave, r.status === 'fulfilled' ? r.value.items : []]
         }))
         : {}
+    // Capa de álbum: a ficha e as faixas saem do texto da matéria, que a listagem não traz; busca só as da capa.
+    const capasAlbum: Record<number, CapaAlbum> = {}
+    if (comercio) {
+        const idsCapa = escolherCapas(posts, siteSettings.home.heroPostId, 4, new Date(), new Set(siteSettings.home.highlightPostIds)).map(post => post.id)
+        const comTexto = idsCapa.length ? await getPosts({ includeIds: idsCapa, perPage: idsCapa.length }).catch(() => null) : null
+        for (const post of comTexto?.items ?? []) {
+            const capa = extrairCapaAlbum(post.content?.rendered)
+            if (capa) capasAlbum[post.id] = capa
+        }
+    }
     const productions = productionsResult.status === 'fulfilled' ? productionsResult.value.items : []
     const artists = trendingArtists.status === 'fulfilled' ? trendingArtists.value : []
     const featuredSpotlight = featuredSpotlightResult.status === 'fulfilled' ? featuredSpotlightResult.value : null
@@ -88,5 +100,5 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
 
     const prateleirasEditorias = prateleirasResult.status === 'fulfilled' ? prateleirasResult.value : {}
 
-    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias }
+    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum }
 }

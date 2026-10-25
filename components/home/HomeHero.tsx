@@ -15,8 +15,10 @@ import { getAvaliacao, confiancaDaNota } from '@/lib/tmdb/avaliacao'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
 import { homeCatName } from '@/lib/home/catStyle'
 import { HeroCarousel } from '@/components/home/HeroCarousel'
+import { HeroAlbum } from '@/components/home/HeroAlbum'
+import type { CapaAlbum } from '@/lib/home/capa-album'
 
-async function HeroPost({ post, locale, primeiro = true }: { post: WPPost; locale: Locale; primeiro?: boolean }) {
+async function HeroPost({ post, locale, primeiro = true, album }: { post: WPPost; locale: Locale; primeiro?: boolean; album?: CapaAlbum }) {
     const t = await getTranslations({ locale, namespace: 'home.hero' })
     const tc = await getTranslations({ locale, namespace: 'home.comum' })
     const data = formatDatePt(post.date, intlLocale(locale))
@@ -61,6 +63,7 @@ async function HeroPost({ post, locale, primeiro = true }: { post: WPPost; local
                 </Link>
                 </div>
                 {excerpt && <p className="mt-3 max-w-[58ch] text-[13px] leading-5 text-muted line-clamp-2">{excerpt}</p>}
+                {album && <HeroAlbum album={album} slug={post.slug} locale={locale} />}
                 <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-4">
                     <span className="min-w-0 truncate text-[11px] text-muted">{data}</span>
                     <Link {...postLink(post.slug, locale)}
@@ -234,18 +237,20 @@ async function HeroFallback({ locale }: { locale: Locale }) {
 }
 
 interface Props {
+    /** Ficha e faixas das matérias de álbum, por id do post. */
+    albuns?: Record<number, CapaAlbum>
     /** Matérias do carrossel: a capa primeiro. Uma só vira o card único. */
     posts?: WPPost[]
     production?: WPProduction
     locale?: Locale
 }
 
-export function HomeHero({ posts = [], production, locale = DEFAULT_LOCALE }: Props) {
-    if (posts.length === 1) return <HeroPost post={posts[0]} locale={locale} />
+export function HomeHero({ posts = [], production, albuns = {}, locale = DEFAULT_LOCALE }: Props) {
+    if (posts.length === 1) return <HeroPost post={posts[0]} locale={locale} album={albuns[posts[0].id]} />
     if (posts.length > 1) {
         return (
             <HeroCarousel>
-                {posts.map((post, i) => <HeroPost key={post.id} post={post} locale={locale} primeiro={i === 0} />)}
+                {posts.map((post, i) => <HeroPost key={post.id} post={post} locale={locale} primeiro={i === 0} album={albuns[post.id]} />)}
             </HeroCarousel>
         )
     }
