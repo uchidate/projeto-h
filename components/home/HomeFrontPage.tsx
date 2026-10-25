@@ -16,7 +16,6 @@ import { HomeAssuntos } from '@/components/home/HomeAssuntos'
 import { HomeCalendario } from '@/components/home/HomeCalendario'
 import { HomeSeguindo } from '@/components/home/HomeSeguindo'
 import { HomeEditorias } from '@/components/home/HomeEditorias'
-import { HomeEditorialHubs } from '@/components/home/HomeEditorialHubs'
 import { HomeDestaquesColuna } from '@/components/home/HomeDestaquesColuna'
 import { HomeLongreads } from '@/components/home/HomeLongreads'
 import { HomeTrendingArtists } from '@/components/home/HomeTrendingArtists'
@@ -106,7 +105,6 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 )}
                 {soPt && <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>}
                 {soPt && <div data-bloco="home-guias" className="contents"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
-                {soPt && <div data-bloco="home-hubs" className="contents"><HomeEditorialHubs hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>
                 {soPt && <div data-bloco="home-loja" className="contents"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
                 {ADSENSE.slots.inline && (
@@ -137,13 +135,9 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-10">
                             <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
                         </div>
+                        {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href="/comidas" bloco="home-gastronomia" locale={locale} />}
                         <div data-bloco="home-explore" className="contents"><HomeExplore cartoes={explore} locale={locale} /></div>
-                        {temas && (
-                            <>
-                                <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href="/comidas" bloco="home-gastronomia" locale={locale} />
-                                <HomeTema tema={temas.beleza} chave="beleza" cor="#c61153" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />
-                            </>
-                        )}
+                        {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#c61153" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />}
                     </>
                 )}
                 <div className="cv-auto [--cv-h:620px] sm:[--cv-h:720px] lg:[--cv-h:490px]">
