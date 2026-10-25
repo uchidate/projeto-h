@@ -3,7 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { StoreCard } from '@/components/ui/StoreCard'
-import { Search } from 'lucide-react'
+import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
+import { todasReceitas } from '@/lib/receitas'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { ADSENSE } from '@/lib/config/ads'
@@ -35,6 +36,7 @@ const MONO = 'font-mono text-[10px] font-bold uppercase tracking-[0.14em]'
 const COR_CULTURA = '#6d3fc0'
 const COR_COMIDA = '#b4531a'
 const COR_LOJA = '#ff246e'
+const COR_FESTA = '#0e7490'
 
 type Guia = { label: string; href: string; emoji: string }
 
@@ -65,6 +67,45 @@ const CATEGORIAS_PRATO: [string, string][] = [
     ['rice', 'Arroz'], ['noodles', 'Macarrão'], ['soup_stew', 'Sopas e ensopados'], ['bbq', 'Churrasco'], ['pancake', 'Panquecas'],
     ['street_food', 'Comida de rua'], ['banchan', 'Acompanhamentos'], ['dessert', 'Sobremesas'], ['drink', 'Bebidas'], ['snack', 'Lanches'],
 ]
+
+const FESTAS: { nome: string; hangul: string; data: string; nota: string; guia?: string }[] = [
+    { nome: 'Seollal', hangul: '설날', data: '2027-02-07', nota: 'Ano-Novo lunar', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
+    { nome: 'Daeboreum', hangul: '정월대보름', data: '2027-02-21', nota: 'Primeira lua cheia do ano' },
+    { nome: 'Samiljeol', hangul: '삼일절', data: '2027-03-01', nota: 'Movimento de 1º de março' },
+    { nome: 'Dano', hangul: '단오', data: '2027-06-09', nota: '5º dia do 5º mês lunar' },
+    { nome: 'Gwangbokjeol', hangul: '광복절', data: '2027-08-15', nota: 'Dia da Libertação' },
+    { nome: 'Chuseok', hangul: '추석', data: '2027-09-15', nota: 'Festa da colheita', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
+    { nome: 'Hangeul-nal', hangul: '한글날', data: '2027-10-09', nota: 'Dia do alfabeto coreano', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
+]
+
+/** Datas lunares (Seollal, Daeboreum, Dano, Chuseok) conferidas no calendário oficial de 2027; ao virar o ano a lista esvazia e o bloco some até ser atualizada. */
+function proximasFestas(agora = new Date()) {
+    const hoje = Date.UTC(agora.getFullYear(), agora.getMonth(), agora.getDate())
+    return FESTAS
+        .map(f => ({ ...f, dias: Math.round((Date.parse(f.data) - hoje) / 86_400_000) }))
+        .filter(f => f.dias >= 0)
+        .slice(0, 4)
+}
+
+const formatoData = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+
+function minutosEmTexto(min: number) {
+    if (min >= 60) return `${Math.floor(min / 60)} h${min % 60 ? ` ${min % 60} min` : ''}`
+    return `${min} min`
+}
+
+/** Pratos com modo de preparo cadastrado (data/receitas.json) que existem no acervo, com foto. Tempo longo demais (marinada, molho) não vira rótulo. */
+function escolherReceitas(itens: { slug: string; title: { rendered: string }; featured_image_url?: string | null }[]) {
+    const mapa = todasReceitas()
+    return itens
+        .filter(i => i.featured_image_url && mapa[i.slug])
+        .slice(0, 4)
+        .map(i => {
+            const r = mapa[i.slug]
+            const total = (r.preparoMin ?? 0) + (r.cozimentoMin ?? 0)
+            return { slug: i.slug, nome: stripHtml(i.title.rendered), imagem: i.featured_image_url as string, tempo: total > 0 && total <= 240 ? minutosEmTexto(total) : null }
+        })
+}
 
 const lista = { items: [], total: 0, totalPages: 0 }
 const ou = <T,>(valor: T) => (r: PromiseSettledResult<T>) => (r.status === 'fulfilled' ? r.value : valor)
@@ -122,6 +163,13 @@ export default async function CulturaCoreanaPage() {
         if (imagem) capas.set(INICIO[i], imagem.src)
     })
     const pratos = escolherFichas(fo.items, 5)
+    const itensBusca: ItemBusca[] = [
+        ...guias.map(g => ({ rotulo: g.label, href: g.href, tipo: 'Guia' as const })),
+        ...fo.items.map(f => ({ rotulo: stripHtml(f.title.rendered), href: `/comidas/${f.slug}`, tipo: 'Prato' as const })),
+        ...ec.items.map(c => ({ rotulo: stripHtml(c.title.rendered), href: `/empresas/${c.slug}`, tipo: 'Marca' as const })),
+    ]
+    const receitas = escolherReceitas(fo.items)
+    const festas = proximasFestas()
     const marcas = escolherFichas(ec.items, 6)
 
     const jsonLd = {
@@ -134,6 +182,7 @@ export default async function CulturaCoreanaPage() {
 
     const atalhos = [
         guias.length > 0 && { id: 'guias', rotulo: 'Guias de cultura', n: guias.length, cor: COR_CULTURA },
+        festas.length > 0 && { id: 'festas', rotulo: 'Festas', n: festas.length, cor: COR_FESTA },
         pratos.length > 0 && { id: 'pratos', rotulo: 'Pratos', n: fo.total, cor: COR_COMIDA },
         marcas.length > 0 && { id: 'marcas', rotulo: 'Marcas', n: ec.total, cor: COR_COMIDA },
     ].filter(Boolean) as { id: string; rotulo: string; n: number; cor: string }[]
@@ -150,12 +199,8 @@ export default async function CulturaCoreanaPage() {
                 <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
                     <h1 className="whitespace-nowrap font-[family-name:var(--font-playfair)] text-[34px] font-bold leading-none sm:text-[44px]">
                         Cultura e Gastronomia<span className="text-accent">.</span>
-                        <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{(guias.length + fo.total + ec.total).toLocaleString('pt-BR')}</span>
                     </h1>
-                    <form action="/search" role="search" className="flex h-12 w-full min-w-0 items-center gap-3 border border-border-strong bg-surface px-4 transition-colors focus-within:border-foreground lg:max-w-[560px] lg:flex-1">
-                        <Search aria-hidden className="h-[18px] w-[18px] shrink-0 text-muted" />
-                        <input name="q" type="text" placeholder="Buscar guia, prato ou marca" aria-label="Buscar guia, prato ou marca" className="min-w-0 flex-1 input-embutido border-0 bg-transparent p-0 text-[15px] text-foreground shadow-none placeholder:text-muted focus:outline-hidden" />
-                    </form>
+                    <HubBusca itens={itensBusca} />
                     {atalhos.length > 0 && (
                         <nav aria-label="Seções desta página" className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0">
                             {atalhos.map(a => (
@@ -164,6 +209,7 @@ export default async function CulturaCoreanaPage() {
                         </nav>
                     )}
                 </div>
+                <p className="mt-3 text-[13px] text-muted">{`${guias.length} guias · ${fo.total} pratos · ${ec.total} marcas · do alfabeto ao kimchi, explicado em português`}</p>
             </section>
 
             <div className="page-wrap space-y-10 py-8">
@@ -235,6 +281,36 @@ export default async function CulturaCoreanaPage() {
                     </div>
                 )}
 
+                {festas.length > 0 && (
+                    <section aria-label="Próximas festas" className="space-y-5">
+                        <Capitulo n={++n} id="festas" titulo="Calendário" sub="Próximas datas da Coreia" cor={COR_FESTA} />
+                        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                            {festas.map(f => {
+                                const corpo = (
+                                    <>
+                                        <span className="flex items-baseline justify-between gap-2">
+                                            <span className="font-serif text-[22px] font-medium leading-none text-foreground">{f.nome}</span>
+                                            <span className="text-[15px] leading-none text-muted" lang="ko">{f.hangul}</span>
+                                        </span>
+                                        <span className="mt-3 block font-mono text-[11px] font-black uppercase tracking-[0.14em]" style={{ color: COR_FESTA }}>
+                                            {f.dias === 0 ? 'Hoje' : f.dias === 1 ? 'Amanhã' : `Em ${f.dias} dias`}
+                                        </span>
+                                        <span className="mt-1 block text-[13px] text-foreground/70">{formatoData.format(Date.parse(f.data))} · {f.nota}</span>
+                                    </>
+                                )
+                                const cls = 'block h-full border border-border border-t-4 bg-background p-4'
+                                return (
+                                    <li key={f.nome}>
+                                        {f.guia
+                                            ? <Link href={f.guia} className={`${cls} transition-colors hover:bg-surface`} style={{ borderTopColor: COR_FESTA }}>{corpo}</Link>
+                                            : <div className={cls} style={{ borderTopColor: COR_FESTA }}>{corpo}</div>}
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </section>
+                )}
+
                 {(pratos.length > 0 || posts.items.length > 0) && (
                     <section aria-label="Gastronomia" className="space-y-5">
                         <Capitulo n={++n} id="pratos" titulo="Gastronomia" sub={`${fo.total} pratos catalogados`} cor={COR_COMIDA} />
@@ -276,6 +352,26 @@ export default async function CulturaCoreanaPage() {
                                 </div>
                             )}
                         </div>
+                        {receitas.length > 0 && (
+                            <div className="border-t border-border pt-5">
+                                <p className={`mb-3 text-[9px] ${MONO}`} style={{ color: COR_COMIDA }}>Para fazer em casa · com modo de preparo</p>
+                                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                    {receitas.map(r => (
+                                        <li key={r.slug}>
+                                            <Link href={`/comidas/${r.slug}`} className="group flex items-center gap-3 border border-border bg-background p-2.5 transition-colors hover:border-foreground">
+                                                <span className="relative h-14 w-14 shrink-0 overflow-hidden bg-surface">
+                                                    <Image src={r.imagem} alt="" fill sizes="56px" className="object-cover" />
+                                                </span>
+                                                <span className="min-w-0">
+                                                    <span className="block text-[14px] font-bold leading-tight text-foreground group-hover:text-accent">{r.nome}</span>
+                                                    {r.tempo && <span className={`mt-1 block text-[9px] text-muted ${MONO}`}>{r.tempo}</span>}
+                                                </span>
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                         <VerTodos href="/comidas" cor={COR_COMIDA}>Ver todos os pratos →</VerTodos>
                     </section>
                 )}
