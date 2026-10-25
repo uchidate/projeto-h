@@ -164,7 +164,8 @@ export function HubPageContent({
     const showType     = hub.kind === 'productions'
     const hasFilters   = showYear || showPlatform || showType
 
-    const hasActiveFilter = !!(activeGenre || activePlatform || activeNetwork || activeType || activeYear)
+    const tipoFoiEscolhido = !!activeType && activeType !== hub.filter.type
+    const hasActiveFilter = !!(activeGenre || activePlatform || activeNetwork || tipoFoiEscolhido || activeYear)
 
     const activeFilterLabel = [
         activeGenre,
@@ -240,7 +241,7 @@ export function HubPageContent({
                         {showType && (
                             <div className="flex items-center gap-1.5 shrink-0">
                                 <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted shrink-0">Tipo</span>
-                                <FilterChip label="Todos" href={buildHref({ type: '' })} active={!activeType} />
+                                <FilterChip label="Todos" href={buildHref({ type: hub.filter.type ? 'all' : '' })} active={hub.filter.type ? activeType === 'all' : !activeType} />
                                 {KNOWN_TYPES.map(t => (
                                     <FilterChip key={t} label={TYPE_LABELS[t]} href={buildHref({ type: t })} active={activeType === t} />
                                 ))}

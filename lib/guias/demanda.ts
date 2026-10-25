@@ -27,7 +27,6 @@ export const VISITAS_POR_GUIA: Record<string, number> = {
     'doramas-medicos-coreanos': 14,
     'doramas-jtbc': 14,
     'melhores-doramas-de-todos-os-tempos': 13,
-    'doramas-sobrevivencia-coreanos': 13,
     'doramas-ocn': 12,
     'doramas-kocowa': 12,
     'doramas-disney-plus': 11,

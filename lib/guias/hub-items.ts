@@ -74,7 +74,8 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
     const tag      = opts.tag      ?? f.tag
     const platform = opts.platform ?? f.platform
     const network  = opts.network  ?? f.network
-    const type     = (opts.type    ?? f.type) as 'drama' | 'movie' | 'special' | 'variety' | undefined
+    // type=all (chip "Todos") desliga o tipo padrão do guia, que senão voltaria sozinho.
+    const type     = (opts.type === 'all' ? undefined : (opts.type ?? f.type)) as 'drama' | 'movie' | 'special' | 'variety' | undefined
     const year     = opts.year     ?? f.year
 
     try {

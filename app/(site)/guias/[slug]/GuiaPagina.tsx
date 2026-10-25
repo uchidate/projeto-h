@@ -109,7 +109,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
                 siteUrl={SITE_URL}
                 page={page}
                 totalPages={totalPages}
-                activeFilters={{ genre, platform, network, type, year: year?.toString() }}
+                activeFilters={{ genre, platform, network, type: type ?? hub.filter.type, year: year?.toString() }}
             />
         </Suspense>
     )
