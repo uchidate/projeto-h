@@ -6,7 +6,7 @@ import { htmlLang } from '@/lib/i18n/format'
 import { useEffect, type ReactNode } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { PageBreadcrumb } from '@/components/ui/PageBreadcrumb'
+import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
 import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import { BrandDot } from '@/components/ui/BrandDot'
@@ -42,6 +42,8 @@ interface ActiveFilters {
 interface Props {
     hub: ArchiveHub
     relatedHubs: ArchiveHub[]
+    /** Todos os guias para a busca do topo (montado no servidor). */
+    itensBusca?: ItemBusca[]
     productions?: WPProduction[]
     destaques?: WPProduction[]
     artists?: WPArtist[]
@@ -109,7 +111,7 @@ const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Glob
 const textoDoGuia = (intro: string[]) => intro.filter(p => !/^Este guia reúne/i.test(p.trim()))
 
 export function HubPageContent({
-    hub, relatedHubs, productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz,
+    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -260,32 +262,31 @@ export function HubPageContent({
                 </ResponsiveFilterBar>
             )}
 
-            <PageBreadcrumb
-                crumbs={[
-                    { label: 'Início', href: '/' },
-                    { label: 'Guias', href: '/guias' },
-                    { label: hub.shortTitle },
-                ]}
-                description={`${total} ${kindLabel}`}
-            />
+            {/* Topo no mesmo padrão de /guias: título, busca e atalhos numa faixa só. */}
+            <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
+                <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
+                    <h1 className="font-[family-name:var(--font-playfair)] text-[28px] font-bold leading-[1.05] sm:text-[34px] lg:max-w-[420px]">
+                        {hub.shortTitle}<BrandDot />
+                        <span className="sr-only"> — {hub.title}</span>
+                    </h1>
+                    {itensBusca.length > 0 && <HubBusca itens={itensBusca} placeholder="Buscar outro guia" />}
+                    <nav aria-label="Outros guias" className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0">
+                        <Link href="/guias" className="touch-target flex h-10 shrink-0 items-center border border-border-strong px-4 text-[14px] font-semibold text-foreground transition-colors hover:border-accent/60">← Guias</Link>
+                        {relatedHubs.slice(0, 3).map(r => (
+                            <Link key={r.slug} href={`/guias/${r.slug}`} className="touch-target flex h-10 shrink-0 items-center border border-border-strong px-4 text-[14px] font-semibold text-foreground transition-colors hover:border-accent/60">{r.shortTitle}</Link>
+                        ))}
+                    </nav>
+                </div>
+                <p className="mt-3 text-[13px] text-muted">{total} {kindLabel} · {hub.description}</p>
+            </section>
 
             <div className="page-wrap flex flex-col gap-12 py-8">
 
-                {/* Header */}
-                <header className="border-b-2 border-foreground pb-6 space-y-3">
-                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">
-                        {hub.kind === 'productions' ? 'Guia de produções' : hub.kind === 'artists' ? 'Guia de artistas' : 'Guia de grupos'}
-                    </p>
-                    <h1 className="text-[32px] font-black leading-[0.95] tracking-[-0.04em] sm:text-[44px]">
-                        {hub.title}<BrandDot />
-                    </h1>
-                    <p className="text-[14px] leading-7 text-muted max-w-2xl">{hub.description}</p>
-                    {textoDoGuia(hub.intro).length > 0 && (
-                        <div className="pt-2 grid gap-3 text-sm leading-7 text-muted md:grid-cols-2 border-t border-border/40">
-                            {textoDoGuia(hub.intro).map((p, i) => <p key={i}>{p}</p>)}
-                        </div>
-                    )}
-                </header>
+                {textoDoGuia(hub.intro).length > 0 && (
+                    <div className="grid gap-3 border-b border-border pb-6 text-sm leading-7 text-muted md:grid-cols-2">
+                        {textoDoGuia(hub.intro).map((p, i) => <p key={i}>{p}</p>)}
+                    </div>
+                )}
 
                 {hub.whatYouWillFind && (
                     <div className="order-1 border-l-2 border-accent pl-4 py-1">

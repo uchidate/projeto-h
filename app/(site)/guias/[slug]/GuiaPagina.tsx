@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
-import { getHub, getRelatedHubs } from '@/lib/guias'
+import { getAllHubs, getHub, getRelatedHubs } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
 import { getPosts } from '@/lib/wordpress/posts'
 import { getProductionGenres } from '@/lib/wordpress/productions'
@@ -44,8 +44,9 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
     // Guia de dorama/filme/série pede comida e K-beauty; os demais, itens de K-pop.
     const tipoVitrine = /dorama|drama|filme|serie|netflix|novela|romance|thriller|terror|comedia|acao/.test(slug) ? 'drama' : 'kpop'
     const shopProducts = await getVitrineGeral(`guia:${slug}`, 6, tipoVitrine)
-    const [relatedHubs, result, { items: blogPosts }, genres] = await Promise.all([
+    const [relatedHubs, todosGuias, result, { items: blogPosts }, genres] = await Promise.all([
         getRelatedHubs(hub),
+        getAllHubs(),
         getHubItems(hub, { page, genre, platform, network, type, year }),
         getPosts({ search: hub.keywords[0], perPage: 3, includeContent: false }),
         getProductionGenres(),
@@ -68,6 +69,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
             <HubPageContent
                 hub={hub}
                 relatedHubs={relatedHubs}
+                itensBusca={todosGuias.map(h => ({ rotulo: h.shortTitle, href: `/guias/${h.slug}`, tipo: h.kind === 'productions' ? 'Produções' : h.kind === 'artists' ? 'Artistas' : 'Grupos', palavras: h.keywords.join(' ') }))}
                 total={result.total}
                 productions={result.kind === 'productions' ? result.items : undefined}
                 artists={result.kind === 'artists' ? result.items : undefined}
