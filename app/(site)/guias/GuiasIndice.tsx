@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ALL_HUBS, GRUPOS_DE_GUIAS, type ArchiveHub } from '@/lib/guias'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
+import { porDemanda, resumoDoGuia } from '@/lib/guias/demanda'
 import { carregarGuiasPorTema } from '@/lib/home/guias'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
@@ -57,19 +58,21 @@ function Capitulo({ n, titulo, sub, cor, id }: { n: number; titulo: string; sub:
 }
 
 function ItemDoGuia({ hub }: { hub: ArchiveHub }) {
+    const resumo = resumoDoGuia(hub.shortTitle, hub.description)
     return (
         <li className="border-t border-border first:border-t-0">
             <Link href={`/guias/${hub.slug}`} className="group block py-2.5">
                 <span className="block text-[14px] font-semibold leading-snug text-foreground transition-colors group-hover:text-accent">{hub.shortTitle}</span>
-                {hub.description && <span className="mt-0.5 line-clamp-1 block text-[12px] text-muted">{hub.description}</span>}
+                {resumo && <span className="mt-0.5 line-clamp-1 block text-[12px] text-muted">{resumo}</span>}
             </Link>
         </li>
     )
 }
 
 function GrupoDeGuias({ titulo, hubs, cor }: { titulo: string; hubs: ArchiveHub[]; cor: string }) {
-    const visiveis = hubs.slice(0, MOSTRAR)
-    const demais = hubs.slice(MOSTRAR)
+    const ordenados = porDemanda(hubs)
+    const visiveis = ordenados.slice(0, MOSTRAR)
+    const demais = ordenados.slice(MOSTRAR)
     return (
         <div className="border-t-4 pt-3" style={{ borderColor: cor }}>
             <h3 className="mb-1 flex items-baseline justify-between gap-2 font-serif text-[20px] font-medium leading-tight text-foreground">
@@ -140,6 +143,19 @@ export async function GuiasIndice({ kind }: { kind?: string }) {
                     {visibleCount} guias{!activeKind && guiasDeCultura.length > 0 ? ` · ${guiasDeCultura.length} de cultura` : ''} · para descobrir o que assistir, quem acompanhar e por onde começar
                 </p>
             </section>
+
+            {!activeKind && (
+                <nav aria-label="Seções de guias" className="sticky top-0 z-30 border-y border-border bg-background/95 backdrop-blur">
+                    <div className="page-wrap flex gap-5 overflow-x-auto py-2.5">
+                        {KIND_ORDER.map((k, i) => (
+                            <a key={k} href={`#${k}`} className={`flex shrink-0 items-center gap-2 text-foreground hover:text-accent ${MONO}`}>
+                                <span aria-hidden className="h-2 w-2" style={{ backgroundColor: KIND_COR[k] }} />
+                                {`0${i + 1} · ${KIND_LABELS[k]}`}
+                            </a>
+                        ))}
+                    </div>
+                </nav>
+            )}
 
             <div className="page-wrap space-y-10 py-8">
                 {!activeKind && (guiasPorTema.length > 0 || guiasDeCultura.length > 0) && (
