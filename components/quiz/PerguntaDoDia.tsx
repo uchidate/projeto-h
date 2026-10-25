@@ -54,7 +54,7 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
                         const errada = marcada === i && i !== pergunta.correct
                         return (
                             <button key={i} type="button" onClick={() => responder(i)} disabled={respondida}
-                                className={`touch-target flex min-h-[56px] items-center gap-3 border-[3px] border-[#15102b] px-4 py-2 text-left text-[16px] font-extrabold transition-transform sm:text-[18px] ${certa ? 'bg-[#38e1c0]' : errada ? 'bg-[#ff5fa2]' : 'bg-white hover:-translate-y-0.5 disabled:opacity-70'}`}>
+                                className={`touch-target flex min-h-[56px] items-center gap-3 border-[3px] border-[#15102b] px-4 py-2 text-left text-[16px] font-extrabold transition-transform sm:text-[18px] ${certa ? 'bg-[#38e1c0]' : errada ? 'bg-[#ff5fa2]' : 'bg-white hover:-translate-y-0.5 hover:bg-accent/5 disabled:opacity-70'}`}>
                                 <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center text-[14px]" style={{ background: CORES[i] }}>{LETRAS[i]}</span>
                                 <span className="flex-1">{op}</span>
                                 {certa && <span className="text-[12px]">Certo!</span>}
@@ -86,8 +86,8 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
                         const errada = marcada === i && i !== pergunta.correct
                         return (
                             <button key={i} type="button" onClick={() => responder(i)} disabled={respondida}
-                                className={`touch-target flex items-center justify-center gap-2 border px-3 py-2.5 text-center text-[14px] font-bold transition-colors ${
-                                    certa ? 'border-green-500 bg-green-500/10' : errada ? 'border-red-500 bg-red-500/10' : 'border-border bg-background hover:border-accent/60 disabled:opacity-70'
+                                className={`touch-target flex items-center justify-center gap-2 border-2 px-3 py-3.5 text-center text-[16px] font-bold transition-colors ${
+                                    certa ? 'border-green-500 bg-green-500/10' : errada ? 'border-red-500 bg-red-500/10' : 'border-border bg-background hover:border-accent/60 hover:bg-accent/5 disabled:opacity-70'
                                 }`}>
                                 <span>{op}</span>
                                 {certa && <span className="text-[11px] text-green-500">Certo</span>}

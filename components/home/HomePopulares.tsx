@@ -21,14 +21,14 @@ function Coluna({ titulo, verTodos, href, linhas, escala }: { titulo: string; ve
             </div>
             <ol>
                 {linhas.map((l, i) => (
-                    <li key={l.chave} className="border-b border-border last:border-b-0">
-                        <Link href={l.href} className="group flex items-center gap-3.5 py-3">
+                    <li key={l.chave} className={`border-b border-border last:border-b-0 ${i === 0 ? '-mx-5 bg-accent/5 px-5' : ''}`}>
+                        <Link href={l.href} className={`group flex items-center gap-3.5 ${i === 0 ? 'py-4' : 'py-3'}`}>
                             <span className="w-5 shrink-0 font-serif text-[22px] font-bold leading-none text-accent">{i + 1}</span>
-                            <span className="relative h-12 w-12 shrink-0 overflow-hidden bg-surface">
-                                {l.imagem && <Image src={l.imagem} alt="" fill sizes="48px" className="object-cover object-top" />}
+                            <span className={`relative shrink-0 overflow-hidden bg-surface ${i === 0 ? 'h-16 w-16' : 'h-12 w-12'}`}>
+                                {l.imagem && <Image src={l.imagem} alt="" fill sizes="64px" className="object-cover object-top" />}
                             </span>
                             <span className="min-w-0 flex-1">
-                                <span className="block truncate text-[15px] font-extrabold leading-snug text-foreground group-hover:text-accent">{l.nome}</span>
+                                <span className={`block truncate font-extrabold leading-snug text-foreground group-hover:text-accent ${i === 0 ? 'font-serif text-[19px] font-medium' : 'text-[15px]'}`}>{l.nome}</span>
                                 {l.sub && <span className="mt-0.5 block truncate text-[12px] leading-snug text-muted">{l.sub}</span>}
                             </span>
                             {l.valor !== null && (
