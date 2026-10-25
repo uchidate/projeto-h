@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
+import { stripHtml } from '@/lib/utils'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { getAllHubs, getHub, getRelatedHubs } from '@/lib/guias'
 import { findAgencyId, getHubItems } from '@/lib/guias/hub-items'
@@ -10,6 +11,7 @@ import { SolistaDestaque } from '@/components/guias/SolistaDestaque'
 import { getPosts } from '@/lib/wordpress/posts'
 import { getProductionGenres } from '@/lib/wordpress/productions'
 import { getVitrineGeral, getVitrinePorTermos } from '@/lib/wordpress/vitrine'
+import { getStoreProductsByArtistId } from '@/lib/wordpress/store'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import { HubPageContent } from '@/components/features/HubPageContent'
@@ -50,7 +52,9 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
         getRelatedHubs(hub),
         getAllHubs(),
         getHubItems(hub, { page, genre, platform, network, type, year }),
-        getPosts({ search: hub.keywords[0], perPage: 3, includeContent: false }),
+        hub.filter.artistSlug
+            ? getPosts({ mentionsType: 'artist', mentionsSlug: hub.filter.artistSlug, perPage: 3, includeContent: false })
+            : getPosts({ search: hub.keywords[0], perPage: 3, includeContent: false }),
         getProductionGenres(),
     ])
     // "Comece por aqui": só na primeira página, sem filtro ativo. Sai da própria página de resultados,
@@ -69,6 +73,10 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
         if (agencyId) gruposDaAgencia = (await getGroups({ agency: agencyId, perPage: 24, orderby: 'popularity', order: 'desc' }).catch(() => ({ items: [] }))).items
         if (gruposDaAgencia.length === 0 && agencyId) gruposDaAgencia = (await getGroups({ agency: agencyId, perPage: 24, orderby: 'title', order: 'asc' }).catch(() => ({ items: [] }))).items
     }
+    // Guia de um artista: ele abre a página e a lista traz só os demais nomes (do grupo, se houver).
+    const solista = result.kind === 'artists' && hub.filter.artistSlug ? result.items.find(a => a.slug === hub.filter.artistSlug) : undefined
+    const demaisDoSolista = solista && result.kind === 'artists' ? result.items.filter(a => a.id !== solista.id) : undefined
+    const resumoDoSolista = solista ? hub.description.replace(/^Perfil completo d[eo] [^:]+:\s*/i, '').replace(/^./, c => c.toUpperCase()) : undefined
     // Vitrine pelo assunto do guia (palavras do título, das palavras-chave e dos grupos da agência no nome do produto).
     // Sem casamento, cai na vitrine geral do tipo.
     // Palavras genéricas ficam fora: "doramas" e "coreanos" casariam caneca e macarrão em qualquer guia de produção.
@@ -77,13 +85,20 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
         .map(t => t.replace(GENERICAS, ' ').replace(/\s+/g, ' ').trim()).filter(t => t.length > 2)
     // Guia de produção fica com a vitrine geral de drama: o casamento por palavra só acerta nomes próprios (artista, grupo),
     // e no gênero trazia caneca e kit facial por coincidência de termo.
-    let shopProducts = hub.kind === 'productions' ? [] : await getVitrinePorTermos(termosDoGuia, `guia:${slug}`, { limit: 6 }).catch(() => [])
-    const tematica = shopProducts.length >= 3
-    if (!tematica) shopProducts = await getVitrineGeral(`guia:${slug}`, 6, tipoVitrine)
-    // Guia de um artista: ele abre a página e a lista traz só os demais nomes (do grupo, se houver).
-    const solista = result.kind === 'artists' && hub.filter.artistSlug ? result.items.find(a => a.slug === hub.filter.artistSlug) : undefined
-    const demaisDoSolista = solista && result.kind === 'artists' ? result.items.filter(a => a.id !== solista.id) : undefined
-    const resumoDoSolista = solista ? hub.description.replace(/^Perfil completo d[eo] [^:]+:\s*/i, '').replace(/^./, c => c.toUpperCase()) : undefined
+    let shopProducts: Awaited<ReturnType<typeof getVitrineGeral>> = []
+    let tematica = false
+    if (solista) {
+        // Guia de um artista: só produto do próprio artista e do grupo; sem eles, a faixa some em vez de mostrar outro grupo.
+        const nomes = [solista, ...(demaisDoSolista ?? []).slice(0, 3)]
+        const listas = await Promise.all(nomes.map(a => getStoreProductsByArtistId(a.id).catch(() => [])))
+        const intercalados = Array.from({ length: Math.max(0, ...listas.map(l => l.length)) }, (_, i) => listas.map(l => l[i]).filter(Boolean)).flat()
+        shopProducts = [...new Map(intercalados.map(p => [p.id, p])).values()].slice(0, 6)
+        tematica = true
+    } else {
+        shopProducts = hub.kind === 'productions' ? [] : await getVitrinePorTermos(termosDoGuia, `guia:${slug}`, { limit: 6 }).catch(() => [])
+        tematica = shopProducts.length >= 3
+        if (!tematica) shopProducts = await getVitrineGeral(`guia:${slug}`, 6, tipoVitrine)
+    }
     const genreMap = Object.fromEntries(genres.map(g => [g.id, { name: g.name, slug: g.slug }]))
     const perPage = 48
     const totalPages = Math.ceil(result.total / perPage)
@@ -102,7 +117,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
                 artists={result.kind === 'artists' ? (demaisDoSolista ?? result.items) : undefined}
                 groups={result.kind === 'groups' ? result.items : undefined}
                 blogPosts={blogPosts}
-                lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title={tematica ? `Na loja: ${hub.shortTitle}` : tipoVitrine === 'drama' ? 'Para quem curte k-drama' : 'Para quem curte k-pop'} contexto={`guia:${slug}:meio`} />}
+                lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title={tematica ? `Na loja: ${solista ? stripHtml(solista.title.rendered) : hub.shortTitle}` : tipoVitrine === 'drama' ? 'Para quem curte k-drama' : 'Para quem curte k-pop'} contexto={`guia:${slug}:meio`} />}
                 quiz={<QuizWidget category={tipoVitrine === 'drama' ? 'k-drama' : 'k-pop'} />}
                 destaques={destaques}
                 genreMap={genreMap}

@@ -178,6 +178,13 @@ export function HubPageContent({
     const displayCount = productions?.length ?? artists?.length ?? groups?.length ?? 0
 
     const canonical = `${siteUrl}/guias/${hub.slug}`
+    // Guia de um artista: a ficha vem primeiro e o texto de apoio depois dela.
+    const soloGuia = !!listaTitulo || semLista
+    const introBloco = textoDoGuia(hub.intro).length > 0 && (
+        <div className="grid gap-3 border-b border-border pb-6 text-sm leading-7 text-muted md:grid-cols-2">
+            {textoDoGuia(hub.intro).map((p, i) => <p key={i}>{p}</p>)}
+        </div>
+    )
     const kindLabel = hub.kind === 'productions' ? 'produções' : hub.kind === 'artists' ? 'artistas' : 'grupos'
 
     const allItems = [
@@ -289,11 +296,7 @@ export function HubPageContent({
 
             <div className="page-wrap flex flex-col gap-12 py-8">
 
-                {textoDoGuia(hub.intro).length > 0 && (
-                    <div className="grid gap-3 border-b border-border pb-6 text-sm leading-7 text-muted md:grid-cols-2">
-                        {textoDoGuia(hub.intro).map((p, i) => <p key={i}>{p}</p>)}
-                    </div>
-                )}
+                {!soloGuia && introBloco}
 
                 {hub.whatYouWillFind && (
                     <div className="order-1 border-l-2 border-accent pl-4 py-1">
@@ -323,6 +326,7 @@ export function HubPageContent({
                 <HubDestaques items={destaques} eyebrow="Comece por aqui" title={`Em alta e bem avaliadas — ${hub.shortTitle}`} />
 
                 {abertura}
+                {soloGuia && introBloco}
 
                 {!semLista && <section>
                     <SectionTitleBar
@@ -431,8 +435,8 @@ export function HubPageContent({
                     <section className="order-2" itemScope itemType="https://schema.org/FAQPage">
                         <SectionTitleBar eyebrow="Tire suas dúvidas" title="Perguntas frequentes" />
                         <div className="grid gap-px bg-border sm:grid-cols-2">
-                            {hub.faq.map(item => (
-                                <div key={item.question} className="bg-background p-5" itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+                            {hub.faq.map((item, i) => (
+                                <div key={item.question} className={`bg-background p-5${hub.faq.length % 2 === 1 && i === hub.faq.length - 1 ? ' sm:col-span-2' : ''}`} itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
                                     <h3 className="text-[13px] font-black text-foreground leading-snug" itemProp="name">{item.question}</h3>
                                     <div itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
                                         <p className="mt-2 text-[13px] leading-6 text-muted" itemProp="text">{item.answer}</p>
