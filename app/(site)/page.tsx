@@ -6,7 +6,6 @@ import { Suspense } from 'react'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { HomeFrontPage } from '@/components/home/HomeFrontPage'
 import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
-import { HomeBelowFold } from '@/components/home/HomeBelowFold'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
 import { IS_BUILD } from '@/lib/wordpress/config'
@@ -97,9 +96,6 @@ export default async function HomePage() {
                 producoesEmAlta={producoesEmAlta}
                 hoje={hoje}
             />
-            <Suspense fallback={null}>
-                <HomeBelowFold homeSettings={siteSettings.home} />
-            </Suspense>
         </>
     )
 }
