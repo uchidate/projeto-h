@@ -7,7 +7,6 @@ import { useEffect, type ReactNode } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
-import { ResponsiveFilterBar } from '@/components/ui/ResponsiveFilterBar'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { ScrollToTop } from '@/components/ui/ScrollToTop'
@@ -60,6 +59,8 @@ interface Props {
     introDepois?: boolean
     /** Título da lista quando ela não é "Explorar" (ex.: "Do mesmo grupo"). */
     listaTitulo?: { eyebrow: string; title: string }
+    /** Onde o guia mora em /guias (ex.: "Artistas · Por agência"); situa quem chega por busca. */
+    rotulo?: string
     /** Banner do quiz da categoria do guia (feito no servidor). */
     quiz?: ReactNode
     siteUrl?: string
@@ -92,7 +93,7 @@ function FilterChip({ label, href, active }: { label: string; href: string; acti
     return (
         <Link
             href={href}
-            className={`px-3 py-1 text-[12px] font-semibold transition-colors whitespace-nowrap ${
+            className={`shrink-0 px-3 py-1.5 text-[12px] font-semibold transition-colors whitespace-nowrap ${
                 active
                     ? 'bg-foreground text-background'
                     : 'border border-border text-muted hover:border-foreground hover:text-foreground'
@@ -119,7 +120,7 @@ const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Glob
 const textoDoGuia = (intro: string[]) => intro.filter(p => !/^Este guia reúne/i.test(p.trim()))
 
 export function HubPageContent({
-    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz, abertura, semLista = false, introDepois = false, listaTitulo,
+    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz, abertura, semLista = false, introDepois = false, listaTitulo, rotulo,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -169,14 +170,6 @@ export function HubPageContent({
     const tipoFoiEscolhido = !!activeType && activeType !== hub.filter.type
     const hasActiveFilter = !!(activeGenre || activePlatform || activeNetwork || tipoFoiEscolhido || activeYear)
 
-    const activeFilterLabel = [
-        activeGenre,
-        activePlatform,
-        activeNetwork,
-        activeType ? TYPE_LABELS[activeType] : '',
-        activeYear,
-    ].filter(Boolean).join(', ') || 'Todos'
-
     const displayCount = productions?.length ?? artists?.length ?? groups?.length ?? 0
 
     const canonical = `${siteUrl}/guias/${hub.slug}`
@@ -187,6 +180,8 @@ export function HubPageContent({
             {textoDoGuia(hub.intro).map((p, i) => <p key={i}>{p}</p>)}
         </div>
     )
+    // Guia de lista: o texto de apoio sobe para o topo (uma leitura só) em vez de repetir a descrição e abrir outro bloco abaixo.
+    const textoNoTopo = !soloGuia && textoDoGuia(hub.intro).length > 0
     const kindLabel = hub.kind === 'productions' ? 'produções' : hub.kind === 'artists' ? 'artistas' : 'grupos'
 
     const allItems = [
@@ -244,47 +239,16 @@ export function HubPageContent({
                 ],
             }} />
 
-            {hasFilters && (
-                <ResponsiveFilterBar label="Filtros" value={activeFilterLabel}>
-                    <div className="flex items-center gap-3">
-                        {showType && (
-                            <div className="flex items-center gap-1.5 shrink-0">
-                                <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted shrink-0">Tipo</span>
-                                <FilterChip label="Todos" href={buildHref({ type: hub.filter.type ? 'all' : '' })} active={hub.filter.type ? activeType === 'all' : !activeType} />
-                                {KNOWN_TYPES.map(t => (
-                                    <FilterChip key={t} label={TYPE_LABELS[t]} href={buildHref({ type: t })} active={activeType === t} />
-                                ))}
-                            </div>
-                        )}
-                        {showPlatform && (
-                            <div className="flex items-center gap-1.5 shrink-0">
-                                <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted shrink-0">Plataforma</span>
-                                <FilterChip label="Todas" href={buildHref({ platform: '' })} active={!activePlatform} />
-                                {KNOWN_PLATFORMS.map(p => (
-                                    <FilterChip key={p} label={p} href={buildHref({ platform: p })} active={activePlatform === p} />
-                                ))}
-                            </div>
-                        )}
-                        {showYear && (
-                            <div className="flex items-center gap-1.5 shrink-0">
-                                <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted shrink-0">Ano</span>
-                                <FilterChip label="Todos" href={buildHref({ year: '' })} active={!activeYear} />
-                                {KNOWN_YEARS.slice(0, 10).map(y => (
-                                    <FilterChip key={y} label={y} href={buildHref({ year: y })} active={activeYear === y} />
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </ResponsiveFilterBar>
-            )}
-
             {/* Topo no mesmo padrão de /guias: título, busca e atalhos numa faixa só. */}
             <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
                 <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
-                    <h1 className="font-[family-name:var(--font-playfair)] text-[28px] font-bold leading-[1.05] sm:text-[34px] lg:max-w-[420px]">
-                        {hub.shortTitle}<BrandDot />
-                        <span className="sr-only"> — {hub.title}</span>
-                    </h1>
+                    <div className="lg:max-w-[420px]">
+                        {rotulo && <p className="mb-1.5 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">{rotulo}</p>}
+                        <h1 className="font-[family-name:var(--font-playfair)] text-[28px] font-bold leading-[1.05] sm:text-[34px]">
+                            {hub.shortTitle}<BrandDot />
+                            <span className="sr-only"> — {hub.title}</span>
+                        </h1>
+                    </div>
                     {itensBusca.length > 0 && <HubBusca itens={itensBusca} placeholder="Buscar outro guia" />}
                     <nav aria-label="Outros guias" className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0">
                         <Link href="/guias" className="touch-target flex h-10 shrink-0 items-center border border-border-strong px-4 text-[14px] font-semibold text-foreground transition-colors hover:border-accent/60">← Guias</Link>
@@ -293,12 +257,53 @@ export function HubPageContent({
                         ))}
                     </nav>
                 </div>
-                <p className="mt-3 text-[13px] text-muted">{!introDepois && `${total} ${kindLabel} · `}{hub.description}</p>
+                {textoNoTopo ? (
+                    <p className="mt-4 max-w-3xl text-[15px] leading-7 text-muted">
+                        <span className="mr-2 font-mono text-[11px] font-black uppercase tracking-widest text-foreground">{total} {kindLabel}</span>
+                        {textoDoGuia(hub.intro).join(' ')}
+                    </p>
+                ) : (
+                    <p className="mt-3 text-[13px] text-muted">{!introDepois && `${total} ${kindLabel} · `}{hub.description}</p>
+                )}
             </section>
+
+            {hasFilters && (
+                <section aria-label="Filtros do guia" className="page-wrap pb-1 pt-1">
+                    <div className="flex flex-col gap-2.5 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-7 lg:gap-y-2">
+                        {showType && (
+                            <div className="-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
+                                <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted shrink-0">Tipo</span>
+                                <FilterChip label="Todos" href={buildHref({ type: hub.filter.type ? 'all' : '' })} active={hub.filter.type ? activeType === 'all' : !activeType} />
+                                {KNOWN_TYPES.map(t => (
+                                    <FilterChip key={t} label={TYPE_LABELS[t]} href={buildHref({ type: t })} active={activeType === t} />
+                                ))}
+                            </div>
+                        )}
+                        {showPlatform && (
+                            <div className="-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
+                                <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted shrink-0">Plataforma</span>
+                                <FilterChip label="Todas" href={buildHref({ platform: '' })} active={!activePlatform} />
+                                {KNOWN_PLATFORMS.map(p => (
+                                    <FilterChip key={p} label={p} href={buildHref({ platform: p })} active={activePlatform === p} />
+                                ))}
+                            </div>
+                        )}
+                        {showYear && (
+                            <div className="-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
+                                <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted shrink-0">Ano</span>
+                                <FilterChip label="Todos" href={buildHref({ year: '' })} active={!activeYear} />
+                                {KNOWN_YEARS.slice(0, 10).map(y => (
+                                    <FilterChip key={y} label={y} href={buildHref({ year: y })} active={activeYear === y} />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </section>
+            )}
 
             <div className="page-wrap flex flex-col gap-12 py-8">
 
-                {!soloGuia && introBloco}
+                
 
                 {hub.whatYouWillFind && (
                     <div className="order-1 border-l-2 border-accent pl-4 py-1">
@@ -325,7 +330,7 @@ export function HubPageContent({
                 )}
 
                 {/* Ordem visual: lista antes do texto de apoio (`order-1`) e das seções finais (`order-2`). Medido: no celular a 1ª produção aparecia depois de ~1,6 telas de introdução, chips e "O que você vai encontrar"; o DOM segue na ordem original para o texto continuar indexável. */}
-                <HubDestaques items={destaques} eyebrow="Comece por aqui" title={`Em alta e bem avaliadas — ${hub.shortTitle}`} />
+                <HubDestaques items={destaques} eyebrow="Comece por aqui" title="Em alta e bem avaliadas" />
 
                 {abertura}
                 {soloGuia && introBloco}

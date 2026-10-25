@@ -86,3 +86,13 @@ export const GRUPOS_DE_GUIAS: { kind: ArchiveHub['kind']; grupos: GrupoDeGuias[]
         ],
     },
 ]
+
+const NOME_DO_TIPO: Record<ArchiveHub['kind'], string> = { productions: 'Produções', artists: 'Artistas', groups: 'Grupos' }
+
+/** Rótulo curto de onde o guia mora em /guias (ex.: "Artistas · Integrantes de grupos"), para situar quem chega por busca. */
+export function rotuloDoGuia(slug: string): string | undefined {
+    for (const { kind, grupos } of GRUPOS_DE_GUIAS) {
+        const g = grupos.find(x => x.hubs.some(h => h.slug === slug))
+        if (g) return `${NOME_DO_TIPO[kind]} · ${g.titulo}`
+    }
+}

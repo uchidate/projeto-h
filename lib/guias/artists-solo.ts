@@ -136,7 +136,7 @@ export const artistsSoloHubs: ArchiveHub[] = [
     {
         slug: 'jisoo',
         kind: 'artists',
-        filter: { groupSlug: 'blackpink' },
+        filter: { groupSlug: 'blackpink', artistSlug: 'jisoo-kim' },
         title: 'Jisoo — BLACKPINK',
         shortTitle: 'Jisoo (BLACKPINK)',
         description: 'Perfil completo de Jisoo: vocalista e visual do BLACKPINK, álbum solo "ME", atriz em "Snowdrop", ícone de beleza.',

@@ -10,7 +10,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'BTS',
         description: 'Conheça os integrantes do BTS com perfis, carreira solo, músicas, vídeos e curiosidades em português.',
         intro: [
-            'BTS é o grupo de K-Pop mais conhecido no mundo, com sete integrantes que também constroem carreiras solo expressivas na música, atuação e entretenimento.',
+            'BTS é um grupo de sete integrantes que estreou em 2013 pela Big Hit, hoje parte da HYBE, e cujos membros também lançaram projetos solo.',
             `Este guia reúne os perfis dos membros cadastrados na ${SITE_NAME} para que fãs e novos descobridores possam navegar por cada trajetória individual com facilidade.`,
         ],
         keywords: ['integrantes do bts', 'membros bts', 'bts kpop', 'rm jin suga jhope jimin v jungkook', 'bangtan boys'],
@@ -18,7 +18,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         faq: [
             { question: 'Quem são os integrantes do BTS?', answer: `BTS tem sete integrantes: RM, Jin, Suga, J-Hope, Jimin, V e Jungkook. Todos têm perfis na ${SITE_NAME} com discografia, vídeos e carreira individual.` },
             { question: 'Os membros do BTS têm carreira solo?', answer: 'Sim. Todos lançaram projetos solo: RM com "Indigo", Jin com "The Astronaut", Suga com sua identidade Agust D, J-Hope com "Jack in the Box", Jimin com "FACE", V com "Layover" e Jungkook com "GOLDEN".' },
-            { question: 'BTS ainda está ativo?', answer: 'BTS pausou atividades coletivas enquanto os membros cumprem o serviço militar obrigatório. Os membros vão se formando gradualmente a partir de 2024–2025, com retorno previsto do grupo para 2025/2026.' },
+            { question: 'Os integrantes do BTS cumpriram o serviço militar?', answer: 'Sim. Os sete integrantes cumpriram o serviço militar obrigatório sul-coreano, com dispensas entre 2024 e junho de 2025.' },
         ],
     },
     {
@@ -29,14 +29,14 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'BLACKPINK',
         description: 'Explore as integrantes do BLACKPINK com perfis, carreira solo, músicas, vídeos e fatos em português.',
         intro: [
-            'BLACKPINK é um dos grupos de K-Pop mais reconhecidos globalmente, com integrantes que também construíram carreiras solo fortes.',
+            'BLACKPINK é um grupo feminino da YG Entertainment que estreou em 2016 e cujas quatro integrantes também têm carreira solo.',
             'Este guia conecta as páginas individuais das integrantes para quem quer acompanhar música, moda, atuação e presença internacional.',
         ],
         keywords: ['integrantes do blackpink', 'membros blackpink', 'blackpink kpop', 'jennie lisa jisoo rosé'],
         whatYouWillFind: 'Aqui você encontra perfis individuais de cada integrante do BLACKPINK, com links para discografia, vídeos, doramas, campanhas de moda e conexões com outros artistas.',
         faq: [
-            { question: 'As integrantes do BLACKPINK têm carreira solo?', answer: 'Sim. Rosé lançou o álbum "rosie" (2024), Jennie tem extensa carreira solo com "Solo" e "You & Me", Lisa se estabeleceu globalmente com "LALISA" e "MONEY", e Jisoo estreou como atriz em "Snowdrop".' },
-            { question: 'O BLACKPINK ainda está ativo?', answer: 'Sim. BLACKPINK completou seus contratos individuais com a YG Entertainment e renovou. O grupo continua ativo com atividades coletivas e individuais das integrantes.' },
+            { question: 'As integrantes do BLACKPINK têm carreira solo?', answer: 'Sim. Rosé lançou o álbum "rosie" (2024), Jennie tem extensa carreira solo com "Solo" e "You & Me", Lisa se estabeleceu globalmente com "LALISA" e "MONEY", e Jisoo atuou no dorama "Snowdrop".' },
+            { question: 'Quantas integrantes tem o BLACKPINK?', answer: 'Quatro: Jisoo, Jennie, Rosé e Lisa. O grupo estreou em 2016 pela YG Entertainment.' },
         ],
     },
     {
@@ -63,7 +63,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'aespa',
         description: 'Explore as integrantes do aespa com perfis, carreira, músicas, vídeos e curiosidades em português.',
         intro: [
-            'aespa combina K-Pop, identidade visual futurista e performances que marcaram a quarta geração.',
+            'aespa é um grupo feminino da SM Entertainment que estreou em 2020 com um conceito que une as integrantes a avatares digitais.',
             `Neste guia, você encontra links diretos para as integrantes e pode navegar por perfis relacionados dentro do catálogo da ${SITE_NAME}.`,
         ],
         keywords: ['integrantes do aespa', 'membros aespa', 'aespa kpop', 'karina winter giselle ningning'],
@@ -79,7 +79,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'IVE',
         description: 'Conheça as integrantes do IVE com perfis em português, posições, carreira, músicas e curiosidades sobre o grupo.',
         intro: [
-            'IVE se tornou um dos nomes centrais da nova geração do K-Pop, reunindo integrantes com forte presença em música, moda, performance e cultura pop.',
+            'IVE é um grupo feminino da Starship Entertainment que estreou em 2021.',
             `Este guia organiza as páginas das integrantes para facilitar a navegação por perfis, carreira e conexões dentro da ${SITE_NAME}.`,
         ],
         keywords: ['integrantes do ive', 'membros ive', 'ive kpop', 'wonyoung yujin rei'],
@@ -95,7 +95,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'NewJeans',
         description: 'Veja as integrantes do NewJeans com perfis em português, carreira, músicas, conceitos e curiosidades.',
         intro: [
-            'NewJeans marcou a nova geração com estética própria, sonoridade pop e alto impacto cultural.',
+            'NewJeans é um grupo feminino que estreou em 2022 pelo selo ADOR, da HYBE.',
             `Este guia organiza as integrantes cadastradas na ${SITE_NAME} para facilitar descoberta e navegação.`,
         ],
         keywords: ['integrantes do newjeans', 'membros newjeans', 'newjeans kpop'],
@@ -111,7 +111,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'LE SSERAFIM',
         description: 'Conheça as integrantes do LE SSERAFIM com perfis, carreira, músicas, vídeos e conexões no K-Pop.',
         intro: [
-            'LE SSERAFIM combina performance, narrativa visual e presença global entre os grupos femininos mais comentados da nova geração.',
+            'LE SSERAFIM é um grupo feminino que estreou em 2022 pela Source Music, selo da HYBE.',
             `Este guia reúne as integrantes públicas na ${SITE_NAME} e facilita a navegação por perfis e conteúdos relacionados.`,
         ],
         keywords: ['integrantes do le sserafim', 'membros le sserafim', 'lesserafim kpop'],
@@ -127,7 +127,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'Stray Kids',
         description: 'Explore os integrantes do Stray Kids com perfis em português, carreira, músicas, vídeos e curiosidades sobre o grupo.',
         intro: [
-            'Stray Kids é um dos grupos masculinos de maior impacto da quarta geração, reconhecido pela produção própria, sonoridade intensa e fanbase global chamada STAY.',
+            'Stray Kids é um grupo masculino da JYP Entertainment que estreou em 2018 e cujos integrantes participam da composição e produção das músicas; o fandom se chama STAY.',
             `Este guia organiza os membros cadastrados na ${SITE_NAME} para facilitar a navegação por perfis, atividades individuais e conteúdos relacionados.`,
         ],
         keywords: ['integrantes do stray kids', 'membros stray kids', 'straykids kpop', 'bang chan felix hyunjin'],
@@ -160,7 +160,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'SEVENTEEN',
         description: 'Conheça os integrantes do SEVENTEEN com perfis, carreira, músicas, unidades e curiosidades em português.',
         intro: [
-            'SEVENTEEN é um dos maiores grupos de boy band da quarta geração, com treze integrantes divididos em três unidades: vocal, hip-hop e performance.',
+            'SEVENTEEN é um grupo masculino da Pledis Entertainment que estreou em 2015, com treze integrantes divididos em três unidades: vocal, hip-hop e performance.',
             `Este guia organiza os membros cadastrados na ${SITE_NAME} para facilitar a navegação por perfis, histórico e atividades individuais.`,
         ],
         keywords: ['integrantes do seventeen', 'membros seventeen', 'seventeen kpop', 'svt carats'],
@@ -176,7 +176,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'TXT',
         description: 'Explore os integrantes do TXT (TOMORROW X TOGETHER) com perfis, carreira, músicas e curiosidades em português.',
         intro: [
-            'TXT, abreviação de TOMORROW X TOGETHER, é o segundo grupo masculino da HYBE (Big Hit), famoso por conceitos narrativos profundos e uma sonoridade que mistura pop alternativo com K-Pop.',
+            'TXT, abreviação de TOMORROW X TOGETHER, é um grupo masculino que estreou em 2019 pela Big Hit, hoje parte da HYBE.',
             `Este guia organiza os membros cadastrados na ${SITE_NAME} para facilitar a descoberta de perfis, discografia e atividades individuais.`,
         ],
         keywords: ['integrantes do txt', 'membros tomorrow x together', 'txt kpop', 'yeonjun soobin beomgyu taehyun huening kai'],
@@ -192,7 +192,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'ATEEZ',
         description: 'Explore os integrantes do ATEEZ com perfis em português, carreira, músicas, performances e curiosidades.',
         intro: [
-            'ATEEZ ganhou reconhecimento internacional por performances intensas, narrativas visuais elaboradas e uma base de fãs chamada ATINY que cresce globalmente.',
+            'ATEEZ é um grupo masculino da KQ Entertainment que estreou em 2018; o fandom se chama ATINY.',
             `Este guia organiza os membros cadastrados na ${SITE_NAME} para navegar por perfis e conteúdos relacionados.`,
         ],
         keywords: ['integrantes do ateez', 'membros ateez', 'ateez kpop', 'atiny hongjoong mingi'],
@@ -208,7 +208,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'Girls\' Generation',
         description: 'Conheça as integrantes do Girls\' Generation (SNSD) com perfis, carreira, músicas e curiosidades em português.',
         intro: [
-            'Girls\' Generation, também conhecido como SNSD, é um dos grupos mais icônicos da segunda geração do K-Pop.',
+            'Girls\' Generation, também conhecido como SNSD, é um grupo feminino da SM Entertainment que estreou em 2007.',
             `Este guia organiza as integrantes públicas na ${SITE_NAME}, facilitando a navegação por perfis, carreiras individuais e contexto histórico do grupo.`,
         ],
         keywords: ['integrantes do girls generation', 'membros snsd', 'girls generation kpop', 'snsd taeyeon yoona', 'soshi'],
@@ -224,7 +224,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'BIGBANG',
         description: 'Explore os integrantes do BIGBANG com perfis em português, carreira solo, músicas e história do grupo.',
         intro: [
-            'BIGBANG é considerado um dos grupos mais influentes do K-Pop, tendo definido o som e o estilo de toda uma era da música coreana.',
+            'BIGBANG é um grupo masculino da YG Entertainment que estreou em 2006.',
             `Este guia organiza os membros cadastrados na ${SITE_NAME} para quem quer explorar as trajetórias individuais de G-Dragon, T.O.P, Taeyang, Daesung e Seungri.`,
         ],
         keywords: ['integrantes do bigbang', 'membros bigbang', 'bigbang kpop', 'gdragon taeyang top daesung'],
@@ -256,7 +256,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'GOT7',
         description: 'Explore os integrantes do GOT7 com perfis em português, carreira, músicas, vídeos e curiosidades.',
         intro: [
-            'GOT7 construiu uma base de fãs global leal com sua mistura de pop, hip-hop e R&B.',
+            'GOT7 é um grupo masculino que estreou em 2014 pela JYP Entertainment.',
             `Este guia organiza os membros cadastrados na ${SITE_NAME} para quem quer explorar perfis, discografia e conexões do grupo.`,
         ],
         keywords: ['integrantes do got7', 'membros got7', 'got7 kpop', 'mark jay b jackson jinyoung youngjae bambam yugyeom'],
@@ -272,7 +272,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'MAMAMOO',
         description: 'Conheça as integrantes do MAMAMOO com perfis em português, carreira, músicas e curiosidades sobre o grupo.',
         intro: [
-            'MAMAMOO é conhecido por vocais excepcionais, personalidade forte e uma abordagem musical que foge dos padrões comuns do K-Pop.',
+            'MAMAMOO é um grupo feminino da RBW que estreou em 2014.',
             `Este guia reúne as integrantes cadastradas na ${SITE_NAME} para navegar por perfis, carreira individual e conteúdos relacionados.`,
         ],
         keywords: ['integrantes do mamamoo', 'membros mamamoo', 'mamamoo kpop', 'solar moonbyul wheein hwasa'],
@@ -288,7 +288,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'ITZY',
         description: 'Conheça as integrantes do ITZY com perfis, carreira, músicas, vídeos e curiosidades em português.',
         intro: [
-            'ITZY se destacou na quarta geração com mensagens de autoconfiança, coreografias energéticas e um conceito "ser você mesmo" que conquistou fãs globalmente.',
+            'ITZY é um grupo feminino da JYP Entertainment que estreou em 2019.',
             `Este guia reúne as integrantes cadastradas na ${SITE_NAME} para navegar por perfis e conteúdos relacionados.`,
         ],
         keywords: ['integrantes do itzy', 'membros itzy', 'itzy kpop', 'yeji lia ryujin chaeryeong yuna'],
@@ -304,7 +304,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: '(G)I-DLE',
         description: 'Explore as integrantes do (G)I-DLE com perfis, carreira, músicas produzidas pelo grupo e curiosidades em português.',
         intro: [
-            '(G)I-DLE chama atenção pela autoprodução musical e por um conceito poderoso e versátil.',
+            '(G)I-DLE é um grupo feminino da Cube Entertainment que estreou em 2018, com integrantes que participam da composição das músicas.',
             `Este guia organiza as integrantes cadastradas na ${SITE_NAME} para facilitar a descoberta de perfis e conteúdos relacionados.`,
         ],
         keywords: ['integrantes do gidle', 'membros g i dle', 'gidle kpop', 'soyeon minnie miyeon yuqi shuhua'],
@@ -320,7 +320,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'ENHYPEN',
         description: 'Conheça os integrantes do ENHYPEN com perfis em português, carreira, músicas e curiosidades sobre o grupo.',
         intro: [
-            'ENHYPEN foi formado pelo reality "I-Land" em 2020 e rapidamente conquistou uma posição central entre os grupos masculinos da quarta geração.',
+            'ENHYPEN é um grupo masculino da Belift Lab formado pelo reality "I-Land" e estreado em 2020.',
             `Este guia reúne os integrantes cadastrados na ${SITE_NAME} para facilitar a navegação por perfis e conteúdos relacionados.`,
         ],
         keywords: ['integrantes do enhypen', 'membros enhypen', 'enhypen kpop', 'i-land grupo'],
@@ -336,7 +336,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'SHINee',
         description: 'Conheça os integrantes do SHINee com perfis em português, carreira, músicas, vídeos e curiosidades sobre o grupo.',
         intro: [
-            'SHINee é um grupo icônico da segunda geração do K-Pop, reconhecido por vocais excepcionais, performances inovadoras e uma discografia que influenciou toda uma geração de artistas.',
+            'SHINee é um grupo masculino da SM Entertainment que estreou em 2008.',
             `Este guia reúne os integrantes públicos na ${SITE_NAME} para que fãs e novos descobridores possam explorar perfis, histórico e conexões do grupo.`,
         ],
         keywords: ['integrantes do shinee', 'membros shinee', 'shinee kpop', 'onew key minho taemin'],
@@ -352,7 +352,7 @@ export const groupsMembersHubs: ArchiveHub[] = [
         shortTitle: 'Red Velvet',
         description: 'Explore as integrantes do Red Velvet com perfis em português, carreira, músicas, conceitos e curiosidades.',
         intro: [
-            'Red Velvet é um dos grupos mais versáteis do K-Pop, alternando entre o conceito "Red" (pop energético) e "Velvet" (R&B suave), com uma discografia que impressiona por qualidade e variedade.',
+            'Red Velvet é um grupo feminino da SM Entertainment que estreou em 2014 e alterna dois conceitos: "Red", mais enérgico, e "Velvet", mais suave.',
             `Este guia reúne as integrantes cadastradas na ${SITE_NAME} para quem quer descobrir perfis, carreira individual e músicas relacionadas ao grupo.`,
         ],
         keywords: ['integrantes do red velvet', 'membros red velvet', 'red velvet kpop', 'irene seulgi wendy joy yeri'],

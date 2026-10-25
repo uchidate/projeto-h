@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { stripHtml } from '@/lib/utils'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
-import { getAllHubs, getHub, getRelatedHubs } from '@/lib/guias'
+import { getAllHubs, getHub, getRelatedHubs, rotuloDoGuia } from '@/lib/guias'
 import { findAgencyId, getHubItems } from '@/lib/guias/hub-items'
 import { getGroups } from '@/lib/wordpress/groups'
 import { GruposDaAgencia } from '@/components/guias/GruposDaAgencia'
@@ -132,6 +132,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
             <HubPageContent
                 hub={hub}
                 relatedHubs={relatedHubs}
+                rotulo={rotuloDoGuia(hub.slug)}
                 abertura={grupoGuia ? <GrupoDestaque group={grupoGuia} agencia={agenciaDoGrupo} exIntegrantes={exIntegrantes} integrantes={integrantesDoGrupo} /> : solista ? <SolistaDestaque artist={solista} grupo={demaisDoSolista?.length ? 'do grupo' : undefined} resumo={resumoDoSolista} /> : destaquesDaCategoria.length > 0 ? <DestaquesDaCategoria artists={destaquesDaCategoria} rotulo={hub.shortTitle} /> : gruposDaAgencia.length > 0 ? <GruposDaAgencia agencia={hub.shortTitle} grupos={gruposDaAgencia} /> : undefined}
                 introDepois={!!solista || !!grupoGuia}
                 semLista={!!solista && demaisDoSolista?.length === 0}
