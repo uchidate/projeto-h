@@ -9,6 +9,8 @@ import { getGroups } from '@/lib/wordpress/groups'
 import { GruposDaAgencia } from '@/components/guias/GruposDaAgencia'
 import { SolistaDestaque } from '@/components/guias/SolistaDestaque'
 import { GrupoDestaque } from '@/components/guias/GrupoDestaque'
+import { DestaquesDaCategoria } from '@/components/guias/DestaquesDaCategoria'
+import { getArtists } from '@/lib/wordpress/artists'
 import { getAgencyById } from '@/lib/wordpress/agencies'
 import { getPosts } from '@/lib/wordpress/posts'
 import { getProductionGenres } from '@/lib/wordpress/productions'
@@ -87,6 +89,11 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
     const agenciaDoGrupo = grupoGuia?.acf?.agency ? (await getAgencyById(grupoGuia.acf.agency).catch(() => null))?.title.rendered : undefined
     const exIntegrantes = ((grupoGuia as { former_member_slugs?: string[] } | undefined)?.former_member_slugs ?? []).map(x => x.split('|')[1] ?? x.split('|')[0].replace(/-/g, ' '))
     const integrantesDoGrupo = result.kind === 'artists' ? result.items.length : 0
+    // Guia por categoria (cantoras, atores, idols): os 12 de maior peso abrem a página, antes da lista alfabética.
+    const f = hub.filter
+    const destaquesDaCategoria = hub.kind === 'artists' && f.role && !f.agencyName && !f.groupSlug && !f.artistSlug && semFiltro
+        ? (await getArtists({ role: f.role, gender: f.gender, perPage: 12, orderby: 'popularity', order: 'desc' }).catch(() => ({ items: [] }))).items
+        : []
     // Vitrine pelo assunto do guia (palavras do título, das palavras-chave e dos grupos da agência no nome do produto).
     // Sem casamento, cai na vitrine geral do tipo.
     // Palavras genéricas ficam fora: "doramas" e "coreanos" casariam caneca e macarrão em qualquer guia de produção.
@@ -125,9 +132,10 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
             <HubPageContent
                 hub={hub}
                 relatedHubs={relatedHubs}
-                abertura={grupoGuia ? <GrupoDestaque group={grupoGuia} agencia={agenciaDoGrupo} exIntegrantes={exIntegrantes} integrantes={integrantesDoGrupo} /> : solista ? <SolistaDestaque artist={solista} grupo={demaisDoSolista?.length ? 'do grupo' : undefined} resumo={resumoDoSolista} /> : gruposDaAgencia.length > 0 ? <GruposDaAgencia agencia={hub.shortTitle} grupos={gruposDaAgencia} /> : undefined}
+                abertura={grupoGuia ? <GrupoDestaque group={grupoGuia} agencia={agenciaDoGrupo} exIntegrantes={exIntegrantes} integrantes={integrantesDoGrupo} /> : solista ? <SolistaDestaque artist={solista} grupo={demaisDoSolista?.length ? 'do grupo' : undefined} resumo={resumoDoSolista} /> : destaquesDaCategoria.length > 0 ? <DestaquesDaCategoria artists={destaquesDaCategoria} rotulo={hub.shortTitle} /> : gruposDaAgencia.length > 0 ? <GruposDaAgencia agencia={hub.shortTitle} grupos={gruposDaAgencia} /> : undefined}
+                introDepois={!!solista || !!grupoGuia}
                 semLista={!!solista && demaisDoSolista?.length === 0}
-                listaTitulo={solista ? { eyebrow: `${demaisDoSolista?.length ?? 0} artistas`, title: 'Do mesmo grupo' } : grupoGuia ? { eyebrow: `${integrantesDoGrupo} integrantes`, title: 'Integrantes' } : undefined}
+                listaTitulo={solista ? { eyebrow: `${demaisDoSolista?.length ?? 0} artistas`, title: 'Do mesmo grupo' } : grupoGuia ? { eyebrow: `${integrantesDoGrupo} integrantes`, title: 'Integrantes' } : destaquesDaCategoria.length > 0 ? { eyebrow: `${result.total} artistas`, title: 'Todos, de A a Z' } : undefined}
                 itensBusca={todosGuias.map(h => ({ rotulo: h.shortTitle, href: `/guias/${h.slug}`, tipo: h.kind === 'productions' ? 'Produções' : h.kind === 'artists' ? 'Artistas' : 'Grupos', palavras: h.keywords.join(' ') }))}
                 total={demaisDoSolista ? demaisDoSolista.length : result.total}
                 productions={result.kind === 'productions' ? result.items : undefined}

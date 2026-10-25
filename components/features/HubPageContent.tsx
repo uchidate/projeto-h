@@ -56,6 +56,8 @@ interface Props {
     abertura?: ReactNode
     /** Guia de um artista sem outros nomes para listar: só a abertura. */
     semLista?: boolean
+    /** Guia de um artista ou grupo: a ficha vem antes do texto de apoio e a contagem do topo some. */
+    introDepois?: boolean
     /** Título da lista quando ela não é "Explorar" (ex.: "Do mesmo grupo"). */
     listaTitulo?: { eyebrow: string; title: string }
     /** Banner do quiz da categoria do guia (feito no servidor). */
@@ -117,7 +119,7 @@ const KNOWN_PLATFORMS = ['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'Glob
 const textoDoGuia = (intro: string[]) => intro.filter(p => !/^Este guia reúne/i.test(p.trim()))
 
 export function HubPageContent({
-    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz, abertura, semLista = false, listaTitulo,
+    hub, relatedHubs, itensBusca = [], productions, destaques = [], artists, groups, total, blogPosts = [], lojaMeio, quiz, abertura, semLista = false, introDepois = false, listaTitulo,
     siteUrl = SITE_URL, genreMap: _genreMap = {},
     page = 1, totalPages = 1, activeFilters = {},
 }: Props) {
@@ -179,7 +181,7 @@ export function HubPageContent({
 
     const canonical = `${siteUrl}/guias/${hub.slug}`
     // Guia de um artista: a ficha vem primeiro e o texto de apoio depois dela.
-    const soloGuia = !!listaTitulo || semLista
+    const soloGuia = introDepois
     const introBloco = textoDoGuia(hub.intro).length > 0 && (
         <div className="grid gap-3 border-b border-border pb-6 text-sm leading-7 text-muted md:grid-cols-2">
             {textoDoGuia(hub.intro).map((p, i) => <p key={i}>{p}</p>)}
@@ -291,7 +293,7 @@ export function HubPageContent({
                         ))}
                     </nav>
                 </div>
-                <p className="mt-3 text-[13px] text-muted">{!semLista && !listaTitulo && `${total} ${kindLabel} · `}{hub.description}</p>
+                <p className="mt-3 text-[13px] text-muted">{!introDepois && `${total} ${kindLabel} · `}{hub.description}</p>
             </section>
 
             <div className="page-wrap flex flex-col gap-12 py-8">
