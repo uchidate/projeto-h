@@ -33,7 +33,7 @@ async function HeroPost({ post, locale, primeiro = true, album }: { post: WPPost
         <div className="relative">
             <Link {...postLink(post.slug, locale)}
                 className="group relative block min-w-0 overflow-hidden border-b border-border">
-                <div className="relative aspect-16/10 w-full sm:aspect-video">
+                <div className="relative aspect-video w-full">
                     {image ? (
                         <Image src={image.src} alt={image.alt || title} fill priority={primeiro} fetchPriority={primeiro ? 'high' : 'auto'}
                             sizes="(max-width: 1024px) 100vw, 46vw"
@@ -47,7 +47,7 @@ async function HeroPost({ post, locale, primeiro = true, album }: { post: WPPost
             </Link>
 
             <div className="flex min-w-0 flex-col border-b border-border bg-background px-4 py-5 sm:px-6 sm:py-6 lg:px-5">
-                <div className="pointer-events-none absolute inset-x-0 top-0 flex aspect-16/10 flex-col justify-end bg-linear-to-t from-black/85 via-black/35 to-transparent px-4 pb-4 sm:aspect-video lg:px-5 lg:pb-5">
+                <div className="pointer-events-none absolute inset-x-0 top-0 flex aspect-video flex-col justify-end bg-linear-to-t from-black/85 via-black/35 to-transparent px-4 pb-4 lg:px-5 lg:pb-5">
                 <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.14em]">
                     <span className="text-white">{primeiro ? tc('capa') : tc('emDestaque')}</span>
                     <span className="text-white/50" aria-hidden="true">·</span>
@@ -113,7 +113,7 @@ async function HeroProduction({ production, locale }: { production: WPProduction
     return (
         <div className="lg:flex lg:h-[400px]">
             <div className="group relative min-w-0 overflow-hidden border-b border-border lg:w-[50%] lg:shrink-0 lg:border-b-0 lg:border-r">
-                <div className="relative aspect-16/10 w-full sm:aspect-video lg:h-full lg:aspect-auto">
+                <div className="relative aspect-video w-full lg:h-full lg:aspect-auto">
                     {imagem ? (
                         <Image src={imagem.src} alt="" fill priority fetchPriority="high"
                             sizes="(max-width: 1024px) 100vw, 50vw"

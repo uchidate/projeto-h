@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import type { Seguindo } from '@/lib/home/seguindo'
 
-const MONO = 'font-mono text-[10px] font-bold uppercase tracking-[0.12em]'
+const MONO = 'font-mono text-[11px] font-bold uppercase tracking-[0.12em]'
 
 function quando(iso: string, hoje: string, ontem: string) {
     const dia = new Date(iso.endsWith('Z') || /[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`)
@@ -56,11 +56,11 @@ export function HomeSeguindo() {
                     <Link key={n.id} href={`/blog/${n.slug}`} className="group block border border-border bg-background">
                         <span className="relative block aspect-video overflow-hidden bg-surface">
                             {n.imagem && <Image src={n.imagem} alt="" fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />}
-                            <span className={`absolute left-0 top-0 bg-accent px-2 py-1 leading-none text-white ${MONO} text-[9px]`}>{t('novo')} · {quando(n.data, t('hoje'), t('ontem'))}</span>
+                            <span className={`absolute left-0 top-0 bg-accent px-2 py-1 leading-none text-white ${MONO} text-[11px]`}>{t('novo')} · {quando(n.data, t('hoje'), t('ontem'))}</span>
                         </span>
                         <span className="block px-3 py-3">
                             <span className="block font-serif text-[16px] font-medium leading-snug text-foreground group-hover:text-accent">{n.titulo}</span>
-                            <span className={`mt-1.5 block ${MONO} text-[9px] text-muted`}>{t('sobre', { nome: n.sobre })}</span>
+                            <span className={`mt-1.5 block ${MONO} text-[11px] text-muted`}>{t('sobre', { nome: n.sobre })}</span>
                         </span>
                     </Link>
                 ))}

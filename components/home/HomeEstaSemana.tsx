@@ -4,7 +4,7 @@ import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import type { AniversariosHome } from '@/lib/home/aniversarios'
 
 const MARROM = 'text-[#8a5a00]'
-const ROTULO = 'font-mono text-[10px] font-bold uppercase tracking-[0.12em]'
+const ROTULO = 'font-mono text-[11px] font-bold uppercase tracking-[0.12em]'
 
 function diaRotulo(data: string, locale: Locale) {
     const d = new Date(`${data}T12:00:00Z`)

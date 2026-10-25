@@ -76,8 +76,8 @@ export function PerguntaDoDia({ pergunta, chave, dataExtenso, variante = 'padrao
                 <div className="min-w-0 lg:flex-1">
                     <p className={`${SERIF} text-[21px] font-semibold leading-tight lg:text-[22px]`}>{pergunta.question}</p>
                     <div className="mt-3 flex flex-wrap items-center gap-2.5">
-                        <span className="border border-[#8a5a00] px-1.5 py-1 font-mono text-[9px] font-black uppercase leading-none tracking-[0.12em] text-[#8a5a00]">Pergunta do dia</span>
-                        <h2 id="dia-titulo" className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a5a00]">{dataExtenso}</h2>
+                        <span className="border border-[#8a5a00] px-1.5 py-1 font-mono text-[11px] font-black uppercase leading-none tracking-[0.12em] text-[#8a5a00]">Pergunta do dia</span>
+                        <h2 id="dia-titulo" className="font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-[#8a5a00]">{dataExtenso}</h2>
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 lg:w-[250px] lg:shrink-0">

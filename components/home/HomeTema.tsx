@@ -69,7 +69,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                                 return (
                                     <li key={post.id} className="border-t border-border first:border-t-0">
                                         <Link {...postLink(post.slug, locale)} className="group flex items-start gap-3 py-2.5">
-                                            <span className="relative aspect-[3/2] w-20 shrink-0 overflow-hidden bg-surface">
+                                            <span className="relative aspect-video w-20 shrink-0 overflow-hidden bg-surface">
                                                 {imagem && <Image src={imagem.src} alt="" fill sizes="80px" className="object-cover" />}
                                             </span>
                                             <span className="min-w-0">
@@ -102,10 +102,10 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
             </div>
 
             {produtos.length > 0 && (
-                <div className="mt-5 border-2 p-3" style={{ borderColor: cor }}>
+                <div className="mt-5 border-2 border-[#ff246e] bg-[#fff0f5] p-3 dark:bg-[#2a1018]">
                     <div className="mb-2.5 flex items-center justify-between gap-3">
                         <p className={`${MONO} text-[9px] text-muted`}>{t('prateleira')}</p>
-                        <Link href="/loja" className="shrink-0 px-3 py-2 font-mono text-[10px] font-black uppercase leading-none tracking-[0.1em] text-white" style={{ backgroundColor: cor }}>{t('verPrateleira')}</Link>
+                        <Link href="/loja" className="shrink-0 px-3 py-2 font-mono text-[10px] font-black uppercase leading-none tracking-[0.1em] text-white bg-[#ff246e]">{t('verPrateleira')}</Link>
                     </div>
                     <div className="grid grid-cols-2 gap-3 lg:hidden">
                         {produtos.slice(0, 2).map(p => <HomeProdutoMini key={p.id} product={p} contexto={`home_${chave}`} />)}
