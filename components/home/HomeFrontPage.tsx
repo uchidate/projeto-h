@@ -100,7 +100,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     {soPt && aniversarios && <div data-bloco="home-calendario" className="hidden min-w-0 bg-[var(--color-home-card)] border border-border lg:block"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {ADSENSE.slots.leaderboard && (
-                    <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 sm:px-6 lg:px-4">
+                    <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 empty:hidden sm:px-6 lg:px-4">
                         <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_hero_leaderboard" />
                     </div>
                 )}
@@ -109,7 +109,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>
                 {soPt && <div data-bloco="home-loja" className="-mx-3.5 lg:mx-0"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
                 {ADSENSE.slots.inline && (
-                    <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 sm:px-6 lg:px-4">
+                    <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 empty:hidden sm:px-6 lg:px-4">
                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="home_feed" />
                     </div>
                 )}
