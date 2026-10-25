@@ -16,4 +16,21 @@ describe('extrairCapaAlbum', () => {
     it('sem texto devolve null', () => {
         expect(extrairCapaAlbum(undefined)).toBeNull()
     })
+    it('lê duração, clipe e Billboard do próprio artigo', () => {
+        const yt = '<iframe src="https://www.youtube-nocookie.com/embed/abc"></iframe>'
+        const tabela = '<table><tr><th>Faixa</th><th>Duração (Spotify)</th></tr><tr><td>A</td><td>2:07</td></tr><tr><td>B</td><td>2:56</td></tr></table>'
+        const texto = '<p>o disco ocupou o 94º lugar na Billboard 200, nos Estados Unidos</p>'
+        const r = extrairCapaAlbum(stats + texto + faixa(1, 'A') + faixa(2, 'B') + yt + faixa(3, 'C') + tabela)
+        expect(r?.faixas).toEqual([
+            { id: 'faixa-1', titulo: 'A', duracao: '2:07' },
+            { id: 'faixa-2', titulo: 'B', duracao: '2:56', clipe: true },
+            { id: 'faixa-3', titulo: 'C' },
+        ])
+        expect(r?.fichas.at(-1)).toEqual({ rotulo: 'Billboard 200', valor: '94º' })
+    })
+    it('não inventa duração nem posição quando o texto não traz', () => {
+        const r = extrairCapaAlbum(stats + faixa(1, 'A') + faixa(2, 'B') + faixa(3, 'C'))
+        expect(r?.faixas.every(f => f.duracao === undefined && f.clipe === undefined)).toBe(true)
+        expect(r?.fichas.some(f => f.rotulo === 'Billboard 200')).toBe(false)
+    })
 })

@@ -30,7 +30,9 @@ export async function HeroAlbum({ album, slug, locale }: { album: CapaAlbum; slu
                         <Link href={`${base}#${f.id}`} className="group flex items-center gap-3 py-1.5">
                             <span aria-hidden className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-foreground text-[8px] text-background">▶</span>
                             <span className="w-3 shrink-0 font-mono text-[10px] text-muted">{i + 1}</span>
-                            <span className="min-w-0 truncate text-[13px] font-semibold text-foreground group-hover:text-accent">{f.titulo}</span>
+                            <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-foreground group-hover:text-accent">{f.titulo}</span>
+                            {f.clipe && <span className="shrink-0 border border-accent px-1.5 py-0.5 font-mono text-[9px] font-black uppercase leading-none tracking-[0.12em] text-accent">{t('clipe')}</span>}
+                            {f.duracao && <span className="w-9 shrink-0 text-right font-mono text-[11px] text-muted">{f.duracao}</span>}
                         </Link>
                     </li>
                 ))}
