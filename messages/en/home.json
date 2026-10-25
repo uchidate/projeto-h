@@ -52,7 +52,7 @@
   "calendario": {
     "rotulo": "Calendar",
     "titulo": "Today on the calendar",
-    "tag": "Birthdays",
+    "estaSemana": "This week", "tag": "Birthdays",
     "hoje": "Today",
     "aSeguir": "Coming up",
     "abrir": "7 days →",

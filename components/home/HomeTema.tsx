@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
+import { HomeProdutoMini } from '@/components/home/HomeProdutoMini'
 import { postLink } from '@/components/home/postLink'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
@@ -106,7 +107,10 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                         <p className={`${MONO} text-[9px] text-muted`}>{t('prateleira')}</p>
                         <Link href="/loja" className="shrink-0 px-3 py-2 font-mono text-[10px] font-black uppercase leading-none tracking-[0.1em] text-white" style={{ backgroundColor: cor }}>{t('verPrateleira')}</Link>
                     </div>
-                    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+                    <div className="grid grid-cols-2 gap-3 lg:hidden">
+                        {produtos.slice(0, 2).map(p => <HomeProdutoMini key={p.id} product={p} contexto={`home_${chave}`} />)}
+                    </div>
+                    <div className="hidden gap-2 lg:grid lg:grid-cols-5">
                         {produtos.map(p => <StoreCard key={p.id} product={p} compact contexto={`home_${chave}`} />)}
                     </div>
                 </div>

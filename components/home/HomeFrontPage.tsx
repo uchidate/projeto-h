@@ -14,6 +14,7 @@ import { HomeTema } from '@/components/home/HomeTema'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HomeAssuntos } from '@/components/home/HomeAssuntos'
 import { HomeCalendario } from '@/components/home/HomeCalendario'
+import { HomeEstaSemana } from '@/components/home/HomeEstaSemana'
 import { HomeSeguindo } from '@/components/home/HomeSeguindo'
 import { HomeEditorias } from '@/components/home/HomeEditorias'
 import { HomeDestaquesColuna } from '@/components/home/HomeDestaquesColuna'
@@ -96,7 +97,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 <div className="flex flex-col gap-3.5 pt-3.5 lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-5 lg:pt-5">
                     <div data-bloco="home-hero" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
                     <div data-bloco="home-destaques" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
-                    {soPt && aniversarios && <div data-bloco="home-calendario" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
+                    {soPt && aniversarios && <div data-bloco="home-calendario" className="hidden min-w-0 bg-[var(--color-home-card)] border border-border lg:block"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {ADSENSE.slots.leaderboard && (
                     <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 sm:px-6 lg:px-4">
@@ -156,6 +157,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         </div>
                     </>
                 )}
+                {soPt && aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}
             </div>
         </section>
     )
