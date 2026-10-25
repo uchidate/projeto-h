@@ -116,7 +116,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                   * deve mexer em como o AdSense enxerga a página.
                   */}
                 <HomeCapitulo n={4} chave="reportagem" cor="#6d3fc0" locale={locale} />
-                <div className="cv-auto [--cv-h:1500px] lg:[--cv-h:640px] -mx-3.5 border-t-4 border-t-[#6d3fc0] bg-[#efe9fb] px-3.5 py-5 dark:bg-[#1c1530] lg:-mx-6 lg:px-6 lg:py-7">
+                <div className="cv-auto [--cv-h:1500px] lg:[--cv-h:860px] -mx-3.5 border-t-4 border-t-[#6d3fc0] bg-[#efe9fb] px-3.5 py-5 dark:bg-[#1c1530] lg:-mx-6 lg:px-6 lg:py-7">
                     <div className="border border-border bg-[var(--color-home-card)]">
                         <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} locale={locale} /></div>
                     </div>
