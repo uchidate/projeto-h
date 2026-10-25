@@ -20,7 +20,7 @@ export async function HomeCalendario({ aniversarios, locale = DEFAULT_LOCALE }: 
     const t = await getTranslations({ locale, namespace: 'home.calendario' })
     const comAniversario = new Set([...(hoje.length ? [semana[0]] : []), ...seguintes.map(d => d.data)])
     return (
-        <aside aria-label={t('rotulo')} className="border-t border-border bg-background px-4 py-4 sm:px-6 lg:border lg:px-4">
+        <aside aria-label={t('rotulo')} className="border-t border-border bg-background px-4 py-4 sm:px-6 lg:border-0 lg:bg-transparent lg:px-4">
             <div className="flex items-center justify-between">
                 <h2 className={`${ROTULO} ${MARROM}`}>{t('titulo')}</h2>
                 <Link href="/calendario" className={`${ROTULO} text-muted hover:text-accent`}>{t('abrir')}</Link>
