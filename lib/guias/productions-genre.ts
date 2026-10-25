@@ -303,8 +303,8 @@ export const productionsGenreHubs: ArchiveHub[] = [
         shortTitle: 'Doramas policiais',
         description: 'Doramas policiais coreanos com investigação, crime, detetives, promotores e suspense em português.',
         intro: [
-            'Doramas policiais coreanos se destacam por investigações complexas, crimes em camadas e personagens que enfrentam corrupção, traumas e dilemas morais.',
-            `Este guia reúne produções coreanas de investigação, crime e polícia cadastradas na ${SITE_NAME} para quem quer histórias tensas e bem amarradas.`,
+            'No policial coreano, o caso da vez divide espaço com o que a investigação cobra de quem a faz: equipes de detetives, promotores e repórteres dividem o papel de protagonista, e a corrupção dentro da própria instituição pesa tanto quanto o crime. Signal (tvN, 2016), em que um rádio liga detetives de duas épocas, é um dos títulos mais citados do formato.',
+            'Há dois ritmos: séries que fecham um caso por episódio e as que conduzem um único caso ao longo da temporada. A lista abaixo segue a ordem de interesse recente, com as mais bem avaliadas em destaque.',
         ],
         keywords: ['doramas policiais coreanos', 'kdramas policiais', 'dorama coreano investigação', 'crime coreano série'],
         whatYouWillFind: 'Histórias de investigação, crime, delegacias, promotores, detetives e suspense criminal, com links para produções e artistas relacionados.',
@@ -314,8 +314,9 @@ export const productionsGenreHubs: ArchiveHub[] = [
             { label: 'Doramas thriller', href: '/guias/doramas-thriller-coreanos' },
         ],
         faq: [
-            { question: 'Doramas policiais coreanos são parecidos com thrillers?', answer: 'Muitas vezes sim, mas o hub policial prioriza investigação, delegacias, promotores, crimes e detetives como eixo principal da história.' },
-            { question: 'O hub inclui séries de serial killer?', answer: 'Pode incluir quando a produção está marcada com crime, investigação, thriller policial ou temas semelhantes no catálogo.' },
+            { question: 'Qual a diferença entre dorama policial e thriller?', answer: 'O policial tem a investigação como eixo: delegacias, detetives, promotores e o caso a ser resolvido. O thriller pode prescindir de polícia e apostar na tensão e na ameaça; os dois se misturam com frequência.' },
+            { question: 'Os doramas policiais têm casos por episódio?', answer: 'Alguns fecham um caso por episódio; outros seguem um único caso por toda a temporada. Muitos combinam os dois formatos, com um caso maior ao fundo.' },
+            { question: 'Por onde começar?', answer: 'Signal (tvN, 2016), que está no catálogo, é um ponto de partida comum: mistura casos de arquivo, viagem entre épocas e investigação em equipe.' },
         ],
     },
     {

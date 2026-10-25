@@ -54,12 +54,12 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
         getProductionGenres(),
     ])
     // "Comece por aqui": só na primeira página, sem filtro ativo. Sai da própria página de resultados,
-    // mantendo a ordem de tendência e exigindo nota decente. Não reordena por nota: acf.rating é o
+    // mantendo a ordem de tendência e exigindo nota decente (10,0 fica de fora: com poucos votos, a nota máxima vem de meia dúzia de avaliações). Não reordena por nota: acf.rating é o
     // vote_average do TMDB sem mínimo de votos, e títulos com poucos votos chegam a 9,7.
     const semFiltro = page === 1 && !genre && !platform && !network && !type && !year
     const destaques = result.kind === 'productions' && semFiltro
         ? result.items
-            .filter(p => Number(p.acf?.rating ?? 0) >= 7.5)
+            .filter(p => { const nota = Number(p.acf?.rating ?? 0); return nota >= 7.5 && nota < 9.8 })
             .slice(0, 6)
         : []
     // Guia de agência: os grupos vêm antes da grade de artistas (ordem de popularidade; grupo sem leitura fica no fim).
