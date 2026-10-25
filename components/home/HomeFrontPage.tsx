@@ -92,7 +92,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
 
     return (
         <section className="bg-[var(--color-home-page)]" aria-label={t('rotulo')}>
-            {soPt && <div data-bloco="home-assuntos" className="mx-auto max-w-[1440px] bg-[var(--color-home-card)]"><HomeAssuntos hubs={homeSettings.hubs} locale={locale} /></div>}
+            {soPt && <div data-bloco="home-assuntos" className="mx-auto hidden max-w-[1440px] bg-[var(--color-home-card)] lg:block"><HomeAssuntos hubs={homeSettings.hubs} locale={locale} /></div>}
             <div className="mx-auto flex max-w-[1440px] flex-col gap-3.5 px-3.5 pb-3.5 lg:gap-5 lg:px-6 lg:pb-5">
                 <div className="flex flex-col gap-3.5 pt-3.5 lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-5 lg:pt-5">
                     <div data-bloco="home-hero" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>

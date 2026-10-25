@@ -16,7 +16,7 @@ export async function HeroAlbum({ album, slug, locale }: { album: CapaAlbum; slu
             {fichas.length > 0 && (
                 <dl className="grid grid-cols-2 border border-border sm:grid-cols-4">
                     {fichas.map(f => (
-                        <div key={f.rotulo} className="min-w-0 border-b border-border px-3 py-2 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
+                        <div key={f.rotulo} className="min-w-0 border-b border-border px-3 py-2 last:border-b-0 odd:border-r sm:border-b-0 sm:border-r sm:last:border-r-0">
                             <dt className="font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-muted">{f.rotulo}</dt>
                             <dd className="mt-0.5 text-[14px] font-extrabold leading-tight text-foreground">{f.valor}</dd>
                         </div>
