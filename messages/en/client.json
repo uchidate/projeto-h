@@ -272,5 +272,14 @@
     "retomar": "Resume autoplay",
     "slides": "Choose highlight",
     "irPara": "Go to highlight {n}"
+  },
+  "homeSeguindo": {
+      "titulo": "News from who you follow",
+      "caixa": "For you",
+      "seguirMais": "+ Follow more",
+      "novo": "New",
+      "hoje": "today",
+      "ontem": "yesterday",
+      "sobre": "About {nome}"
   }
 }
