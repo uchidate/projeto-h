@@ -1,11 +1,17 @@
 import { getPosts, getCategories } from '@/lib/wordpress/posts'
 import { getProductions } from '@/lib/wordpress/productions'
-import { getMostAccessedArtists, getStreamingArtists } from '@/lib/wordpress/artists'
+import { getArtists, getMostAccessedArtists, getStreamingArtists } from '@/lib/wordpress/artists'
 import { getFeaturedSpotlight } from '@/lib/wordpress/spotlight'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
-import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { getStoreProducts } from '@/lib/wordpress/store'
+import { maisVendidos } from '@/lib/home/mais-vendidos'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getStreamingTopShows } from '@/lib/tmdb/streaming'
+import { hojeEmBrasilia, mesesParaBuscar, montarAniversarios, type AniversariosHome } from '@/lib/home/aniversarios'
+import { carregarExplore } from '@/lib/home/explore'
+import { carregarTemas } from '@/lib/home/temas'
+import { carregarGuiasPorTema } from '@/lib/home/guias'
+import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
 
 /**
  * Dados da `HomeFrontPage`, comuns à home em português e às de outros idiomas.
@@ -14,12 +20,13 @@ import { getStreamingTopShows } from '@/lib/tmdb/streaming'
  */
 export async function carregarHome({ comercio }: { comercio: boolean }) {
     const siteSettings = await getSiteSettings()
+    const hoje = hojeEmBrasilia()
     const curatedIds = [
         siteSettings.home.heroPostId,
         ...siteSettings.home.highlightPostIds,
     ].filter(Boolean)
 
-    const [postsResult, curatedPostsResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, featuredProductsResult] = await Promise.allSettled([
+    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
@@ -27,6 +34,8 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         curatedIds.length
             ? getPosts({ perPage: curatedIds.length, includeIds: curatedIds })
             : Promise.resolve({ items: [], total: 0, totalPages: 0 }),
+        // Uma busca por editoria: o feed geral é dominado pelo assunto da semana e deixaria colunas vazias.
+        Promise.allSettled(COLUNAS_EDITORIAS.map(c => getPosts({ category: c.categoria, perPage: 16, includeContent: false }))),
         getProductions({ perPage: 6, orderby: 'date' }),
         getMostAccessedArtists(8),
         getTrendingGroups(8),
@@ -34,7 +43,14 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         getFeaturedSpotlight(),
         comercio ? getStreamingTopShows() : Promise.resolve({}),
         getCategories(),
-        comercio ? getFeaturedStoreProducts() : Promise.resolve([]),
+        comercio ? getStoreProducts().then(todos => maisVendidos(todos)) : Promise.resolve([]),
+        // Só o calendário em português existe; a busca é por mês de nascimento, ordenada por popularidade.
+        comercio
+            ? Promise.all(mesesParaBuscar(hoje).map(birthMonth => getArtists({ birthMonth, perPage: 100 }))).then(r => r.flatMap(x => x.items))
+            : Promise.resolve([]),
+        comercio ? carregarGuiasPorTema() : Promise.resolve([]),
+        comercio ? carregarTemas() : Promise.resolve(null),
+        comercio ? carregarExplore() : Promise.resolve([]),
     ])
 
     const latestPosts = postsResult.status === 'fulfilled' ? postsResult.value.items : []
@@ -42,6 +58,12 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
     const posts = [...curatedPosts, ...latestPosts].filter(
         (post, index, all) => all.findIndex(item => item.id === post.id) === index,
     )
+    const postsEditorias: PostsPorEditoria = editoriasResult.status === 'fulfilled'
+        ? Object.fromEntries(COLUNAS_EDITORIAS.map((c, i) => {
+            const r = editoriasResult.value[i]
+            return [c.chave, r.status === 'fulfilled' ? r.value.items : []]
+        }))
+        : {}
     const productions = productionsResult.status === 'fulfilled' ? productionsResult.value.items : []
     const artists = trendingArtists.status === 'fulfilled' ? trendingArtists.value : []
     const featuredSpotlight = featuredSpotlightResult.status === 'fulfilled' ? featuredSpotlightResult.value : null
@@ -52,7 +74,15 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
     const streamingByPlatform = streamingShows.status === 'fulfilled' ? streamingShows.value : {}
     const categories = categoriesResult.status === 'fulfilled' ? categoriesResult.value : []
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
-    const featuredProducts = featuredProductsResult.status === 'fulfilled' ? featuredProductsResult.value : []
+    const produtosMaisVendidos = maisVendidosResult.status === 'fulfilled' ? maisVendidosResult.value : []
 
-    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, featuredProducts }
+    const aniversarios: AniversariosHome = montarAniversarios(aniversariosResult.status === 'fulfilled' ? aniversariosResult.value : [], hoje)
+
+    const guiasPorTema = guiasResult.status === 'fulfilled' ? guiasResult.value : []
+
+    const temas = temasResult.status === 'fulfilled' ? temasResult.value : null
+
+    const explore = exploreResult.status === 'fulfilled' ? exploreResult.value : []
+
+    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore }
 }

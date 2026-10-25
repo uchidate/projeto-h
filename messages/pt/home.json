@@ -1,7 +1,6 @@
 {
   "pagina": {
-    "rotulo": "Página inicial __SITE__",
-    "lojaTitulo": "Escolhas da curadoria"
+    "rotulo": "Página inicial __SITE__"
   },
   "comum": {
     "verTodos": "ver todos →",
@@ -40,23 +39,111 @@
     "verTodas": "ver todas →"
   },
   "spotlight": {
-    "eyebrow": "● charts & buzz coreano",
     "titulo": "Populares na Coreia agora",
-    "descricao": "Baseado em charts, streams e redes sociais na Coreia",
+    "tag": "Ranking",
     "artistas": "Artistas →",
     "grupos": "Grupos →"
   },
   "destaques": {
-    "titulo": "Em destaque",
-    "selecaoEditorial": "seleção editorial",
-    "verTodosArtigos": "Ver todos os artigos"
+    "titulo": "Destaques"
+  },
+  "calendario": {
+    "rotulo": "Calendário",
+    "titulo": "Hoje no calendário",
+    "tag": "Aniversários",
+    "hoje": "Hoje",
+    "aSeguir": "A seguir",
+    "abrir": "7 dias →",
+    "anos": "anos"
+  },
+  "guias": {
+      "titulo": "Guias",
+      "tag": "Atemporal",
+      "comece": "Comece aqui",
+      "porTema": "Guias por tema",
+      "verTodos": "Ver todos os guias",
+      "titulos": "{total} títulos"
+  },
+  "assuntos": {
+    "rotulo": "Assuntos"
+  },
+  "temas": {
+      "gastronomia": {
+          "titulo": "Gastronomia coreana",
+          "caixa": "Tema da semana",
+          "contaPratos": "{n} pratos",
+          "contaMarcas": "{n} empresas",
+          "contaArtigos": "{n} artigos",
+          "abrir": "Abrir o tema",
+          "paraLer": "Para ler",
+          "pratos": "Pratos",
+          "marcas": "Marcas",
+          "naLoja": "{n} na loja",
+          "prateleira": "Na loja · comida coreana · afiliado",
+          "verPrateleira": "Ver prateleira →"
+      },
+      "beleza": {
+          "titulo": "Beleza coreana",
+          "caixa": "Em foco",
+          "contaPratos": "{n} pratos",
+          "contaMarcas": "{n} marcas",
+          "contaArtigos": "{n} artigos sobre skincare, maquiagem e protetor solar",
+          "abrir": "Abrir o tema",
+          "paraLer": "Para ler",
+          "pratos": "Pratos",
+          "marcas": "Marcas",
+          "naLoja": "{n} na loja",
+          "prateleira": "Na loja · K-Beauty · afiliado",
+          "verPrateleira": "Ver prateleira →"
+      }
+  },
+  "explore": {
+      "titulo": "Explore por tema",
+      "caixa": "{n} assuntos",
+      "verTodos": "Ver todos os temas",
+      "artigos": "artigos",
+      "fichas": "fichas",
+      "ultimo": "Último",
+      "novo": "Novo",
+      "temas": {
+          "kpop": "K-Pop",
+          "cultura": "Cultura",
+          "gastronomia": "Gastronomia",
+          "kbeauty": "K-Beauty",
+          "guias": "Guias para iniciantes",
+          "kdrama": "K-Drama",
+          "kfilm": "K-Film",
+          "reality": "Reality shows",
+          "webtoons": "Webtoons",
+          "agencias": "Agências"
+      },
+      "apoio": {
+          "agencias": "SM, JYP, HYBE, YG e as demais agências"
+      }
+  },
+  "loja": {
+      "titulo": "Gostou? Leve para casa.",
+      "caixa": "Mais vendidos",
+      "verLoja": "Ver a loja toda →",
+      "aviso": "Comprando pelos links, o HallyuHub recebe comissão, sem custo extra.",
+      "vendidos": "{n} vendidos",
+      "comprar": "Comprar na loja →",
+      "precoCaiu": "Preço caiu"
+  },
+  "editorias": {
+    "rotulo": "Editorias",
+    "kpop": "K-Pop",
+    "doramas": "Doramas e filmes",
+    "cultura": "Cultura e K-Beauty",
+    "verMais": "ver mais →"
   },
   "ultimas": {
     "titulo": "Últimas publicações",
     "verFeed": "ver feed →"
   },
   "longreads": {
-    "titulo": "Para ler com calma",
+    "titulo": "Em profundidade",
+    "tag": "Leitura longa",
     "arquivo": "arquivo →"
   },
   "artistasEmAlta": {
@@ -97,8 +184,6 @@
     "acao": "Fazer o quiz"
   },
   "abaixoDaDobra": {
-    "guiasTitulo": "Comece por Aqui",
-    "guiasEyebrow": "cultura coreana 101",
     "gruposTitulo": "Grupos K-Pop",
     "gruposEyebrow": "seleção editorial",
     "aniversariantesTitulo": "Aniversariantes — {mes}",

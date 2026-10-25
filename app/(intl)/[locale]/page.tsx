@@ -85,7 +85,7 @@ export default async function IntlHomePage({ params }: { params: Params }) {
                 homeSettings={dados.siteSettings.home}
                 streamingByPlatform={dados.streamingByPlatform}
                 categoryMap={dados.categoryMap}
-                featuredProducts={dados.featuredProducts}
+                produtosMaisVendidos={dados.produtosMaisVendidos}
             />
             <div className="page-wrap py-10 sm:py-14">
                 <header className="mb-8 border-b-2 border-foreground pb-6">

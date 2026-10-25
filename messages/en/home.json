@@ -1,7 +1,6 @@
 {
   "pagina": {
-    "rotulo": "__SITE__ home page",
-    "lojaTitulo": "Editors' picks"
+    "rotulo": "__SITE__ home page"
   },
   "comum": {
     "verTodos": "see all →",
@@ -40,23 +39,111 @@
     "verTodas": "see all →"
   },
   "spotlight": {
-    "eyebrow": "● Korean charts & buzz",
     "titulo": "Popular in Korea right now",
-    "descricao": "Based on charts, streams and social media in Korea",
+    "tag": "Ranking",
     "artistas": "Artists →",
     "grupos": "Groups →"
   },
   "destaques": {
-    "titulo": "Featured",
-    "selecaoEditorial": "editors' selection",
-    "verTodosArtigos": "See all articles"
+    "titulo": "Featured"
+  },
+  "calendario": {
+    "rotulo": "Calendar",
+    "titulo": "Today on the calendar",
+    "tag": "Birthdays",
+    "hoje": "Today",
+    "aSeguir": "Coming up",
+    "abrir": "7 days →",
+    "anos": "years"
+  },
+  "guias": {
+      "titulo": "Guides",
+      "tag": "Timeless",
+      "comece": "Start here",
+      "porTema": "Guides by theme",
+      "verTodos": "All guides",
+      "titulos": "{total} titles"
+  },
+  "assuntos": {
+    "rotulo": "Topics"
+  },
+  "temas": {
+      "gastronomia": {
+          "titulo": "Korean food",
+          "caixa": "Theme of the week",
+          "contaPratos": "{n} dishes",
+          "contaMarcas": "{n} companies",
+          "contaArtigos": "{n} articles",
+          "abrir": "Open the theme",
+          "paraLer": "To read",
+          "pratos": "Dishes",
+          "marcas": "Brands",
+          "naLoja": "{n} in the shop",
+          "prateleira": "In the shop · Korean food · affiliate",
+          "verPrateleira": "See the shelf →"
+      },
+      "beleza": {
+          "titulo": "Korean beauty",
+          "caixa": "In focus",
+          "contaPratos": "{n} dishes",
+          "contaMarcas": "{n} brands",
+          "contaArtigos": "{n} articles on skincare, makeup and sunscreen",
+          "abrir": "Open the theme",
+          "paraLer": "To read",
+          "pratos": "Dishes",
+          "marcas": "Brands",
+          "naLoja": "{n} in the shop",
+          "prateleira": "In the shop · K-Beauty · affiliate",
+          "verPrateleira": "See the shelf →"
+      }
+  },
+  "explore": {
+      "titulo": "Explore by topic",
+      "caixa": "{n} topics",
+      "verTodos": "All topics",
+      "artigos": "articles",
+      "fichas": "profiles",
+      "ultimo": "Latest",
+      "novo": "New",
+      "temas": {
+          "kpop": "K-Pop",
+          "cultura": "Culture",
+          "gastronomia": "Food",
+          "kbeauty": "K-Beauty",
+          "guias": "Beginner guides",
+          "kdrama": "K-Drama",
+          "kfilm": "K-Film",
+          "reality": "Reality shows",
+          "webtoons": "Webtoons",
+          "agencias": "Agencies"
+      },
+      "apoio": {
+          "agencias": "SM, JYP, HYBE, YG and the other agencies"
+      }
+  },
+  "loja": {
+      "titulo": "Liked it? Take it home.",
+      "caixa": "Best sellers",
+      "verLoja": "See the whole shop →",
+      "aviso": "When you buy through these links, HallyuHub earns a commission at no extra cost to you.",
+      "vendidos": "{n} sold",
+      "comprar": "Buy in the shop →",
+      "precoCaiu": "Price drop"
+  },
+  "editorias": {
+    "rotulo": "Sections",
+    "kpop": "K-Pop",
+    "doramas": "Dramas & films",
+    "cultura": "Culture & K-Beauty",
+    "verMais": "see more →"
   },
   "ultimas": {
     "titulo": "Latest posts",
     "verFeed": "see feed →"
   },
   "longreads": {
-    "titulo": "Longer reads",
+    "titulo": "In depth",
+    "tag": "Long read",
     "arquivo": "archive →"
   },
   "artistasEmAlta": {
@@ -97,8 +184,6 @@
     "acao": "Take the quiz"
   },
   "abaixoDaDobra": {
-    "guiasTitulo": "Start Here",
-    "guiasEyebrow": "Korean culture 101",
     "gruposTitulo": "K-Pop Groups",
     "gruposEyebrow": "editors' selection",
     "aniversariantesTitulo": "Birthdays — {mes}",

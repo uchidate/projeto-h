@@ -84,12 +84,11 @@ export async function HomeArtistSpotlight({ artists = [], groups = [], locale = 
     return (
         <div className="border-t border-border bg-surface/40 px-4 py-5 sm:px-6 lg:px-10">
             <div className="flex items-center justify-between mb-4">
-                <div>
-                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.16em] text-accent">{t('eyebrow')}</p>
-                    <h2 className="font-sans text-[14px] sm:text-[15px] font-black tracking-[-0.02em] text-foreground mt-0.5">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    <h2 className="font-sans text-[14px] sm:text-[15px] font-black tracking-[-0.02em] text-foreground">
                         {t('titulo')}
                     </h2>
-                    <p className="mt-0.5 text-[11px] text-muted hidden sm:block">{t('descricao')}</p>
+                    <span className="inline-block whitespace-nowrap border border-current px-[7px] py-1 font-mono text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-accent">{t('tag')}</span>
                 </div>
                 <div className="flex gap-2">
                     <Link href={rota('artists', undefined, locale)} className="text-[11px] font-bold text-muted hover:text-accent transition-colors">{t('artistas')}</Link>

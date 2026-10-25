@@ -12,7 +12,7 @@ vi.mock('@/lib/wordpress/posts', () => ({
     getCategories: async () => [],
 }))
 vi.mock('@/lib/wordpress/productions', () => ({ getProductions: async () => vazio, getStreamingTopShows: async () => ({}) }))
-vi.mock('@/lib/wordpress/artists', () => ({ getMostAccessedArtists: async () => [], getPopularArtists: async () => [], getStreamingArtists: async () => [] }))
+vi.mock('@/lib/wordpress/artists', () => ({ getArtists: async () => ({ items: [], total: 0, totalPages: 0 }), getMostAccessedArtists: async () => [], getPopularArtists: async () => [], getStreamingArtists: async () => [] }))
 vi.mock('@/lib/wordpress/groups', () => ({ getTrendingGroups: async () => [] }))
 vi.mock('@/lib/wordpress/spotlight', () => ({ getFeaturedSpotlight: async () => null }))
 // IS_BUILD falso: a guarda só vale em runtime, nunca durante o build estático.

@@ -15,6 +15,21 @@ describe('primitivas de blocos', () => {
         expect(screen.getByRole('button', { name: 'Abrir' })).toBeInTheDocument()
     })
 
+    it('BlockHeader mostra a caixa depois do título, com cor opcional', () => {
+        const { rerender } = render(<BlockHeader title="Em profundidade" tag="Leitura longa" />)
+        const titulo = screen.getByRole('heading', { name: 'Em profundidade' })
+        const caixa = screen.getByText('Leitura longa')
+        expect(titulo.compareDocumentPosition(caixa) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+        expect(caixa).toHaveClass('border', 'text-accent')
+        rerender(<BlockHeader title="Em profundidade" tag="Leitura longa" tagColor="#6d3fc0" />)
+        expect(screen.getByText('Leitura longa')).toHaveStyle({ color: '#6d3fc0' })
+    })
+
+    it('BlockHeader sem tag não cria caixa', () => {
+        render(<BlockHeader title="Sem caixa" />)
+        expect(document.querySelector('span.border')).toBeNull()
+    })
+
     it('BlockSection aplica layout e ritmo padronizados', () => {
         const { container } = render(<BlockSection id="bio" layout="page" spacing="default">Conteúdo</BlockSection>)
         expect(container.firstChild).toHaveClass('page-wrap', 'border-t', 'py-(--profile-section-block)')

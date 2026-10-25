@@ -28,13 +28,13 @@ async function HeroPost({ post, locale, primeiro = true }: { post: WPPost; local
     const Titulo = primeiro ? 'h1' : 'h2'
 
     return (
-        <div className="lg:flex lg:h-[400px]">
+        <div className="relative">
             <Link {...postLink(post.slug, locale)}
-                className="group relative block min-w-0 overflow-hidden border-b border-border lg:w-[50%] lg:shrink-0 lg:border-b-0 lg:border-r">
-                <div className="relative aspect-16/10 w-full sm:aspect-video lg:h-full lg:aspect-auto">
+                className="group relative block min-w-0 overflow-hidden border-b border-border">
+                <div className="relative aspect-16/10 w-full sm:aspect-video">
                     {image ? (
                         <Image src={image.src} alt={image.alt || title} fill priority={primeiro} fetchPriority={primeiro ? 'high' : 'auto'}
-                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            sizes="(max-width: 1024px) 100vw, 46vw"
                             className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none" />
                     ) : (
                         <div className="absolute inset-0 bg-surface flex items-center justify-center">
@@ -44,58 +44,28 @@ async function HeroPost({ post, locale, primeiro = true }: { post: WPPost; local
                 </div>
             </Link>
 
-            <div className="flex min-w-0 flex-col border-b border-border bg-background px-4 py-5 sm:px-6 sm:py-6 lg:hidden">
+            <div className="flex min-w-0 flex-col border-b border-border bg-background px-4 py-5 sm:px-6 sm:py-6 lg:px-5">
+                <div className="lg:pointer-events-none lg:absolute lg:inset-x-0 lg:top-0 lg:flex lg:aspect-video lg:flex-col lg:justify-end lg:bg-linear-to-t lg:from-black/85 lg:via-black/35 lg:to-transparent lg:px-5 lg:pb-5">
                 <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.14em]">
-                    <span className="text-accent">{primeiro ? tc('capa') : tc('emDestaque')}</span>
-                    <span className="text-muted/45" aria-hidden="true">·</span>
-                    <span className="text-muted">{homeCatName(post, undefined, tc('artigo'))}</span>
-                    <span className="text-muted/45" aria-hidden="true">·</span>
-                    <span className="text-muted">{tc('minutosDeLeitura', { mins })}</span>
+                    <span className="text-accent lg:text-white">{primeiro ? tc('capa') : tc('emDestaque')}</span>
+                    <span className="text-muted/45 lg:text-white/50" aria-hidden="true">·</span>
+                    <span className="text-muted lg:text-white/80">{homeCatName(post, undefined, tc('artigo'))}</span>
+                    <span className="text-muted/45 lg:text-white/50" aria-hidden="true">·</span>
+                    <span className="text-muted lg:text-white/80">{tc('minutosDeLeitura', { mins })}</span>
                     <HomePtBadge locale={locale} />
                 </div>
-                <Link {...postLink(post.slug, locale)} className="group mt-3 min-w-0">
-                    {/* Variante mobile do mesmo título: como <h1>, formava par com o
-                        hero desktop e o crawler (que não aplica breakpoint) via dois H1.
-                        role/aria-level preserva o cabeçalho para leitor de tela. */}
-                    <p role="heading" aria-level={primeiro ? 1 : 2} className="min-w-0 max-w-[22ch] wrap-anywhere font-serif text-[clamp(1.8rem,7.6vw,2.6rem)] font-medium leading-[1.03] tracking-[-0.035em] text-foreground transition-colors group-hover:text-accent">
+                <Link {...postLink(post.slug, locale)} className="group mt-3 min-w-0 lg:pointer-events-auto">
+                    <Titulo className="min-w-0 max-w-[22ch] wrap-anywhere font-serif text-[clamp(1.8rem,7.6vw,2.6rem)] font-medium lg:text-[2.1rem] leading-[1.03] tracking-[-0.035em] text-foreground transition-colors group-hover:text-accent lg:text-white lg:group-hover:text-white">
                         {title}
-                    </p>
+                    </Titulo>
                 </Link>
+                </div>
                 {excerpt && <p className="mt-3 max-w-[58ch] text-[13px] leading-5 text-muted line-clamp-2">{excerpt}</p>}
                 <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-4">
                     <span className="min-w-0 truncate text-[11px] text-muted">{data}</span>
                     <Link {...postLink(post.slug, locale)}
                         className="shrink-0 whitespace-nowrap border-b border-accent pb-0.5 font-mono text-[10px] font-black uppercase tracking-widest text-foreground transition-colors hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent">
                         {`${t('lerAgora')} `}<span aria-hidden="true">→</span>
-                    </Link>
-                </div>
-            </div>
-
-            <div className="hidden lg:flex relative min-w-0 flex-1 flex-col bg-background px-8 py-7 overflow-hidden">
-                <div className="mb-4">
-                    <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em]">
-                        <span className="inline-flex items-center gap-1.5 bg-accent/10 px-2.5 py-1 text-accent">
-                            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                            {primeiro ? tc('capa') : tc('emDestaque')}
-                        </span>
-                        <span className="text-muted/45">·</span>
-                        <span className="text-muted">{homeCatName(post, undefined, tc('artigo'))}</span>
-                        <span className="text-muted/45">·</span>
-                        <span className="text-muted">{tc('minutosDeLeitura', { mins })}</span>
-                        <HomePtBadge locale={locale} />
-                    </div>
-                </div>
-                <Link {...postLink(post.slug, locale)} className="group relative">
-                    <Titulo className="min-w-0 max-w-[20ch] wrap-anywhere font-serif text-home-hero font-medium text-foreground transition-colors group-hover:text-accent">
-                        {title}
-                    </Titulo>
-                </Link>
-                {excerpt && <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.65] text-foreground/65 line-clamp-3">{excerpt}</p>}
-                <div className="mt-auto pt-5 border-t border-border flex items-center justify-between">
-                    <span className="text-[12px] text-muted"><b className="text-foreground">{SITE_NAME}</b> · {data}</span>
-                    <Link {...postLink(post.slug, locale)}
-                        className="inline-flex items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white hover:bg-accent-a11y/90 transition-colors shrink-0">
-                        {`${t('continuarLeitura')} `}<span aria-hidden>→</span>
                     </Link>
                 </div>
             </div>
