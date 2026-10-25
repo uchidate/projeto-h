@@ -90,20 +90,20 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     const latestRestantes = latest.filter(post => !editoriasIds.has(post.id))
 
     return (
-        <section className="bg-background lg:bg-[var(--color-home-page)]" aria-label={t('rotulo')}>
-            {soPt && <div data-bloco="home-assuntos" className="mx-auto max-w-[1440px] lg:bg-[var(--color-home-card)]"><HomeAssuntos hubs={homeSettings.hubs} locale={locale} /></div>}
-            <div className="mx-auto max-w-[1440px] border-t border-border bg-background lg:flex lg:flex-col lg:gap-5 lg:border-0 lg:bg-transparent lg:px-6 lg:pb-5">
-                <div className="lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-5 lg:pt-5">
-                    <div data-bloco="home-hero" className="min-w-0 lg:bg-[var(--color-home-card)] lg:border lg:border-border"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
-                    <div data-bloco="home-destaques" className="min-w-0 lg:bg-[var(--color-home-card)] lg:border lg:border-border"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
-                    {soPt && aniversarios && <div data-bloco="home-calendario" className="min-w-0 lg:bg-[var(--color-home-card)] lg:border lg:border-border"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
+        <section className="bg-[var(--color-home-page)]" aria-label={t('rotulo')}>
+            {soPt && <div data-bloco="home-assuntos" className="mx-auto max-w-[1440px] bg-[var(--color-home-card)]"><HomeAssuntos hubs={homeSettings.hubs} locale={locale} /></div>}
+            <div className="mx-auto flex max-w-[1440px] flex-col gap-3.5 px-3.5 pb-3.5 lg:gap-5 lg:px-6 lg:pb-5">
+                <div className="flex flex-col gap-3.5 pt-3.5 lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-5 lg:pt-5">
+                    <div data-bloco="home-hero" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
+                    <div data-bloco="home-destaques" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
+                    {soPt && aniversarios && <div data-bloco="home-calendario" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {ADSENSE.slots.leaderboard && (
                     <div className="border-t border-border px-4 py-6 sm:px-6 lg:px-4">
                         <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_hero_leaderboard" />
                     </div>
                 )}
-                {soPt && <div data-bloco="home-seguindo" className="empty:hidden lg:bg-[var(--color-home-card)]"><HomeSeguindo /></div>}
+                {soPt && <div data-bloco="home-seguindo" className="empty:hidden bg-[var(--color-home-card)]"><HomeSeguindo /></div>}
                 {soPt && <div data-bloco="home-guias" className="contents"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
                 <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>
                 {soPt && <div data-bloco="home-loja" className="contents"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
@@ -122,36 +122,36 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                   * mede visibilidade com IntersectionObserver, e a mudança não
                   * deve mexer em como o AdSense enxerga a página.
                   */}
-                <div className="cv-auto [--cv-h:1800px] lg:[--cv-h:1180px] grid border-t border-border bg-surface/55 lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)] lg:bg-[var(--color-home-card)]">
+                <div className="cv-auto [--cv-h:1800px] lg:[--cv-h:1180px] grid border border-border bg-surface/55 lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)] bg-[var(--color-home-card)]">
                     <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} locale={locale} /></div>
                     <div data-bloco="home-artistas-em-alta" className="contents"><HomeTrendingArtists artists={artists} featuredArtist={featuredArtist} featuredArtistNote={featuredArtistNote} locale={locale} /></div>
                 </div>
-                <div className="cv-auto [--cv-h:230px] lg:[--cv-h:208px] lg:bg-[var(--color-home-card)]">
+                <div className="cv-auto [--cv-h:230px] lg:[--cv-h:208px] bg-[var(--color-home-card)]">
                     <div data-bloco="home-spotlight" className="contents"><HomeArtistSpotlight artists={spotlightArtists ?? artists} groups={trendingGroups} locale={locale} /></div>
                 </div>
                 {soPt && (
                     <>
                         {pergunta}
-                        <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-4 lg:bg-[var(--color-home-card)]">
+                        <div className="cv-auto [--cv-h:266px] min-[430px]:[--cv-h:243px] sm:[--cv-h:155px] md:[--cv-h:110px] lg:[--cv-h:147px] border-t border-border px-4 sm:px-6 lg:px-4 bg-[var(--color-home-card)]">
                             <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
                         </div>
                         {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href="/comidas" bloco="home-gastronomia" locale={locale} />}
-                        <div data-bloco="home-explore" className="lg:bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>
+                        <div data-bloco="home-explore" className="bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>
                         {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#c61153" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />}
                     </>
                 )}
-                <div className="cv-auto [--cv-h:620px] sm:[--cv-h:720px] lg:[--cv-h:490px] lg:bg-[var(--color-home-card)]">
+                <div className="cv-auto [--cv-h:620px] sm:[--cv-h:720px] lg:[--cv-h:490px] bg-[var(--color-home-card)]">
                     <div data-bloco="home-producoes" className="contents"><HomeProductionsRail productions={productions} locale={locale} /></div>
                 </div>
                 {trendingGroups.length > 0 && (
-                    <div className="cv-auto [--cv-h:1100px] lg:[--cv-h:920px] grid border-t border-border bg-background lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)] lg:bg-[var(--color-home-card)]">
+                    <div className="cv-auto [--cv-h:1100px] lg:[--cv-h:920px] grid border border-border bg-background lg:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.75fr)] bg-[var(--color-home-card)]">
                         <div data-bloco="home-ultimos" className="contents"><HomeLatestPosts posts={latestRestantes.slice(0, 8)} categoryMap={categoryMap} locale={locale} /></div>
                         <div data-bloco="home-grupos-em-alta" className="contents"><HomeTrendingGroups groups={trendingGroups} locale={locale} /></div>
                     </div>
                 )}
                 {soPt && (
                     <>
-                        <div className="cv-auto [--cv-h:266px] sm:[--cv-h:284px] lg:[--cv-h:250px] lg:bg-[var(--color-home-card)]">
+                        <div className="cv-auto [--cv-h:266px] sm:[--cv-h:284px] lg:[--cv-h:250px] bg-[var(--color-home-card)]">
                             <div data-bloco="home-streaming" className="contents"><HomeStreamingTop showsByPlatform={streamingByPlatform} /></div>
                         </div>
                     </>
