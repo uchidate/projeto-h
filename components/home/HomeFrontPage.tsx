@@ -25,6 +25,7 @@ import { HomeLatestPosts } from '@/components/home/HomeLatestPosts'
 import { HomeStreamingTop } from '@/components/home/HomeStreamingTop'
 import { HomeArtistSpotlight } from '@/components/home/HomeArtistSpotlight'
 import type { PrateleirasEditorias } from '@/lib/home/editorias-loja'
+import type { CapaAlbum } from '@/lib/home/capa-album'
 import type { CartaoExplore } from '@/lib/home/explore'
 import type { TemaHome } from '@/lib/home/temas'
 import type { GuiaDaHome } from '@/lib/home/guias'
@@ -58,11 +59,12 @@ type Props = {
     guiasPorTema?: GuiaDaHome[]
     explore?: CartaoExplore[]
     prateleirasEditorias?: PrateleirasEditorias
+    capasAlbum?: Record<number, CapaAlbum>
     temas?: { gastronomia: TemaHome; beleza: TemaHome } | null
     locale?: Locale
 }
 
-export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, produtosMaisVendidos = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null, explore = [], prateleirasEditorias = {} }: Props) {
+export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, spotlightArtists, featuredArtist, featuredArtistNote, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, streamingByPlatform, categoryMap, produtosMaisVendidos = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null, explore = [], prateleirasEditorias = {}, capasAlbum = {} }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
@@ -92,7 +94,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
             <div className="mx-auto max-w-[1440px] border-y border-border bg-background">
                 {soPt && <div data-bloco="home-assuntos" className="contents"><HomeAssuntos hubs={homeSettings.hubs} locale={locale} /></div>}
                 <div className="lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)]">
-                    <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
+                    <div data-bloco="home-hero" className="contents"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
                     <div data-bloco="home-destaques" className="contents"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
                     {soPt && aniversarios && <div data-bloco="home-calendario" className="contents"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>

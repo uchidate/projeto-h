@@ -11,6 +11,8 @@
     "emDestaque": "Featured"
   },
   "hero": {
+    "asFaixas": "The {n} tracks",
+    "maisFaixas": "+ {n} more tracks",
     "lerAgora": "Read now",
     "continuarLeitura": "Keep reading",
     "filmeEmDestaque": "Featured film",
