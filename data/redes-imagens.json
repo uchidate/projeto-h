@@ -1653,5 +1653,29 @@
         "alt": "Tudo sobre Love in Disguise no HallyuHub: hallyuhub.com.br/productions/love-in-disguise."
       }
     ]
+  },
+  "serie-02": {
+    "alt": "Son Ye-jin fazendo coração com os dedos, em evento em março de 2024.",
+    "credito": "K-POPIT, CC BY 3.0",
+    "ig": "1:1",
+    "slides": [
+      {
+        "arte": "serie-02-dado",
+        "alt": "8 episódios em Joseon, com Son Ye-jin, Ji Chang-wook e Nana, no ar na Netflix desde 18 de setembro. Fonte: Netflix."
+      },
+      {
+        "foto": "serie-02-foto2",
+        "foco": [
+          0.5,
+          0.3
+        ],
+        "alt": "Ji Chang-wook acenando em aeroporto, em novembro de 2019.",
+        "credito": "Dispatch, CC BY 3.0"
+      },
+      {
+        "arte": "serie-02-chamada",
+        "alt": "Tudo sobre The Scandal no HallyuHub: hallyuhub.com.br/blog/son-ye-jin-e-ji-chang-wook-estreiam-the-scandal-na-netflix."
+      }
+    ]
   }
 }
