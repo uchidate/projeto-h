@@ -1286,6 +1286,16 @@
         "credito": "KIYOUNG KIM, CC BY 2.0"
       },
       {
+        "foto": "perfil-38-foto3",
+        "foco": [
+          0.5,
+          0.45
+        ],
+        "alt": "Imagem de divulgação de Descendentes do Sol: os dois protagonistas lado a lado, ele em uniforme militar fazendo continência.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
         "arte": "perfil-38-chamada",
         "alt": "Tudo sobre Song Hye-kyo no HallyuHub: hallyuhub.com.br/artists/song-hye-kyo."
       }
@@ -1308,6 +1318,16 @@
         ],
         "alt": "Park Seo-joon em ensaio para a Marie Claire Coreia, em 2023.",
         "credito": "Marie Claire Korea, CC BY 3.0"
+      },
+      {
+        "foto": "perfil-39-foto3",
+        "foco": [
+          0.55,
+          0.4
+        ],
+        "alt": "Imagem de divulgação de Itaewon Class: o protagonista em primeiro plano, numa rua de Itaewon à noite.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
       },
       {
         "arte": "perfil-39-chamada",
@@ -1370,6 +1390,16 @@
         "credito": "4season_santa, CC BY-SA 2.0"
       },
       {
+        "foto": "perfil-42-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Moving: o elenco principal, de roupas pretas, diante de fundo claro.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
         "arte": "perfil-42-chamada",
         "alt": "Tudo sobre Han Hyo-joo no HallyuHub: hallyuhub.com.br/artists/han-hyo-joo."
       }
@@ -1392,6 +1422,16 @@
         ],
         "alt": "Park Min-young no aeroporto de Incheon, em 2026.",
         "credito": "TV10, CC BY 4.0"
+      },
+      {
+        "foto": "perfil-43-foto3",
+        "foco": [
+          0.5,
+          0.45
+        ],
+        "alt": "Imagem de divulgação de What’s Wrong with Secretary Kim: os dois protagonistas sentados num sofá azul, de braços cruzados.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
       },
       {
         "arte": "perfil-43-chamada",
@@ -1527,6 +1567,16 @@
         "credito": "Sara Komatsu, CC BY-SA 4.0"
       },
       {
+        "foto": "perfil-49-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Pousando no Amor (Crash Landing on You): os dois protagonistas abraçados ao lado de uma fogueira.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
         "arte": "perfil-49-chamada",
         "alt": "Tudo sobre Hyun Bin no HallyuHub: hallyuhub.com.br/artists/hyun-bin."
       }
@@ -1631,9 +1681,10 @@
     ]
   },
   "serie-01": {
-    "alt": "Yim Si-wan fazendo coração com os dedos, em evento em 9 de dezembro de 2024.",
-    "credito": "K-POPIT, CC BY 3.0",
+    "alt": "Imagem de divulgação de Amor Disfarçado: os dois protagonistas em close.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "serie-01-dado",
@@ -1642,11 +1693,22 @@
       {
         "foto": "serie-01-foto2",
         "foco": [
-          0.5,
-          0.3
+          0.55,
+          0.5
         ],
-        "alt": "Seol In-ah em evento em setembro de 2024.",
-        "credito": "K-POPIT, CC BY 3.0"
+        "alt": "Arte de divulgação de Amor Disfarçado (Love in Disguise): os dois protagonistas dançando sobre uma cidade à noite.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "foto": "serie-01-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Amor Disfarçado: os dois protagonistas sentados, de terno, um ao lado do outro.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
       },
       {
         "arte": "serie-01-chamada",
@@ -1655,9 +1717,10 @@
     ]
   },
   "serie-02": {
-    "alt": "Son Ye-jin fazendo coração com os dedos, em evento em março de 2024.",
-    "credito": "K-POPIT, CC BY 3.0",
+    "alt": "Imagem de divulgação de The Scandal: os três personagens principais diante de casas tradicionais coreanas.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "serie-02-dado",
@@ -1667,10 +1730,21 @@
         "foto": "serie-02-foto2",
         "foco": [
           0.5,
-          0.3
+          0.5
         ],
-        "alt": "Ji Chang-wook acenando em aeroporto, em novembro de 2019.",
-        "credito": "Dispatch, CC BY 3.0"
+        "alt": "Cena de The Scandal: um homem de chapéu tradicional e uma mulher de hanbok verde, sentados frente a frente num aposento.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "foto": "serie-02-foto3",
+        "foco": [
+          0.5,
+          0.4
+        ],
+        "alt": "Cena de The Scandal: mulher de hanbok verde segurando uma xícara de chá.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
       },
       {
         "arte": "serie-02-chamada",
