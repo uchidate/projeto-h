@@ -1810,5 +1810,133 @@
         "alt": "Tudo sobre Youn Yuh-jung no HallyuHub: hallyuhub.com.br/artists/youn-yuh-jung."
       }
     ]
+  },
+  "perfil-58": {
+    "alt": "Kim Hye-yoon sorrindo, fazendo um coração com as mãos, de vestido preto.",
+    "credito": "K-POPIT, CC BY 3.0",
+    "ig": "1:1",
+    "slides": [
+      {
+        "arte": "perfil-58-dado",
+        "alt": "23,8% de audiência no último episódio de SKY Castle, recorde da TV a cabo coreana na época. Fonte: Nielsen Korea."
+      },
+      {
+        "foto": "perfil-58-foto2",
+        "foco": [
+          0.5,
+          0.3
+        ],
+        "alt": "Kim Hye-yoon sorrindo, fazendo um coração com as mãos, de vestido preto.",
+        "credito": "K-POPIT, CC BY 3.0"
+      },
+      {
+        "foto": "perfil-58-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de SKY Castle: o elenco principal reunido.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "perfil-58-chamada",
+        "alt": "Tudo sobre Kim Hye-yoon no HallyuHub: hallyuhub.com.br/artists/kim-hye-yoon."
+      }
+    ]
+  },
+  "perfil-59": {
+    "alt": "Jung Ho-yeon sorrindo, em ensaio de novembro de 2021.",
+    "credito": "Marie Claire Korea, CC BY 3.0",
+    "ig": "1:1",
+    "slides": [
+      {
+        "arte": "perfil-59-dado",
+        "alt": "SAG 2022 melhor atriz em série dramática por Round 6 (Squid Game), no Sindicato dos Atores dos EUA. Fonte: SAG Awards."
+      },
+      {
+        "foto": "perfil-59-foto2",
+        "foco": [
+          0.5,
+          0.3
+        ],
+        "alt": "Jung Ho-yeon sorrindo, em ensaio de novembro de 2021.",
+        "credito": "Marie Claire Korea, CC BY 3.0"
+      },
+      {
+        "foto": "perfil-59-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Round 6 (Squid Game).",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "perfil-59-chamada",
+        "alt": "Tudo sobre Jung Ho-yeon no HallyuHub: hallyuhub.com.br/artists/jung-ho-yeon."
+      }
+    ]
+  },
+  "perfil-60": {
+    "alt": "Jennie, do BLACKPINK, em evento, de olhar para a câmera.",
+    "credito": "티비텐, CC BY 3.0",
+    "ig": "1:1",
+    "slides": [
+      {
+        "arte": "perfil-60-dado",
+        "alt": "nº 7 na Billboard 200 com Ruby, de 2025, com cerca de 56 mil unidades equivalentes: a melhor posição solo da Jennie. Fonte: Billboard."
+      },
+      {
+        "foto": "perfil-60-foto2",
+        "foco": [
+          0.5,
+          0.35
+        ],
+        "alt": "Jennie, do BLACKPINK, em evento, de olhar para a câmera.",
+        "credito": "티비텐, CC BY 3.0"
+      },
+      {
+        "arte": "perfil-60-chamada",
+        "alt": "Tudo sobre Jennie no HallyuHub: hallyuhub.com.br/artists/kim-jennie."
+      }
+    ]
+  },
+  "perfil-61": {
+    "alt": "Imagem de divulgação de Vincenzo: o protagonista de terno, em preto e branco.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "perfil-61-dado",
+        "alt": "14,6% de audiência no último episódio de Vincenzo, o maior da série. Fonte: Nielsen Korea."
+      },
+      {
+        "foto": "perfil-61-foto2",
+        "foco": [
+          0.5,
+          0.35
+        ],
+        "alt": "Imagem de divulgação de Vincenzo: o protagonista de terno, em preto e branco.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "foto": "perfil-61-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Vincenzo.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "perfil-61-chamada",
+        "alt": "Tudo sobre Song Joong-ki no HallyuHub: hallyuhub.com.br/artists/song-joong-ki."
+      }
+    ]
   }
 }
