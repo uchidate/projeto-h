@@ -687,6 +687,16 @@
         "credito": "K-POPIT, CC BY 3.0"
       },
       {
+        "foto": "perfil-11-foto3",
+        "foco": [
+          0.5,
+          0.4
+        ],
+        "alt": "Imagem de divulgação de Extraordinário Advogado Woo: a protagonista olhando para cima, cercada de baleias, num escritório visto do alto.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
         "arte": "perfil-11-chamada",
         "alt": "Tudo sobre Park Eun-bin no HallyuHub: hallyuhub.com.br/artists/park-eun-bin."
       }
@@ -927,6 +937,16 @@
         "credito": "Rene \"Ralph\" Min, CC0"
       },
       {
+        "foto": "perfil-22-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Round 6 (Squid Game): participantes de agasalho verde caminhando por um corredor.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
         "arte": "perfil-22-chamada",
         "alt": "Tudo sobre Lee Jung-jae no HallyuHub: hallyuhub.com.br/artists/lee-jung-jae."
       }
@@ -949,6 +969,16 @@
         ],
         "alt": "Park Bo-gum acenando em evento da Dyson, em abril de 2026.",
         "credito": "TV10, CC BY-SA 4.0"
+      },
+      {
+        "foto": "perfil-23-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de When Life Gives You Tangerines: os dois protagonistas de uniforme escolar, lado a lado, num campo de flores amarelas.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
       },
       {
         "arte": "perfil-23-chamada",
@@ -974,6 +1004,16 @@
         "alt": "Song Kang em filme de moda da Cartier, em 2021.",
         "credito": "Marie Claire Korea, CC BY 3.0",
         "igPronto": "perfil-24-foto2-ig"
+      },
+      {
+        "foto": "perfil-24-foto3",
+        "foco": [
+          0.5,
+          0.45
+        ],
+        "alt": "Arte de divulgação de Sweet Home: o protagonista em chamas, com uma asa monstruosa.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
       },
       {
         "arte": "perfil-24-chamada",
@@ -1168,6 +1208,16 @@
         "credito": "K-POPIT, CC BY 3.0"
       },
       {
+        "foto": "perfil-33-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de The Heirs: os dois protagonistas em primeiro plano.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
         "arte": "perfil-33-chamada",
         "alt": "Tudo sobre Park Shin-hye no HallyuHub: hallyuhub.com.br/artists/park-shin-hye."
       }
@@ -1190,6 +1240,16 @@
         ],
         "alt": "Lee Jong-suk de blazer azul, em evento em outubro de 2025.",
         "credito": "K-POPit, CC BY 3.0"
+      },
+      {
+        "foto": "perfil-34-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de W: os dois protagonistas em retrato, ao lado do logotipo da série.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
       },
       {
         "arte": "perfil-34-chamada",
@@ -1215,6 +1275,16 @@
         "alt": "Nam Joo-hyuk em ensaio da campanha Dior Sauvage.",
         "credito": "Marie Claire Korea, CC BY 3.0",
         "igPronto": "perfil-35-foto2-ig"
+      },
+      {
+        "foto": "perfil-35-foto3",
+        "foco": [
+          0.5,
+          0.45
+        ],
+        "alt": "Imagem de divulgação de Twenty-Five Twenty-One: os dois protagonistas lado a lado, ela tomando um sorvete.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
       },
       {
         "arte": "perfil-35-chamada",
