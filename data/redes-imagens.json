@@ -1708,5 +1708,107 @@
         "alt": "Tudo sobre The Scandal no HallyuHub: hallyuhub.com.br/blog/son-ye-jin-e-ji-chang-wook-estreiam-the-scandal-na-netflix."
       }
     ]
+  },
+  "perfil-54": {
+    "alt": "Jung Kook, do BTS, em ensaio fotográfico em Los Angeles, em maio de 2018.",
+    "credito": "Dispatch, CC BY 3.0",
+    "ig": "1:1",
+    "slides": [
+      {
+        "arte": "perfil-54-dado",
+        "alt": "nº 1 na Billboard Hot 100 com “Seven”, em julho de 2023: o primeiro nº 1 solo do Jung Kook. Fonte: Billboard."
+      },
+      {
+        "arte": "perfil-54-chamada",
+        "alt": "Tudo sobre Jung Kook no HallyuHub: hallyuhub.com.br/artists/jung-kook."
+      }
+    ]
+  },
+  "perfil-55": {
+    "alt": "Imagem de divulgação de Invasão Zumbi (Train to Busan): o protagonista de camisa suja de sangue, dentro do trem.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "perfil-55-dado",
+        "alt": "11,5 milhões de ingressos vendidos na Coreia do Sul por Invasão Zumbi (Train to Busan), em 2016. Fonte: KOBIS."
+      },
+      {
+        "foto": "perfil-55-foto2",
+        "foco": [
+          0.5,
+          0.3
+        ],
+        "alt": "Gong Yoo sorrindo, de jaqueta de couro preta, em ensaio de 2021.",
+        "credito": "Marie Claire Korea, CC BY 3.0"
+      },
+      {
+        "foto": "perfil-55-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Invasão Zumbi (Train to Busan): os sobreviventes correndo pelos trilhos, com o protagonista carregando uma criança.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "perfil-55-chamada",
+        "alt": "Tudo sobre Gong Yoo no HallyuHub: hallyuhub.com.br/artists/gong-yoo."
+      }
+    ]
+  },
+  "perfil-56": {
+    "alt": "Imagem de divulgação de Goblin (Guardian): os dois protagonistas lado a lado, ela de olhos fechados, recostada nele.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "perfil-56-dado",
+        "alt": "20,5% de audiência no último episódio de Goblin, recorde da tvN na época. Fonte: Nielsen Korea."
+      },
+      {
+        "foto": "perfil-56-foto2",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Goblin (Guardian): a protagonista entrega um buquê a ele, de frente para o mar.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "perfil-56-chamada",
+        "alt": "Tudo sobre Kim Go-eun no HallyuHub: hallyuhub.com.br/artists/kim-go-eun."
+      }
+    ]
+  },
+  "perfil-57": {
+    "alt": "Imagem de divulgação de Minari: a família protagonista, com a avó ao centro, na grama alta.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "perfil-57-dado",
+        "alt": "1ª sul-coreana a vencer um Oscar de atuação: melhor atriz coadjuvante por Minari, em 2021. Fonte: Academia de Hollywood."
+      },
+      {
+        "foto": "perfil-57-foto2",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Cena de Minari: o menino e a avó diante de uma cômoda.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "perfil-57-chamada",
+        "alt": "Tudo sobre Youn Yuh-jung no HallyuHub: hallyuhub.com.br/artists/youn-yuh-jung."
+      }
+    ]
   }
 }
