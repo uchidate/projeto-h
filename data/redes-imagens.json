@@ -1938,5 +1938,185 @@
         "alt": "Tudo sobre Song Joong-ki no HallyuHub: hallyuhub.com.br/artists/song-joong-ki."
       }
     ]
+  },
+  "serie-03": {
+    "alt": "Imagem de divulgação de Um Choque de Amor: o protagonista de terno atrás da protagonista, que cobre a boca com as mãos.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "serie-03-dado",
+        "alt": "10 episódios, todos no ar na Netflix desde 9 de outubro, com Kim Young-kwang e Chae Soo-bin. Fonte: Netflix."
+      },
+      {
+        "foto": "serie-03-foto2",
+        "foco": [
+          0.5,
+          0.3
+        ],
+        "alt": "Imagem de divulgação de Um Choque de Amor: o protagonista de terno atrás da protagonista, que cobre a boca com as mãos.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "foto": "serie-03-foto3",
+        "foco": [
+          0.7,
+          0.4
+        ],
+        "alt": "Imagem de divulgação de Um Choque de Amor: ela de blusa rosa com um raio estampado, ele de paletó, os dois sobre fundo rosa.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "serie-03-chamada",
+        "alt": "Tudo sobre Um Choque de Amor no HallyuHub: hallyuhub.com.br/artists/kim-young-kwang."
+      }
+    ]
+  },
+  "serie-04": {
+    "alt": "Cena de Doctor X: A Máfia do Jaleco Branco: a protagonista de jaleco branco caminha por um corredor de hospital.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "serie-04-dado",
+        "alt": "12 episódios de Doctor X: A Máfia do Jaleco Branco, na Netflix desde 9 de outubro, com novos às sextas e sábados. Fonte: Netflix."
+      },
+      {
+        "foto": "serie-04-foto2",
+        "foco": [
+          0.5,
+          0.45
+        ],
+        "alt": "Cena de Doctor X: A Máfia do Jaleco Branco: a protagonista de jaleco branco caminha por um corredor de hospital.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "foto": "serie-04-foto3",
+        "foco": [
+          0.5,
+          0.4
+        ],
+        "alt": "Imagem de divulgação de Doctor X: A Máfia do Jaleco Branco: a protagonista de casaco preto sobre fundo vermelho.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "serie-04-chamada",
+        "alt": "Tudo sobre Doctor X no HallyuHub: hallyuhub.com.br/artists/kim-ji-won."
+      }
+    ]
+  },
+  "serie-05": {
+    "alt": "Imagem de divulgação de 100 Dias de Mentiras: a protagonista de vestido azul-claro olha por cima do ombro, no meio de uma multidão em Gyeongseong.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "serie-05-dado",
+        "alt": "16 episódios de 100 Dias de Mentiras, na Netflix desde 10 de outubro, com novos aos sábados e domingos. Fonte: Netflix."
+      },
+      {
+        "foto": "serie-05-foto2",
+        "foco": [
+          0.7,
+          0.35
+        ],
+        "alt": "Imagem de divulgação de 100 Dias de Mentiras: a protagonista de vestido azul-claro olha por cima do ombro, no meio de uma multidão em Gyeongseong.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "foto": "serie-05-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de 100 Dias de Mentiras: os dois protagonistas numa estação de trem.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "serie-05-chamada",
+        "alt": "Tudo sobre 100 Dias de Mentiras no HallyuHub: hallyuhub.com.br/artists/kim-yoo-jung."
+      }
+    ]
+  },
+  "perfil-62": {
+    "alt": "Imagem de divulgação de Queen of Tears: a protagonista, de blusa azul, sentada à mesa de CEO.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "perfil-62-dado",
+        "alt": "24,9% de audiência no último episódio de Queen of Tears, recorde da tvN. Fonte: Nielsen Korea."
+      },
+      {
+        "foto": "perfil-62-foto2",
+        "foco": [
+          0.5,
+          0.4
+        ],
+        "alt": "Imagem de divulgação de Queen of Tears: a protagonista, de blusa azul, sentada à mesa de CEO.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "foto": "perfil-62-foto3",
+        "foco": [
+          0.5,
+          0.4
+        ],
+        "alt": "Imagem de divulgação de Queen of Tears: o casal protagonista em trajes de casamento.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "perfil-62-chamada",
+        "alt": "Tudo sobre Kim Ji-won no HallyuHub: hallyuhub.com.br/artists/kim-ji-won."
+      }
+    ]
+  },
+  "perfil-63": {
+    "alt": "Imagem de divulgação de Love in the Moonlight: a protagonista de hanbok verde, deitada na grama com o parceiro de cena.",
+    "credito": "divulgação oficial, via TMDB",
+    "ig": "1:1",
+    "oficial": true,
+    "slides": [
+      {
+        "arte": "perfil-63-dado",
+        "alt": "22,9% de audiência no último episódio de Love in the Moonlight, em 2016. Fonte: Nielsen Korea."
+      },
+      {
+        "foto": "perfil-63-foto2",
+        "foco": [
+          0.6,
+          0.4
+        ],
+        "alt": "Imagem de divulgação de Love in the Moonlight: a protagonista de hanbok verde, deitada na grama com o parceiro de cena.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "foto": "perfil-63-foto3",
+        "foco": [
+          0.5,
+          0.5
+        ],
+        "alt": "Imagem de divulgação de Love in the Moonlight: os dois protagonistas sorrindo, de hanbok, diante de uma lua grande.",
+        "credito": "divulgação oficial, via TMDB",
+        "oficial": true
+      },
+      {
+        "arte": "perfil-63-chamada",
+        "alt": "Tudo sobre Kim Yoo-jung no HallyuHub: hallyuhub.com.br/artists/kim-yoo-jung."
+      }
+    ]
   }
 }
