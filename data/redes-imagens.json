@@ -669,9 +669,10 @@
     ]
   },
   "perfil-11": {
-    "alt": "Park Eun-bin em evento.",
-    "credito": "KIYOUNG KIM, CC BY 2.0",
+    "alt": "Imagem de divulgação de Extraordinário Advogado Woo: a protagonista olhando para cima, cercada de baleias, num escritório visto do alto.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-11-dado",
@@ -685,16 +686,6 @@
         ],
         "alt": "Park Eun-bin acenando em evento, em março de 2025.",
         "credito": "K-POPIT, CC BY 3.0"
-      },
-      {
-        "foto": "perfil-11-foto3",
-        "foco": [
-          0.5,
-          0.4
-        ],
-        "alt": "Imagem de divulgação de Extraordinário Advogado Woo: a protagonista olhando para cima, cercada de baleias, num escritório visto do alto.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
       },
       {
         "arte": "perfil-11-chamada",
@@ -953,9 +944,10 @@
     ]
   },
   "perfil-23": {
-    "alt": "Park Bo-gum em show de aniversário de oito anos de carreira, em 2019.",
-    "credito": "beautybbo, CC BY 4.0",
+    "alt": "Imagem de divulgação de When Life Gives You Tangerines: os dois protagonistas de uniforme escolar, lado a lado, num campo de flores amarelas.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-23-dado",
@@ -969,16 +961,6 @@
         ],
         "alt": "Park Bo-gum acenando em evento da Dyson, em abril de 2026.",
         "credito": "TV10, CC BY-SA 4.0"
-      },
-      {
-        "foto": "perfil-23-foto3",
-        "foco": [
-          0.5,
-          0.5
-        ],
-        "alt": "Imagem de divulgação de When Life Gives You Tangerines: os dois protagonistas de uniforme escolar, lado a lado, num campo de flores amarelas.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
       },
       {
         "arte": "perfil-23-chamada",
@@ -1190,9 +1172,10 @@
     ]
   },
   "perfil-33": {
-    "alt": "Park Shin-hye em evento em setembro de 2024.",
-    "credito": "K-POPIT, CC BY 3.0",
+    "alt": "Imagem de divulgação de The Heirs: os dois protagonistas em primeiro plano.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-33-dado",
@@ -1208,25 +1191,16 @@
         "credito": "K-POPIT, CC BY 3.0"
       },
       {
-        "foto": "perfil-33-foto3",
-        "foco": [
-          0.5,
-          0.5
-        ],
-        "alt": "Imagem de divulgação de The Heirs: os dois protagonistas em primeiro plano.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
-      },
-      {
         "arte": "perfil-33-chamada",
         "alt": "Tudo sobre Park Shin-hye no HallyuHub: hallyuhub.com.br/artists/park-shin-hye."
       }
     ]
   },
   "perfil-34": {
-    "alt": "Lee Jong-suk no Festival Internacional de Cinema de Busan, em 2026.",
-    "credito": "Arielaortizb, CC BY-SA 4.0",
+    "alt": "Imagem de divulgação de W: os dois protagonistas em retrato, ao lado do logotipo da série.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-34-dado",
@@ -1242,25 +1216,16 @@
         "credito": "K-POPit, CC BY 3.0"
       },
       {
-        "foto": "perfil-34-foto3",
-        "foco": [
-          0.5,
-          0.5
-        ],
-        "alt": "Imagem de divulgação de W: os dois protagonistas em retrato, ao lado do logotipo da série.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
-      },
-      {
         "arte": "perfil-34-chamada",
         "alt": "Tudo sobre Lee Jong-suk no HallyuHub: hallyuhub.com.br/artists/lee-jong-suk."
       }
     ]
   },
   "perfil-35": {
-    "alt": "Nam Joo-hyuk em ensaio para a Marie Claire Coreia, em dezembro de 2020.",
-    "credito": "Marie Claire Korea, CC BY 3.0",
+    "alt": "Imagem de divulgação de Twenty-Five Twenty-One: os dois protagonistas lado a lado, ela tomando um sorvete.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-35-dado",
@@ -1275,16 +1240,6 @@
         "alt": "Nam Joo-hyuk em ensaio da campanha Dior Sauvage.",
         "credito": "Marie Claire Korea, CC BY 3.0",
         "igPronto": "perfil-35-foto2-ig"
-      },
-      {
-        "foto": "perfil-35-foto3",
-        "foco": [
-          0.5,
-          0.45
-        ],
-        "alt": "Imagem de divulgação de Twenty-Five Twenty-One: os dois protagonistas lado a lado, ela tomando um sorvete.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
       },
       {
         "arte": "perfil-35-chamada",
@@ -1338,9 +1293,10 @@
     ]
   },
   "perfil-38": {
-    "alt": "Song Hye-kyo acenando em evento em Busan, em julho de 2023.",
-    "credito": "K-POPIT, CC BY 3.0",
+    "alt": "Imagem de divulgação de Descendentes do Sol: os dois protagonistas lado a lado, ele em uniforme militar fazendo continência.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-38-dado",
@@ -1356,25 +1312,16 @@
         "credito": "KIYOUNG KIM, CC BY 2.0"
       },
       {
-        "foto": "perfil-38-foto3",
-        "foco": [
-          0.5,
-          0.45
-        ],
-        "alt": "Imagem de divulgação de Descendentes do Sol: os dois protagonistas lado a lado, ele em uniforme militar fazendo continência.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
-      },
-      {
         "arte": "perfil-38-chamada",
         "alt": "Tudo sobre Song Hye-kyo no HallyuHub: hallyuhub.com.br/artists/song-hye-kyo."
       }
     ]
   },
   "perfil-39": {
-    "alt": "Park Seo-joon na pré-estreia de Midnight Runners, em agosto de 2017.",
-    "credito": "HeyDay, CC BY 4.0",
+    "alt": "Imagem de divulgação de Itaewon Class: o protagonista em primeiro plano, numa rua de Itaewon à noite.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-39-dado",
@@ -1388,16 +1335,6 @@
         ],
         "alt": "Park Seo-joon em ensaio para a Marie Claire Coreia, em 2023.",
         "credito": "Marie Claire Korea, CC BY 3.0"
-      },
-      {
-        "foto": "perfil-39-foto3",
-        "foco": [
-          0.55,
-          0.4
-        ],
-        "alt": "Imagem de divulgação de Itaewon Class: o protagonista em primeiro plano, numa rua de Itaewon à noite.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
       },
       {
         "arte": "perfil-39-chamada",
@@ -1476,9 +1413,10 @@
     ]
   },
   "perfil-43": {
-    "alt": "Park Min-young em ensaio para a Marie Claire Coreia, em maio de 2018.",
-    "credito": "Marie Claire Korea, CC BY 3.0",
+    "alt": "Imagem de divulgação de What’s Wrong with Secretary Kim: os dois protagonistas sentados num sofá azul, de braços cruzados.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-43-dado",
@@ -1492,16 +1430,6 @@
         ],
         "alt": "Park Min-young no aeroporto de Incheon, em 2026.",
         "credito": "TV10, CC BY 4.0"
-      },
-      {
-        "foto": "perfil-43-foto3",
-        "foco": [
-          0.5,
-          0.45
-        ],
-        "alt": "Imagem de divulgação de What’s Wrong with Secretary Kim: os dois protagonistas sentados num sofá azul, de braços cruzados.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
       },
       {
         "arte": "perfil-43-chamada",
@@ -1619,9 +1547,10 @@
     ]
   },
   "perfil-49": {
-    "alt": "Hyun Bin no Festival Internacional de Cinema de Toronto, em 2024.",
-    "credito": "Sara Komatsu, CC BY-SA 4.0",
+    "alt": "Imagem de divulgação de Pousando no Amor (Crash Landing on You): os dois protagonistas abraçados ao lado de uma fogueira.",
+    "credito": "divulgação oficial, via TMDB",
     "ig": "1:1",
+    "oficial": true,
     "slides": [
       {
         "arte": "perfil-49-dado",
@@ -1635,16 +1564,6 @@
         ],
         "alt": "Hyun Bin no Festival Internacional de Cinema de Toronto, em 2024.",
         "credito": "Sara Komatsu, CC BY-SA 4.0"
-      },
-      {
-        "foto": "perfil-49-foto3",
-        "foco": [
-          0.5,
-          0.5
-        ],
-        "alt": "Imagem de divulgação de Pousando no Amor (Crash Landing on You): os dois protagonistas abraçados ao lado de uma fogueira.",
-        "credito": "divulgação oficial, via TMDB",
-        "oficial": true
       },
       {
         "arte": "perfil-49-chamada",
