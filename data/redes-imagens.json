@@ -1629,5 +1629,29 @@
         "alt": "Tudo sobre BIGBANG no HallyuHub: hallyuhub.com.br/groups/bigbang."
       }
     ]
+  },
+  "serie-01": {
+    "alt": "Yim Si-wan fazendo coração com os dedos, em evento em 9 de dezembro de 2024.",
+    "credito": "K-POPIT, CC BY 3.0",
+    "ig": "1:1",
+    "slides": [
+      {
+        "arte": "serie-01-dado",
+        "alt": "Seg e ter os dias dos novos episódios de Amor Disfarçado (Love in Disguise) no Prime Video, desde a estreia, em 19 de outubro. Fonte: Omelete."
+      },
+      {
+        "foto": "serie-01-foto2",
+        "foco": [
+          0.5,
+          0.3
+        ],
+        "alt": "Seol In-ah em evento em setembro de 2024.",
+        "credito": "K-POPIT, CC BY 3.0"
+      },
+      {
+        "arte": "serie-01-chamada",
+        "alt": "Tudo sobre Love in Disguise no HallyuHub: hallyuhub.com.br/productions/love-in-disguise."
+      }
+    ]
   }
 }
