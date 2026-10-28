@@ -78,7 +78,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "@vitest/coverage-v8": "^5.0.5",
     "conventional-changelog-conventionalcommits": "^9.3.1",
-    "dotenv": "^18.0.8",
+    "dotenv": "^18.0.9",
     "eslint": "9.39.4",
     "eslint-config-next": "^16.4.3",
     "husky": "^9.1.7",
