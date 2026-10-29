@@ -9,7 +9,11 @@ import { BLOCK_ALT_PREFIX, BLOCK_CSS_PREFIX } from '@/lib/constants/identidade.m
  * O plugin do WordPress le a propria copia deste contrato, no repositorio de
  * operacao: mudanca de bloco precisa ser feita nos dois.
  */
-const blocosDoPrefixo = catalogo.blocks.map((block) => ({ ...block, name: block.name.replace('__bloco__/', `${BLOCK_CSS_PREFIX}/`).replace('__bloco2__/', `${BLOCK_ALT_PREFIX}/`) }))
+// Com os dois prefixos iguais (hallyuhub), `__bloco__/highlight` e `__bloco2__/highlight` viram o mesmo nome:
+// fica a primeira entrada.
+const blocosDoPrefixo = catalogo.blocks
+    .map((block) => ({ ...block, name: block.name.replace('__bloco__/', `${BLOCK_CSS_PREFIX}/`).replace('__bloco2__/', `${BLOCK_ALT_PREFIX}/`) }))
+    .filter((block, i, todos) => todos.findIndex((outro) => outro.name === block.name) === i)
 
 /**
  * Troca de prefixo em fases: todo bloco próprio também vale sob `hallyuhub/`, para que o conteúdo possa
