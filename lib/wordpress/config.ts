@@ -10,7 +10,7 @@ import { WORDPRESS_API_FALLBACK } from '@/lib/constants/site'
  * host. Validar aqui é barato e falha no lugar certo, em vez de silenciosamente
  * apontar para fora.
  */
-function urlDaApiValida(valor: string | undefined): string {
+export function urlDaApiValida(valor: string | undefined): string {
     if (!valor) return WORDPRESS_API_FALLBACK
     let parsed: URL
     try {
@@ -19,7 +19,10 @@ function urlDaApiValida(valor: string | undefined): string {
         console.error('[wp] WORDPRESS_API_URL não é uma URL válida; usando o padrão')
         return WORDPRESS_API_FALLBACK
     }
-    const local = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname.endsWith('.local')
+    // Host local: loopback, `.local` ou nome de serviço da rede Docker (um rótulo só, sem ponto, como
+    // `wordpress-ondacoreana`). Sem ponto não resolve na internet, então a chamada não sai da máquina;
+    // recusá-lo fazia o app cair no padrão público e passar pelo domínio e pela Cloudflare (erros 522).
+    const local = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname.endsWith('.local') || !parsed.hostname.includes('.')
     if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && local)) {
         console.error('[wp] WORDPRESS_API_URL precisa ser https (http só em host local); usando o padrão')
         return WORDPRESS_API_FALLBACK
