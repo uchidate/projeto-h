@@ -11,7 +11,8 @@ import { stripHtml } from '@/lib/utils'
 import { EmbedsSobDemanda } from '@/components/blog/EmbedsSobDemanda'
 import { adiarEmbedsSpotify } from '@/lib/blog/embedsSobDemanda'
 
-const BLOCO_PRODUTO = `${BLOCK_ALT_PREFIX}/product`
+// Aceita o nome atual e o novo (`hallyuhub/product`) durante a troca de prefixo; o antigo sai na fase 4.
+const BLOCOS_PRODUTO = new Set([`${BLOCK_ALT_PREFIX}/product`, 'hallyuhub/product'])
 
 /** Texto da legenda do bloco de produto (o `<p class="oc-product__caption">` salvo pelo editor). */
 function legendaDoBloco(html: string) {
@@ -48,7 +49,7 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
     const prateleiras = new Map<string, ProdutoDoTexto[]>()
     let atual: ProdutoDoTexto[] | null = null
     for (const b of model.blocks) {
-        if (b.name !== BLOCO_PRODUTO) { atual = null; continue }
+        if (!BLOCOS_PRODUTO.has(b.name)) { atual = null; continue }
         // Produto oculto, removido ou sem link some do texto em vez de deixar um buraco.
         const produto = produtos?.get(Number(b.attrs.productId))
         if (!atual) { atual = []; prateleiras.set(b.id, atual) }
@@ -69,7 +70,7 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
                     data-article-block={block.name}
                 >
                     {block.id === idPrimeiraFaixa && <IndiceDeFaixas faixas={faixas} idPlayerDoAlbum={faixas.length >= 3 ? idPlayerDoAlbum : undefined} />}
-                    {block.name === BLOCO_PRODUTO
+                    {BLOCOS_PRODUTO.has(block.name)
                         ? (prateleiras.get(block.id)?.length ? <ProdutosNoArtigo itens={prateleiras.get(block.id)!} contexto={contextoProduto} /> : null)
                         : faixaDoBloco(block.id)
                             ? (

@@ -33,6 +33,17 @@ describe('GutenbergArticleRenderer', () => {
             block('core/paragraph', '<p>Depois do produto, o texto continua.</p>'),
         ])
 
+        it('aceita também o nome novo do bloco (hallyuhub/product) durante a troca de prefixo', () => {
+            const modeloNovo = buildArticleModel([
+                block('core/paragraph', '<p>Abertura do artigo com contexto suficiente.</p>'),
+                block('hallyuhub/product', '<div class="oc-product" data-product-id="5"><p class="oc-product__caption">Legenda</p></div>', { productId: 5 }),
+                block('core/paragraph', '<p>Depois do produto, o texto continua.</p>'),
+            ])
+            const { container } = render(<GutenbergArticleRenderer model={modeloNovo} produtos={new Map([[5, produto(5)]])} contextoProduto="artigo:x:produto" />)
+            expect(screen.getByText('Pepero Original 47g')).toBeInTheDocument()
+            expect(container.querySelector('[data-produto-no-artigo="5"]')).not.toBeNull()
+        })
+
         it('mostra o cartão da loja com preço atual, link de afiliado e legenda', () => {
             const { container } = render(<GutenbergArticleRenderer model={modelo(5)} produtos={new Map([[5, produto(5)]])} contextoProduto="artigo:x:produto" />)
             expect(screen.getByText('Pepero Original 47g')).toBeInTheDocument()
