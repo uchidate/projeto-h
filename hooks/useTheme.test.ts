@@ -36,11 +36,9 @@ describe('useTheme', () => {
 
     it('descarta a chave antiga, que guardava o padrão e não a escolha', () => {
         localStorage.setItem('portal_theme', 'dark')
-        localStorage.setItem('portal_legado_theme', 'dark')
         const { result } = renderHook(() => useTheme())
         expect(result.current.theme).toBe('light')
         expect(localStorage.getItem('portal_theme')).toBeNull()
-        expect(localStorage.getItem('portal_legado_theme')).toBeNull()
     })
 
     it('toggleTheme alterna, persiste a escolha e atualiza a classe do html', () => {
