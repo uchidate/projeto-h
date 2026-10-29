@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARTICLE_BLOCKS, isArticleBlockSupported } from './articleBlockCatalog'
+import { ARTICLE_BLOCKS, ARTICLE_BLOCK_CATALOG, isArticleBlockSupported } from './articleBlockCatalog'
 
 describe('catálogo de blocos na troca de prefixo', () => {
     it('todo bloco próprio vale também sob hallyuhub/', () => {
@@ -12,6 +12,10 @@ describe('catálogo de blocos na troca de prefixo', () => {
     it('os 13 blocos próprios existem sob hallyuhub/ em qualquer configuração', () => {
         const esperados = ['stats', 'product', 'related-content', 'highlight', 'callout', 'marker-list', 'alert', 'spotify', 'pros-cons', 'spoiler', 'rating', 'ficha-drama', 'lyrics']
         for (const bloco of esperados) expect(isArticleBlockSupported(`hallyuhub/${bloco}`)).toBe(true)
+    })
+    it('não repete nome de bloco no catálogo', () => {
+        const nomes = ARTICLE_BLOCK_CATALOG.blocks.map((block) => block.name)
+        expect(new Set(nomes).size).toBe(nomes.length)
     })
     it('blocos do core não ganham alias', () => {
         expect(ARTICLE_BLOCKS.has('hallyuhub/paragraph')).toBe(false)
