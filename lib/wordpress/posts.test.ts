@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { getPosts, getRelatedPosts } from './posts'
+import { getPosts, getPostSlugById, getRelatedPosts } from './posts'
+import { WordPressIndisponivelError } from './client'
 import type { WPPost } from './types'
 
 function post(id: number, overrides: Partial<WPPost> = {}): WPPost {
@@ -127,5 +128,31 @@ describe('getRelatedPosts', () => {
         const result = await getRelatedPosts(post(1, { tags: [], categories: [] }))
         expect(result).toEqual([])
         expect(fetchMock).not.toHaveBeenCalled()
+    })
+})
+
+describe('getPostSlugById (link curto /i/{id})', () => {
+    let fetchMock: ReturnType<typeof vi.fn>
+    beforeEach(() => { fetchMock = vi.fn(); vi.stubGlobal('fetch', fetchMock) })
+    afterEach(() => vi.unstubAllGlobals())
+
+    it('pede só o slug do post publicado com aquele ID', async () => {
+        fetchMock.mockResolvedValue({ ok: true, json: async () => [{ slug: 'eunkwang-unfold' }] })
+        expect(await getPostSlugById(35235)).toBe('eunkwang-unfold')
+        const url: string = fetchMock.mock.calls[0][0]
+        expect(url).toContain('include=35235')
+        expect(url).toContain('status=publish')
+        expect(url).toContain('_fields=slug')
+    })
+
+    it('post que não existe devolve null (resposta legítima, não falha)', async () => {
+        fetchMock.mockResolvedValue({ ok: true, json: async () => [] })
+        expect(await getPostSlugById(1)).toBeNull()
+    })
+
+    // Soluço do WordPress não pode virar "não existe": quem chama responde 503, não 404.
+    it('WordPress fora do ar lança, em vez de devolver null', async () => {
+        fetchMock.mockResolvedValue({ ok: false, status: 502, json: async () => ({}) })
+        await expect(getPostSlugById(35235)).rejects.toBeInstanceOf(WordPressIndisponivelError)
     })
 })
