@@ -1,5 +1,5 @@
 'use client'
-import { storageKey, legacyStorageKey } from '@/lib/constants/identidade.mjs'
+import { storageKey } from '@/lib/constants/identidade.mjs'
 /* eslint-disable react-hooks/set-state-in-effect -- theme hydrates after browser APIs become available */
 
 import { useEffect, useState } from 'react'
@@ -12,7 +12,7 @@ type Theme = 'light' | 'dark'
  * que guardavam o padrão e não a escolha, são descartadas.
  */
 const THEME_STORAGE_KEY = storageKey('theme_choice')
-const ANTIGAS = [storageKey('theme'), legacyStorageKey('theme')]
+const ANTIGAS = [storageKey('theme')]
 
 function lerSessao(): string | null {
     try { return sessionStorage.getItem(THEME_STORAGE_KEY) } catch { return null }
