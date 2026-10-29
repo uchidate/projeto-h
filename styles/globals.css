@@ -2515,9 +2515,11 @@ html[data-consent-pendente] iframe[id^="aswift"][style*="fixed"] {
   .wp-article-content .oc-track { padding: 0.85rem 0.85rem 0.95rem; }
 }
 
-/* Player compacto do Spotify (bloco ondacoreana/spotify): sem isso o iframe herda 150 px e deixa um vazio sob a faixa. */
-.wp-article-content .ondacoreana-spotify--compact { margin: 1rem 0; }
-.wp-article-content .ondacoreana-spotify--compact iframe { display: block; width: 100%; height: 80px; border: 0; border-radius: 12px; }
+/* Player compacto do Spotify (bloco hallyuhub/spotify; o nome ondacoreana-* sai quando o HTML dos posts migrar): sem isso o iframe herda 150 px e deixa um vazio sob a faixa. */
+.wp-article-content .ondacoreana-spotify--compact,
+.wp-article-content .hallyuhub-spotify--compact { margin: 1rem 0; }
+.wp-article-content .ondacoreana-spotify--compact iframe,
+.wp-article-content .hallyuhub-spotify--compact iframe { display: block; width: 100%; height: 80px; border: 0; border-radius: 12px; }
 
 /* Título do cartão de faixa: espaço para o botão de compartilhar. */
 .wp-article-content .oc-track h3 { padding-right: 7.5rem; }
