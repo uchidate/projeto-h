@@ -67,6 +67,20 @@ export async function getPostBySlug(slug: string, lang?: string): Promise<WPPost
     )
 }
 
+/**
+ * Slug de um post pelo ID, só o campo necessário (link curto `/i/{id}` das redes sociais).
+ *
+ * Ausência do post devolve `null`; WordPress fora do ar LANÇA (via `wpFetchPorSlug`): quem chama decide a
+ * resposta sem transformar um soluço do CMS em "não existe". O slug de um post quase não muda, então o cache é longo.
+ */
+export async function getPostSlugById(id: number): Promise<string | null> {
+    const post = await wpFetchPorSlug<Pick<WPPost, 'slug'>>(
+        `/wp/v2/posts${buildParams({ include: id, status: 'publish', per_page: 1, _fields: 'slug' })}`,
+        { revalidate: 86400, tags: [WP_CACHE_TAGS.posts] },
+    )
+    return post?.slug ?? null
+}
+
 export async function getCategories() {
     const categories = await wpBuscarOpcional<WPTerm[]>(`/wp/v2/categories${buildParams({
         per_page: 100, hide_empty: true, orderby: 'count', order: 'desc',
