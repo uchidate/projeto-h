@@ -45,4 +45,11 @@ describe('GET /i/[id] (link curto das redes)', () => {
         getPostSlugById.mockRejectedValue(new Error('bug'))
         await expect(chamar('35235')).rejects.toThrow('bug')
     })
+
+    it('seção do site sozinha (/i/loja) redireciona com a origem Instagram, sem consultar o WordPress', async () => {
+        const res = await chamar('loja')
+        expect(res.status).toBe(302)
+        expect(new URL(res.headers.get('location')!).pathname).toBe('/loja')
+        expect(getPostSlugById).not.toHaveBeenCalled()
+    })
 })
