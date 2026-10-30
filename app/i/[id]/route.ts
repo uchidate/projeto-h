@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { SITE_URL } from '@/lib/constants/site'
+import { redirecionarSecao, SEM_INDEXAR } from '@/lib/redes/linkCurto'
 import { WordPressIndisponivelError } from '@/lib/wordpress/client'
 import { getPostSlugById } from '@/lib/wordpress/posts'
 
@@ -8,11 +9,10 @@ import { getPostSlugById } from '@/lib/wordpress/posts'
 // O UTM sai daqui e não do texto da legenda, e o Umami continua separando por post (`utm_campaign` = slug).
 export const dynamic = 'force-dynamic'
 
-const SEM_INDEXAR = { 'X-Robots-Tag': 'noindex, nofollow' }
-
 export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
     const { id } = await context.params
-    if (!/^\d{1,10}$/.test(id)) return new NextResponse(null, { status: 404, headers: SEM_INDEXAR })
+    // Não numérico: seção do site (`/i/loja`); redirecionarSecao devolve 404 para o que não for seção.
+    if (!/^\d{1,10}$/.test(id)) return redirecionarSecao([id])
 
     let slug: string | null
     try {
