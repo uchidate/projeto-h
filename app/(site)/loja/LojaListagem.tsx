@@ -11,6 +11,9 @@ import { VitrineVista } from '@/components/ui/VitrineVista'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
+/** Por categoria na /loja sem filtro: os mais clicados primeiro; o resto fica em "Ver todos" (a página chegava a ~31 mil px no celular). */
+const ITENS_POR_CATEGORIA = 12
+
 export const metadataLoja: Metadata = {
     title: 'Loja K-Pop',
     description: `Produtos K-Pop, K-Beauty e K-Drama selecionados pela curadoria ${SITE_NAME}: álbuns, lightsticks, photocards, skincare coreana e muito mais.`,
@@ -139,14 +142,15 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                             ))}
                     </div>
                 </div>
-                <p className="mt-3 flex items-start gap-2 text-[12px] text-muted">
+                <p className="mt-3 hidden items-start gap-2 text-[12px] text-muted sm:flex">
                     <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
                     Os links desta página são de afiliados. Você paga o mesmo preço — a comissão ajuda a manter o {SITE_NAME} no ar.
                 </p>
 
-                {/* Mosaico — mesmas imagens da vitrine, com desconto/preço no hover em vez de decoração pura */}
+                {/* Mosaico — mesmas imagens da vitrine, com desconto/preço no hover em vez de decoração pura.
+                    No celular fica escondido: repete os produtos de "Escolhas da curadoria" logo abaixo e empurra o 1º card para ~650px. */}
                 {featured.length > 0 && (
-                    <div className="mt-5 grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-8">
+                    <div className="mt-5 hidden grid-cols-6 gap-2 sm:grid lg:grid-cols-8">
                         {featured.slice(0, 8).map(p => {
                             const descontoMosaico = calcularDesconto(p.acf.price, p.acf.original_price)
                             return (
@@ -257,8 +261,14 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                         <span className="text-[12px] font-semibold text-muted">{items.length} produto{items.length !== 1 ? 's' : ''}</span>
                                     </div>
                                     <VitrineVista contexto={`loja:categoria:${cat}`} produtoIds={items.slice(0, 8).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                        {items.map(p => <StoreCard key={p.id} product={p} contexto={`loja:categoria:${cat}`} link={productLinks.get(p.id)} />)}
+                                        {items.slice(0, ITENS_POR_CATEGORIA).map(p => <StoreCard key={p.id} product={p} contexto={`loja:categoria:${cat}`} link={productLinks.get(p.id)} />)}
                                     </VitrineVista>
+                                    {items.length > ITENS_POR_CATEGORIA && (
+                                        <a href={setParam('categoria', cat)}
+                                            className="mt-4 flex h-11 items-center justify-center border border-border-strong text-[13px] font-bold text-foreground transition-colors hover:border-accent hover:text-accent">
+                                            Ver todos os {items.length} de {formatCategory(cat)} →
+                                        </a>
+                                    )}
                                 </section>
                             ))
                         )}
