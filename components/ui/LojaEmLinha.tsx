@@ -53,7 +53,12 @@ export function LojaEmLinha({ products, bloco, contexto, title = 'Achados da loj
                             <span className="flex min-w-0 flex-1 flex-col">
                                 <span className="line-clamp-2 text-[13px] font-semibold leading-snug">{nome}</span>
                                 <span className="mt-auto flex items-end justify-between gap-2 pt-1.5 sm:block sm:pt-0">
-                                    {acf.price && <span className="text-lg font-black leading-none sm:mt-1 sm:block">{acf.price}</span>}
+                                    {acf.price && (
+                                        <span className="sm:mt-1 sm:block">
+                                            <span className="text-lg font-black leading-none">{acf.price}</span>
+                                            {desconto !== null && acf.original_price && <span className="ml-1.5 text-[12px] text-muted line-through">{acf.original_price}</span>}
+                                        </span>
+                                    )}
                                     <span className="inline-flex shrink-0 items-center gap-1 text-[12px] font-black text-accent sm:mt-auto sm:pt-2">
                                         Ver oferta <ExternalLink size={12} aria-hidden />
                                     </span>
