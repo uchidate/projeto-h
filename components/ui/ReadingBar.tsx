@@ -63,7 +63,7 @@ export function ReadingBar({ backHref, backLabel, tagLabel, tagColor, tagHref, t
         const atualizar = () => {
             raiz.style.setProperty(
                 '--reading-bar-h',
-                visible ? `${Math.ceil(barra.getBoundingClientRect().height)}px` : '0px',
+                visible ? `${Math.ceil(barra.offsetHeight)}px` : '0px',
             )
         }
         atualizar()

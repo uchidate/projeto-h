@@ -150,7 +150,11 @@ const NavBar = ({
         const nav = navRef.current
         if (!nav) return
         const update = () => {
-            const altura = Math.ceil(nav.getBoundingClientRect().height)
+            // offsetHeight, não getBoundingClientRect: com `zoom` no body (desktop, ver
+            // globals.css) o retângulo vem em pixels de tela e a variável, usada em
+            // `top`/`height` dentro do body, seria multiplicada de novo — a barra
+            // de leitura ficava 12% abaixo do cabeçalho, com um vão no meio.
+            const altura = Math.ceil(nav.offsetHeight)
             // ESPACO RESERVADO — constante, nunca zero.
             //
             // O .navbar-spacer usa esta variavel como `height` e vive NO FLUXO
