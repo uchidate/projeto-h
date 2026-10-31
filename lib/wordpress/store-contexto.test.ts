@@ -51,6 +51,23 @@ describe('escolherPorTema', () => {
         const kdrama = [produto(200, 'Jogo de dados', 'kdrama'), produto(201, 'Creme', 'kbeauty')]
         expect(escolherPorTema(kdrama, { temas: ['drama'] }).map(p => p.id)).toContain(200)
     })
+    it('tema drama não puxa photocard nem roupa de grupo só pela categoria', () => {
+        const lista = [
+            produto(300, 'Photocard Stray Kids Karma', 'photocard'),
+            produto(301, 'Moletom BTS World Tour', 'clothing'),
+            produto(302, 'Lamen Shin Ramyun Nongshim', 'snacks'),
+            produto(303, 'Kit Pepero Lotte', 'alimenta'),
+        ]
+        const ids = escolherPorTema(lista, { temas: ['drama'] }).map(p => p.id)
+        expect(ids).toEqual(expect.arrayContaining([302, 303]))
+        expect(ids).not.toContain(300)
+        expect(ids).not.toContain(301)
+    })
+    it('drama ainda traz produto do grupo quando o título dele aparece na página', () => {
+        const lista = [produto(310, 'Photocard Stray Kids Karma', 'photocard'), produto(311, 'Lamen Shin', 'snacks')]
+        const ids = escolherPorTema(lista, { temas: ['drama'], texto: 'Elenco com Stray Kids' }).map(p => p.id)
+        expect(ids).toContain(310)
+    })
     it('vários temas limitam por categoria', () => {
         const muitos = Array.from({ length: 10 }, (_, i) => produto(100 + i, `Item ${i}`, 'kbeauty'))
         const ids = escolherPorTema(muitos, { temas: ['drama'], maxPorCategoria: 3 })
