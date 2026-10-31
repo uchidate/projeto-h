@@ -587,25 +587,27 @@
 }
 
 /* Custom Scrollbar
-   Só em ponteiro fino e fora da raiz (html). Estilizar a barra da raiz faz o WebKit reservar
-   8px de barra clássica: no Safari do iPhone, elementos fixos em tela cheia (a vinheta do
-   Google) ficam 382px num layout de 390px, deslocados do canto onde mora o botão de fechar.
-   Medido em WebKit móvel em 2026-10-20: com a regra global 382px; sem ela, 390px. */
+   Só em ponteiro fino, fora da raiz (html) e fora do que é do Google. Estilizar a barra de um
+   elemento que rola faz o WebKit reservar 8px de barra clássica: a vinheta do Google (ins/iframe
+   fixos em tela cheia, com overflow próprio, ou o body quando ela trava a rolagem) fica 8px menor
+   que a tela e o botão de fechar, no canto, some até o Google recalcular. Medido em WebKit móvel
+   em 2026-10-20 (382px num layout de 390px); no desktop o ponteiro é fino, então a regra seguia
+   valendo e o defeito continuou (relato de 2026-10-31). */
 @media (hover: hover) and (pointer: fine) {
-  *:not(html)::-webkit-scrollbar {
+  *:not(html, body, ins, iframe, [id^="google_"], [id^="aswift"], [class*="adsbygoogle"], [id^="google_"] *, [class*="adsbygoogle"] *, ins *)::-webkit-scrollbar {
     width: 8px;
   }
 
-  *:not(html)::-webkit-scrollbar-track {
+  *:not(html, body, ins, iframe, [id^="google_"], [id^="aswift"], [class*="adsbygoogle"], [id^="google_"] *, [class*="adsbygoogle"] *, ins *)::-webkit-scrollbar-track {
     background: var(--color-surface);
   }
 
-  *:not(html)::-webkit-scrollbar-thumb {
+  *:not(html, body, ins, iframe, [id^="google_"], [id^="aswift"], [class*="adsbygoogle"], [id^="google_"] *, [class*="adsbygoogle"] *, ins *)::-webkit-scrollbar-thumb {
     background: var(--color-border);
     border-radius: 4px;
   }
 
-  *:not(html)::-webkit-scrollbar-thumb:hover {
+  *:not(html, body, ins, iframe, [id^="google_"], [id^="aswift"], [class*="adsbygoogle"], [id^="google_"] *, [class*="adsbygoogle"] *, ins *)::-webkit-scrollbar-thumb:hover {
     background: var(--color-muted);
   }
 }
