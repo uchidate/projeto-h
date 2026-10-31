@@ -41,7 +41,10 @@ function topoDeEncaixe(): number {
     }
     // O offset entra aqui porque este calculo decide QUANDO fixar, comparando
     // com a posicao real na tela — e ali o deslocamento visual conta.
-    return ler('--site-header-h', 64) + ler('--site-header-offset', 0) + ler('--reading-bar-h', 0)
+    // As variáveis estão em px do body, que tem `zoom` no desktop; a comparação
+    // com a posição na tela precisa de px de tela.
+    const zoom = parseFloat(getComputedStyle(document.body).zoom) || 1
+    return (ler('--site-header-h', 64) + ler('--site-header-offset', 0) + ler('--reading-bar-h', 0)) * zoom
 }
 
 /**

@@ -420,7 +420,8 @@
 
   @media (min-width: 1024px) {
     :root {
-      --site-header-h: 196px;
+      /* Altura do nav em px do body: com o zoom de 1.12 abaixo ele mede 188px na tela. */
+      --site-header-h: 168px;
       --section-bar-h: 44px;
       --profile-section-gap: 3rem;
       --profile-section-spine: 6rem;
