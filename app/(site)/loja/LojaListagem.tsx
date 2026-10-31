@@ -139,14 +139,15 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                             ))}
                     </div>
                 </div>
-                <p className="mt-3 flex items-start gap-2 text-[12px] text-muted">
+                <p className="mt-3 hidden items-start gap-2 text-[12px] text-muted sm:flex">
                     <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
                     Os links desta página são de afiliados. Você paga o mesmo preço — a comissão ajuda a manter o {SITE_NAME} no ar.
                 </p>
 
-                {/* Mosaico — mesmas imagens da vitrine, com desconto/preço no hover em vez de decoração pura */}
+                {/* Mosaico — mesmas imagens da vitrine, com desconto/preço no hover em vez de decoração pura.
+                    No celular fica escondido: repete os produtos de "Escolhas da curadoria" logo abaixo e empurra o 1º card para ~650px. */}
                 {featured.length > 0 && (
-                    <div className="mt-5 grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-8">
+                    <div className="mt-5 hidden grid-cols-6 gap-2 sm:grid lg:grid-cols-8">
                         {featured.slice(0, 8).map(p => {
                             const descontoMosaico = calcularDesconto(p.acf.price, p.acf.original_price)
                             return (
