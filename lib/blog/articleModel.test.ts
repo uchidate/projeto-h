@@ -17,6 +17,15 @@ describe('buildArticleModel', () => {
         expect(model.blocks[0].id).toBe('block-1')
     })
 
+    it('guia de produto tem no máximo 2 quebras de anúncio e mais espaço entre elas', () => {
+        const paragrafos = Array.from({ length: 16 }, (_, index) => block('core/paragraph', `<p>${`detalhe ${index} `.repeat(120)}</p>`))
+        const comum = buildArticleModel(paragrafos)
+        const guia = buildArticleModel([...paragrafos, block('hallyuhub/product', '<div class="oc-product"></div>', { productId: 1 })])
+        expect(comum.adBreakAfter.size).toBe(3)
+        expect(guia.adBreakAfter.size).toBeLessThanOrEqual(2)
+        expect(guia.adBreakAfter.size).toBeLessThan(comum.adBreakAfter.size)
+    })
+
     it('falha explicitamente para bloco fora do contrato', () => {
         expect(() => buildArticleModel([block('plugin/desconhecido', '<div />')])).toThrow(/não suportado/)
     })
