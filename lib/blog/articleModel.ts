@@ -43,6 +43,12 @@ export function buildArticleModel(source: WPArticleBlock[]): ArticleModel {
 
     const total = blocks.reduce((sum, block) => sum + block.textLength, 0)
     const adBreakAfter = new Set<string>()
+    // Guia de produto: os cartões de produto já ocupam a tela entre os trechos de texto, então a mesma
+    // distância em caracteres vira pouca distância na rolagem. Menos quebras e mais espaço entre elas
+    // (pedido do dono em 2026-11-01: anúncio demais atrapalha a leitura do guia).
+    const guiaDeProduto = blocks.some(block => block.name.endsWith('/product'))
+    const maxQuebras = guiaDeProduto ? 2 : 3
+    const minTexto = guiaDeProduto ? 2000 : 1200
     let consumed = 0
     let sinceLast = 0
     for (let index = 0; index < blocks.length; index++) {
@@ -53,8 +59,8 @@ export function buildArticleModel(source: WPArticleBlock[]): ArticleModel {
         // ~80% em sessões do Brasil (Umami, 28 dias até 2026-09-17). Artigo longo
         // passava milhares de caracteres sem anúncio depois da segunda quebra.
         // O espaçamento mínimo de 1.200 caracteres continua valendo.
-        if (adBreakAfter.size >= 3 || index < 2 || !ARTICLE_BLOCKS.get(block.name)?.adBoundary) continue
-        if (sinceLast < 1200 || total - consumed < 600 || blocks[index + 1]?.name === 'core/heading') continue
+        if (adBreakAfter.size >= maxQuebras || index < 2 || !ARTICLE_BLOCKS.get(block.name)?.adBoundary) continue
+        if (sinceLast < minTexto || total - consumed < 600 || blocks[index + 1]?.name === 'core/heading') continue
         adBreakAfter.add(block.id)
         sinceLast = 0
     }
