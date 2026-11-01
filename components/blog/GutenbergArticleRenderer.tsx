@@ -62,7 +62,7 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
     const faixaDoBloco = (id: string) => faixas.find(f => f.id === id)
     const idPrimeiraFaixa = faixas.length >= 3 ? faixas[0].id : undefined
     return (
-        <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" data-article-model-version={model.version}>
+        <div className={`prose dark:prose-invert max-w-none ${model.guiaDeProduto ? '' : 'sm:[&_p]:text-justify'}`} data-article-model-version={model.version}>
             <EmbedsSobDemanda />
             {model.blocks.map((block) => (
                 <div
