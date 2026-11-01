@@ -1,9 +1,25 @@
 import { StoreCard } from '@/components/ui/StoreCard'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import { stripHtml } from '@/lib/utils'
 
 export interface ProdutoDoTexto {
     produto: StoreProduct
     legendaHtml?: string
+}
+
+const normaliza = (t: string) => stripHtml(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+
+/** Legenda que só repete o nome do produto (a do editor costuma ser o próprio título) não acrescenta nada ao cartão. */
+export function legendaRepeteTitulo(legendaHtml: string | undefined, titulo: string) {
+    if (!legendaHtml) return false
+    const l = normaliza(legendaHtml)
+    const t = normaliza(titulo)
+    if (!l || !t) return false
+    const colado = (x: string) => x.replace(/ /g, '')
+    if (colado(l) === colado(t) || colado(t).includes(colado(l)) || colado(l).includes(colado(t))) return true
+    const palavras = l.split(' ')
+    const comuns = palavras.filter(p => t.split(' ').includes(p)).length
+    return comuns / palavras.length >= 0.8
 }
 
 function Legenda({ html }: { html?: string }) {
@@ -19,9 +35,9 @@ function Legenda({ html }: { html?: string }) {
  */
 export function ProdutoNoArtigo({ produto, legendaHtml, contexto }: ProdutoDoTexto & { contexto: string }) {
     return (
-        <figure className="not-prose !my-8 !mx-auto !items-stretch w-full max-w-[280px]" data-produto-no-artigo={produto.id}>
-            <StoreCard product={produto} contexto={contexto} />
-            <Legenda html={legendaHtml} />
+        <figure className="not-prose !my-8 !mx-auto !items-stretch w-full max-w-[34rem]" data-produto-no-artigo={produto.id}>
+            <StoreCard product={produto} contexto={contexto} linha />
+            <Legenda html={legendaRepeteTitulo(legendaHtml, produto.title.rendered) ? undefined : legendaHtml} />
         </figure>
     )
 }
