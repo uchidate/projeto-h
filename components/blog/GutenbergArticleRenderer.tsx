@@ -32,7 +32,7 @@ function faixasDoIndice(blocks: ArticleModel['blocks']): FaixaDoIndice[] {
     return faixas
 }
 
-/** `cardGrupo` (variante B do teste) entra na primeira quebra de anúncio, logo antes dela; em texto curto, sem quebra, vai ao fim do corpo. */
+/** `cardGrupo` entra logo depois do 2º bloco (a abertura); em texto de um bloco só, vai ao fim do corpo. */
 /** `sugestaoMeio` entra após ~40% dos blocos, em artigo com pelo menos 8; nunca antes do 3º bloco. */
 export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaMeio, produtos, contextoProduto = 'artigo' }: { model: ArticleModel; cardGrupo?: ReactNode; sugestaoMeio?: ReactNode; lojaMeio?: ReactNode; produtos?: Map<number, StoreProduct>; contextoProduto?: string }) {
     const idMeio = sugestaoMeio && model.blocks.length >= 8
@@ -42,8 +42,9 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
     const idLoja = lojaMeio && model.blocks.length >= 10
         ? model.blocks[Math.max(4, Math.floor(model.blocks.length * 0.7))]?.id
         : undefined
+    // Logo depois da abertura (2º bloco): 49% dos leitores passam de 25% da página e só 3% chegam ao fim.
     const primeiraQuebra = cardGrupo
-        ? (model.blocks.find(b => model.adBreakAfter.has(b.id)) ?? model.blocks[model.blocks.length - 1])?.id
+        ? model.blocks[Math.min(1, model.blocks.length - 1)]?.id
         : undefined
     // Produtos em sequência saem juntos, numa prateleira; o primeiro bloco da sequência a desenha e os demais ficam vazios.
     const prateleiras = new Map<string, ProdutoDoTexto[]>()

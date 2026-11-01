@@ -21,6 +21,20 @@ describe('GutenbergArticleRenderer', () => {
         expect(container.firstElementChild).toHaveAttribute('data-article-model-version', '1')
     })
 
+    it('põe o card de perfis citados logo depois da abertura, antes da primeira quebra de anúncio', () => {
+        const model = buildArticleModel([
+            block('core/paragraph', '<p>Primeiro parágrafo da abertura.</p>'),
+            block('core/paragraph', '<p>Segundo parágrafo da abertura.</p>'),
+            block('core/heading', '<h2 class="wp-block-heading">Seção</h2>'),
+            block('core/paragraph', '<p>Texto da seção.</p>'),
+        ])
+        const { container } = render(<GutenbergArticleRenderer model={model} cardGrupo={<aside data-testid="card">Perfis citados</aside>} />)
+        const blocos = [...container.querySelectorAll('[data-article-block]')]
+        const dentroDoSegundo = blocos[1].querySelector('[data-testid="card"]')
+        expect(dentroDoSegundo).not.toBeNull()
+        expect(blocos[0].querySelector('[data-testid="card"]')).toBeNull()
+    })
+
     describe('bloco de produto', () => {
         const nome = `${BLOCK_ALT_PREFIX}/product`
         const produto = (id: number): StoreProduct => ({

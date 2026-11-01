@@ -113,15 +113,17 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
 
                         <ProductionElencoB title={title} cast={cast} castRoles={castRoles} />
 
-                        {/* A ficha é a página de maior tráfego e não tinha loja: faixa curta logo após o elenco,
-                            onde o leitor ainda está no auge do interesse pela obra. */}
-                        <LojaEmLinha bloco="producao-loja-meio" products={shopProducts} title={`Para quem curte ${title}`} contexto={`producao:${production.slug}:meio`} />
-
                         {/* Logo após o elenco: na 3ª posição do fim da página só ~19% dos visitantes chegavam
-                            às relacionadas, que convertem ~8% de quem as vê (Umami, 30d, 2026-10). */}
+                            às relacionadas, que convertem ~8% de quem as vê (Umami, 30d, 2026-10). Em 2026-11-01 a faixa
+                            de loja estava entre as duas e só 558 de 1.157 vistas do elenco chegavam às relacionadas
+                            (4,7% de clique contra 2,3% da loja): a loja passa a vir depois. */}
                         <div id="relacionados" className={ANCORA}>
                             <ProductionRelated related={related} genres={genres} naColuna />
                         </div>
+
+                        {/* A ficha é a página de maior tráfego e não tinha loja: faixa curta depois das relacionadas,
+                            ainda antes dos episódios. */}
+                        <LojaEmLinha bloco="producao-loja-meio" products={shopProducts} title={`Para quem curte ${title}`} contexto={`producao:${production.slug}:meio`} />
 
                         {episodios.length > 0 && (
                             <section id="episodios" className={ANCORA} data-bloco="producao-episodios">
