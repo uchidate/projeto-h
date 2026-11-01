@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-export interface EntidadeDoCard { name: string; href: string; image: string | null; tipo: 'grupo' | 'artista' }
+export interface EntidadeDoCard { name: string; href: string; image: string | null; tipo: 'grupo' | 'artista' | 'producao' }
 
 interface Props {
     titulo: string
@@ -28,7 +28,7 @@ export function BlogEntityCard({ titulo, itens, color }: Props) {
                                 {a.image && <Image src={a.image} alt="" fill sizes="(max-width: 640px) 84px, 110px" className="object-cover object-top" />}
                             </span>
                             <span className="mt-1.5 block truncate text-center text-[12px] font-bold text-foreground">{a.name}</span>
-                            <span className="block text-center font-mono text-[9px] uppercase tracking-[0.08em] text-muted">{a.tipo === 'grupo' ? 'Grupo' : 'Artista'}</span>
+                            <span className="block text-center font-mono text-[9px] uppercase tracking-[0.08em] text-muted">{a.tipo === 'grupo' ? 'Grupo' : a.tipo === 'producao' ? 'Produção' : 'Artista'}</span>
                         </Link>
                     </div>
                 ))}

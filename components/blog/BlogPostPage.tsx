@@ -338,9 +338,10 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
     const citados: EntidadeDoCard[] = [
         ...(post.related_entities?.groups ?? []).filter(g => g.image).map(g => ({ name: g.name, href: `/groups/${g.slug}`, image: g.image, tipo: 'grupo' as const })),
         ...(post.related_entities?.artists ?? []).filter(x => x.image).map(x => ({ name: x.name, href: `/artists/${x.slug}`, image: x.image, tipo: 'artista' as const })),
+        ...(post.related_entities?.productions ?? []).filter(x => x.image).map(x => ({ name: x.title, href: `/productions/${x.slug}`, image: x.image, tipo: 'producao' as const })),
     ].slice(0, 7)
-    const cardGrupo = citados.length >= 2
-        ? <BlogEntityCard titulo="Perfis citados no texto" itens={citados} color={primaryGroupColor} />
+    const cardGrupo = citados.length >= 1
+        ? <BlogEntityCard titulo={citados.every(c => c.tipo === 'producao') ? 'Produções citadas no texto' : 'Perfis citados no texto'} itens={citados} color={primaryGroupColor} />
         : null
 
     const relatedPreviews = buildRelatedPreviewMap(post)
@@ -368,7 +369,9 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
     const tituloAtual = stripHtml(post.title.rendered)
     // Pula gêmeos do artigo atual: o ranking de relacionados os põe no topo por compartilharem entidade.
     const candidatoMeio = relatedPosts.slice(1).find(c => !tituloQuaseIgual(tituloAtual, stripHtml(c.title.rendered)))
-    const meioNovo = Math.floor(post.id / 2) % 2 === 0 && candidatoMeio !== undefined
+    // Sugestão do meio desligada em 2026-11-01: 0 cliques em 318 vistas (Umami, 28 dias, humanos); o card de
+    // perfis citados, que leva a uma ficha, teve 4% e agora sobe para logo depois da abertura.
+    const meioNovo = false && candidatoMeio !== undefined
     const moreRelatedPosts = relatedPosts.slice(1, 6).filter(c => !meioNovo || c.id !== candidatoMeio?.id).slice(0, 4)
     const lojaMeio = shopProducts.length > 0
         ? <LojaEmLinha bloco="artigo-loja-meio" products={shopProducts} title="Achados para quem lê isso" contexto={`blog:${post.slug}:meio`} />
@@ -667,7 +670,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
                                         <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" dangerouslySetInnerHTML={{ __html: articleLead }} />
                                         {contentSegments.map((segment, i) => (
                                             <div key={i}>
-                                                {i === 1 && cardGrupo}
+                                                {i === 0 && cardGrupo}
                                                 {i === Math.max(1, Math.ceil(contentSegments.length * 0.4)) && contentSegments.length >= 3 && sugestaoMeio}
                                                 {i === Math.max(2, Math.ceil(contentSegments.length * 0.75)) && contentSegments.length >= 4 && lojaMeio && <div className="my-8">{lojaMeio}</div>}
                                                 {i > 0 && ADSENSE.slots.inline && <div className="my-8"><AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="article_body" /></div>}
