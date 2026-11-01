@@ -8,6 +8,7 @@ import { calcularDesconto, ehMenorPrecoEmDias, ehNovo, quedaDePreco, type StoreP
 import { stripHtml } from '@/lib/utils'
 import { trackProductClick } from '@/lib/analytics'
 import type { ProductLink } from '@/lib/wordpress/productLinks'
+import { zoomDaFoto } from '@/lib/wordpress/fotoDeRevendedora'
 
 export const STORE_CONFIG: Record<string, { label: string; color: string; bg: string; textColor: string; stripe: string }> = {
     shopee:       { label: 'Shopee',        color: 'text-orange-500', bg: 'bg-orange-700',  textColor: 'text-white', stripe: 'bg-orange-600' },
@@ -57,7 +58,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                 <span className={`absolute inset-y-0 left-0 w-1 ${cfg.stripe}`} aria-hidden="true" />
                 <div className="relative h-28 w-28 shrink-0 overflow-hidden bg-surface sm:h-36 sm:w-36">
                     {acf.image_url ? (
-                        <Image src={acf.image_url} alt={name} fill sizes="(max-width: 640px) 112px, 144px" className="object-cover" />
+                        <Image src={acf.image_url} alt={name} fill sizes="(max-width: 640px) 112px, 144px" className={`object-cover ${zoomDaFoto(product.id)}`} />
                     ) : (
                         <div className="flex h-full w-full items-end bg-linear-to-br from-foreground/90 to-foreground/70 p-2">
                             <span className="line-clamp-4 text-xs font-black uppercase leading-tight text-background/60">{name}</span>
@@ -102,7 +103,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                 className="flex gap-3 border border-border bg-background p-3 transition-colors hover:border-accent/40 group">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-surface">
                     {acf.image_url ? (
-                        <Image src={acf.image_url} alt={name} fill sizes="64px" className="object-cover" />
+                        <Image src={acf.image_url} alt={name} fill sizes="64px" className={`object-cover ${zoomDaFoto(product.id)}`} />
                     ) : (
                         <div className="flex h-full w-full items-end bg-linear-to-br from-foreground/90 to-foreground/70 p-1">
                             <span className="line-clamp-3 text-[9px] font-black uppercase leading-tight text-background/60">{name}</span>
@@ -136,7 +137,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                 {acf.image_url ? (
                     <Image src={acf.image_url} alt={name} fill
                         sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 220px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.06]" />
+                        className={`object-cover transition-transform duration-500 ${zoomDaFoto(product.id) || 'group-hover:scale-[1.06]'}`} />
                 ) : (
                     <div className="flex h-full w-full items-end bg-linear-to-br from-foreground/90 to-foreground/70 p-3">
                         <span className="line-clamp-4 text-sm font-black uppercase leading-tight text-background/60">{name}</span>
