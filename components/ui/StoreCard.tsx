@@ -70,7 +70,6 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                 <div className="flex min-w-0 flex-1 flex-col">
                     <div className="flex items-center gap-1.5">
                         <span className={`font-mono text-[9px] font-bold uppercase tracking-wide ${cfg.color}`}>{cfg.label}</span>
-                        {novo && <span className="bg-accent px-1 py-0.5 font-mono text-[9px] font-black uppercase tracking-wide text-white">Novo</span>}
                         {acf.rating && acf.rating > 0 && (
                             <span className="ml-auto flex items-center gap-1 text-[11px] font-bold text-muted">
                                 <Star className="h-3 w-3 fill-amber-400 text-amber-400" />

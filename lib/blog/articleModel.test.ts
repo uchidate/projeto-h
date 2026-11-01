@@ -32,3 +32,19 @@ describe('buildArticleModel', () => {
         expect(() => buildArticleModel([block('plugin/desconhecido', '<div />')])).toThrow(/não suportado/)
     })
 })
+
+describe('crédito da capa', () => {
+    it('tira o parágrafo "Foto da capa" do corpo e o expõe à parte', () => {
+        const model = buildArticleModel([
+            block('core/paragraph', '<p>Abertura do guia.</p>'),
+            block('core/paragraph', '<p>Foto da capa: mulher aplicando creme (CC0, Wikimedia Commons).</p>'),
+        ])
+        expect(model.blocks).toHaveLength(1)
+        expect(model.creditoCapaHtml).toBe('Foto da capa: mulher aplicando creme (CC0, Wikimedia Commons).')
+    })
+    it('sem crédito, nada muda', () => {
+        const model = buildArticleModel([block('core/paragraph', '<p>Só texto.</p>')])
+        expect(model.creditoCapaHtml).toBeUndefined()
+        expect(model.blocks).toHaveLength(1)
+    })
+})

@@ -1858,75 +1858,100 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
   width: 100%;
 }
 
-/* ── Prós e Contras ── */
+/* ── Prós e Contras ──
+   Compacto: título em frase, rótulos coloridos e ✓/✕ nos itens. Os seletores repetem a classe da lista de
+   propósito: a regra global de `ul li` do artigo (marcador rosa, recuo) tem a mesma força e venceria. */
 .wp-article-content .__bloco__-pros-cons {
-  margin: 2rem 0;
+  margin: 1.75rem 0;
   border: 1px solid var(--color-border);
-  background: var(--color-background);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  overflow: hidden;
 }
 
 .wp-article-content .__bloco__-pros-cons__title {
   margin: 0;
-  padding: 0.75rem 1rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.65rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
   font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-muted);
+  line-height: 1.3;
+  color: var(--color-fg);
   border-bottom: 1px solid var(--color-border);
+  text-align: left;
 }
 
 .wp-article-content .__bloco__-pros-cons__grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
 }
 
 .wp-article-content .__bloco__-pros,
 .wp-article-content .__bloco__-cons {
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
 }
 
 .wp-article-content .__bloco__-pros {
-  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .wp-article-content .__bloco__-pros__label,
 .wp-article-content .__bloco__-cons__label {
-  margin: 0 0 0.65rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.62rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: left;
 }
 
-.wp-article-content .__bloco__-pros__label { color: #16a34a; }
-.wp-article-content .__bloco__-cons__label { color: #dc2626; }
+.wp-article-content .__bloco__-pros__label { color: #15803d; }
+.wp-article-content .__bloco__-cons__label { color: #b91c1c; }
 
 .wp-article-content .__bloco__-pros__list,
 .wp-article-content .__bloco__-cons__list {
   margin: 0;
-  padding-left: 1.1rem;
+  padding: 0;
+  gap: 0.2rem;
 }
 
 .wp-article-content .__bloco__-pros__list li,
 .wp-article-content .__bloco__-cons__list li {
-  margin: 0.35rem 0;
+  margin: 0;
+  padding-left: 1.3rem;
   font-size: 0.9rem;
-  line-height: 1.6;
-  color: var(--color-fg-subtle);
+  line-height: 1.5;
+  color: var(--color-fg);
+  text-align: left;
 }
 
-@media (max-width: 639px) {
+.wp-article-content .__bloco__-pros__list li::before,
+.wp-article-content .__bloco__-cons__list li::before {
+  top: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  font-size: 0.85rem;
+  font-weight: 900;
+  line-height: 1.5;
+}
+
+.wp-article-content .__bloco__-pros__list li::before { content: "✓"; color: #15803d; }
+.wp-article-content .__bloco__-cons__list li::before { content: "✕"; color: #b91c1c; }
+
+@media (min-width: 520px) {
   .wp-article-content .__bloco__-pros-cons__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
   .wp-article-content .__bloco__-pros {
-    border-right: 0;
-    border-bottom: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    border-bottom: 0;
   }
 }
+
+.dark .wp-article-content .__bloco__-pros__label,
+.dark .wp-article-content .__bloco__-pros__list li::before { color: #4ade80; }
+.dark .wp-article-content .__bloco__-cons__label,
+.dark .wp-article-content .__bloco__-cons__list li::before { color: #f87171; }
 
 .wp-article-content table {
   display: block;
