@@ -20,6 +20,8 @@ export type ArticleModel = {
     adBreakAfter: Set<string>
     /** Guia de compra (tem bloco de produto): a página tira os anúncios de antes do texto e do fim. */
     guiaDeProduto: boolean
+    /** HTML interno do parágrafo "Foto da capa: …", tirado do corpo para a página mostrá-lo como legenda sob a capa. */
+    creditoCapaHtml?: string
 }
 
 function slug(value: string) {
@@ -27,7 +29,12 @@ function slug(value: string) {
         .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 72)
 }
 
-export function buildArticleModel(source: WPArticleBlock[]): ArticleModel {
+const CREDITO_CAPA = /^\s*Foto da capa:/i
+
+export function buildArticleModel(todos: WPArticleBlock[]): ArticleModel {
+    const indiceCredito = todos.findIndex(b => b.name === 'core/paragraph' && CREDITO_CAPA.test(stripHtml(b.html)))
+    const creditoCapaHtml = indiceCredito >= 0 ? todos[indiceCredito].html.match(/<p[^>]*>([\s\S]*?)<\/p>/i)?.[1]?.trim() : undefined
+    const source = creditoCapaHtml ? todos.filter((_, i) => i !== indiceCredito) : todos
     const used = new Map<string, number>()
     const headings: ArticleModel['headings'] = []
     const blocks = source.map((block, index) => {
@@ -77,5 +84,5 @@ export function buildArticleModel(source: WPArticleBlock[]): ArticleModel {
         sinceLast = 0
     }
 
-    return { version: 1, blocks, headings, adBreakAfter, guiaDeProduto }
+    return { version: 1, blocks, headings, adBreakAfter, guiaDeProduto, creditoCapaHtml }
 }

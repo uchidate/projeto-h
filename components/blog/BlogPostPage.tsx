@@ -43,7 +43,6 @@ import { buildArticleModel } from '@/lib/blog/articleModel'
 import { GutenbergArticleRenderer } from '@/components/blog/GutenbergArticleRenderer'
 import { toRgba } from '@/lib/agencies/presentation'
 import { ArticleSidebarAd } from '@/components/blog/ArticleSidebarAd'
-import { BarraAncorada } from '@/components/ui/BarraAncorada'
 import { metaDescription } from '@/lib/seo/metaDescription'
 
 type ArticleHeading = { id: string; text: string; level: 2 | 3 }
@@ -474,47 +473,8 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                 postId={post.id}
             />
 
-            {/* Barra de contexto editorial: categoria + tags do artigo.
-              *
-              * Ocupa DE PROPOSITO o mesmo `top` da ReadingBar, com z-index
-              * menor: no topo do artigo aparecem as tags, e quando a leitura
-              * comeca a ReadingBar cobre este espaco com progresso, titulo e
-              * compartilhar. No celular, empilhar as duas custaria 74px de
-              * cromo fixo — quase 9% da tela.
-              *
-              * Por isso as duas precisam do mesmo ancoramento. Em
-              * 2026-09-11 so a ReadingBar tinha: ela subiu junto com o
-              * cabecalho ao rolar, esta ficou parada em 93px, e o que deveria
-              * estar coberto apareceu flutuando no meio da imagem de capa. */}
-            {(cat || tags.length > 0) && (
-                <BarraAncorada posicao="fixed" z={308} className="left-1/2 -translate-x-1/2 w-full max-w-[1440px] bg-background border-b border-border/50">
-                    <div className="page-wrap flex items-center gap-0 h-9 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                        {cat && (
-                            <Link
-                                href={`/blog?category=${cat.slug}`}
-                                className="shrink-0 flex items-center h-full pr-3 mr-3 border-r border-border/50 font-mono text-[9px] font-black uppercase tracking-[0.14em] hover:opacity-80 transition-opacity"
-                                style={{ color: accentColor }}
-                            >
-                                {cat.name}
-                            </Link>
-                        )}
-                        {tags.slice(0, 8).map(tag => {
-                            const ts = catStyle(tag.slug)
-                            return (
-                                <Link
-                                    key={tag.id}
-                                    href={`/blog?tag=${tag.slug}`}
-                                    className="shrink-0 mr-1.5 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em] transition-opacity hover:opacity-80"
-                                    style={{ color: ts.color, backgroundColor: ts.bg }}
-                                >
-                                    {tag.name}
-                                </Link>
-                            )
-                        })}
-                    </div>
-                </BarraAncorada>
-            )}
-            <div aria-hidden="true" className="h-9" />
+            {/* A faixa de categoria e tags saiu do topo (2026-11-01): empilhava 36px de cromo antes do título e repetia o
+              * "Explorar por tema" do fim do artigo. As tags continuam lá, no fim. */}
 
             {/* ── Mobile hero estilo Globo: texto acima, foto full-width abaixo ── */}
             <div className="lg:hidden bg-background px-4 pt-4 pb-3 border-b border-border">
@@ -558,6 +518,9 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                     <Image src={image.src} alt={title} fill priority
                         sizes="100vw" className="object-cover" />
                 </div>
+            )}
+            {image && structuredModel?.creditoCapaHtml && (
+                <p className="lg:hidden px-4 pt-1.5 text-[11px] leading-snug text-muted [&_a]:underline" dangerouslySetInnerHTML={{ __html: structuredModel.creditoCapaHtml }} />
             )}
 
             <div className="page-wrap py-0 sm:py-5 lg:py-6">
@@ -629,13 +592,16 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                         {/* Desktop image — depois da autoria, antes do conteúdo */}
                         {image && (
                             <figure
-                                className="oc-hero-media hidden lg:block relative mb-10 w-full overflow-hidden bg-surface aspect-video"
+                                className={`oc-hero-media hidden lg:block relative w-full overflow-hidden bg-surface aspect-video ${structuredModel?.creditoCapaHtml ? 'mb-2' : 'mb-10'}`}
                                 style={primaryGroupColor ? { boxShadow: `0 32px 64px -28px ${toRgba(primaryGroupColor, 0.5)}` } : undefined}
                             >
                                 <Image src={image.src} alt={image.alt || title} fill priority
                                     sizes="(max-width: 1280px) 100vw, calc(100vw - 360px)"
                                     className="object-cover" />
                             </figure>
+                        )}
+                        {image && structuredModel?.creditoCapaHtml && (
+                            <p className="hidden lg:block -mt-8 mb-8 text-[11px] leading-snug text-muted [&_a]:underline" dangerouslySetInnerHTML={{ __html: structuredModel.creditoCapaHtml }} />
                         )}
 
                         {/* Leaderboard após o bloco título–autoria–imagem: mantém alta
