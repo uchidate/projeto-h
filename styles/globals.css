@@ -1726,6 +1726,21 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
   margin-top: 0.75rem;
 }
 
+@media (max-width: 519px) {
+  .wp-article-content aside:not([class]) {
+    padding: 1rem 1rem 1rem 2.4rem;
+  }
+  .wp-article-content aside:not([class])::before {
+    left: 0.8rem;
+    top: 1.05rem;
+  }
+  .wp-article-content aside:not([class]) p {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--color-fg);
+  }
+}
+
 .wp-article-content aside:not([class]) p strong:first-child {
   display: block;
   margin-bottom: 0.5rem;
@@ -1747,11 +1762,17 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
 
 .wp-article-content .__bloco__-highlight__text {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: 1.05rem;
+  font-weight: 600;
   line-height: 1.55;
   color: var(--color-fg);
   font-style: normal;
+}
+
+@media (max-width: 519px) {
+  .wp-article-content .__bloco__-highlight {
+    padding: 1rem 1.1rem;
+  }
 }
 
 .wp-article-content .__bloco__-highlight__attribution {
@@ -2001,15 +2022,23 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
   }
 
   .wp-article-content .oc-related-content {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
     width: 100%;
     align-items: center;
-    gap: 0.65rem;
+    column-gap: 0.75rem;
+    row-gap: 0.15rem;
     padding: 0.8rem;
   }
 
+  .wp-article-content .oc-related-content::before { grid-row: 1 / span 2; }
+
   .wp-article-content .oc-related-content > span {
     display: block;
+    grid-column: 2;
   }
+
+  .wp-article-content .oc-related-content > a { grid-column: 2; }
 
   .wp-article-content .oc-related-content a {
     display: block;
@@ -2362,7 +2391,12 @@ ins.adsbygoogle[data-ad-status^="unfill"] { display: none !important; }
     margin: 0;
 }
 @media (max-width: 480px) {
-    .wp-article-content .__bloco__-ficha__grid { grid-template-columns: 1fr; }
+    .wp-article-content .__bloco__-ficha { padding: 1rem; }
+    .wp-article-content .__bloco__-ficha__grid {
+        grid-template-columns: max-content 1fr;
+        gap: 0.5rem 1rem;
+        align-items: baseline;
+    }
 }
 
 .wp-article-content .__bloco__-lyrics {
