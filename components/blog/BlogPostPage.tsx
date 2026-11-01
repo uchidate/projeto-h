@@ -300,7 +300,7 @@ interface Props {
     produtosNoTexto?: StoreProduct[]
 }
 
-export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produtosNoTexto = [] }: Props) {
+export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProductsDaPagina = [], produtosNoTexto = [] }: Props) {
     /* Hallmark · macrostructure: Long Document · genre: editorial · theme: editorial tokens
      * audience: leitores de cultura coreana · use: leitura e descoberta · tone: editorial
      * pre-emit critique: P5 H4 E4 S5 R4 V4
@@ -373,7 +373,12 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
     // perfis citados, que leva a uma ficha, teve 4% e agora sobe para logo depois da abertura.
     const meioNovo = false && candidatoMeio !== undefined
     const moreRelatedPosts = relatedPosts.slice(1, 6).filter(c => !meioNovo || c.id !== candidatoMeio?.id).slice(0, 4)
-    const lojaMeio = shopProducts.length > 0
+    // Guia de produto: o próprio texto é a vitrine. A faixa "Achados" no meio sai, e a vitrine do fim não repete
+    // o que o guia já mostrou (pedido do dono, 2026-11-01: módulos parecidos demais depois do texto).
+    const guiaDeProduto = post.article_blocks?.some(b => b.name.endsWith('/product')) === true
+    const idsNoTexto = new Set(produtosNoTexto.map(p => p.id))
+    const shopProducts = guiaDeProduto ? shopProductsDaPagina.filter(p => !idsNoTexto.has(p.id)) : shopProductsDaPagina
+    const lojaMeio = shopProducts.length > 0 && !guiaDeProduto
         ? <LojaEmLinha bloco="artigo-loja-meio" products={shopProducts} title="Achados para quem lê isso" contexto={`blog:${post.slug}:meio`} />
         : null
     const deslizante = shopProducts[3] ?? shopProducts[0]
