@@ -18,6 +18,8 @@ export type ArticleModel = {
     blocks: ArticleBlockModel[]
     headings: Array<{ id: string; text: string; level: 2 | 3 }>
     adBreakAfter: Set<string>
+    /** Guia de compra (tem bloco de produto): a página tira os anúncios de antes do texto e do fim. */
+    guiaDeProduto: boolean
 }
 
 function slug(value: string) {
@@ -47,14 +49,24 @@ export function buildArticleModel(source: WPArticleBlock[]): ArticleModel {
     // distância em caracteres vira pouca distância na rolagem. Menos quebras e mais espaço entre elas
     // (pedido do dono em 2026-11-01: anúncio demais atrapalha a leitura do guia).
     const guiaDeProduto = blocks.some(block => block.name.endsWith('/product'))
-    const maxQuebras = guiaDeProduto ? 2 : 3
+    const maxQuebras = 3
     const minTexto = guiaDeProduto ? 2000 : 1200
     let consumed = 0
     let sinceLast = 0
+    let paragrafos = 0
     for (let index = 0; index < blocks.length; index++) {
         const block = blocks[index]
         consumed += block.textLength
         sinceLast += block.textLength
+        if (block.name === 'core/paragraph') paragrafos++
+        // Guia de produto: o anúncio do topo (antes da primeira frase) saiu; o primeiro entra depois dos dois
+        // primeiros parágrafos, quando a leitora já começou a ler (celular: o bloco reservado tinha ~410px
+        // entre a capa e o texto). Pedido do dono em 2026-11-01.
+        if (guiaDeProduto && adBreakAfter.size === 0 && paragrafos === 2 && block.name === 'core/paragraph' && blocks[index + 1]?.name !== 'core/heading') {
+            adBreakAfter.add(block.id)
+            sinceLast = 0
+            continue
+        }
         // Até 3 quebras: `article_body` preenche ~51% e `article_post_suggestion`
         // ~80% em sessões do Brasil (Umami, 28 dias até 2026-09-17). Artigo longo
         // passava milhares de caracteres sem anúncio depois da segunda quebra.
@@ -65,5 +77,5 @@ export function buildArticleModel(source: WPArticleBlock[]): ArticleModel {
         sinceLast = 0
     }
 
-    return { version: 1, blocks, headings, adBreakAfter }
+    return { version: 1, blocks, headings, adBreakAfter, guiaDeProduto }
 }

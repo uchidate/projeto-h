@@ -635,7 +635,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
 
                         {/* Leaderboard após o bloco título–autoria–imagem: mantém alta
                             viewability sem separar a capa do título nem disputar o LCP. */}
-                        {ADSENSE.slots.leaderboard && (
+                        {ADSENSE.slots.leaderboard && !structuredModel?.guiaDeProduto && (
                             <AdSlotInline
                                 slot={ADSENSE.slots.leaderboard}
                                 layout="leaderboard"
@@ -823,7 +823,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts = [], produ
                             </div>
                         )}
 
-                        {ADSENSE.slots.post_suggestion && (
+                        {ADSENSE.slots.post_suggestion && !structuredModel?.guiaDeProduto && (
                             <div className="mx-4 my-6 sm:mx-6 lg:mx-8">
                                 <AdSlotInline
                                     slot={ADSENSE.slots.post_suggestion}
