@@ -1217,6 +1217,50 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
   min-width: 1.5rem;
 }
 
+/* Referências numeradas do artigo: [n] discreto no texto, lista compacta no fim (pedido do dono, 2026-11-01) */
+.wp-article-content sup.ref {
+  margin-left: 0.1em;
+  font-size: 0.68em;
+  font-weight: 700;
+  line-height: 0;
+  white-space: nowrap;
+}
+.wp-article-content sup.ref a {
+  color: var(--color-accent);
+  text-decoration: none;
+  padding: 0 0.05em;
+}
+.wp-article-content sup.ref a:hover { text-decoration: underline; }
+.wp-article-content ol:has(> li[id^="ref-"]) {
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+.wp-article-content ol:has(> li[id^="ref-"]) li {
+  padding-left: 1.9rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+  scroll-margin-top: calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 20px);
+}
+.wp-article-content ol:has(> li[id^="ref-"]) li::before {
+  content: "[" counter(oc-ol) "]";
+  top: 0.05em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+.wp-article-content ol:has(> li[id^="ref-"]) li a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-muted) 45%, transparent);
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+.wp-article-content ol:has(> li[id^="ref-"]) li:target {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  border-radius: 4px;
+}
+
 /* Blockquote editorial */
 .wp-article-content blockquote {
   margin: 2rem 0;
