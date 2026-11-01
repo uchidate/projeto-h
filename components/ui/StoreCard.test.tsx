@@ -85,3 +85,12 @@ describe('StoreCard', () => {
         expect(screen.getByText('R$ 50')).toBeInTheDocument()
     })
 })
+
+describe('StoreCard em linha', () => {
+    it('mostra o botão Ver oferta sempre e o preço, com o mesmo link patrocinado', () => {
+        render(<StoreCard product={product({ price: 'R$ 50,00' })} linha />)
+        expect(screen.getByText('Ver oferta')).toBeInTheDocument()
+        expect(screen.getByText('R$ 50,00')).toBeInTheDocument()
+        expect(screen.getByRole('link')).toHaveAttribute('rel', 'noopener noreferrer sponsored')
+    })
+})
