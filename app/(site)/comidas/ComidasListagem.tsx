@@ -210,29 +210,6 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                 </div>
             )}
 
-            {receitas.length > 0 && (
-                <section data-bloco="comidas-receitas" className="border-b border-border/40">
-                    <div className="page-wrap py-8">
-                        <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent">Para fazer em casa · com modo de preparo</p>
-                        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                            {receitas.map(r => (
-                                <li key={r.slug}>
-                                    <Link href={`/comidas/${r.slug}`} className="group flex items-center gap-3 border border-border bg-background p-2.5 transition-colors hover:border-foreground">
-                                        <span className="relative h-14 w-14 shrink-0 overflow-hidden bg-surface">
-                                            <Image src={r.imagem} alt="" fill sizes="56px" className="object-cover" />
-                                        </span>
-                                        <span className="min-w-0">
-                                            <span className="block text-[14px] font-bold leading-tight text-foreground [overflow-wrap:anywhere] group-hover:text-accent">{r.nome}</span>
-                                            {r.tempo && <span className="mt-1 block font-mono text-[9px] text-muted">{r.tempo}</span>}
-                                        </span>
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </section>
-            )}
-
             {/* Mapa por região */}
             {page === 1 && (
                 <div className="page-wrap py-8">
@@ -347,6 +324,29 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                     </>
                 )}
             </div>
+
+            {receitas.length > 0 && (
+                <section data-bloco="comidas-receitas" className="border-b border-border/40">
+                    <div className="page-wrap py-8">
+                        <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent">Para fazer em casa · com modo de preparo</p>
+                        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                            {receitas.map(r => (
+                                <li key={r.slug}>
+                                    <Link href={`/comidas/${r.slug}`} className="group flex items-center gap-3 border border-border bg-background p-2.5 transition-colors hover:border-foreground">
+                                        <span className="relative h-14 w-14 shrink-0 overflow-hidden bg-surface">
+                                            <Image src={r.imagem} alt="" fill sizes="56px" className="object-cover" />
+                                        </span>
+                                        <span className="min-w-0">
+                                            <span className="block text-[14px] font-bold leading-tight text-foreground [overflow-wrap:anywhere] group-hover:text-accent">{r.nome}</span>
+                                            {r.tempo && <span className="mt-1 block font-mono text-[9px] text-muted">{r.tempo}</span>}
+                                        </span>
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </section>
+            )}
 
             {lojaDoTema && lojaDoTema.produtos.length >= 4 && (
                 <ShopRelatedSection
