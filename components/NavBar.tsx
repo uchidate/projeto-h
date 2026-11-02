@@ -1,5 +1,6 @@
 'use client'
 
+import { rotaPertenceAoItem } from '@/lib/temas'
 import { useLocale, useTranslations } from 'next-intl'
 import { intlLocale } from '@/lib/i18n/format'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
@@ -192,10 +193,7 @@ const NavBar = ({
         window.dispatchEvent(new Event('quick-search:open'))
     }
 
-    const isActive = (href: string) => {
-        if (href === '/') return pathname === '/'
-        return pathname === href || pathname?.startsWith(`${href}/`)
-    }
+    const isActive = (href: string) => rotaPertenceAoItem(pathname, href)
 
     // Abas do celular: as cinco primeiras; o resto fica em "Mais". Se a página atual é uma das extras, ela aparece
     // como aba ativa depois das cinco, para o leitor sempre ver onde está.

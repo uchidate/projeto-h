@@ -8,6 +8,8 @@ import { BlogPage } from '@/components/blog/BlogPage'
 import { getAllHubs } from '@/lib/guias'
 import { candidatosDestaque, maisLidos, perenes as escolherPerenes } from '@/lib/blog/destaque'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { CATEGORIAS_COM_LOJA } from '@/lib/blog/categoriaLoja'
+import { carregarLojaDoTema } from '@/lib/blog/lojaDoTema'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
@@ -100,6 +102,10 @@ export async function BlogListagem({ searchParams }: { searchParams: SearchParam
         ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:blog')
         : []
 
+    // Categoria com loja (K-beauty): marcas com produto e vitrine própria, só na 1ª página sem busca, etiqueta nem ordem.
+    const cfgLoja = sp.category && !sp.tag && !sp.search && !order && page === 1 ? CATEGORIAS_COM_LOJA[sp.category] : undefined
+    const categoriaLoja = cfgLoja ? await carregarLojaDoTema(cfgLoja, `listagem:blog:${sp.category}`) : undefined
+
     return (
         <>
             <PageBreadcrumb items={[{ name: 'Blog', path: '/blog' }]} />
@@ -119,6 +125,7 @@ export async function BlogListagem({ searchParams }: { searchParams: SearchParam
             emAlta={inicio ? candidatosDestaque(pool, new Date(), 8).filter(p => !idsCandidatos.has(p.id)).slice(0, 4) : []}
             perenes={inicio ? escolherPerenes(pool.filter(p => !idsCandidatos.has(p.id)), 4, new Date(), categories.filter(c => c.slug === 'noticias-k-pop').map(c => c.id)) : []}
             shopProducts={shopProducts}
+            categoriaLoja={categoriaLoja}
         />
         </>
     )

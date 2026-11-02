@@ -18,6 +18,8 @@ import { BlogListaSidebarAd } from '@/components/blog/BlogListaSidebarAd'
 import { RastreioDeFiltros } from '@/components/analytics/RastreioDeFiltros'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import type { StoreProduct } from '@/lib/wordpress/store'
+import { BlogMarcasFaixa } from '@/components/blog/BlogMarcasFaixa'
+import type { MarcaDaCategoria } from '@/lib/blog/categoriaLoja'
 
 type Props = {
     posts: WPPost[]
@@ -38,9 +40,11 @@ type Props = {
     /** Próximos por interesse, ao lado do destaque. */
     emAlta?: WPPost[]
     shopProducts?: StoreProduct[]
+    /** Categoria com loja: marcas com produto e vitrine da própria categoria (ver lib/blog/categoriaLoja). */
+    categoriaLoja?: { rotulo: string; categoriaLoja: string; marcas: MarcaDaCategoria[]; produtos: StoreProduct[] }
 }
 
-export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, emAlta = [], shopProducts = [] }: Props) {
+export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, emAlta = [], shopProducts = [], categoriaLoja }: Props) {
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
     function buildHref(overrides: Record<string, string | undefined> = {}) {
         const params = new URLSearchParams()
@@ -84,6 +88,8 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
     const cheios = Math.floor(gridPosts.length / CICLO) * CICLO
     const primaryPosts = gridPosts.slice(0, cheios || gridPosts.length)
     const compactPosts = gridPosts.slice(primaryPosts.length)
+    // Com vitrine da categoria, ela entra depois do primeiro bloco de 6 artigos (duas linhas na grade de 3 colunas).
+    const vitrineDepois = categoriaLoja && categoriaLoja.produtos.length >= 4 ? 6 : primaryPosts.length
     /* O bloco lateral repetia a grade ao lado: os 5 mais recentes, numa
        listagem também ordenada por data — na primeira página o item nº 1 era o
        próprio post do hero. `getSidebarPosts` agora busca a partir do offset da
@@ -128,6 +134,9 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                         ))}
                     </div>
                 </div>
+                {categoriaLoja && categoriaLoja.marcas.length >= 4 && (
+                    <BlogMarcasFaixa marcas={categoriaLoja.marcas} rotulo={categoriaLoja.rotulo} />
+                )}
             </section>
 
             <div className="page-wrap pt-6 pb-16">
@@ -225,7 +234,26 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
 
                             {primaryPosts.length > 0 && (
                                 <div data-bloco="listagem-blog" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {primaryPosts.map((p, i) => <BlogPostCard key={p.id} post={p} priority={i < 3} categoryMap={categoryMap} />)}
+                                    {primaryPosts.slice(0, vitrineDepois).map((p, i) => <BlogPostCard key={p.id} post={p} priority={i < 3} categoryMap={categoryMap} />)}
+                                </div>
+                            )}
+
+                            {categoriaLoja && categoriaLoja.produtos.length >= 4 && primaryPosts.length > 0 && (
+                                <div className="my-8">
+                                    <ShopRelatedSection
+                                        title={`Na loja: ${categoriaLoja.rotulo}`}
+                                        products={categoriaLoja.produtos}
+                                        href={`/loja?categoria=${categoriaLoja.categoriaLoja}`}
+                                        verTudoLabel={`Ver todos de ${categoriaLoja.rotulo}`}
+                                        contexto={`listagem:blog:${currentCategory}`}
+                                        bloco="blog-vitrine-categoria"
+                                    />
+                                </div>
+                            )}
+
+                            {primaryPosts.length > vitrineDepois && (
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {primaryPosts.slice(vitrineDepois).map(p => <BlogPostCard key={p.id} post={p} priority={false} categoryMap={categoryMap} />)}
                                 </div>
                             )}
 

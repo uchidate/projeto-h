@@ -11,6 +11,11 @@ import { stripHtml } from '@/lib/utils'
 import { KoreaRegionMap } from '@/components/food/KoreaRegionMap'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { buildVitrineMatcher } from '@/lib/wordpress/vitrine'
+import { getPosts, getCategories } from '@/lib/wordpress/posts'
+import { BlogGuiaCard } from '@/components/blog/BlogGuiaCard'
+import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
+import { CATEGORIAS_COM_LOJA } from '@/lib/blog/categoriaLoja'
+import { carregarLojaDoTema } from '@/lib/blog/lojaDoTema'
 
 export type SearchParams = Promise<{ search?: string; page?: string; category?: string; vegetarian?: string; occasion?: string; season?: string; maxSpicy?: string; region?: string }>
 
@@ -83,7 +88,10 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
         (c.params.maxSpicy ?? undefined) === sp.maxSpicy,
     )
 
-    const [{ items: foods, total, totalPages }, temVitrine] = await Promise.all([
+    // Guias e vitrine do tema só na primeira página sem filtro: com filtro ou busca, a lista de pratos é o assunto.
+    const semFiltro = page === 1 && !(sp.search || sp.category || sp.vegetarian || sp.occasion || sp.season || sp.maxSpicy || sp.region)
+    const cfgLoja = CATEGORIAS_COM_LOJA['comida']
+    const [{ items: foods, total, totalPages }, temVitrine, artigos, lojaDoTema] = await Promise.all([
         getFoods({
             page,
             perPage: 48,
@@ -98,6 +106,8 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
             order: 'desc',
         }),
         buildVitrineMatcher(),
+        semFiltro ? artigosDoTema('comida') : Promise.resolve(null),
+        semFiltro && cfgLoja ? carregarLojaDoTema(cfgLoja, 'comidas:lista') : Promise.resolve(undefined),
     ])
     if (page > Math.max(1, totalPages)) notFound()
 
@@ -173,6 +183,21 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                     })}
                 </div>
             </div>
+
+            {/* Guias e artigos do tema: quem chega pelo catálogo encontra também a leitura e a loja. */}
+            {artigos && artigos.posts.length >= 3 && (
+                <section data-bloco="comidas-artigos" className="border-b border-border/40">
+                    <div className="page-wrap py-8">
+                        <div className="mb-4 flex items-baseline gap-3">
+                            <h2 className="font-serif text-[24px] font-semibold leading-tight sm:text-[28px]">Guias e artigos de comida</h2>
+                            <Link href="/blog?category=comida" className="ml-auto shrink-0 font-mono text-[11px] text-muted transition-colors hover:text-accent">todos os artigos →</Link>
+                        </div>
+                        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            {artigos.posts.map(p => <BlogGuiaCard key={p.id} post={p} categoryMap={artigos.categoryMap} />)}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Mapa por região */}
             {page === 1 && (
@@ -288,7 +313,31 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                     </>
                 )}
             </div>
+
+            {lojaDoTema && lojaDoTema.produtos.length >= 4 && (
+                <ShopRelatedSection
+                    title="Na loja: Comida"
+                    products={lojaDoTema.produtos}
+                    href={`/loja?categoria=${lojaDoTema.categoriaLoja}`}
+                    verTudoLabel="Ver todos de Comida"
+                    contexto="comidas:lista"
+                    bloco="comidas-vitrine"
+                />
+            )}
         </div>
         </>
     )
+}
+
+/** Artigos mais recentes da categoria do blog; falha do WordPress não derruba o catálogo. */
+async function artigosDoTema(categoria: string) {
+    try {
+        const [{ items }, categorias] = await Promise.all([
+            getPosts({ category: categoria, perPage: 4, includeContent: false }),
+            getCategories(),
+        ])
+        return { posts: items, categoryMap: Object.fromEntries(categorias.map(c => [c.id, { name: c.name, slug: c.slug }])) }
+    } catch {
+        return null
+    }
 }
