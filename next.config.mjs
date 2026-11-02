@@ -216,6 +216,10 @@ const nextConfig = {
             { source: '/guias/grupos-4a-geracao-kpop', destination: '/blog/melhores-grupos-kpop-4a-geracao', permanent: true },
             // O guia de sobrevivência usava o mesmo filtro do de thriller (mesma lista de 428 itens) e foi tirado do índice (2026-10-25).
             { source: '/guias/doramas-sobrevivencia-coreanos', destination: '/guias/doramas-thriller-coreanos', permanent: true },
+            // Guia duplicado consolidado em 2026-11-02: os dois textos respondiam "lámen de caldo
+            // ou molho seco". O guia de compra (29444) ficou e recebeu a seção sobre picância; o outro
+            // não tinha impressões em 90 dias.
+            { source: '/blog/lamen-coreano-caldo-molho-seco-picancia', destination: '/blog/lamen-coreano-no-brasil-preco-por-pacote', permanent: true },
             // Artigo despublicado em 2026-09-15: todo o texto partia da premissa de
             // que o MEOVV era da HYBE (e comparava o grupo com ILLIT e LE SSERAFIM
             // "dentro da empresa"). O MEOVV e da The Black Label. A ficha do grupo,
