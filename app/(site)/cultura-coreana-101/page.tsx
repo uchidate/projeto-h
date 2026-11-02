@@ -105,7 +105,8 @@ function VerTodos({ href, children, cor }: { href: string; children: React.React
 export default async function CulturaCoreanaPage() {
     const [settings, culturaPosts, categorias, ...capasInicio] = await Promise.allSettled([
         getSiteSettings(),
-        getPosts({ category: 'cultura', perPage: 12, includeContent: false }),
+        // Margem larga: guias e posts de outros temas ocupam o topo da categoria, e as reportagens vêm depois deles.
+        getPosts({ category: 'cultura', perPage: 40, includeContent: false }),
         getCategories(),
         ...INICIO.map(slug => getPostBySlug(slug)),
     ])
@@ -289,25 +290,22 @@ export default async function CulturaCoreanaPage() {
                     </section>
                 )}
 
-                <section aria-label="Gastronomia" className="space-y-5">
+                <section aria-label="Outros temas" className="grid gap-4 md:grid-cols-2">
                     <Link href="/comidas" className="group flex items-center gap-4 border-2 px-5 py-4 transition-colors hover:bg-surface" style={{ borderColor: COR_COMIDA }}>
                         <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">🍜</span>
                         <span className="min-w-0">
                             <span className={`block text-[9px] ${MONO}`} style={{ color: COR_COMIDA }}>Gastronomia</span>
-                            <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">Pratos, receitas, marcas e a loja de comida coreana</span>
+                            <span className="block font-serif text-[20px] font-medium leading-tight text-foreground group-hover:text-accent">Pratos, receitas, marcas e a loja de comida coreana</span>
+                            <span className={`mt-2 block text-foreground ${MONO}`}>Ver gastronomia →</span>
                         </span>
-                        <span className={`ml-auto shrink-0 text-foreground ${MONO}`}>Ver gastronomia →</span>
                     </Link>
-                </section>
-
-                <section aria-label="Merch" className="space-y-5">
                     <Link href="/merch" className="group flex items-center gap-4 border-2 px-5 py-4 transition-colors hover:bg-surface" style={{ borderColor: COR_MERCH }}>
                         <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">🪄</span>
                         <span className="min-w-0">
                             <span className={`block text-[9px] ${MONO}`} style={{ color: COR_MERCH }}>Merch</span>
-                            <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">Lightstick, photocard, álbum físico e o que comprar</span>
+                            <span className="block font-serif text-[20px] font-medium leading-tight text-foreground group-hover:text-accent">Lightstick, photocard, álbum físico e o que comprar</span>
+                            <span className={`mt-2 block text-foreground ${MONO}`}>Ver merch →</span>
                         </span>
-                        <span className={`ml-auto shrink-0 text-foreground ${MONO}`}>Ver merch →</span>
                     </Link>
                 </section>
             </div>
