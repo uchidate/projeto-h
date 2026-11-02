@@ -40,8 +40,8 @@ jobs:
             const limites = {
               'streaming-scores.yml': 2,   // diario   (0 5 * * *)
               'trending-scores.yml': 8,    // semanal  (0 6 * * 1)
-              'validate-wp-data.yml': 8,   // semanal  (43 6 * * 1)
-              // Ate 2026-11-02 so os tres acima eram vigiados; os outros workflows de dados podiam
+              // validate-wp-data saiu em 2026-11-02: o job `acervo` do observatorio (servidor) o substitui.
+              // Ate 2026-11-02 so os tres primeiros eram vigiados; os outros workflows de dados podiam
               // parar em silencio (e o cron do GitHub chega a atrasar mais de 7 h, medido numa segunda).
               // Cada um grava algo que o site ou o Grafana le: ver docs/DADOS-AGENDADOS.md no repositorio de operacao.
               'artist-popularity.yml': 8,  // semanal  (15 6 * * 1)  popularity_score
