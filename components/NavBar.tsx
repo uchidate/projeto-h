@@ -6,7 +6,7 @@ import { intlLocale } from '@/lib/i18n/format'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Command, Search, ShoppingBag } from 'lucide-react'
 import { MobileMais } from '@/components/features/MobileMais'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
@@ -83,6 +83,13 @@ const NavBar = ({
 }) => {
     const navRef = useRef<HTMLElement | null>(null)
     const pathname = usePathname()
+    // Lida no cliente, sem useSearchParams, para não tornar dinâmicas as páginas estáticas que têm o menu.
+    // No servidor e na hidratação vale null; a navegação troca o pathname e re-renderiza.
+    const categoriaBlog = useSyncExternalStore(
+        () => () => {},
+        () => new URLSearchParams(window.location.search).get('category'),
+        () => null,
+    )
     const [isScrolled, setIsScrolled] = useState(false)
     const [isHidden, setIsHidden] = useState(false)
     const openSearch = useQuickSearch((state) => state.open)
@@ -193,7 +200,7 @@ const NavBar = ({
         window.dispatchEvent(new Event('quick-search:open'))
     }
 
-    const isActive = (href: string) => rotaPertenceAoItem(pathname, href)
+    const isActive = (href: string) => rotaPertenceAoItem(pathname, href, categoriaBlog)
 
     // Abas do celular: as cinco primeiras; o resto fica em "Mais". Se a página atual é uma das extras, ela aparece
     // como aba ativa depois das cinco, para o leitor sempre ver onde está.

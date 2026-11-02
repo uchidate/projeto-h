@@ -19,6 +19,16 @@ describe('rotaPertenceAoItem', () => {
     })
 })
 
+describe('rotaPertenceAoItem com categoria do blog', () => {
+    it('/blog?category=comida não acende Notícias', () => {
+        expect(rotaPertenceAoItem('/blog', '/blog', 'comida')).toBe(false)
+    })
+    it('categoria sem tema ou sem categoria mantém Notícias', () => {
+        expect(rotaPertenceAoItem('/blog', '/blog', 'k-pop')).toBe(true)
+        expect(rotaPertenceAoItem('/blog', '/blog', null)).toBe(true)
+    })
+})
+
 describe('temasComLoja', () => {
     it('K-beauty, comida e merch têm categoria e loja ligadas', () => {
         expect(temasComLoja().map(t => t.id)).toEqual(['k-beauty', 'comida', 'merch'])
