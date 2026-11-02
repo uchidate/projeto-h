@@ -48,7 +48,6 @@ jobs:
               'artist-access.yml': 8,      // semanal  (30 6 * * 1)  access_score (home: mais acessados)
               'views-artigos.yml': 8,      // semanal  (0 7 * * 1)   views (Mais lidos, conteudo perene)
               'artist-discography.yml': 2, // diario   (45 6 * * *)  music_release
-              'exporta-seo.yml': 2,        // diario   (20 6 * * *)  seo.prom (Grafana hallyuhub-seo)
               'exporta-deploy.yml': 2,     // diario + a cada deploy (deploy.prom)
               'performance.yml': 8,        // semanal  (Lighthouse CI)
             }
