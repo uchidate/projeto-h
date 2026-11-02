@@ -60,6 +60,17 @@ type BlogCategory = {
     count: number
 }
 
+/**
+ * O menu salvo no WordPress ainda traz o item único "Cultura e Gastronomia". Enquanto a opção não é
+ * atualizada lá, o item antigo vira dois (Cultura e Gastronomia); menu que já tem /comidas fica como está.
+ */
+export function separarCulturaEGastronomia(menu: SiteLink[]): SiteLink[] {
+    if (menu.some(l => l.href === '/comidas')) return menu
+    return menu.flatMap(l => l.href === '/cultura-coreana-101' && /gastronomia/i.test(l.label)
+        ? [{ ...l, label: 'Cultura' }, { label: 'Gastronomia', href: '/comidas' }]
+        : [l])
+}
+
 const DEFAULT_HOME_HUBS: HomeHub[] = [
     { label: 'K-Drama', href: '/blog?category=k-drama', hangul: '드라마', detail: 'séries coreanas', color: '#e91e8c' },
     { label: 'K-Pop', href: '/blog?category=k-pop', hangul: '케이팝', detail: 'música e grupos', color: '#7c3aed' },
@@ -209,7 +220,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
             tagline: data.tagline || DEFAULT_SITE_SETTINGS.tagline,
             logoSubtitles: data.logoSubtitles?.length ? data.logoSubtitles : DEFAULT_SITE_SETTINGS.logoSubtitles,
             tickerEnabled: data.tickerEnabled ?? DEFAULT_SITE_SETTINGS.tickerEnabled,
-            navigation: data.navigation?.length ? data.navigation : DEFAULT_SITE_SETTINGS.navigation,
+            navigation: data.navigation?.length ? separarCulturaEGastronomia(data.navigation) : DEFAULT_SITE_SETTINGS.navigation,
             footerColumns: data.footerColumns?.length ? data.footerColumns : DEFAULT_SITE_SETTINGS.footerColumns,
             home: {
                 heroPostId: data.home?.heroPostId ?? 0,
