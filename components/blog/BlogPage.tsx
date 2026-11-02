@@ -41,7 +41,7 @@ type Props = {
     emAlta?: WPPost[]
     shopProducts?: StoreProduct[]
     /** Categoria com loja: marcas com produto e vitrine da própria categoria (ver lib/blog/categoriaLoja). */
-    categoriaLoja?: { rotulo: string; categoriaLoja: string; industria: string; marcas: MarcaDaCategoria[]; produtos: StoreProduct[] }
+    categoriaLoja?: { rotulo: string; categoriaLoja: string; industria?: string; marcas: MarcaDaCategoria[]; produtos: StoreProduct[] }
 }
 
 export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, emAlta = [], shopProducts = [], categoriaLoja }: Props) {

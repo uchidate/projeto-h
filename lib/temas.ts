@@ -12,7 +12,7 @@ export type TemaDoSite = {
     categoriaBlog?: string
     /** Categorias dos produtos na loja (`acf.category`); a primeira é a da página "ver todos". */
     categoriasLoja?: string[]
-    /** Setor das fichas de empresa que são as marcas do tema. */
+    /** Setor das fichas de empresa que são as marcas do tema; sem ele o tema não tem faixa de marcas. */
     industria?: CompanyIndustry
 }
 
@@ -21,11 +21,13 @@ export const TEMAS: TemaDoSite[] = [
     // Comida: catálogo em /comidas, que é também o item "Gastronomia" do menu.
     // `alimenta` é um valor gravado por engano no lugar de `snacks` em produtos importados.
     { id: 'comida', rotulo: 'Comida', categoriaBlog: 'comida', categoriasLoja: ['snacks', 'alimenta'], industria: 'food_beverage' },
+    // Merch de K-pop: sem marcas (o fã compra do grupo, não de fabricante), só artigos e prateleira.
+    { id: 'merch', rotulo: 'Merch', categoriaBlog: 'merch', categoriasLoja: ['lightstick', 'photocard', 'kpop_album'] },
 ]
 
-/** Tema que tem categoria própria no blog, loja e marcas ligadas. */
+/** Tema que tem categoria própria no blog e produtos da loja ligados. */
 export function temasComLoja(): TemaDoSite[] {
-    return TEMAS.filter(t => t.categoriaBlog && t.categoriasLoja?.length && t.industria)
+    return TEMAS.filter(t => t.categoriaBlog && t.categoriasLoja?.length)
 }
 
 /** A rota pertence ao item do menu: o próprio href ou o que vem depois dele. */

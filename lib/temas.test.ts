@@ -20,7 +20,7 @@ describe('rotaPertenceAoItem', () => {
 })
 
 describe('temasComLoja', () => {
-    it('K-beauty e comida têm categoria, loja e marcas', () => {
-        expect(temasComLoja().map(t => t.id)).toEqual(['k-beauty', 'comida'])
+    it('K-beauty, comida e merch têm categoria e loja ligadas', () => {
+        expect(temasComLoja().map(t => t.id)).toEqual(['k-beauty', 'comida', 'merch'])
     })
 })

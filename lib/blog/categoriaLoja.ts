@@ -10,13 +10,13 @@ import { temasComLoja } from '@/lib/temas'
  */
 export type CategoriaComLoja = {
     categoriasLoja: string[]
-    industria: CompanyIndustry
+    industria?: CompanyIndustry
     rotulo: string
 }
 
 /** Derivado do cadastro de temas (lib/temas.ts): só entra tema com categoria, loja e marcas ligadas. */
 export const CATEGORIAS_COM_LOJA: Record<string, CategoriaComLoja> = Object.fromEntries(
-    temasComLoja().map(t => [t.categoriaBlog!, { categoriasLoja: t.categoriasLoja!, industria: t.industria!, rotulo: t.rotulo }]),
+    temasComLoja().map(t => [t.categoriaBlog!, { categoriasLoja: t.categoriasLoja!, industria: t.industria, rotulo: t.rotulo }]),
 )
 
 export type MarcaDaCategoria = {

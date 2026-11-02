@@ -111,8 +111,8 @@ export default async function CulturaCoreanaPage() {
     const guias = ou<Awaited<ReturnType<typeof getSiteSettings>> | null>(null)(settings)?.cultureGuides ?? []
     const { inicio, trilhas } = agruparGuias(guias)
     const slugsGuias = new Set(guias.map(g => g.href.replace('/blog/', '')))
-    // "Cultura" no WordPress é a categoria mais ampla: o que tem categoria própria (comida, K-beauty) fica no tema dele.
-    const idsDeOutroTema = new Set(ou<Awaited<ReturnType<typeof getCategories>>>([])(categorias).filter(c => c.slug === 'comida' || c.slug === 'k-beauty').map(c => c.id))
+    // "Cultura" no WordPress é a categoria mais ampla: o que tem categoria própria (comida, K-beauty, merch) fica no tema dele.
+    const idsDeOutroTema = new Set(ou<Awaited<ReturnType<typeof getCategories>>>([])(categorias).filter(c => c.slug === 'comida' || c.slug === 'k-beauty' || c.slug === 'merch').map(c => c.id))
     const reportagens = ou<Awaited<ReturnType<typeof getPosts>>>(lista)(culturaPosts).items
         .filter(p => !slugsGuias.has(p.slug) && !p.categories?.some(id => idsDeOutroTema.has(id)) && getWPImage(p._embedded, p.featured_image_url))
         .slice(0, 4)
