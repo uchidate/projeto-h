@@ -40,14 +40,17 @@ export function produtosDaCategoria(produtos: StoreProduct[], categoriasLoja: st
  * Marcas (fichas de empresa) com pelo menos um produto da categoria. O casamento
  * é pelo nome da marca como palavra inteira no título do produto, o mesmo critério
  * da página de loja da marca; nome com menos de 4 letras não entra, para não casar
- * por acidente. Ordem: mais produtos primeiro, depois ordem alfabética.
+ * por acidente. Marca listada que tem ficha própria não conta para a empresa que a lista. Ordem: mais produtos primeiro, depois ordem alfabética.
  */
 export function marcasComProdutos(empresas: WPCompany[], produtos: StoreProduct[]): MarcaDaCategoria[] {
     const titulos = produtos.map(p => normalizar(stripHtml(p.title.rendered)))
     const marcas: MarcaDaCategoria[] = []
+    const nomes = new Set(empresas.map(e => normalizar(stripHtml(e.title.rendered))))
     for (const e of empresas) {
         const nome = stripHtml(e.title.rendered)
-        const termos = [nome, ...(e.acf?.global_brands ?? [])]
+        // Marca listada que já tem ficha própria conta só na ficha dela (ex.: Medicube lista a APRILSKIN).
+        const dosOutros = (e.acf?.global_brands ?? []).filter(b => !nomes.has(normalizar(b)))
+        const termos = [nome, ...dosOutros]
             .map(normalizar)
             .filter(t => t.trim().length >= 4)
         if (termos.length === 0) continue
