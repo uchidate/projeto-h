@@ -9,7 +9,8 @@ Resumo de onde cada coisa vai. O que está marcado como **(lint)** é cobrado po
 app/  ->  components/  ->  lib/
 ```
 
-A dependência só desce. **(lint)**
+A dependência só desce. **(lint)** O `npm run quality:boundaries` confere de novo pelo caminho resolvido
+(pega import relativo) e proíbe ciclo entre módulos; regras em `.dependency-cruiser.cjs`.
 
 - `app/` roteia, lê params, chama o carregamento de dados e compõe. Não guarda
   tipo nem função que outra camada precise.

@@ -62,6 +62,8 @@ jobs:
         run: npm run lint
       - name: Type-check
         run: npm run type-check
+      - name: Fronteiras entre camadas
+        run: npm run quality:boundaries
       - name: Testes
         run: npm test
 
