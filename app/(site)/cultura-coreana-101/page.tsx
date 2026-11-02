@@ -126,7 +126,7 @@ export default async function CulturaCoreanaPage() {
         const imagem = post && getWPImage(post._embedded, post.featured_image_url)
         if (imagem) capas.set(INICIO[i], imagem.src)
         const resumo = post && (post.acf?.subtitle?.trim() || stripHtml(post.excerpt.rendered))
-        if (resumo) resumos.set(INICIO[i], metaDescription(resumo, 150))
+        if (resumo) resumos.set(INICIO[i], metaDescription(resumo, 120))
     })
     const itensBusca: ItemBusca[] = [
         ...guias.map(g => ({ rotulo: g.label, href: g.href, tipo: 'Guia' as const })),
