@@ -304,8 +304,8 @@ const NavBar = ({
                     </div>
 
                     {/* Nav links desktop */}
-                    <div className="navbar-dark-strip flex h-12 items-center border-b-2 border-foreground px-10">
-                        <div className="flex h-full flex-1 items-center gap-5 overflow-x-auto xl:gap-8">
+                    <div className="navbar-dark-strip flex h-12 items-center border-b-2 border-foreground px-6 xl:px-10">
+                        <div className="flex h-full flex-1 items-center gap-3.5 overflow-x-auto xl:gap-8">
                             {linksEsquerda.map((link) => (
                                 <Link
                                     key={link.href}
@@ -318,7 +318,7 @@ const NavBar = ({
                             ))}
                         </div>
                         {/* Calendário e Quiz ficam à direita da barra, como no mockup */}
-                        <div className="ml-4 flex h-full shrink-0 items-center gap-5 xl:gap-8">
+                        <div className="ml-4 flex h-full shrink-0 items-center gap-3.5 xl:gap-8">
                             {linksDireita.map((link) => (
                                 <Link
                                     key={link.href}

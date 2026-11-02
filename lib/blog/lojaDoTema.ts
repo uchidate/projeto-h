@@ -17,6 +17,7 @@ export async function carregarLojaDoTema(cfg: CategoriaComLoja, contexto: string
         return {
             rotulo: cfg.rotulo,
             categoriaLoja: cfg.categoriasLoja[0],
+            industria: cfg.industria,
             marcas: marcasComProdutos(empresas.items, produtos),
             produtos: ordenarPrateleira(produtos, contexto).slice(0, 10),
         }

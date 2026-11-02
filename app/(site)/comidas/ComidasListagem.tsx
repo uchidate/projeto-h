@@ -16,6 +16,8 @@ import { BlogGuiaCard } from '@/components/blog/BlogGuiaCard'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import { CATEGORIAS_COM_LOJA } from '@/lib/blog/categoriaLoja'
 import { carregarLojaDoTema } from '@/lib/blog/lojaDoTema'
+import { BlogMarcasFaixa } from '@/components/blog/BlogMarcasFaixa'
+import { receitasEmDestaque } from '@/lib/comidas/receitasEmDestaque'
 
 export type SearchParams = Promise<{ search?: string; page?: string; category?: string; vegetarian?: string; occasion?: string; season?: string; maxSpicy?: string; region?: string }>
 
@@ -91,7 +93,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
     // Guias e vitrine do tema só na primeira página sem filtro: com filtro ou busca, a lista de pratos é o assunto.
     const semFiltro = page === 1 && !(sp.search || sp.category || sp.vegetarian || sp.occasion || sp.season || sp.maxSpicy || sp.region)
     const cfgLoja = CATEGORIAS_COM_LOJA['comida']
-    const [{ items: foods, total, totalPages }, temVitrine, artigos, lojaDoTema] = await Promise.all([
+    const [{ items: foods, total, totalPages }, temVitrine, artigos, lojaDoTema, todosPratos] = await Promise.all([
         getFoods({
             page,
             perPage: 48,
@@ -108,7 +110,10 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
         buildVitrineMatcher(),
         semFiltro ? artigosDoTema('comida') : Promise.resolve(null),
         semFiltro && cfgLoja ? carregarLojaDoTema(cfgLoja, 'comidas:lista') : Promise.resolve(undefined),
+        // As receitas saem do acervo todo: as 48 mais novas da página podem não incluir nenhuma com modo de preparo.
+        semFiltro ? getFoods({ perPage: 100 }).catch(() => null) : Promise.resolve(null),
     ])
+    const receitas = todosPratos ? receitasEmDestaque(todosPratos.items) : []
     if (page > Math.max(1, totalPages)) notFound()
 
     return (
@@ -195,6 +200,35 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                         <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             {artigos.posts.map(p => <BlogGuiaCard key={p.id} post={p} categoryMap={artigos.categoryMap} />)}
                         </div>
+                    </div>
+                </section>
+            )}
+
+            {lojaDoTema && lojaDoTema.marcas.length >= 4 && (
+                <div className="page-wrap border-b border-border/40 pb-6">
+                    <BlogMarcasFaixa marcas={lojaDoTema.marcas} rotulo={lojaDoTema.rotulo} todasHref={`/empresas?industry=${lojaDoTema.industria}`} />
+                </div>
+            )}
+
+            {receitas.length > 0 && (
+                <section data-bloco="comidas-receitas" className="border-b border-border/40">
+                    <div className="page-wrap py-8">
+                        <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent">Para fazer em casa · com modo de preparo</p>
+                        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                            {receitas.map(r => (
+                                <li key={r.slug}>
+                                    <Link href={`/comidas/${r.slug}`} className="group flex items-center gap-3 border border-border bg-background p-2.5 transition-colors hover:border-foreground">
+                                        <span className="relative h-14 w-14 shrink-0 overflow-hidden bg-surface">
+                                            <Image src={r.imagem} alt="" fill sizes="56px" className="object-cover" />
+                                        </span>
+                                        <span className="min-w-0">
+                                            <span className="block text-[14px] font-bold leading-tight text-foreground [overflow-wrap:anywhere] group-hover:text-accent">{r.nome}</span>
+                                            {r.tempo && <span className="mt-1 block font-mono text-[9px] text-muted">{r.tempo}</span>}
+                                        </span>
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </section>
             )}

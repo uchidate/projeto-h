@@ -2,25 +2,19 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
-import { StoreCard } from '@/components/ui/StoreCard'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
-import { todasReceitas } from '@/lib/receitas'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { ADSENSE } from '@/lib/config/ads'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
-import { escolherFichas, type FichaDoTema } from '@/lib/home/temas'
 import { dataRelativa } from '@/lib/home/data-relativa'
-import { getCompanies } from '@/lib/wordpress/companies'
-import { getFoods } from '@/lib/wordpress/foods'
-import { getPostBySlug, getPosts } from '@/lib/wordpress/posts'
+import { getCategories, getPostBySlug, getPosts } from '@/lib/wordpress/posts'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
-import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getWPImage, stripHtml } from '@/lib/utils'
 
 const PAGE_URL = `${SITE_URL}/cultura-coreana-101`
-const TITLE = 'Cultura e Gastronomia Coreana: Guias, Pratos e Marcas'
-const DESCRIPTION = 'Hangeul, honoríficos, festas tradicionais, pratos, marcas de comida e bebida: o essencial da cultura coreana reunido num lugar só, com guias para quem está começando.'
+const TITLE = 'Cultura Coreana: Guias, Festas e Tradições'
+const DESCRIPTION = 'Hangeul, honoríficos, festas tradicionais, etiqueta e vida cotidiana: o essencial da cultura coreana reunido num lugar só, com guias para quem está começando.'
 
 export const revalidate = 3600
 
@@ -35,7 +29,6 @@ export const metadata: Metadata = {
 const MONO = 'font-mono text-[10px] font-bold uppercase tracking-[0.14em]'
 const COR_CULTURA = '#6d3fc0'
 const COR_COMIDA = '#b4531a'
-const COR_LOJA = '#ff246e'
 const COR_FESTA = '#0e7490'
 
 type Guia = { label: string; href: string; emoji: string }
@@ -63,11 +56,6 @@ function agruparGuias(guias: Guia[]) {
     return { inicio, trilhas: trilhas.filter(t => t.guias.length > 0) }
 }
 
-const CATEGORIAS_PRATO: [string, string][] = [
-    ['rice', 'Arroz'], ['noodles', 'Macarrão'], ['soup_stew', 'Sopas e ensopados'], ['bbq', 'Churrasco'], ['pancake', 'Panquecas'],
-    ['street_food', 'Comida de rua'], ['banchan', 'Acompanhamentos'], ['dessert', 'Sobremesas'], ['drink', 'Bebidas'], ['snack', 'Lanches'],
-]
-
 const FESTAS: { nome: string; hangul: string; data: string; nota: string; guia?: string }[] = [
     { nome: 'Seollal', hangul: '설날', data: '2027-02-07', nota: 'Ano-Novo lunar', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
     { nome: 'Daeboreum', hangul: '정월대보름', data: '2027-02-21', nota: 'Primeira lua cheia do ano' },
@@ -93,24 +81,6 @@ function proximasFestas(agora = new Date()) {
 
 const formatoData = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
 
-function minutosEmTexto(min: number) {
-    if (min >= 60) return `${Math.floor(min / 60)} h${min % 60 ? ` ${min % 60} min` : ''}`
-    return `${min} min`
-}
-
-/** Pratos com modo de preparo cadastrado (data/receitas.json) que existem no acervo, com foto. Tempo longo demais (marinada, molho) não vira rótulo. */
-function escolherReceitas(itens: { slug: string; title: { rendered: string }; featured_image_url?: string | null }[]) {
-    const mapa = todasReceitas()
-    return itens
-        .filter(i => i.featured_image_url && mapa[i.slug])
-        .slice(0, 4)
-        .map(i => {
-            const r = mapa[i.slug]
-            const total = (r.preparoMin ?? 0) + (r.cozimentoMin ?? 0)
-            return { slug: i.slug, nome: stripHtml(i.title.rendered), imagem: i.featured_image_url as string, tempo: total > 0 && total <= 240 ? minutosEmTexto(total) : null }
-        })
-}
-
 const lista = { items: [], total: 0, totalPages: 0 }
 const ou = <T,>(valor: T) => (r: PromiseSettledResult<T>) => (r.status === 'fulfilled' ? r.value : valor)
 
@@ -125,20 +95,6 @@ function Capitulo({ n, titulo, sub, cor, id }: { n: number; titulo: string; sub:
     )
 }
 
-function Ficha({ ficha, base, cor, destaque = false }: { ficha: FichaDoTema; base: string; cor: string; destaque?: boolean }) {
-    return (
-        <Link href={`${base}/${ficha.slug}`} className={`group flex flex-col border border-border bg-background transition-colors hover:border-foreground ${destaque ? 'col-span-2 row-span-2' : ''}`}>
-            <span className={`relative block overflow-hidden bg-white ${destaque ? 'min-h-0 flex-1 aspect-[16/10] sm:aspect-auto' : 'aspect-[16/10]'}`}>
-                <Image src={ficha.imagem} alt={ficha.nome} fill sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 16vw" className="object-contain p-2 transition-transform group-hover:scale-[1.03]" />
-            </span>
-            <span className="block px-3 py-2.5">
-                <span className={`block font-bold leading-tight text-foreground group-hover:text-accent ${destaque ? 'font-serif text-[22px] font-medium' : 'text-[14px]'}`}>{ficha.nome}</span>
-                {ficha.naLoja > 0 && <span className={`mt-1 block ${MONO} text-[9px]`} style={{ color: cor }}>{ficha.naLoja} na loja</span>}
-            </span>
-        </Link>
-    )
-}
-
 function VerTodos({ href, children, cor }: { href: string; children: React.ReactNode; cor: string }) {
     return (
         <Link href={href} className={`inline-block border-b-2 pb-0.5 text-foreground ${MONO}`} style={{ borderColor: cor }}>{children}</Link>
@@ -146,24 +102,19 @@ function VerTodos({ href, children, cor }: { href: string; children: React.React
 }
 
 export default async function CulturaCoreanaPage() {
-    const [settings, comidas, empresas, artigos, prateleira, culturaPosts, ...capasInicio] = await Promise.allSettled([
+    const [settings, culturaPosts, categorias, ...capasInicio] = await Promise.allSettled([
         getSiteSettings(),
-        getFoods({ perPage: 100 }),
-        getCompanies({ industry: 'food_beverage', perPage: 100 }),
-        getPosts({ tag: 'comida-coreana', perPage: 3, includeContent: false }),
-        getVitrinePorTermos([], 'hub_cultura', { limit: 5, temas: ['culinaria'] }),
         getPosts({ category: 'cultura', perPage: 12, includeContent: false }),
+        getCategories(),
         ...INICIO.map(slug => getPostBySlug(slug)),
     ])
     const guias = ou<Awaited<ReturnType<typeof getSiteSettings>> | null>(null)(settings)?.cultureGuides ?? []
-    const fo = ou<Awaited<ReturnType<typeof getFoods>>>(lista)(comidas)
-    const ec = ou<Awaited<ReturnType<typeof getCompanies>>>(lista)(empresas)
-    const posts = ou<Awaited<ReturnType<typeof getPosts>>>(lista)(artigos)
-    const produtos = ou<Awaited<ReturnType<typeof getVitrinePorTermos>>>([])(prateleira).filter(p => p.acf.affiliate_url).slice(0, 5)
     const { inicio, trilhas } = agruparGuias(guias)
     const slugsGuias = new Set(guias.map(g => g.href.replace('/blog/', '')))
+    // "Cultura" no WordPress é a categoria mais ampla: o que tem categoria própria (comida, K-beauty) fica no tema dele.
+    const idsDeOutroTema = new Set(ou<Awaited<ReturnType<typeof getCategories>>>([])(categorias).filter(c => c.slug === 'comida' || c.slug === 'k-beauty').map(c => c.id))
     const reportagens = ou<Awaited<ReturnType<typeof getPosts>>>(lista)(culturaPosts).items
-        .filter(p => !slugsGuias.has(p.slug) && getWPImage(p._embedded, p.featured_image_url))
+        .filter(p => !slugsGuias.has(p.slug) && !p.categories?.some(id => idsDeOutroTema.has(id)) && getWPImage(p._embedded, p.featured_image_url))
         .slice(0, 4)
     const capas = new Map<string, string>()
     capasInicio.forEach((r, i) => {
@@ -171,18 +122,10 @@ export default async function CulturaCoreanaPage() {
         const imagem = post && getWPImage(post._embedded, post.featured_image_url)
         if (imagem) capas.set(INICIO[i], imagem.src)
     })
-    const pratos = escolherFichas(fo.items, 5)
     const itensBusca: ItemBusca[] = [
         ...guias.map(g => ({ rotulo: g.label, href: g.href, tipo: 'Guia' as const })),
-        ...fo.items.map(f => ({ rotulo: stripHtml(f.title.rendered), href: `/comidas/${f.slug}`, tipo: 'Prato' as const })),
-        ...ec.items.map(c => ({ rotulo: stripHtml(c.title.rendered), href: `/empresas/${c.slug}`, tipo: 'Marca' as const })),
     ]
-    const receitas = escolherReceitas(fo.items)
     const festas = proximasFestas()
-    const marcas = escolherFichas(ec.items, 12)
-    // Marcas ainda sem logo não viram cartão, mas aparecem como atalho: a lista mostra todas as que existem no acervo.
-    const comLogo = new Set(marcas.map(m => m.slug))
-    const marcasSemLogo = ec.items.filter(c => !comLogo.has(c.slug)).map(c => ({ slug: c.slug, nome: stripHtml(c.title.rendered) }))
 
     const jsonLd = {
         '@context': 'https://schema.org',
@@ -195,8 +138,6 @@ export default async function CulturaCoreanaPage() {
     const atalhos = [
         guias.length > 0 && { id: 'guias', rotulo: 'Guias de cultura', n: guias.length, cor: COR_CULTURA },
         festas.length > 0 && { id: 'festas', rotulo: 'Festas', n: festas.length, cor: COR_FESTA },
-        pratos.length > 0 && { id: 'pratos', rotulo: 'Pratos', n: fo.total, cor: COR_COMIDA },
-        marcas.length > 0 && { id: 'marcas', rotulo: 'Marcas', n: ec.total, cor: COR_COMIDA },
     ].filter(Boolean) as { id: string; rotulo: string; n: number; cor: string }[]
 
     let n = 0
@@ -204,13 +145,13 @@ export default async function CulturaCoreanaPage() {
     return (
         <>
             <JsonLd data={jsonLd} />
-            <PageBreadcrumb items={[{ name: 'Cultura e Gastronomia', path: '/cultura-coreana-101' }]} />
+            <PageBreadcrumb items={[{ name: 'Cultura', path: '/cultura-coreana-101' }]} />
 
             {/* Topo no padrão de /artists: título, busca e atalhos numa faixa só. */}
             <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
                 <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
                     <h1 className="whitespace-nowrap font-[family-name:var(--font-playfair)] text-[34px] font-bold leading-none sm:text-[44px]">
-                        Cultura e Gastronomia<span className="text-accent">.</span>
+                        Cultura<span className="text-accent">.</span>
                     </h1>
                     <HubBusca itens={itensBusca} />
                     {atalhos.length > 0 && (
@@ -221,7 +162,7 @@ export default async function CulturaCoreanaPage() {
                         </nav>
                     )}
                 </div>
-                <p className="mt-3 text-[13px] text-muted">{`${guias.length} guias · ${fo.total} pratos · ${ec.total} marcas · do alfabeto ao kimchi, explicado em português`}</p>
+                <p className="mt-3 text-[13px] text-muted">{`${guias.length} guias · do alfabeto às festas, explicado em português`}</p>
             </section>
 
             <div className="page-wrap space-y-10 py-8">
@@ -347,101 +288,16 @@ export default async function CulturaCoreanaPage() {
                     </section>
                 )}
 
-                {(pratos.length > 0 || posts.items.length > 0) && (
-                    <section aria-label="Gastronomia" className="space-y-5">
-                        <Capitulo n={++n} id="pratos" titulo="Gastronomia" sub={`${fo.total} pratos catalogados`} cor={COR_COMIDA} />
-                        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-                            {pratos.length > 0 && (
-                                <div>
-                                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                        {pratos.map((f, i) => <Ficha key={f.slug} ficha={f} base="/comidas" cor={COR_COMIDA} destaque={i === 0} />)}
-                                    </div>
-                                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                                        <span className={`mr-1 text-[9px] text-muted ${MONO}`}>Explorar por tipo</span>
-                                        {CATEGORIAS_PRATO.map(([chave, rotulo]) => (
-                                            <Link key={chave} href={`/comidas?category=${chave}`} className="border border-border px-2.5 py-1.5 text-[13px] font-semibold leading-none text-foreground transition-colors hover:border-foreground hover:bg-surface">{rotulo}</Link>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                            {posts.items.length > 0 && (
-                                <div>
-                                    <p className={`mb-2 text-[9px] ${MONO}`} style={{ color: COR_COMIDA }}>Para ler</p>
-                                    <ul>
-                                        {posts.items.map(post => {
-                                            const imagem = getWPImage(post._embedded, post.featured_image_url)
-                                            return (
-                                                <li key={post.id} className="border-t border-border first:border-t-0">
-                                                    <Link href={`/blog/${post.slug}`} className="group flex items-start gap-3 py-3">
-                                                        <span className="relative aspect-video w-24 shrink-0 overflow-hidden bg-surface">
-                                                            {imagem && <Image src={imagem.src} alt="" fill sizes="96px" className="object-cover" />}
-                                                        </span>
-                                                        <span className="min-w-0">
-                                                            <span className="line-clamp-3 block font-serif text-[16px] font-medium leading-snug text-foreground group-hover:text-accent">{stripHtml(post.title.rendered)}</span>
-                                                            <span className={`mt-1 block text-[9px] text-muted ${MONO}`}>{dataRelativa(post.date, 'pt')}</span>
-                                                        </span>
-                                                    </Link>
-                                                </li>
-                                            )
-                                        })}
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                        {receitas.length > 0 && (
-                            <div className="border-t border-border pt-5">
-                                <p className={`mb-3 text-[9px] ${MONO}`} style={{ color: COR_COMIDA }}>Para fazer em casa · com modo de preparo</p>
-                                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                    {receitas.map(r => (
-                                        <li key={r.slug}>
-                                            <Link href={`/comidas/${r.slug}`} className="group flex items-center gap-3 border border-border bg-background p-2.5 transition-colors hover:border-foreground">
-                                                <span className="relative h-14 w-14 shrink-0 overflow-hidden bg-surface">
-                                                    <Image src={r.imagem} alt="" fill sizes="56px" className="object-cover" />
-                                                </span>
-                                                <span className="min-w-0">
-                                                    <span className="block text-[14px] font-bold leading-tight text-foreground [overflow-wrap:anywhere] group-hover:text-accent">{r.nome}</span>
-                                                    {r.tempo && <span className={`mt-1 block text-[9px] text-muted ${MONO}`}>{r.tempo}</span>}
-                                                </span>
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                        <VerTodos href="/comidas" cor={COR_COMIDA}>Ver todos os pratos →</VerTodos>
-                    </section>
-                )}
-
-                {marcas.length > 0 && (
-                    <section aria-label="Marcas de comida e bebida" className="space-y-5">
-                        <Capitulo n={++n} id="marcas" titulo="Marcas" sub={`${ec.total} empresas de comida e bebida`} cor={COR_COMIDA} />
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
-                            {marcas.map(f => <Ficha key={f.slug} ficha={f} base="/empresas" cor={COR_COMIDA} />)}
-                        </div>
-                        {marcasSemLogo.length > 0 && (
-                            <ul className="flex flex-wrap gap-2" aria-label="Outras marcas">
-                                {marcasSemLogo.map(m => (
-                                    <li key={m.slug}>
-                                        <Link href={`/empresas/${m.slug}`} className="touch-target flex h-10 items-center border border-border-strong px-4 text-[14px] font-semibold text-foreground transition-colors hover:border-accent/60">{m.nome}</Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                        <VerTodos href="/empresas" cor={COR_COMIDA}>Ver todas as empresas →</VerTodos>
-                    </section>
-                )}
-
-                {produtos.length > 0 && (
-                    <section aria-label="Na loja" className="border-2 border-[#ff246e] bg-[#fff0f5] p-4 dark:bg-[#2a1018]">
-                        <div className="mb-3 flex items-center justify-between gap-3">
-                            <p className={`text-[10px] text-muted ${MONO}`}>Na loja · comida coreana · afiliado</p>
-                            <Link href="/loja" className="shrink-0 px-3 py-2 font-mono text-[10px] font-black uppercase leading-none tracking-[0.1em] text-white" style={{ backgroundColor: COR_LOJA }}>Ver a loja →</Link>
-                        </div>
-                        <div className="-mx-4 grid auto-cols-[62%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:mx-0 sm:auto-cols-auto sm:grid-flow-row sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
-                            {produtos.map(p => <StoreCard key={p.id} product={p} compact contexto="hub_cultura" />)}
-                        </div>
-                    </section>
-                )}
+                <section aria-label="Gastronomia" className="space-y-5">
+                    <Link href="/comidas" className="group flex items-center gap-4 border-2 px-5 py-4 transition-colors hover:bg-surface" style={{ borderColor: COR_COMIDA }}>
+                        <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">🍜</span>
+                        <span className="min-w-0">
+                            <span className={`block text-[9px] ${MONO}`} style={{ color: COR_COMIDA }}>Gastronomia</span>
+                            <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">Pratos, receitas, marcas e a loja de comida coreana</span>
+                        </span>
+                        <span className={`ml-auto shrink-0 text-foreground ${MONO}`}>Ver gastronomia →</span>
+                    </Link>
+                </section>
             </div>
         </>
     )

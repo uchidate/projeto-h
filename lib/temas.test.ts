@@ -9,14 +9,12 @@ describe('rotaPertenceAoItem', () => {
         expect(rotaPertenceAoItem('/', '/')).toBe(true)
         expect(rotaPertenceAoItem('/blog', '/')).toBe(false)
     })
-    it('comidas e empresas acendem Cultura e Gastronomia', () => {
-        expect(rotaPertenceAoItem('/comidas', '/cultura-coreana-101')).toBe(true)
-        expect(rotaPertenceAoItem('/comidas/pepero', '/cultura-coreana-101')).toBe(true)
-        expect(rotaPertenceAoItem('/empresas/lotte', '/cultura-coreana-101')).toBe(true)
-    })
-    it('não acende outro item por tabela', () => {
-        expect(rotaPertenceAoItem('/comidas', '/blog')).toBe(false)
-        expect(rotaPertenceAoItem('/comidasx', '/cultura-coreana-101')).toBe(false)
+    it('Gastronomia acende em /comidas e nas fichas; Cultura só no hub dela', () => {
+        expect(rotaPertenceAoItem('/comidas', '/comidas')).toBe(true)
+        expect(rotaPertenceAoItem('/comidas/pepero', '/comidas')).toBe(true)
+        expect(rotaPertenceAoItem('/comidas/pepero', '/cultura-coreana-101')).toBe(false)
+        expect(rotaPertenceAoItem('/empresas/lotte', '/comidas')).toBe(false)
+        expect(rotaPertenceAoItem('/comidasx', '/comidas')).toBe(false)
         expect(rotaPertenceAoItem(null, '/blog')).toBe(false)
     })
 })
