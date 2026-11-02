@@ -43,6 +43,10 @@ describe('marcasComProdutos', () => {
         const r = marcasComProdutos([empresa('amore', 'Amorepacific', null, ['Celimax']), empresa('lg', 'LG'), empresa('x', 'Sem Produto')], produtos)
         expect(r.map(m => m.slug)).toEqual(['amore'])
     })
+    it('marca com ficha própria não conta para a empresa que a lista', () => {
+        const r = marcasComProdutos([empresa('medicube', 'Medicube', null, ['Celimax']), empresa('celimax', 'Celimax')], produtos)
+        expect(r.map(m => [m.slug, m.produtos])).toEqual([['celimax', 2]])
+    })
     it('só casa palavra inteira', () => {
         expect(marcasComProdutos([empresa('max', 'Celi')], produtos)).toEqual([])
     })
