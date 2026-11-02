@@ -29,6 +29,7 @@ export const metadata: Metadata = {
 const MONO = 'font-mono text-[10px] font-bold uppercase tracking-[0.14em]'
 const COR_CULTURA = '#6d3fc0'
 const COR_COMIDA = '#b4531a'
+const COR_MERCH = '#7c3aed'
 const COR_FESTA = '#0e7490'
 
 type Guia = { label: string; href: string; emoji: string }
@@ -296,6 +297,17 @@ export default async function CulturaCoreanaPage() {
                             <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">Pratos, receitas, marcas e a loja de comida coreana</span>
                         </span>
                         <span className={`ml-auto shrink-0 text-foreground ${MONO}`}>Ver gastronomia →</span>
+                    </Link>
+                </section>
+
+                <section aria-label="Merch" className="space-y-5">
+                    <Link href="/merch" className="group flex items-center gap-4 border-2 px-5 py-4 transition-colors hover:bg-surface" style={{ borderColor: COR_MERCH }}>
+                        <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">🪄</span>
+                        <span className="min-w-0">
+                            <span className={`block text-[9px] ${MONO}`} style={{ color: COR_MERCH }}>Merch</span>
+                            <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">Lightstick, photocard, álbum físico e o que comprar</span>
+                        </span>
+                        <span className={`ml-auto shrink-0 text-foreground ${MONO}`}>Ver merch →</span>
                     </Link>
                 </section>
             </div>
