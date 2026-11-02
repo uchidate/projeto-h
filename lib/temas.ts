@@ -12,31 +12,27 @@ export type TemaDoSite = {
     categoriaBlog?: string
     /** Categorias dos produtos na loja (`acf.category`); a primeira é a da página "ver todos". */
     categoriasLoja?: string[]
-    /** Setor das fichas de empresa que são as marcas do tema. */
+    /** Setor das fichas de empresa que são as marcas do tema; sem ele o tema não tem faixa de marcas. */
     industria?: CompanyIndustry
-    /** Item do menu que representa o tema (`href` da navegação). */
-    menuHref?: string
-    /** Prefixos de rota que pertencem ao tema e acendem o `menuHref`, além do próprio href. */
-    rotas?: string[]
 }
 
 export const TEMAS: TemaDoSite[] = [
     { id: 'k-beauty', rotulo: 'K-beauty', categoriaBlog: 'k-beauty', categoriasLoja: ['kbeauty'], industria: 'beauty' },
-    // Comida: catálogo em /comidas e marcas em /empresas moram sob "Cultura e Gastronomia".
+    // Comida: catálogo em /comidas, que é também o item "Gastronomia" do menu.
     // `alimenta` é um valor gravado por engano no lugar de `snacks` em produtos importados.
-    { id: 'comida', rotulo: 'Comida', categoriaBlog: 'comida', categoriasLoja: ['snacks', 'alimenta'], industria: 'food_beverage', menuHref: '/cultura-coreana-101', rotas: ['/comidas', '/empresas'] },
+    { id: 'comida', rotulo: 'Comida', categoriaBlog: 'comida', categoriasLoja: ['snacks', 'alimenta'], industria: 'food_beverage' },
+    // Merch de K-pop: sem marcas (o fã compra do grupo, não de fabricante), só artigos e prateleira.
+    { id: 'merch', rotulo: 'Merch', categoriaBlog: 'merch', categoriasLoja: ['lightstick', 'photocard', 'kpop_album'] },
 ]
 
-/** Tema que tem categoria própria no blog, loja e marcas ligadas. */
+/** Tema que tem categoria própria no blog e produtos da loja ligados. */
 export function temasComLoja(): TemaDoSite[] {
-    return TEMAS.filter(t => t.categoriaBlog && t.categoriasLoja?.length && t.industria)
+    return TEMAS.filter(t => t.categoriaBlog && t.categoriasLoja?.length)
 }
 
-/** A rota pertence ao item do menu: o próprio href ou uma rota que um tema atribuiu a ele. */
+/** A rota pertence ao item do menu: o próprio href ou o que vem depois dele. */
 export function rotaPertenceAoItem(pathname: string | null | undefined, href: string): boolean {
     if (!pathname) return false
     if (href === '/') return pathname === '/'
-    const dentro = (base: string) => pathname === base || pathname.startsWith(`${base}/`)
-    if (dentro(href)) return true
-    return TEMAS.some(t => t.menuHref === href && (t.rotas ?? []).some(dentro))
+    return pathname === href || pathname.startsWith(`${href}/`)
 }

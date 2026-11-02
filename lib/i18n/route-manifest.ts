@@ -58,6 +58,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/fandoms': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/positions': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/loja': { tipo: 'listagem', estado: 'somentePt', motivo: 'catálogo de lojas brasileiras com preço em reais e link de afiliado; sem sentido para leitor de outro país (a ficha em EN já esconde a vitrine)' },
+    '/merch': { tipo: 'listagem', estado: 'somentePt', motivo: 'guias de colecionismo e vitrine da loja brasileira com preço em reais e link de afiliado; sem sentido para leitor de outro país' },
     '/blog': { tipo: 'listagem', estado: 'parcial', falta: 'só a listagem (artigos com selo PT abrindo no original); /en/blog/[slug] serve o original em português com aviso e noindex; artigos com tradução publicada aparecem traduzidos' },
     '/guias': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     '/trending': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },

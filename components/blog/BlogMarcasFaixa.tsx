@@ -7,12 +7,12 @@ import type { MarcaDaCategoria } from '@/lib/blog/categoriaLoja'
  * não empurrar os artigos para baixo no celular. Cada marca leva à loja dela.
  * Marca sem logo entra só com o nome.
  */
-export function BlogMarcasFaixa({ marcas, rotulo }: { marcas: MarcaDaCategoria[]; rotulo: string }) {
+export function BlogMarcasFaixa({ marcas, rotulo, todasHref = '/empresas' }: { marcas: MarcaDaCategoria[]; rotulo: string; todasHref?: string }) {
     return (
         <section data-bloco="blog-marcas" aria-label={`Marcas de ${rotulo} na loja`} className="mt-5">
             <div className="mb-2 flex items-baseline gap-3">
                 <h2 className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60">Marcas na loja</h2>
-                <Link href="/empresas?industry=beauty" className="ml-auto font-mono text-[11px] text-muted transition-colors hover:text-accent">todas as marcas →</Link>
+                <Link href={todasHref} className="ml-auto font-mono text-[11px] text-muted transition-colors hover:text-accent">todas as marcas →</Link>
             </div>
             <ul className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
                 {marcas.map(m => (

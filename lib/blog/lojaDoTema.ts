@@ -1,5 +1,6 @@
 import { getStoreProducts } from '@/lib/wordpress/store'
 import { getCompanies } from '@/lib/wordpress/companies'
+import type { WPCompany } from '@/lib/wordpress/types'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { marcasComProdutos, produtosDaCategoria, type CategoriaComLoja } from '@/lib/blog/categoriaLoja'
 
@@ -11,12 +12,13 @@ export async function carregarLojaDoTema(cfg: CategoriaComLoja, contexto: string
     try {
         const [todos, empresas] = await Promise.all([
             getStoreProducts(),
-            getCompanies({ industry: cfg.industria, perPage: 100, orderby: 'title', order: 'asc' }),
+            cfg.industria ? getCompanies({ industry: cfg.industria, perPage: 100, orderby: 'title', order: 'asc' }) : Promise.resolve({ items: [] as WPCompany[] }),
         ])
         const produtos = produtosDaCategoria(todos, cfg.categoriasLoja)
         return {
             rotulo: cfg.rotulo,
             categoriaLoja: cfg.categoriasLoja[0],
+            industria: cfg.industria,
             marcas: marcasComProdutos(empresas.items, produtos),
             produtos: ordenarPrateleira(produtos, contexto).slice(0, 10),
         }

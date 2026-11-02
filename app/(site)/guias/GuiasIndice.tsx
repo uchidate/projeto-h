@@ -198,8 +198,8 @@ export async function GuiasIndice({ kind }: { kind?: string }) {
                     >
                         <span>
                             <span className={`block text-[9px] text-[#6d3fc0] ${MONO}`}>Também nos guias</span>
-                            <span className="block font-serif text-[24px] font-medium leading-tight text-foreground group-hover:text-accent">Cultura e gastronomia coreana</span>
-                            <span className="mt-1 block text-[14px] text-foreground/70">Hangeul, honoríficos, festas, pratos e marcas: {guiasDeCultura.length || 'dezenas de'} guias para entender a Coreia.</span>
+                            <span className="block font-serif text-[24px] font-medium leading-tight text-foreground group-hover:text-accent">Cultura coreana</span>
+                            <span className="mt-1 block text-[14px] text-foreground/70">Hangeul, honoríficos, festas e vida cotidiana: {guiasDeCultura.length || 'dezenas de'} guias para entender a Coreia.</span>
                         </span>
                         <span className={`shrink-0 text-foreground ${MONO}`}>Abrir →</span>
                     </Link>

@@ -53,6 +53,11 @@ it('k-beauty liga a kbeauty e beauty; comida liga snacks e alimenta', () => {
     expect(CATEGORIAS_COM_LOJA['comida']).toMatchObject({ categoriasLoja: ['snacks', 'alimenta'], industria: 'food_beverage' })
 })
 
+it('merch liga lightstick, photocard e álbum, sem setor de marcas', () => {
+    expect(CATEGORIAS_COM_LOJA['merch']).toMatchObject({ categoriasLoja: ['lightstick', 'photocard', 'kpop_album'] })
+    expect(CATEGORIAS_COM_LOJA['merch'].industria).toBeUndefined()
+})
+
 it('produtosDaCategoria aceita mais de uma categoria de loja', () => {
     const lista = [produto(1, 'A', { category: 'snacks' }), produto(2, 'B', { category: 'alimenta' }), produto(3, 'C', { category: 'kbeauty' })]
     expect(produtosDaCategoria(lista, ['snacks', 'alimenta']).map(p => p.id)).toEqual([1, 2])

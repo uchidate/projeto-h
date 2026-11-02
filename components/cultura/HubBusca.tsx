@@ -24,7 +24,7 @@ const semAcento = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLo
 const MAX = 8
 
 /** Busca ao vivo dos hubs: filtra os itens já carregados na página; sem JS cai na busca do site. */
-export function HubBusca({ itens, placeholder = 'Buscar guia, prato ou marca', sugestoes = [] }: { itens: ItemBusca[]; placeholder?: string; sugestoes?: ItemBusca[] }) {
+export function HubBusca({ itens, placeholder = 'Buscar guia ou festa', sugestoes = [] }: { itens: ItemBusca[]; placeholder?: string; sugestoes?: ItemBusca[] }) {
     const [q, setQ] = useState('')
     const [aberto, setAberto] = useState(false)
     const campo = useRef<HTMLInputElement>(null)
