@@ -11,6 +11,7 @@ import { dataRelativa } from '@/lib/home/data-relativa'
 import { getCategories, getPostBySlug, getPosts } from '@/lib/wordpress/posts'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getWPImage, stripHtml } from '@/lib/utils'
+import { metaDescription } from '@/lib/seo/metaDescription'
 
 const PAGE_URL = `${SITE_URL}/cultura-coreana-101`
 const TITLE = 'Cultura Coreana: Guias, Festas e Tradições'
@@ -119,10 +120,13 @@ export default async function CulturaCoreanaPage() {
         .filter(p => !slugsGuias.has(p.slug) && !p.categories?.some(id => idsDeOutroTema.has(id)) && getWPImage(p._embedded, p.featured_image_url))
         .slice(0, 4)
     const capas = new Map<string, string>()
+    const resumos = new Map<string, string>()
     capasInicio.forEach((r, i) => {
         const post = ou<Awaited<ReturnType<typeof getPostBySlug>>>(null)(r as PromiseSettledResult<Awaited<ReturnType<typeof getPostBySlug>>>)
         const imagem = post && getWPImage(post._embedded, post.featured_image_url)
         if (imagem) capas.set(INICIO[i], imagem.src)
+        const resumo = post && (post.acf?.subtitle?.trim() || stripHtml(post.excerpt.rendered))
+        if (resumo) resumos.set(INICIO[i], metaDescription(resumo, 150))
     })
     const itensBusca: ItemBusca[] = [
         ...guias.map(g => ({ rotulo: g.label, href: g.href, tipo: 'Guia' as const })),
@@ -175,6 +179,7 @@ export default async function CulturaCoreanaPage() {
                             <div className="grid gap-3 sm:grid-cols-2">
                                 {inicio.map(g => {
                                     const capa = capas.get(g.href.replace('/blog/', ''))
+                                    const resumo = resumos.get(g.href.replace('/blog/', ''))
                                     return (
                                         <Link key={g.href} href={g.href} className="group block border-2 transition-colors hover:bg-surface" style={{ borderColor: COR_CULTURA }}>
                                             {capa && (
@@ -187,6 +192,7 @@ export default async function CulturaCoreanaPage() {
                                                 <span className="min-w-0">
                                                     <span className={`block text-[9px] ${MONO}`} style={{ color: COR_CULTURA }}>Comece por aqui</span>
                                                     <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">{g.label}</span>
+                                                    {resumo && <span className="mt-1 line-clamp-2 block text-[13px] leading-snug text-foreground/70">{resumo}</span>}
                                                 </span>
                                             </span>
                                         </Link>
