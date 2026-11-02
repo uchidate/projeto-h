@@ -83,6 +83,11 @@ const NavBar = ({
 }) => {
     const navRef = useRef<HTMLElement | null>(null)
     const pathname = usePathname()
+    // Lida no cliente, sem useSearchParams, para não tornar dinâmicas as páginas estáticas que têm o menu.
+    const [categoriaBlog, setCategoriaBlog] = useState<string | null>(null)
+    useEffect(() => {
+        setCategoriaBlog(new URLSearchParams(window.location.search).get('category'))
+    }, [pathname])
     const [isScrolled, setIsScrolled] = useState(false)
     const [isHidden, setIsHidden] = useState(false)
     const openSearch = useQuickSearch((state) => state.open)
@@ -193,7 +198,7 @@ const NavBar = ({
         window.dispatchEvent(new Event('quick-search:open'))
     }
 
-    const isActive = (href: string) => rotaPertenceAoItem(pathname, href)
+    const isActive = (href: string) => rotaPertenceAoItem(pathname, href, categoriaBlog)
 
     // Abas do celular: as cinco primeiras; o resto fica em "Mais". Se a página atual é uma das extras, ela aparece
     // como aba ativa depois das cinco, para o leitor sempre ver onde está.

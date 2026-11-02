@@ -31,8 +31,14 @@ export function temasComLoja(): TemaDoSite[] {
 }
 
 /** A rota pertence ao item do menu: o próprio href ou o que vem depois dele. */
-export function rotaPertenceAoItem(pathname: string | null | undefined, href: string): boolean {
+export function rotaPertenceAoItem(
+    pathname: string | null | undefined,
+    href: string,
+    categoriaBlog?: string | null,
+): boolean {
     if (!pathname) return false
     if (href === '/') return pathname === '/'
+    // /blog?category=comida é a vitrine do tema, não "Notícias": o pathname não traz a query.
+    if (href === '/blog' && categoriaBlog && TEMAS.some(t => t.categoriaBlog === categoriaBlog)) return false
     return pathname === href || pathname.startsWith(`${href}/`)
 }
