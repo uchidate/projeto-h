@@ -13,7 +13,7 @@ export type PostsQuery = {
     categoriesExclude?: number[]
     tag?: string        // slug da tag
     search?: string
-    orderby?: 'date' | 'modified' | 'title' | 'menu_order'
+    orderby?: 'date' | 'modified' | 'title' | 'menu_order' | 'relevance'
     order?: 'desc' | 'asc'
     slug?: string
     excludeId?: number

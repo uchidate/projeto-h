@@ -136,7 +136,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                         <span className="text-accent">.</span>
                         <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{total.toLocaleString('pt-BR')}</span>
                     </h1>
-                    <SearchInput placeholder="Buscar artigo por título" param="search" current={currentSearch} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[520px] lg:flex-1" />
+                    <SearchInput placeholder="Buscar nos artigos" param="search" current={currentSearch} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[520px] lg:flex-1" />
                     <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label="Categorias">
                         <Link href="/blog" className={chipCategoria(!currentCategory)}>Todas</Link>
                         {categoriasChip.map(c => (

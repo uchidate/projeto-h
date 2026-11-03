@@ -36,7 +36,8 @@ function consultaDaLista(sp: { category?: string; tag?: string; search?: string;
     const semFiltro = !sp.category && !sp.tag && !sp.search
     if (semFiltro && sp.tipo === 'guias') return { tipo: 'guias' as const, extra: { categoryIds: idsGuias } }
     if (semFiltro) return { tipo: undefined, extra: { categoriesExclude: idsGuias } }
-    return { tipo: undefined, extra: {} }
+    // Busca por texto: por data, "Round 6" trazia um protetor solar em primeiro; a relevância põe o guia da série à frente.
+    return { tipo: undefined, extra: sp.search ? { orderby: 'relevance' as const } : {} }
 }
 
 function buildBlogUrl(siteUrl: string, page: number, opts: { category?: string; tag?: string }) {
