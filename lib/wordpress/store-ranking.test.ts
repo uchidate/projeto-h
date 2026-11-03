@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ordenarCategorias, ordenarPrateleira } from './store-ranking'
+import { candidatosDescoberta, ordenarCategorias, ordenarPrateleira } from './store-ranking'
 import type { StoreProduct } from './store'
 
 const produto = (id: number): StoreProduct => ({
@@ -38,5 +38,44 @@ describe('ordenarPrateleira', () => {
         const alta = com(900022, { commission_rate: '14', position: 9 })
         const semDado = com(900023, { position: 2 })
         expect(ordenarPrateleira([semDado, baixa, alta], 'x').map(p => p.id)).toEqual([900022, 900021, 900023])
+    })
+})
+
+describe('candidatosDescoberta', () => {
+    const com = (id: number, extra: Partial<StoreProduct['acf']> = {}) => ({ ...produto(id), acf: { ...produto(id).acf, ...extra } })
+    // IDs 9xxxxx não existem no ranking: todos "sem leitura".
+    const catalogo = [
+        ...Array.from({ length: 10 }, (_, i) => com(910000 + i, { category: 'kbeauty' })),
+        ...Array.from({ length: 4 }, (_, i) => com(920000 + i, { category: 'photocard' })),
+        com(930001, { category: 'kbeauty', is_hidden: true }),
+        com(930002, { category: 'kbeauty', price: null }),
+        com(930003, { category: 'kbeauty', affiliate_url: null }),
+        com(930004, { category: 'kbeauty', image_url: null }),
+    ]
+    const prateleira = [catalogo[0], catalogo[1]]
+
+    it('só escolhe produto elegível, fora da prateleira, marcado como descoberta', () => {
+        const r = candidatosDescoberta(prateleira, catalogo, 'artigo:x')
+        expect(r).toHaveLength(6)
+        for (const p of r) {
+            expect(p.descoberta).toBe(true)
+            expect(prateleira.map(x => x.id)).not.toContain(p.id)
+            expect(p.id).toBeLessThan(930000)
+        }
+    })
+
+    it('prefere a categoria da prateleira e completa com as demais quando falta', () => {
+        expect(candidatosDescoberta(prateleira, catalogo, 'a').every(p => p.acf.category === 'kbeauty')).toBe(true)
+        const so = candidatosDescoberta([com(940001, { category: 'photocard' })], catalogo, 'a', 6)
+        expect(so.some(p => p.acf.category === 'photocard')).toBe(true)
+        expect(so).toHaveLength(6)
+    })
+
+    it('é estável por contexto e muda de um contexto para outro', () => {
+        const a1 = candidatosDescoberta(prateleira, catalogo, 'artigo:a').map(p => p.id)
+        const a2 = candidatosDescoberta(prateleira, catalogo, 'artigo:a').map(p => p.id)
+        const b = candidatosDescoberta(prateleira, catalogo, 'artigo:b').map(p => p.id)
+        expect(a1).toEqual(a2)
+        expect(a1).not.toEqual(b)
     })
 })

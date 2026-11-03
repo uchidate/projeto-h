@@ -22,6 +22,7 @@ import { GroupDetailPage } from '@/components/groups/GroupDetailPage'
 import { getHubsForGroup } from '@/lib/guias/hub-lookup'
 import { getStoreProductsByGroupId, getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
+import { comDescobertas } from '@/lib/wordpress/vitrine'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
@@ -133,8 +134,11 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
 
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio
-        ? ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'grupo:fallback')
+        ? await comDescobertas(ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'grupo:fallback'), 'grupo:fallback')
         : []
+    const shopProductsFicha = semProdutoProprio
+        ? shopFallbackProducts
+        : (locale === DEFAULT_LOCALE ? await comDescobertas(ordenarPrateleira(shopProducts, `grupo:${slug}`), `grupo:${slug}`) : [])
 
     const relatedHubs = getHubsForGroup(group)
     const companyMentions = locale === DEFAULT_LOCALE
@@ -156,7 +160,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('group', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={semProdutoProprio ? shopFallbackProducts : (locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `grupo:${slug}`) : [])} shopFallback={semProdutoProprio} companyMentions={companyMentions} />
+            <GroupDetailPage group={group} members={members} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} agency={agency} organizationContext={organizationContext} relatedGroups={relatedGroups} discography={discography} soloReleases={soloReleases} relatedHubs={relatedHubs} shopProducts={shopProductsFicha} shopFallback={semProdutoProprio} companyMentions={companyMentions} />
         </>
     )
 }

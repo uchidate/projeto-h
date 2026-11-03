@@ -93,3 +93,36 @@ export function ordenarCategorias(porCategoria: Record<string, StoreProduct[]>):
     return Object.keys(porCategoria).sort((a, b) =>
         pontos(b) - pontos(a) || porCategoria[b].length - porCategoria[a].length || a.localeCompare(b))
 }
+
+/** O ranking de cliques ainda não tem leitura deste produto (não aparece no global nem no contexto). */
+export function semLeitura(produto: StoreProduct, contexto?: string): boolean {
+    const ranking = carregarRankingCliques()
+    const id = String(produto.id)
+    return ranking.global[id] === undefined && (!contexto || ranking.porContexto[contexto]?.[produto.id] === undefined)
+}
+
+/** Hash simples e estável (FNV-1a) para embaralhar sem aleatoriedade: mesma página, mesmo resultado no servidor. */
+function hashEstavel(texto: string): number {
+    let h = 2166136261
+    for (let i = 0; i < texto.length; i++) h = Math.imul(h ^ texto.charCodeAt(i), 16777619)
+    return h >>> 0
+}
+
+/**
+ * Candidatos ao slot de descoberta: produtos do catálogo que o ranking nunca leu, visíveis e completos
+ * (preço, imagem, link), de preferência nas categorias da própria prateleira e fora dela. A ordem é um
+ * embaralhamento estável por contexto, então páginas diferentes exploram partes diferentes do catálogo.
+ * Devolve cópias marcadas com `descoberta: true`, para a prateleira separá-las do pool ordenado.
+ */
+export function candidatosDescoberta(prateleira: StoreProduct[], catalogo: StoreProduct[], contexto: string, max = 6): StoreProduct[] {
+    const naPrateleira = new Set(prateleira.map(p => p.id))
+    const categorias = new Set(prateleira.map(p => p.acf.category).filter((c): c is string => !!c))
+    const elegiveis = catalogo.filter(p =>
+        !naPrateleira.has(p.id) && !p.acf.is_hidden && p.acf.affiliate_url && p.acf.price && p.acf.image_url && semLeitura(p))
+    const daCategoria = (p: StoreProduct) => (p.acf.category && categorias.has(p.acf.category) ? 0 : 1)
+    return elegiveis
+        .map(p => ({ p, grupo: daCategoria(p), h: hashEstavel(`${contexto}:${p.id}`) }))
+        .sort((a, b) => a.grupo - b.grupo || a.h - b.h)
+        .slice(0, max)
+        .map(({ p }) => ({ ...p, descoberta: true }))
+}

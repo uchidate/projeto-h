@@ -4,6 +4,8 @@ import { garantirRankingRemoto } from './ranking-remoto'
 
 export type StoreProduct = {
     id: number
+    /** Marcado só pela vitrine (vitrine.ts): candidato do slot de descoberta, fora do pool ordenado. Nunca vem do WordPress. */
+    descoberta?: boolean
     title: { rendered: string }
     date_gmt: string
     acf: {

@@ -1,6 +1,6 @@
 import { getFeaturedStoreProducts, getStoreProducts, getStoreProductsByArtistId, getStoreProductsByIds, type StoreProduct, type TipoVitrine } from '@/lib/wordpress/store'
 import { escolherPorTemaComAderencia, type Tema } from '@/lib/wordpress/store-contexto'
-import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
+import { candidatosDescoberta, ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 
 /**
  * Selo "disponível na loja" nos cards de listagem: um fetch de produtos
@@ -19,9 +19,22 @@ export async function buildVitrineMatcher(): Promise<(termos: (string | undefine
     }
 }
 
+/**
+ * Acrescenta ao fim da lista candidatos do slot de descoberta (marcados `descoberta: true`). Falha de rede
+ * nunca derruba a vitrine: sem catálogo, devolve a lista como veio.
+ */
+export async function comDescobertas(lista: StoreProduct[], contexto: string): Promise<StoreProduct[]> {
+    if (lista.length === 0) return lista
+    try {
+        return [...lista, ...candidatosDescoberta(lista, await getStoreProducts(), contexto)]
+    } catch {
+        return lista
+    }
+}
+
 /** Vitrine geral em destaque, já ordenada por contexto. Base das faixas de loja em páginas sem produto próprio. */
 export async function getVitrineGeral(contexto: string, limit = 6, tipo?: TipoVitrine): Promise<StoreProduct[]> {
-    return ordenarPrateleira(await getFeaturedStoreProducts(limit, tipo), contexto)
+    return comDescobertas(ordenarPrateleira(await getFeaturedStoreProducts(limit, tipo), contexto), contexto)
 }
 
 /**
@@ -32,7 +45,7 @@ export async function getVitrineGeral(contexto: string, limit = 6, tipo?: TipoVi
 export async function getVitrineTematica(texto: string, contexto: string, opcoes: { limit?: number; tipo?: TipoVitrine; temas?: Tema[] } = {}): Promise<StoreProduct[]> {
     const { limit = 6, tipo, temas } = opcoes
     const casados = escolherPorTemaComAderencia(await getStoreProducts(), { texto, temas, limite: limit })
-    if (casados.length >= 3) return ordenarPrateleira(casados.map(x => x.p), contexto, new Map(casados.map(x => [x.p.id, x.aderencia])))
+    if (casados.length >= 3) return comDescobertas(ordenarPrateleira(casados.map(x => x.p), contexto, new Map(casados.map(x => [x.p.id, x.aderencia]))), contexto)
     return getVitrineGeral(contexto, limit, tipo)
 }
 
@@ -47,10 +60,11 @@ export async function getVitrineDoElenco(artistIds: number[], contexto: string, 
         for (const lista of porArtista) if (i < lista.length) intercalados.push(lista[i])
     }
     const unicos = [...new Map(intercalados.map(p => [p.id, p])).values()]
-    if (unicos.length >= 3) return ordenarPrateleira(unicos, contexto).slice(0, limit)
+    if (unicos.length >= 3) return comDescobertas(ordenarPrateleira(unicos, contexto).slice(0, limit), contexto)
     // Sem produto do elenco: tenta casar pelo assunto da obra antes da vitrine geral.
     const geral = texto ? await getVitrineTematica(texto, contexto, { limit, tipo, temas: [tipo === 'drama' ? 'drama' : 'musica'] }) : await getVitrineGeral(contexto, limit, tipo)
-    return [...new Map([...unicos, ...geral].map(p => [p.id, p])).values()].slice(0, limit)
+    const completo = [...new Map([...unicos, ...geral.filter(p => !p.descoberta)].map(p => [p.id, p])).values()].slice(0, limit)
+    return comDescobertas(completo, contexto)
 }
 
 /**

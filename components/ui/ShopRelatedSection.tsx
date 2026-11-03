@@ -29,14 +29,18 @@ function ShelfBlock({ title, products, href = '/loja', verTudoLabel = 'Ver tudo 
                     {verTudoLabel} →
                 </Link>
             </div>
-            <PrateleiraRotativa produtos={products.slice(0, 10)} contexto={contexto} />
+            <PrateleiraRotativa
+                produtos={products.filter(p => !p.descoberta).slice(0, 10)}
+                descobertas={products.filter(p => p.descoberta)}
+                contexto={contexto}
+            />
         </div>
     )
 }
 
 export function ShopRelatedSection({ title, products, href = '/loja', verTudoLabel = 'Ver tudo na loja', contexto, secondary, bloco }: Props) {
-    const hasPrimary = products.length > 0
-    const hasSecondary = !!secondary && secondary.products.length > 0
+    const hasPrimary = products.some(p => !p.descoberta)
+    const hasSecondary = !!secondary && secondary.products.some(p => !p.descoberta)
     if (!hasPrimary && !hasSecondary) return null
 
     // Sem produtos próprios mas com produtos do grupo: a prateleira do grupo assume o topo, não some.
