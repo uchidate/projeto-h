@@ -38,13 +38,13 @@ export function ArtistColophon({ artist, name, accent }: { artist: WPArtist; nam
                 <dl className="mt-3 flex flex-wrap gap-x-10 gap-y-4">
                     {revisedAt && (
                         <div>
-                            <dt className="font-mono text-[9px] font-black uppercase tracking-[0.12em] text-muted">{t('colophon.revision')}</dt>
+                            <dt className="font-mono text-[10px] font-black uppercase tracking-[0.12em] text-muted">{t('colophon.revision')}</dt>
                             <dd className="mt-1 text-[14px] text-foreground/85">{revisedAt}</dd>
                         </div>
                     )}
                     {sourceUrls.length > 0 && (
                         <div>
-                            <dt className="font-mono text-[9px] font-black uppercase tracking-[0.12em] text-muted">{t('colophon.sources')}</dt>
+                            <dt className="font-mono text-[10px] font-black uppercase tracking-[0.12em] text-muted">{t('colophon.sources')}</dt>
                             <dd className="mt-1 text-[14px] text-foreground/85">
                                 {t('colophon.references', { count: sourceUrls.length })}
                                 {outlets.size > 0 && ` · ${t('colophon.outlets', { count: outlets.size })}`}

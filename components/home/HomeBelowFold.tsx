@@ -42,7 +42,7 @@ async function GroupChip({ group, className = '', locale }: { group: WPGroup; cl
                     </div>
                 )}
                 {(acf.members?.length ?? 0) > 0 && (
-                    <span className="absolute bottom-1.5 left-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[8px] font-bold text-white">
+                    <span className="absolute bottom-1.5 left-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white">
                         {t('membros', { n: acf.members!.length })}
                     </span>
                 )}
@@ -55,7 +55,7 @@ async function GroupChip({ group, className = '', locale }: { group: WPGroup; cl
             <div className="flex min-w-0 flex-col justify-center px-3 py-2">
                 <p className="truncate text-[14px] font-black text-foreground transition-colors group-hover:text-accent">{name}</p>
                 {acf.name_hangul && <p className="mt-0.5 font-mono text-[10px] text-muted">{acf.name_hangul}</p>}
-                <p className="mt-1 font-mono text-[9px] uppercase tracking-wider text-muted/70">
+                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted/70">
                     {acf.debut_date ? acf.debut_date.slice(0, 4) : (acf.active === false ? t('encerradoCapitalizado') : t('emAtividade'))}
                 </p>
             </div>
@@ -92,7 +92,7 @@ async function BirthdayChip({ artist, today, locale }: { artist: WPArtist; today
             </div>
             <div className="min-w-0 w-full">
                 <p className="text-[11px] font-semibold leading-tight line-clamp-2 group-hover:text-accent transition-colors">{name}</p>
-                {day && <p className="font-mono text-[9px] text-muted">{t('dia', { dia: day })}</p>}
+                {day && <p className="font-mono text-[10px] text-muted">{t('dia', { dia: day })}</p>}
             </div>
         </Link>
     )

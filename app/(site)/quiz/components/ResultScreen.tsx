@@ -239,7 +239,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                             </div>
                         </div>
                         <TimeChart times={timeHistory} maxTime={maxTime} />
-                        <div className="flex items-center gap-3 mt-2 text-[9px] text-muted">
+                        <div className="flex items-center gap-3 mt-2 text-[10px] text-muted">
                             <span className="flex items-center gap-1"><span className="w-2 h-2 bg-green-400 inline-block" />rápido (≤40%)</span>
                             <span className="flex items-center gap-1"><span className="w-2 h-2 bg-amber-400 inline-block" />médio</span>
                             <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-400 inline-block" />lento</span>

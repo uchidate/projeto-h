@@ -24,7 +24,7 @@ export function GroupSpotifyEmbed({ spotifyUrl, name, accent: _accent }: Props) 
             <BlockHeader title="Spotify" eyebrow={tc('common.dossier')} tone="muted"
                 icon={<Music className="h-4 w-4 text-green-500" />}
                 action={<a href={spotifyUrl} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-[10px] font-bold text-green-500 hover:text-green-400 transition-colors">
+                    className="flex items-center gap-1.5 py-2 text-[10px] font-bold text-green-500 hover:text-green-400 transition-colors">
                     {tc('spotify.open')}
                     <ExternalLink className="h-3 w-3" />
                 </a>} />

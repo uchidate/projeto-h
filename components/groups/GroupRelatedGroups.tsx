@@ -45,7 +45,7 @@ export function GroupRelatedGroups({ groups, accent, agencyName }: Props) {
                                 <div className="absolute inset-x-0 bottom-0 bg-black/60 p-3 backdrop-blur-xs">
                                     <p className="line-clamp-2 text-[13px] font-black leading-snug text-white">{rgName}</p>
                                     {rg.acf?.fandom_name && (
-                                        <p className="mt-0.5 truncate font-mono text-[9px] uppercase tracking-[0.08em]" style={{ color: rgColor }}>
+                                        <p className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.08em]" style={{ color: rgColor }}>
                                             {rg.acf.fandom_name}
                                         </p>
                                     )}

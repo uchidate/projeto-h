@@ -195,7 +195,7 @@ export default async function GroupPage({ params }: { params: Params }) {
                                             )}
                                             {!isActive && (
                                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                                    <span className="font-mono text-[8px] font-bold text-white/80 uppercase">Inativo</span>
+                                                    <span className="font-mono text-[10px] font-bold text-white/80 uppercase">Inativo</span>
                                                 </div>
                                             )}
                                         </div>
@@ -207,7 +207,7 @@ export default async function GroupPage({ params }: { params: Params }) {
                                             <p className="font-mono text-[10px] text-muted/60 mt-1">Est. {debutYear}</p>
                                         )}
                                         {acf.fandom_name && (
-                                            <p className="font-mono text-[9px] text-accent/70 mt-0.5">{acf.fandom_name}</p>
+                                            <p className="font-mono text-[10px] text-accent/70 mt-0.5">{acf.fandom_name}</p>
                                         )}
                                     </Link>
                                 )

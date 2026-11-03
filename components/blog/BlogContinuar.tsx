@@ -58,7 +58,7 @@ export function BlogContinuar({ atual, candidatos, verMaisHref }: Props) {
         <section data-bloco="artigo-continuar" aria-labelledby="continuar-titulo" className="mt-10 border-t border-border px-4 pt-8 pb-10 sm:px-6 lg:px-8">
             <div className="mb-5 flex items-end justify-between gap-4">
                 <div className="min-w-0">
-                    <p className="mb-1 font-mono text-[9px] font-black uppercase tracking-[0.16em] text-accent">Continue por aqui</p>
+                    <p className="mb-1 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">Continue por aqui</p>
                     <h2 id="continuar-titulo" className="font-serif text-[clamp(1.6rem,3vw,2.15rem)] font-semibold leading-none tracking-[-0.035em] text-foreground">
                         Para ler a seguir
                     </h2>

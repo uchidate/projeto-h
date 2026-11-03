@@ -46,10 +46,10 @@ export function GroupEraRail({ chapters, accent, groupName }: Props) {
         <div className="overflow-hidden border border-border bg-surface">
             <div className="flex items-baseline justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
                 <div>
-                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.15em]" style={{ color: accent }}>{tc('eras.title')}</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em]" style={{ color: accent }}>{tc('eras.title')}</p>
                     <p className="mt-1 text-sm font-bold text-foreground/75">{tc('profile.erasOf', { name: groupName })}</p>
                 </div>
-                <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.12em] text-muted">{tc('common.swipe')}</span>
+                <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.12em] text-muted">{tc('common.swipe')}</span>
             </div>
 
             {/* Indicador estilo "stories": um segmento por era, preenchendo conforme o scroll */}
@@ -88,7 +88,7 @@ export function GroupEraRail({ chapters, accent, groupName }: Props) {
                                 sizes={poucas ? '(min-width: 640px) 33vw, 200px' : '200px'}
                             />
                             <div className="absolute inset-x-0 bottom-0 bg-black/55 p-3.5 backdrop-blur-xs">
-                                <span className="block font-mono text-[8px] font-black uppercase tracking-[0.12em] text-white/60 transition-colors group-hover/era:text-white">
+                                <span className="block font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white/60 transition-colors group-hover/era:text-white">
                                     {chapter.period}
                                 </span>
                                 <span className="mt-1 block text-[13px] font-black leading-tight text-white">{chapter.title}</span>

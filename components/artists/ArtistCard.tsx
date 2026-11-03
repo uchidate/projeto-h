@@ -73,7 +73,7 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
                         </div>
                     )}
                     {isTrending && (
-                        <span className="absolute left-2 top-2 bg-accent-a11y px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-white">
+                        <span className="absolute left-2 top-2 bg-accent-a11y px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white">
                             ● top
                         </span>
                     )}
@@ -111,7 +111,7 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
                 <p className="font-mono text-[10px] text-muted mt-0.5">{artist.acf.name_hangul}</p>
             )}
             {showRole && roles.length > 0 && (
-                <p className="mt-1 truncate font-mono text-[9px] uppercase tracking-wide text-muted/60">{roles[0]}</p>
+                <p className="mt-1 truncate font-mono text-[10px] uppercase tracking-wide text-muted/60">{roles[0]}</p>
             )}
         </Link>
     )

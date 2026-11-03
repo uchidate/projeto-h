@@ -31,7 +31,7 @@ export function MencionadoAcervo({ mentions, title = 'Mencionado no acervo' }: P
                                 )}
                             </span>
                             <span className="text-[12px] leading-tight">
-                                <span className="block font-mono text-[9px] uppercase tracking-wide text-muted">{LABEL[m.type]}</span>
+                                <span className="block font-mono text-[10px] uppercase tracking-wide text-muted">{LABEL[m.type]}</span>
                                 <span className="font-bold group-hover:text-accent transition-colors">{m.title}</span>
                             </span>
                         </Link>

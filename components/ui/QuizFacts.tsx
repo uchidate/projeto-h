@@ -78,7 +78,7 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId, 
                 <div className={`flex h-6 w-6 items-center justify-center ${tone.bg}`}>
                     <Lightbulb className={`w-3.5 h-3.5 ${tone.text}`} />
                 </div>
-                <p className="font-mono text-[9px] font-black uppercase tracking-[0.15em] text-muted">
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-muted">
                     Teste o que você sabe · {entityName}
                 </p>
             </div>

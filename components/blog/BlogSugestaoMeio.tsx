@@ -35,7 +35,7 @@ export function BlogSugestaoMeio({ atual, candidato }: { atual: WPPost; candidat
                     </span>
                 )}
                 <span className="min-w-0 flex-1">
-                    <span className="mb-1 block font-mono text-[9px] font-black uppercase tracking-[0.16em] text-accent">
+                    <span className="mb-1 block font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">
                         {motivo?.texto ?? 'Leia também'}
                     </span>
                     <span className="line-clamp-2 block text-[16px] font-black leading-snug tracking-[-0.02em] text-foreground transition-colors group-hover:text-accent">

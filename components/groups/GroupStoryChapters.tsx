@@ -26,7 +26,7 @@ export function GroupStoryChapters({ chapters, accent, groupName, portrait, debu
             <header className="relative grid gap-0 border-b border-featured-border lg:grid-cols-[minmax(0,1.35fr)_minmax(200px,0.65fr)]">
                 <div className="flex flex-col justify-between p-6 sm:p-8">
                     <div>
-                        <p className="font-mono text-[9px] font-black uppercase tracking-[0.17em]" style={{ color: accent }}>{t('storyEyebrow')}</p>
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.17em]" style={{ color: accent }}>{t('storyEyebrow')}</p>
                         <h3 className="mt-4 max-w-md font-serif text-3xl font-medium leading-[1.04] tracking-[-0.02em] sm:text-4xl">
                             {t('storyHeading', { name: groupName })}
                         </h3>
@@ -42,7 +42,7 @@ export function GroupStoryChapters({ chapters, accent, groupName, portrait, debu
                         pela borda superior e lia como defeito. A cifra real carrega. */}
                     <div className="mt-8 flex items-end gap-3 border-t border-featured-border pt-5">
                         <strong className="font-mono text-4xl leading-none">{yearsDocumented ?? chapters.length}</strong>
-                        <span className="max-w-[140px] font-mono text-[8px] uppercase leading-4 tracking-[0.12em] text-featured-muted">
+                        <span className="max-w-[140px] font-mono text-[10px] uppercase leading-4 tracking-[0.12em] text-featured-muted">
                             {yearsDocumented ? t('yearsDocumented') : t('chaptersDocumented')}
                         </span>
                     </div>
@@ -51,7 +51,7 @@ export function GroupStoryChapters({ chapters, accent, groupName, portrait, debu
                     <figure className="relative min-h-[260px] overflow-hidden border-t border-featured-border lg:border-l lg:border-t-0">
                         <Image src={portrait.src} alt={portrait.alt} fill className="object-cover object-top" sizes="(max-width: 1024px) 100vw, 24vw" />
                         <div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-transparent" />
-                        <figcaption className="absolute bottom-2.5 left-3.5 font-mono text-[8px] uppercase tracking-[0.12em] text-white/60">
+                        <figcaption className="absolute bottom-2.5 left-3.5 font-mono text-[10px] uppercase tracking-[0.12em] text-white/60">
                             {groupName} · imagem oficial
                         </figcaption>
                     </figure>
@@ -102,14 +102,14 @@ export function GroupStoryChapters({ chapters, accent, groupName, portrait, debu
                                             <footer className="mt-2.5">
                                                 <cite className="not-italic">
                                                     <span className="block text-[11px] font-black text-white">{chapter.quote_author}</span>
-                                                    {chapter.quote_context && <span className="mt-0.5 block font-mono text-[8px] uppercase leading-4 tracking-widest text-white/60">{chapter.quote_context}</span>}
+                                                    {chapter.quote_context && <span className="mt-0.5 block font-mono text-[10px] uppercase leading-4 tracking-widest text-white/60">{chapter.quote_context}</span>}
                                                 </cite>
                                             </footer>
                                         </blockquote>
                                     </>
                                 )}
                                 {chapter.visual_credit && (
-                                    <figcaption className={`absolute inset-x-0 bg-black/55 px-3.5 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-white/60 backdrop-blur-xs ${quoteOnPhoto ? 'top-0' : 'bottom-0'}`}>
+                                    <figcaption className={`absolute inset-x-0 bg-black/55 px-3.5 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-white/60 backdrop-blur-xs ${quoteOnPhoto ? 'top-0' : 'bottom-0'}`}>
                                         {chapter.visual_credit}
                                     </figcaption>
                                 )}
@@ -128,22 +128,22 @@ export function GroupStoryChapters({ chapters, accent, groupName, portrait, debu
                                     <footer className="mt-2.5">
                                         <cite className="not-italic">
                                             <span className="block text-[11px] font-black text-featured-fg">{chapter.quote_author}</span>
-                                            {chapter.quote_context && <span className="mt-0.5 block font-mono text-[8px] uppercase leading-4 tracking-widest text-featured-muted">{chapter.quote_context}</span>}
+                                            {chapter.quote_context && <span className="mt-0.5 block font-mono text-[10px] uppercase leading-4 tracking-widest text-featured-muted">{chapter.quote_context}</span>}
                                         </cite>
                                     </footer>
                                 </blockquote>
                             )}
-                            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[8px] font-black uppercase tracking-[0.11em]">
-                                <a href={chapter.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-featured-muted hover:text-featured-fg">
+                            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[10px] font-black uppercase tracking-[0.11em]">
+                                <a href={chapter.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 text-featured-muted hover:text-featured-fg">
                                     {t('chapterSource')} <ExternalLink size={9} />
                                 </a>
                                 {chapter.quote_source_url && (
-                                    <a href={chapter.quote_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-featured-muted hover:text-featured-fg">
+                                    <a href={chapter.quote_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 text-featured-muted hover:text-featured-fg">
                                         Ler citação na fonte <ExternalLink size={9} />
                                     </a>
                                 )}
                                 {chapter.visual_source_url && (
-                                    <a href={chapter.visual_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-featured-muted hover:text-featured-fg">
+                                    <a href={chapter.visual_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 text-featured-muted hover:text-featured-fg">
                                         {t('imageSource')} <ExternalLink size={9} />
                                     </a>
                                 )}

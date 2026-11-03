@@ -38,7 +38,7 @@ function CartaoGuia({ guia, titulos }: { guia: GuiaDaHome; titulos: string }) {
             </div>
             <div>
                 <h3 className="text-[17px] font-semibold leading-tight text-white">{guia.titulo}</h3>
-                <p className={`mt-2 text-[#a8a8bc] ${MONO} text-[9px] group-hover:text-white`}>{titulos} →</p>
+                <p className={`mt-2 text-[#a8a8bc] ${MONO} text-[10px] group-hover:text-white`}>{titulos} →</p>
             </div>
         </Link>
     )

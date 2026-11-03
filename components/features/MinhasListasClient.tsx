@@ -93,7 +93,7 @@ export function MinhasListasClient({
         <div className="page-wrap py-8 lg:py-12">
             <div className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
                 <div>
-                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted mb-1">Conta</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted mb-1">Conta</p>
                     <h1 className="text-[32px] font-black leading-tight tracking-[-0.03em]">
                         Minhas listas<BrandDot />
                     </h1>
@@ -148,7 +148,7 @@ export function MinhasListasClient({
 
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-accent">Coleção</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">Coleção</p>
                     <h2 className="text-[22px] font-black tracking-tight">{activeCopy.title}</h2>
                     <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{activeCopy.description}</p>
                 </div>

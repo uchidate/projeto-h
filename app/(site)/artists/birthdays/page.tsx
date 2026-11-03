@@ -206,7 +206,7 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                                                     <span className="font-mono text-[10px] text-muted mt-0.5">{artist.age} anos</span>
                                                 )}
                                                 {artist.hangul && (
-                                                    <span className="font-mono text-[9px] text-muted/60">{artist.hangul}</span>
+                                                    <span className="font-mono text-[10px] text-muted/60">{artist.hangul}</span>
                                                 )}
                                             </Link>
                                         ))}

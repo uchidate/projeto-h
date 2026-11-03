@@ -67,7 +67,7 @@ export function HubBusca({ itens, placeholder = 'Buscar guia ou festa', sugestoe
                             <p>Nenhum guia com “{q.trim()}”. <button type="submit" className="font-semibold text-accent underline">Buscar no site todo</button></p>
                             {sugestoes.length > 0 && (
                                 <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-                                    <span className="font-mono text-[9px] font-bold uppercase tracking-[0.14em]">Mais lidos</span>
+                                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em]">Mais lidos</span>
                                     {sugestoes.map(g => <Link key={g.href} href={g.href} className="font-semibold text-foreground hover:text-accent">{g.rotulo}</Link>)}
                                 </p>
                             )}
@@ -78,7 +78,7 @@ export function HubBusca({ itens, placeholder = 'Buscar guia ou festa', sugestoe
                                 <li key={i.href} className="border-t border-border first:border-t-0">
                                     <Link href={i.href} className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-surface">
                                         <span className="text-[14px] font-semibold text-foreground">{i.rotulo}</span>
-                                        <span className="shrink-0 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-muted">{i.tipo}</span>
+                                        <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted">{i.tipo}</span>
                                     </Link>
                                 </li>
                             ))}

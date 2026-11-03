@@ -66,11 +66,11 @@ export function ArtistCarreira({ id, eyebrow, titulo, tituloPremios, capitulos, 
                                 </blockquote>
                             )}
                             <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] font-black uppercase tracking-[0.1em] text-muted">
-                                <a href={c.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
+                                <a href={c.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 hover:text-foreground">
                                     {t('chapterSource')} <ExternalLink size={10} />
                                 </a>
                                 {c.quote_source_url && (
-                                    <a href={c.quote_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
+                                    <a href={c.quote_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 hover:text-foreground">
                                         Ler citação na fonte <ExternalLink size={10} />
                                     </a>
                                 )}

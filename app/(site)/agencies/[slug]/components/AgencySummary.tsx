@@ -8,7 +8,7 @@ export function AgencySummary({ view }: { view: AgencyView }) {
     return (
         <section id="sobre" aria-labelledby="resumo-agencia" className="scroll-mt-(--scroll-anchor-offset,106px) border-y border-foreground/10 py-7 sm:py-9">
             <div>
-                <p className="font-mono text-[9px] font-black uppercase tracking-[0.16em] text-(--ac)">Em resumo</p>
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-(--ac)">Em resumo</p>
                 <h2 id="resumo-agencia" className="mt-2 max-w-4xl text-2xl font-black leading-tight tracking-[-0.035em] sm:text-4xl">
                     O que você precisa saber sobre {name}
                 </h2>

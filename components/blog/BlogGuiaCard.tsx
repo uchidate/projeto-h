@@ -21,7 +21,7 @@ export function BlogGuiaCard({ post, categoryMap }: { post: WPPost; categoryMap:
                 </span>
             )}
             <span className="flex flex-1 flex-col p-4">
-                {cat && <span className="mb-2 self-start px-2 py-0.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.12em]" style={{ backgroundColor: cs.bg, color: cs.color }}>{cat.name}</span>}
+                {cat && <span className="mb-2 self-start px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.12em]" style={{ backgroundColor: cs.bg, color: cs.color }}>{cat.name}</span>}
                 <span className="font-serif text-[19px] font-semibold leading-tight text-foreground transition-colors group-hover:text-accent">{titulo}</span>
                 {resumo && <span className="mt-2 line-clamp-3 text-[13px] leading-relaxed text-muted">{resumo}</span>}
                 <span className="mt-auto flex items-center gap-3 pt-3 text-[11px] text-muted">

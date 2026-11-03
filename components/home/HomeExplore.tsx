@@ -35,16 +35,16 @@ export async function HomeExplore({ cartoes, locale = DEFAULT_LOCALE }: { cartoe
                                 {c.hangul || !imagem
                                     ? <span aria-hidden className="absolute inset-0 flex items-center justify-center text-[40px] font-black text-white">{c.hangul}</span>
                                     : <Image src={imagem.src} alt="" fill sizes="(max-width: 1024px) 230px, 18vw" className="object-cover transition-transform group-hover:scale-[1.03]" />}
-                                <span className="absolute left-2 top-2 px-1.5 py-1 font-mono text-[9px] font-bold uppercase leading-none tracking-[0.12em] text-white" style={{ backgroundColor: c.cor }}>{tt(c.chave)}</span>
+                                <span className="absolute left-2 top-2 px-1.5 py-1 font-mono text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-white" style={{ backgroundColor: c.cor }}>{tt(c.chave)}</span>
                             </Link>
                             <div className="flex flex-1 flex-col px-3 pb-3 pt-2.5">
                                 <p className="flex items-baseline gap-1.5">
                                     <span className="text-[28px] font-black leading-none" style={{ color: c.cor }}>{c.total.toLocaleString(locale === 'en' ? 'en-US' : 'pt-BR')}</span>
-                                    <span className={`${MONO} text-[9px] text-muted`}>{t(c.unidade)}</span>
+                                    <span className={`${MONO} text-[10px] text-muted`}>{t(c.unidade)}</span>
                                 </p>
                                 {c.ultimo ? (
                                     <>
-                                        <p className={`mt-2 flex items-center gap-1.5 ${MONO} text-[9px] text-muted`}>
+                                        <p className={`mt-2 flex items-center gap-1.5 ${MONO} text-[10px] text-muted`}>
                                             {t('ultimo')} · {diaCurto(c.ultimo.date, locale)}
                                             {c.novo && <span className="bg-accent px-1 py-0.5 leading-none text-white">{t('novo')}</span>}
                                         </p>

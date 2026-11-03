@@ -32,7 +32,7 @@ export function GroupCard({ group }: { group: Awaited<ReturnType<typeof getGroup
                         <span className="text-[28px] font-black text-muted/15">{gname[0]}</span>
                     </div>
                 )}
-                <div className={`absolute top-2 right-2 px-1.5 py-0.5 font-mono text-[8px] font-bold text-white ${isActive ? '[background:var(--gc,var(--ac))]' : 'bg-muted/60'}`}>
+                <div className={`absolute top-2 right-2 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white ${isActive ? '[background:var(--gc,var(--ac))]' : 'bg-muted/60'}`}>
                     {isActive ? 'Ativo' : 'Inativo'}
                 </div>
             </div>
@@ -42,7 +42,7 @@ export function GroupCard({ group }: { group: Awaited<ReturnType<typeof getGroup
                     <p className="font-mono text-[10px] text-muted mt-0.5">{group.acf.name_hangul}</p>
                 )}
                 {debutYear && (
-                    <p className="font-mono text-[9px] text-muted/50 mt-1">desde {debutYear}</p>
+                    <p className="font-mono text-[10px] text-muted/50 mt-1">desde {debutYear}</p>
                 )}
             </div>
         </Link>

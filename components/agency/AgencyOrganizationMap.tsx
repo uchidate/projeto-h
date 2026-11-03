@@ -55,7 +55,7 @@ export function AgencyOrganizationMap({ agency, network, groups, artists }: Prop
                             return (
                                 <Link key={parent.id} href={`/agencies/${parent.slug}`} className="group inline-flex min-w-48 items-center justify-between gap-5 border border-border bg-background px-4 py-3 transition-colors hover:border-(--ac)">
                                     <span>
-                                        <span className="block font-mono text-[8px] font-black uppercase tracking-[0.12em] text-muted">{KIND_LABELS[parent.acf?.organization_kind ?? ''] ?? 'Organização controladora'}</span>
+                                        <span className="block font-mono text-[10px] font-black uppercase tracking-[0.12em] text-muted">{KIND_LABELS[parent.acf?.organization_kind ?? ''] ?? 'Organização controladora'}</span>
                                         <strong className="mt-1 block text-[15px] group-hover:text-accent">{parentName}</strong>
                                     </span>
                                     <span aria-hidden="true" className="text-lg text-(--ac)">→</span>
@@ -99,7 +99,7 @@ export function AgencyOrganizationMap({ agency, network, groups, artists }: Prop
                                 <p className="profile-kicker text-(--ac)">{KIND_LABELS[item.acf?.organization_kind ?? ''] ?? 'Organização relacionada'}</p>
                                 <h3 className="mt-1 text-[17px] font-black leading-tight group-hover:text-accent">{itemName}</h3>
                                 {item.acf?.region && <p className="mt-1 text-[11px] text-muted">{item.acf.region}</p>}
-                                {(groupCount > 0 || artistCount > 0) && <p className="mt-3 font-mono text-[9px] uppercase tracking-wider text-muted">{groupCount} grupos · {artistCount} perfis</p>}
+                                {(groupCount > 0 || artistCount > 0) && <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-muted">{groupCount} grupos · {artistCount} perfis</p>}
                             </div>
                         </Link>
                     )

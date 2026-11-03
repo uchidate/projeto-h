@@ -53,16 +53,16 @@ export function GroupHeadlineStat({ value, label, context, asOf, sourceUrl, acce
         // overflow-hidden, então saía sempre cortado — no topo com -top-6, na borda
         // quando centrado. Ornamento que não sobrevive à própria caixa é defeito.
         <div className="py-7 pr-8 sm:py-9">
-            <dt className="font-mono text-[9px] font-black uppercase leading-4 tracking-[0.14em] text-muted">{label}</dt>
+            <dt className="font-mono text-[10px] font-black uppercase leading-4 tracking-[0.14em] text-muted">{label}</dt>
             <dd className="mt-2">
                 <strong className="block text-[56px] font-black leading-[0.92] tracking-[-0.04em] sm:text-[76px]" style={{ color: accent }}>
                     {prefix}{display}{suffix}
                 </strong>
                 {context && <span className="mt-3 block max-w-[52ch] text-[13px] leading-6 text-foreground/65">{context}</span>}
-                <span className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[8px] font-black uppercase tracking-[0.11em]">
+                <span className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] font-black uppercase tracking-[0.11em]">
                     {asOf && <span className="text-muted">ref. {asOf}</span>}
                     {sourceUrl && (
-                        <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-muted underline decoration-border underline-offset-4 hover:text-foreground">
+                        <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 text-muted underline decoration-border underline-offset-4 hover:text-foreground">
                             {t('source')} <ExternalLink size={9} />
                         </a>
                     )}

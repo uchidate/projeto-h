@@ -29,7 +29,7 @@ function Ficha({ ficha, base, naLoja, cor }: { ficha: FichaDoTema; base: string;
             </span>
             <span className="block px-3 py-2.5">
                 <span className="block text-[14px] font-bold leading-tight text-foreground">{ficha.nome}</span>
-                {ficha.naLoja > 0 && <span className={`mt-1 block ${MONO} text-[9px]`} style={{ color: cor }}>{naLoja}</span>}
+                {ficha.naLoja > 0 && <span className={`mt-1 block ${MONO} text-[10px]`} style={{ color: cor }}>{naLoja}</span>}
             </span>
         </Link>
     )
@@ -61,7 +61,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)]">
                 {artigos.length > 0 && (
                     <div>
-                        <p className={`mb-2 ${MONO} text-[9px]`} style={{ color: cor }}>{t('paraLer')}</p>
+                        <p className={`mb-2 ${MONO} text-[10px]`} style={{ color: cor }}>{t('paraLer')}</p>
                         <ul>
                             {artigos.map(post => {
                                 const imagem = getWPImage(post._embedded, post.featured_image_url)
@@ -74,7 +74,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                                             </span>
                                             <span className="min-w-0">
                                                 <span className="block font-serif text-[15px] font-medium leading-snug text-foreground group-hover:text-accent line-clamp-3">{titulo}</span>
-                                                <span className={`mt-1 block ${MONO} text-[9px] text-muted`}>{dataRelativa(post.date, locale)}</span>
+                                                <span className={`mt-1 block ${MONO} text-[10px] text-muted`}>{dataRelativa(post.date, locale)}</span>
                                             </span>
                                         </Link>
                                     </li>
@@ -85,7 +85,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                 )}
                 {pratos.length > 0 && (
                     <div>
-                        <p className={`mb-2 ${MONO} text-[9px]`} style={{ color: cor }}>{t('pratos')}</p>
+                        <p className={`mb-2 ${MONO} text-[10px]`} style={{ color: cor }}>{t('pratos')}</p>
                         <div className="-mx-4 grid auto-cols-[44%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0">
                             {pratos.map(f => <Ficha key={f.slug} ficha={f} base="/comidas" cor={cor} naLoja={t('naLoja', { n: f.naLoja })} />)}
                         </div>
@@ -93,7 +93,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                 )}
                 {marcas.length > 0 && (
                     <div className={chave === 'beleza' ? 'lg:col-span-2' : ''}>
-                        <p className={`mb-2 ${MONO} text-[9px]`} style={{ color: cor }}>{t('marcas')}</p>
+                        <p className={`mb-2 ${MONO} text-[10px]`} style={{ color: cor }}>{t('marcas')}</p>
                         <div className={`-mx-4 grid auto-cols-[44%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 ${chave === 'beleza' ? 'lg:grid-cols-4' : ''}`}>
                             {marcas.map(f => <Ficha key={f.slug} ficha={f} base="/empresas" cor={cor} naLoja={t('naLoja', { n: f.naLoja })} />)}
                         </div>
@@ -104,7 +104,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
             {produtos.length > 0 && (
                 <div className="mt-5 border-2 border-[#ff246e] bg-[#fff0f5] p-3 dark:bg-[#2a1018]">
                     <div className="mb-2.5 flex items-center justify-between gap-3">
-                        <p className={`${MONO} text-[9px] text-muted`}>{t('prateleira')}</p>
+                        <p className={`${MONO} text-[10px] text-muted`}>{t('prateleira')}</p>
                         <Link href="/loja" className="shrink-0 px-3 py-2 font-mono text-[10px] font-black uppercase leading-none tracking-[0.1em] text-white bg-[#ff246e]">{t('verPrateleira')}</Link>
                     </div>
                     <div className="grid grid-cols-2 gap-3 lg:hidden">

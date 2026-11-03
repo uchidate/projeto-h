@@ -174,7 +174,7 @@ export function EntityGrid({ items, kind, locale, limite, emPortugues = false, s
                                         className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
                                 )}
                                 {emPortugues && selo && (
-                                    <span className="absolute left-2 top-2 border border-white/25 bg-black/60 px-1.5 py-0.5 font-mono text-[9px] font-black uppercase tracking-[0.12em] text-white">{selo}</span>
+                                    <span className="absolute left-2 top-2 border border-white/25 bg-black/60 px-1.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white">{selo}</span>
                                 )}
                             </div>
                             <p className="mt-2 text-[14px] font-bold leading-tight transition-colors group-hover:text-accent">{name}</p>

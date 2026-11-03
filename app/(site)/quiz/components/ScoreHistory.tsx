@@ -21,7 +21,7 @@ export function ScoreHistory({ scores }: { scores: QuizStats['scores'] }) {
                             <span className="font-mono text-[11px] font-black text-amber-400 tabular-nums flex-1">{s.points.toLocaleString()} pts</span>
                             <span className="text-[11px] text-muted tabular-nums">{s.score}/{s.total} · {pct}%</span>
                             {(s.streak ?? 0) >= 3 && <span className="text-[10px]">🔥{s.streak}</span>}
-                            <span className={`font-mono text-[9px] font-black ${cfg.color}`}>{cfg.label}</span>
+                            <span className={`font-mono text-[10px] font-black ${cfg.color}`}>{cfg.label}</span>
                             <span className="text-[10px] text-muted hidden sm:inline">
                                 {new Date(s.date).toLocaleDateString(intlLocale(), { day: '2-digit', month: 'short' })}
                             </span>

@@ -249,7 +249,7 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                 {locale === DEFAULT_LOCALE && relatedHubs.length > 0 && (
                     <div className="mt-16">
                         <div className="mb-4 border-b border-border pb-3">
-                            <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">{t('explore')}</p>
+                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('explore')}</p>
                             <h2 className="text-[18px] font-black tracking-[-0.03em]">{t('relatedGuides')}</h2>
                         </div>
                         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

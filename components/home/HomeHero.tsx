@@ -48,7 +48,7 @@ async function HeroPost({ post, locale, primeiro = true, album }: { post: WPPost
 
             <div className="flex min-w-0 flex-col border-b border-border bg-background px-4 py-5 sm:px-6 sm:py-6 lg:px-5">
                 <div className="pointer-events-none absolute inset-x-0 top-0 flex aspect-video flex-col justify-end bg-linear-to-t from-black/85 via-black/35 to-transparent px-4 pb-4 lg:px-5 lg:pb-5">
-                <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.14em]">
+                <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em]">
                     <span className="text-white">{primeiro ? tc('capa') : tc('emDestaque')}</span>
                     <span className="text-white/50" aria-hidden="true">·</span>
                     <span className="text-white/80">{homeCatName(post, undefined, tc('artigo'))}</span>

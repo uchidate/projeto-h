@@ -42,7 +42,7 @@ export function GanchoArtista({ destaque, grupoNome, grupoNoTopo = false }: { de
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 via-55% to-transparent px-3 pb-3 pt-9 text-white">
                     {!grupoNoTopo && etiqueta}
                     {destaque.tipo !== 'obra' && (
-                        <span className="flex items-center gap-1.5 whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
+                        <span className="flex items-center gap-1.5 whitespace-nowrap font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
                             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />{t(destaque.tipo)}
                         </span>
                     )}

@@ -10,7 +10,7 @@ export function AtribuicaoJustWatch({ className = '' }: { className?: string }) 
     const t = useTranslations('profile.ui')
     return (
         <a href="https://www.justwatch.com" target="_blank" rel="noopener noreferrer nofollow"
-            className={`font-mono text-[9px] uppercase tracking-[0.12em] text-muted hover:text-foreground ${className}`}>
+            className={`font-mono text-[10px] uppercase tracking-[0.12em] text-muted hover:text-foreground ${className}`}>
             {t('sidebar.justWatch')}
         </a>
     )

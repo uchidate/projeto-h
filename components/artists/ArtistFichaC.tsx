@@ -238,7 +238,7 @@ export function ArtistFichaC({
                                         className="group flex items-center gap-3.5 border-l-[3px] bg-background/50 p-2.5 pr-3 backdrop-blur-sm" style={{ borderColor: accent }}>
                                         <Image src={destaques[0].img!.src} alt="" width={48} height={68} sizes="48px" className="h-[68px] w-12 shrink-0 object-cover" style={{ boxShadow: `3px 3px 0 ${accent}` }} />
                                         <span className="min-w-0 flex-1">
-                                            <span className="flex items-center gap-1.5 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">
+                                            <span className="flex items-center gap-1.5 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
                                                 <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />{t('heroTopWork')}
                                             </span>
                                             <span className={`mt-1 line-clamp-2 block ${SERIF} text-[17px] font-bold italic leading-[1.1]`}>{tituloDe(destaques[0].p)}</span>

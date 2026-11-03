@@ -55,7 +55,7 @@ export async function HomeDestaquesColuna({ posts, categoryMap, locale = DEFAULT
                                 </span>
                                 <span className="min-w-0 flex-1">
                                     <span className="block text-[13px] font-extrabold leading-snug text-foreground transition-colors group-hover:text-accent line-clamp-3">{titulo}</span>
-                                    <span className={`mt-1 block ${ROTULO} text-[9px] text-muted`}>{homeCatName(post, categoryMap, tc('artigo'))} · {dataRelativa(post.date, locale)}</span>
+                                    <span className={`mt-1 block ${ROTULO} text-[10px] text-muted`}>{homeCatName(post, categoryMap, tc('artigo'))} · {dataRelativa(post.date, locale)}</span>
                                 </span>
                             </Link>
                         </li>

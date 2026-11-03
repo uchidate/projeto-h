@@ -91,7 +91,7 @@ export default async function ConquistasPage() {
                     </div>
                     {nextAchievement ? (
                         <div className="border border-border bg-background p-3">
-                            <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Proxima mais perto</p>
+                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Proxima mais perto</p>
                             <p className="mt-1 text-[14px] font-black text-foreground">{nextAchievement.label}</p>
                             <p className="mt-1 text-[12px] leading-relaxed text-muted">{nextAchievement.howTo}</p>
                             <Link href={nextAchievement.href} className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-accent hover:underline">
@@ -121,7 +121,7 @@ export default async function ConquistasPage() {
                                         <Icon size={17} />
                                     </span>
                                     <div>
-                                        <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">{doneCount}/{items.length} concluidas</p>
+                                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{doneCount}/{items.length} concluidas</p>
                                         <h2 className="text-[22px] font-black tracking-tight">{copy.title}</h2>
                                         <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{copy.desc}</p>
                                     </div>

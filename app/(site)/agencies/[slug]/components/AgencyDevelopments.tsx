@@ -26,11 +26,11 @@ export function AgencyDevelopments({ view }: { view: AgencyView }) {
                     )}
                     <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-                        <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-white/60">A escala no acervo</p>
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-white/60">A escala no acervo</p>
                         <div className="mt-4 grid grid-cols-3 gap-px border border-white/20 bg-white/20">
-                            <div className="bg-black/65 p-3 backdrop-blur-xs"><strong className="block text-2xl font-black">{allGroups.length}</strong><span className="font-mono text-[8px] uppercase tracking-wider text-white/60">grupos</span></div>
-                            <div className="bg-black/65 p-3 backdrop-blur-xs"><strong className="block text-2xl font-black">{allArtists.length}</strong><span className="font-mono text-[8px] uppercase tracking-wider text-white/60">perfis</span></div>
-                            <div className="bg-black/65 p-3 backdrop-blur-xs"><strong className="block text-2xl font-black">{businessPillars.length}</strong><span className="font-mono text-[8px] uppercase tracking-wider text-white/60">frentes</span></div>
+                            <div className="bg-black/65 p-3 backdrop-blur-xs"><strong className="block text-2xl font-black">{allGroups.length}</strong><span className="font-mono text-[10px] uppercase tracking-wider text-white/60">grupos</span></div>
+                            <div className="bg-black/65 p-3 backdrop-blur-xs"><strong className="block text-2xl font-black">{allArtists.length}</strong><span className="font-mono text-[10px] uppercase tracking-wider text-white/60">perfis</span></div>
+                            <div className="bg-black/65 p-3 backdrop-blur-xs"><strong className="block text-2xl font-black">{businessPillars.length}</strong><span className="font-mono text-[10px] uppercase tracking-wider text-white/60">frentes</span></div>
                         </div>
                         <figcaption className="mt-4 max-w-md text-[11px] leading-5 text-white/55">
                             {currentVisualGroup ? `${stripHtml(currentVisualGroup.title.rendered)} integra o recorte visual desta página. Os números representam a cobertura disponível no ${SITE_NAME}.` : `Os números representam a cobertura disponível no ${SITE_NAME}.`}
@@ -51,7 +51,7 @@ export function AgencyDevelopments({ view }: { view: AgencyView }) {
                                 <h3 className="mt-5 max-w-xl text-xl font-black leading-tight tracking-tight">{item.title}</h3>
                                 <p className="mt-3 text-[13px] leading-6 text-foreground/70">{item.description}</p>
                                 {item.source_url && (
-                                    <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-1.5 pt-4 font-mono text-[9px] uppercase tracking-widest text-muted transition-colors hover:text-foreground">
+                                    <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-1.5 pt-4 font-mono text-[10px] uppercase tracking-widest text-muted transition-colors hover:text-foreground">
                                         Conferir fonte <ExternalLink size={10} />
                                     </a>
                                 )}

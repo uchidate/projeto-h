@@ -10,7 +10,7 @@ const filterSelectClass = 'h-8 shrink-0 rounded-md border border-border bg-surfa
 export function FilterSelect({ label, labelIcon, children, className = '', ...props }: Props) {
     return (
         <label className="flex shrink-0 items-center gap-1.5">
-            <span className="flex items-center gap-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">
+            <span className="flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">
                 {labelIcon}
                 {label}
             </span>

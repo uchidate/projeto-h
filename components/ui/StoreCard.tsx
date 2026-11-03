@@ -70,7 +70,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">
                     <div className="flex items-center gap-1.5">
-                        <span className={`font-mono text-[9px] font-bold uppercase tracking-wide ${cfg.color}`}>{cfg.label}</span>
+                        <span className={`font-mono text-[10px] font-bold uppercase tracking-wide ${cfg.color}`}>{cfg.label}</span>
                         {acf.rating && acf.rating > 0 && (
                             <span className="ml-auto flex items-center gap-1 text-[11px] font-bold text-muted">
                                 <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
@@ -106,14 +106,14 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                         <Image src={acf.image_url} alt={name} fill sizes="64px" className={`object-cover ${zoomDaFoto(product.id)}`} />
                     ) : (
                         <div className="flex h-full w-full items-end bg-linear-to-br from-foreground/90 to-foreground/70 p-1">
-                            <span className="line-clamp-3 text-[9px] font-black uppercase leading-tight text-background/60">{name}</span>
+                            <span className="line-clamp-3 text-[10px] font-black uppercase leading-tight text-background/60">{name}</span>
                         </div>
                     )}
                 </div>
                 <div className="min-w-0 flex-1">
                     <p className="line-clamp-3 text-[13px] font-semibold leading-snug text-foreground">{name}</p>
                     {acf.price && <p className="mt-1 text-sm font-black text-foreground">{acf.price}</p>}
-                    <span className={`mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wide ${cfg.bg} ${cfg.textColor}`}>
+                    <span className={`mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wide ${cfg.bg} ${cfg.textColor}`}>
                         {cfg.label}
                     </span>
                 </div>
@@ -150,7 +150,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                         </span>
                     )}
                     {badgeTexto && (
-                        <span className="bg-accent-a11y px-1.5 py-0.5 font-mono text-[9px] font-black uppercase tracking-wide text-white">
+                        <span className="bg-accent-a11y px-1.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-wide text-white">
                             {badgeTexto}
                         </span>
                     )}
@@ -161,9 +161,9 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
             </div>
             <div className="mt-2 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5">
-                    <span className={`px-1 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wide ${cfg.color}`}>{cfg.label}</span>
+                    <span className={`px-1 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wide ${cfg.color}`}>{cfg.label}</span>
                     {novo && (
-                        <span className="bg-accent px-1 py-0.5 font-mono text-[9px] font-black uppercase tracking-wide text-white">
+                        <span className="bg-accent px-1 py-0.5 font-mono text-[10px] font-black uppercase tracking-wide text-white">
                             Novo
                         </span>
                     )}
@@ -200,7 +200,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
         </a>
         {link && (
             <Link href={link.type === 'company' ? `/empresas/${link.slug}` : `/comidas/${link.slug}`}
-                className="mt-1 truncate px-1 text-[11px] font-semibold text-accent hover:underline">
+                className="-mt-1 block truncate px-1 py-2.5 text-[11px] font-semibold text-accent hover:underline">
                 {link.type === 'company' ? '🏢' : '🍽️'} Sobre {link.title}
             </Link>
         )}

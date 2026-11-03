@@ -139,7 +139,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                     <Link
                         href={buildComidasPath({ ...sp, category: undefined })}
                         scroll={false}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
+                        className={`inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
                             !category
                                 ? 'bg-accent-a11y text-white border-accent-a11y'
                                 : 'border-border text-muted hover:text-foreground hover:border-border-strong'
@@ -152,7 +152,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                             key={cat}
                             href={buildComidasPath({ ...sp, category: cat, page: undefined })}
                             scroll={false}
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
+                            className={`inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
                                 category === cat
                                     ? 'bg-accent-a11y text-white border-accent-a11y'
                                     : 'border-border text-muted hover:text-foreground hover:border-border-strong'
@@ -175,7 +175,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                 key={col.label}
                                 href={buildComidasPath(col.params)}
                                 scroll={false}
-                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
+                                className={`inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
                                     isActive
                                         ? 'bg-accent-a11y text-white border-accent-a11y'
                                         : 'border-border text-muted hover:text-foreground hover:border-border-strong'
@@ -269,7 +269,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                             )}
                                             {(acf.is_vegetarian || acf.is_vegan) && (
                                                 <div className="absolute top-2 left-2 bg-green-600/80 backdrop-blur-xs rounded-full px-1.5 py-0.5">
-                                                    <span className="font-mono text-[8px] text-white font-bold">
+                                                    <span className="font-mono text-[10px] text-white font-bold">
                                                         {acf.is_vegan ? 'VEGAN' : 'VEG'}
                                                     </span>
                                                 </div>
@@ -338,7 +338,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                         </span>
                                         <span className="min-w-0">
                                             <span className="block text-[14px] font-bold leading-tight text-foreground [overflow-wrap:anywhere] group-hover:text-accent">{r.nome}</span>
-                                            {r.tempo && <span className="mt-1 block font-mono text-[9px] text-muted">{r.tempo}</span>}
+                                            {r.tempo && <span className="mt-1 block font-mono text-[10px] text-muted">{r.tempo}</span>}
                                         </span>
                                     </Link>
                                 </li>

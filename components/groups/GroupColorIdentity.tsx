@@ -54,7 +54,7 @@ export function GroupColorIdentity({ officialColor, groupName, fanClubName, ligh
     return (
         <div className="border border-border bg-background overflow-hidden">
             <div className="px-4 pt-4 pb-3 border-b border-border">
-                <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
                     Identidade Visual · {groupName}
                 </p>
             </div>
@@ -90,7 +90,7 @@ export function GroupColorIdentity({ officialColor, groupName, fanClubName, ligh
                     { label: 'HSL', value: hsl },
                 ].map(({ label, value }) => (
                     <div key={label} className="px-3 py-2.5">
-                        <p className="font-mono text-[9px] font-black uppercase tracking-widest text-muted mb-0.5">{label}</p>
+                        <p className="font-mono text-[10px] font-black uppercase tracking-widest text-muted mb-0.5">{label}</p>
                         <p className="font-mono text-[11px] font-bold text-foreground truncate">{value}</p>
                     </div>
                 ))}

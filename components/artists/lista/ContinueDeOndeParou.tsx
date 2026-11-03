@@ -32,7 +32,7 @@ export function ContinueDeOndeParou({ apenas }: { apenas?: 'grupo' | 'producao' 
                             </span>
                             <span className="min-w-0">
                                 <span className="block truncate text-[14px] font-bold sm:text-[15px]">{r.nome}</span>
-                                {r.papel && <span className="mt-0.5 block truncate font-mono text-[9px] uppercase tracking-[0.08em] text-muted sm:text-[10px]">{r.papel}</span>}
+                                {r.papel && <span className="mt-0.5 block truncate font-mono text-[10px] uppercase tracking-[0.08em] text-muted sm:text-[10px]">{r.papel}</span>}
                             </span>
                         </Link>
                     </li>

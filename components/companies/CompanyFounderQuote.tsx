@@ -24,7 +24,7 @@ export function CompanyFounderQuote({ quote, author, context, accent }: Props) {
                     <cite className="not-italic font-mono text-[11px] font-black uppercase tracking-widest" style={{ color: accent }}>
                         {author}
                     </cite>
-                    {context && <span className="font-mono text-[9px] uppercase tracking-widest text-featured-muted">{context}</span>}
+                    {context && <span className="font-mono text-[10px] uppercase tracking-widest text-featured-muted">{context}</span>}
                 </footer>
             </blockquote>
         </section>

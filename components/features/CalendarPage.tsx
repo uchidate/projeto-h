@@ -206,7 +206,7 @@ function MiniCalendar({ year, month, events, todayStr }: {
             </p>
             <div className="mb-1 grid grid-cols-7">
                 {WEEKDAYS_SHORT.map((d, i) => (
-                    <div key={i} className="py-0.5 text-center font-mono text-[9px] text-muted/60">{d}</div>
+                    <div key={i} className="py-0.5 text-center font-mono text-[10px] text-muted/60">{d}</div>
                 ))}
             </div>
             <div className="grid grid-cols-7">

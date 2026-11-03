@@ -21,7 +21,7 @@ export async function HomeEditorialHubs({ hubs, locale = DEFAULT_LOCALE }: { hub
                             </span>
                         )}
                         <span className="relative text-[13px] font-black leading-tight tracking-[-0.03em] text-foreground whitespace-nowrap">{h.label}</span>
-                        <span className="relative text-[9px] font-bold uppercase tracking-[0.08em] text-muted/70 whitespace-nowrap">{h.detail}</span>
+                        <span className="relative text-[10px] font-bold uppercase tracking-[0.08em] text-muted/70 whitespace-nowrap">{h.detail}</span>
                     </Link>
                 ))}
             </div>

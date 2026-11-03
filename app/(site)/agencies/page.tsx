@@ -154,7 +154,7 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                 <div className="space-y-3 lg:flex lg:w-full lg:items-center lg:gap-4 lg:space-y-0">
                     {/* Tipo */}
                     <div className="flex shrink-0 items-center gap-1.5">
-                        <span className="flex items-center gap-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">
+                        <span className="flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">
                             <SlidersHorizontal className="h-3 w-3" />
                             Tipo
                         </span>
@@ -172,7 +172,7 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
 
                     {/* Ordenação */}
                     <div className="flex shrink-0 items-center gap-1.5">
-                        <span className="flex items-center gap-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">
+                        <span className="flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">
                             <ArrowUpDown className="h-3 w-3" />
                             Ordenar
                         </span>
@@ -253,7 +253,7 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                                 <div className="flex items-center gap-3 mb-5 border-b border-foreground pb-3">
                                     <div className="h-7 w-1 shrink-0 bg-accent" />
                                     <div>
-                                        <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">As maiores</p>
+                                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">As maiores</p>
                                         <h2 className="text-lg font-black tracking-[-0.03em] flex items-center gap-2">
                                             Big 4 <Star size={14} className="text-accent" fill="currentColor" />
                                         </h2>
@@ -283,7 +283,7 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                                     <div className="flex items-center gap-3 mb-5 border-b border-foreground/10 pb-3">
                                         <div className="h-7 w-1 shrink-0 bg-foreground/20" />
                                         <div>
-                                            <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Além das Big 4</p>
+                                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Além das Big 4</p>
                                             <h2 className="text-lg font-black tracking-[-0.03em]">Outras agências</h2>
                                         </div>
                                     </div>
@@ -292,7 +292,7 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                                     <div className="flex items-center gap-3 mb-5 border-b border-foreground/10 pb-3">
                                         <div className="h-7 w-1 shrink-0 bg-foreground/20" />
                                         <div>
-                                            <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Mid & Independentes</p>
+                                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Mid & Independentes</p>
                                             <h2 className="text-lg font-black tracking-[-0.03em]">{rest.length} agências</h2>
                                         </div>
                                     </div>
@@ -301,7 +301,7 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                                     <div className="flex items-center gap-3 mb-5 border-b border-foreground/10 pb-3">
                                         <div className="h-7 w-1 shrink-0 bg-foreground/20" />
                                         <div>
-                                            <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Selos e empresas vinculadas</p>
+                                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Selos e empresas vinculadas</p>
                                             <h2 className="text-lg font-black tracking-[-0.03em]">{rest.length} subsidiárias</h2>
                                         </div>
                                     </div>
@@ -427,7 +427,7 @@ function AgencyCard({ agency, agencyGroups, agencyArtists, featured }: AgencyCar
 
                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-black/10" />
                 {classification && (
-                    <span className="absolute left-3 top-3 inline-flex items-center gap-1 border border-white/20 bg-black/55 px-2 py-1 font-mono text-[8px] font-black uppercase tracking-[0.12em] text-white/80 backdrop-blur-xs">
+                    <span className="absolute left-3 top-3 inline-flex items-center gap-1 border border-white/20 bg-black/55 px-2 py-1 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white/80 backdrop-blur-xs">
                         {classification === 'Big 4' && <Star size={8} fill="currentColor" />}
                         {classification}
                     </span>

@@ -74,22 +74,22 @@ export function GroupCard({ group, priority }: { group: WPGroup; priority?: bool
                 )}
                 <div className="absolute inset-0 hidden bg-linear-to-t from-black/75 via-black/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:block" />
                 {isInactive && (
-                    <span className="absolute right-1.5 top-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-white/80 sm:right-2 sm:top-2 sm:text-[9px]">
+                    <span className="absolute right-1.5 top-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white/80 sm:right-2 sm:top-2 sm:text-[10px]">
                         encerrado
                     </span>
                 )}
                 {!isInactive && (acf.trending_score ?? 0) >= 7 && (
-                    <span className="absolute left-1.5 top-1.5 bg-accent-a11y px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-wider text-white sm:left-2 sm:top-2 sm:text-[9px]">
+                    <span className="absolute left-1.5 top-1.5 bg-accent-a11y px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white sm:left-2 sm:top-2 sm:text-[10px]">
                         em alta
                     </span>
                 )}
                 {memberCount > 0 && (
-                    <span className="absolute bottom-1.5 left-1.5 flex items-center gap-1 bg-black/75 px-1.5 py-0.5 font-mono text-[8px] font-semibold text-white sm:bottom-2 sm:left-2 sm:text-[9px]">
+                    <span className="absolute bottom-1.5 left-1.5 flex items-center gap-1 bg-black/75 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-white sm:bottom-2 sm:left-2 sm:text-[10px]">
                         <Users size={10} aria-hidden="true" />
                         {memberCount}
                     </span>
                 )}
-                <div className="absolute inset-x-3 bottom-3 hidden translate-y-1 font-mono text-[9px] uppercase tracking-[0.06em] text-white/80 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 sm:block">
+                <div className="absolute inset-x-3 bottom-3 hidden translate-y-1 font-mono text-[10px] uppercase tracking-[0.06em] text-white/80 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 sm:block">
                     {[acf.name_hangul, debutYear && `desde ${debutYear}`].filter(Boolean).join(' · ')}
                 </div>
             </div>
@@ -99,23 +99,23 @@ export function GroupCard({ group, priority }: { group: WPGroup; priority?: bool
                         {name}
                     </span>
                     {acf.name_hangul && (
-                        <span className="shrink-0 font-mono text-[9px] text-muted sm:hidden">{acf.name_hangul}</span>
+                        <span className="shrink-0 font-mono text-[10px] text-muted sm:hidden">{acf.name_hangul}</span>
                     )}
                 </div>
-                <div className="mt-1 truncate font-mono text-[9px] uppercase tracking-[0.04em] text-muted">
+                <div className="mt-1 truncate font-mono text-[10px] uppercase tracking-[0.04em] text-muted">
                     {[type, debutYear].filter(Boolean).join(' · ')}
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
                     {generation && (
                         <span
                             title={generation.label}
-                            className={`border px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-[0.04em] ${generation.className}`}
+                            className={`border px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.04em] ${generation.className}`}
                         >
                             {generation.shortLabel}
                         </span>
                     )}
                     {memberCount > 0 && (
-                        <span className="hidden border border-border bg-surface px-1.5 py-0.5 font-mono text-[8px] font-semibold uppercase tracking-[0.04em] text-muted sm:inline-block">
+                        <span className="hidden border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-muted sm:inline-block">
                             {memberCount} {memberCount === 1 ? 'integrante' : 'integrantes'}
                         </span>
                     )}
@@ -186,7 +186,7 @@ function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?
                 )}
                 {fandom && (
                     <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 via-55% to-transparent px-3 pb-3 pt-9 text-white">
-                        <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
+                        <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
                             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />Fandom
                         </span>
                         <span className={`mt-1 line-clamp-1 block ${SERIF} text-[18px] font-bold italic leading-[1.08] [text-shadow:0_0_8px_rgba(0,0,0,.6)]`}>{fandom}</span>
@@ -203,7 +203,7 @@ function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?
                         ))}
                     </span>
                 )}
-                {acf.active === false && <span className="absolute right-1.5 top-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-white/80">encerrado</span>}
+                {acf.active === false && <span className="absolute right-1.5 top-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white/80">encerrado</span>}
             </span>
             <span className="mt-2 block truncate text-[14px] font-bold leading-tight group-hover:text-accent sm:text-[15px]">{name}</span>
             {meta && <span className="mt-0.5 block truncate text-[12px] text-muted">{meta}</span>}
