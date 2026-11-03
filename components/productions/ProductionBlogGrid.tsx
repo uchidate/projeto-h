@@ -41,7 +41,7 @@ export function ProductionBlogGrid({ title, posts, categoryMap }: Props) {
                                 {imagem && <Image src={imagem.src} alt="" fill sizes="(min-width: 1024px) 33vw, 104px" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />}
                             </span>
                             <span className="block lg:mt-3.5">
-                                {categoria && <span className="block font-mono text-[9px] font-black uppercase tracking-[0.14em] text-accent lg:text-[10px]">{categoria}</span>}
+                                {categoria && <span className="block font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent lg:text-[10px]">{categoria}</span>}
                                 <span className="mt-1 block text-[15px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent lg:mt-2 lg:font-serif lg:text-[22px] lg:font-semibold lg:leading-tight">{titulo}</span>
                             </span>
                         </Link>

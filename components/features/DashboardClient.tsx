@@ -245,7 +245,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                         <section>
                             <div className="mb-5 flex items-baseline justify-between">
                                 <div>
-                                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Coleção</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Coleção</p>
                                     <h2 className="text-[20px] font-black tracking-tight">Favoritos recentes</h2>
                                 </div>
                                 <Link href="/minhas-listas?tab=favoritos" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
@@ -262,7 +262,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                         <section>
                             <div className="mb-5 flex items-baseline justify-between">
                                 <div>
-                                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Continuidade</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Continuidade</p>
                                     <h2 className="text-[20px] font-black tracking-tight">Continuar assistindo</h2>
                                 </div>
                                 <Link href="/minhas-listas?tab=assistindo" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
@@ -279,7 +279,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                         <section>
                             <div className="mb-5 flex items-baseline justify-between">
                                 <div>
-                                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Lista</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Lista</p>
                                     <h2 className="text-[20px] font-black tracking-tight">Quero ver</h2>
                                 </div>
                                 <Link href="/minhas-listas?tab=lista" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
@@ -296,7 +296,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                         <section>
                             <div className="mb-5 flex items-baseline justify-between">
                                 <div>
-                                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Minha Onda</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Minha Onda</p>
                                     <h2 className="text-[20px] font-black tracking-tight">Acompanhando</h2>
                                 </div>
                                 <div className="flex gap-3">
@@ -342,7 +342,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                         <section id="leituras-salvas">
                             <div className="mb-5 flex items-baseline justify-between">
                                 <div>
-                                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Biblioteca</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Biblioteca</p>
                                     <h2 className="text-[20px] font-black tracking-tight">Salvos para ler</h2>
                                 </div>
                                 <Link href="/blog" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
@@ -379,7 +379,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                         <section>
                             <div className="mb-5 flex items-baseline justify-between">
                                 <div>
-                                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Histórico</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Histórico</p>
                                     <h2 className="text-[20px] font-black tracking-tight">Lidos recentemente</h2>
                                 </div>
                                 <Link href="/blog" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
@@ -416,7 +416,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                         <section>
                             <div className="mb-5 flex items-baseline justify-between">
                                 <div>
-                                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Blog</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Blog</p>
                                     <h2 className="text-[20px] font-black tracking-tight">Leituras recentes</h2>
                                 </div>
                                 <Link href="/blog" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">

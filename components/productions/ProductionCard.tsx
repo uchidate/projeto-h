@@ -62,13 +62,13 @@ export function ProductionCard({ production, priority, sizes = '(max-width: 640p
                             </div>
                         )}
                         {acf.age_rating && (
-                            <div className="rounded-sm bg-foreground/90 px-1 py-0.5 text-[9px] font-black text-background">{acf.age_rating}</div>
+                            <div className="rounded-sm bg-foreground/90 px-1 py-0.5 text-[10px] font-black text-background">{acf.age_rating}</div>
                         )}
                     </div>
                     {gancho && (
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 via-55% to-transparent px-2.5 pb-2.5 pt-10 text-white">
                             {(gancho.rede || gancho.noAr) && (
-                                <span className="flex items-center gap-1.5 whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
+                                <span className="flex items-center gap-1.5 whitespace-nowrap font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
                                     <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
                                     {[gancho.rede, gancho.noAr ? labels.productionStatus('airing') : undefined].filter(Boolean).join(' · ')}
                                 </span>
@@ -103,7 +103,7 @@ export function ProductionCard({ production, priority, sizes = '(max-width: 640p
                     </div>
                 )}
                 {acf.type && (
-                    <div className="absolute top-2 right-2 bg-foreground/80 text-background font-mono text-[8px] uppercase tracking-wider px-1.5 py-0.5 flex items-center gap-0.5">
+                    <div className="absolute top-2 right-2 bg-foreground/80 text-background font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 flex items-center gap-0.5">
                         {acf.type === 'movie' ? <Film size={8} /> : <Tv size={8} />}
                         {labels.productionType(acf.type)}
                     </div>

@@ -43,7 +43,7 @@ export function ExpandableArtistGrid({ artists, accent, initialCount = 16 }: Pro
                             </div>
                             <p className="text-[11px] font-semibold leading-tight group-hover:text-accent transition-colors line-clamp-2">{name}</p>
                             {artist.acf?.name_hangul && (
-                                <p className="font-mono text-[9px] text-muted/60 mt-0.5">{artist.acf.name_hangul}</p>
+                                <p className="font-mono text-[10px] text-muted/60 mt-0.5">{artist.acf.name_hangul}</p>
                             )}
                         </Link>
                     )

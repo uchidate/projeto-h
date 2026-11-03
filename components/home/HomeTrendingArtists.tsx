@@ -23,7 +23,7 @@ export async function HomeTrendingArtists({ artists, featuredArtist, featuredArt
         <aside className="px-4 py-8 sm:px-6 lg:px-8">
             <div className="mb-4">
                 <div className="flex items-center justify-between">
-                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.16em] text-accent">{t('eyebrow')}</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">{t('eyebrow')}</p>
                 </div>
                 <h2 className="font-sans text-[15px] font-black tracking-[-0.02em] text-foreground mt-0.5">{t('titulo')}</h2>
                 <p className="mt-1 text-[11px] text-muted leading-snug">{t('descricao')}</p>

@@ -114,7 +114,7 @@ export function buildGroupProfileEntries({
                                 {acf.name_hangul}
                             </span>
                         )}
-                        <figcaption className="font-mono text-[9px] font-black uppercase tracking-[0.16em]" style={{ color: accent }}>
+                        <figcaption className="font-mono text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: accent }}>
                             O nome {name}
                         </figcaption>
                         <p className="relative mt-2.5 max-w-xl font-serif text-lg font-bold leading-snug tracking-[-0.02em] text-foreground/90 sm:text-[21px]">
@@ -162,7 +162,7 @@ export function buildGroupProfileEntries({
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">{activeMembers.map(member => <GroupMemberCard key={member.id} member={toMemberSummary(member)} accent={accent} positions={memberPositions[member.slug]} />)}</div>
                 <GroupMembersTable groupName={name} linhas={linhasAtivos} />
                 {totalEx > 0 && <div className="mt-6">
-                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted mb-3">Ex-integrantes · {totalEx}</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted mb-3">Ex-integrantes · {totalEx}</p>
                     {formerMembers.length > 0 && <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">{formerMembers.map(member => <GroupMemberCard key={member.id} member={toMemberSummary(member)} accent={accent} positions={memberPositions[member.slug]} isFormer />)}</div>}
                     {formerSemFicha.length > 0 && <p className={`text-[13px] leading-relaxed text-muted ${formerMembers.length > 0 ? 'mt-4' : ''}`}>{formerSemFicha.map(e => e.name).join(' · ')}</p>}
                 </div>}

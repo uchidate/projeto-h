@@ -117,7 +117,7 @@ export function ProdutoConhecidoTile({ name, image, emoji, ofertas, contexto }: 
                                 {o.image && <Image src={o.image} alt={o.nome} fill sizes="44px" className="object-cover" />}
                             </span>
                             <span className="min-w-0 flex-1">
-                                <span className="block truncate font-mono text-[9px] uppercase tracking-wide text-muted">{STORE_CONFIG[o.store]?.label ?? o.store}</span>
+                                <span className="block truncate font-mono text-[10px] uppercase tracking-wide text-muted">{STORE_CONFIG[o.store]?.label ?? o.store}</span>
                                 <span className="block text-[12px] font-bold leading-tight group-hover:text-accent transition-colors">{o.price ?? 'Ver preço'}</span>
                             </span>
                         </LojaClique>

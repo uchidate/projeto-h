@@ -71,7 +71,7 @@ export function BlogToc({ headings }: { headings: { id: string; text: string; le
 
     return (
         <nav aria-label="Neste artigo" onMouseEnter={() => setCongelado(inicioNatural)} onMouseLeave={() => setCongelado(null)} onFocus={() => setCongelado(inicioNatural)} onBlur={() => setCongelado(null)}>
-            <p className="mb-2.5 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">
+            <p className="mb-2.5 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
                 Neste artigo
             </p>
 
@@ -80,7 +80,7 @@ export function BlogToc({ headings }: { headings: { id: string; text: string; le
                 {hiddenAbove > 0 && (
                     <a
                         href={`#${headings[0].id}`}
-                        className="flex items-center gap-1 py-1 font-mono text-[9px] text-muted/60 hover:text-muted transition-colors"
+                        className="flex items-center gap-1 py-1 font-mono text-[10px] text-muted/60 hover:text-muted transition-colors"
                     >
                         <span className="inline-block w-3 h-px bg-border/60" />
                         {hiddenAbove} {hiddenAbove === 1 ? 'seção acima' : 'seções acima'}
@@ -111,7 +111,7 @@ export function BlogToc({ headings }: { headings: { id: string; text: string; le
                 {hiddenBelow > 0 && (
                     <a
                         href={`#${headings[total - 1].id}`}
-                        className="flex items-center gap-1 py-1 font-mono text-[9px] text-muted/60 hover:text-muted transition-colors"
+                        className="flex items-center gap-1 py-1 font-mono text-[10px] text-muted/60 hover:text-muted transition-colors"
                     >
                         <span className="inline-block w-3 h-px bg-border/60" />
                         {hiddenBelow} {hiddenBelow === 1 ? 'seção abaixo' : 'seções abaixo'}

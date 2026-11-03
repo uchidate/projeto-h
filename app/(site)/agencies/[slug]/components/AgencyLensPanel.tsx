@@ -25,7 +25,7 @@ export function AgencyLensPanel({ view }: { view: AgencyView }) {
                 <div className="border-t border-border pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
                     <div className="flex items-center gap-2 text-(--ac)">
                         <Network size={14} />
-                        <span className="font-mono text-[9px] font-black uppercase tracking-[0.14em]">Escopo desta página</span>
+                        <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em]">Escopo desta página</span>
                     </div>
                     <p className="mt-3 text-[12px] leading-5 text-muted">
                         {network.organizations.length > 1

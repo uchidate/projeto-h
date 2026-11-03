@@ -54,7 +54,7 @@ function SpotlightCard({ item, labels, locale }: { item: SpotlightItem; labels: 
                     {name}
                 </p>
                 {sub && (
-                    <p className="mt-0.5 font-mono text-[9px] text-muted/60 truncate">{sub}</p>
+                    <p className="mt-0.5 font-mono text-[10px] text-muted/60 truncate">{sub}</p>
                 )}
             </div>
         </Link>

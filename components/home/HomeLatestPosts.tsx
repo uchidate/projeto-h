@@ -35,7 +35,7 @@ export async function HomeLatestPosts({ posts, categoryMap, locale = DEFAULT_LOC
                         <Link key={post.id} {...postLink(post.slug, locale)}
                             className={`group grid-cols-[96px_minmax(0,1fr)] items-center gap-3 border-b border-border py-4 transition-colors hover:bg-surface/60 sm:grid-cols-[96px_minmax(0,1fr)_112px] sm:gap-5 ${i >= 4 ? 'hidden lg:grid' : 'grid'}`}>
                             <span
-                                className="inline-block truncate text-[9px] font-black uppercase tracking-[0.12em] text-(--category-light) dark:text-(--category-dark)"
+                                className="inline-block truncate text-[10px] font-black uppercase tracking-[0.12em] text-(--category-light) dark:text-(--category-dark)"
                                 style={{ '--category-light': color.light, '--category-dark': color.dark } as CSSProperties}
                             >
                                 {cat?.name ?? tc('artigo')}

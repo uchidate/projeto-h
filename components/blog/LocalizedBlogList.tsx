@@ -96,7 +96,7 @@ export async function LocalizedBlogList({ locale, pageParam }: { locale: Locale;
                                             <Image src={imagem.src} alt={imagem.alt || titulo} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
                                         )}
-                                        {!traduzido && <span className="absolute left-2 top-2 border border-white/25 bg-black/60 px-1.5 py-0.5 font-mono text-[9px] font-black uppercase tracking-[0.12em] text-white">{tc('badge')}</span>}
+                                        {!traduzido && <span className="absolute left-2 top-2 border border-white/25 bg-black/60 px-1.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white">{tc('badge')}</span>}
                                     </div>
                                     <p className="mt-2 text-[16px] font-bold leading-tight transition-colors group-hover:text-accent">{titulo}</p>
                                     <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted">{data.format(new Date(post.date))}</p>

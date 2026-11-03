@@ -13,7 +13,7 @@ export function InfoCardGrid({ items, columns = 2, className = '' }: { items: In
         <div className={`grid gap-3 ${columns === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2'} ${className}`}>
             {items.map(item => (
                 <article key={item.key} className="border border-border bg-surface p-5">
-                    {item.meta && <div className="mb-2 font-mono text-[9px] font-black uppercase tracking-[0.12em] text-muted">{item.meta}</div>}
+                    {item.meta && <div className="mb-2 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-muted">{item.meta}</div>}
                     <h3 className="text-[14px] font-black leading-snug text-foreground">{item.title}</h3>
                     <div className="mt-2 text-[13px] leading-6 text-muted">{item.body}</div>
                 </article>

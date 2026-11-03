@@ -44,7 +44,7 @@ export function BlogPostCard({ post, priority, categoryMap }: { post: WPPost; pr
             </div>
             <div className="flex flex-1 flex-col gap-2 pt-3">
                 {cat && (
-                    <span className="self-start px-2 py-0.5 font-mono font-bold uppercase tracking-[0.12em] text-[9.5px] whitespace-nowrap"
+                    <span className="self-start px-2 py-0.5 font-mono font-bold uppercase tracking-[0.12em] text-[10px] whitespace-nowrap"
                         style={{ backgroundColor: cs.bg, color: cs.color }}>
                         {cat.name}
                     </span>

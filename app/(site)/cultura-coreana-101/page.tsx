@@ -190,7 +190,7 @@ export default async function CulturaCoreanaPage() {
                                             <span className="flex items-center gap-4 px-5 py-4">
                                                 <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">{g.emoji}</span>
                                                 <span className="min-w-0">
-                                                    <span className={`block text-[9px] ${MONO}`} style={{ color: COR_CULTURA }}>Comece por aqui</span>
+                                                    <span className={`block text-[10px] ${MONO}`} style={{ color: COR_CULTURA }}>Comece por aqui</span>
                                                     <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">{g.label}</span>
                                                     {resumo && <span className="mt-1 line-clamp-2 block text-[13px] leading-snug text-foreground/70">{resumo}</span>}
                                                 </span>
@@ -216,7 +216,7 @@ export default async function CulturaCoreanaPage() {
                                     <div key={t.titulo} className="border-t-4 pt-3" style={{ borderColor: t.cor }}>
                                         <h3 className="mb-1 flex items-baseline justify-between gap-2 font-serif text-[20px] font-medium leading-tight text-foreground">
                                             {t.titulo}
-                                            <span className={`text-[9px] text-muted ${MONO}`}>{t.guias.length}</span>
+                                            <span className={`text-[10px] text-muted ${MONO}`}>{t.guias.length}</span>
                                         </h3>
                                         <ul>{visiveis.map(item)}</ul>
                                         {demais.length > 0 && (
@@ -234,7 +234,7 @@ export default async function CulturaCoreanaPage() {
                         </div>
                         {reportagens.length > 0 && (
                             <div className="border-t border-border pt-5">
-                                <p className={`mb-3 text-[9px] ${MONO}`} style={{ color: COR_CULTURA }}>Reportagens e análises</p>
+                                <p className={`mb-3 text-[10px] ${MONO}`} style={{ color: COR_CULTURA }}>Reportagens e análises</p>
                                 <ul className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
                                     {reportagens.map(post => {
                                         const imagem = getWPImage(post._embedded, post.featured_image_url)
@@ -245,7 +245,7 @@ export default async function CulturaCoreanaPage() {
                                                         {imagem && <Image src={imagem.src} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition-transform group-hover:scale-[1.03]" />}
                                                     </span>
                                                     <span className="mt-2 line-clamp-3 block font-serif text-[17px] font-medium leading-snug text-foreground group-hover:text-accent">{stripHtml(post.title.rendered)}</span>
-                                                    <span className={`mt-1 block text-[9px] text-muted ${MONO}`}>{dataRelativa(post.date, 'pt')}</span>
+                                                    <span className={`mt-1 block text-[10px] text-muted ${MONO}`}>{dataRelativa(post.date, 'pt')}</span>
                                                 </Link>
                                             </li>
                                         )
@@ -300,7 +300,7 @@ export default async function CulturaCoreanaPage() {
                     <Link href="/comidas" className="group flex items-center gap-4 border-2 px-5 py-4 transition-colors hover:bg-surface" style={{ borderColor: COR_COMIDA }}>
                         <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">🍜</span>
                         <span className="min-w-0">
-                            <span className={`block text-[9px] ${MONO}`} style={{ color: COR_COMIDA }}>Gastronomia</span>
+                            <span className={`block text-[10px] ${MONO}`} style={{ color: COR_COMIDA }}>Gastronomia</span>
                             <span className="block font-serif text-[20px] font-medium leading-tight text-foreground group-hover:text-accent">Pratos, receitas, marcas e a loja de comida coreana</span>
                             <span className={`mt-2 block text-foreground ${MONO}`}>Ver gastronomia →</span>
                         </span>
@@ -308,7 +308,7 @@ export default async function CulturaCoreanaPage() {
                     <Link href="/merch" className="group flex items-center gap-4 border-2 px-5 py-4 transition-colors hover:bg-surface" style={{ borderColor: COR_MERCH }}>
                         <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">🪄</span>
                         <span className="min-w-0">
-                            <span className={`block text-[9px] ${MONO}`} style={{ color: COR_MERCH }}>Merch</span>
+                            <span className={`block text-[10px] ${MONO}`} style={{ color: COR_MERCH }}>Merch</span>
                             <span className="block font-serif text-[20px] font-medium leading-tight text-foreground group-hover:text-accent">Lightstick, photocard, álbum físico e o que comprar</span>
                             <span className={`mt-2 block text-foreground ${MONO}`}>Ver merch →</span>
                         </span>

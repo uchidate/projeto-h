@@ -107,7 +107,7 @@ export function ArtistBiography({ name, label, contentBefore, contentAfter, fact
                                     <cite className="not-italic font-mono text-[11px] font-black uppercase tracking-widest" style={{ color: accent }}>
                                         {bioQuote.author}
                                     </cite>
-                                    {bioQuote.context && <span className="ml-2 font-mono text-[9px] uppercase tracking-widest text-muted">{bioQuote.context}</span>}
+                                    {bioQuote.context && <span className="ml-2 font-mono text-[10px] uppercase tracking-widest text-muted">{bioQuote.context}</span>}
                                 </footer>
                             </blockquote>
                         )}

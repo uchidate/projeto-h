@@ -1228,7 +1228,11 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
 .wp-article-content sup.ref a {
   color: var(--color-accent);
   text-decoration: none;
-  padding: 0 0.05em;
+  /* Área de toque de ~24x24 px (WCAG 2.5.8) sem mexer no texto: o padding é compensado pela margem negativa. */
+  display: inline-block;
+  line-height: 1;
+  padding: 0.6em 0.45em;
+  margin: -0.6em -0.45em;
 }
 .wp-article-content sup.ref a:hover { text-decoration: underline; }
 .wp-article-content ol:has(> li[id^="ref-"]) {

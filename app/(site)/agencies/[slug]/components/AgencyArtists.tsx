@@ -32,7 +32,7 @@ export function AgencyArtists({ view }: { view: AgencyView }) {
                         </div>
                         <div className="flex flex-col justify-between p-5 sm:p-7 flex-1 min-w-0 [border-left:2px_solid_var(--ac)]">
                             <div>
-                                <span className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-(--ac) mb-3 block">
+                                <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-(--ac) mb-3 block">
                                     ● Perfil em destaque
                                 </span>
                                 <p className="text-[24px] sm:text-[32px] font-black leading-tight tracking-tight group-hover:text-(--ac) transition-colors">{aname}</p>
@@ -42,7 +42,7 @@ export function AgencyArtists({ view }: { view: AgencyView }) {
                                 {roles.length > 0 && (
                                     <div className="flex flex-wrap gap-1.5 mt-3">
                                         {roles.slice(0, 3).map(r => (
-                                            <span key={r} className="font-mono text-[9px] uppercase tracking-wider border border-border px-2 py-1 text-muted">{r}</span>
+                                            <span key={r} className="font-mono text-[10px] uppercase tracking-wider border border-border px-2 py-1 text-muted">{r}</span>
                                         ))}
                                     </div>
                                 )}

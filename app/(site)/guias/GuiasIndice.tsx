@@ -77,7 +77,7 @@ function GrupoDeGuias({ titulo, hubs, cor }: { titulo: string; hubs: ArchiveHub[
         <div className="border-t-4 pt-3" style={{ borderColor: cor }}>
             <h3 className="mb-1 flex items-baseline justify-between gap-2 font-serif text-[20px] font-medium leading-tight text-foreground">
                 {titulo}
-                <span className={`text-[9px] text-muted ${MONO}`}>{hubs.length}</span>
+                <span className={`text-[10px] text-muted ${MONO}`}>{hubs.length}</span>
             </h3>
             <ul>{visiveis.map(h => <ItemDoGuia key={h.slug} hub={h} />)}</ul>
             {demais.length > 0 && (
@@ -197,7 +197,7 @@ export async function GuiasIndice({ kind }: { kind?: string }) {
                         className="group flex flex-col gap-1 border-2 border-[#6d3fc0] bg-background px-5 py-5 transition-colors hover:bg-surface sm:flex-row sm:items-center sm:justify-between"
                     >
                         <span>
-                            <span className={`block text-[9px] text-[#6d3fc0] ${MONO}`}>Também nos guias</span>
+                            <span className={`block text-[10px] text-[#6d3fc0] ${MONO}`}>Também nos guias</span>
                             <span className="block font-serif text-[24px] font-medium leading-tight text-foreground group-hover:text-accent">Cultura coreana</span>
                             <span className="mt-1 block text-[14px] text-foreground/70">Hangeul, honoríficos, festas e vida cotidiana: {guiasDeCultura.length || 'dezenas de'} guias para entender a Coreia.</span>
                         </span>

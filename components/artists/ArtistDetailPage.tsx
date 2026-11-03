@@ -290,7 +290,7 @@ export function ArtistDetailPage({
             {locale === DEFAULT_LOCALE && relatedHubs.length > 0 && (
                 <div className="page-wrap py-8 border-t border-border/40">
                     <div className="mb-4">
-                        <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">{t('explore')}</p>
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('explore')}</p>
                         <h2 className="text-[18px] font-black tracking-[-0.03em]">{t('relatedGuides')}</h2>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

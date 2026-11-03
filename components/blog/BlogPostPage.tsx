@@ -407,7 +407,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
 
                             {categories.length > 1 && (
                                 <div className="rounded-md border border-border bg-surface p-4">
-                                    <p className="mb-3 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Categorias</p>
+                                    <p className="mb-3 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Categorias</p>
                                     <div className="flex flex-wrap gap-1.5">
                                         {categories.map(c => {
                                             const cs2 = catStyle(c.slug)
@@ -479,7 +479,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
             {/* ── Mobile hero estilo Globo: texto acima, foto full-width abaixo ── */}
             <div className="lg:hidden bg-background px-4 pt-4 pb-3 border-b border-border">
                 {cat && (
-                    <span className="mb-2 inline-block font-mono text-[9px] font-black uppercase tracking-[0.14em]"
+                    <span className="mb-2 inline-block font-mono text-[10px] font-black uppercase tracking-[0.14em]"
                         style={{ color: cs.color }}>
                         {cat.name}
                     </span>
@@ -538,7 +538,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                     {/* Cabeçalho ocupa a largura editorial inteira; a sidebar começa abaixo. */}
                     <header className="hidden px-8 pt-10 lg:block">
                         {cat && (
-                            <span className="mb-3 inline-block font-mono text-[9px] font-black uppercase tracking-[0.16em]"
+                            <span className="mb-3 inline-block font-mono text-[10px] font-black uppercase tracking-[0.16em]"
                                 style={{ color: cs.color }}>
                                 {cat.name}
                             </span>
@@ -662,7 +662,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                                 {/* Tags / Explorar por tema */}
                                 {tags.length > 0 && (
                                     <div className="mt-10 pt-8 border-t border-border">
-                                        <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted mb-3">Explorar por tema</p>
+                                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted mb-3">Explorar por tema</p>
                                         <div className="flex flex-wrap gap-2">
                                             {tags.map(tag => {
                                                 const ts = catStyle(tag.slug)
@@ -811,7 +811,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                                     {author.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.12em] text-muted mb-0.5">Escrito por</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.12em] text-muted mb-0.5">Escrito por</p>
                                     <p className="font-bold text-foreground text-[14px]">{author.name}</p>
                                     <p className="text-[12px] text-muted mt-0.5">Publicado em {formatDateTime(post.date)}{wasUpdated ? ` · Atualizado em ${formatDateTime(post.modified)}` : ''}</p>
                                 </div>
@@ -865,7 +865,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                     <div data-bloco="artigo-leia-tambem" className="mt-10 border-t border-border pt-8 pb-8">
                         <div className="mb-5 flex items-end justify-between gap-4 px-4 sm:px-6 lg:px-8">
                             <div className="min-w-0">
-                                <p className="mb-1 font-mono text-[9px] font-black uppercase tracking-[0.16em] text-accent">Continue lendo</p>
+                                <p className="mb-1 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">Continue lendo</p>
                                 <h2 className="min-w-0 wrap-anywhere font-serif text-[clamp(1.6rem,3vw,2.15rem)] font-semibold leading-none tracking-[-0.035em] text-foreground">Leia também<BrandDot /></h2>
                             </div>
                             <Link href={cat ? `/blog?category=${cat.slug}` : '/blog'} className="shrink-0 whitespace-nowrap font-mono text-[10px] font-black uppercase tracking-[0.12em] text-accent transition-colors hover:text-accent-strong">Ver mais →</Link>
@@ -893,7 +893,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                                         </div>
                                         <div className="min-w-0 self-center lg:self-start">
                                             {rpCat && (
-                                                <span className="mb-1.5 block font-mono text-[9px] font-black uppercase tracking-[0.14em] text-accent">
+                                                <span className="mb-1.5 block font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">
                                                     {rpCat.name}
                                                 </span>
                                             )}

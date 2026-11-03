@@ -13,7 +13,7 @@ export function AgencyCatalog({ view }: { view: AgencyView }) {
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-1 shrink-0 [background:var(--ac)]" />
                     <div>
-                        <p className="font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">Elenco</p>
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Elenco</p>
                         <h2 className="text-xl font-black tracking-[-0.03em]">Um mapa visual do catálogo</h2>
                     </div>
                 </div>
@@ -64,12 +64,12 @@ export function AgencyCatalog({ view }: { view: AgencyView }) {
                                 )}
                                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-transparent" />
                                 {index === 0 && (
-                                    <span className="absolute left-4 top-4 border border-white/25 bg-black/45 px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.12em] text-white backdrop-blur-xs">
+                                    <span className="absolute left-4 top-4 border border-white/25 bg-black/45 px-2.5 py-1 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white backdrop-blur-xs">
                                         Comece por aqui
                                     </span>
                                 )}
                                 <div className={`absolute inset-x-0 bottom-0 ${index === 0 ? 'p-5 sm:p-7' : 'p-4'}`}>
-                                    <div className={`inline-block px-1.5 py-0.5 font-mono text-[8px] font-black text-white mb-2 ${isActive ? '[background:var(--gc,var(--ac))]' : 'bg-muted/60'}`}>
+                                    <div className={`inline-block px-1.5 py-0.5 font-mono text-[10px] font-black text-white mb-2 ${isActive ? '[background:var(--gc,var(--ac))]' : 'bg-muted/60'}`}>
                                         {isActive ? 'Ativo' : 'Inativo'}
                                     </div>
                                     <p className={`font-black leading-tight text-white ${index === 0 ? 'text-2xl sm:text-3xl' : 'text-[17px]'}`}>{gname}</p>
@@ -77,7 +77,7 @@ export function AgencyCatalog({ view }: { view: AgencyView }) {
                                         <p className="text-white/50 font-mono text-[10px] mt-0.5">{group.acf.name_hangul}</p>
                                     )}
                                     {debutYear && (
-                                        <p className="font-mono text-[9px] text-white/35 mt-1.5">desde {debutYear}</p>
+                                        <p className="font-mono text-[10px] text-white/35 mt-1.5">desde {debutYear}</p>
                                     )}
                                 </div>
                             </div>

@@ -21,7 +21,7 @@ export function EntityOrganizationTrail({ context }: { context: EntityOrganizati
                         <div key={organization.id} className="flex items-center gap-2">
                             {index > 0 && <ChevronRight size={14} className="text-muted" aria-hidden="true" />}
                             <Link href={`/agencies/${organization.slug}`} className="min-w-36 border border-border bg-background px-4 py-3 transition-colors hover:border-(--ac)">
-                                <span className="font-mono text-[8px] font-black uppercase tracking-[0.12em] text-muted">{(() => { const kind = organization.acf?.organization_kind ?? ''; return isKind(kind) ? t(`org.${kind}`) : node.direct ? t('org.direct') : t('org.parent') })()}</span>
+                                <span className="font-mono text-[10px] font-black uppercase tracking-[0.12em] text-muted">{(() => { const kind = organization.acf?.organization_kind ?? ''; return isKind(kind) ? t(`org.${kind}`) : node.direct ? t('org.direct') : t('org.parent') })()}</span>
                                 <strong className="mt-1 block text-[14px]">{name}</strong>
                             </Link>
                         </div>

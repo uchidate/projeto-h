@@ -56,7 +56,7 @@ function AnimatedStat({ value, label, accent }: { value: string; label: string; 
                 style={{ color: accent }}>
                 {displayValue}
             </p>
-            <p className="mt-1 font-mono text-[9px] uppercase tracking-widest text-muted">{label}</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
         </div>
     )
 }

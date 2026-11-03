@@ -26,7 +26,7 @@ function RecentPost({ post, index }: { post: WPPost; index: number }) {
                 </p>
                 <div className="flex items-center gap-1.5 flex-wrap">
                     {cat && (
-                        <span className="px-1.5 py-0.5 text-[9px] font-semibold"
+                        <span className="px-1.5 py-0.5 text-[10px] font-semibold"
                             style={{ color: cs.color, backgroundColor: cs.bg }}>
                             {cat.name}
                         </span>

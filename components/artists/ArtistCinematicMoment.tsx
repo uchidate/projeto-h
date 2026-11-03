@@ -62,11 +62,11 @@ export function ArtistCinematicMoment({ statement, sub, accent, quote, quoteAuth
                                 {quoteAuthor}
                             </cite>
                             {quoteContext && (
-                                <span className="font-mono text-[9px] uppercase tracking-widest text-muted">{quoteContext}</span>
+                                <span className="font-mono text-[10px] uppercase tracking-widest text-muted">{quoteContext}</span>
                             )}
                             {quoteSourceUrl && (
                                 <a href={quoteSourceUrl} target="_blank" rel="noopener noreferrer"
-                                    className="font-mono text-[9px] font-black uppercase tracking-widest text-muted underline decoration-border underline-offset-4 hover:text-foreground">
+                                    className="font-mono text-[10px] font-black uppercase tracking-widest text-muted underline decoration-border underline-offset-4 hover:text-foreground">
                                     {t('readSource')}
                                 </a>
                             )}

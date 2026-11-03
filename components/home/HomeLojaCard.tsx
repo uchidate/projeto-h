@@ -25,8 +25,8 @@ export function HomeLojaCard({ product, vendidos, comprar, selo }: Props) {
             className="group flex h-full min-w-0 flex-col bg-white text-[#14141c] shadow-[0_2px_0_rgba(0,0,0,0.12)]">
             <span className="relative block aspect-square overflow-hidden bg-white">
                 <Image src={acf.image_url} alt={nome} fill sizes="(max-width: 1024px) 190px, 17vw" className="object-contain p-1 transition-transform group-hover:scale-[1.03]" />
-                <span className="absolute left-0 top-0 bg-[#14141c] px-2 py-1 font-mono text-[9px] font-bold uppercase leading-none tracking-[0.1em] text-white">{vendidos}</span>
-                <span className="absolute bottom-0 left-0 bg-[#0b6b63] px-2 py-1 font-mono text-[9px] font-bold uppercase leading-none tracking-[0.1em] text-white">{selo ?? formatCategory(acf.category ?? 'outros')}</span>
+                <span className="absolute left-0 top-0 bg-[#14141c] px-2 py-1 font-mono text-[10px] font-bold uppercase leading-none tracking-[0.1em] text-white">{vendidos}</span>
+                <span className="absolute bottom-0 left-0 bg-[#0b6b63] px-2 py-1 font-mono text-[10px] font-bold uppercase leading-none tracking-[0.1em] text-white">{selo ?? formatCategory(acf.category ?? 'outros')}</span>
             </span>
             <span className="flex flex-1 flex-col px-3 pb-3 pt-2.5">
                 <span className="line-clamp-2 text-[13px] font-semibold leading-snug">{nome}</span>

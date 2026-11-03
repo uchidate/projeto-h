@@ -62,16 +62,16 @@ export default async function EmpresasPage({ searchParams }: { searchParams: Sea
             <div className="border-b border-border/40 bg-surface/30">
                 <div className="page-wrap py-3 flex flex-wrap gap-2">
                     <Link href="/empresas"
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${!industry && !chaebol ? 'bg-accent-a11y text-white border-accent-a11y' : 'border-border text-muted hover:text-foreground hover:border-border-strong'}`}>
+                        className={`inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${!industry && !chaebol ? 'bg-accent-a11y text-white border-accent-a11y' : 'border-border text-muted hover:text-foreground hover:border-border-strong'}`}>
                         Todas
                     </Link>
                     <Link href="/empresas?chaebol=true"
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${chaebol ? 'bg-accent-a11y text-white border-accent-a11y' : 'border-border text-muted hover:text-foreground hover:border-border-strong'}`}>
+                        className={`inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${chaebol ? 'bg-accent-a11y text-white border-accent-a11y' : 'border-border text-muted hover:text-foreground hover:border-border-strong'}`}>
                         🏛️ Chaebols
                     </Link>
                     {VALID_INDUSTRIES.map(ind => (
                         <Link key={ind} href={`/empresas?industry=${ind}`}
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${industry === ind ? 'bg-accent-a11y text-white border-accent-a11y' : 'border-border text-muted hover:text-foreground hover:border-border-strong'}`}>
+                            className={`inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${industry === ind ? 'bg-accent-a11y text-white border-accent-a11y' : 'border-border text-muted hover:text-foreground hover:border-border-strong'}`}>
                             <span>{COMPANY_INDUSTRY_EMOJI[ind]}</span>
                             {COMPANY_INDUSTRY_LABELS[ind]}
                         </Link>

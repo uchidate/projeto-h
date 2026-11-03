@@ -181,7 +181,7 @@ export function BlogSuggestedNext({ candidatos, stopAtId }: Props) {
                     </div>
                 )}
                 <div className="min-w-0 flex-1">
-                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-accent mb-0.5">
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent mb-0.5">
                         Sugerido para você{cat ? ` · ${cat.name}` : ''}
                     </p>
                     {/* Duas linhas no celular, uma a partir de sm.

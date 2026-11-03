@@ -32,7 +32,7 @@ export function QuizWidget({ category = 'all', title, description }: Props) {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                        <p className={`font-mono text-[9px] font-black uppercase tracking-[0.18em] mb-0.5 ${meta.text}`}>
+                        <p className={`font-mono text-[10px] font-black uppercase tracking-[0.18em] mb-0.5 ${meta.text}`}>
                             Quiz {meta.label}
                         </p>
                         <p className={`text-[15px] font-black leading-tight tracking-[-0.02em] text-foreground transition-colors ${meta.groupHoverText}`}>

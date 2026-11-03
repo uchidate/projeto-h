@@ -25,7 +25,7 @@ export function GooglePreferredSource({ postSlug }: Props) {
 
                 <div className="min-w-0 flex-1 px-4 py-3.5 sm:flex sm:items-center sm:justify-between sm:gap-5 sm:px-5">
                     <div>
-                        <p className="mb-1 font-mono text-[9px] font-black uppercase tracking-[0.14em] text-muted">
+                        <p className="mb-1 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
                             Suas fontes no Google
                         </p>
                         <p id="google-preferred-source-title" className="text-[14px] font-black leading-snug text-foreground sm:text-[15px]">

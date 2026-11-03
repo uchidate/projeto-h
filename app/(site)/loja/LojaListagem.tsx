@@ -161,7 +161,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                             className="object-cover transition-transform duration-300 group-hover:scale-105" unoptimized />
                                     )}
                                     {descontoMosaico !== null && (
-                                        <span className="absolute left-1 top-1 bg-foreground px-1 py-0.5 font-mono text-[9px] font-black tabular-nums text-background">
+                                        <span className="absolute left-1 top-1 bg-foreground px-1 py-0.5 font-mono text-[10px] font-black tabular-nums text-background">
                                             -{descontoMosaico}%
                                         </span>
                                     )}
@@ -181,7 +181,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                 {/* Filtros secundários */}
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
                     <div className="flex flex-col gap-1.5">
-                        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Loja</span>
+                        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">Loja</span>
                         <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="group">
                             <a href={setParam('loja', '')}
                                 className={`shrink-0 px-3 py-1.5 text-[12px] font-bold transition-colors ${!sp.loja ? 'border border-accent text-accent' : 'border border-border-strong text-foreground-subtle hover:border-accent/50 hover:text-accent'}`}>
@@ -203,7 +203,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                         {sp.ofertas === '1' && <input type="hidden" name="ofertas" value="1" />}
                         {sp.queda === '1' && <input type="hidden" name="queda" value="1" />}
                         <label className="flex min-w-[220px] flex-col gap-1 lg:min-w-70">
-                            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted">Busca</span>
+                            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">Busca</span>
                             <input name="busca" type="text" defaultValue={sp.busca ?? ''} placeholder="Buscar produto…"
                                 className="h-8 border border-border bg-surface px-2.5 text-[12px] text-foreground placeholder:text-muted focus:border-foreground focus:outline-hidden" />
                         </label>

@@ -28,7 +28,7 @@ export function GruposDaAgencia({ agencia, grupos }: { agencia: string; grupos: 
                                     {g.featured_image_url
                                         ? <Image src={g.featured_image_url} alt={g.title.rendered} fill priority={i < 4} sizes="(max-width: 1024px) 170px, 20vw" className="object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
                                         : <div className="flex h-full items-center justify-center text-3xl font-black text-muted/20">{g.title.rendered[0]}</div>}
-                                    {encerrado && <span className={`absolute left-2 top-2 bg-background/90 px-1.5 py-0.5 text-[9px] text-muted ${MONO}`}>Encerrado</span>}
+                                    {encerrado && <span className={`absolute left-2 top-2 bg-background/90 px-1.5 py-0.5 text-[10px] text-muted ${MONO}`}>Encerrado</span>}
                                 </div>
                                 <div className="border-b border-border/50 py-2">
                                     <h3 className="truncate text-[14px] font-bold text-foreground transition-colors group-hover:text-accent">{g.title.rendered}</h3>

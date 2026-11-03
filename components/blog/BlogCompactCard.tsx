@@ -33,7 +33,7 @@ export function BlogCompactCard({ post, rank, categoryMap }: { post: WPPost; ran
             )}
             <div className="flex-1 min-w-0">
                 {cat && (
-                    <span className="px-1.5 py-0.5 font-mono font-bold uppercase tracking-[0.12em] text-[8.5px] whitespace-nowrap mb-1 inline-block"
+                    <span className="px-1.5 py-0.5 font-mono font-bold uppercase tracking-[0.12em] text-[10px] whitespace-nowrap mb-1 inline-block"
                         style={{ backgroundColor: cs.bg, color: cs.color }}>
                         {cat.name}
                     </span>

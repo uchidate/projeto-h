@@ -75,7 +75,7 @@ export function NotificationBell() {
             >
                 <Bell size={17} />
                 {unreadCount > 0 && (
-                    <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center bg-accent-a11y px-1 text-[9px] font-black leading-none text-white">
+                    <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center bg-accent-a11y px-1 text-[10px] font-black leading-none text-white">
                         {Math.min(unreadCount, 9)}
                     </span>
                 )}
@@ -119,7 +119,7 @@ export function NotificationBell() {
                                             {!item.readAt && <span className="h-1.5 w-1.5 shrink-0 bg-accent" />}
                                             <span className="text-[12px] font-black text-foreground group-hover:text-accent">{item.title}</span>
                                         </span>
-                                        <span className="mb-1 inline-flex border border-border px-1.5 py-0.5 font-mono text-[9px] font-black uppercase tracking-wider text-muted">
+                                        <span className="mb-1 inline-flex border border-border px-1.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-muted">
                                             {typeLabel(item.type)}
                                         </span>
                                         <span className="block text-[12px] leading-snug text-muted">{item.body}</span>
