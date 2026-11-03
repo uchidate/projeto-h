@@ -194,7 +194,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                             <h2 className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60">
                                 Guias
                             </h2>
-                            <Link href="/guias" className="ml-auto font-mono text-[11px] text-muted transition-colors hover:text-accent">
+                            <Link href="/guias" className="-my-2.5 ml-auto py-2.5 font-mono text-[11px] text-muted transition-colors hover:text-accent">
                                 todos os guias →
                             </Link>
                         </div>
@@ -300,7 +300,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                                 <nav className="mt-10 flex flex-wrap items-center justify-center gap-1.5" aria-label="Paginação">
                                     {currentPage > 1 && (
                                         <Link href={buildHref({ page: String(currentPage - 1) })} scroll
-                                            className="px-3 py-1.5 border border-border text-[12px] font-semibold text-muted hover:border-foreground hover:text-foreground transition-all">
+                                            className="inline-flex min-h-11 min-w-11 items-center justify-center border border-border px-3 text-[12px] font-semibold text-muted transition-all hover:border-foreground hover:text-foreground sm:min-h-9 sm:min-w-9">
                                             ←
                                         </Link>
                                     )}
@@ -308,13 +308,13 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                                         p === '…'
                                             ? <span key={`ellipsis-${i}`} className="px-1 text-[12px] text-muted/40">…</span>
                                             : <Link key={p} href={buildHref({ page: String(p) })} scroll
-                                                className={`min-w-[32px] px-3 py-1.5 text-center text-[12px] font-semibold transition-all ${p === currentPage ? 'bg-foreground text-background' : 'border border-border text-muted hover:border-foreground hover:text-foreground'}`}>
+                                                aria-current={p === currentPage ? 'page' : undefined} className={`inline-flex min-h-11 min-w-11 items-center justify-center px-3 text-center text-[12px] font-semibold transition-all sm:min-h-9 sm:min-w-9 ${p === currentPage ? 'bg-foreground text-background' : 'border border-border text-muted hover:border-foreground hover:text-foreground'}`}>
                                                 {p}
                                             </Link>
                                     )}
                                     {currentPage < totalPages && (
                                         <Link href={buildHref({ page: String(currentPage + 1) })} scroll
-                                            className="px-3 py-1.5 border border-border text-[12px] font-semibold text-muted hover:border-foreground hover:text-foreground transition-all">
+                                            className="inline-flex min-h-11 min-w-11 items-center justify-center border border-border px-3 text-[12px] font-semibold text-muted transition-all hover:border-foreground hover:text-foreground sm:min-h-9 sm:min-w-9">
                                             →
                                         </Link>
                                     )}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 
 type Aba = { id: string; rotulo: string; node: ReactNode }
 
@@ -11,14 +11,27 @@ type Aba = { id: string; rotulo: string; node: ReactNode }
  */
 export function BlogAbas({ abas, rotuloDoGrupo }: { abas: Aba[]; rotuloDoGrupo: string }) {
     const [ativa, setAtiva] = useState(abas[0]?.id)
+    const botoes = useRef<Record<string, HTMLButtonElement | null>>({})
+    /* Padrão ARIA de abas: só a ativa entra na ordem do Tab; as setas (e Home/End) trocam de aba. */
+    function aoTeclar(e: KeyboardEvent<HTMLButtonElement>, i: number) {
+        const passo = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
+        const destino = e.key === 'Home' ? 0 : e.key === 'End' ? abas.length - 1 : passo ? (i + passo + abas.length) % abas.length : -1
+        if (destino < 0) return
+        e.preventDefault()
+        setAtiva(abas[destino].id)
+        botoes.current[abas[destino].id]?.focus()
+    }
     return (
         <div>
             <div role="tablist" aria-label={rotuloDoGrupo} className="flex gap-5 border-b border-border">
-                {abas.map(a => {
+                {abas.map((a, i) => {
                     const selecionada = a.id === ativa
                     return (
                         <button
                             key={a.id}
+                            ref={el => { botoes.current[a.id] = el }}
+                            tabIndex={selecionada ? 0 : -1}
+                            onKeyDown={e => aoTeclar(e, i)}
                             type="button"
                             role="tab"
                             id={`aba-${a.id}`}
