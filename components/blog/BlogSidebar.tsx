@@ -77,7 +77,7 @@ export function BlogSidebar({ recentPosts, categories, currentCategory }: BlogSi
 
             {categories.length > 0 && (
                 <div>
-                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-3">Categorias</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-3">Mais categorias</p>
                     <div className="flex flex-wrap gap-1.5">
                         {categories.map(cat => {
                             const cs = catStyle(cat.slug)
