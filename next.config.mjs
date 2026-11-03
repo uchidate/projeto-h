@@ -225,6 +225,9 @@ const nextConfig = {
             // "dentro da empresa"). O MEOVV e da The Black Label. A ficha do grupo,
             // corrigida no mesmo dia, responde as mesmas buscas com os dados certos.
             { source: '/blog/meovv-hybe-grupo-felino-meow-kpop', destination: '/groups/meovv', permanent: true },
+            // Fandom do TWS: a ficha dizia "TWSONE" e o nome oficial é "42" (corrigido em
+            // 2026-11-03). O slug da torcida vem do nome, então /fandoms/twsone passou a 404.
+            { source: '/fandoms/twsone', destination: '/fandoms/42', permanent: true },
             // Notícias duplicadas consolidadas em 2026-09-15: o pipeline publicou o
             // mesmo fato duas vezes em 24-48h. Duas páginas quase iguais competem
             // entre si e o Google tende a indexar só uma ("Descoberta, não
