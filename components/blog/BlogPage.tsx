@@ -69,10 +69,14 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
         : maisUsadas
     // O destaque padrão é o primeiro candidato (não mais o artigo mais novo); os demais cabem na grade normalmente.
     const hero = destaques[0] ?? posts[0]
-    const rest = posts.filter(p => p.id !== hero?.id)
+    const showHero = !isFiltered && currentPage === 1 && !order && !!hero
+    /* Ao lado do destaque, "Últimas" traz as 4 notícias mais novas (fora o próprio destaque). Elas
+       saem da grade logo abaixo para a mesma matéria não aparecer duas vezes na tela. */
+    const ultimas = showHero ? posts.filter(p => p.id !== hero?.id).slice(0, 4) : []
+    const idsUltimas = new Set(ultimas.map(p => p.id))
+    const rest = posts.filter(p => p.id !== hero?.id && !idsUltimas.has(p.id))
     const currentCategoryLabel = categories.find(c => c.slug === currentCategory)?.name ?? currentCategory
 
-    const showHero = !isFiltered && currentPage === 1 && !order && !!hero
     const gridPosts = showHero ? rest : posts
     /* Célula vazia no fim da linha é aritmética. A grade tem 1, 2 e 3 colunas,
        então só fecha toda linha com um múltiplo de 6. A página traz 12 posts e
@@ -142,7 +146,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
             <div className="page-wrap pt-6 pb-16">
 
                 {showHero && (
-                    <div className={`grid items-start gap-6 lg:gap-8 ${emAlta.length > 0 ? 'md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]' : ''}`}>
+                    <div className={`grid items-start gap-6 lg:gap-8 ${emAlta.length + ultimas.length > 0 ? 'md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]' : ''}`}>
                         {destaques.length > 1
                             ? <BlogDestaque candidatos={destaques.map((p, i) => ({
                                 slug: p.slug,
@@ -150,7 +154,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                                 node: <BlogHeroCompacto post={p} categoryMap={categoryMap} priority={i === 0} />,
                             }))} />
                             : <BlogHeroCompacto post={hero} categoryMap={categoryMap} priority />}
-                        <BlogEmAlta posts={emAlta} />
+                        <BlogEmAlta posts={emAlta} ultimas={ultimas} />
                     </div>
                 )}
                 {showHero && ADSENSE.slots.leaderboard && (
