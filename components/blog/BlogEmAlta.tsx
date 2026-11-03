@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { WPPost } from '@/lib/wordpress/types'
-import { getWPImage, stripHtml, formatDatePt } from '@/lib/utils'
+import { getWPImage, stripHtml } from '@/lib/utils'
+import { tempoRelativoPt } from '@/lib/blog/tempoRelativo'
 import { BlogAbas } from '@/components/blog/BlogAbas'
 
 type Marcador = 'numero' | 'data'
@@ -21,7 +22,7 @@ function Lista({ posts, marcador }: { posts: WPPost[]; marcador: Marcador }) {
                             <span className="min-w-0 flex-1">
                                 <span className="block text-[14px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent lg:text-[17px]">{titulo}</span>
                                 {marcador === 'data' && (
-                                    <time dateTime={p.date} className="mt-1 block font-mono text-[10px] uppercase tracking-[0.1em] text-muted">{formatDatePt(p.date)}</time>
+                                    <time dateTime={p.date} className="mt-1 block font-mono text-[10px] uppercase tracking-[0.1em] text-muted">{tempoRelativoPt(p.date)}</time>
                                 )}
                             </span>
                             {/* Guia sem imagem destacada: só o texto, sem quadrado vazio. */}
