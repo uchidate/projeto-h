@@ -28,3 +28,29 @@ export function sortearPrateleira(produtos: StoreProduct[], quantidade: number, 
     }
     return escolhidos.sort((a, b) => a.i - b.i).map(x => x.p)
 }
+
+/** Posição (0-based) do slot de descoberta: 4º cartão, visível no celular (o 5º some abaixo de lg). */
+export const SLOT_DESCOBERTA = 3
+
+/**
+ * Como `sortearPrateleira`, mas reserva um slot para um produto que o ranking ainda não leu
+ * ("sem leitura": nunca teve impressão suficiente para ter score). Sem isso o pool só recicla os
+ * mesmos poucos produtos e o resto do catálogo nunca é exibido nem medido. O candidato é sorteado
+ * por igual entre `descobertas`; o resto da prateleira segue o sorteio ponderado de sempre.
+ * Sem candidatos, ou com `quantidade` menor que o slot, devolve exatamente `sortearPrateleira`.
+ */
+export function sortearComDescoberta(
+    produtos: StoreProduct[],
+    descobertas: StoreProduct[],
+    quantidade: number,
+    vistosRecentes: ReadonlySet<number> = new Set(),
+    aleatorio: () => number = Math.random,
+): StoreProduct[] {
+    const ids = new Set(produtos.map(p => p.id))
+    const candidatos = descobertas.filter(d => !ids.has(d.id))
+    if (candidatos.length === 0 || quantidade <= SLOT_DESCOBERTA) return sortearPrateleira(produtos, quantidade, vistosRecentes, aleatorio)
+    const escolhida = candidatos[Math.min(candidatos.length - 1, Math.floor(aleatorio() * candidatos.length))]
+    const demais = sortearPrateleira(produtos, quantidade - 1, vistosRecentes, aleatorio)
+    demais.splice(Math.min(SLOT_DESCOBERTA, demais.length), 0, escolhida)
+    return demais
+}

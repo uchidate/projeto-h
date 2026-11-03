@@ -3,13 +3,15 @@
 
 import { useEffect, useState } from 'react'
 import type { StoreProduct } from '@/lib/wordpress/store'
-import { sortearPrateleira } from '@/lib/wordpress/store-rotacao'
+import { sortearComDescoberta } from '@/lib/wordpress/store-rotacao'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { useVitrineVista } from '@/components/ui/VitrineVista'
 
 interface Props {
     /** Já vem ordenado (aderência > destaque > desconto > CTR/comissão > posição) — o sorteio só escolhe quais aparecem. */
     produtos: StoreProduct[]
+    /** Produtos que o ranking ainda não leu: um deles ocupa o slot de descoberta (ver store-rotacao). Opcional. */
+    descobertas?: StoreProduct[]
     contexto: string
     quantidade?: number
 }
@@ -35,7 +37,11 @@ function garantirLoja(selecionados: StoreProduct[], produtos: StoreProduct[], lo
     if (selecionados.some(p => p.acf.store === loja)) return selecionados
     const candidato = produtos.find(p => p.acf.store === loja && !selecionados.includes(p))
     if (!candidato || selecionados.length === 0) return selecionados
-    return [...selecionados.slice(0, -1), candidato]
+    // O slot de descoberta é reservado: a troca cai no último cartão que não é dele.
+    let alvo = selecionados.length - 1
+    while (alvo > 0 && selecionados[alvo].descoberta) alvo--
+    if (selecionados[alvo].descoberta) return selecionados
+    return selecionados.map((p, i) => (i === alvo ? candidato : p))
 }
 
 const CHAVE_VISTOS = 'hh:loja:vistos'
@@ -52,12 +58,12 @@ function guardarVistos(ids: number[]) {
     try { localStorage.setItem(CHAVE_VISTOS, JSON.stringify([...new Set(ids)].slice(0, 15))) } catch { /* modo privado/sem storage */ }
 }
 
-export function PrateleiraRotativa({ produtos, contexto, quantidade = 5 }: Props) {
+export function PrateleiraRotativa({ produtos, descobertas = [], contexto, quantidade = 5 }: Props) {
     const [exibidos, setExibidos] = useState(() => garantirLoja(produtos.slice(0, quantidade), produtos, 'shopee'))
 
     useEffect(() => {
         const vistos = lerVistos()
-        const sorteados = sortearPrateleira(produtos, quantidade, new Set(vistos))
+        const sorteados = sortearComDescoberta(produtos, descobertas, quantidade, new Set(vistos))
         // Regra de negócio: a prateleira sempre representa a Shopee quando ela
         // tem produto disponível pro contexto — nunca some, mesmo que o sorteio não a tenha escolhido.
         const final = garantirLoja(sorteados, produtos, 'shopee')

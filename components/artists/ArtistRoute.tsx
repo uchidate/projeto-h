@@ -14,6 +14,7 @@ import { ArtistDetailPage } from '@/components/artists/ArtistDetailPage'
 import { getHubsForArtist } from '@/lib/guias/hub-lookup'
 import { getStoreProductsByArtistId, getStoreProductsByGroupId, getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
+import { comDescobertas } from '@/lib/wordpress/vitrine'
 import { getMusicReleases } from '@/lib/wordpress/music'
 import { getArtigosDeAlbum, ligarArtigosAosAlbuns } from '@/lib/blog/albumArticles'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
@@ -141,8 +142,11 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     const tipoVitrine = !connectionGroup && (primaryRole === 'actor' || primaryRole === 'host') ? 'drama' : 'kpop'
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0 && groupShopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio
-        ? ordenarPrateleira(await getFeaturedStoreProducts(8, tipoVitrine), 'artista:fallback')
+        ? await comDescobertas(ordenarPrateleira(await getFeaturedStoreProducts(8, tipoVitrine), 'artista:fallback'), 'artista:fallback')
         : []
+    const shopProductsFicha = semProdutoProprio
+        ? shopFallbackProducts
+        : (locale === DEFAULT_LOCALE ? await comDescobertas(ordenarPrateleira(shopProducts, `artista:${slug}`), `artista:${slug}`) : [])
 
     const relatedHubs = getHubsForArtist(artist)
     const companyMentions = locale === DEFAULT_LOCALE
@@ -166,7 +170,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
             connectionGroup={groupMemberIds.length > 0 ? connectionGroup : undefined}
             discography={discography}
             relatedHubs={relatedHubs}
-            shopProducts={semProdutoProprio ? shopFallbackProducts : (locale === DEFAULT_LOCALE ? ordenarPrateleira(shopProducts, `artista:${slug}`) : [])}
+            shopProducts={shopProductsFicha}
             groupShopProducts={groupShopProducts}
             shopFallback={semProdutoProprio}
             companyMentions={companyMentions}

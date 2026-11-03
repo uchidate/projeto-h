@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { sortearPrateleira } from './store-rotacao'
+import { SLOT_DESCOBERTA, sortearComDescoberta, sortearPrateleira } from './store-rotacao'
 import type { StoreProduct } from './store'
 
 const prod = (id: number, extra: Partial<StoreProduct['acf']> = {}): StoreProduct => ({
@@ -41,5 +41,33 @@ describe('sortearPrateleira', () => {
     it('o que o visitante viu há pouco aparece menos', () => {
         const conta = (vistos: Set<number>) => Array.from({ length: 400 }, (_, s) => sortearPrateleira(lista, 5, vistos, semente(s + 11))).filter(r => r.some(p => p.id === 1)).length
         expect(conta(new Set([1]))).toBeLessThan(conta(new Set()))
+    })
+})
+
+describe('sortearComDescoberta', () => {
+    const novos = Array.from({ length: 6 }, (_, i) => ({ ...prod(100 + i), descoberta: true }))
+
+    it('põe um candidato sem leitura no slot reservado e completa o resto pelo sorteio de sempre', () => {
+        const r = sortearComDescoberta(lista, novos, 5, new Set(), semente(3))
+        expect(r).toHaveLength(5)
+        expect(r[SLOT_DESCOBERTA].id).toBeGreaterThanOrEqual(100)
+        expect(r.filter(p => p.id >= 100)).toHaveLength(1)
+        expect(new Set(r.map(p => p.id)).size).toBe(5)
+    })
+
+    it('todo candidato aparece com o tempo (sorteio uniforme) e o pool continua representado', () => {
+        const vistos = new Set<number>()
+        for (let s = 1; s <= 300; s++) vistos.add(sortearComDescoberta(lista, novos, 5, new Set(), semente(s * 104729))[SLOT_DESCOBERTA].id)
+        expect(vistos.size).toBe(6)
+    })
+
+    it('sem candidatos, ou com poucos slots, é igual ao sorteio comum', () => {
+        expect(sortearComDescoberta(lista, [], 5, new Set(), semente(9))).toEqual(sortearPrateleira(lista, 5, new Set(), semente(9)))
+        expect(sortearComDescoberta(lista, novos, 3, new Set(), semente(9))).toEqual(sortearPrateleira(lista, 3, new Set(), semente(9)))
+    })
+
+    it('ignora candidato que já está no pool', () => {
+        const dentro = [{ ...lista[0], descoberta: true }]
+        expect(sortearComDescoberta(lista, dentro, 5, new Set(), semente(4))).toEqual(sortearPrateleira(lista, 5, new Set(), semente(4)))
     })
 })
