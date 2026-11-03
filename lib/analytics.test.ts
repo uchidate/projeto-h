@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { trackQuizComplete, trackSearch, trackScrollDepth, trackBlogRead } from './analytics'
+import { trackQuizComplete, trackSearch, trackScrollDepth, trackBlogRead, trackProductClick, trackVitrineVista } from './analytics'
 
 describe('envio duplo (Google Analytics + Umami)', () => {
     let gtag: ReturnType<typeof vi.fn<(...args: unknown[]) => void>>
@@ -97,5 +97,29 @@ describe('segunda rodada: amostragem e formato', () => {
         } finally {
             vi.useRealTimers()
         }
+    })
+})
+
+describe('slot de descoberta da vitrine', () => {
+    const gtag = vi.fn<(...args: unknown[]) => void>()
+    const umamiTrack = vi.fn<(nome?: string, dados?: Record<string, unknown>) => void>()
+    beforeEach(() => { gtag.mockClear(); umamiTrack.mockClear(); window.gtag = gtag; window.umami = { track: umamiTrack } })
+    afterEach(() => { delete window.gtag; delete window.umami })
+
+    it('clique comum não ganha propriedade nova (o ranking por CTR segue igual)', () => {
+        trackProductClick({ productId: 7, store: 'shopee', contexto: 'grupo:bts' })
+        expect(umamiTrack).toHaveBeenCalledWith('product_click', { product_id: 7, product_store: 'shopee', click_context: 'grupo:bts' })
+    })
+
+    it('clique no slot de descoberta leva click_slot', () => {
+        trackProductClick({ productId: 7, store: 'shopee', contexto: 'grupo:bts', descoberta: true })
+        expect(umamiTrack).toHaveBeenCalledWith('product_click', { product_id: 7, product_store: 'shopee', click_context: 'grupo:bts', click_slot: 'descoberta' })
+    })
+
+    it('vista só leva discovery_ids quando o slot apareceu', () => {
+        trackVitrineVista({ contexto: 'loja', produtoIds: [1, 2, 3] })
+        expect(umamiTrack).toHaveBeenLastCalledWith('vitrine_view', { click_context: 'loja', product_ids: '1,2,3' })
+        trackVitrineVista({ contexto: 'loja', produtoIds: [1, 2, 3], descobertaIds: [3] })
+        expect(umamiTrack).toHaveBeenLastCalledWith('vitrine_view', { click_context: 'loja', product_ids: '1,2,3', discovery_ids: '3' })
     })
 })

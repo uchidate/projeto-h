@@ -47,7 +47,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
 
     if (!acf.affiliate_url) return null
 
-    const registrarClique = () => trackProductClick({ productId: product.id, store, contexto })
+    const registrarClique = () => trackProductClick({ productId: product.id, store, contexto, descoberta: product.descoberta })
 
     if (linha) {
         return (

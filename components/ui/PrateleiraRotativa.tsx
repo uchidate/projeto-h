@@ -72,7 +72,7 @@ export function PrateleiraRotativa({ produtos, descobertas = [], contexto, quant
     // eslint-disable-next-line react-hooks/exhaustive-deps -- sorteia uma vez por montagem (cada visualização da página), não a cada render
     }, [])
 
-    const ref = useVitrineVista<HTMLDivElement>(contexto, exibidos.map(p => p.id))
+    const ref = useVitrineVista<HTMLDivElement>(contexto, exibidos.map(p => p.id), exibidos.filter(p => p.descoberta).map(p => p.id))
 
     return (
         // 5 colunas no desktop (cartões ~250px, não 310px); o 5º some abaixo de lg para o celular e o tablet fecharem em 4.

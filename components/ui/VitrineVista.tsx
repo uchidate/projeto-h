@@ -8,9 +8,9 @@ import { trackVitrineVista } from '@/lib/analytics'
  * Os IDs passados são os que o visitante de fato vê (a prateleira rotativa mostra 4 de 8),
  * porque é esse o denominador do CTR por produto.
  */
-export function useVitrineVista<T extends HTMLElement>(contexto: string, produtoIds: number[]) {
+export function useVitrineVista<T extends HTMLElement>(contexto: string, produtoIds: number[], descobertaIds: number[] = []) {
     const ref = useRef<T>(null)
-    const idsChave = produtoIds.join(',')
+    const idsChave = `${produtoIds.join(',')}|${descobertaIds.join(',')}`
     useEffect(() => {
         const el = ref.current
         if (!el || produtoIds.length === 0 || typeof IntersectionObserver === 'undefined') return
@@ -18,7 +18,7 @@ export function useVitrineVista<T extends HTMLElement>(contexto: string, produto
         const obs = new IntersectionObserver(entradas => {
             if (enviado || !entradas.some(e => e.isIntersecting)) return
             enviado = true
-            trackVitrineVista({ contexto, produtoIds })
+            trackVitrineVista({ contexto, produtoIds, descobertaIds })
             obs.disconnect()
         }, { threshold: 0.5 })
         obs.observe(el)
