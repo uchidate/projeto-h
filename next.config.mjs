@@ -156,7 +156,7 @@ const nextConfig = {
             artists: ['search', 'page', 'role', 'affiliation', 'letter', 'sortBy'],
             groups: ['search', 'page', 'type', 'active', 'letter', 'generation', 'order'],
             productions: ['genre', 'platform', 'type', 'order', 'page', 'search'],
-            blog: ['category', 'tag', 'page', 'search', 'order'],
+            blog: ['category', 'tag', 'page', 'search', 'order', 'tipo'],
             loja: ['categoria', 'loja', 'busca', 'ofertas'],
             comidas: ['search', 'page', 'category', 'vegetarian', 'occasion', 'season', 'maxSpicy', 'region'],
         }

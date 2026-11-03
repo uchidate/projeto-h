@@ -37,6 +37,8 @@ type Props = {
     /** Conteúdo-chave: passa dos 45 dias e continua entre os mais lidos. */
     perenes?: WPPost[]
     order?: string
+    /** 'guias': a lista traz só os guias de compra (K-beauty, merch, comida). */
+    tipo?: 'guias'
     /** Próximos por interesse, ao lado do destaque. */
     emAlta?: WPPost[]
     shopProducts?: StoreProduct[]
@@ -44,12 +46,13 @@ type Props = {
     categoriaLoja?: { rotulo: string; categoriaLoja: string; industria?: string; marcas: MarcaDaCategoria[]; produtos: StoreProduct[] }
 }
 
-export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, emAlta = [], shopProducts = [], categoriaLoja }: Props) {
+export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, tipo, emAlta = [], shopProducts = [], categoriaLoja }: Props) {
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
     function buildHref(overrides: Record<string, string | undefined> = {}) {
         const params = new URLSearchParams()
-        const next = { category: currentCategory, tag: currentTag, search: currentSearch, order, ...overrides }
+        const next = { category: currentCategory, tag: currentTag, search: currentSearch, order, tipo, ...overrides }
         if (next.order) params.set('order', next.order)
+        if (next.tipo) params.set('tipo', next.tipo)
         if (next.category) params.set('category', next.category)
         if (next.tag) params.set('tag', next.tag)
         if (next.search) params.set('search', next.search)
@@ -72,7 +75,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
     const categoriasForaDosChips = categories.filter(c => c.slug !== 'uncategorized' && !idsNosChips.has(c.id))
     // O destaque padrão é o primeiro candidato (não mais o artigo mais novo); os demais cabem na grade normalmente.
     const hero = destaques[0] ?? posts[0]
-    const showHero = !isFiltered && currentPage === 1 && !order && !!hero
+    const showHero = !isFiltered && currentPage === 1 && !order && !tipo && !!hero
     /* Ao lado do destaque, "Últimas" traz as 4 notícias mais novas (fora o próprio destaque). Elas
        saem da grade logo abaixo para a mesma matéria não aparecer duas vezes na tela. */
     const ultimas = showHero ? posts.filter(p => p.id !== hero?.id).slice(0, 4) : []
@@ -122,7 +125,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
     return (
         <div className="bg-background">
             {/* Chaves iguais ao SearchParams de app/(site)/blog/page.tsx. */}
-            <RastreioDeFiltros listagem="blog" filtros={['category', 'tag', 'page', 'search', 'order']} />
+            <RastreioDeFiltros listagem="blog" filtros={['category', 'tag', 'page', 'search', 'order', 'tipo']} />
             {/* H1 só para leitor de tela e robô: o cabeçalho visual da página é o
                 breadcrumb, e um título grande aqui mexeria no layout. */}
             <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
@@ -185,7 +188,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                 {/* Guias saíram da navbar e reaparecem aqui, ao lado da intenção
                     que já os procurava. Só na primeira página sem filtro: numa
                     busca por artigo específico esta faixa seria ruído. */}
-                {!isFiltered && !order && currentPage === 1 && guias.length > 0 && (
+                {!isFiltered && !order && !tipo && currentPage === 1 && guias.length > 0 && (
                     <section className="mb-10 mt-10 border-t border-border pt-5">
                         <div className="mb-3 flex items-baseline gap-3">
                             <h2 className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60">
@@ -228,15 +231,20 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                     <div className="mt-10 grid items-stretch gap-10 lg:grid-cols-[minmax(0,1fr)_300px] xl:gap-14">
                         <div className="min-w-0">
                             {!isFiltered && (
-                                <div className="mb-4 flex gap-6 border-b border-border" role="group" aria-label="Ordenar artigos">
-                                    <Link href="/blog" className={`flex h-11 items-center border-b-2 text-[14px] font-semibold transition-colors ${!order ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`}>Mais recentes</Link>
-                                    <Link href="/blog?order=lidos" className={`flex h-11 items-center border-b-2 text-[14px] font-semibold transition-colors ${order === 'lidos' ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`}>Mais lidos</Link>
+                                <div className="mb-4 flex gap-6 overflow-x-auto border-b border-border" role="group" aria-label="Tipo de lista">
+                                    {[
+                                        { rotulo: 'Notícias', href: '/blog', ativa: !order && !tipo },
+                                        { rotulo: 'Guias de compra', href: '/blog?tipo=guias', ativa: tipo === 'guias' },
+                                        { rotulo: 'Mais lidos', href: '/blog?order=lidos', ativa: order === 'lidos' },
+                                    ].map(a => (
+                                        <Link key={a.href} href={a.href} aria-current={a.ativa ? 'page' : undefined} className={`flex h-11 shrink-0 items-center border-b-2 text-[14px] font-semibold transition-colors ${a.ativa ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`}>{a.rotulo}</Link>
+                                    ))}
                                 </div>
                             )}
                             <div className="flex items-center gap-3 mb-5">
                                 <Sparkles size={12} className="text-accent shrink-0" />
                                 <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60 shrink-0">
-                                    {isFiltered ? 'Artigos encontrados' : order === 'lidos' ? 'Mais lidos' : 'Últimos artigos'}
+                                    {isFiltered ? 'Artigos encontrados' : order === 'lidos' ? 'Mais lidos' : tipo === 'guias' ? 'Guias de compra' : 'Últimas notícias'}
                                 </p>
                                 <div className="flex-1 h-px bg-border" />
                                 {isFiltered && (

@@ -12,6 +12,7 @@ import { CATEGORIAS_COM_LOJA } from '@/lib/blog/categoriaLoja'
 import { carregarLojaDoTema } from '@/lib/blog/lojaDoTema'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { idsGuiaDeCompra } from '@/lib/blog/guiasDeCompra'
 
 async function carregarBase(): Promise<WPPost[]> {
     try {
@@ -24,7 +25,19 @@ async function carregarBase(): Promise<WPPost[]> {
     } catch { return [] }
 }
 
-export type SearchParams = Promise<{ category?: string; tag?: string; page?: string; search?: string; order?: string }>
+export type SearchParams = Promise<{ category?: string; tag?: string; page?: string; search?: string; order?: string; tipo?: string }>
+
+/**
+ * O que a lista traz. Sem filtro, a listagem é de notícias e artigos: os guias de compra (K-beauty,
+ * merch, comida) ficam de fora e têm aba própria (`?tipo=guias`). Com categoria, tag ou busca o
+ * leitor pediu um recorte, e nada é retirado.
+ */
+function consultaDaLista(sp: { category?: string; tag?: string; search?: string; tipo?: string }, idsGuias: number[]) {
+    const semFiltro = !sp.category && !sp.tag && !sp.search
+    if (semFiltro && sp.tipo === 'guias') return { tipo: 'guias' as const, extra: { categoryIds: idsGuias } }
+    if (semFiltro) return { tipo: undefined, extra: { categoriesExclude: idsGuias } }
+    return { tipo: undefined, extra: {} }
+}
 
 function buildBlogUrl(siteUrl: string, page: number, opts: { category?: string; tag?: string }) {
     return urlDaListagem('/blog', ['category', 'tag'], { category: opts.category, tag: opts.tag, page: page > 1 ? String(page) : undefined }, siteUrl)
@@ -34,6 +47,8 @@ export async function metadataBlogListagem({ searchParams }: { searchParams: Sea
     const sp = await searchParams
     const page = paginaDe(sp.page)
     const canonical = buildBlogUrl(SITE_URL, page, sp)
+    const idsGuias = idsGuiaDeCompra(await getCategories())
+    const consulta = consultaDaLista(sp, idsGuias)
     const title = sp.category
         ? `Blog — ${sp.category}${page > 1 ? ` — página ${page}` : ''}`
         : page > 1
@@ -41,8 +56,8 @@ export async function metadataBlogListagem({ searchParams }: { searchParams: Sea
             : 'Blog — K-Drama, K-Pop e Cultura Coreana'
 
     // Fetch só para saber totalPages (leve: 1 post, só cabeçalho X-WP-TotalPages)
-    const { totalPages } = await getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false })
-    const shouldNoIndex = Boolean(sp.search || sp.tag || sp.order) || paginaInvalida(page, totalPages)
+    const { totalPages } = await getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false, ...consulta.extra })
+    const shouldNoIndex = Boolean(sp.search || sp.tag || sp.order || consulta.tipo) || paginaInvalida(page, totalPages)
 
     return {
         title,
@@ -63,10 +78,12 @@ export async function BlogListagem({ searchParams }: { searchParams: SearchParam
 
     const semFiltro = !sp.category && !sp.tag && !sp.search
     const order = sp.order === 'lidos' ? 'lidos' : undefined
-    const [postsResult, categories, sidebarPosts, hubs, pool] = await Promise.all([
-        getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false }),
-        getCategories(),
-        getSidebarPosts(page, 13),
+    const categories = await getCategories()
+    const idsGuias = idsGuiaDeCompra(categories)
+    const consulta = consultaDaLista(sp, idsGuias)
+    const [postsResult, sidebarPosts, hubs, pool] = await Promise.all([
+        getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false, ...consulta.extra }),
+        getSidebarPosts(page, 13, semFiltro && !consulta.tipo ? idsGuias : []),
         getAllHubs(),
         // Base do destaque, dos conteúdos-chave e de "Mais lidos": todo o acervo (até 8 chamadas de 100, em cache); os guias
         // perenes costumam ser antigos e ficariam fora de uma janela só dos recentes. Falha aqui não derruba a lista.
@@ -93,7 +110,7 @@ export async function BlogListagem({ searchParams }: { searchParams: SearchParam
     const totalItens = lidos ? lidos.length : postsResult.total
     const paginas = lidos ? Math.max(1, Math.ceil(lidos.length / porPagina)) : postsResult.totalPages
     if (lidos && page > paginas) notFound()
-    const inicio = semFiltro && page === 1 && !order
+    const inicio = semFiltro && page === 1 && !order && !consulta.tipo
     const comImagem = pool.filter(p => p.featured_image_url)
     const candidatos = inicio ? candidatosDestaque(comImagem, new Date(), 3) : []
     // O que já é candidato a destaque não repete em "Comece por aqui".
@@ -121,6 +138,7 @@ export async function BlogListagem({ searchParams }: { searchParams: SearchParam
             sidebarPosts={sidebarPosts}
             guias={guias}
             order={order}
+            tipo={consulta.tipo}
             destaques={candidatos}
             emAlta={inicio ? candidatosDestaque(pool, new Date(), 8).filter(p => !idsCandidatos.has(p.id)).slice(0, 4) : []}
             perenes={inicio ? escolherPerenes(pool.filter(p => !idsCandidatos.has(p.id)), 4, new Date(), categories.filter(c => c.slug === 'noticias-k-pop').map(c => c.id)) : []}

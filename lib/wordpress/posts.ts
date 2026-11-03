@@ -7,6 +7,10 @@ export type PostsQuery = {
     perPage?: number
     category?: string   // slug da categoria
     categoryId?: number // ID direto (sem lookup)
+    /** Vários ids (a REST faz OU entre eles). */
+    categoryIds?: number[]
+    /** Tira posts dessas categorias (`categories_exclude` da REST). */
+    categoriesExclude?: number[]
     tag?: string        // slug da tag
     search?: string
     orderby?: 'date' | 'modified' | 'title' | 'menu_order'
@@ -28,7 +32,7 @@ export type PostsQuery = {
 }
 
 export async function getPosts(query: PostsQuery = {}) {
-    const { page = 1, perPage = 12, category, categoryId, tag, search, orderby = 'date', order = 'desc', slug, excludeId, excludeIds, offset, includeIds, mentionsType, mentionsSlug, includeContent = true, lang } = query
+    const { page = 1, perPage = 12, category, categoryId, categoryIds, categoriesExclude, tag, search, orderby = 'date', order = 'desc', slug, excludeId, excludeIds, offset, includeIds, mentionsType, mentionsSlug, includeContent = true, lang } = query
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage, orderby, order, status: 'publish',
         _fields: includeContent
@@ -42,12 +46,15 @@ export async function getPosts(query: PostsQuery = {}) {
         oc_mentions_type: mentionsType ?? undefined,
         oc_mentions_slug: mentionsType ? mentionsSlug : undefined,
     }
-    if (categoryId) {
+    if (categoryIds?.length) {
+        params.categories = categoryIds.join(',')
+    } else if (categoryId) {
         params.categories = categoryId
     } else if (category) {
         const cats = await wpBuscarOpcional<WPTerm[]>(`/wp/v2/categories${buildParams({ slug: category, per_page: 1 })}`, { revalidate: 3600 })
         if (cats[0]) params.categories = cats[0].id
     }
+    if (categoriesExclude?.length) params.categories_exclude = categoriesExclude.join(',')
     if (tag) {
         const tags = await wpBuscarOpcional<WPTerm[]>(`/wp/v2/tags${buildParams({ slug: tag, per_page: 1 })}`, { revalidate: 3600 })
         if (tags[0]) params.tags = tags[0].id
@@ -145,9 +152,9 @@ export async function getRelatedPosts(post: WPPost, limit = 4): Promise<WPPost[]
  * arquivo" promete. Na última página o offset ultrapassa o total, a resposta
  * vem vazia e o bloco simplesmente não aparece.
  */
-export async function getSidebarPosts(currentPage = 1, perPage = 13) {
+export async function getSidebarPosts(currentPage = 1, perPage = 13, categoriesExclude: number[] = []) {
     return wpBuscarOpcional<WPPost[]>(
-        `/wp/v2/posts${buildParams({ per_page: 5, offset: currentPage * perPage, status: 'publish', orderby: 'date', order: 'desc', _fields: 'id,slug,title,date,acf,featured_image_url,categories' })}`,
+        `/wp/v2/posts${buildParams({ per_page: 5, offset: currentPage * perPage, status: 'publish', orderby: 'date', order: 'desc', categories_exclude: categoriesExclude.length ? categoriesExclude.join(',') : undefined, _fields: 'id,slug,title,date,acf,featured_image_url,categories' })}`,
         { revalidate: 300, tags: [WP_CACHE_TAGS.posts] },
     )
 }
