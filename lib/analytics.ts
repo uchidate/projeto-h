@@ -556,8 +556,13 @@ export function trackFiltroListagem(params: { listagem: string; filtros: string;
  * Vitrine de produtos que entrou na tela (uma vez por montagem). Dá o denominador do CTR por
  * produto: sem impressão, o produto mais exibido sempre parece o melhor.
  */
-export function trackVitrineVista(params: { contexto: string; produtoIds: number[] }) {
-    enviar('vitrine_view', { click_context: params.contexto, product_ids: params.produtoIds.join(',') })
+export function trackVitrineVista(params: { contexto: string; produtoIds: number[]; descobertaIds?: number[] }) {
+    // `discovery_ids` só vai quando o slot de descoberta apareceu: separa o CTR dele do resto da vitrine.
+    enviar('vitrine_view', {
+        click_context: params.contexto,
+        product_ids: params.produtoIds.join(','),
+        ...(params.descobertaIds?.length ? { discovery_ids: params.descobertaIds.join(',') } : {}),
+    })
 }
 
 /**
@@ -565,10 +570,12 @@ export function trackVitrineVista(params: { contexto: string; produtoIds: number
  * página/vitrine onde apareceu (ex.: "artista:jisoo-kim", "loja"), pra medir
  * relevância por página e não só popularidade global.
  */
-export function trackProductClick(params: { productId: number; store: string; contexto: string }) {
+export function trackProductClick(params: { productId: number; store: string; contexto: string; descoberta?: boolean }) {
     enviar('product_click', {
         product_id: params.productId,
         product_store: params.store,
         click_context: params.contexto,
+        // `click_slot` só vai no clique do slot de descoberta (produto que o ranking ainda não leu).
+        ...(params.descoberta ? { click_slot: 'descoberta' } : {}),
     })
 }
