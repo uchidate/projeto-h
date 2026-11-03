@@ -67,6 +67,9 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
     const categoriasChip = currentCategory && !maisUsadas.some(c => c.slug === currentCategory)
         ? [...maisUsadas.slice(0, 4), ...categories.filter(c => c.slug === currentCategory)]
         : maisUsadas
+    // A lateral lista só o que os chips do topo não mostram: antes repetia as mesmas categorias, com contagem.
+    const idsNosChips = new Set(categoriasChip.map(c => c.id))
+    const categoriasForaDosChips = categories.filter(c => c.slug !== 'uncategorized' && !idsNosChips.has(c.id))
     // O destaque padrão é o primeiro candidato (não mais o artigo mais novo); os demais cabem na grade normalmente.
     const hero = destaques[0] ?? posts[0]
     const showHero = !isFiltered && currentPage === 1 && !order && !!hero
@@ -168,8 +171,13 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                             <h2 className="font-serif text-[26px] font-semibold leading-tight sm:text-[32px]">Comece por aqui</h2>
                             <p className="mt-1 text-[14px] text-muted">Os guias que continuam sendo lidos, meses depois de publicados</p>
                         </div>
-                        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            {perenes.slice(0, 4).map(p => <BlogGuiaCard key={p.id} post={p} categoryMap={categoryMap} />)}
+                        {/* No celular os 4 cards empilhados passavam de 1.900 px de rolagem; viram uma faixa deslizável. */}
+                        <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 items-start gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+                            {perenes.slice(0, 4).map(p => (
+                                <div key={p.id} className="flex w-[78%] shrink-0 snap-start flex-col sm:w-auto">
+                                    <BlogGuiaCard post={p} categoryMap={categoryMap} />
+                                </div>
+                            ))}
                         </div>
                     </section>
                 )}
@@ -317,7 +325,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                                 </div>
                             )}
                             <div className="mt-8">
-                                <BlogSidebar recentPosts={sidebarPosts} categories={categories} currentCategory={currentCategory} />
+                                <BlogSidebar recentPosts={sidebarPosts} categories={categoriasForaDosChips} currentCategory={currentCategory} />
                             </div>
                         </aside>
                     </div>
