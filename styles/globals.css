@@ -942,7 +942,9 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
    no hover engrossa. WCAG 1.4.1 e 1.4.3. */
 .wp-article-content .prose a:not(sup.ref a),
 .wp-article-content p a:not(sup.ref a),
-.wp-article-content li a:not(sup.ref a) {
+.wp-article-content li a:not(sup.ref a),
+.profile-prose :is(p, li) a:not(sup.ref a),
+.link-prosa :is(p, li) a:not(sup.ref a) {
   color: color-mix(in oklab, var(--color-accent) 50%, var(--color-fg));
   font-weight: 600;
   text-decoration: none;
@@ -954,7 +956,9 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
 }
 .wp-article-content .prose a:not(sup.ref a):hover,
 .wp-article-content p a:not(sup.ref a):hover,
-.wp-article-content li a:not(sup.ref a):hover {
+.wp-article-content li a:not(sup.ref a):hover,
+.profile-prose :is(p, li) a:not(sup.ref a):hover,
+.link-prosa :is(p, li) a:not(sup.ref a):hover {
   background-size: 100% 2px;
 }
 

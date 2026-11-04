@@ -169,10 +169,10 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
 
                         <section id="dossie" className={ANCORA}>
                             <BlockHeader title={t('ui.synopsis')} eyebrow={t('ui.dossier')} tone="muted" size="lg" />
-                            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-black prose-a:text-accent prose-a:no-underline prose-a:hover:underline"
+                            <div className="link-prosa prose prose-lg dark:prose-invert max-w-none prose-headings:font-black prose-a:text-accent prose-a:no-underline prose-a:hover:underline"
                                 dangerouslySetInnerHTML={{ __html: contentBefore }} />
                             {contentAfter && (
-                                <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-black prose-a:text-accent prose-a:no-underline prose-a:hover:underline"
+                                <div className="link-prosa prose prose-lg dark:prose-invert max-w-none prose-headings:font-black prose-a:text-accent prose-a:no-underline prose-a:hover:underline"
                                     dangerouslySetInnerHTML={{ __html: contentAfter }} />
                             )}
                         </section>
