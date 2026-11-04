@@ -31,6 +31,24 @@ describe('rotas migradas para a árvore única', () => {
         expect(servemPt.filter((n) => !registradas.includes(n))).toEqual([])
     })
 
+    it('fichas pré-geradas devolvem { locale, ... } completo (senão o Next desiste de pré-gerar todos os slugs)', () => {
+        const base = join(RAIZ, 'app', '(intl)', '[locale]')
+        const ruins: string[] = []
+        const varrer = (dir: string) => {
+            for (const d of readdirSync(dir, { withFileTypes: true })) {
+                if (!d.isDirectory()) continue
+                const arquivo = join(dir, d.name, 'page.tsx')
+                if (d.name.startsWith('[') && d.name !== '[locale]' && existsSync(arquivo)) {
+                    const texto = readFileSync(arquivo, 'utf8')
+                    if (texto.includes('servePt: true') && /generateStaticParams/.test(texto) && !texto.includes('locale: DEFAULT_LOCALE')) ruins.push(arquivo.replace(RAIZ, ''))
+                }
+                varrer(join(dir, d.name))
+            }
+        }
+        varrer(base)
+        expect(ruins).toEqual([])
+    })
+
     it('não repete rota', () => {
         expect(new Set(ROTAS_MIGRADAS.map((r) => r.pt)).size).toBe(ROTAS_MIGRADAS.length)
     })

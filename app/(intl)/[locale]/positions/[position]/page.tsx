@@ -11,10 +11,12 @@ export const revalidate = 1800
 
 type Params = Promise<{ locale: string; position: string }>
 
-// Só o português é pré-gerado; os outros idiomas renderizam sob demanda com ISR.
-export async function generateStaticParams({ params }: { params: { locale: string } }) {
-    if (params.locale !== DEFAULT_LOCALE) return []
-    return VALID_POSITIONS.map(position => ({ position }))
+// Pré-geração só do português. O filho devolve SEMPRE `{ locale, slug }` completos: se devolvesse
+// vazio para `en`, o Next repassaria `{ locale: 'en' }` sem `slug` e, por haver um conjunto
+// incompleto, desistiria de pré-gerar TODOS os slugs (o build caía de 1005 para 639 páginas).
+// Os outros idiomas renderizam sob demanda com ISR; só itens com tradução publicada têm página (D5-b).
+export async function generateStaticParams() {
+    return VALID_POSITIONS.map(position => ({ locale: DEFAULT_LOCALE, position }))
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
