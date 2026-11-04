@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { href as rota } from '@/lib/i18n/routes'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { formatNumber } from '@/lib/i18n/format'
 import { labelsFor } from '@/lib/i18n/labels'
 import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
 import type { WPArtist, WPGroup, WPProduction } from '@/lib/wordpress/types'
@@ -68,7 +69,7 @@ export async function HomePopulares({ artistas, grupos, producoes, hoje, locale 
     const t = await getTranslations({ locale, namespace: 'home.populares' })
     const tt = await getTranslations({ locale, namespace: 'home.tipoDeGrupo' })
     const labels = labelsFor(locale)
-    const numero = (n: number) => n.toLocaleString(locale === 'en' ? 'en-US' : 'pt-BR', { maximumFractionDigits: 1 })
+    const numero = (n: number) => formatNumber(n, { maximumFractionDigits: 1 }, locale)
 
     const linhasArtistas: Linha[] = [...artistas].filter(a => (a.acf?.trending_score ?? 0) > 0).sort((a, b) => (b.acf?.trending_score ?? 0) - (a.acf?.trending_score ?? 0)).slice(0, 5).map(a => {
         const acf = a.acf ?? {}

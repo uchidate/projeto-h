@@ -1,11 +1,13 @@
 import { tipoDePagina } from '@/lib/tipoDePagina'
+import { ACTIVE_LOCALES } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import { classeDaVisita } from '@/lib/visita'
 
 /**
  * Rotas onde o Umami não carrega nem conta nada. Prefixo, não igualdade: cobre
  * subrotas (`/cadastro/etapa-2`). Ver o porquê no cabeçalho de UmamiScript.
  */
-const ROTAS_SEM_MEDICAO = ['/entrar', '/cadastro', '/en/sign-in', '/en/sign-up']
+const ROTAS_SEM_MEDICAO = ACTIVE_LOCALES.flatMap((locale) => [href('login', undefined, locale), href('signup', undefined, locale)])
 
 export function rotaSemMedicao(caminho: string): boolean {
     return ROTAS_SEM_MEDICAO.some((r) => caminho === r || caminho.startsWith(`${r}/`))

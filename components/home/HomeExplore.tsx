@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { postLink } from '@/components/home/postLink'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { formatNumber } from '@/lib/i18n/format'
 import type { CartaoExplore } from '@/lib/home/explore'
 import { getWPImage, stripHtml } from '@/lib/utils'
 
@@ -39,7 +40,7 @@ export async function HomeExplore({ cartoes, locale = DEFAULT_LOCALE }: { cartoe
                             </Link>
                             <div className="flex flex-1 flex-col px-3 pb-3 pt-2.5">
                                 <p className="flex items-baseline gap-1.5">
-                                    <span className="text-[28px] font-black leading-none" style={{ color: c.cor }}>{c.total.toLocaleString(locale === 'en' ? 'en-US' : 'pt-BR')}</span>
+                                    <span className="text-[28px] font-black leading-none" style={{ color: c.cor }}>{formatNumber(c.total, undefined, locale)}</span>
                                     <span className={`${MONO} text-[10px] text-muted`}>{t(c.unidade)}</span>
                                 </p>
                                 {c.ultimo ? (

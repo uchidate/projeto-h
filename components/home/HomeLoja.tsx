@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { HomeLojaCard } from '@/components/home/HomeLojaCard'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { formatNumber } from '@/lib/i18n/format'
 import { vendidos } from '@/lib/home/mais-vendidos'
 import { quedaDePreco, type StoreProduct } from '@/lib/wordpress/store'
 
@@ -9,7 +10,7 @@ import { quedaDePreco, type StoreProduct } from '@/lib/wordpress/store'
 export async function HomeLoja({ produtos, locale = DEFAULT_LOCALE }: { produtos: StoreProduct[]; locale?: Locale }) {
     if (produtos.length === 0) return null
     const t = await getTranslations({ locale, namespace: 'home.loja' })
-    const numero = (n: number) => n.toLocaleString(locale === 'en' ? 'en-US' : 'pt-BR')
+    const numero = (n: number) => formatNumber(n, undefined, locale)
     return (
         <section aria-label={t('titulo')} className="bg-[#ff246e] px-4 py-6 text-white sm:px-6 lg:px-5">
             <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">

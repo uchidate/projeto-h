@@ -157,7 +157,7 @@ export function buildGroupProfileEntries({
                 <GroupSectionHeading id="membros-titulo" eyebrow={label || undefined} title={totalEx > 0 ? t('blocks.groupMembersTitleWithFormer', { active: activeMembers.length, former: totalEx }) : t('blocks.groupMembersTitle', { count: members.length })} accent={accent} />
                 {/* Resposta direta no topo: é o formato que o Google extrai para "membros do X". */}
                 {linhasAtivos.length > 0 && <p className="mb-6 max-w-[62ch] text-[0.98rem] leading-7 text-foreground-subtle">
-                    {t('blocks.membersSummary', { group: name, count: linhasAtivos.length, names: listaDeNomes(linhasAtivos.map(l => l.nome), locale === 'en' ? 'and' : 'e') })}
+                    {t('blocks.membersSummary', { group: name, count: linhasAtivos.length, names: listaDeNomes(linhasAtivos.map(l => l.nome), t('blocks.listConjunction')) })}
                 </p>}
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">{activeMembers.map(member => <GroupMemberCard key={member.id} member={toMemberSummary(member)} accent={accent} positions={memberPositions[member.slug]} />)}</div>
                 <GroupMembersTable groupName={name} linhas={linhasAtivos} />

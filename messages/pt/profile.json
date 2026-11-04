@@ -157,6 +157,7 @@
     "groupMembersTitle": "Integrantes · {count}",
     "groupMembersTitleWithFormer": "Integrantes · {active} ativos · {former} ex",
     "membersSummary": "{group} tem {count} integrantes: {names}.",
+    "listConjunction": "e",
     "membersTable": {
       "caption": "Idade e posição dos integrantes do {group}",
       "member": "Integrante",
