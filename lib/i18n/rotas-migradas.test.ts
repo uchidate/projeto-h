@@ -21,7 +21,7 @@ describe('rotas migradas para a árvore única', () => {
 
     it.each(ROTAS_MIGRADAS)('$pt: bate com o registro de caminhos por idioma', ({ pt, interno }) => {
         // O caminho em inglês de ROUTES é o nome da pasta; o em português é a URL pública.
-        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups'] as const
+        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists'] as const
         const achada = rotas.find((r) => href(r, undefined, 'pt') === pt)
         expect(achada, `${pt} não está em ROUTES`).toBeDefined()
         expect(href(achada!, undefined, 'en')).toBe(`/en${interno}`)
