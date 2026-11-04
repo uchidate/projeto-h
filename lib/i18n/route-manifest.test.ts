@@ -26,7 +26,7 @@ const ehInterna = (caminho: string) => caminho.split('/').includes('filtrado')
 /** Páginas de `app/(intl)/[locale]`, trazidas ao caminho em português via `ROUTES` (`/sign-in` → `/entrar`). */
 const paginasEmIntl = () => {
     const dePara = caminhoPtDe('en')
-    return paginasDe('(intl)/[locale]').map(c => dePara[c] ?? c)
+    return paginasDe('(intl)/[locale]').filter(c => !ehInterna(c)).map(c => dePara[c] ?? c)
 }
 
 /**
