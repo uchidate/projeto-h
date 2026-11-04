@@ -399,7 +399,7 @@ export function CalendarPage({ events, todayStr }: Props) {
                 </div>
                 <div className="relative sm:ml-auto sm:w-64">
                     <Search size={14} className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-muted" />
-                    <input type="search" placeholder="Buscar idol ou grupo…"
+                    <input type="search" placeholder="Buscar idol ou grupo…" aria-label="Buscar idol ou grupo"
                         value={search} onChange={e => setSearch(e.target.value)}
                         className="h-9 w-full border-b border-border bg-transparent pl-6 pr-7 text-[13px] placeholder:text-muted focus:border-accent focus:outline-hidden" />
                     {search && (
