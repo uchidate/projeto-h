@@ -153,9 +153,8 @@ const nextConfig = {
         // Mesmo desvio nas listagens: sem query a página é estática (ISR); com
         // filtro, paginação ou busca vai para <lista>/filtrado, que lê `searchParams`.
         // As chaves vêm do tipo SearchParams de app/(site)/<lista>/<Lista>Listagem.tsx.
-        // `groups` e `artists` já migraram: seus desvios saem de lib/i18n/rotas-migradas.mjs.
+        // `groups`, `artists` e `productions` já migraram: seus desvios saem de lib/i18n/rotas-migradas.mjs.
         const chavesDasListagens = {
-            productions: ['genre', 'platform', 'type', 'order', 'page', 'search'],
             blog: ['category', 'tag', 'page', 'search', 'order', 'tipo'],
             loja: ['categoria', 'loja', 'busca', 'ofertas'],
             comidas: ['search', 'page', 'category', 'vegetarian', 'occasion', 'season', 'maxSpicy', 'region'],
