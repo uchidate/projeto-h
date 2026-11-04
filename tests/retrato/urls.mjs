@@ -62,6 +62,7 @@ export const COM_FILTRO = [
     '/blog?page=2', '/blog?category=noticias', '/blog?search=bts', '/blog?tipo=guia', '/en/blog?page=2',
     '/comidas?search=kimchi', '/comidas?category=soup_stew', '/en/foods?search=kimchi', '/guias?kind=doramas', '/en/guides?kind=doramas',
     '/fandoms?search=bts', '/empresas?industry=technology', '/empresas?page=2', '/agencies?type=big4', '/en/fandoms?search=bts', '/en/companies?page=2',
+    '/search?q=bts', '/en/search?q=bts', '/quiz?sub=facil', '/artists/birthdays?month=11',
 ]
 
 /** Só em português (sem versão em outro idioma por decisão do manifesto) e casos de erro. */

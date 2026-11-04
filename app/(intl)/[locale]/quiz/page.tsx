@@ -3,7 +3,7 @@ import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
-import QuizPage, { generateMetadata as metadataEmPortugues } from '@/app/(site)/quiz/page'
+import QuizPage, { generateMetadata as metadataEmPortugues } from './QuizIndex'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 export const revalidate = 3600
@@ -11,15 +11,18 @@ export const revalidate = 3600
 type Params = Promise<{ locale: string }>
 type SearchParams = Parameters<typeof QuizPage>[0]['searchParams']
 
+/** Português: a página. Outros idiomas: a mesma página com o aviso de que ainda não há tradução. */
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
-    if (!idiomaValido(locale)) return {}
-    return comoFallback(await metadataEmPortugues())
+    if (!idiomaValido(locale, { servePt: true })) return {}
+    const metadata = await metadataEmPortugues()
+    return locale === DEFAULT_LOCALE ? metadata : comoFallback(metadata)
 }
 
-export default async function IntlQuizPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
+export default async function Page({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
     const { locale } = await params
-    entrarNaPagina(locale)
+    entrarNaPagina(locale, { servePt: true })
+    if (locale === DEFAULT_LOCALE) return <QuizPage searchParams={searchParams} />
     return (
         <>
             <AvisoSemTraducao locale={locale} hrefOriginal={href('quiz', undefined, DEFAULT_LOCALE)} />

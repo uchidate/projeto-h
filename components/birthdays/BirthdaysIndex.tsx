@@ -14,7 +14,6 @@ import { getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 
-export const revalidate = 3600
 
 const MONTH_NAMES = [
     'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
