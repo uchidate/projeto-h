@@ -5,7 +5,6 @@ import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { POSITION_LABELS } from '@/lib/constants/positions'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
-export const revalidate = 3600
 
 const POSITION_DESCRIPTIONS: Record<string, string> = {
     leader: 'porta-voz oficial do grupo, escolhido pela agência',
