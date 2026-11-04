@@ -50,6 +50,15 @@ export const PARES = [
     { pt: '/cadastro', en: '/en/sign-up' },
 ]
 
+/**
+ * Listagens com query: exercitam o desvio `<lista>/filtrado` (rewrite). Inclui o filtro que canonicaliza
+ * para a página estática de tipo, a busca e a paginação, em PT e EN.
+ */
+export const COM_FILTRO = [
+    '/groups?page=2', '/groups?type=girl_group', '/groups?search=bts', '/groups?generation=4&active=true',
+    '/en/groups?page=2',
+]
+
 /** Só em português (sem versão em outro idioma por decisão do manifesto) e casos de erro. */
 export const SO_PT = ['/loja', '/privacidade', '/termos', '/merch']
 
@@ -59,6 +68,7 @@ export const DEVEM_DAR_404 = ['/pt', '/pt/about', '/pt/groups/bts', '/en/pagina-
 export function todasAsUrls() {
     const urls = new Set(SO_PT)
     for (const par of PARES) { urls.add(par.pt); urls.add(par.en) }
+    for (const u of COM_FILTRO) urls.add(u)
     for (const u of DEVEM_DAR_404) urls.add(u)
     return [...urls]
 }
