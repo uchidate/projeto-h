@@ -29,7 +29,11 @@ const paginasEmIntl = () => {
     return paginasDe('(intl)/[locale]').map(c => dePara[c] ?? c)
 }
 
-const paginasPt = paginasDe('(site)').filter(c => !ehInterna(c))
+/**
+ * Páginas públicas em português: as que ainda vivem em `app/(site)` somadas às já migradas para
+ * `app/(intl)/[locale]` (servidas sem prefixo por rewrite). Some da primeira à medida que a migração avança.
+ */
+const paginasPt = [...new Set([...paginasDe('(site)').filter(c => !ehInterna(c)), ...paginasEmIntl()])].sort()
 
 describe('manifesto de rotas (i18n)', () => {
     it('toda página pública em português tem uma decisão de idioma', () => {
@@ -39,7 +43,7 @@ describe('manifesto de rotas (i18n)', () => {
 
     it('não há entrada do manifesto sem página correspondente', () => {
         const orfas = Object.keys(MANIFESTO_DE_ROTAS).filter(c => !paginasPt.includes(c))
-        expect(orfas, `Entradas sem página em app/(site): ${orfas.join(', ')}`).toEqual([])
+        expect(orfas, `Entradas sem página em app/(site) nem em app/(intl): ${orfas.join(', ')}`).toEqual([])
     })
 
     it('rota marcada como pronta ou parcial existe em app/(intl)/[locale]', () => {

@@ -1,15 +1,17 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setPageLocale } from '@/lib/i18n/request-locale'
-import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
+import { metadataDoLayout } from '@/lib/i18n/metadata-layout'
 import { SiteShell } from '@/components/layout/SiteShell'
-import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, isActiveLocale } from '@/lib/i18n/config'
+import { ACTIVE_LOCALES, isActiveLocale } from '@/lib/i18n/config'
 
 /**
- * Root layout dos idiomas além do português — ver D2 em docs/I18N-ARQUITETURA.md.
+ * Layout de todos os idiomas — ver D2 em docs/I18N-ARQUITETURA.md.
  *
- * O português não passa por aqui: vive em `app/(site)` sem prefixo. Por isso
- * `/pt/...` e idiomas desligados em `ACTIVE_LOCALES` respondem 404.
+ * Em migração: as rotas já movidas para cá servem o português SEM prefixo por um rewrite em
+ * `next.config.mjs` (`/about` -> `/pt/about`); o `/pt/...` digitado direto responde 404 no `proxy.ts`.
+ * Idiomas desligados em `ACTIVE_LOCALES` respondem 404. As rotas ainda não movidas continuam em
+ * `app/(site)` e recusam `pt` por conta própria.
  */
 // Sem `dynamicParams = false` aqui: a config é herdada pelas rotas filhas e,
 // como nenhuma ficha é pré-gerada, toda ficha em outro idioma dava 404
@@ -17,7 +19,7 @@ import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, isActiveLocale } from '@/l
 // consegue sobrescrever. Idioma desligado continua 404 pelo `notFound()` abaixo.
 
 export function generateStaticParams() {
-    return ACTIVE_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE).map((locale) => ({ locale }))
+    return ACTIVE_LOCALES.map((locale) => ({ locale }))
 }
 
 type Params = Promise<{ locale: string }>
@@ -25,17 +27,12 @@ type Params = Promise<{ locale: string }>
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
     if (!isActiveLocale(locale)) return {}
-    return {
-        metadataBase: new URL(SITE_URL),
-        title: { template: `%s | ${SITE_NAME}`, default: SITE_NAME },
-        manifest: '/manifest.webmanifest',
-        openGraph: { siteName: SITE_NAME, locale: LOCALE_META[locale].ogLocale, type: 'website' },
-    }
+    return metadataDoLayout(locale)
 }
 
 export default async function IntlLayout({ children, params }: { children: React.ReactNode; params: Params }) {
     const { locale } = await params
-    if (locale === DEFAULT_LOCALE || !isActiveLocale(locale)) notFound()
+    if (!isActiveLocale(locale)) notFound()
     setPageLocale(locale)
     return <SiteShell locale={locale}>{children}</SiteShell>
 }

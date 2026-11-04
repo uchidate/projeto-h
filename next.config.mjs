@@ -168,7 +168,14 @@ const nextConfig = {
             })),
         )
         return {
-            beforeFiles: [...desviosGuias, ...desviosListagens],
+            beforeFiles: [
+                // Rotas já migradas para `app/(intl)/[locale]`: o português continua sem prefixo na URL pública e
+                // é servido internamente como `/pt/...`. O `/pt/...` digitado direto responde 404 no proxy.ts.
+                // Spike da F0 (plano de i18n): só `/about`. Vira lista gerada do registro de rotas na F1.
+                { source: '/about', destination: '/pt/about' },
+                ...desviosGuias,
+                ...desviosListagens,
+            ],
             afterFiles: [
             // O IndexNow exige o arquivo de verificação na raiz, com o nome da
             // própria chave. O padrão é restrito ao alfabeto da especificação e a

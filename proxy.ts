@@ -7,6 +7,12 @@ const PROTECTED_PREFIXES = ['/dashboard', '/perfil', '/minhas-listas']
 
 const proxy = withAuth(
     async function protegerRota(req) {
+        // `/pt/...` não é URL pública (o português não tem prefixo; D3 do plano de i18n). Como as rotas migradas
+        // existem internamente sob `/pt`, o 404 é daqui: reescreve para um idioma que não existe, que cai no mesmo
+        // 404 de qualquer `/xx/...`. Trocar por um redirecionamento 308 é decisão futura, separada.
+        if (/^\/pt(\/|$)/.test(req.nextUrl.pathname)) {
+            return NextResponse.rewrite(new URL(`/xx${req.nextUrl.pathname.slice(3)}`, req.url))
+        }
         // 410 para seções que saíram do site (`/news/<id>` e `/admin/…` do sistema anterior).
         if (secaoFoiRemovida(req.nextUrl.pathname)) {
             return new NextResponse(null, { status: 410 })
