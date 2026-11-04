@@ -2770,3 +2770,14 @@ html[data-player-dock] .oc-back-to-top { bottom: calc(var(--bottom-nav-h, 62px) 
 
 /* Home: o fundo cinza vai até o rodapé, sem a faixa clara de margem entre a loja e o rodapé. */
 body:has([data-bloco="home-hero"]) footer[data-bloco="rodape"] { margin-top: 0; }
+
+/* Campos de formulário em telas de toque: o Safari do iPhone amplia a página ao focar um campo com fonte < 16px e não
+   volta sozinho. Estavam de 12 a 15px (só /search tinha 16). Fora de @layer para vencer os text-[13px] das utilities;
+   no desktop (ponteiro fino) nada muda. */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type='checkbox'], [type='radio'], [type='range'], [type='color'], [type='file'], [type='submit'], [type='button'], [type='hidden']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

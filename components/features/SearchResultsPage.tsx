@@ -115,6 +115,7 @@ export function SearchResultsPage({ query, results, suggestions = [] }: Props) {
                         value={value}
                         onChange={e => { setValue(e.target.value); navigate(e.target.value) }}
                         placeholder="Buscar artistas, doramas, artigos…"
+                        aria-label="Buscar artistas, doramas e artigos"
                         autoFocus
                         className="w-full h-12 pl-11 pr-10 border border-border bg-background text-[16px] text-foreground placeholder:text-muted focus:border-accent focus:outline-hidden transition-colors"
                     />

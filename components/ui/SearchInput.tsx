@@ -63,6 +63,9 @@ export function SearchInput({ placeholder = 'Buscar...', param = 'search', curre
                 value={value}
                 onChange={handleChange}
                 placeholder={placeholder}
+                aria-label={placeholder}
+                enterKeyHint="search"
+                autoComplete="off"
                 className="min-w-0 flex-1 appearance-none input-embutido border-0 bg-transparent p-0 text-[13px] text-foreground outline-hidden placeholder:text-muted focus:outline-hidden focus:ring-0 focus-visible:outline-hidden"
             />
             {value && (
