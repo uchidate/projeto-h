@@ -13,7 +13,6 @@ import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
-export const revalidate = 300
 
 export const metadata: Metadata = {
     title: 'Em Alta no K-Pop',

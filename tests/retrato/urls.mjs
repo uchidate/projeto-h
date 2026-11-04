@@ -60,6 +60,7 @@ export const COM_FILTRO = [
     '/artists?page=2', '/artists?search=iu', '/artists?role=singer', '/artists?letter=K', '/en/artists?page=2',
     '/productions?page=2', '/productions?search=love', '/productions?genre=romance', '/productions?type=series', '/en/productions?page=2',
     '/blog?page=2', '/blog?category=noticias', '/blog?search=bts', '/blog?tipo=guia', '/en/blog?page=2',
+    '/comidas?search=kimchi', '/comidas?category=soup_stew', '/en/foods?search=kimchi', '/guias?kind=doramas', '/en/guides?kind=doramas',
 ]
 
 /** Só em português (sem versão em outro idioma por decisão do manifesto) e casos de erro. */

@@ -148,15 +148,13 @@ const nextConfig = {
                 has: [{ type: 'query', key }],
                 destination: '/guias/:slug/filtrado',
             })),
-            { source: '/guias', has: [{ type: 'query', key: 'kind' }], destination: '/guias/filtrado' },
         ]
         // Mesmo desvio nas listagens: sem query a página é estática (ISR); com
         // filtro, paginação ou busca vai para <lista>/filtrado, que lê `searchParams`.
         // As chaves vêm do tipo SearchParams de app/(site)/<lista>/<Lista>Listagem.tsx.
-        // `groups`, `artists`, `productions` e `blog` já migraram: seus desvios saem de lib/i18n/rotas-migradas.mjs.
+        // `groups`, `artists`, `productions`, `blog`, `comidas` e `guias` (índice) já migraram: seus desvios saem de lib/i18n/rotas-migradas.mjs.
         const chavesDasListagens = {
             loja: ['categoria', 'loja', 'busca', 'ofertas'],
-            comidas: ['search', 'page', 'category', 'vegetarian', 'occasion', 'season', 'maxSpicy', 'region'],
         }
         const desviosListagens = Object.entries(chavesDasListagens).flatMap(([lista, chaves]) =>
             chaves.map(key => ({
