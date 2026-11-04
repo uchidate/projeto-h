@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { setPageLocale } from '@/lib/i18n/request-locale'
-import { isActiveLocale } from '@/lib/i18n/config'
 import { ArtistRoute, buildArtistMetadata } from '@/components/artists/ArtistRoute'
+import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 // 6h (era 600s). O `s-maxage` da borda vem daqui, e com 600s a cauda longa quase nunca
 // acertava o cache (3 de 40 páginas, 2026-09-24; miss custa 0,8 a 2,2s contra 0,2s).
@@ -21,13 +19,12 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale, slug } = await params
-    if (!isActiveLocale(locale)) return {}
+    if (!idiomaValido(locale)) return {}
     return buildArtistMetadata(slug, locale)
 }
 
 export default async function IntlArtistPage({ params }: { params: Params }) {
     const { locale, slug } = await params
-    if (!isActiveLocale(locale)) notFound()
-    setPageLocale(locale)
+    entrarNaPagina(locale)
     return <ArtistRoute slug={slug} locale={locale} />
 }

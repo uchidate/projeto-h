@@ -1,15 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { DEFAULT_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
-import { setPageLocale } from '@/lib/i18n/request-locale'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { HomeFrontPage } from '@/components/home/HomeFrontPage'
 import { IS_BUILD } from '@/lib/wordpress/config'
 import { carregarHome } from '@/lib/home/carregar-home'
 import { EntityGrid, fetchCatalog, type CatalogKind } from '@/components/features/LocalizedCatalog'
+import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 export const revalidate = 600
 
@@ -25,7 +24,7 @@ async function carregarSecoes(locale: Locale) {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
-    if (!isActiveLocale(locale) || locale === DEFAULT_LOCALE) return {}
+    if (!idiomaValido(locale)) return {}
     const t = await getTranslations({ locale, namespace: 'entity.home' })
     const url = `${SITE_URL}${href('home', undefined, locale)}`
     const vazia = (await carregarSecoes(locale)).length === 0
@@ -57,8 +56,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
  */
 export default async function IntlHomePage({ params }: { params: Params }) {
     const { locale } = await params
-    if (!isActiveLocale(locale) || locale === DEFAULT_LOCALE) notFound()
-    setPageLocale(locale)
+    entrarNaPagina(locale)
     const [t, tc, secoes, dados] = await Promise.all([
         getTranslations({ locale, namespace: 'entity.home' }),
         getTranslations({ locale, namespace: 'entity.catalog' }),
