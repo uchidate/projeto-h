@@ -4,6 +4,7 @@
 import { withSentryConfig } from '@sentry/nextjs/config'
 import createNextIntlPlugin from 'next-intl/plugin'
 import { SECURITY_HEADERS } from './lib/security/headers.mjs'
+import { rewritesDasRotasMigradas } from './lib/i18n/rotas-migradas.mjs'
 import { SITE_DOMAIN, WORDPRESS_HOST, UMAMI_ORIGIN, identidadeFaltando } from './lib/constants/identidade.mjs'
 
 // Build de producao sem a identidade do site configurada publicaria nome e
@@ -171,8 +172,8 @@ const nextConfig = {
             beforeFiles: [
                 // Rotas já migradas para `app/(intl)/[locale]`: o português continua sem prefixo na URL pública e
                 // é servido internamente como `/pt/...`. O `/pt/...` digitado direto responde 404 no proxy.ts.
-                // Spike da F0 (plano de i18n): só `/about`. Vira lista gerada do registro de rotas na F1.
-                { source: '/about', destination: '/pt/about' },
+                // Lista única em lib/i18n/rotas-migradas.mjs (conferida por teste contra o registro e os arquivos).
+                ...rewritesDasRotasMigradas(),
                 ...desviosGuias,
                 ...desviosListagens,
             ],
