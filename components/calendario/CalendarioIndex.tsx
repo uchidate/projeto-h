@@ -10,7 +10,6 @@ import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
-export const revalidate = 3600
 
 export const metadata: Metadata = {
     title: 'Calendário K-Pop',

@@ -6,7 +6,6 @@ import { FandomsPage } from '@/components/fandoms/FandomsPage'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 
-export const revalidate = 600
 
 type SearchParams = Promise<{ search?: string }>
 

@@ -3,23 +3,26 @@ import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
-import AgenciesPage, { generateMetadata as metadataEmPortugues } from '@/app/(site)/agencies/page'
+import AgenciesPage, { generateMetadata as metadataEmPortugues } from '@/components/agencies/AgenciesIndex'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 export const revalidate = 3600
 
 type Params = Promise<{ locale: string }>
-type SearchParams = Promise<Record<string, string | string[] | undefined>>
+type SearchParams = Parameters<typeof AgenciesPage>[0]['searchParams']
 
+/** Português: a página. Outros idiomas: a mesma página com o aviso de que ainda não há tradução. */
 export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: SearchParams }): Promise<Metadata> {
     const { locale } = await params
-    if (!idiomaValido(locale)) return {}
-    return comoFallback(await metadataEmPortugues({ searchParams }))
+    if (!idiomaValido(locale, { servePt: true })) return {}
+    const metadata = await metadataEmPortugues({ searchParams })
+    return locale === DEFAULT_LOCALE ? metadata : comoFallback(metadata)
 }
 
-export default async function IntlAgenciesPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
+export default async function Page({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
     const { locale } = await params
-    entrarNaPagina(locale)
+    entrarNaPagina(locale, { servePt: true })
+    if (locale === DEFAULT_LOCALE) return <AgenciesPage searchParams={searchParams} />
     return (
         <>
             <AvisoSemTraducao locale={locale} hrefOriginal={href('agencies', undefined, DEFAULT_LOCALE)} />

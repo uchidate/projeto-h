@@ -17,7 +17,6 @@ import type { WPArtist, WPGroup } from '@/lib/wordpress/types'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 
-export const revalidate = 3600
 
 const BIG4_SLUGS = new Set(['sm-entertainment', 'hybe', 'yg-entertainment', 'jyp-entertainment'])
 const AGENCY_DESCRIPTION = 'Conheça as principais agências de entretenimento coreanas — HYBE, SM, YG, JYP e muito mais.'

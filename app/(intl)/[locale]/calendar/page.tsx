@@ -3,22 +3,25 @@ import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
-import CalendarioPage, { metadata as metadataEmPortugues } from '@/app/(site)/calendario/page'
+import CalendarioPage, { metadata as metadataEmPortugues } from '@/components/calendario/CalendarioIndex'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 export const revalidate = 3600
 
 type Params = Promise<{ locale: string }>
 
+/** Português: a página. Outros idiomas: a mesma página com o aviso de que ainda não há tradução. */
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
-    if (!idiomaValido(locale)) return {}
-    return comoFallback(metadataEmPortugues)
+    if (!idiomaValido(locale, { servePt: true })) return {}
+    const metadata = metadataEmPortugues
+    return locale === DEFAULT_LOCALE ? metadata : comoFallback(metadata)
 }
 
-export default async function IntlCalendarPage({ params }: { params: Params }) {
+export default async function Page({ params }: { params: Params }) {
     const { locale } = await params
-    entrarNaPagina(locale)
+    entrarNaPagina(locale, { servePt: true })
+    if (locale === DEFAULT_LOCALE) return <CalendarioPage />
     return (
         <>
             <AvisoSemTraducao locale={locale} hrefOriginal={href('calendar', undefined, DEFAULT_LOCALE)} />

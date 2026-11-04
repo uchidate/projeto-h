@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { ROTAS_MIGRADAS, rewritesDasRotasMigradas } from './rotas-migradas.mjs'
@@ -8,6 +8,19 @@ const RAIZ = process.cwd()
 const pagina = (grupo: string, caminho: string) => join(RAIZ, 'app', grupo, caminho, 'page.tsx')
 
 describe('rotas migradas para a árvore única', () => {
+    it('toda página de (intl) que serve o português está registrada (senão /<rota> dá 404, sem rewrite para /pt/...)', () => {
+        const base = join(RAIZ, 'app', '(intl)', '[locale]')
+        const servemPt = readdirSync(base, { withFileTypes: true })
+            .filter((d) => d.isDirectory() && !d.name.startsWith('['))
+            .map((d) => d.name)
+            .filter((nome) => {
+                const arquivo = join(base, nome, 'page.tsx')
+                return existsSync(arquivo) && readFileSync(arquivo, 'utf8').includes('servePt: true')
+            })
+        const registradas = ROTAS_MIGRADAS.map((r) => r.interno.slice(1))
+        expect(servemPt.filter((n) => !registradas.includes(n))).toEqual([])
+    })
+
     it('não repete rota', () => {
         expect(new Set(ROTAS_MIGRADAS.map((r) => r.pt)).size).toBe(ROTAS_MIGRADAS.length)
     })
@@ -21,7 +34,7 @@ describe('rotas migradas para a árvore única', () => {
 
     it.each(ROTAS_MIGRADAS)('$pt: bate com o registro de caminhos por idioma', ({ pt, interno }) => {
         // O caminho em inglês de ROUTES é o nome da pasta; o em português é a URL pública.
-        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending'] as const
+        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending', 'agencies', 'companies', 'fandoms', 'calendar'] as const
         const achada = rotas.find((r) => href(r, undefined, 'pt') === pt)
         expect(achada, `${pt} não está em ROUTES`).toBeDefined()
         expect(href(achada!, undefined, 'en')).toBe(`/en${interno}`)
