@@ -6,7 +6,6 @@ import { SITE_URL } from '@/lib/constants/site'
 import { SearchResultsPage } from '@/components/features/SearchResultsPage'
 import type { SearchResult } from '@/lib/search/types'
 
-export const revalidate = 0
 
 type SearchParams = Promise<{ q?: string }>
 

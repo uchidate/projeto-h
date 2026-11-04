@@ -2,9 +2,8 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import type { QuizCategory } from '@/lib/wordpress/quiz'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
-import { QuizPageContent } from './quizPageContent'
+import { QuizPageContent } from '@/app/(site)/quiz/quizPageContent'
 
-export const revalidate = 3600
 
 const VALID_CATEGORIES = ['k-pop', 'k-drama', 'cultura', 'historia'] as QuizCategory[]
 
