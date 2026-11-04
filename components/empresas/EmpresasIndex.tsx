@@ -10,7 +10,6 @@ import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml } from '@/lib/utils'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
-export const revalidate = 600
 
 type SearchParams = Promise<{ search?: string; page?: string; industry?: string; chaebol?: string }>
 
