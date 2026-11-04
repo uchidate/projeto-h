@@ -1,7 +1,11 @@
 import type { Locale } from '@/lib/i18n/config'
 
 const DIA_MS = 86_400_000
-const PALAVRAS = { pt: { hoje: 'hoje', ontem: 'ontem' }, en: { hoje: 'today', ontem: 'yesterday' } } as const
+/** `Record<Locale, …>`: idioma novo sem estas palavras não compila. */
+const PALAVRAS: Record<Locale, { hoje: string; ontem: string }> = {
+    pt: { hoje: 'hoje', ontem: 'ontem' },
+    en: { hoje: 'today', ontem: 'yesterday' },
+}
 
 /** Dia civil (AAAA-MM-DD) de um instante, no fuso de Brasília. */
 function diaEmBrasilia(d: Date) {
@@ -12,7 +16,7 @@ function diaEmBrasilia(d: Date) {
 export function dataRelativa(iso: string, locale: Locale, agora = new Date()): string {
     const publicado = new Date(iso.length === 10 ? `${iso}T12:00:00-03:00` : iso.endsWith('Z') || /[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`)
     const dia = diaEmBrasilia(publicado)
-    const palavras = PALAVRAS[locale === 'en' ? 'en' : 'pt']
+    const palavras = PALAVRAS[locale]
     if (dia === diaEmBrasilia(agora)) return palavras.hoje
     if (dia === diaEmBrasilia(new Date(agora.getTime() - DIA_MS))) return palavras.ontem
     const [, mes, d] = dia.split('-')

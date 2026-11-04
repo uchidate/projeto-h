@@ -160,7 +160,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
                     href="#main-content"
                     className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[1000] focus:bg-foreground focus:px-4 focus:py-3 focus:text-[14px] focus:font-bold focus:text-background"
                 >
-                    {locale === 'en' ? 'Skip to content' : 'Pular para o conteúdo'}
+                    {messages.client.nav.skipToContent}
                 </a>
                 {/* Schema.org WebSite — sinaliza ao Google a estrutura do site */}
                 <JsonLd

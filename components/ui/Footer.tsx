@@ -4,6 +4,7 @@ import { BrandMark } from '@/components/ui/BrandMark'
 import { Rss } from 'lucide-react'
 import { IconInstagram } from '@/components/ui/SocialIcons'
 import { SITE_NAME } from '@/lib/constants/site'
+import { splitLocale } from '@/lib/i18n/config'
 import type { FooterColumn, SiteLink } from '@/lib/wordpress/site-settings'
 
 export type FooterLabels = {
@@ -20,7 +21,7 @@ export default function Footer({ columns, tagline, labels, mostSearched = [] }: 
     // Privacidade e Termos já ficam na linha de baixo; repeti-los numa coluna só duplica o link.
     const jaNaLinhaFinal = new Set(['/privacidade', '/termos', '/privacy', '/terms'])
     const colunas = columns
-        .map(col => ({ ...col, links: col.links.filter(link => !jaNaLinhaFinal.has(link.href.replace(/^\/en/, ''))) }))
+        .map(col => ({ ...col, links: col.links.filter(link => !jaNaLinhaFinal.has(splitLocale(link.href).path)) }))
         .filter(col => col.links.length > 0)
 
     return (

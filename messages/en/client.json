@@ -170,6 +170,7 @@
     "close": "Close ad"
   },
   "nav": {
+    "skipToContent": "Skip to content",
     "searchPlaceholder": "Search artists, groups, productions...",
     "shop": "Shop",
     "search": "Search",

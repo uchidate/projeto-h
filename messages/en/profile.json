@@ -156,6 +156,7 @@
     "groupManagementTitle": "Who manages the group",
     "groupMembersTitle": "Members · {count}",
     "membersSummary": "{group} has {count} members: {names}.",
+    "listConjunction": "and",
     "membersTable": {
       "caption": "Age and position of {group} members",
       "member": "Member",
