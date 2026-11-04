@@ -58,6 +58,7 @@ export const COM_FILTRO = [
     '/groups?page=2', '/groups?type=girl_group', '/groups?search=bts', '/groups?generation=4&active=true',
     '/en/groups?page=2',
     '/artists?page=2', '/artists?search=iu', '/artists?role=singer', '/artists?letter=K', '/en/artists?page=2',
+    '/productions?page=2', '/productions?search=love', '/productions?genre=romance', '/productions?type=series', '/en/productions?page=2',
 ]
 
 /** Só em português (sem versão em outro idioma por decisão do manifesto) e casos de erro. */
