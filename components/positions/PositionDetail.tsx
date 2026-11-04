@@ -9,16 +9,11 @@ import { notFound } from 'next/navigation'
 import { getGroupsByPosition } from '@/lib/wordpress/groups'
 import { getArtistsByIds } from '@/lib/wordpress/artists'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
-import { POSITION_LABELS, VALID_POSITIONS, isValidPosition } from '@/lib/constants/positions'
+import { POSITION_LABELS, isValidPosition } from '@/lib/constants/positions'
 import { getWPImage, stripHtml } from '@/lib/utils'
 
-export const revalidate = 1800
 
 type Params = Promise<{ position: string }>
-
-export async function generateStaticParams() {
-    return VALID_POSITIONS.map(position => ({ position }))
-}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { position } = await params

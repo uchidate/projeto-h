@@ -13,14 +13,8 @@ import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { FandomDetailPage } from '@/components/fandoms/FandomDetailPage'
 
-export const revalidate = 600
 
 type Params = Promise<{ slug: string }>
-
-export async function generateStaticParams() {
-    const fandoms = await getAllFandoms()
-    return fandoms.map(f => ({ slug: f.slug }))
-}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { slug } = await params

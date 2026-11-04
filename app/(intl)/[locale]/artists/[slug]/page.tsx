@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+import { getArtists } from '@/lib/wordpress/artists'
 import { ArtistRoute, buildArtistMetadata } from '@/components/artists/ArtistRoute'
+import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 // 6h (era 600s). O `s-maxage` da borda vem daqui, e com 600s a cauda longa quase nunca
@@ -11,20 +13,26 @@ export const revalidate = 21600
 
 type Params = Promise<{ locale: string; slug: string }>
 
-// Sem pré-geração: só itens com tradução publicada terão página, e isso é
-// decidido na Fase 3 (D5-b). Até lá, renderização sob demanda com ISR.
-export function generateStaticParams() {
-    return []
+// Só o português é pré-gerado. Em outros idiomas só itens com tradução publicada têm página
+// (decidido na Fase 3, D5-b): renderização sob demanda com ISR.
+export async function generateStaticParams({ params }: { params: { locale: string } }) {
+    if (params.locale !== DEFAULT_LOCALE) return []
+    try {
+        const { items } = await getArtists({ perPage: 100 })
+        return items.map(item => ({ slug: item.slug }))
+    } catch {
+        return []
+    }
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale, slug } = await params
-    if (!idiomaValido(locale)) return {}
+    if (!idiomaValido(locale, { servePt: true })) return {}
     return buildArtistMetadata(slug, locale)
 }
 
-export default async function IntlArtistPage({ params }: { params: Params }) {
+export default async function Page({ params }: { params: Params }) {
     const { locale, slug } = await params
-    entrarNaPagina(locale)
+    entrarNaPagina(locale, { servePt: true })
     return <ArtistRoute slug={slug} locale={locale} />
 }
