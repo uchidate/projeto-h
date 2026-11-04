@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { isActiveLocale } from '@/lib/i18n/config'
-import { setPageLocale } from '@/lib/i18n/request-locale'
 import { LocalizedCatalog, buildCatalogMetadata } from '@/components/features/LocalizedCatalog'
+import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 export const revalidate = 600
 
@@ -11,13 +9,12 @@ type SearchParams = Promise<{ page?: string }>
 
 export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: SearchParams }): Promise<Metadata> {
     const [{ locale }, { page }] = await Promise.all([params, searchParams])
-    if (!isActiveLocale(locale)) return {}
+    if (!idiomaValido(locale)) return {}
     return buildCatalogMetadata('groups', locale, page)
 }
 
 export default async function IntlCatalogPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
     const [{ locale }, { page }] = await Promise.all([params, searchParams])
-    if (!isActiveLocale(locale)) notFound()
-    setPageLocale(locale)
+    entrarNaPagina(locale)
     return <LocalizedCatalog kind="groups" locale={locale} pageParam={page} />
 }

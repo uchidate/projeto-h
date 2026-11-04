@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { setPageLocale } from '@/lib/i18n/request-locale'
+import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 import { metadataDoLayout } from '@/lib/i18n/metadata-layout'
 import { SiteShell } from '@/components/layout/SiteShell'
-import { ACTIVE_LOCALES, isActiveLocale } from '@/lib/i18n/config'
+import { ACTIVE_LOCALES } from '@/lib/i18n/config'
 
 /**
  * Layout de todos os idiomas — ver D2 em docs/I18N-ARQUITETURA.md.
@@ -26,13 +25,12 @@ type Params = Promise<{ locale: string }>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
-    if (!isActiveLocale(locale)) return {}
+    if (!idiomaValido(locale, { servePt: true })) return {}
     return metadataDoLayout(locale)
 }
 
 export default async function IntlLayout({ children, params }: { children: React.ReactNode; params: Params }) {
     const { locale } = await params
-    if (!isActiveLocale(locale)) notFound()
-    setPageLocale(locale)
+    entrarNaPagina(locale, { servePt: true })
     return <SiteShell locale={locale}>{children}</SiteShell>
 }
