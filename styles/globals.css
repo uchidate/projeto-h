@@ -936,22 +936,25 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
   font-weight: 800;
 }
 
-/* Links de prosa: sublinhado animado em vez de underline estático */
-.wp-article-content .prose a,
-.wp-article-content p a,
-.wp-article-content li a {
-  color: var(--color-accent);
+/* Links de prosa. O acento (rosa, ou a cor do grupo no artigo) sozinho dava 3,5:1 no rosa, 2,2:1 no dourado do BTS
+   e 1,7:1 no azul do TWS, e o sublinhado só existia ao passar o mouse (no celular, nunca). Agora o texto mistura o
+   acento com a cor do texto (contraste >= 4,5:1 nos dois temas, mantendo o tom) e o sublinhado fica sempre visível;
+   no hover engrossa. WCAG 1.4.1 e 1.4.3. */
+.wp-article-content .prose a:not(sup.ref a),
+.wp-article-content p a:not(sup.ref a),
+.wp-article-content li a:not(sup.ref a) {
+  color: color-mix(in oklab, var(--color-accent) 50%, var(--color-fg));
   font-weight: 600;
   text-decoration: none;
-  background-image: linear-gradient(var(--color-accent), var(--color-accent));
+  background-image: linear-gradient(currentColor, currentColor);
   background-repeat: no-repeat;
   background-position: 0 100%;
-  background-size: 0% 2px;
+  background-size: 100% 1px;
   transition: background-size 0.25s ease;
 }
-.wp-article-content .prose a:hover,
-.wp-article-content p a:hover,
-.wp-article-content li a:hover {
+.wp-article-content .prose a:not(sup.ref a):hover,
+.wp-article-content p a:not(sup.ref a):hover,
+.wp-article-content li a:not(sup.ref a):hover {
   background-size: 100% 2px;
 }
 
