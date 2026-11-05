@@ -450,6 +450,17 @@
     "notice": "Esta página ainda não está disponível neste idioma. O conteúdo abaixo é o original em português.",
     "readOriginal": "Ver a página em português"
   },
+  "guides": {
+    "title": "Guias",
+    "description": "Guias de doramas e filmes coreanos, por gênero, plataforma e mais, com perfis em português.",
+    "count": "{count, plural, one {# guia} other {# guias}}",
+    "productions": "{count, plural, one {# produção} other {# produções}}",
+    "seeAll": "Ver todas as produções",
+    "faq": "Perguntas frequentes",
+    "related": "Guias relacionados",
+    "empty": "Nenhuma produção com página neste idioma neste guia ainda.",
+    "back": "Todos os guias"
+  },
   "blog": {
     "categories": "Categorias",
     "title": "Blog",

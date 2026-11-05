@@ -61,7 +61,7 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
         Promise.all(mesesParaBuscar(hoje).map(birthMonth => getArtists({ birthMonth, perPage: 100, comTraducoes: !emPt })))
             .then(r => r.flatMap(x => x.items))
             .then(itens => emPt ? itens : itens.filter(a => a.translations?.[locale] && !a.translations[locale]?.stale).map(a => localizeEntity(a, locale, 'artist'))),
-        comercio ? carregarGuiasPorTema() : Promise.resolve([]),
+        comercio || !emPt ? carregarGuiasPorTema(locale) : Promise.resolve([]),
         comercio || !emPt ? carregarTemas(locale) : Promise.resolve(null),
         comercio || !emPt ? carregarExplore(locale) : Promise.resolve([]),
         comercio ? carregarPrateleirasEditorias() : Promise.resolve({}),

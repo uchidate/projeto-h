@@ -1,0 +1,140 @@
+{
+  "doramas-historicos-coreanos": {
+    "slug": "korean-historical-dramas",
+    "title": "Korean Historical Dramas (Sageuk)",
+    "shortTitle": "Sageuk",
+    "description": "The best Korean historical dramas (sageuk), with English profiles, cast, platforms and where to watch.",
+    "intro": [
+      "Sageuks, Korea's historical dramas, take viewers to dynasties such as Joseon and Goryeo, with elaborate costumes, political intrigue and epic romances that hold you from the first episode to the last.",
+      "HallyuHub organizes the best sageuk in its catalog so you can find where to watch, meet the cast and explore the stories that shaped Korea."
+    ],
+    "faq": [
+      {
+        "question": "What is sageuk?",
+        "answer": "Sageuk is the Korean term for historical drama. These dramas are set in periods such as the Joseon Dynasty (1392–1897) or Goryeo, and combine history, politics, romance and, at times, fantasy."
+      },
+      {
+        "question": "Which sageuk are the best known?",
+        "answer": "\"Mr. Sunshine\", \"Jewel in the Palace\", \"Six Flying Dragons\" and \"Kingdom\" are among the most acclaimed. \"Kingdom\", on Netflix, brought the genre to an international audience."
+      }
+    ]
+  },
+  "doramas-romanticos": {
+    "slug": "korean-romance-dramas",
+    "title": "Korean Romance Dramas",
+    "shortTitle": "Romance dramas",
+    "description": "Discover the best Korean romance dramas, with synopsis, cast, ratings and where to watch.",
+    "intro": [
+      "Korean romances shaped a genre of their own: unforgettable OSTs, chemistry between the leads and stories that balance drama and lightness in an unusual way.",
+      "This guide gathers the Korean romance productions cataloged on HallyuHub, with pages in English to help you understand the cast, the synopsis and where to watch."
+    ],
+    "whatYouWillFind": "Here you will find Korean romance dramas cataloged on HallyuHub, with synopsis in English, ratings, cast and information on where to watch, from big Netflix hits to classics from the Korean broadcasters.",
+    "faq": [
+      {
+        "question": "What makes a good Korean romance drama?",
+        "answer": "A good Korean romance drama combines chemistry between the leads, a memorable OST, well-developed emotional conflicts and the famous slow tension before the couple gets together."
+      },
+      {
+        "question": "What is \"slow burn\" in romance dramas?",
+        "answer": "Slow burn is romantic tension that builds gradually over the episodes, with the couple resisting their feelings before giving in. It is one of the most loved traits of K-dramas and keeps viewers coming back across a whole series."
+      },
+      {
+        "question": "Do romance dramas have happy endings?",
+        "answer": "Most Korean romance dramas end happily. There are acclaimed exceptions with more open or melancholic endings, such as \"My Mister\" and \"Nevertheless\"."
+      },
+      {
+        "question": "Are there shorter romance dramas for beginners?",
+        "answer": "Yes. Dramas such as \"Business Proposal\" (12 episodes), \"Nevertheless\" (10 episodes) and \"What's Wrong with Secretary Kim\" (16 episodes) are good ways in, since they are shorter and lighter."
+      }
+    ],
+    "relatedSearches": [
+      { "label": "Korean dramas on Netflix", "to": "doramas-coreanos-netflix" },
+      { "label": "Best Korean dramas of all time", "to": "melhores-doramas-de-todos-os-tempos" }
+    ]
+  },
+  "doramas-acao-coreanos": {
+    "slug": "korean-action-dramas",
+    "title": "Korean Action Dramas",
+    "shortTitle": "Action dramas",
+    "description": "The best Korean action dramas, with fight scenes, espionage and chases, plus ratings and English profiles.",
+    "intro": [
+      "In the catalog, action brings together stories of espionage, crime, martial arts and revenge, and many of them also appear in the thriller and police guides.",
+      "The list opens with series only, ordered by recent interest; the Type filter at the top adds the movies."
+    ],
+    "faq": [
+      {
+        "question": "What goes into the action list?",
+        "answer": "Productions tagged with the action genre in the catalog, from espionage and crime to martial arts. Many also carry the thriller or crime tag."
+      },
+      {
+        "question": "Can I see the action movies?",
+        "answer": "Yes. The list opens with series only; in the Type filter at the top, choose Movie (or All) to include feature films."
+      },
+      {
+        "question": "What is the difference between action and thriller?",
+        "answer": "Action puts movement first: fights, chases, missions. Thrillers bet on tension and threat, and the two often mix."
+      }
+    ]
+  },
+  "melhores-doramas-de-todos-os-tempos": {
+    "slug": "best-korean-dramas-of-all-time",
+    "title": "Best Korean Dramas of All Time",
+    "shortTitle": "Best dramas",
+    "description": "The best-rated Korean dramas of all time, with synopsis, cast, platforms and ratings.",
+    "intro": [
+      "Some K-dramas outlived their release moment and became cultural landmarks, watched and rewatched by fans around the world for years or decades.",
+      "This guide gathers the Korean productions with the best ratings and greatest cultural impact cataloged on HallyuHub, a reference for anyone who wants to start or deepen their journey into the world of K-dramas."
+    ],
+    "whatYouWillFind": "A gateway to the most relevant dramas in the catalog: popular romances, thrillers, classics, series by platform and productions by year.",
+    "faq": [
+      {
+        "question": "Where should I start with Korean dramas?",
+        "answer": "For beginners, \"Crash Landing on You\" and \"Goblin\" are good ways in. For action fans, \"Vincenzo\". For pure romance, \"My Love from the Star\"."
+      }
+    ],
+    "relatedSearches": [
+      { "label": "Romance dramas", "to": "doramas-romanticos" },
+      { "label": "Korean dramas on Netflix", "to": "doramas-coreanos-netflix" }
+    ]
+  },
+  "filmes-coreanos": {
+    "slug": "korean-movies",
+    "title": "Korean Movies",
+    "shortTitle": "Korean movies",
+    "description": "Korean movies with synopsis, cast, ratings and related pages in English.",
+    "intro": [
+      "Korean cinema goes far beyond dramas: thrillers, romances, action, horror and auteur dramas helped establish Korea as an audiovisual powerhouse.",
+      "This guide gathers the Korean movies cataloged on HallyuHub so you can browse by synopsis, cast, rating and related artists."
+    ],
+    "faq": [
+      {
+        "question": "Does this guide include only dramas?",
+        "answer": "No. Unlike the K-drama guides, this one is dedicated to Korean movies cataloged as cinema productions."
+      },
+      {
+        "question": "Do the pages show the cast?",
+        "answer": "When synced, each movie can show its cast, related artists, rating and other editorial data."
+      }
+    ]
+  },
+  "doramas-coreanos-netflix": {
+    "slug": "korean-dramas-on-netflix",
+    "title": "Korean Dramas on Netflix",
+    "shortTitle": "Dramas on Netflix",
+    "description": "Discover Korean dramas available on or associated with Netflix, with synopsis, cast, ratings and links to artists.",
+    "intro": [
+      "Netflix helped many Korean dramas reach audiences that had not followed K-drama closely before.",
+      "This guide gathers Korean productions tied to the platform, with pages in English to help you understand the cast, the synopsis and the context of each title."
+    ],
+    "faq": [
+      {
+        "question": "Are all the dramas in this guide available on Netflix?",
+        "answer": "Availability can vary by country and date. The guide gathers Korean productions associated with Netflix or tagged in the catalog as present on the platform."
+      },
+      {
+        "question": "Does HallyuHub say where to watch?",
+        "answer": "When data is available, production pages show platforms, cast, synopsis and editorial context to help with discovery."
+      }
+    ]
+  }
+}

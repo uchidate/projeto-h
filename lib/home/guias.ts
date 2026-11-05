@@ -1,5 +1,8 @@
 import { getHub } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { hasLocale } from '@/lib/i18n/entity-translation'
+import { localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
 
 /** Guias por tema da faixa escura: slug do guia em /guias/{slug} e a cor do filete. */
 export const GUIAS_POR_TEMA = [
@@ -43,15 +46,24 @@ export function escolherCapas(porGuia: { slug: string; capas: string[] }[], n = 
     return out
 }
 
-export async function carregarGuiasPorTema(): Promise<GuiaDaHome[]> {
-    const lidos = await Promise.all(GUIAS_POR_TEMA.map(async ({ slug, cor }) => {
-        const hub = await getHub(slug)
+/**
+ * Fora do português só entram os guias com texto traduzido; o total e as capas vêm das produções com página no idioma,
+ * e o `slug` devolvido é o da URL do idioma.
+ */
+export async function carregarGuiasPorTema(locale: Locale = DEFAULT_LOCALE): Promise<GuiaDaHome[]> {
+    const emPt = locale === DEFAULT_LOCALE
+    const traduzidos = new Set(slugsPtTraduzidos(locale))
+    const temas = GUIAS_POR_TEMA.filter(g => emPt || traduzidos.has(g.slug))
+    const lidos = await Promise.all(temas.map(async ({ slug, cor }) => {
+        const original = await getHub(slug)
+        const hub = original && (emPt ? original : localizarGuia(original, locale))
         if (!hub || hub.kind !== 'productions') return null
-        const r = await getHubItems(hub, { perPage: 8 })
+        const r = await getHubItems(hub, { perPage: 8, ...(emPt ? {} : { locale }) })
         if (r.kind !== 'productions') return null
         // Transmissões de show no cinema ("Live Viewing") entram como filme, mas não são o que o guia promete.
-        const capas = r.items.filter(p => !/live viewing/i.test(p.title.rendered)).map(p => p.featured_image_url).filter((c): c is string => !!c)
-        return { slug, titulo: hub.shortTitle || hub.title, cor, total: r.total, capas }
+        const itens = r.items.filter(p => emPt || hasLocale(p, locale))
+        const capas = itens.filter(p => !/live viewing/i.test(p.title.rendered)).map(p => p.featured_image_url).filter((c): c is string => !!c)
+        return { slug: slugPublicoDoGuia(slug, locale) ?? slug, titulo: hub.shortTitle || hub.title, cor, total: r.total, capas }
     }))
     const guias = lidos.filter((g): g is NonNullable<typeof g> => g !== null && g.capas.length > 0)
     const capas = escolherCapas(guias)

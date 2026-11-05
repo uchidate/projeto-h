@@ -5,6 +5,8 @@ import { comoFallback } from '@/lib/i18n/fallback-ficha'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { GuiasIndice, buildGuiasMetadata } from '@/components/guias/GuiasIndice'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
+import { slugsPtTraduzidos } from '@/lib/guias/i18n'
+import { LocalizedGuidesIndex, buildLocalizedGuidesIndexMetadata } from '@/components/guias/LocalizedGuide'
 
 // Estática de propósito: ler `searchParams` aqui tornaria a rota dinâmica
 // (`cache-control: no-store`, Cloudflare em BYPASS). O filtro `?kind=` é desviado para
@@ -16,13 +18,15 @@ type Params = Promise<{ locale: string }>
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
     if (!idiomaValido(locale, { servePt: true })) return {}
-    return locale === DEFAULT_LOCALE ? buildGuiasMetadata() : comoFallback(buildGuiasMetadata())
+    if (locale === DEFAULT_LOCALE) return buildGuiasMetadata()
+    return slugsPtTraduzidos(locale).length > 0 ? buildLocalizedGuidesIndexMetadata(locale) : comoFallback(buildGuiasMetadata())
 }
 
 export default async function Page({ params }: { params: Params }) {
     const { locale } = await params
     entrarNaPagina(locale, { servePt: true })
     if (locale === DEFAULT_LOCALE) return <GuiasIndice />
+    if (slugsPtTraduzidos(locale).length > 0) return <LocalizedGuidesIndex locale={locale} />
     return (
         <>
             <AvisoSemTraducao locale={locale} hrefOriginal={href('guides', undefined, DEFAULT_LOCALE)} />

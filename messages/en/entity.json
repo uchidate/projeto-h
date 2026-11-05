@@ -450,6 +450,17 @@
     "notice": "This page isn't available in English yet. The content below is the original in Portuguese.",
     "readOriginal": "Read it on the Portuguese page"
   },
+  "guides": {
+    "title": "Guides",
+    "description": "Guides to Korean dramas and movies, by genre, platform and more, with profiles in English.",
+    "count": "{count, plural, one {# guide} other {# guides}}",
+    "productions": "{count, plural, one {# production} other {# productions}}",
+    "seeAll": "See all productions",
+    "faq": "Frequently asked questions",
+    "related": "Related guides",
+    "empty": "No productions with an English page in this guide yet.",
+    "back": "All guides"
+  },
   "blog": {
     "categories": "Categories",
     "title": "Blog",

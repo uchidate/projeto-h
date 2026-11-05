@@ -1,3 +1,5 @@
+import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import { Fragment } from 'react'
 import type { Metadata } from 'next'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
@@ -16,7 +18,7 @@ export function buildGuiasMetadata(): Metadata {
     return {
         title: 'Guias de K-Drama, K-Pop e Cinema Coreano',
         description: 'Explore guias editoriais sobre produções, artistas e grupos do entretenimento coreano. Doramas por gênero, plataforma, artistas por agência e muito mais.',
-        alternates: { canonical: `${SITE_URL}/guias` },
+        alternates: { canonical: `${SITE_URL}/guias`, languages: { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias`, [LOCALE_META.en.htmlLang]: `${SITE_URL}${href('guides', undefined, 'en')}`, 'x-default': `${SITE_URL}/guias` } },
         ...compartilhamento({
             titulo: 'Guias de K-Drama, K-Pop e Cinema Coreano',
             descricao: 'Doramas por gênero e plataforma, artistas por agência e muito mais.',

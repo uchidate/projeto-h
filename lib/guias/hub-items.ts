@@ -63,6 +63,8 @@ export type HubItemsOptions = {
     type?: string
     year?: number
     status?: string
+    /** Só produções com tradução publicada neste idioma. */
+    locale?: string
 }
 
 export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): Promise<HubItems> {
@@ -85,6 +87,7 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
                 genre, tag, platform, network, type, year,
                 orderby: 'trending_score',
                 order: 'desc',
+                locale: opts.locale,
             })
             return { kind: 'productions', items, total }
         }
