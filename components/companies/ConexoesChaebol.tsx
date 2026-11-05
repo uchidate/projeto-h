@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
  * não pra uma ficha própria do grupo (rara) nem recentra como o MapaConexoes.
  */
 export function ConexoesChaebol({ companyName, chaebolGroup, groupHubHref, globalBrands = [] }: Props) {
+    const t = useTranslations('entity.company.ui')
     // Dado inválido no WP já visto (ex: ficha da Abib com chaebol_group = "Abib"
     // — a própria empresa): sem esse guard, o diagrama liga o nó a ele mesmo.
     const group = chaebolGroup && chaebolGroup.trim().toLowerCase() !== companyName.trim().toLowerCase()
@@ -25,7 +27,7 @@ export function ConexoesChaebol({ companyName, chaebolGroup, groupHubHref, globa
 
     return (
         <div className="rounded-2xl border border-border bg-surface/30 p-5 sm:p-8">
-            <h2 className="mb-6 text-[15px] font-black tracking-tight">🔗 Conexões do grupo</h2>
+            <h2 className="mb-6 text-[15px] font-black tracking-tight">{t('connections')}</h2>
             <div className="flex flex-col items-center gap-3">
                 {group && (
                     <>

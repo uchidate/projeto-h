@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getCompanyBySlug, getCompanies, getRelatedCompanies, countCompaniesInChaebolGroup, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
+import { getCompanyBySlug, getCompanies, getRelatedCompanies, countCompaniesInChaebolGroup, emojiDoSetor } from '@/lib/wordpress/companies'
 import { SITE_URL } from '@/lib/constants/site'
 import { stripHtml, getWPImage, slugify, normalizeWPImageHost } from '@/lib/utils'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
@@ -104,6 +104,9 @@ export default async function CompanyPage({ params }: { params: Params }) {
     const sourceCompany = await getCompanyBySlug(slug)
     if (!sourceCompany) notFound()
     const company = localizeEntity(sourceCompany, locale, 'company')
+    const ui = await getTranslations({ locale, namespace: 'entity.company.ui' })
+    // Blog e loja existem só em português: fora dele a ficha não os mostra.
+    const soPt = locale === DEFAULT_LOCALE
 
     const acf = company.acf ?? {}
     const name = stripHtml(company.title.rendered)
@@ -128,12 +131,15 @@ export default async function CompanyPage({ params }: { params: Params }) {
     const groupHubHref = hasOwnChaebolGroup && siblingCount > 1 ? href('companyGroup', { slug: slugify(acf.chaebol_group!) }, locale) : null
     // Mesma blindagem contra autorreferência do ConexoesChaebol: sem isso, a
     // seção renderiza vazia (só título) pra fichas como a da Abib.
+    const setoresRelacionados: Record<number, string | null> = Object.fromEntries(
+        await Promise.all(relatedCompanies.map(async c => [c.id, await rotuloDoSetorEm(c.acf?.industry, locale)] as const)),
+    )
     const hasOtherGlobalBrands = (acf.global_brands ?? []).some(b => b.trim().toLowerCase() !== name.trim().toLowerCase())
 
     const stats = [
-        acf.founded_year && { label: 'Fundação', value: String(acf.founded_year) },
-        acf.employees && { label: 'Funcionários', value: acf.employees.toLocaleString(intlLocale()) },
-        acf.revenue && { label: 'Receita', value: acf.revenue },
+        acf.founded_year && { label: ui('founded'), value: String(acf.founded_year) },
+        acf.employees && { label: ui('employees'), value: acf.employees.toLocaleString(intlLocale(locale)) },
+        acf.revenue && { label: ui('revenue'), value: acf.revenue },
     ].filter((s): s is { label: string; value: string } => Boolean(s))
 
     // "Nome do produto|URL da imagem" — URL é opcional, mesmo padrão pipe-delimited de awards/milestones
@@ -144,7 +150,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
 
     const breadcrumbSchema = buildBreadcrumbSchema([
         { name: `${SITE_NAME}`, url: SITE_URL },
-        { name: 'Empresas', url: `${SITE_URL}${href('companies', undefined, locale)}` },
+        { name: ui('breadcrumb'), url: `${SITE_URL}${href('companies', undefined, locale)}` },
         { name: name, url: companyUrl },
     ])
 
@@ -181,7 +187,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                             {indLabel && (
                                 <p className="font-mono text-[11px] text-muted uppercase tracking-[0.06em] mb-2">
                                     {indEmoji} {indLabel}
-                                    {acf.is_chaebol && <span className="ml-2 text-accent">· Chaebol</span>}
+                                    {acf.is_chaebol && <span className="ml-2 text-accent">· {ui('chaebol')}</span>}
                                 </p>
                             )}
                             <h1 className="text-[32px] sm:text-[44px] font-black tracking-[-0.03em] leading-none">{name}</h1>
@@ -209,7 +215,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                                 {acf.website && (
                                     <a href={acf.website} target="_blank" rel="noopener noreferrer"
                                         className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface font-mono text-[11px] text-accent hover:border-accent transition-colors">
-                                        <Globe size={12} /> Site oficial
+                                        <Globe size={12} /> {ui('officialSite')}
                                     </a>
                                 )}
                                 {acf.instagram && (
@@ -227,10 +233,10 @@ export default async function CompanyPage({ params }: { params: Params }) {
             {stats.length > 0 && <GroupAnimatedStats stats={stats} accent="var(--color-accent)" />}
 
             {/* Produtos mais conhecidos — abre as ofertas da loja sem sair da página */}
-            {products.length > 0 && (
+            {soPt && products.length > 0 && (
                 <div className="border-b border-border/40 bg-surface/20">
                     <div className="page-wrap py-6">
-                        <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-4">Produtos & Serviços mais conhecidos</h2>
+                        <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-4">{ui('knownProducts')}</h2>
                         <div className="flex gap-3 overflow-x-auto overflow-y-visible pb-1 scrollbar-none">
                             {products.map(p => {
                                 const nucleo = nucleoProduto(p.name)
@@ -308,29 +314,29 @@ export default async function CompanyPage({ params }: { params: Params }) {
                         {/* Dados da empresa */}
                         {(acf.founder || acf.ceo || acf.chaebol_group) && (
                             <div className="rounded-xl border border-border bg-surface/40 p-5">
-                                <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">Ficha</h3>
+                                <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">{ui('fact')}</h3>
                                 <dl className="space-y-2">
                                     {acf.founder && (
                                         <div className="flex justify-between gap-2">
-                                            <dt className="font-mono text-[11px] text-muted">Fundador</dt>
+                                            <dt className="font-mono text-[11px] text-muted">{ui('founder')}</dt>
                                             <dd className="text-[12px] text-foreground/80 text-right">{acf.founder}</dd>
                                         </div>
                                     )}
                                     {acf.ceo && (
                                         <div className="flex justify-between gap-2">
-                                            <dt className="font-mono text-[11px] text-muted">CEO</dt>
+                                            <dt className="font-mono text-[11px] text-muted">{ui('ceo')}</dt>
                                             <dd className="text-[12px] text-foreground/80 text-right">{acf.ceo}</dd>
                                         </div>
                                     )}
                                     {acf.chaebol_group && (
                                         <div className="flex justify-between gap-2">
-                                            <dt className="font-mono text-[11px] text-muted">Grupo</dt>
+                                            <dt className="font-mono text-[11px] text-muted">{ui('group')}</dt>
                                             <dd className="text-[12px] text-foreground/80 text-right">{acf.chaebol_group}</dd>
                                         </div>
                                     )}
                                     {acf.status && acf.status !== 'active' && (
                                         <div className="flex justify-between gap-2">
-                                            <dt className="font-mono text-[11px] text-muted">Status</dt>
+                                            <dt className="font-mono text-[11px] text-muted">{ui('status')}</dt>
                                             <dd className="text-[12px] text-foreground/80 text-right capitalize">{acf.status}</dd>
                                         </div>
                                     )}
@@ -341,7 +347,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                         {/* Curiosidades */}
                         {acf.curiosidades && acf.curiosidades.length > 0 && (
                             <div className="rounded-xl border border-surface-editorial bg-surface-editorial/30 p-5">
-                                <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent mb-3">Curiosidades</h3>
+                                <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent mb-3">{ui('trivia')}</h3>
                                 <ul className="space-y-2">
                                     {acf.curiosidades.map((c, i) => (
                                         <li key={i} className="text-[13px] text-foreground/80 leading-relaxed">💡 {c}</li>
@@ -351,18 +357,18 @@ export default async function CompanyPage({ params }: { params: Params }) {
                         )}
 
                         {company.modified && (
-                            <p className="font-mono text-[10px] text-muted/70">Atualizado em {formatDate(company.modified)}</p>
+                            <p className="font-mono text-[10px] text-muted/70">{ui('updatedOn', { date: formatDate(company.modified, undefined, locale) })}</p>
                         )}
                     </aside>
                 </div>
             </ProfileSection>
 
             {/* Loja e blog */}
-            {(vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
+            {soPt && (vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
                 <ProfileSection id="loja-blog" indented={false}>
                     <div className="space-y-6">
-                        <LojaEmLinha products={vitrine} bloco="empresa-ficha" contexto={`empresa:${slug}`} title="Produtos da marca"
-                            href={`/loja/empresa/${slug}`} verTudoLabel="Ver tudo" />
+                        <LojaEmLinha products={vitrine} bloco="empresa-ficha" contexto={`empresa:${slug}`} title={ui('shopTitle')}
+                            href={`/loja/empresa/${slug}`} verTudoLabel={ui('shopSeeAll')} />
                         <CitadoNoBlog posts={posts} />
                         <MencionadoAcervo mentions={mentions} />
                     </div>
@@ -372,7 +378,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
             {/* Relacionadas */}
             {relatedCompanies.length > 0 && (
                 <ProfileSection id="relacionadas" indented={false}>
-                    <h2 className="text-[18px] font-black tracking-tight mb-5">Mais empresas sul-coreanas</h2>
+                    <h2 className="text-[18px] font-black tracking-tight mb-5">{ui('related')}</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {relatedCompanies.map(c => {
                             const cname = stripHtml(c.title.rendered)
@@ -390,11 +396,11 @@ export default async function CompanyPage({ params }: { params: Params }) {
                                     </div>
                                     <div>
                                         <p className="text-[13px] font-bold group-hover:text-accent transition-colors line-clamp-1">{cname}</p>
-                                        {rotuloDoSetor(c.acf?.industry) && (
-                                            <p className="font-mono text-[10px] text-muted">{rotuloDoSetor(c.acf?.industry)}</p>
+                                        {setoresRelacionados[c.id] && (
+                                            <p className="font-mono text-[10px] text-muted">{setoresRelacionados[c.id]}</p>
                                         )}
-                                        {naLojaMatcher([cname, ...(c.acf?.global_brands ?? [])]) && (
-                                            <p className="font-mono text-[10px] font-semibold text-accent">🛍️ Na loja</p>
+                                        {soPt && naLojaMatcher([cname, ...(c.acf?.global_brands ?? [])]) && (
+                                            <p className="font-mono text-[10px] font-semibold text-accent">🛍️ {ui('inStore')}</p>
                                         )}
                                     </div>
                                 </Link>
@@ -403,7 +409,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                     </div>
                     <div className="mt-6">
                         <Link href={href('companies', undefined, locale)} className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
-                            ← Ver todas as empresas
+                            {ui('seeAll')}
                         </Link>
                     </div>
                 </ProfileSection>
