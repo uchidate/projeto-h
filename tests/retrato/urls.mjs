@@ -70,7 +70,7 @@ export const COM_FILTRO = [
 ]
 
 /** Só em português (sem versão em outro idioma por decisão do manifesto) e casos de erro. */
-export const SO_PT = ['/loja', '/privacidade', '/termos', '/merch']
+export const SO_PT = ['/loja', '/merch', '/privacidade', '/termos', '/en/privacy', '/en/terms', '/en/profile', '/en/my-lists', '/perfil', '/minhas-listas']
 
 /** Devem responder 404 hoje e continuar assim (D3: `/pt/...` não existe como URL pública). */
 export const DEVEM_DAR_404 = ['/pt', '/pt/about', '/pt/groups/bts', '/en/pagina-que-nao-existe', '/xx/about',

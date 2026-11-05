@@ -6,6 +6,8 @@ import { getUserFavorites, getUserWatchlist, getUserProductionStatuses } from '@
 import { getProductionsByIds } from '@/lib/wordpress/productions'
 import { MinhasListasClient } from '@/components/features/MinhasListasClient'
 import type { Metadata } from 'next'
+import { href } from '@/lib/i18n/routes'
+import type { Locale } from '@/lib/i18n/config'
 
 export const metadata: Metadata = {
     title: 'Minhas Listas',
@@ -13,12 +15,14 @@ export const metadata: Metadata = {
 }
 
 export default async function MinhasListasPage({
+    locale,
     searchParams,
 }: {
+    locale: Locale
     searchParams: Promise<{ tab?: string }>
 }) {
     const session = await getServerSession(authOptions)
-    if (!session) redirect('/entrar?callbackUrl=/minhas-listas')
+    if (!session) redirect(`${href('login', undefined, locale)}?callbackUrl=${href('myLists', undefined, locale)}`)
 
     const { tab } = await searchParams
     const token = await getWpToken()

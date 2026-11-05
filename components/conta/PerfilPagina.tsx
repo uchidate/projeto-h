@@ -7,6 +7,8 @@ import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { stripHtml } from '@/lib/utils'
 import { PerfilClient, type TorcidaDoPerfil } from '@/components/features/PerfilClient'
 import type { Metadata } from 'next'
+import { href } from '@/lib/i18n/routes'
+import type { Locale } from '@/lib/i18n/config'
 
 export const metadata: Metadata = {
     title: 'Meu Perfil',
@@ -26,9 +28,9 @@ async function getTorcidasDoUsuario(token: string | null | undefined): Promise<T
         .map(f => ({ slug: f.slug, nome: f.name, cor: f.color ?? '#c39bff', grupo: stripHtml(f.groups[0]?.title.rendered ?? '') }))
 }
 
-export default async function PerfilPage() {
+export default async function PerfilPage({ locale }: { locale: Locale }) {
     const session = await getServerSession(authOptions)
-    if (!session) redirect('/entrar?callbackUrl=/perfil')
+    if (!session) redirect(`${href('login', undefined, locale)}?callbackUrl=${href('profile', undefined, locale)}`)
 
     const token = await getWpToken()
     const [stats, torcidas] = await Promise.all([
