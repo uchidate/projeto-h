@@ -39,7 +39,7 @@ import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 /**
  * Ficha de grupo, compartilhada entre idiomas — mesmo padrão de ArtistRoute.
  * As páginas por tipo (`/groups/girl-groups` etc.) ficam só em português, em
- * `app/(site)/groups/[slug]/page.tsx`.
+ * `components/groups/GroupSlugPage.tsx`.
  */
 export async function buildGroupMetadata(slug: string, locale: Locale): Promise<Metadata> {
     const found = await getGroupBySlug(slug)

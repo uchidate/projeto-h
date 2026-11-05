@@ -175,7 +175,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
 
     return (
         <>
-            {/* Chaves iguais ao SearchParams de app/(site)/artists/page.tsx. */}
+            {/* Chaves iguais ao SearchParams de `ArtistsPage`. */}
             <RastreioDeFiltros listagem="artistas" filtros={['search', 'page', 'role', 'affiliation', 'letter', 'sortBy']} />
             <SalvarContextoLista contexto={contexto} />
             <JsonLd data={{

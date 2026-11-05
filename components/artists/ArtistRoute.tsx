@@ -34,8 +34,8 @@ import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 
 /**
  * Ficha de artista, compartilhada entre idiomas — ver D2 em
- * docs/I18N-ARQUITETURA.md. As rotas de `app/(site)` e `app/(intl)/[locale]`
- * só resolvem o slug e o idioma e delegam para cá.
+ * docs/I18N-ARQUITETURA.md. A rota de `app/[locale]`
+ * só resolve o slug e o idioma e delegam para cá.
  *
  * Em outro idioma, a ficha só existe com tradução publicada (`hasLocale`) e o
  * texto vem da sobreposição `translations` (lib/i18n/entity-translation.ts).

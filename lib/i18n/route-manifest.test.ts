@@ -23,14 +23,14 @@ function paginasDe(grupo: string): string[] {
 /** `filtrado` é destino interno de rewrite (listagens estáticas), não uma rota pública. */
 const ehInterna = (caminho: string) => caminho.split('/').includes('filtrado')
 
-/** Páginas de `app/(intl)/[locale]`, trazidas ao caminho em português via `ROUTES` (`/sign-in` → `/entrar`). */
+/** Páginas de `app/[locale]`, trazidas ao caminho em português via `ROUTES` (`/sign-in` → `/entrar`). */
 const paginasEmIntl = () => {
     const dePara = caminhoPtDe('en')
-    return paginasDe('(intl)/[locale]').filter(c => !ehInterna(c)).map(c => dePara[c] ?? c)
+    return paginasDe('[locale]').filter(c => !ehInterna(c)).map(c => dePara[c] ?? c)
 }
 
 /**
- * Páginas públicas em português: as de `app/(intl)/[locale]`, servidas sem prefixo por rewrite.
+ * Páginas públicas em português: as de `app/[locale]`, servidas sem prefixo por rewrite.
  */
 const paginasPt = [...new Set(paginasEmIntl())].sort()
 
@@ -42,20 +42,20 @@ describe('manifesto de rotas (i18n)', () => {
 
     it('não há entrada do manifesto sem página correspondente', () => {
         const orfas = Object.keys(MANIFESTO_DE_ROTAS).filter(c => !paginasPt.includes(c))
-        expect(orfas, `Entradas sem página em app/(intl): ${orfas.join(', ')}`).toEqual([])
+        expect(orfas, `Entradas sem página em app/[locale]: ${orfas.join(', ')}`).toEqual([])
     })
 
-    it('rota marcada como pronta ou parcial existe em app/(intl)/[locale]', () => {
+    it('rota marcada como pronta ou parcial existe em app/[locale]', () => {
         const emIntl = paginasEmIntl()
         const prontas = Object.entries(MANIFESTO_DE_ROTAS).filter(([, r]) => r.estado === 'pronta' || r.estado === 'parcial').map(([c]) => c)
         const faltando = prontas.filter(c => !emIntl.includes(c))
-        expect(faltando, `Marcadas como prontas, mas sem página em app/(intl): ${faltando.join(', ')}`).toEqual([])
+        expect(faltando, `Marcadas como prontas, mas sem página em app/[locale]: ${faltando.join(', ')}`).toEqual([])
     })
 
-    it('toda página em app/(intl) está no manifesto como pronta, parcial ou só-PT (sem tradução fantasma)', () => {
+    it('toda página em app/[locale] está no manifesto como pronta, parcial ou só-PT (sem tradução fantasma)', () => {
         const emIntl = paginasEmIntl()
         const naoMarcadas = emIntl.filter(c => !['pronta', 'parcial', 'somentePt'].includes(MANIFESTO_DE_ROTAS[c]?.estado))
-        expect(naoMarcadas, `Páginas em app/(intl) fora do manifesto como "pronta": ${naoMarcadas.join(', ')}`).toEqual([])
+        expect(naoMarcadas, `Páginas em app/[locale] fora do manifesto como "pronta": ${naoMarcadas.join(', ')}`).toEqual([])
     })
 
     it('"parcial" sempre diz o que falta', () => {
@@ -70,7 +70,7 @@ describe('manifesto de rotas (i18n)', () => {
         }
     })
 
-    it('página só-PT em app/(intl) responde 404 fora do português', () => {
+    it('página só-PT em app/[locale] responde 404 fora do português', () => {
         const dePara = caminhoPtDe('en')
         const semGuarda: string[] = []
         const percorrer = (dir: string, prefixo: string) => {
@@ -84,11 +84,11 @@ describe('manifesto de rotas (i18n)', () => {
                 }
             }
         }
-        percorrer(join(RAIZ, 'app', '(intl)', '[locale]'), '')
+        percorrer(join(RAIZ, 'app', '[locale]'), '')
         expect(semGuarda, `Só-PT sem guarda de idioma: ${semGuarda.join(', ')}`).toEqual([])
     })
 
     it('a pasta de páginas existe (guarda contra rodar fora da raiz)', () => {
-        expect(existsSync(join(RAIZ, 'app', '(intl)', '[locale]'))).toBe(true)
+        expect(existsSync(join(RAIZ, 'app', '[locale]'))).toBe(true)
     })
 })

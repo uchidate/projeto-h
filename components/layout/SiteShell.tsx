@@ -52,9 +52,8 @@ const playfair = Playfair_Display({
 
 /**
  * Casco comum a todos os idiomas: <html>, head, providers, navegação, rodapé,
- * consentimento, analytics e anúncios. Cada grupo de rotas (`(site)` em
- * português, `(intl)/[locale]`) tem o próprio root layout e só repassa o
- * idioma — ver D2 em docs/I18N-ARQUITETURA.md.
+ * consentimento, analytics e anúncios. O layout de `app/[locale]` é o único
+ * root layout e só repassa o idioma — ver D2 em docs/I18N-ARQUITETURA.md.
  */
 const STICKY_LIGADO = false
 

@@ -6,8 +6,8 @@ import { loadMessages } from './messages'
  * Configuração por requisição do next-intl, sem middleware.
  *
  * Não há resolução de idioma no proxy (ver D2): o idioma chega por
- * `setPageLocale` nos layouts e pages de `app/(intl)/[locale]`. As rotas em português
- * (`app/(site)`) não chamam nada e caem no idioma padrão.
+ * `setPageLocale` nos layouts e pages de `app/[locale]`. Fora de `app/[locale]` (rotas de API,
+ * feeds, 404 global) ninguém chama nada e vale o idioma padrão.
  */
 export default getRequestConfig(async () => {
     // Nunca ler `requestLocale`: sem idioma definido ele cai em headers() e a

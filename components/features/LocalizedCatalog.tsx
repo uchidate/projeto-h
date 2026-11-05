@@ -19,7 +19,7 @@ import { labelsFor } from '@/lib/i18n/labels'
  * Listagem de fichas em idioma diferente do português — D2/D7 em
  * docs/I18N-ARQUITETURA.md.
  *
- * Não reaproveita as listagens de `(site)`: elas têm filtros (letra, papel,
+ * Não reaproveita as listagens em português: elas têm filtros (letra, papel,
  * geração, gênero, plataforma) pensados para milhares de itens. O catálogo
  * traduzido começa com dezenas; os mesmos filtros gerariam páginas vazias e
  * rasas. Aqui só há paginação, e só entram fichas com tradução publicada.
