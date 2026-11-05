@@ -33,6 +33,7 @@ const ROUTES = {
     search: { pt: '/search', en: '/search' },
     cultura101: { pt: '/cultura-coreana-101', en: '/korean-culture-101' },
     agency: { pt: '/agencies/[slug]', en: '/agencies/[slug]' },
+    companyGroup: { pt: '/empresas/grupo/[slug]', en: '/companies/group/[slug]' },
     company: { pt: '/empresas/[slug]', en: '/companies/[slug]' },
     food: { pt: '/comidas/[slug]', en: '/foods/[slug]' },
     about: { pt: '/about', en: '/about' },

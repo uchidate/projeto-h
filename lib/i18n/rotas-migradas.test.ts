@@ -64,7 +64,7 @@ describe('rotas migradas para a árvore única', () => {
     // Só-PT (manifesto) não tem caminho em outro idioma, então não consta em ROUTES.
     it.each(ROTAS_MIGRADAS.filter((r) => MANIFESTO_DE_ROTAS[r.pt.replace(/:(\w+)/g, '[$1]')]?.estado !== 'somentePt'))('$pt: bate com o registro de caminhos por idioma', ({ pt, interno }) => {
         // O caminho em inglês de ROUTES é o nome da pasta; o em português é a URL pública.
-        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending', 'agencies', 'companies', 'fandoms', 'calendar', 'quiz', 'search', 'birthdays', 'artist', 'production', 'fandom', 'position', 'group', 'agency', 'company', 'food', 'guide', 'post', 'quizCategory', 'login', 'signup', 'cultura101', 'profile', 'myLists', 'privacy', 'terms'] as const
+        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending', 'agencies', 'companies', 'fandoms', 'calendar', 'quiz', 'search', 'birthdays', 'artist', 'production', 'fandom', 'position', 'group', 'agency', 'company', 'food', 'guide', 'post', 'quizCategory', 'companyGroup', 'login', 'signup', 'cultura101', 'profile', 'myLists', 'privacy', 'terms'] as const
         // Rotas com parâmetro: `/artists/:slug` vira `/artists/X` dos dois lados antes de comparar.
         // O nome do parâmetro pode diferir entre ROUTES e o registro (quiz: categoria/category); passamos os dois.
         const params = Object.fromEntries([...pt.matchAll(/:(\w+)/g), ...interno.matchAll(/:(\w+)/g), ...['categoria', 'category'].map((n) => [0, n])].map((m) => [m[1], 'X']))
