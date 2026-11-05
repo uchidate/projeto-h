@@ -15,18 +15,20 @@ export type FoodsQuery = {
     maxSpicy?: number
     occasion?: string
     season?: string
-    region?: string
+    region?: string    /** Só itens com tradução publicada neste idioma (REST `oc_locale`); traz `translations`. */
+    locale?: string
 }
 
 export async function getFoods(query: FoodsQuery = {}) {
     const {
         page = 1, perPage = 24, search, orderby = 'date', order = 'desc',
-        slug, category, letter, vegetarian, maxSpicy, occasion, season, region,
+        slug, category, letter, vegetarian, maxSpicy, occasion, season, region, locale,
     } = query
 
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage, orderby, order, status: 'publish',
-        _fields: 'id,slug,title,excerpt,date,featured_image_url,acf',
+        _fields: locale ? 'id,slug,title,excerpt,date,featured_image_url,acf,translations' : 'id,slug,title,excerpt,date,featured_image_url,acf',
+        oc_locale: locale,
         slug: slug ?? undefined,
         search: search ?? undefined,
         oc_category: category ?? undefined,

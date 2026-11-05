@@ -9,13 +9,16 @@ export type AgenciesQuery = {
     orderby?: 'date' | 'title' | 'modified' | 'menu_order'
     order?: 'desc' | 'asc'
     slug?: string
+    /** Só itens com tradução publicada neste idioma (REST `oc_locale`); traz `translations`. */
+    locale?: string
 }
 
 export async function getAgencies(query: AgenciesQuery = {}) {
-    const { page = 1, perPage = 24, search, orderby = 'date', order = 'desc', slug } = query
+    const { page = 1, perPage = 24, search, orderby = 'date', order = 'desc', slug, locale } = query
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage, orderby, order, status: 'publish',
-        _fields: 'id,slug,title,date,excerpt,featured_image_url,acf,agency_type,accent_color,country,milestones,achievements',
+        _fields: 'id,slug,title,date,excerpt,featured_image_url,acf,agency_type,accent_color,country,milestones,achievements' + (locale ? ',translations' : ''),
+        oc_locale: locale,
         slug: slug ?? undefined, search: search ?? undefined,
     }
     return wpFetchWithTotal<WPAgency>(`/wp/v2/agency${buildParams(params)}`, {

@@ -6,7 +6,10 @@ import { getTranslations } from 'next-intl/server'
 import { getArtists } from '@/lib/wordpress/artists'
 import { getGroups } from '@/lib/wordpress/groups'
 import { getProductions } from '@/lib/wordpress/productions'
-import type { WPArtist, WPGroup, WPProduction } from '@/lib/wordpress/types'
+import { getAgencies } from '@/lib/wordpress/agencies'
+import { getCompanies } from '@/lib/wordpress/companies'
+import { getFoods } from '@/lib/wordpress/foods'
+import type { WPAgency, WPArtist, WPCompany, WPFood, WPGroup, WPProduction } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
@@ -24,20 +27,34 @@ import { labelsFor } from '@/lib/i18n/labels'
  * traduzido começa com dezenas; os mesmos filtros gerariam páginas vazias e
  * rasas. Aqui só há paginação, e só entram fichas com tradução publicada.
  */
-export type CatalogKind = 'artists' | 'groups' | 'productions'
+export type CatalogKind = 'artists' | 'groups' | 'productions' | 'agencies' | 'companies' | 'foods'
 
 const PER_PAGE = 48
-const DETAIL_ROUTE = { artists: 'artist', groups: 'group', productions: 'production' } as const
+const DETAIL_ROUTE = { artists: 'artist', groups: 'group', productions: 'production', agencies: 'agency', companies: 'company', foods: 'food' } as const
+
+/**
+ * Tipos cujo catálogo em outro idioma lista só as fichas traduzidas: o original em português é
+ * texto de qualidade irregular e a listagem em português tem filtros próprios; sem tradução não há o que mostrar.
+ */
+const SO_TRADUZIDAS: ReadonlySet<CatalogKind> = new Set(['agencies', 'companies', 'foods'])
 
 
-type Entity = WPArtist | WPGroup | WPProduction
+type Entity = WPArtist | WPGroup | WPProduction | WPAgency | WPCompany | WPFood
+
+/** Busca uma página do tipo; `locale` filtra pelas traduções publicadas. */
+async function buscar(kind: CatalogKind, query: { page: number; perPage: number; orderby: 'title'; order: 'asc'; locale?: Locale }): Promise<{ items: Entity[]; total: number; totalPages: number }> {
+    switch (kind) {
+        case 'artists': return getArtists(query)
+        case 'groups': return getGroups(query)
+        case 'productions': return getProductions({ ...query, excludeAdult: true })
+        case 'agencies': return getAgencies(query)
+        case 'companies': return getCompanies(query)
+        case 'foods': return getFoods(query)
+    }
+}
 
 export async function fetchCatalog(kind: CatalogKind, locale: Locale, page: number) {
-    const query = { page, perPage: PER_PAGE, locale, orderby: 'title' as const, order: 'asc' as const }
-    const result: { items: Entity[]; total: number; totalPages: number } =
-        kind === 'artists' ? await getArtists(query)
-            : kind === 'groups' ? await getGroups(query)
-                : await getProductions({ ...query, excludeAdult: true })
+    const result = await buscar(kind, { page, perPage: PER_PAGE, locale, orderby: 'title', order: 'asc' })
     // Defesa em profundidade: se `oc_locale` ainda não existir no WordPress, o
     // parâmetro é ignorado e viria o catálogo inteiro em português.
     const items = result.items.filter((item) => hasLocale(item, locale)).map((item) => localizeEntity(item, locale, DETAIL_ROUTE[kind]))
@@ -55,12 +72,7 @@ function parsePage(value?: string) {
 
 /** Catálogo original (português), paginado, sem filtrar por tradução. */
 async function fetchOriginal(kind: CatalogKind, page: number) {
-    const query = { page, perPage: PER_PAGE, orderby: 'title' as const, order: 'asc' as const }
-    const result: { items: Entity[]; total: number; totalPages: number } =
-        kind === 'artists' ? await getArtists(query)
-            : kind === 'groups' ? await getGroups(query)
-                : await getProductions({ ...query, excludeAdult: true })
-    return result
+    return buscar(kind, { page, perPage: PER_PAGE, orderby: 'title', order: 'asc' })
 }
 
 /**
@@ -70,6 +82,10 @@ async function fetchOriginal(kind: CatalogKind, page: number) {
  * rastreador não descobre milhares de páginas de fallback por esta listagem.
  */
 export async function fetchCatalogCompleto(kind: CatalogKind, locale: Locale, page: number) {
+    if (SO_TRADUZIDAS.has(kind)) {
+        const traduzidas = await fetchTodasTraduzidas(kind, locale)
+        return { traduzidas, totalTraduzidas: traduzidas.length, originais: [] as Entity[], total: traduzidas.length, totalPages: 1 }
+    }
     const [traduzidas, original] = await Promise.all([
         fetchTodasTraduzidas(kind, locale),
         fetchOriginal(kind, page),
@@ -171,7 +187,7 @@ export function EntityGrid({ items, kind, locale, limite, emPortugues = false, s
                             <div className={`relative overflow-hidden bg-surface ${kind === 'productions' ? 'aspect-2/3' : 'aspect-3/4'}`}>
                                 {image && (
                                     <Image src={image.src} alt={image.alt || name} fill sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 16vw"
-                                        className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                                        className={`transition-transform duration-500 group-hover:scale-[1.04] ${kind === 'agencies' || kind === 'companies' ? 'object-contain p-3' : 'object-cover'}`} />
                                 )}
                                 {emPortugues && selo && (
                                     <span className="absolute left-2 top-2 border border-white/25 bg-black/60 px-1.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-white">{selo}</span>

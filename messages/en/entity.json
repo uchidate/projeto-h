@@ -403,7 +403,19 @@
     "translatedHeading": "Available in English",
     "originalHeading": "More on the site",
     "originalNote": "These profiles are not translated yet. They open in the original Portuguese.",
-    "badge": "PT"
+    "badge": "PT",
+    "agencies": {
+      "title": "K-Pop agencies",
+      "description": "K-Pop agency profiles in English: artists, groups and history."
+    },
+    "companies": {
+      "title": "Korean companies",
+      "description": "Profiles of Korean companies and brands in English: history, brands and key facts."
+    },
+    "foods": {
+      "title": "Korean food",
+      "description": "Korean dish guides in English: ingredients, history and where to find them."
+    }
   },
   "footer": {
     "catalog": "Catalog"

@@ -1,3 +1,4 @@
+import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import type { Metadata } from 'next'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
@@ -61,12 +62,14 @@ export async function metadataComidas({ searchParams }: { searchParams: SearchPa
     const { totalPages } = await getFoods({ page, perPage: 48, search: sp.search, category, vegetarian, occasion: sp.occasion, season: sp.season, maxSpicy, region, orderby: 'date', order: 'desc' })
     const hasFacets = Boolean(sp.search || sp.category || sp.vegetarian || sp.occasion || sp.season || sp.maxSpicy || sp.region)
     const invalidPage = page > Math.max(1, totalPages)
+    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('foods') : undefined
 
     return {
         title: 'Comidas Coreanas — Guia Completo',
         description: 'Descubra a culinária coreana: bibimbap, tteokbokki, samgyeopsal e muito mais. Guia completo em português.',
         alternates: {
             canonical: url,
+            ...(languages ? { languages } : {}),
             ...(page > 1 ? { prev: buildComidasUrl({ ...sp, page: String(page - 1) }) } : {}),
             ...(page < totalPages ? { next: buildComidasUrl({ ...sp, page: String(page + 1) }) } : {}),
         },

@@ -403,7 +403,19 @@
     "translatedHeading": "Disponível neste idioma",
     "originalHeading": "Mais no site",
     "originalNote": "Estes perfis ainda não foram traduzidos. Abrem no original em português.",
-    "badge": "PT"
+    "badge": "PT",
+    "agencies": {
+      "title": "Agências de K-Pop",
+      "description": "Perfis de agências de K-Pop em português."
+    },
+    "companies": {
+      "title": "Empresas coreanas",
+      "description": "Perfis de empresas e marcas coreanas em português."
+    },
+    "foods": {
+      "title": "Comida coreana",
+      "description": "Guias de pratos coreanos em português."
+    }
   },
   "footer": {
     "catalog": "Catálogo"
