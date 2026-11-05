@@ -63,7 +63,7 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
             .then(itens => emPt ? itens : itens.filter(a => a.translations?.[locale] && !a.translations[locale]?.stale).map(a => localizeEntity(a, locale, 'artist'))),
         comercio ? carregarGuiasPorTema() : Promise.resolve([]),
         comercio || !emPt ? carregarTemas(locale) : Promise.resolve(null),
-        comercio ? carregarExplore() : Promise.resolve([]),
+        comercio || !emPt ? carregarExplore(locale) : Promise.resolve([]),
         comercio ? carregarPrateleirasEditorias() : Promise.resolve({}),
     ])
 

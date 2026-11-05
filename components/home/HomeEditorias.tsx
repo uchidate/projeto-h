@@ -38,7 +38,7 @@ export async function HomeEditorias({ editorias: colunas, prateleiras = {}, loca
                         <div key={coluna.chave} className="flex min-w-0 flex-col border border-border bg-background">
                             <div className="flex items-center justify-between px-4 py-2.5 text-white" style={{ backgroundColor: coluna.cor }}>
                                 <h2 className="font-mono text-[11px] font-black uppercase tracking-[0.14em]">{t(coluna.chave)}</h2>
-                                <Link href={locale === DEFAULT_LOCALE ? `${blog}?category=${coluna.categoria}` : blog} className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] hover:underline">{t('verMais')}</Link>
+                                <Link href={`${blog}?category=${coluna.categoria}`} className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] hover:underline">{t('verMais')}</Link>
                             </div>
                             <Link {...postLink(abertura.slug, locale)} className="group block p-4 pb-3">
                                 <div className="relative aspect-video overflow-hidden bg-surface">
