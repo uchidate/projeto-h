@@ -11,7 +11,7 @@ import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
 import { IS_BUILD } from '@/lib/wordpress/config'
 import { carregarHome } from '@/lib/home/carregar-home'
 
-// (O `revalidate` de 600 s mora em app/(intl)/[locale]/page.tsx.)
+// (O `revalidate` de 600 s mora em app/[locale]/page.tsx.)
 // 10 minutos em vez de 60 s: publicar dispara revalidação sob demanda pelo
 // webhook, então o tempo aqui é só a rede de segurança. Com 60 s a home ficava
 // permanentemente STALE (x-nextjs-cache: STALE em toda requisição), regerando à

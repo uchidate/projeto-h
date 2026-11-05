@@ -5,8 +5,8 @@ import { DEFAULT_LOCALE, LOCALE_META, type Locale } from './config'
 /**
  * Metadados do layout de cada idioma, num lugar só.
  *
- * Antes cada árvore (`app/(site)` para o português, `app/(intl)/[locale]` para os demais) tinha o seu
- * layout com o seu metadata. Na árvore única o layout é um só e pergunta aqui. O português mantém
+ * Antes o português e os demais idiomas tinham layouts separados, cada um com o seu metadata.
+ * Na árvore única (`app/[locale]`) o layout é um só e pergunta aqui. O português mantém
  * exatamente o que já estava no ar (título padrão, descrição, `appleWebApp`, robots detalhado); os
  * demais idiomas ficam como estavam, sem descrição própria (cada página define a sua).
  */

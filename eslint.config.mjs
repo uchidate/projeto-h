@@ -7,7 +7,7 @@ export default defineConfig([
     ...nextTypeScript,
     {
         rules: {
-            // Desligada ao criar app/(intl)/[locale] (docs/I18N-ARQUITETURA.md, D2).
+            // Desligada ao criar app/[locale] (docs/I18N-ARQUITETURA.md, D2).
             // A regra monta um regex por rota trocando colchetes de forma gulosa:
             // `/[locale]/artists/[slug]` vira um padrão que casa com qualquer
             // caminho e acusa todo <a href="/..."> do site. E ela já não protegia
@@ -69,7 +69,7 @@ export default defineConfig([
         rules: {
             'no-restricted-imports': ['error', {
                 patterns: [{
-                    group: ['@/app/*', '**/app/(site)/*', '**/app/(intl)/*'],
+                    group: ['@/app/*', '**/app/\\[locale\\]/*'],
                     message: 'components/ e lib/ não importam de app/. Tipos e funções usados por páginas e componentes vão em lib/<dominio>/.',
                 }],
             }],

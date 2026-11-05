@@ -140,7 +140,7 @@ const nextConfig = {
         // Todos os desvios `?filtro` → `<lista>/filtrado` saem de lib/i18n/rotas-migradas.mjs.
         return {
             beforeFiles: [
-                // Rotas já migradas para `app/(intl)/[locale]`: o português continua sem prefixo na URL pública e
+                // Rotas já migradas para `app/[locale]`: o português continua sem prefixo na URL pública e
                 // é servido internamente como `/pt/...`. O `/pt/...` digitado direto responde 404 no proxy.ts.
                 // Lista única em lib/i18n/rotas-migradas.mjs (conferida por teste contra o registro e os arquivos).
                 ...rewritesDasRotasMigradas(),

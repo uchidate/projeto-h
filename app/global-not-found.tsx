@@ -11,10 +11,9 @@ export const metadata: Metadata = {
 /**
  * 404 de URL que não casa com rota nenhuma (ex.: `/xx`).
  *
- * `app/(site)/not-found.tsx` só cobre `notFound()` chamado dentro de `(site)`.
- * Como o app tem mais de um root layout — `(site)` e `(intl)/[locale]`, e o
- * `app/layout.tsx` de topo só repassa `children` —, a URL sem rota caía no 404
- * padrão do Next, sem menu nem saída. Esta convenção (flag
+ * `app/not-found.tsx` só cobre o `notFound()` do layout de `[locale]` (idioma inválido). Como o
+ * `app/layout.tsx` de topo só repassa `children` e o casco (`<html>`) vem do layout de `[locale]`,
+ * a URL sem rota (ex.: `/xx`) caía no 404 padrão do Next, sem menu nem saída. Esta convenção (flag
  * `experimental.globalNotFound`) é a indicada pelo Next para esse caso; ela
  * ignora os layouts, por isso monta o casco completo por conta própria.
  */

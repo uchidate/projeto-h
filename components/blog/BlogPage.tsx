@@ -124,7 +124,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
 
     return (
         <div className="bg-background">
-            {/* Chaves iguais ao SearchParams de app/(site)/blog/page.tsx. */}
+            {/* Chaves iguais ao SearchParams de `BlogPage`. */}
             <RastreioDeFiltros listagem="blog" filtros={['category', 'tag', 'page', 'search', 'order', 'tipo']} />
             {/* H1 só para leitor de tela e robô: o cabeçalho visual da página é o
                 breadcrumb, e um título grande aqui mexeria no layout. */}

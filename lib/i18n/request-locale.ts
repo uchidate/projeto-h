@@ -7,9 +7,8 @@ import { DEFAULT_LOCALE, type Locale } from './config'
  *
  * O next-intl, quando ninguém define o idioma, cai em `headers()` — e isso
  * torna dinâmica toda rota que usa `useTranslations`. Medido no build de
- * 2026-09-13: as ~40 rotas de `(site)` deixaram de ser pré-renderizadas. Aqui o
- * padrão é o português (as rotas de `(site)` não precisam fazer nada) e as
- * rotas de `(intl)/[locale]` gravam o idioma em cada layout e page, que o Next
+ * 2026-09-13: as ~40 rotas em português deixaram de ser pré-renderizadas. Aqui o
+ * padrão é o português e as rotas de `app/[locale]` gravam o idioma em cada layout e page, que o Next
  * pode renderizar em escopos separados.
  */
 const store = cache(() => ({ locale: DEFAULT_LOCALE as Locale }))

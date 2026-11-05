@@ -4,16 +4,16 @@
  * existem em inglês, com os caminhos por idioma; aqui está o mapa completo, para
  * que nenhuma página nasça sem uma decisão de internacionalização.
  *
- * `route-manifest.test.ts` compara este arquivo com `app/(site)` e `app/(intl)`:
+ * `route-manifest.test.ts` compara este arquivo com `app/[locale]`:
  * página nova sem entrada aqui quebra a CI.
  */
 
 export type TipoDeRota = 'detalhe' | 'listagem' | 'editorial' | 'estatica' | 'conta'
 
 export type EstadoDaRota =
-    /** Existe em `app/(intl)/[locale]` (e em `ROUTES`). */
+    /** Existe em `app/[locale]` (e em `ROUTES`). */
     | { estado: 'pronta' }
-    /** Existe em `app/(intl)/[locale]`, mas não é equivalente à versão em português; `falta` diz o quê. */
+    /** Existe em `app/[locale]`, mas não é equivalente à versão em português; `falta` diz o quê. */
     | { estado: 'parcial'; falta: string }
     /** Vai existir; ainda não foi construída. Não bloqueia a CI. */
     | { estado: 'pendente' }
@@ -24,7 +24,7 @@ export type RotaDoManifesto = { tipo: TipoDeRota } & EstadoDaRota
 
 const pronta: EstadoDaRota = { estado: 'pronta' }
 
-/** Chave = caminho PT como em `app/(site)`, com `[param]` para segmentos dinâmicos. */
+/** Chave = caminho PT em português, com `[param]` para segmentos dinâmicos. */
 export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     // Fichas
     '/artists/[slug]': { tipo: 'detalhe', ...pronta },

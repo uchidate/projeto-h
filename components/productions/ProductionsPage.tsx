@@ -82,7 +82,7 @@ export function ProductionsPage({
 
     return (
         <>
-            {/* Chaves iguais ao SearchParams de app/(site)/productions/page.tsx. */}
+            {/* Chaves iguais ao SearchParams de `ProductionsPage`. */}
             <RastreioDeFiltros listagem="producoes" filtros={['genre', 'platform', 'type', 'order', 'page', 'search']} />
 
             {/* ── Topo: título, busca e tipo numa faixa só; gênero e plataforma logo abaixo ── */}

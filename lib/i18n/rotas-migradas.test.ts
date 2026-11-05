@@ -15,8 +15,8 @@ const comoRewrite = (caminho: string) => caminho.replace(/\[(\w+)\]/g, ':$1')
 const pagina = (grupo: string, caminho: string) => join(RAIZ, 'app', grupo, comoPasta(caminho), 'page.tsx')
 
 describe('rotas migradas para a árvore única', () => {
-    it('toda página de (intl) que serve o português está registrada (senão /<rota> dá 404, sem rewrite para /pt/...)', () => {
-        const base = join(RAIZ, 'app', '(intl)', '[locale]')
+    it('toda página de app/[locale] que serve o português está registrada (senão /<rota> dá 404, sem rewrite para /pt/...)', () => {
+        const base = join(RAIZ, 'app', '[locale]')
         const servemPt: string[] = []
         const varrer = (dir: string, prefixo: string) => {
             for (const d of readdirSync(dir, { withFileTypes: true })) {
@@ -33,7 +33,7 @@ describe('rotas migradas para a árvore única', () => {
     })
 
     it('fichas pré-geradas devolvem { locale, ... } completo (senão o Next desiste de pré-gerar todos os slugs)', () => {
-        const base = join(RAIZ, 'app', '(intl)', '[locale]')
+        const base = join(RAIZ, 'app', '[locale]')
         const ruins: string[] = []
         const varrer = (dir: string) => {
             for (const d of readdirSync(dir, { withFileTypes: true })) {
@@ -54,8 +54,8 @@ describe('rotas migradas para a árvore única', () => {
         expect(new Set(ROTAS_MIGRADAS.map((r) => r.pt)).size).toBe(ROTAS_MIGRADAS.length)
     })
 
-    it.each(ROTAS_MIGRADAS)('$pt: página única em (intl) que serve o português', ({ interno }) => {
-        const emIntl = pagina('(intl)/[locale]', interno)
+    it.each(ROTAS_MIGRADAS)('$pt: página única em app/[locale] que serve o português', ({ interno }) => {
+        const emIntl = pagina('[locale]', interno)
         expect(existsSync(emIntl), `falta ${emIntl}`).toBe(true)
         expect(readFileSync(emIntl, 'utf8'), `${interno} precisa de servePt: true`).toContain('servePt: true')
     })
@@ -76,7 +76,7 @@ describe('rotas migradas para a árvore única', () => {
     })
 
     it.each(ROTAS_MIGRADAS.filter((r) => r.filtrado))('$pt: a variante filtrado existe e serve o português', ({ interno }) => {
-        const emIntl = pagina('(intl)/[locale]', `${interno}/filtrado`)
+        const emIntl = pagina('[locale]', `${interno}/filtrado`)
         expect(existsSync(emIntl), `falta ${emIntl}`).toBe(true)
         expect(readFileSync(emIntl, 'utf8')).toContain('servePt: true')
     })

@@ -156,7 +156,7 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
     } catch { /* silencioso */ }
 
     // O fallback precisa devolver o MESMO kind do hub, não sempre 'productions'
-    // — a página consumidora (app/(site)/guias/[slug]/page.tsx) decide qual
+    // — a página consumidora (components/guias/GuiaPagina.tsx) decide qual
     // prop passar (productions/artists/groups) com base em result.kind, então
     // um kind errado aqui fazia hubs de artista/grupo caírem como se não
     // tivessem nenhum item passado pro componente certo (undefined em vez de []).
