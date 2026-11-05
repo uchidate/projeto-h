@@ -89,7 +89,7 @@ describe('AgencyDetailPage', () => {
 
     it('renderiza o caminho feliz com o nome da agência e o elenco relacionado', async () => {
         getAgencyBySlug.mockResolvedValue(baseAgency)
-        const { default: AgencyDetailPage } = await import('./page')
+        const { default: AgencyDetailPage } = await import('./AgencyDetail')
 
         const jsx = await AgencyDetailPage({ params: Promise.resolve({ slug: 'hybe' }) })
         render(jsx)
@@ -101,7 +101,7 @@ describe('AgencyDetailPage', () => {
 
     it('chama notFound() quando a agência não existe', async () => {
         getAgencyBySlug.mockResolvedValue(null)
-        const { default: AgencyDetailPage } = await import('./page')
+        const { default: AgencyDetailPage } = await import('./AgencyDetail')
 
         await expect(
             AgencyDetailPage({ params: Promise.resolve({ slug: 'inexistente' }) }),
@@ -115,7 +115,7 @@ describe('AgencyDetailPage', () => {
         const { getGroups } = await import('@/lib/wordpress/groups')
         vi.mocked(getArtists).mockResolvedValueOnce({ items: [], total: 0, totalPages: 0 })
         vi.mocked(getGroups).mockResolvedValueOnce({ items: [], total: 0, totalPages: 0 })
-        const { default: AgencyDetailPage } = await import('./page')
+        const { default: AgencyDetailPage } = await import('./AgencyDetail')
 
         const jsx = await AgencyDetailPage({ params: Promise.resolve({ slug: 'hybe' }) })
         render(jsx)

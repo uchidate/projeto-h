@@ -1,5 +1,5 @@
 import { Network, BookOpenCheck } from 'lucide-react'
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyLensPanel({ view }: { view: AgencyView }) {
     const { mark, network, allArtists, allGroups, editorialLens } = view

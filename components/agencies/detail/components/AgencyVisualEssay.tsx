@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ExternalLink, ChevronRight } from 'lucide-react'
 import { stripHtml } from '@/lib/utils'
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyVisualEssay({ view }: { view: AgencyView }) {
     const { name, mark, interfaceAccent, editorialVisualStories } = view

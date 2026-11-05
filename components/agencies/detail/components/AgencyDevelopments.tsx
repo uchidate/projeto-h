@@ -3,8 +3,8 @@ import { intlLocale } from '@/lib/i18n/format'
 import Image from 'next/image'
 import { ExternalLink } from 'lucide-react'
 import { stripHtml } from '@/lib/utils'
-import { SectionHeader } from '@/app/(site)/agencies/[slug]/components/SectionHeader'
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import { SectionHeader } from '@/components/agencies/detail/components/SectionHeader'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyDevelopments({ view }: { view: AgencyView }) {
     const { name, businessPillars, currentDevelopments, allArtists, allGroups, currentVisualGroup, currentVisualImage } = view

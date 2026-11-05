@@ -42,11 +42,10 @@ function nucleoProduto(nome: string): string[] {
     return semAcento(nome.replace(/\(.*?\)/g, '')).split(/\s+/).filter(w => w.length >= 3)
 }
 
-export const revalidate = 600
 
 type Params = Promise<{ slug: string }>
 
-export async function generateStaticParams() {
+export async function slugsPreGerados() {
     try {
         const { items, totalPages } = await getCompanies({ perPage: 100, orderby: 'date' })
         const slugs = items.map(c => ({ slug: c.slug }))

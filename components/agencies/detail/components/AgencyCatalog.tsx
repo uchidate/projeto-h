@@ -2,8 +2,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { getWPImage, stripHtml, getYear } from '@/lib/utils'
 import { optionalAccent, toRgba, type CSSVariableProperties } from '@/lib/agencies/presentation'
-import { GroupCard } from '@/app/(site)/agencies/[slug]/components/GroupCard'
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import { GroupCard } from '@/components/agencies/detail/components/GroupCard'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyCatalog({ view }: { view: AgencyView }) {
     const { interfaceAccent, allGroups, activeGroups, inactiveGroups, featuredGroups, groupsByGen, groupsWithoutGeneration } = view

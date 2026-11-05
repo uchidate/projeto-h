@@ -14,7 +14,6 @@ import { GroupRoute, buildGroupMetadata } from '@/components/groups/GroupRoute'
 // Seguro porque `/api/revalidate` expurga a cópia da borda deste item (lib/cloudflare-purge.ts).
 // Mudança feita por script SEM passar por essa rota só aparece na borda em até 6h:
 // use o skill revalidar-cache depois de alteração programática.
-export const revalidate = 21600
 
 type Params = Promise<{ slug: string }>
 
@@ -66,7 +65,7 @@ const TIPO_CONFIGS: Record<string, TipoConfig> = {
 
 // ── Static params ───────────────────────────────────────────────────────────
 
-export async function generateStaticParams() {
+export async function slugsPreGerados() {
     const tipoSlugs = Object.keys(TIPO_CONFIGS).map(t => ({ slug: t }))
     try {
         const { items, totalPages } = await getGroups({ perPage: 100, orderby: 'date' })
