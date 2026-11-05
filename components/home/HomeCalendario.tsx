@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import type { AniversariosHome } from '@/lib/home/aniversarios'
 
 const MARROM = 'text-[#8a5a00]'
@@ -23,7 +24,7 @@ export async function HomeCalendario({ aniversarios, locale = DEFAULT_LOCALE }: 
         <aside aria-label={t('rotulo')} className="px-4 py-4 sm:px-6 lg:px-4">
             <div className="flex items-center justify-between">
                 <h2 className={`${ROTULO} ${MARROM}`}>{t('titulo')}</h2>
-                <Link href="/calendario" className={`${ROTULO} text-muted hover:text-accent`}>{t('abrir')}</Link>
+                {locale === DEFAULT_LOCALE && <Link href="/calendario" className={`${ROTULO} text-muted hover:text-accent`}>{t('abrir')}</Link>}
             </div>
             <ol className="mt-2.5 grid grid-cols-7 gap-1">
                 {semana.map((data, i) => {
@@ -47,7 +48,7 @@ export async function HomeCalendario({ aniversarios, locale = DEFAULT_LOCALE }: 
                     <ul>
                         {hoje.map(a => (
                             <li key={a.slug} className="border-b border-border last:border-b-0">
-                                <Link href={`/artists/${a.slug}`} className="group flex items-center gap-3 py-2.5">
+                                <Link href={href('artist', { slug: a.slug }, locale)} className="group flex items-center gap-3 py-2.5">
                                     <span className="relative h-[50px] w-10 shrink-0 overflow-hidden bg-surface">
                                         {a.foto && <Image src={a.foto} alt="" fill sizes="40px" className="object-cover" />}
                                     </span>
@@ -82,7 +83,7 @@ export async function HomeCalendario({ aniversarios, locale = DEFAULT_LOCALE }: 
                                         {dia.nomes.map((a, i) => (
                                             <span key={a.slug}>
                                                 {i > 0 && ', '}
-                                                <Link href={`/artists/${a.slug}`} className="hover:text-accent hover:underline">{a.nome}</Link>
+                                                <Link href={href('artist', { slug: a.slug }, locale)} className="hover:text-accent hover:underline">{a.nome}</Link>
                                             </span>
                                         ))}
                                     </span>

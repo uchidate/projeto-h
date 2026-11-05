@@ -15,6 +15,7 @@ import { carregarExplore } from '@/lib/home/explore'
 import { carregarTemas } from '@/lib/home/temas'
 import { carregarGuiasPorTema } from '@/lib/home/guias'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { localizeEntity } from '@/lib/i18n/entity-translation'
 import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
 
 /**
@@ -53,10 +54,12 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
         comercio ? getStreamingTopShows() : Promise.resolve({}),
         getCategories(),
         comercio ? getStoreProducts().then(todos => maisVendidos(todos)) : Promise.resolve([]),
-        // Só o calendário em português existe; a busca é por mês de nascimento, ordenada por popularidade.
-        comercio
-            ? Promise.all(mesesParaBuscar(hoje).map(birthMonth => getArtists({ birthMonth, perPage: 100 }))).then(r => r.flatMap(x => x.items))
-            : Promise.resolve([]),
+        // A busca é por mês de nascimento, ordenada por popularidade.
+        // Fora do português, só artistas com ficha traduzida (o filtro `oc_locale` não combina com o mês, então filtra aqui);
+        // nome e foto vêm da versão no idioma e o link do calendário abre essa ficha.
+        Promise.all(mesesParaBuscar(hoje).map(birthMonth => getArtists({ birthMonth, perPage: 100, comTraducoes: !emPt })))
+            .then(r => r.flatMap(x => x.items))
+            .then(itens => emPt ? itens : itens.filter(a => a.translations?.[locale] && !a.translations[locale]?.stale).map(a => localizeEntity(a, locale, 'artist'))),
         comercio ? carregarGuiasPorTema() : Promise.resolve([]),
         comercio ? carregarTemas() : Promise.resolve(null),
         comercio ? carregarExplore() : Promise.resolve([]),
