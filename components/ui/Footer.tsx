@@ -16,7 +16,7 @@ export type FooterLabels = {
     mostSearched?: string
 }
 
-export default function Footer({ columns, tagline, labels, mostSearched = [] }: { columns: FooterColumn[]; tagline: string; labels: FooterLabels & { homeHref?: string }; mostSearched?: SiteLink[] }) {
+export default function Footer({ columns, tagline, labels, mostSearched = [] }: { columns: FooterColumn[]; tagline: string; labels: FooterLabels & { homeHref?: string; privacyHref?: string; termsHref?: string }; mostSearched?: SiteLink[] }) {
     const year = new Date().getFullYear()
     // Privacidade e Termos já ficam na linha de baixo; repeti-los numa coluna só duplica o link.
     const jaNaLinhaFinal = new Set(['/privacidade', '/termos', '/privacy', '/terms'])
@@ -91,8 +91,8 @@ export default function Footer({ columns, tagline, labels, mostSearched = [] }: 
                         © {year} {SITE_NAME}. {labels.rights}
                     </p>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] text-featured-muted sm:text-[11px]">
-                        <Link href="/privacidade" className="whitespace-nowrap transition-colors hover:text-featured-fg">{labels.privacy}</Link>
-                        <Link href="/termos" className="whitespace-nowrap transition-colors hover:text-featured-fg">{labels.terms}</Link>
+                        <Link href={labels.privacyHref ?? '/privacidade'} className="whitespace-nowrap transition-colors hover:text-featured-fg">{labels.privacy}</Link>
+                        <Link href={labels.termsHref ?? '/termos'} className="whitespace-nowrap transition-colors hover:text-featured-fg">{labels.terms}</Link>
                     </div>
                 </div>
             </div>

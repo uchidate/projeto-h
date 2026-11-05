@@ -113,7 +113,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_hero_leaderboard" />
                     </div>
                 )}
-                {soPt && <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>}
+                <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>
                 {temGuias && <HomeCapitulo n={2} chave="aprenda" cor="#0b6b63" locale={locale} />}
                 {temGuias && <div data-bloco="home-guias" className="-mx-3.5 lg:mx-0"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
                 <HomeCapitulo n={2 + g} chave="editoria" cor="#6d3fc0" locale={locale} />

@@ -421,7 +421,12 @@
     }
   },
   "footer": {
-    "catalog": "Catalog"
+    "catalog": "Catalog",
+    "explore": "Explore",
+    "about": "About",
+    "agencies": "Agencies",
+    "aboutUs": "About HallyuHub",
+    "contact": "Contact"
   },
   "layout": {
     "tagline": "K-Drama, K-Pop and Korean culture in English.",

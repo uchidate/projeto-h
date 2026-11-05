@@ -5,18 +5,20 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
+import { href } from '@/lib/i18n/routes'
+import type { Locale } from '@/lib/i18n/config'
 import type { Seguindo } from '@/lib/home/seguindo'
 
 const MONO = 'font-mono text-[11px] font-bold uppercase tracking-[0.12em]'
 
-function quando(iso: string, hoje: string, ontem: string) {
+function quando(iso: string, hoje: string, ontem: string, locale: string) {
     const dia = new Date(iso.endsWith('Z') || /[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`)
     const f = (d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(d)
     const agora = new Date()
     if (f(dia) === f(agora)) return hoje
     if (f(dia) === f(new Date(agora.getTime() - 86_400_000))) return ontem
-    return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' }).format(dia)
+    return new Intl.DateTimeFormat(locale === 'pt' ? 'pt-BR' : locale, { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' }).format(dia)
 }
 
 /**
@@ -25,18 +27,19 @@ function quando(iso: string, hoje: string, ontem: string) {
  */
 export function HomeSeguindo() {
     const t = useTranslations('client.homeSeguindo')
+    const locale = useLocale() as Locale
     const { data: session, status } = useSession()
     const [dados, setDados] = useState<Seguindo | null>(null)
 
     useEffect(() => {
         if (status !== 'authenticated') { setDados(null); return }
         let vivo = true
-        fetch('/api/home/seguindo', { credentials: 'same-origin' })
+        fetch(`/api/home/seguindo?lang=${locale}`, { credentials: 'same-origin' })
             .then(r => (r.ok ? r.json() : null))
             .then((d: Seguindo | null) => { if (vivo) setDados(d) })
             .catch(() => {})
         return () => { vivo = false }
-    }, [status, session?.user])
+    }, [status, session?.user, locale])
 
     if (!dados || dados.novidades.length === 0) return null
     return (
@@ -49,14 +52,14 @@ export function HomeSeguindo() {
                 {dados.nomes.map(n => (
                     <li key={n} className="rounded-full border border-accent px-3 py-1 text-[12px] font-bold text-accent">{n} ✓</li>
                 ))}
-                <li><Link href="/artists" className="rounded-full border border-dashed border-border px-3 py-1 text-[12px] font-bold text-muted hover:text-accent">{t('seguirMais')}</Link></li>
+                <li><Link href={href('artists', undefined, locale)} className="rounded-full border border-dashed border-border px-3 py-1 text-[12px] font-bold text-muted hover:text-accent">{t('seguirMais')}</Link></li>
             </ul>
             <div className="grid gap-4 sm:grid-cols-3">
                 {dados.novidades.map(n => (
-                    <Link key={n.id} href={`/blog/${n.slug}`} className="group block border border-border bg-background">
+                    <Link key={n.id} href={href('post', { slug: n.slug }, locale)} className="group block border border-border bg-background">
                         <span className="relative block aspect-video overflow-hidden bg-surface">
                             {n.imagem && <Image src={n.imagem} alt="" fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />}
-                            <span className={`absolute left-0 top-0 bg-accent px-2 py-1 leading-none text-white ${MONO} text-[11px]`}>{t('novo')} · {quando(n.data, t('hoje'), t('ontem'))}</span>
+                            <span className={`absolute left-0 top-0 bg-accent px-2 py-1 leading-none text-white ${MONO} text-[11px]`}>{t('novo')} · {quando(n.data, t('hoje'), t('ontem'), locale)}</span>
                         </span>
                         <span className="block px-3 py-3">
                             <span className="block font-serif text-[16px] font-medium leading-snug text-foreground group-hover:text-accent">{n.titulo}</span>
