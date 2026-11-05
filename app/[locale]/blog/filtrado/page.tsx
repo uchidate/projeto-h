@@ -17,7 +17,7 @@ export async function generateMetadata({ params, searchParams }: { params: Param
     if (!idiomaValido(locale, { servePt: true })) return {}
     return locale === DEFAULT_LOCALE
         ? metadataBlogListagem({ searchParams })
-        : buildLocalizedBlogMetadata(locale, (await searchParams).page)
+        : buildLocalizedBlogMetadata(locale, (await searchParams).page, (await searchParams).category)
 }
 
 export default async function Page({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
@@ -27,5 +27,5 @@ export default async function Page({ params, searchParams }: { params: Params; s
     if (Object.keys(sp).length === 0) redirect(href('blog', undefined, locale))
     return locale === DEFAULT_LOCALE
         ? <BlogListagem searchParams={searchParams} />
-        : <LocalizedBlogList locale={locale} pageParam={sp.page} />
+        : <LocalizedBlogList locale={locale} pageParam={sp.page} categoryParam={sp.category} />
 }

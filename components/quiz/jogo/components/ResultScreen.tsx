@@ -2,16 +2,19 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 import {
     Share2, Flame, Zap, BookOpen, ChevronDown, ChevronUp,
     ArrowRight, RotateCcw, Clock,
     Target, BarChart3,
 } from 'lucide-react'
 import { SITE_NAME } from '@/lib/constants/site'
+import type { Locale } from '@/lib/i18n/config'
+import { href as rotaHref } from '@/lib/i18n/routes'
 import type { QuizQuestion } from '@/lib/wordpress/quiz'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
-import { CATEGORY_META, CONTENT_LINKS, getResult } from '../lib/config'
+import { CATEGORY_META, CONTENT_LINKS, getResult, hrefDoLink, ehTema } from '../lib/config'
 import { AvisoConsentimento } from '@/components/consent/AvisoConsentimento'
 import { generateShareCard } from './ShareCard'
 import { QuestionText } from './QuestionText'
@@ -31,11 +34,15 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
     bestStreak: number
     onReset: () => void
 }) {
+    const t = useTranslations('client.quiz')
+    const locale = useLocale() as Locale
     const [showReview, setShowReview] = useState(false)
+    const nomeCat = (c: string | undefined) => (ehTema(c) ? t(`categorias.${c}`) : (c ?? ''))
 
     const score  = answers.filter((a, i) => a === questions[i]?.correct).length
     const pct    = score / questions.length
-    const result = getResult(pct)
+    const faixa = getResult(pct)
+    const result = { color: faixa.color, title: t(`resultado.${faixa.chave}.titulo`), sub: t(`resultado.${faixa.chave}.sub`) }
     const perfect = score === questions.length
 
     const scoreByCategory = useMemo(() => {
@@ -72,31 +79,46 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
         return best !== weakestCat ? best : (cats[1]?.[0] ?? null)
     }, [scoreByCategory, weakestCat])
 
-    const EXPLORE_META: Record<string, { href: string; label: string }> = {
-        'k-drama':  { href: '/productions', label: 'Explorar doramas' },
-        'k-pop':    { href: '/groups',       label: 'Explorar grupos K-Pop' },
-        'cultura':  { href: '/blog?category=cultura', label: 'Explorar cultura coreana' },
-        'historia': { href: '/blog?category=cultura', label: 'Explorar história coreana' },
+    const EXPLORE_HREF: Record<string, string> = {
+        'k-drama':  rotaHref('productions', undefined, locale),
+        'k-pop':    rotaHref('groups', undefined, locale),
+        'cultura':  `${rotaHref('blog', undefined, locale)}?category=cultura`,
+        'historia': `${rotaHref('blog', undefined, locale)}?category=cultura`,
     }
+    const blogHref = rotaHref('blog', undefined, locale)
+    const rotuloExplorar = (c: string | null) => (ehTema(c) ? t(`explorar.${c}`) : t('explorar.padrao'))
 
-    const exploreHref  = EXPLORE_META[weakestCat ?? '']?.href  ?? '/blog'
-    const exploreLabel = EXPLORE_META[weakestCat ?? '']?.label ?? 'Explorar conteúdo'
+    const exploreHref  = EXPLORE_HREF[weakestCat ?? ''] ?? blogHref
+    const exploreLabel = rotuloExplorar(weakestCat)
 
-    const strongExploreHref  = EXPLORE_META[strongestCat ?? '']?.href  ?? '/blog'
-    const strongExploreLabel = EXPLORE_META[strongestCat ?? '']?.label ?? 'Explorar mais'
+    const strongExploreHref  = EXPLORE_HREF[strongestCat ?? ''] ?? blogHref
+    const strongExploreLabel = ehTema(strongestCat) ? t(`explorar.${strongestCat}`) : t('explorar.mais')
 
-    const shareText = `Fiz o Quiz Hallyu na ${SITE_NAME}! Acertei ${score}/${questions.length} e fiz ${points.toLocaleString()} pts${bestStreak >= 3 ? ` 🔥${bestStreak}x sequência` : ''} — tente você também!`
+    const pontos = points.toLocaleString(locale)
+    const shareText = t('res.compartilharTexto', {
+        site: SITE_NAME, score, total: questions.length, pts: pontos,
+        streak: bestStreak >= 3 ? t('res.compartilharSeq', { n: bestStreak }) : '',
+    })
 
     const handleShare = async () => {
         const url = typeof window !== 'undefined' ? window.location.href : ''
-        const blob = await generateShareCard({ title: result.title, score, total: questions.length, points, streak: bestStreak, accent: result.color }).catch(() => null)
+        const blob = await generateShareCard({
+            title: result.title, score, total: questions.length, points, streak: bestStreak, accent: result.color,
+            labels: {
+                header: 'HALLYUHUB · QUIZ',
+                myResult: t('cartao.meuResultado'),
+                scoreLine: t('cartao.deTotal', { score, total: questions.length, pts: pontos }),
+                streakLine: t('cartao.sequencia', { n: bestStreak }),
+                cta: t('cartao.faca', { host: `${SITE_NAME.toLowerCase()}.com.br${rotaHref('quiz', undefined, locale)}` }),
+            },
+        }).catch(() => null)
         const file = blob ? new File([blob], 'quiz-hallyuhub.png', { type: 'image/png' }) : null
 
         if (file && navigator.canShare?.({ files: [file] })) {
-            try { await navigator.share({ title: 'Quiz Hallyu', text: shareText, url, files: [file] }); return } catch { /* fallback */ }
+            try { await navigator.share({ title: t('res.compartilharTitulo'), text: shareText, url, files: [file] }); return } catch { /* fallback */ }
         }
         if (navigator.share) {
-            try { await navigator.share({ title: 'Quiz Hallyu', text: shareText, url }); return } catch { /* fallback */ }
+            try { await navigator.share({ title: t('res.compartilharTitulo'), text: shareText, url }); return } catch { /* fallback */ }
         }
         if (file) {
             const a = document.createElement('a')
@@ -134,8 +156,8 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                         <div className={`flex items-center gap-2 bg-[#ffe14d] px-3 py-2 text-[#15102b] ${SOMBRA}`}>
                             <span className="text-[18px]">🔥</span>
                             <div>
-                                <p className="text-[14px] font-black">Sequência de {bestStreak}!</p>
-                                <p className="text-[11px] font-bold">melhor sequência</p>
+                                <p className="text-[14px] font-black">{t('res.sequenciaDe', { n: bestStreak })}</p>
+                                <p className="text-[11px] font-bold">{t('res.melhorSequencia')}</p>
                             </div>
                         </div>
                     )}
@@ -155,12 +177,12 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
                                 <span className="text-4xl font-black tabular-nums">{score}</span>
-                                <span className="text-sm text-muted font-semibold">de {questions.length}</span>
+                                <span className="text-sm text-muted font-semibold">{t('res.deTotal', { total: questions.length })}</span>
                             </div>
                         </div>
                         <div className="mb-3 flex items-center gap-2 bg-[#ffe14d] px-5 py-2 text-[#15102b]">
                             <Zap className="h-4 w-4" />
-                            <span className="text-base font-black">{points.toLocaleString()} pts</span>
+                            <span className="text-base font-black">{t('hist.pts', { n: pontos })}</span>
                         </div>
                         <div className="w-full mt-2">
                             <AccuracyBar correct={score} total={questions.length} />
@@ -169,7 +191,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
 
                     <div className={`border-[3px] border-[#15102b] bg-surface p-6 dark:border-white/30 ${SOMBRA}`}>
                         <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-4 flex items-center gap-1.5">
-                            <BarChart3 className="w-3.5 h-3.5" />Por categoria
+                            <BarChart3 className="w-3.5 h-3.5" />{t('res.porCategoria')}
                         </p>
                         <div className="space-y-4">
                             {Object.entries(scoreByCategory).map(([cat, { correct, total }]) => {
@@ -181,7 +203,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                                         <div className="flex items-center justify-between mb-1.5">
                                             <div className="flex items-center gap-2">
                                                 <meta.Icon className={`w-3.5 h-3.5 ${meta.color}`} />
-                                                <span className={`text-xs font-bold ${meta.color}`}>{meta.label}</span>
+                                                <span className={`text-xs font-bold ${meta.color}`}>{nomeCat(cat)}</span>
                                             </div>
                                             <span className="text-xs font-bold tabular-nums">{correct}/{total}</span>
                                         </div>
@@ -195,7 +217,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                         {relatedContent.length > 0 && (
                             <div className="mt-5 pt-4 border-t border-border">
                                 <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-3 flex items-center gap-1.5">
-                                    <BookOpen className="w-3.5 h-3.5" />Saiba mais sobre o que você errou
+                                    <BookOpen className="w-3.5 h-3.5" />{t('res.saibaErrou')}
                                 </p>
                                 <div className="space-y-2">
                                     {relatedContent.map((item, i) => {
@@ -224,25 +246,25 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                 {/* Timeline + tempo */}
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
                     <div className="border border-border bg-surface p-4">
-                        <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-3">Mapa de respostas</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-3">{t('res.mapa')}</p>
                         <ScoreTimeline answers={answers} questions={questions} />
-                        <p className="text-[10px] text-muted mt-2">cada bloco = 1 pergunta · ícone = categoria</p>
+                        <p className="text-[10px] text-muted mt-2">{t('res.mapaLegenda')}</p>
                     </div>
                     <div className="border border-border bg-surface p-4">
                         <div className="flex items-center justify-between mb-3">
                             <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted flex items-center gap-1.5">
-                                <Clock className="w-3.5 h-3.5" />Tempo por pergunta
+                                <Clock className="w-3.5 h-3.5" />{t('res.tempoPorPergunta')}
                             </p>
                             <div className="flex items-center gap-3 text-[10px] text-muted">
-                                <span>média <span className="font-black text-foreground">{avgTime}s</span></span>
-                                <span>rápidas <span className="font-black text-green-400">{fastAnswers}</span></span>
+                                <span>{t('res.media')} <span className="font-black text-foreground">{avgTime}s</span></span>
+                                <span>{t('res.rapidas')} <span className="font-black text-green-400">{fastAnswers}</span></span>
                             </div>
                         </div>
                         <TimeChart times={timeHistory} maxTime={maxTime} />
                         <div className="flex items-center gap-3 mt-2 text-[10px] text-muted">
-                            <span className="flex items-center gap-1"><span className="w-2 h-2 bg-green-400 inline-block" />rápido (≤40%)</span>
-                            <span className="flex items-center gap-1"><span className="w-2 h-2 bg-amber-400 inline-block" />médio</span>
-                            <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-400 inline-block" />lento</span>
+                            <span className="flex items-center gap-1"><span className="w-2 h-2 bg-green-400 inline-block" />{t('res.rapido')}</span>
+                            <span className="flex items-center gap-1"><span className="w-2 h-2 bg-amber-400 inline-block" />{t('res.medio')}</span>
+                            <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-400 inline-block" />{t('res.lento')}</span>
                         </div>
                     </div>
                 </div>
@@ -254,8 +276,8 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                             className="w-full flex items-center justify-between px-4 py-3.5 bg-surface hover:bg-surface/80 transition-colors text-left">
                             <div className="flex items-center gap-2">
                                 <Target className="w-4 h-4 text-red-400" />
-                                <span className="text-[13px] font-black">Revisar erros</span>
-                                <span className="font-mono text-[11px] text-red-400">{wrongAnswers.length} erradas</span>
+                                <span className="text-[13px] font-black">{t('res.revisar')}</span>
+                                <span className="font-mono text-[11px] text-red-400">{t('res.erradas', { n: wrongAnswers.length })}</span>
                             </div>
                             {showReview ? <ChevronUp className="w-4 h-4 text-muted" /> : <ChevronDown className="w-4 h-4 text-muted" />}
                         </button>
@@ -281,7 +303,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                                             <p className="text-[12px] text-foreground-subtle border-l-2 border-green-500 pl-3"><QuestionText text={q.explanation} /></p>
                                             {q.relatedHref && (
                                                 <Link href={q.relatedHref} className="mt-2 inline-flex items-center gap-1 text-[12px] text-accent hover:underline">
-                                                    <BookOpen className="w-3 h-3" />{q.relatedLabel ?? 'Saiba mais'}
+                                                    <BookOpen className="w-3 h-3" />{q.relatedLabel ?? t('partida.saibaMais')}
                                                 </Link>
                                             )}
                                         </div>
@@ -302,32 +324,32 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                 <div className="flex flex-col sm:flex-row gap-3 flex-wrap mb-10">
                     <button type="button" onClick={onReset}
                         className="flex items-center justify-center gap-2 bg-[#ff5fa2] px-6 py-3.5 text-[15px] font-black text-[#15102b] transition-transform hover:-translate-y-0.5 ${SOMBRA}">
-                        <RotateCcw className="w-4 h-4" />Jogar novamente
+                        <RotateCcw className="w-4 h-4" />{t('res.novamente')}
                     </button>
                     <button type="button" onClick={handleShare}
                         className="flex items-center justify-center gap-2 bg-[#38e1c0] px-6 py-3.5 text-[15px] font-black text-[#15102b] transition-transform hover:-translate-y-0.5 shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]">
-                        <Share2 className="w-4 h-4" />Compartilhar resultado
+                        <Share2 className="w-4 h-4" />{t('res.compartilhar')}
                     </button>
                     <Link href={exploreHref}
                         className="flex items-center justify-center gap-2 bg-[#ffe14d] px-6 py-3.5 text-[15px] font-black text-[#15102b] transition-transform hover:-translate-y-0.5 shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]">
                         <Flame className="w-4 h-4" />{exploreLabel}
                     </Link>
                 </div>
-                <AvisoConsentimento recurso="seu placar e suas estatísticas" className="mb-10" />
+                <AvisoConsentimento recurso="placar" className="mb-10" />
 
                 {/* Categoria mais forte */}
                 {strongestCat && (
                     <div className="border-t border-border pt-8 mb-6">
                         <div className="flex items-center justify-between mb-1">
                             <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted">
-                                Você manda em{' '}
-                                <span className={CATEGORY_META[strongestCat]?.color}>{CATEGORY_META[strongestCat]?.label}</span>
+                                {t('res.mandaEm')}{' '}
+                                <span className={CATEGORY_META[strongestCat]?.color}>{nomeCat(strongestCat)}</span>
                             </p>
                             <span className="font-mono text-[10px] text-green-400 font-black">
-                                {scoreByCategory[strongestCat]?.correct}/{scoreByCategory[strongestCat]?.total} certas
+                                {t('res.certas', { c: scoreByCategory[strongestCat]?.correct ?? 0, t: scoreByCategory[strongestCat]?.total ?? 0 })}
                             </span>
                         </div>
-                        <p className="text-[12px] text-muted mb-4">Vai fundo — tem muito mais conteúdo esperando por você.</p>
+                        <p className="text-[12px] text-muted mb-4">{t('res.vaiFundo')}</p>
                         <Link href={strongExploreHref}
                             className="flex items-center gap-3 border border-green-500/30 bg-green-500/5 px-4 py-3 hover:border-green-500/60 transition-colors group">
                             {(() => { const meta = CATEGORY_META[strongestCat]; return meta ? <meta.Icon className={`w-4 h-4 ${meta.color} shrink-0`} /> : null })()}
@@ -341,16 +363,16 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                 {weakestCat && (
                     <div className="border-t border-border pt-8">
                         <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-1">
-                            Estude mais sobre{' '}
-                            <span className={CATEGORY_META[weakestCat]?.color}>{CATEGORY_META[weakestCat]?.label}</span>
+                            {t('res.estude')}{' '}
+                            <span className={CATEGORY_META[weakestCat]?.color}>{nomeCat(weakestCat)}</span>
                         </p>
-                        <p className="text-[12px] text-muted mb-4">Você teve mais dificuldade nesta categoria — explore o conteúdo do site para melhorar.</p>
+                        <p className="text-[12px] text-muted mb-4">{t('res.dificuldade')}</p>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            {(CONTENT_LINKS[weakestCat] ?? CONTENT_LINKS['all']).map(({ href, label, Icon }) => (
-                                <Link key={href} href={href}
+                            {(CONTENT_LINKS[weakestCat] ?? CONTENT_LINKS['all']).map(({ chave, Icon }) => (
+                                <Link key={chave} href={hrefDoLink(chave, locale)}
                                     className="flex items-center sm:flex-col gap-3 sm:gap-2 border border-border bg-surface px-4 py-3 sm:p-4 sm:text-center hover:border-accent/50 hover:bg-accent/5 transition-colors group">
                                     <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted group-hover:text-accent transition-colors shrink-0" />
-                                    <span className="text-[12px] font-bold text-foreground group-hover:text-accent transition-colors">{label}</span>
+                                    <span className="text-[12px] font-bold text-foreground group-hover:text-accent transition-colors">{t(`links.${chave}`)}</span>
                                 </Link>
                             ))}
                         </div>

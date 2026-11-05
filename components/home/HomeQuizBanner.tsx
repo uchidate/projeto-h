@@ -2,12 +2,13 @@ import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 
 export async function HomeQuizBanner({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
     const t = await getTranslations({ locale, namespace: 'home.quiz' })
     return (
         <Link
-            href="/quiz"
+            href={href('quiz', undefined, locale)}
             className="group flex h-full flex-col justify-center gap-3 bg-[#0b0b0e] px-5 py-4 text-white transition-colors hover:bg-[#15151c]"
         >
             <div className="min-w-0">

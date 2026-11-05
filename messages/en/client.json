@@ -282,5 +282,164 @@
       "hoje": "today",
       "ontem": "yesterday",
       "sobre": "About {nome}"
+  },
+  "perguntaDoDia": {
+    "titulo": "Question of the day",
+    "certo": "Correct",
+    "certoExcl": "Correct!",
+    "sequencia": "{n, plural, one {# day in a row} other {# days in a row}}",
+    "comece": "start your streak",
+    "volte": "Come back tomorrow to keep it going.",
+    "voltePrimeira": "Come back tomorrow to start your streak.",
+    "jogar": "Play the full quiz →"
+  },
+  "consentimento": {
+    "sequencia": "your daily streak",
+    "placar": "your score and stats",
+    "texto": "To save {recurso} in this browser we need your permission to use cookies. Without it, the quiz and the site work normally; they just won't remember you.",
+    "rever": "Review my choice",
+    "privacidade": "How we use data"
+  },
+  "quiz": {
+    "categorias": {
+      "k-pop": "K-Pop",
+      "k-drama": "K-Drama",
+      "cultura": "Culture",
+      "historia": "History"
+    },
+    "categoriasSub": {
+      "k-pop": "Groups and artists",
+      "k-drama": "Series and film",
+      "cultura": "Korean traditions",
+      "historia": "Past and present"
+    },
+    "niveis": {
+      "easy": "Beginner",
+      "medium": "Intermediate",
+      "hard": "Expert"
+    },
+    "tudoMisturado": "Mixed bag",
+    "resultado": {
+      "perfeito": {
+        "titulo": "Perfect!",
+        "sub": "Hallyu expert"
+      },
+      "excelente": {
+        "titulo": "Excellent!",
+        "sub": "Dedicated fan"
+      },
+      "muitoBom": {
+        "titulo": "Very good!",
+        "sub": "Solid knowledge"
+      },
+      "quaseLa": {
+        "titulo": "Almost there!",
+        "sub": "Keep exploring"
+      },
+      "continue": {
+        "titulo": "Keep trying!",
+        "sub": "Beginner"
+      }
+    },
+    "links": {
+      "boyGroups": "Boy groups",
+      "girlGroups": "Girl groups",
+      "soloArtists": "Solo artists",
+      "dramaCatalog": "K-drama catalog",
+      "romanceDramas": "Romance dramas",
+      "bestDramas": "Best dramas",
+      "cultureArticles": "Culture articles",
+      "blog": "Blog",
+      "koreanArtists": "Korean artists",
+      "historicalDramas": "Historical dramas",
+      "historyGuide": "History guide",
+      "kpopGroups": "K-pop groups",
+      "artists": "Artists"
+    },
+    "explorar": {
+      "k-drama": "Explore K-dramas",
+      "k-pop": "Explore K-pop groups",
+      "cultura": "Explore Korean culture",
+      "historia": "Explore Korean history",
+      "padrao": "Explore content",
+      "mais": "Explore more"
+    },
+    "capa": {
+      "perguntas": "{n} QUESTIONS",
+      "tituloSr": "K-Pop and K-Drama quiz: ",
+      "titulo": "Ready to test your<br></br><fa>fan</fa> side? <marca>✦</marca>",
+      "melhorSequencia": "best streak",
+      "deAcerto": "correct",
+      "melhorPlacar": "best score",
+      "semPerguntas": "No questions found.",
+      "convite": "Want more? A round of {n}!",
+      "jogar": "Play now",
+      "soN": "Only {n} questions in this filter: all of them will be used.",
+      "escolhaTime": "Pick your team",
+      "seu": " · {pct}% yours",
+      "nPerguntas": "{n} questions",
+      "ritmo": "What's your pace?",
+      "tempoPts": "{time} s per question · up to {pts} pts",
+      "atalhos": "Press <kbd>A B C D</kbd> or <kbd>1 2 3 4</kbd> to answer",
+      "jogarNivel": "Play · {nivel}"
+    },
+    "partida": {
+      "perguntaDe": "Question {n} of {total}",
+      "bonus": "🔥 Streak of {n}! +{pts} bonus pts",
+      "acertou": "🎉 Correct!",
+      "tempo": "⏰ Time's up!",
+      "quase": "😅 Close!",
+      "saibaMais": "Learn more",
+      "verResultado": "See results",
+      "proxima": "Next",
+      "proximaSeg": "Next ({s}s)"
+    },
+    "res": {
+      "sequenciaDe": "Streak of {n}!",
+      "melhorSequencia": "best streak",
+      "deTotal": "of {total}",
+      "porCategoria": "By category",
+      "saibaErrou": "Learn more about what you missed",
+      "mapa": "Answer map",
+      "mapaLegenda": "each block = 1 question · icon = category",
+      "tempoPorPergunta": "Time per question",
+      "media": "avg",
+      "rapidas": "fast",
+      "rapido": "fast (≤40%)",
+      "medio": "medium",
+      "lento": "slow",
+      "revisar": "Review mistakes",
+      "erradas": "{n} wrong",
+      "novamente": "Play again",
+      "compartilhar": "Share result",
+      "mandaEm": "You rule",
+      "certas": "{c}/{t} correct",
+      "vaiFundo": "Keep going — there's much more content waiting for you.",
+      "estude": "Study more",
+      "dificuldade": "This was your hardest category — explore the site's content to improve.",
+      "compartilharTexto": "I played the Hallyu Quiz on {site}! I got {score}/{total} and scored {pts} pts{streak} — try it yourself!",
+      "compartilharSeq": " 🔥{n}x streak",
+      "certo": "Correct",
+      "errado": "Wrong",
+      "compartilharTitulo": "Hallyu Quiz"
+    },
+    "cartao": {
+      "meuResultado": "My quiz result",
+      "deTotal": "{score} of {total} · {pts} pts",
+      "sequencia": "🔥 streak of {n}",
+      "faca": "Take yours at {host}"
+    },
+    "estat": {
+      "titulo": "Your stats",
+      "partidas": "games",
+      "taxa": "accuracy",
+      "melhorPts": "best pts",
+      "melhorStreak": "best streak",
+      "catForte": "strongest category"
+    },
+    "hist": {
+      "ultimas": "Recent games",
+      "pts": "{n} pts"
+    }
   }
 }

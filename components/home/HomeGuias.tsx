@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import { formatNumber } from '@/lib/i18n/format'
 import { APOIO_DOS_PASSOS, type GuiaDaHome } from '@/lib/home/guias'
 import type { BestOfList } from '@/lib/wordpress/site-settings'
@@ -24,9 +25,9 @@ function Passo({ numero, guia, ultimo }: { numero: number; guia: BestOfList; ult
     )
 }
 
-function CartaoGuia({ guia, titulos }: { guia: GuiaDaHome; titulos: string }) {
+function CartaoGuia({ guia, titulos, locale }: { guia: GuiaDaHome; titulos: string; locale: Locale }) {
     return (
-        <Link href={`/guias/${guia.slug}`}
+        <Link href={href('guide', { slug: guia.slug }, locale)}
             className="group flex h-full min-h-[220px] flex-col justify-between gap-4 border border-[#2c2c38] border-t-[3px] bg-[#18181f] px-4 pb-4 pt-[18px] transition-colors hover:bg-[#20202a]"
             style={{ borderTopColor: guia.cor }}>
             <div className="relative h-[108px]" style={{ width: 70 + 2 * 56 }}>
@@ -66,12 +67,12 @@ export async function HomeGuias({ passos, guias, locale = DEFAULT_LOCALE, naIndi
                 <div className="mt-8 min-w-0 lg:mt-0">
                     <div className="mb-4 flex items-baseline justify-between">
                         <p className={`text-[#ff7aa6] ${MONO}`}>{t('porTema')}</p>
-                        {!naIndice && <Link href="/guias" className={`hidden border-b border-[#ff7aa6] pb-0.5 text-white lg:inline-block ${MONO}`}>{t('verTodos')}</Link>}
+                        {!naIndice && <Link href={href('guides', undefined, locale)} className={`hidden border-b border-[#ff7aa6] pb-0.5 text-white lg:inline-block ${MONO}`}>{t('verTodos')}</Link>}
                     </div>
                     <div className="-mx-4 grid auto-cols-[210px] grid-flow-col gap-3.5 overflow-x-auto px-4 pb-2 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:grid-flow-row lg:auto-cols-auto lg:grid-cols-3 lg:overflow-visible lg:px-0">
-                        {guias.map(g => <CartaoGuia key={g.slug} guia={g} titulos={t('titulos', { total: formatNumber(g.total, undefined, locale) })} />)}
+                        {guias.map(g => <CartaoGuia key={g.slug} guia={g} locale={locale} titulos={t('titulos', { total: formatNumber(g.total, undefined, locale) })} />)}
                     </div>
-                    {!naIndice && <Link href="/guias" className={`mt-4 inline-block border-b border-[#ff7aa6] pb-0.5 text-white lg:hidden ${MONO}`}>{t('verTodos')}</Link>}
+                    {!naIndice && <Link href={href('guides', undefined, locale)} className={`mt-4 inline-block border-b border-[#ff7aa6] pb-0.5 text-white lg:hidden ${MONO}`}>{t('verTodos')}</Link>}
                 </div>
             )}
         </section>

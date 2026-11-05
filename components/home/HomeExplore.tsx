@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { postLink } from '@/components/home/postLink'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href as rota } from '@/lib/i18n/routes'
 import { formatNumber } from '@/lib/i18n/format'
 import type { CartaoExplore } from '@/lib/home/explore'
 import { getWPImage, stripHtml } from '@/lib/utils'
@@ -25,7 +26,7 @@ export async function HomeExplore({ cartoes, locale = DEFAULT_LOCALE }: { cartoe
             <div className="mb-4 flex flex-wrap items-center gap-3">
                 <h2 className="font-serif text-[26px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[32px]">{t('titulo')}</h2>
                 <span className={`border border-accent px-[7px] py-1 leading-none text-accent ${MONO}`}>{t('caixa', { n: cartoes.length })}</span>
-                <Link href="/guias" className={`ml-auto border-b border-foreground pb-0.5 text-foreground ${MONO}`}>{t('verTodos')}</Link>
+                <Link href={locale === DEFAULT_LOCALE ? '/guias' : rota('blog', undefined, locale)} className={`ml-auto border-b border-foreground pb-0.5 text-foreground ${MONO}`}>{t('verTodos')}</Link>
             </div>
             <div className="-mx-4 grid auto-cols-[230px] grid-flow-col gap-3 overflow-x-auto px-4 pb-2 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-5 lg:overflow-visible lg:px-0">
                 {cartoes.map(c => {

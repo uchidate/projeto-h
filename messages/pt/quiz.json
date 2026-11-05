@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "indexTitle": "Quiz de K-Pop e K-Drama: 300+ perguntas",
+    "indexDescription": "Quiz de K-Pop e K-Drama grátis: mais de 300 perguntas sobre música, séries, cultura e história da Coreia, em três níveis e com pergunta nova por dia.",
+    "indexKeywords": [
+      "quiz kpop",
+      "quiz kdrama",
+      "teste kpop",
+      "perguntas kpop",
+      "quiz cultura coreana"
+    ],
+    "categoryTitle": "Quiz de {label}: teste seus conhecimentos",
+    "categoryDescription": "Quiz de {label} grátis: perguntas em três níveis, cronômetro, placar e a explicação de cada resposta. Jogue agora e descubra quanto você sabe de {label}.",
+    "categoryKeywords": [
+      "quiz {label}",
+      "perguntas {label}",
+      "teste {label}"
+    ]
+  },
+  "ld": {
+    "name": "Quiz Hallyu",
+    "categoryName": "Quiz de {label}",
+    "os": "Qualquer",
+    "description": "Quiz de K-Pop, K-Drama, cultura e história da Coreia com pergunta do dia, placar e três níveis de dificuldade.",
+    "categoryDescription": "Quiz de {label} grátis, com pergunta do dia, placar e três níveis de dificuldade.",
+    "currency": "BRL"
+  },
+  "sobre": {
+    "h1": "Quiz de K-Pop e K-Drama: teste seus conhecimentos",
+    "p1": "O quiz do HallyuHub reúne perguntas sobre os grupos de K-Pop, os doramas mais assistidos, a culinária, o idioma e a história da Coreia. É um jeito rápido de descobrir quanto você sabe sobre a onda coreana e de aprender algo novo a cada resposta: depois de cada pergunta aparece uma explicação curta, muitas vezes com um link para a ficha do artista, do grupo ou da produção.",
+    "h2": "Escolha o seu tema",
+    "p2": "No tema <b>K-Pop</b> você responde sobre grupos, idols, músicas e comebacks. No tema <b>K-Drama</b>, sobre séries, elencos e clássicos. Os temas de <b>cultura</b> e <b>história</b> cobrem comida, língua, festividades e a Coreia de Joseon até hoje. Prefere variedade? O modo \"Tudo misturado\" sorteia perguntas de todos os temas.",
+    "p3": "Quer testar o que sabe sobre a sua torcida? Veja a página dos <fandoms>fandoms de K-Pop</fandoms>, escolha a sua e faça o quiz do grupo.",
+    "h3": "Perguntas frequentes sobre o quiz",
+    "faq": {
+      "gratis": {
+        "p": "O quiz é grátis?",
+        "r": "Sim. O jogo do HallyuHub é gratuito e não exige cadastro: basta escolher um tema e o nível e jogar."
+      },
+      "quantas": {
+        "p": "Quantas perguntas tem o quiz?",
+        "r": "Cada partida tem 15 perguntas sorteadas de um banco com mais de 300, sobre K-Pop, K-Drama, cultura e história da Coreia. Há também uma pergunta nova todo dia."
+      },
+      "pontos": {
+        "p": "Como funciona a pontuação?",
+        "r": "Cada acerto vale pontos e quem responde mais rápido ganha um bônus de tempo. Acertar três seguidas dá bônus de sequência. Os níveis Iniciante, Intermediário e Expert mudam o tempo por pergunta e o teto de pontos."
+      },
+      "salvo": {
+        "p": "Minhas estatísticas ficam salvas?",
+        "r": "Se você permitir cookies, o placar, as estatísticas e a sequência de dias ficam guardados neste navegador. Sem permissão, o quiz funciona igual, só não lembra de você na próxima visita."
+      }
+    }
+  }
+}

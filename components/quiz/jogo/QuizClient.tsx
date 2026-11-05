@@ -3,16 +3,18 @@
 
 import { useState, useCallback, useEffect, type ReactNode } from 'react'
 import { BarChart3 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'
 import { trackQuizStart, trackQuizComplete } from '@/lib/analytics'
 import { type QuizStats, EMPTY_STATS, loadStats, saveStats, updateStats } from './lib/stats'
-import { type CategoryFilter, type Screen, CATEGORY_META, DIFFICULTY_CONFIG, QUIZ_SIZE, shuffle } from './lib/config'
+import { type CategoryFilter, type Screen, CATEGORY_META, ehTema, DIFFICULTY_CONFIG, QUIZ_SIZE, shuffle } from './lib/config'
 import { AccuracyBar } from './components/AccuracyBar'
 import { StartScreen } from './components/StartScreen'
 import { QuizScreen } from './components/QuizScreen'
 import { ResultScreen } from './components/ResultScreen'
 
-function _PersonalStats({ stats }: { stats: QuizStats }) {
+export function PersonalStats({ stats }: { stats: QuizStats }) {
+    const t = useTranslations('client.quiz')
     if (stats.totalGames === 0) return null
     const avgPct = stats.totalQuestions > 0 ? Math.round((stats.totalCorrect / stats.totalQuestions) * 100) : 0
     const best = stats.scores[0]
@@ -24,38 +26,38 @@ function _PersonalStats({ stats }: { stats: QuizStats }) {
     return (
         <div className="border border-border bg-surface p-4">
             <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-4 flex items-center gap-1.5">
-                <BarChart3 className="w-3.5 h-3.5" />Suas estatísticas
+                <BarChart3 className="w-3.5 h-3.5" />{t('estat.titulo')}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
                 <div className="text-center">
                     <p className="text-[24px] font-black tabular-nums">{stats.totalGames}</p>
-                    <p className="text-[10px] text-muted">partidas</p>
+                    <p className="text-[10px] text-muted">{t('estat.partidas')}</p>
                 </div>
                 <div className="text-center">
                     <p className="text-[24px] font-black tabular-nums text-accent">{avgPct}%</p>
-                    <p className="text-[10px] text-muted">taxa de acerto</p>
+                    <p className="text-[10px] text-muted">{t('estat.taxa')}</p>
                 </div>
                 <div className="text-center">
                     <p className="text-[24px] font-black tabular-nums text-amber-400">{best?.points.toLocaleString() ?? '—'}</p>
-                    <p className="text-[10px] text-muted">melhor pts</p>
+                    <p className="text-[10px] text-muted">{t('estat.melhorPts')}</p>
                 </div>
                 <div className="text-center">
                     {bestStreak >= 2 ? (
                         <>
                             <p className="text-[24px] font-black tabular-nums text-orange-400">🔥{bestStreak}</p>
-                            <p className="text-[10px] text-muted">melhor streak</p>
+                            <p className="text-[10px] text-muted">{t('estat.melhorStreak')}</p>
                         </>
                     ) : bestCat ? (
                         <>
                             <p className={`text-[13px] font-black ${CATEGORY_META[bestCat[0]]?.color ?? 'text-foreground'}`}>
-                                {CATEGORY_META[bestCat[0]]?.label ?? bestCat[0]}
+                                {ehTema(bestCat[0]) ? t(`categorias.${bestCat[0]}`) : bestCat[0]}
                             </p>
-                            <p className="text-[10px] text-muted">categoria forte</p>
+                            <p className="text-[10px] text-muted">{t('estat.catForte')}</p>
                         </>
                     ) : (
                         <>
                             <p className="text-[13px] font-black text-muted">—</p>
-                            <p className="text-[10px] text-muted">categoria forte</p>
+                            <p className="text-[10px] text-muted">{t('estat.catForte')}</p>
                         </>
                     )}
                 </div>

@@ -4,9 +4,10 @@
 import { useState, useEffect, useRef, useSyncExternalStore } from 'react'
 import { getBannerState, getServerBannerState, subscribeBanner } from '@/lib/consent'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Trophy, ChevronRight, CheckCircle2, XCircle, BookOpen } from 'lucide-react'
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'
-import { CATEGORY_META, DIFFICULTY_CONFIG, TEMA_VISUAL } from '../lib/config'
+import { DIFFICULTY_CONFIG, TEMA_VISUAL, ehTema } from '../lib/config'
 import { QuestionText } from './QuestionText'
 
 // ─── Quiz Screen ──────────────────────────────────────────────────────────────
@@ -16,6 +17,7 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
     difficulty: QuizDifficulty
     onFinish: (answers: (number | null)[], points: number, timeHistory: number[], bestStreak: number) => void
 }) {
+    const t = useTranslations('client.quiz')
     const cfg = DIFFICULTY_CONFIG[difficulty]
     const [current, setCurrent] = useState(0)
     const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null))
@@ -37,7 +39,6 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
     useEffect(() => { stateRef.current = { answers, points, timeHistory, bestStreak } }, [answers, points, timeHistory, bestStreak])
 
     const q = questions[current]
-    const meta = q ? CATEGORY_META[q.category] : null
     // Enquanto o aviso de cookies cobre a tela, o relógio para: a pessoa não pode perder tempo de uma pergunta que nem viu.
     const pausado = useSyncExternalStore(subscribeBanner, getBannerState, getServerBannerState) === 'perguntar'
 
@@ -163,8 +164,8 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
             {/* Cabeçalho: tema, ritmo, sequência, pontos e tempo como etiquetas */}
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-1 text-[12px] font-black uppercase tracking-[0.1em] text-[#15102b]" style={{ background: tema.cor }}>{tema.emoji} {meta?.label}</span>
-                    <span className="text-[12px] font-bold opacity-70">{difficulty === 'easy' ? 'Iniciante' : difficulty === 'medium' ? 'Intermediário' : 'Expert'}</span>
+                    <span className="px-2.5 py-1 text-[12px] font-black uppercase tracking-[0.1em] text-[#15102b]" style={{ background: tema.cor }}>{tema.emoji} {ehTema(q.category) ? t(`categorias.${q.category}`) : q.category}</span>
+                    <span className="text-[12px] font-bold opacity-70">{t(`niveis.${difficulty}`)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                     {streak >= 2 && <span className="animate-pulse bg-[#ffe14d] px-2 py-1 text-[13px] font-black text-[#15102b]">🔥 {streak}x</span>}
@@ -181,7 +182,7 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
                 <div className="linear h-full transition-all duration-1000" style={{ width: `${timePct}%`, background: timeLeft <= 3 ? '#ff5fa2' : timeLeft <= 6 ? '#ffe14d' : '#38e1c0' }} />
             </div>
 
-            <p className="mb-3 text-[12px] font-black uppercase tracking-[0.12em] opacity-70">Pergunta {current + 1} de {questions.length}</p>
+            <p className="mb-3 text-[12px] font-black uppercase tracking-[0.12em] opacity-70">{t('partida.perguntaDe', { n: current + 1, total: questions.length })}</p>
 
             <h2 className="mb-6 font-[family-name:var(--font-playfair)] text-[26px] font-extrabold leading-[1.12] sm:text-[34px]">
                 <QuestionText text={q.question} />
@@ -211,18 +212,18 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
             </div>
 
             {revealed && streakBonus > 0 && streak >= 3 && (
-                <div className="mb-4 bg-[#ffe14d] px-3 py-2 text-[13px] font-black text-[#15102b]">🔥 Sequência de {streak}! +{streakBonus} pts de bônus</div>
+                <div className="mb-4 bg-[#ffe14d] px-3 py-2 text-[13px] font-black text-[#15102b]">{t('partida.bonus', { n: streak, pts: streakBonus })}</div>
             )}
 
             {revealed && (
                 <div className={`mb-6 bg-[#ffe14d] p-4 text-[#15102b] ${SOMBRA}`}>
                     <p className="mb-1 text-[13px] font-black uppercase tracking-[0.1em]">
-                        {selected === q.correct ? '🎉 Acertou!' : selected === null ? '⏰ Tempo esgotado!' : '😅 Quase!'}
+                        {selected === q.correct ? t('partida.acertou') : selected === null ? t('partida.tempo') : t('partida.quase')}
                     </p>
                     <p className="text-[15px] font-medium leading-relaxed"><QuestionText text={q.explanation} /></p>
                     {q.relatedHref && (
                         <Link href={q.relatedHref} className="mt-2 inline-flex items-center gap-1 text-[13px] font-black underline">
-                            <BookOpen className="h-3.5 w-3.5" />{q.relatedLabel ?? 'Saiba mais'}
+                            <BookOpen className="h-3.5 w-3.5" />{q.relatedLabel ?? t('partida.saibaMais')}
                         </Link>
                     )}
                 </div>
@@ -232,9 +233,9 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
                 <button type="button" onClick={handleNext}
                     className={`flex h-14 w-full items-center justify-center gap-2 bg-[#ff5fa2] text-[16px] font-black text-[#15102b] transition-transform hover:-translate-y-0.5 ${SOMBRA}`}>
                     {current + 1 >= questions.length ? (
-                        <><Trophy className="h-5 w-5" />Ver resultado</>
+                        <><Trophy className="h-5 w-5" />{t('partida.verResultado')}</>
                     ) : (
-                        <>Próxima{autoSecs !== null ? ` (${autoSecs}s)` : ''}<ChevronRight className="h-5 w-5" /></>
+                        <>{autoSecs !== null ? t('partida.proximaSeg', { s: autoSecs }) : t('partida.proxima')}<ChevronRight className="h-5 w-5" /></>
                     )}
                 </button>
             )}

@@ -2,6 +2,8 @@ import { getAgencies } from '@/lib/wordpress/agencies'
 import { getFoods } from '@/lib/wordpress/foods'
 import { getPosts } from '@/lib/wordpress/posts'
 import type { WPPost } from '@/lib/wordpress/types'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href as rota } from '@/lib/i18n/routes'
 
 export type UnidadeExplore = 'artigos' | 'fichas'
 export type ChaveExplore = 'kpop' | 'cultura' | 'gastronomia' | 'kbeauty' | 'guias' | 'kdrama' | 'kfilm' | 'reality' | 'webtoons' | 'agencias'
@@ -43,15 +45,34 @@ export interface CartaoExplore {
     novo: boolean
 }
 
-/** Total e matéria mais recente de cada assunto. Assunto sem total (falha do WP) fica de fora em vez de mostrar zero. */
-export async function carregarExplore(): Promise<CartaoExplore[]> {
-    const lidos = await Promise.allSettled(TEMAS_EXPLORE.map(async (t): Promise<CartaoExplore> => {
-        const base = { chave: t.chave, cor: t.cor, href: t.href, hangul: t.hangul, unidade: t.unidade }
-        const posts = t.feed ? await getPosts({ ...t.feed, perPage: 1, includeContent: false }) : null
+/**
+ * Destino do cartão. Em português: o endereço do tema. Em outro idioma: a listagem do blog filtrada pela categoria
+ * (o feed por tag não tem página traduzida), as fichas e as agências traduzidas.
+ */
+function destino(t: TemaExplore, locale: Locale): string {
+    if (locale === DEFAULT_LOCALE) return t.href
+    if (t.chave === 'gastronomia') return rota('foods', undefined, locale)
+    if (t.chave === 'agencias') return rota('agencies', undefined, locale)
+    const feed = t.feed
+    return feed && 'category' in feed ? `${rota('blog', undefined, locale)}?category=${feed.category}` : rota('blog', undefined, locale)
+}
+
+/**
+ * Total e matéria mais recente de cada assunto. Assunto sem total (falha do WP) fica de fora em vez de mostrar zero.
+ * Fora do português só conta o que está traduzido, e o assunto por tag (guias) não entra: a listagem traduzida só filtra por categoria.
+ */
+export async function carregarExplore(locale: Locale = DEFAULT_LOCALE): Promise<CartaoExplore[]> {
+    const emPt = locale === DEFAULT_LOCALE
+    const lang = emPt ? {} : { lang: locale }
+    const idioma = emPt ? {} : { locale }
+    const temas = emPt ? TEMAS_EXPLORE : TEMAS_EXPLORE.filter(t => !(t.feed && 'tag' in t.feed) || t.chave === 'gastronomia')
+    const lidos = await Promise.allSettled(temas.map(async (t): Promise<CartaoExplore> => {
+        const base = { chave: t.chave, cor: t.cor, href: destino(t, locale), hangul: t.hangul, unidade: t.unidade }
+        const posts = t.feed ? await getPosts({ ...t.feed, perPage: 1, includeContent: false, ...lang }) : null
         const ultimo = posts?.items[0] ?? null
         const novo = ultimo ? Date.now() - new Date(ultimo.date.endsWith('Z') ? ultimo.date : `${ultimo.date}Z`).getTime() < 2 * 86_400_000 : false
-        if (t.chave === 'gastronomia') return { ...base, total: (await getFoods({ perPage: 1 })).total, ultimo, novo }
-        if (t.chave === 'agencias') return { ...base, total: (await getAgencies({ perPage: 1 })).total, ultimo: null, novo: false }
+        if (t.chave === 'gastronomia') return { ...base, total: (await getFoods({ perPage: 1, ...idioma })).total, ultimo, novo }
+        if (t.chave === 'agencias') return { ...base, total: (await getAgencies({ perPage: 1, ...idioma })).total, ultimo: null, novo: false }
         return { ...base, total: posts?.total ?? 0, ultimo, novo }
     }))
     return lidos.flatMap(r => (r.status === 'fulfilled' && r.value.total > 0 ? [r.value] : []))

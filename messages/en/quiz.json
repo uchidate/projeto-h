@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "indexTitle": "K-Pop and K-Drama Quiz: Test Your Hallyu Knowledge",
+    "indexDescription": "Free K-pop and K-drama quiz: questions on music, series, culture and history in Korea, in three levels, with a new question every day.",
+    "indexKeywords": [
+      "kpop quiz",
+      "kdrama quiz",
+      "korean culture quiz",
+      "hallyu quiz",
+      "korean history quiz"
+    ],
+    "categoryTitle": "{label} Quiz: Test Your Knowledge",
+    "categoryDescription": "Free {label} quiz: questions in three levels, a timer, a scoreboard and the explanation behind every answer. Play now and see how much you know.",
+    "categoryKeywords": [
+      "{label} quiz",
+      "{label} questions",
+      "{label} trivia"
+    ]
+  },
+  "ld": {
+    "name": "Hallyu Quiz",
+    "categoryName": "{label} Quiz",
+    "os": "Any",
+    "description": "Quiz on K-pop, K-drama, Korean culture and history with a daily question, a scoreboard and three difficulty levels.",
+    "categoryDescription": "Free {label} quiz with a daily question, a scoreboard and three difficulty levels.",
+    "currency": "USD"
+  },
+  "sobre": {
+    "h1": "K-Pop and K-Drama quiz: test your knowledge",
+    "p1": "The HallyuHub quiz gathers questions on K-pop groups, the most-watched K-dramas, Korean food, language and history. It is a quick way to find out how much you know about the Korean wave and to learn something new with every answer: after each question a short explanation appears.",
+    "h2": "Pick your theme",
+    "p2": "The <b>K-Pop</b> theme asks about groups, idols and songs, and <b>K-Drama</b> about series, casts and classics. The <b>culture</b> and <b>history</b> themes cover food, language, festivals and Korea from Joseon to today. Prefer variety? \"Mixed bag\" mode draws questions from every theme.",
+    "p3": "",
+    "h3": "Frequently asked questions about the quiz",
+    "faq": {
+      "gratis": {
+        "p": "Is the quiz free?",
+        "r": "Yes. The HallyuHub game is free and needs no sign-up: just pick a theme and a level and play."
+      },
+      "quantas": {
+        "p": "How many questions are in a round?",
+        "r": "Each round has 15 questions drawn at random from the English question bank, on K-pop, K-drama, Korean culture and history. There is also a new question every day."
+      },
+      "pontos": {
+        "p": "How does scoring work?",
+        "r": "Each correct answer earns points, and answering faster earns a time bonus. Three correct answers in a row earn a streak bonus. The Beginner, Intermediate and Expert levels change the time per question and the points ceiling."
+      },
+      "salvo": {
+        "p": "Are my stats saved?",
+        "r": "If you allow cookies, your score, stats and daily streak are kept in this browser. Without permission the quiz works the same; it just won't remember you on your next visit."
+      }
+    }
+  }
+}

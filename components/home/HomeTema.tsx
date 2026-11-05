@@ -5,6 +5,7 @@ import { HomeProdutoMini } from '@/components/home/HomeProdutoMini'
 import { postLink } from '@/components/home/postLink'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href as rota } from '@/lib/i18n/routes'
 import { dataRelativa } from '@/lib/home/data-relativa'
 import type { FichaDoTema, TemaHome } from '@/lib/home/temas'
 import { getWPImage, stripHtml } from '@/lib/utils'
@@ -87,7 +88,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                     <div>
                         <p className={`mb-2 ${MONO} text-[10px]`} style={{ color: cor }}>{t('pratos')}</p>
                         <div className="-mx-4 grid auto-cols-[44%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0">
-                            {pratos.map(f => <Ficha key={f.slug} ficha={f} base="/comidas" cor={cor} naLoja={t('naLoja', { n: f.naLoja })} />)}
+                            {pratos.map(f => <Ficha key={f.slug} ficha={f} base={rota('foods', undefined, locale)} cor={cor} naLoja={t('naLoja', { n: f.naLoja })} />)}
                         </div>
                     </div>
                 )}
@@ -95,7 +96,7 @@ export async function HomeTema({ tema, chave, cor, href, bloco, locale = DEFAULT
                     <div className={chave === 'beleza' ? 'lg:col-span-2' : ''}>
                         <p className={`mb-2 ${MONO} text-[10px]`} style={{ color: cor }}>{t('marcas')}</p>
                         <div className={`-mx-4 grid auto-cols-[44%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 ${chave === 'beleza' ? 'lg:grid-cols-4' : ''}`}>
-                            {marcas.map(f => <Ficha key={f.slug} ficha={f} base="/empresas" cor={cor} naLoja={t('naLoja', { n: f.naLoja })} />)}
+                            {marcas.map(f => <Ficha key={f.slug} ficha={f} base={rota('companies', undefined, locale)} cor={cor} naLoja={t('naLoja', { n: f.naLoja })} />)}
                         </div>
                     </div>
                 )}
