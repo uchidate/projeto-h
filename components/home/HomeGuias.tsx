@@ -10,7 +10,7 @@ import type { BestOfList } from '@/lib/wordpress/site-settings'
 const MONO = 'font-mono text-[10px] font-bold uppercase tracking-[0.12em]'
 
 function Passo({ numero, guia, ultimo }: { numero: number; guia: BestOfList; ultimo: boolean }) {
-    const apoio = APOIO_DOS_PASSOS[guia.label]
+    const apoio = guia.apoio ?? APOIO_DOS_PASSOS[guia.label]
     return (
         <li className="relative flex w-[200px] shrink-0 flex-col gap-3 border border-[#2c2c38] bg-[#18181f] p-3.5 lg:w-auto lg:flex-row lg:gap-3.5 lg:border-0 lg:bg-transparent lg:p-0">
             <div className="flex flex-col items-start lg:items-center">

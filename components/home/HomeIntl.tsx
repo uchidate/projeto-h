@@ -73,6 +73,7 @@ export async function HomeIntl({ locale }: { locale: Locale }) {
                 homeSettings={dados.siteSettings.home}
                 streamingByPlatform={dados.streamingByPlatform}
                 categoryMap={dados.categoryMap}
+                cultureGuides={dados.passos}
                 postsEditorias={dados.postsEditorias}
                 capasAlbum={dados.capasAlbum}
                 producoesEmAlta={dados.producoesEmAlta}
