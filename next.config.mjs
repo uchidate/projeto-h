@@ -137,27 +137,13 @@ const nextConfig = {
         ],
     },
     async rewrites() {
-        // Mesmo desvio nas listagens: sem query a página é estática (ISR); com
-        // filtro, paginação ou busca vai para <lista>/filtrado, que lê `searchParams`.
-        // As chaves vêm do tipo SearchParams de app/(site)/<lista>/<Lista>Listagem.tsx.
-        // `groups`, `artists`, `productions`, `blog`, `comidas` e `guias` (índice) já migraram: seus desvios saem de lib/i18n/rotas-migradas.mjs.
-        const chavesDasListagens = {
-            loja: ['categoria', 'loja', 'busca', 'ofertas'],
-        }
-        const desviosListagens = Object.entries(chavesDasListagens).flatMap(([lista, chaves]) =>
-            chaves.map(key => ({
-                source: `/${lista}`,
-                has: [{ type: 'query', key }],
-                destination: `/${lista}/filtrado`,
-            })),
-        )
+        // Todos os desvios `?filtro` → `<lista>/filtrado` saem de lib/i18n/rotas-migradas.mjs.
         return {
             beforeFiles: [
                 // Rotas já migradas para `app/(intl)/[locale]`: o português continua sem prefixo na URL pública e
                 // é servido internamente como `/pt/...`. O `/pt/...` digitado direto responde 404 no proxy.ts.
                 // Lista única em lib/i18n/rotas-migradas.mjs (conferida por teste contra o registro e os arquivos).
                 ...rewritesDasRotasMigradas(),
-                    ...desviosListagens,
             ],
             afterFiles: [
             // O IndexNow exige o arquivo de verificação na raiz, com o nome da

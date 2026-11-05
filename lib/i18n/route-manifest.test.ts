@@ -1,4 +1,4 @@
-import { readdirSync, existsSync } from 'node:fs'
+import { readdirSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { MANIFESTO_DE_ROTAS } from './route-manifest'
@@ -53,9 +53,9 @@ describe('manifesto de rotas (i18n)', () => {
         expect(faltando, `Marcadas como prontas, mas sem página em app/(intl): ${faltando.join(', ')}`).toEqual([])
     })
 
-    it('toda página em app/(intl) está marcada como pronta (sem tradução fantasma)', () => {
+    it('toda página em app/(intl) está no manifesto como pronta, parcial ou só-PT (sem tradução fantasma)', () => {
         const emIntl = paginasEmIntl()
-        const naoMarcadas = emIntl.filter(c => !['pronta', 'parcial'].includes(MANIFESTO_DE_ROTAS[c]?.estado))
+        const naoMarcadas = emIntl.filter(c => !['pronta', 'parcial', 'somentePt'].includes(MANIFESTO_DE_ROTAS[c]?.estado))
         expect(naoMarcadas, `Páginas em app/(intl) fora do manifesto como "pronta": ${naoMarcadas.join(', ')}`).toEqual([])
     })
 
@@ -69,6 +69,24 @@ describe('manifesto de rotas (i18n)', () => {
         for (const [caminho, rota] of Object.entries(MANIFESTO_DE_ROTAS)) {
             if (rota.estado === 'somentePt') expect(rota.motivo.trim(), caminho).not.toBe('')
         }
+    })
+
+    it('página só-PT em app/(intl) responde 404 fora do português', () => {
+        const dePara = caminhoPtDe('en')
+        const semGuarda: string[] = []
+        const percorrer = (dir: string, prefixo: string) => {
+            for (const entrada of readdirSync(dir, { withFileTypes: true })) {
+                const caminho = join(dir, entrada.name)
+                if (entrada.isDirectory()) percorrer(caminho, `${prefixo}/${entrada.name}`)
+                else if (entrada.name === 'page.tsx' && !ehInterna(prefixo)) {
+                    const pt = dePara[prefixo || '/'] ?? (prefixo || '/')
+                    if (MANIFESTO_DE_ROTAS[pt]?.estado !== 'somentePt') continue
+                    if (!readFileSync(caminho, 'utf8').includes('locale !== DEFAULT_LOCALE')) semGuarda.push(pt)
+                }
+            }
+        }
+        percorrer(join(RAIZ, 'app', '(intl)', '[locale]'), '')
+        expect(semGuarda, `Só-PT sem guarda de idioma: ${semGuarda.join(', ')}`).toEqual([])
     })
 
     it('a pasta de páginas existe (guarda contra rodar fora da raiz)', () => {

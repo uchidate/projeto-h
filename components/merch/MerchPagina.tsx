@@ -9,8 +9,6 @@ import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { produtosDaCategoria } from '@/lib/blog/categoriaLoja'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 
-export const revalidate = 600
-
 const URL_MERCH = `${SITE_URL}/merch`
 
 export const metadata: Metadata = {

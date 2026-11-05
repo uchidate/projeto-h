@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { ROTAS_MIGRADAS, rewritesDasRotasMigradas } from './rotas-migradas.mjs'
 import { href } from './routes'
+import { MANIFESTO_DE_ROTAS } from './route-manifest'
 
 // `href` tipa os params por rota; aqui a rota vem de uma lista, então usamos uma assinatura solta.
 const hrefSolto = href as unknown as (rota: string, params: Record<string, string> | undefined, locale: 'pt' | 'en') => string
@@ -60,7 +61,8 @@ describe('rotas migradas para a árvore única', () => {
         expect(existsSync(pagina('(site)', pt)), `sobrou cópia em app/(site)${pt}`).toBe(false)
     })
 
-    it.each(ROTAS_MIGRADAS)('$pt: bate com o registro de caminhos por idioma', ({ pt, interno }) => {
+    // Só-PT (manifesto) não tem caminho em outro idioma, então não consta em ROUTES.
+    it.each(ROTAS_MIGRADAS.filter((r) => MANIFESTO_DE_ROTAS[r.pt.replace(/:(\w+)/g, '[$1]')]?.estado !== 'somentePt'))('$pt: bate com o registro de caminhos por idioma', ({ pt, interno }) => {
         // O caminho em inglês de ROUTES é o nome da pasta; o em português é a URL pública.
         const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending', 'agencies', 'companies', 'fandoms', 'calendar', 'quiz', 'search', 'birthdays', 'artist', 'production', 'fandom', 'position', 'group', 'agency', 'company', 'food', 'guide', 'post', 'quizCategory', 'login', 'signup', 'cultura101', 'profile', 'myLists', 'privacy', 'terms'] as const
         // Rotas com parâmetro: `/artists/:slug` vira `/artists/X` dos dois lados antes de comparar.

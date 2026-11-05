@@ -3,46 +3,38 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
-import { getCompanyBySlug } from '@/lib/wordpress/companies'
-import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
+import { getArtistBySlug } from '@/lib/wordpress/artists'
+import { getStoreProductsByArtistId } from '@/lib/wordpress/store'
+import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
-
-export const revalidate = 300
 
 type Params = Promise<{ slug: string }>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { slug } = await params
-    const company = await getCompanyBySlug(slug)
-    if (!company) return {}
-    const name = stripHtml(company.title.rendered)
-    const url = `${SITE_URL}/loja/empresa/${slug}`
+    const artist = await getArtistBySlug(slug)
+    if (!artist) return {}
+    const name = stripHtml(artist.title.rendered)
+    const url = `${SITE_URL}/loja/artista/${slug}`
     return {
         title: `Loja ${name}`,
-        description: `Produtos de ${name} selecionados pela curadoria ${SITE_NAME}.`,
+        description: `Produtos relacionados a ${name} selecionados pela curadoria ${SITE_NAME}: álbuns, photocards, lightsticks e mais.`,
         alternates: { canonical: url },
         openGraph: { ...baseOG(url), title: `Loja ${name} — ${SITE_NAME}` },
         twitter: { ...baseTwitter() },
     }
 }
 
-export default async function LojaEmpresaPage({ params }: { params: Params }) {
+export default async function LojaArtistaPage({ params }: { params: Params }) {
     const { slug } = await params
-    const company = await getCompanyBySlug(slug)
-    if (!company) notFound()
+    const artist = await getArtistBySlug(slug)
+    if (!artist) notFound()
 
-    const acf = company.acf ?? {}
-    const name = stripHtml(company.title.rendered)
-    const img = getWPImage(company._embedded, company.featured_image_url, name)
-    const contexto = `loja_empresa:${slug}`
-    const produtos = await getVitrineVinculada(
-        acf.linked_products,
-        [name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])],
-        contexto,
-        { limit: 60 },
-    )
+    const name = stripHtml(artist.title.rendered)
+    const img = getWPImage(artist._embedded, artist.featured_image_url, name)
+    const produtos = ordenarPrateleira(await getStoreProductsByArtistId(artist.id), `loja_artista:${slug}`)
 
     return (
         <main className="min-h-screen bg-background pb-20">
@@ -73,15 +65,12 @@ export default async function LojaEmpresaPage({ params }: { params: Params }) {
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                        {produtos.map(p => <StoreCard key={p.id} product={p} contexto={contexto} />)}
+                        {produtos.map(p => <StoreCard key={p.id} product={p} contexto={`loja_artista:${slug}`} />)}
                     </div>
                 )}
-                <div className="mt-10 flex flex-wrap gap-4 border-t border-border pt-6">
-                    <Link href={`/empresas/${slug}`} className="font-mono text-[12px] font-semibold text-muted transition-colors hover:text-foreground">
-                        ← Ver ficha de {name}
-                    </Link>
+                <div className="mt-10 border-t border-border pt-6">
                     <Link href="/loja" className="font-mono text-[12px] font-semibold text-muted transition-colors hover:text-foreground">
-                        Ver a loja inteira →
+                        ← Ver a loja inteira
                     </Link>
                 </div>
             </div>
