@@ -16,6 +16,9 @@ export type TranslatableSchema = { readonly [field: string]: FieldRule }
 
 const CHAPTER = ['period', 'title', 'description', 'visual_alt', 'quote_text', 'quote_context'] as const
 const METRIC = ['value', 'label', 'context', 'as_of'] as const
+const PILLAR = ['title', 'description', 'visual_alt', 'visual_caption', 'quote_text', 'quote_context'] as const
+const DEVELOPMENT = ['title', 'description'] as const
+const VIDEO = ['title', 'context', 'badge'] as const
 
 export const TRANSLATABLE_ACF = {
     artist: {
@@ -49,6 +52,30 @@ export const TRANSLATABLE_ACF = {
     },
     production: {
         subtitle: true,
+        curiosidades: true,
+    },
+    // Agências, empresas e comidas aceitam tradução no WordPress, mas as páginas ainda não a leem
+    // (ver `publico` em entidades-traduziveis.ts). Só texto: nomes próprios, URLs, datas e enums ficam de fora.
+    agency: {
+        story_intro: true,
+        milestones: true,
+        achievements: true,
+        business_pillars: PILLAR,
+        story_chapters: CHAPTER,
+        key_metrics: METRIC,
+        current_developments: DEVELOPMENT,
+        featured_videos: VIDEO,
+    },
+    company: {
+        curiosidades: true,
+        milestones: true,
+        founder_quote_text: true,
+        founder_quote_context: true,
+    },
+    food: {
+        where_to_find: true,
+        main_ingredients: true,
+        allergens: true,
         curiosidades: true,
     },
 } as const satisfies Record<string, TranslatableSchema>
