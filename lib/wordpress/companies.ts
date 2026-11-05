@@ -198,7 +198,7 @@ const SETOR_SINONIMO: Record<string, string> = {
     streaming: 'media',
 }
 
-function setorNormalizado(industry?: string | null): string | null {
+export function setorNormalizado(industry?: string | null): string | null {
     if (!industry) return null
     return SETOR_SINONIMO[industry] ?? industry
 }

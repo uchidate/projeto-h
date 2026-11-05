@@ -1,11 +1,17 @@
 import { SITE_NAME } from '@/lib/constants/site'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { buildAlternates } from '@/lib/i18n/alternates'
+import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
+import { href } from '@/lib/i18n/routes'
+import { rotuloDaCategoriaEm } from '@/lib/i18n/rotulos-ficha'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getFoodBySlug, getFoods, getRelatedFoods, FOOD_CATEGORY_LABELS, FOOD_CATEGORY_EMOJI, KOREA_REGIONS } from '@/lib/wordpress/foods'
+import { getFoodBySlug, getFoods, getRelatedFoods, FOOD_CATEGORY_EMOJI, KOREA_REGIONS } from '@/lib/wordpress/foods'
 import { getProductionsByIds } from '@/lib/wordpress/productions'
 import { SITE_URL } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
@@ -25,7 +31,7 @@ import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
 
 
-type Params = Promise<{ slug: string }>
+type Params = Promise<{ slug: string; locale?: Locale }>
 
 export async function slugsPreGerados() {
     try {
@@ -42,38 +48,49 @@ export async function slugsPreGerados() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-    const { slug } = await params
-    const food = await getFoodBySlug(slug)
-    if (!food) return {}
+    const { slug, locale = DEFAULT_LOCALE } = await params
+    const found = await getFoodBySlug(slug)
+    if (!found) return {}
+    // Sem tradução publicada: a ficha em português, fora do índice e com canonical no original.
+    if (semTraducao(found, locale)) {
+        return { ...(await generateMetadata({ params: Promise.resolve({ slug }) })), robots: { index: false, follow: true } }
+    }
+    const food = localizeEntity(found, locale, 'food')
+    const t = await getTranslations({ locale, namespace: 'entity.food' })
 
     const name = stripHtml(food.title.rendered)
     const korean = food.acf?.name_korean
-    const title = `${name}${korean ? ` (${korean})` : ''} — Culinária Coreana`
+    const title = korean ? t('metaTitleKorean', { name, korean }) : t('metaTitle', { name })
     const resumo = stripHtml(food.excerpt?.rendered || food.content?.rendered || '')
     const description = resumo
         ? metaDescriptionComida(resumo, food.acf?.main_ingredients)
-        : `Tudo sobre ${name}: ingredientes, onde comer, curiosidades e mais.`
+        : t('metaDescription', { name })
     const image = getWPImage(food._embedded, food.featured_image_url)
-    const url = `${SITE_URL}/comidas/${slug}`
+    const url = `${SITE_URL}${href('food', { slug }, locale)}`
 
-    return buildWordPressMetadata({ title, description, url, image })
+    return buildWordPressMetadata({
+        title, description, url, image,
+        languages: buildAlternates('food', { slug }, locale, availableLocales(found)).languages,
+        ogLocale: LOCALE_META[locale].ogLocale,
+    })
 }
 
 const SPICY_LABELS = ['Sem pimenta', 'Levemente picante', 'Picante', 'Bem picante', 'Muito picante', 'Extremamente picante']
 
 export default async function FoodPage({ params }: { params: Params }) {
-    const { slug } = await params
-    const food = await getFoodBySlug(slug)
-    if (!food) notFound()
+    const { slug, locale = DEFAULT_LOCALE } = await params
+    const sourceFood = await getFoodBySlug(slug)
+    if (!sourceFood) notFound()
+    const food = localizeEntity(sourceFood, locale, 'food')
 
     const acf = food.acf ?? {}
     const name = stripHtml(food.title.rendered)
     const img = getWPImage(food._embedded, food.featured_image_url)
     const imageCredit = stripHtml(food._embedded?.['wp:featuredmedia']?.[0]?.caption?.rendered ?? '')
-    const catLabel = acf.category ? FOOD_CATEGORY_LABELS[acf.category] : null
+    const catLabel = await rotuloDaCategoriaEm(acf.category, locale)
     const catEmoji = acf.category ? FOOD_CATEGORY_EMOJI[acf.category] : '🍽️'
     const spicy = acf.spicy_level ?? 0
-    const foodUrl = `${SITE_URL}/comidas/${slug}`
+    const foodUrl = `${SITE_URL}${href('food', { slug }, locale)}`
 
     const [vitrine, posts, mentions] = await Promise.all([
         getVitrineVinculada(acf.linked_products, [name, ...(acf.main_ingredients ?? [])], `comida:${slug}`, { temas: ['culinaria'] }),
@@ -91,7 +108,7 @@ export default async function FoodPage({ params }: { params: Params }) {
 
     const breadcrumbSchema = buildBreadcrumbSchema([
         { name: `${SITE_NAME}`, url: SITE_URL },
-        { name: 'Comidas', url: `${SITE_URL}/comidas` },
+        { name: 'Comidas', url: `${SITE_URL}${href('foods', undefined, locale)}` },
         { name: name, url: foodUrl },
     ])
 
@@ -188,7 +205,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                                 {acf.region && (
                                     (KOREA_REGIONS as readonly string[]).includes(acf.region) ? (
                                         <Link
-                                            href={`/comidas?region=${acf.region}`}
+                                            href={`${href('foods', undefined, locale)}?region=${acf.region}`}
                                             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface font-mono text-[11px] text-muted hover:text-foreground hover:border-border-strong transition-colors"
                                         >
                                             📍 {acf.region}
@@ -345,7 +362,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                             const fImg = f.featured_image_url
                             const fCatEmoji = f.acf?.category ? FOOD_CATEGORY_EMOJI[f.acf.category] : '🍽️'
                             return (
-                                <Link key={f.id} href={`/comidas/${f.slug}`}
+                                <Link key={f.id} href={href('food', { slug: f.slug }, locale)}
                                     className="group flex flex-col rounded-xl border border-border hover:border-accent transition-colors overflow-hidden">
                                     <div className="relative aspect-square bg-surface overflow-hidden">
                                         {fImg ? (
@@ -370,7 +387,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                         })}
                     </div>
                     <div className="mt-6">
-                        <Link href="/comidas" className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
+                        <Link href={href('foods', undefined, locale)} className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
                             ← Ver todas as comidas
                         </Link>
                     </div>

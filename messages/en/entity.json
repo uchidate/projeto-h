@@ -15,6 +15,53 @@
     "metaDescription": "Everything about {name} — members, debut, fandom and more.",
     "metaDescriptionHangul": "Everything about {name} ({hangul}) — members, debut, fandom and more."
   },
+  "agency": {
+    "metaTitle": "{name}: artists, groups and history",
+    "metaDescription": "Meet {name}: its history, groups, artists and role in the Korean entertainment industry."
+  },
+  "company": {
+    "metaTitle": "{name} — {industry}",
+    "metaTitleKorean": "{name} ({korean}) — {industry}",
+    "defaultIndustry": "South Korean company",
+    "metaDescription": "{name}: a South Korean {industry} company. History, products and trivia.",
+    "metaDescriptionFounded": "{name}: a South Korean {industry} company founded in {year}. History, products and trivia.",
+    "industries": {
+      "tech": "Technology",
+      "semiconductor": "Semiconductors",
+      "automotive": "Automotive",
+      "entertainment": "Entertainment",
+      "beauty": "Beauty (K-Beauty)",
+      "finance": "Finance",
+      "retail": "Retail",
+      "food_beverage": "Food & Beverage",
+      "gaming": "Gaming",
+      "telecom": "Telecommunications",
+      "media": "Media",
+      "pharma": "Pharmaceuticals",
+      "construction": "Construction",
+      "shipbuilding": "Shipbuilding",
+      "chemical": "Chemicals",
+      "fashion": "Fashion",
+      "ecommerce": "E-commerce"
+    }
+  },
+  "food": {
+    "metaTitle": "{name} — Korean Cuisine",
+    "metaTitleKorean": "{name} ({korean}) — Korean Cuisine",
+    "metaDescription": "Everything about {name}: ingredients, where to eat it, trivia and more.",
+    "categories": {
+      "rice": "Rice",
+      "noodles": "Noodles",
+      "soup_stew": "Soups and Stews",
+      "bbq": "Barbecue",
+      "pancake": "Jeon / Pajeon",
+      "street_food": "Street Food",
+      "banchan": "Banchan",
+      "dessert": "Desserts",
+      "drink": "Drinks",
+      "snack": "Snacks"
+    }
+  },
   "production": {
     "metaTitle": "{title} — {type}",
     "type": {

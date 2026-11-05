@@ -15,6 +15,53 @@
     "metaDescription": "Tudo sobre o grupo {name} — integrantes, estreia, fandom e mais.",
     "metaDescriptionHangul": "Tudo sobre o grupo {name} ({hangul}) — integrantes, estreia, fandom e mais."
   },
+  "agency": {
+    "metaTitle": "{name}: artistas, grupos e história",
+    "metaDescription": "Conheça a {name}, sua história, seus grupos, artistas e sua atuação na indústria do entretenimento coreano."
+  },
+  "company": {
+    "metaTitle": "{name} — {industry}",
+    "metaTitleKorean": "{name} ({korean}) — {industry}",
+    "defaultIndustry": "Empresa sul-coreana",
+    "metaDescription": "{name}: empresa sul-coreana de {industry}. História, produtos e curiosidades.",
+    "metaDescriptionFounded": "{name}: empresa sul-coreana de {industry}, fundada em {year}. História, produtos e curiosidades.",
+    "industries": {
+      "tech": "Tecnologia",
+      "semiconductor": "Semicondutores",
+      "automotive": "Automotivo",
+      "entertainment": "Entretenimento",
+      "beauty": "Beleza (K-Beauty)",
+      "finance": "Finanças",
+      "retail": "Varejo",
+      "food_beverage": "Alimentos & Bebidas",
+      "gaming": "Games",
+      "telecom": "Telecomunicações",
+      "media": "Mídia",
+      "pharma": "Farmacêutico",
+      "construction": "Construção",
+      "shipbuilding": "Naval",
+      "chemical": "Química",
+      "fashion": "Moda",
+      "ecommerce": "E-commerce"
+    }
+  },
+  "food": {
+    "metaTitle": "{name} — Culinária Coreana",
+    "metaTitleKorean": "{name} ({korean}) — Culinária Coreana",
+    "metaDescription": "Tudo sobre {name}: ingredientes, onde comer, curiosidades e mais.",
+    "categories": {
+      "rice": "Arroz",
+      "noodles": "Macarrão",
+      "soup_stew": "Sopas e Guisados",
+      "bbq": "Churrasco",
+      "pancake": "Jeon / Pajeon",
+      "street_food": "Street Food",
+      "banchan": "Banchan",
+      "dessert": "Sobremesas",
+      "drink": "Bebidas",
+      "snack": "Snacks"
+    }
+  },
   "production": {
     "metaTitle": "{title} — {type}",
     "type": {

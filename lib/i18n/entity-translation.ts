@@ -114,6 +114,8 @@ export function localizeEntity<T extends TranslatableEntity>(entity: T, locale: 
  */
 const ESPELHOS_DE_TOPO: Partial<Record<TranslatableType, readonly string[]>> = {
     group: ['editorial_analysis'],
+    // `milestones` e `achievements` da agência vêm só no nível de cima (register_rest_field).
+    agency: ['milestones', 'achievements'],
 }
 
 function espelhosDeTopo(entity: TranslatableEntity, tr: EntityTranslation, type: TranslatableType): Record<string, unknown> {
@@ -122,7 +124,7 @@ function espelhosDeTopo(entity: TranslatableEntity, tr: EntityTranslation, type:
     const traduzidos = pickTranslatable(tr.acf, TRANSLATABLE_ACF[type]) as Record<string, unknown> | undefined
     return Object.fromEntries(
         campos
-            .filter((campo) => typeof base[campo] === 'string')
+            .filter((campo) => typeof base[campo] === 'string' || Array.isArray(base[campo]))
             .map((campo) => [campo, mergeText(base[campo], traduzidos?.[campo])]),
     )
 }

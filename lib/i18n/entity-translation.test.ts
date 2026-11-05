@@ -98,6 +98,22 @@ describe('localizeEntity', () => {
         expect('editorial_analysis' in localizeEntity(artist, 'en', 'artist')).toBe(false)
     })
 
+    it('traduz marcos e conquistas da agencia, que o REST so expoe no nivel de cima', () => {
+        const agencia = {
+            title: { rendered: 'Agencia' },
+            milestones: ['1996|Fundacao', '2005|Estreia'],
+            achievements: ['Primeiro lugar'],
+            acf: { story_intro: 'Introducao' },
+            translations: { en: { acf: { milestones: ['1996|Founded', '2005|Debut'], achievements: ['First place'], story_intro: 'Intro' } } },
+        }
+        const en = localizeEntity(agencia, 'en', 'agency')
+        expect(en.milestones).toEqual(['1996|Founded', '2005|Debut'])
+        expect(en.achievements).toEqual(['First place'])
+        expect(en.acf.story_intro).toBe('Intro')
+        // sem traducao do campo, o topo segue o portugues
+        expect(localizeEntity({ ...agencia, translations: { en: { acf: {} } } }, 'en', 'agency').milestones).toEqual(['1996|Fundacao', '2005|Estreia'])
+    })
+
     it('keeps the source when a translated string is blank', () => {
         expect(mergeText('PT', '   ')).toBe('PT')
         expect(mergeText(3, 'x')).toBe(3)

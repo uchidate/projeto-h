@@ -1,4 +1,10 @@
 import { SITE_NAME } from '@/lib/constants/site'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { buildAlternates } from '@/lib/i18n/alternates'
+import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
+import { href } from '@/lib/i18n/routes'
+import { rotuloDoSetorEm } from '@/lib/i18n/rotulos-ficha'
 import { intlLocale, formatDate } from '@/lib/i18n/format'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -43,7 +49,7 @@ function nucleoProduto(nome: string): string[] {
 }
 
 
-type Params = Promise<{ slug: string }>
+type Params = Promise<{ slug: string; locale?: Locale }>
 
 export async function slugsPreGerados() {
     try {
@@ -60,37 +66,51 @@ export async function slugsPreGerados() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-    const { slug } = await params
-    const company = await getCompanyBySlug(slug)
-    if (!company) return {}
+    const { slug, locale = DEFAULT_LOCALE } = await params
+    const found = await getCompanyBySlug(slug)
+    if (!found) return {}
+    // Sem tradução publicada: a ficha em português, fora do índice e com canonical no original.
+    if (semTraducao(found, locale)) {
+        return { ...(await generateMetadata({ params: Promise.resolve({ slug }) })), robots: { index: false, follow: true } }
+    }
+    const company = localizeEntity(found, locale, 'company')
+    const t = await getTranslations({ locale, namespace: 'entity.company' })
 
     const name = stripHtml(company.title.rendered)
     const korean = company.acf?.name_korean
-    const industry = rotuloDoSetor(company.acf?.industry) ?? 'Empresa sul-coreana'
+    const industry = (await rotuloDoSetorEm(company.acf?.industry, locale)) ?? t('defaultIndustry')
     // "CJ ENM (CJ ENM)": o nome coreano cadastrado às vezes repete o próprio nome.
     const showKorean = korean && !korean.toLowerCase().includes(name.toLowerCase())
-    const title = `${name}${showKorean ? ` (${korean})` : ''} — ${industry}`
+    const title = showKorean ? t('metaTitleKorean', { name, korean, industry }) : t('metaTitle', { name, industry })
     const resumo = stripHtml(company.excerpt?.rendered || company.content?.rendered || '')
+    const year = company.acf?.founded_year
     const description = resumo
         ? metaDescription(resumo)
-        : `${name}: empresa sul-coreana de ${industry.toLowerCase()}${company.acf?.founded_year ? `, fundada em ${company.acf.founded_year}` : ''}. História, produtos e curiosidades.`
+        : year
+            ? t('metaDescriptionFounded', { name, industry: industry.toLowerCase(), year })
+            : t('metaDescription', { name, industry: industry.toLowerCase() })
     const image = getWPImage(company._embedded, company.featured_image_url)
-    const url = `${SITE_URL}/empresas/${slug}`
+    const url = `${SITE_URL}${href('company', { slug }, locale)}`
 
-    return buildWordPressMetadata({ title, description, url, image })
+    return buildWordPressMetadata({
+        title, description, url, image,
+        languages: buildAlternates('company', { slug }, locale, availableLocales(found)).languages,
+        ogLocale: LOCALE_META[locale].ogLocale,
+    })
 }
 
 export default async function CompanyPage({ params }: { params: Params }) {
-    const { slug } = await params
-    const company = await getCompanyBySlug(slug)
-    if (!company) notFound()
+    const { slug, locale = DEFAULT_LOCALE } = await params
+    const sourceCompany = await getCompanyBySlug(slug)
+    if (!sourceCompany) notFound()
+    const company = localizeEntity(sourceCompany, locale, 'company')
 
     const acf = company.acf ?? {}
     const name = stripHtml(company.title.rendered)
     const img = getWPImage(company._embedded, company.featured_image_url)
-    const indLabel = rotuloDoSetor(acf.industry)
+    const indLabel = await rotuloDoSetorEm(acf.industry, locale)
     const indEmoji = emojiDoSetor(acf.industry)
-    const companyUrl = `${SITE_URL}/empresas/${slug}`
+    const companyUrl = `${SITE_URL}${href('company', { slug }, locale)}`
 
     const [vitrine, posts, mentions] = await Promise.all([
         getVitrineVinculada(acf.linked_products, [name, ...(acf.global_brands ?? []), ...(acf.famous_products ?? [])], `empresa:${slug}`),
@@ -105,7 +125,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
         buildVitrineMatcher(),
     ])
     // Hub só vale a pena com pelo menos mais uma empresa do mesmo grupo no acervo.
-    const groupHubHref = hasOwnChaebolGroup && siblingCount > 1 ? `/empresas/grupo/${slugify(acf.chaebol_group!)}` : null
+    const groupHubHref = hasOwnChaebolGroup && siblingCount > 1 ? href('companyGroup', { slug: slugify(acf.chaebol_group!) }, locale) : null
     // Mesma blindagem contra autorreferência do ConexoesChaebol: sem isso, a
     // seção renderiza vazia (só título) pra fichas como a da Abib.
     const hasOtherGlobalBrands = (acf.global_brands ?? []).some(b => b.trim().toLowerCase() !== name.trim().toLowerCase())
@@ -124,7 +144,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
 
     const breadcrumbSchema = buildBreadcrumbSchema([
         { name: `${SITE_NAME}`, url: SITE_URL },
-        { name: 'Empresas', url: `${SITE_URL}/empresas` },
+        { name: 'Empresas', url: `${SITE_URL}${href('companies', undefined, locale)}` },
         { name: name, url: companyUrl },
     ])
 
@@ -359,7 +379,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                             const cImg = c.featured_image_url
                             const cEmoji = emojiDoSetor(c.acf?.industry)
                             return (
-                                <Link key={c.id} href={`/empresas/${c.slug}`}
+                                <Link key={c.id} href={href('company', { slug: c.slug }, locale)}
                                     className="group flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent transition-colors">
                                     <div className="relative w-10 h-10 shrink-0 rounded-lg overflow-hidden bg-surface border border-border flex items-center justify-center">
                                         {cImg ? (
@@ -382,7 +402,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
                         })}
                     </div>
                     <div className="mt-6">
-                        <Link href="/empresas" className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
+                        <Link href={href('companies', undefined, locale)} className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
                             ← Ver todas as empresas
                         </Link>
                     </div>

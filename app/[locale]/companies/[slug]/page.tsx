@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
+import { availableLocales, semTraducao } from '@/lib/i18n/entity-translation'
+import { buildLanguageLinks } from '@/lib/i18n/language-links'
 import { href } from '@/lib/i18n/routes'
-import { comoFallback } from '@/lib/i18n/fallback-ficha'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
-import CompanyPage, { generateMetadata as metadataEmPortugues, slugsPreGerados } from '@/components/companies/CompanyDetail'
+import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
+import CompanyPage, { generateMetadata as metadataDaFicha, slugsPreGerados } from '@/components/companies/CompanyDetail'
+import { getCompanyBySlug } from '@/lib/wordpress/companies'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 export const revalidate = 600
@@ -17,22 +22,27 @@ export async function generateStaticParams() {
     return (await slugsPreGerados()).map(item => ({ locale: DEFAULT_LOCALE, ...item }))
 }
 
-/** Português: a ficha. Outros idiomas: a mesma ficha com o aviso de que ainda não há tradução. */
+/** Português: a ficha. Outros idiomas: a ficha traduzida; sem tradução publicada, a original fora do índice. */
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale, slug } = await params
     if (!idiomaValido(locale, { servePt: true })) return {}
-    const metadata = await metadataEmPortugues({ params: Promise.resolve({ slug }) })
-    return locale === DEFAULT_LOCALE ? metadata : comoFallback(metadata)
+    return metadataDaFicha({ params: Promise.resolve({ slug, locale }) })
 }
 
 export default async function Page({ params }: { params: Params }) {
     const { locale, slug } = await params
     entrarNaPagina(locale, { servePt: true })
-    if (locale === DEFAULT_LOCALE) return <CompanyPage params={Promise.resolve({ slug })} />
+    const found = await getCompanyBySlug(slug)
+    if (!found) notFound()
+    const [languageLinks, tSwitcher] = await Promise.all([
+        buildLanguageLinks('company', { slug }, locale, availableLocales(found)),
+        getTranslations({ locale, namespace: 'entity.switcher' }),
+    ])
     return (
         <>
-            <AvisoSemTraducao locale={locale} hrefOriginal={href('company', { slug }, DEFAULT_LOCALE)} />
-            <CompanyPage params={Promise.resolve({ slug })} />
+            {semTraducao(found, locale) && <AvisoSemTraducao locale={locale} hrefOriginal={href('company', { slug }, DEFAULT_LOCALE)} />}
+            {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
+            <CompanyPage params={Promise.resolve({ slug, locale })} />
         </>
     )
 }
