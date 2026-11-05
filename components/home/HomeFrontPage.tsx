@@ -68,6 +68,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
     const soPt = locale === DEFAULT_LOCALE
+    // Os capítulos são numerados em sequência: sem os blocos só-PT (Aprenda, Jogue, Temas, Loja) a contagem não pula números.
     // Capa só com matéria fresca (ver lib/home/frescor.ts); sem nenhuma, o hero é uma produção.
     // Os slides extras nunca tomam as matérias escolhidas à mão para os destaques (nada some nem se repete).
     const heroPosts = escolherCapas(posts, homeSettings.heroPostId, 4, new Date(), new Set(homeSettings.highlightPostIds))
@@ -93,7 +94,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 <div className="flex flex-col gap-3.5 lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-5">
                     <div data-bloco="home-hero" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeHero posts={heroPosts} albuns={capasAlbum} production={!heroPosts.length ? (productions.find(p => p.featured_image_url) ?? productions[0]) : undefined} locale={locale} /></div>
                     <div data-bloco="home-destaques" className="min-w-0 bg-[var(--color-home-card)] border border-border"><HomeDestaquesColuna posts={highlighted.slice(0, 5)} categoryMap={categoryMap} locale={locale} /></div>
-                    {soPt && aniversarios && <div data-bloco="home-calendario" className="hidden min-w-0 self-start bg-[var(--color-home-card)] border border-border border-t-[3px] border-t-[#8a5a00] lg:block"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
+                    {aniversarios && <div data-bloco="home-calendario" className="hidden min-w-0 self-start bg-[var(--color-home-card)] border border-border border-t-[3px] border-t-[#8a5a00] lg:block"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {ADSENSE.slots.leaderboard && (
                     <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 empty:hidden sm:px-6 lg:px-4">
@@ -103,7 +104,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 {soPt && <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>}
                 {soPt && <HomeCapitulo n={2} chave="aprenda" cor="#0b6b63" locale={locale} />}
                 {soPt && <div data-bloco="home-guias" className="-mx-3.5 lg:mx-0"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
-                <HomeCapitulo n={3} chave="editoria" cor="#6d3fc0" locale={locale} />
+                <HomeCapitulo n={soPt ? 3 : 2} chave="editoria" cor="#6d3fc0" locale={locale} />
                 <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>
                 {/*
                   * Daqui para baixo, nada aparece no carregamento em nenhum
@@ -115,13 +116,13 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                   * mede visibilidade com IntersectionObserver, e a mudança não
                   * deve mexer em como o AdSense enxerga a página.
                   */}
-                <HomeCapitulo n={4} chave="reportagem" cor="#6d3fc0" locale={locale} />
+                <HomeCapitulo n={soPt ? 4 : 3} chave="reportagem" cor="#6d3fc0" locale={locale} />
                 <div className="cv-auto [--cv-h:1500px] lg:[--cv-h:860px] -mx-3.5 border-t-4 border-t-[#6d3fc0] bg-[#efe9fb] px-3.5 py-5 dark:bg-[#1c1530] lg:-mx-6 lg:px-6 lg:py-7">
                     <div className="border border-border bg-[var(--color-home-card)]">
                         <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} locale={locale} /></div>
                     </div>
                 </div>
-                <HomeCapitulo n={5} chave="dados" cor="#c61153" locale={locale} />
+                <HomeCapitulo n={soPt ? 5 : 4} chave="dados" cor="#c61153" locale={locale} />
                 <div data-bloco="home-populares" className="contents"><HomePopulares artistas={artists} grupos={trendingGroups} producoes={producoesEmAlta} hoje={hoje} locale={locale} /></div>
                 {ADSENSE.slots.inline && (
                     <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 empty:hidden sm:px-6 lg:px-4">
@@ -143,7 +144,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#0e7490" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />}
                     </>
                 )}
-                {soPt && aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}
+                {aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}
                 {soPt && <HomeCapitulo n={8} chave="loja" cor="#ff246e" locale={locale} />}
                 {soPt && <div data-bloco="home-loja" className="-mx-3.5 lg:mx-0"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
             </div>

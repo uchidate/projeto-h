@@ -26,7 +26,7 @@ export async function HomeEstaSemana({ aniversarios, locale = DEFAULT_LOCALE }: 
             <div className="mb-3 flex flex-wrap items-center gap-3">
                 <h2 className="font-serif text-[24px] font-medium leading-none tracking-[-0.02em] text-foreground">{t('estaSemana')}</h2>
                 <span className={`border border-[#8a5a00] px-[7px] py-1 leading-none ${MARROM} ${ROTULO}`}>{t('tag')}</span>
-                <Link href="/calendario" className={`ml-auto text-muted hover:text-accent ${ROTULO}`}>{t('abrir')}</Link>
+                {locale === DEFAULT_LOCALE && <Link href="/calendario" className={`ml-auto text-muted hover:text-accent ${ROTULO}`}>{t('abrir')}</Link>}
             </div>
             <div className="-mx-4 grid auto-cols-[40%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar">
                 {dias.map(d => (

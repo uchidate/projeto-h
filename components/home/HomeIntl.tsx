@@ -80,6 +80,8 @@ export async function HomeIntl({ locale }: { locale: Locale }) {
                 streamingByPlatform={dados.streamingByPlatform}
                 categoryMap={dados.categoryMap}
                 produtosMaisVendidos={dados.produtosMaisVendidos}
+                aniversarios={dados.aniversarios}
+                hoje={dados.hoje}
             />
             <div className="page-wrap py-10 sm:py-14">
                 <header className="mb-8 border-b-2 border-foreground pb-6">

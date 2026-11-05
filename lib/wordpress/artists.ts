@@ -18,14 +18,16 @@ export type ArtistsQuery = {
     agency?: number
     agencies?: number[]
     affiliation?: 'group' | 'solo'
+    /** Traz `translations` sem filtrar por idioma: `oc_locale` não combina com outros filtros (ex.: mês de nascimento devolve vazio). */
+    comTraducoes?: boolean
 }
 
 export async function getArtists(query: ArtistsQuery = {}) {
-    const { page = 1, perPage = 24, search, orderby = 'date', order = 'desc', slug, role, gender, letter, birthMonth, agency, agencies, affiliation, locale } = query
+    const { page = 1, perPage = 24, search, orderby = 'date', order = 'desc', slug, role, gender, letter, birthMonth, agency, agencies, affiliation, locale, comTraducoes } = query
     const isMetaOrder = orderby === 'trending_score' || orderby === 'popularity'
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage, orderby: isMetaOrder ? 'date' : orderby, order, status: 'publish',
-        _fields: locale ? 'id,slug,title,date,featured_image_url,acf,translations' : 'id,slug,title,date,featured_image_url,acf',
+        _fields: locale || comTraducoes ? 'id,slug,title,date,featured_image_url,acf,translations' : 'id,slug,title,date,featured_image_url,acf',
         oc_locale: locale,
         slug: slug ?? undefined, search: search ?? undefined,
         oc_role: role ?? undefined, oc_gender: gender ?? undefined,
