@@ -10,7 +10,7 @@ import { carregarHome } from '@/lib/home/carregar-home'
 import { EntityGrid, fetchCatalog, type CatalogKind } from '@/components/features/LocalizedCatalog'
 
 
-const SECOES: CatalogKind[] = ['groups', 'artists', 'productions']
+const SECOES = ['groups', 'artists', 'productions'] as const satisfies readonly CatalogKind[]
 const POR_SECAO = 12
 
 const MIN_ARTIGOS_TRADUZIDOS = 3

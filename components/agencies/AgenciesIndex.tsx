@@ -1,3 +1,4 @@
+import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { Fragment } from 'react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -31,11 +32,12 @@ function firstParam(value: string | string[] | undefined) {
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
     const raw = await searchParams
     const hasFilters = Boolean(firstParam(raw.search)?.trim() || firstParam(raw.type) || firstParam(raw.sortBy))
+    const languages = hasFilters ? undefined : await defaultCatalogLanguages('agencies')
 
     return {
         title: 'Agências K-Pop',
         description: AGENCY_DESCRIPTION,
-        alternates: { canonical: `${SITE_URL}/agencies` },
+        alternates: { canonical: `${SITE_URL}/agencies`, ...(languages ? { languages } : {}) },
         robots: hasFilters ? { index: false, follow: true } : undefined,
         ...compartilhamento({
             titulo: 'Agências K-Pop',

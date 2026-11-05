@@ -1,3 +1,4 @@
+import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import type { Metadata } from 'next'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
@@ -15,10 +16,11 @@ type SearchParams = Promise<{ search?: string; page?: string; industry?: string;
 
 export async function generateMetadata(): Promise<Metadata> {
     const url = `${SITE_URL}/empresas`
+    const languages = await defaultCatalogLanguages('companies')
     return {
         title: 'Empresas Sul-Coreanas — Samsung, Hyundai, Kakao e muito mais',
         description: 'Conheça as maiores e mais influentes empresas da Coreia do Sul — tecnologia, entretenimento, automotivo, games, beauty e muito mais.',
-        alternates: { canonical: url },
+        alternates: { canonical: url, ...(languages ? { languages } : {}) },
         openGraph: baseOG(url),
         twitter: baseTwitter(),
     }
