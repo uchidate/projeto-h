@@ -54,11 +54,10 @@ describe('rotas migradas para a árvore única', () => {
         expect(new Set(ROTAS_MIGRADAS.map((r) => r.pt)).size).toBe(ROTAS_MIGRADAS.length)
     })
 
-    it.each(ROTAS_MIGRADAS)('$pt: página única em (intl) que serve o português, sem cópia em (site)', ({ pt, interno }) => {
+    it.each(ROTAS_MIGRADAS)('$pt: página única em (intl) que serve o português', ({ interno }) => {
         const emIntl = pagina('(intl)/[locale]', interno)
         expect(existsSync(emIntl), `falta ${emIntl}`).toBe(true)
         expect(readFileSync(emIntl, 'utf8'), `${interno} precisa de servePt: true`).toContain('servePt: true')
-        expect(existsSync(pagina('(site)', pt)), `sobrou cópia em app/(site)${pt}`).toBe(false)
     })
 
     // Só-PT (manifesto) não tem caminho em outro idioma, então não consta em ROUTES.
@@ -76,11 +75,10 @@ describe('rotas migradas para a árvore única', () => {
         expect(hrefSolto(achada!, params, 'en')).toBe(`/en${interno}`.replace(/:(\w+)/g, 'X'))
     })
 
-    it.each(ROTAS_MIGRADAS.filter((r) => r.filtrado))('$pt: a variante filtrado existe, serve o português e não sobrou cópia em (site)', ({ pt, interno }) => {
+    it.each(ROTAS_MIGRADAS.filter((r) => r.filtrado))('$pt: a variante filtrado existe e serve o português', ({ interno }) => {
         const emIntl = pagina('(intl)/[locale]', `${interno}/filtrado`)
         expect(existsSync(emIntl), `falta ${emIntl}`).toBe(true)
         expect(readFileSync(emIntl, 'utf8')).toContain('servePt: true')
-        expect(existsSync(pagina('(site)', `${pt}/filtrado`))).toBe(false)
     })
 
     it('gera um rewrite simples por rota, para /pt/<pasta>', () => {

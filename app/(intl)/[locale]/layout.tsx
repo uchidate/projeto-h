@@ -9,8 +9,7 @@ import { ACTIVE_LOCALES } from '@/lib/i18n/config'
  *
  * Em migração: as rotas já movidas para cá servem o português SEM prefixo por um rewrite em
  * `next.config.mjs` (`/about` -> `/pt/about`); o `/pt/...` digitado direto responde 404 no `proxy.ts`.
- * Idiomas desligados em `ACTIVE_LOCALES` respondem 404. As rotas ainda não movidas continuam em
- * `app/(site)` e recusam `pt` por conta própria.
+ * Idiomas desligados em `ACTIVE_LOCALES` respondem 404.
  */
 // Sem `dynamicParams = false` aqui: a config é herdada pelas rotas filhas e,
 // como nenhuma ficha é pré-gerada, toda ficha em outro idioma dava 404
