@@ -137,18 +137,6 @@ const nextConfig = {
         ],
     },
     async rewrites() {
-        // /guias e /guias/<slug> leem filtros pela query; ler `searchParams` na página
-        // a torna dinâmica (no-store, Cloudflare em BYPASS). Sem filtro a rota fica
-        // estática e cacheável; com filtro, o desvio abaixo (que mantém a URL e a
-        // query) manda para a variante dinâmica. As chaves vêm de CHAVES_FILTRO_GUIA
-        // em app/(site)/guias/[slug]/GuiaPagina.tsx.
-        const desviosGuias = [
-            ...['page', 'genre', 'platform', 'network', 'type', 'year'].map(key => ({
-                source: '/guias/:slug',
-                has: [{ type: 'query', key }],
-                destination: '/guias/:slug/filtrado',
-            })),
-        ]
         // Mesmo desvio nas listagens: sem query a página é estática (ISR); com
         // filtro, paginação ou busca vai para <lista>/filtrado, que lê `searchParams`.
         // As chaves vêm do tipo SearchParams de app/(site)/<lista>/<Lista>Listagem.tsx.
@@ -169,8 +157,7 @@ const nextConfig = {
                 // é servido internamente como `/pt/...`. O `/pt/...` digitado direto responde 404 no proxy.ts.
                 // Lista única em lib/i18n/rotas-migradas.mjs (conferida por teste contra o registro e os arquivos).
                 ...rewritesDasRotasMigradas(),
-                ...desviosGuias,
-                ...desviosListagens,
+                    ...desviosListagens,
             ],
             afterFiles: [
             // O IndexNow exige o arquivo de verificação na raiz, com o nome da

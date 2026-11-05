@@ -16,7 +16,6 @@ import { metaDescription } from '@/lib/seo/metaDescription'
 import { buildPostAlternates } from '@/lib/blog/translations'
 import { getProdutosDosBlocos } from '@/lib/blog/produtosDosBlocos'
 
-export const revalidate = 300
 
 async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostBySlug>>, categorias: string[]): Promise<StoreProduct[]> {
     if (!post) return []
@@ -46,7 +45,7 @@ async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostByS
 
 type Params = Promise<{ slug: string }>
 
-export async function generateStaticParams() {
+export async function slugsPreGerados() {
     try {
         const { items } = await getPosts({ perPage: 50 })
         return items.map(p => ({ slug: p.slug }))
