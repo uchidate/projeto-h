@@ -1,5 +1,5 @@
 
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyJourneyNav({ view }: { view: AgencyView }) {
     const { name, narrativeChapters, chapterCountLabel } = view

@@ -1,7 +1,7 @@
 import { SITE_NAME } from '@/lib/constants/site'
 import { ExternalLink } from 'lucide-react'
 import { FactGrid } from '@/components/blocks/FactGrid'
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencySummary({ view }: { view: AgencyView }) {
     const { agency, name, acf, interfaceAccent, excerptText, updatedAtLabel, aboutFallback, summaryFacts } = view

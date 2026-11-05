@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { ExpandableArtistGrid } from '@/components/agency/ExpandableArtistGrid'
-import { SectionHeader } from '@/app/(site)/agencies/[slug]/components/SectionHeader'
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import { SectionHeader } from '@/components/agencies/detail/components/SectionHeader'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyArtists({ view }: { view: AgencyView }) {
     const { interfaceAccent, allArtists, topArtist } = view

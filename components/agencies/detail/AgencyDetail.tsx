@@ -29,7 +29,6 @@ import { AgencySources } from './components/AgencySources'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizFacts } from '@/components/ui/QuizFacts'
 
-export const revalidate = 3600
 
 type Params = Promise<{ slug: string }>
 

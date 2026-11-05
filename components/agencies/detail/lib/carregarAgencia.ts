@@ -15,7 +15,7 @@ import { getStoreProductsByGroupId, type StoreProduct } from '@/lib/wordpress/st
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { applyAgencyDirectoryManifestPreview, applyAgencyManifestPreview, applyEntityAffiliationsManifestPreview } from '@/lib/agencies/preview'
 import { agencyMark, accessibleAccent, countryLabel, normalizeAccent, toRgba, type CSSVariableProperties, AGENCY_TYPE_LABELS, ORGANIZATION_KIND_LABELS } from '@/lib/agencies/presentation'
-import { BIG4_SLUGS, GENERATIONS } from '@/app/(site)/agencies/[slug]/lib/helpers'
+import { BIG4_SLUGS, GENERATIONS } from '@/components/agencies/detail/lib/helpers'
 
 // Tudo o que a página da agência precisa, já resolvido: os componentes de
 // seção só desenham. Devolve null quando a agência não existe.

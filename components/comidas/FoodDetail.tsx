@@ -24,11 +24,10 @@ import { ReceitaPreparo } from '@/components/food/ReceitaPreparo'
 import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
 
-export const revalidate = 600
 
 type Params = Promise<{ slug: string }>
 
-export async function generateStaticParams() {
+export async function slugsPreGerados() {
     try {
         const { items, totalPages } = await getFoods({ perPage: 100, orderby: 'date' })
         const slugs = items.map(f => ({ slug: f.slug }))

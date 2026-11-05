@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { ExternalLink, Globe, Users, Calendar, Star, Music2 } from 'lucide-react'
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyHero({ view }: { view: AgencyView }) {
     const { name, mark, logo, acf, isBig4, tierLabel, entityLabel, originYear, allArtists, allGroups, heroImages } = view

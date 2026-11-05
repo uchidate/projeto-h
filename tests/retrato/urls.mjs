@@ -63,6 +63,7 @@ export const COM_FILTRO = [
     '/comidas?search=kimchi', '/comidas?category=soup_stew', '/en/foods?search=kimchi', '/guias?kind=doramas', '/en/guides?kind=doramas',
     '/fandoms?search=bts', '/empresas?industry=technology', '/empresas?page=2', '/agencies?type=big4', '/en/fandoms?search=bts', '/en/companies?page=2',
     '/search?q=bts', '/en/search?q=bts', '/quiz?sub=facil', '/artists/birthdays?month=11',
+    '/groups/girl-groups', '/en/groups/girl-groups',
 ]
 
 /** Só em português (sem versão em outro idioma por decisão do manifesto) e casos de erro. */
@@ -70,7 +71,8 @@ export const SO_PT = ['/loja', '/privacidade', '/termos', '/merch']
 
 /** Devem responder 404 hoje e continuar assim (D3: `/pt/...` não existe como URL pública). */
 export const DEVEM_DAR_404 = ['/pt', '/pt/about', '/pt/groups/bts', '/en/pagina-que-nao-existe', '/xx/about',
-    '/artists/nao-existe-xyz', '/en/artists/nao-existe-xyz', '/productions/nao-existe-xyz', '/fandoms/nao-existe-xyz', '/positions/nao-existe']
+    '/artists/nao-existe-xyz', '/en/artists/nao-existe-xyz', '/productions/nao-existe-xyz', '/fandoms/nao-existe-xyz', '/positions/nao-existe',
+    '/groups/nao-existe-xyz', '/agencies/nao-existe-xyz', '/empresas/nao-existe-xyz', '/comidas/nao-existe-xyz']
 
 export function todasAsUrls() {
     const urls = new Set(SO_PT)

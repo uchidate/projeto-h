@@ -1,6 +1,6 @@
 import { Trophy, ChevronRight } from 'lucide-react'
-import { SectionHeader } from '@/app/(site)/agencies/[slug]/components/SectionHeader'
-import type { AgencyView } from '@/app/(site)/agencies/[slug]/lib/carregarAgencia'
+import { SectionHeader } from '@/components/agencies/detail/components/SectionHeader'
+import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyAchievements({ view }: { view: AgencyView }) {
     const { achievements } = view
