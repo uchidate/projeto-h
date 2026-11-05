@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server'
-import { HomePtBadge } from '@/components/home/HomePtBadge'
 import { postLink } from '@/components/home/postLink'
 import { href as rota } from '@/lib/i18n/routes'
 import Image from 'next/image'
@@ -40,7 +39,6 @@ export async function HomeLongreads({ posts, locale = DEFAULT_LOCALE }: { posts:
                         {lead.image && <Image src={lead.image.src} alt={lead.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover object-top" />}
                     </div>
                     <span className={`${TAG} mt-4`}>{lead.categoria}</span>
-                    {locale !== DEFAULT_LOCALE && <span className="mt-1 block w-fit"><HomePtBadge locale={locale} /></span>}
                     <h3 className="mt-2.5 font-serif text-[clamp(1.5rem,4vw,2.1rem)] font-medium leading-[1.1] tracking-[-0.01em] text-foreground transition-colors group-hover:text-accent">{lead.title}</h3>
                     {lead.excerpt && <p className="mt-2.5 line-clamp-3 text-[15px] leading-[1.6] text-[#4a4a5a] dark:text-muted">{lead.excerpt}</p>}
                     <p className={`mt-2.5 ${META}`}>{lead.meta}</p>

@@ -1,12 +1,10 @@
-import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import type { Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 
 /**
- * Artigos só existem em português: em outro idioma o link vai direto ao original
- * (`/blog/<slug>`), com `hrefLang` avisando — e `HomePtBadge` marca o item.
+ * Link de artigo da home. Fora do português a home só lista artigos com tradução
+ * publicada (`carregarHome`), então o link vai à versão no idioma da página.
  */
 export function postLink(slug: string, locale: Locale) {
-    return {
-        href: `/blog/${slug}`,
-        ...(locale !== DEFAULT_LOCALE && { hrefLang: LOCALE_META[DEFAULT_LOCALE].htmlLang }),
-    }
+    return { href: href('post', { slug }, locale) }
 }
