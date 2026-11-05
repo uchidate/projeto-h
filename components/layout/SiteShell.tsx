@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { loadMessages } from '@/lib/i18n/messages'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { localizedFooterColumns, localizedNavigation } from '@/lib/i18n/navigation'
+import { href } from '@/lib/i18n/routes'
 import { Outfit, Inter, Sora, Playfair_Display } from 'next/font/google'
 import '@/styles/globals.css'
 import { SITE_URL, SITE_NAME, UMAMI, CLARITY } from '@/lib/constants/site'
@@ -93,6 +94,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         // Só no português: a lista aponta para fichas em PT.
         mostSearched: isDefaultLocale ? 'Mais buscados' : undefined,
         homeHref: isDefaultLocale ? '/' : `/${locale}`,
+        privacyHref: href('privacy', undefined, locale),
+        termsHref: href('terms', undefined, locale),
     }
     // A loja só existe em português; entra no fim da primeira coluna (Catálogo) se o WordPress ainda não a listar.
     const comLoja = siteSettings.footerColumns.map((col, i) =>
@@ -101,7 +104,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
             : col)
     const footerColumns = locale === DEFAULT_LOCALE
         ? comLoja
-        : localizedFooterColumns(locale, messages.entity.footer.catalog, navLabels)
+        : localizedFooterColumns(locale, messages.entity.footer, navLabels)
 
     return (
         <html lang={htmlLang(locale)} suppressHydrationWarning>

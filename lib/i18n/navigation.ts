@@ -28,7 +28,27 @@ export function localizedNavigation(locale: Locale, labels: NavLabels): SiteLink
     ]
 }
 
-export function localizedFooterColumns(locale: Locale, heading: string, labels: NavLabels): FooterColumn[] {
+export type FooterLabelsI18n = { catalog: string; explore: string; about: string; agencies: string; aboutUs: string; contact: string }
+
+/** Rodapé fora do português: as mesmas famílias de links do rodapé em PT (catálogo, explorar, sobre), só com rotas que existem no idioma. */
+export function localizedFooterColumns(locale: Locale, footer: FooterLabelsI18n, labels: NavLabels): FooterColumn[] {
     if (locale === DEFAULT_LOCALE) return []
-    return [{ heading, links: localizedNavigation(locale, labels) }]
+    return [
+        { heading: footer.catalog, links: [
+            { label: labels.productions, href: href('productions', undefined, locale) },
+            { label: labels.artists, href: href('artists', undefined, locale) },
+            { label: labels.groups, href: href('groups', undefined, locale) },
+            { label: footer.agencies, href: href('agencies', undefined, locale) },
+        ] },
+        { heading: footer.explore, links: [
+            { label: labels.blog, href: href('blog', undefined, locale) },
+            { label: labels.guides, href: href('guides', undefined, locale) },
+            { label: labels.foods, href: href('foods', undefined, locale) },
+            { label: labels.quiz, href: href('quiz', undefined, locale) },
+        ] },
+        { heading: footer.about, links: [
+            { label: footer.aboutUs, href: href('about', undefined, locale) },
+            { label: footer.contact, href: href('contact', undefined, locale) },
+        ] },
+    ]
 }

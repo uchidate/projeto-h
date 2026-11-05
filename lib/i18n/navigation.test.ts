@@ -4,6 +4,8 @@ import { localizedNavigation, localizedFooterColumns } from './navigation'
 
 const labels = { home: 'Home', productions: 'Productions', artists: 'Artists', groups: 'Groups', blog: 'Articles', guides: 'Guides', foods: 'Food', quiz: 'Quiz' }
 
+const footer = { catalog: 'Catalog', explore: 'Explore', about: 'About', agencies: 'Agencies', aboutUs: 'About HallyuHub', contact: 'Contact' }
+
 describe('navegação por idioma', () => {
     it('em inglês, lista só rotas que existem no idioma, com prefixo', () => {
         expect(localizedNavigation('en', labels)).toEqual([
@@ -20,12 +22,15 @@ describe('navegação por idioma', () => {
 
     it('em português devolve vazio — o menu vem do WordPress', () => {
         expect(localizedNavigation('pt', labels)).toEqual([])
-        expect(localizedFooterColumns('pt', 'Catálogo', labels)).toEqual([])
+        expect(localizedFooterColumns('pt', footer, labels)).toEqual([])
     })
 
-    it('rodapé traduzido tem uma coluna com os mesmos destinos', () => {
-        expect(localizedFooterColumns('en', 'Catalog', labels)).toEqual([
-            { heading: 'Catalog', links: localizedNavigation('en', labels) },
+    it('rodapé traduzido tem catálogo, explorar e sobre, só com rotas do idioma', () => {
+        const colunas = localizedFooterColumns('en', footer, labels)
+        expect(colunas.map(c => c.heading)).toEqual(['Catalog', 'Explore', 'About'])
+        expect(colunas.flatMap(c => c.links.map(l => l.href))).toEqual([
+            '/en/productions', '/en/artists', '/en/groups', '/en/agencies',
+            '/en/blog', '/en/guides', '/en/foods', '/en/quiz', '/en/about', '/en/contact',
         ])
     })
 })
