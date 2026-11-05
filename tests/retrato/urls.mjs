@@ -67,16 +67,17 @@ export const COM_FILTRO = [
     '/search?q=bts', '/en/search?q=bts', '/quiz?sub=facil', '/artists/birthdays?month=11',
     '/groups/girl-groups', '/en/groups/girl-groups',
     '/guias/melhores-doramas-de-todos-os-tempos?genre=romance', '/guias/melhores-doramas-de-todos-os-tempos?page=2', '/quiz/k-pop?sub=facil',
+    '/loja?busca=photocard', '/loja?categoria=album',
 ]
 
 /** Só em português (sem versão em outro idioma por decisão do manifesto) e casos de erro. */
-export const SO_PT = ['/loja', '/merch', '/privacidade', '/termos', '/en/privacy', '/en/terms', '/en/profile', '/en/my-lists', '/perfil', '/minhas-listas']
+export const SO_PT = ['/loja', '/loja/artista/iu', '/loja/grupo/bts', '/merch', '/conquistas', '/dashboard', '/privacidade', '/termos', '/en/privacy', '/en/terms', '/en/profile', '/en/my-lists', '/perfil', '/minhas-listas']
 
 /** Devem responder 404 hoje e continuar assim (D3: `/pt/...` não existe como URL pública). */
 export const DEVEM_DAR_404 = ['/pt', '/pt/about', '/pt/groups/bts', '/en/pagina-que-nao-existe', '/xx/about',
     '/artists/nao-existe-xyz', '/en/artists/nao-existe-xyz', '/productions/nao-existe-xyz', '/fandoms/nao-existe-xyz', '/positions/nao-existe',
     '/groups/nao-existe-xyz', '/agencies/nao-existe-xyz', '/empresas/nao-existe-xyz', '/comidas/nao-existe-xyz',
-    '/guias/nao-existe-xyz', '/blog/nao-existe-xyz', '/en/blog/nao-existe-xyz', '/quiz/nao-existe']
+    '/guias/nao-existe-xyz', '/en/loja', '/en/merch', '/en/dashboard', '/loja/artista/nao-existe-xyz', '/blog/nao-existe-xyz', '/en/blog/nao-existe-xyz', '/quiz/nao-existe']
 
 export function todasAsUrls() {
     const urls = new Set(SO_PT)

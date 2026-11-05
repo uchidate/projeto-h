@@ -9,8 +9,6 @@ import { StoreCard } from '@/components/ui/StoreCard'
 import { SITE_URL, SITE_NAME, baseOG, baseTwitter } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
 
-export const revalidate = 300
-
 type Params = Promise<{ slug: string }>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
