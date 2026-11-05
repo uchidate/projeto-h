@@ -45,6 +45,8 @@ export const PARES = [
     // Artigos: um sem tradução (a página em EN serve o original ou 404) e um com
     { pt: '/blog/bts-na-america-do-sul-datas-e-guia-dos-14-shows', en: '/en/blog/bts-na-america-do-sul-datas-e-guia-dos-14-shows' },
     { pt: '/blog/taemin-eternal-ep-faixa-a-faixa', en: '/en/blog/taemin-eternal-ep-faixa-a-faixa' },
+    // Quiz por categoria
+    { pt: '/quiz/k-pop', en: '/en/quiz/k-pop' },
     // Conta
     { pt: '/entrar', en: '/en/sign-in' },
     { pt: '/cadastro', en: '/en/sign-up' },
@@ -64,6 +66,7 @@ export const COM_FILTRO = [
     '/fandoms?search=bts', '/empresas?industry=technology', '/empresas?page=2', '/agencies?type=big4', '/en/fandoms?search=bts', '/en/companies?page=2',
     '/search?q=bts', '/en/search?q=bts', '/quiz?sub=facil', '/artists/birthdays?month=11',
     '/groups/girl-groups', '/en/groups/girl-groups',
+    '/guias/melhores-doramas-de-todos-os-tempos?genre=romance', '/guias/melhores-doramas-de-todos-os-tempos?page=2', '/quiz/k-pop?sub=facil',
 ]
 
 /** Só em português (sem versão em outro idioma por decisão do manifesto) e casos de erro. */
@@ -72,7 +75,8 @@ export const SO_PT = ['/loja', '/privacidade', '/termos', '/merch']
 /** Devem responder 404 hoje e continuar assim (D3: `/pt/...` não existe como URL pública). */
 export const DEVEM_DAR_404 = ['/pt', '/pt/about', '/pt/groups/bts', '/en/pagina-que-nao-existe', '/xx/about',
     '/artists/nao-existe-xyz', '/en/artists/nao-existe-xyz', '/productions/nao-existe-xyz', '/fandoms/nao-existe-xyz', '/positions/nao-existe',
-    '/groups/nao-existe-xyz', '/agencies/nao-existe-xyz', '/empresas/nao-existe-xyz', '/comidas/nao-existe-xyz']
+    '/groups/nao-existe-xyz', '/agencies/nao-existe-xyz', '/empresas/nao-existe-xyz', '/comidas/nao-existe-xyz',
+    '/guias/nao-existe-xyz', '/blog/nao-existe-xyz', '/en/blog/nao-existe-xyz', '/quiz/nao-existe']
 
 export function todasAsUrls() {
     const urls = new Set(SO_PT)

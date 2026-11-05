@@ -3,7 +3,7 @@ import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
-import QuizPage, { generateMetadata as metadataEmPortugues } from './QuizIndex'
+import QuizPage, { generateMetadata as metadataEmPortugues } from '@/components/quiz/QuizIndex'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 export const revalidate = 3600

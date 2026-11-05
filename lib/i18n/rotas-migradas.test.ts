@@ -62,9 +62,10 @@ describe('rotas migradas para a árvore única', () => {
 
     it.each(ROTAS_MIGRADAS)('$pt: bate com o registro de caminhos por idioma', ({ pt, interno }) => {
         // O caminho em inglês de ROUTES é o nome da pasta; o em português é a URL pública.
-        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending', 'agencies', 'companies', 'fandoms', 'calendar', 'quiz', 'search', 'birthdays', 'artist', 'production', 'fandom', 'position', 'group', 'agency', 'company', 'food'] as const
+        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending', 'agencies', 'companies', 'fandoms', 'calendar', 'quiz', 'search', 'birthdays', 'artist', 'production', 'fandom', 'position', 'group', 'agency', 'company', 'food', 'guide', 'post', 'quizCategory'] as const
         // Rotas com parâmetro: `/artists/:slug` vira `/artists/X` dos dois lados antes de comparar.
-        const params = Object.fromEntries([...pt.matchAll(/:(\w+)/g)].map((m) => [m[1], 'X']))
+        // O nome do parâmetro pode diferir entre ROUTES e o registro (quiz: categoria/category); passamos os dois.
+        const params = Object.fromEntries([...pt.matchAll(/:(\w+)/g), ...interno.matchAll(/:(\w+)/g), ...['categoria', 'category'].map((n) => [0, n])].map((m) => [m[1], 'X']))
         const esperado = pt.replace(/:(\w+)/g, 'X')
         const achada = rotas.find((r) => {
             try { return hrefSolto(r, params, 'pt') === esperado } catch { return false }

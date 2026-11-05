@@ -2,18 +2,13 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import type { QuizCategory } from '@/lib/wordpress/quiz'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
-import { QuizPageContent, CATEGORY_LABELS } from '../quizPageContent'
+import { QuizPageContent, CATEGORY_LABELS } from '@/components/quiz/jogo/QuizPageContent'
 
-export const revalidate = 3600
 
-const VALID_CATEGORIES = ['k-pop', 'k-drama', 'cultura', 'historia'] as QuizCategory[]
+export const VALID_CATEGORIES = ['k-pop', 'k-drama', 'cultura', 'historia'] as QuizCategory[]
 
 type Params = Promise<{ categoria: string }>
 type SearchParams = Promise<{ sub?: string }>
-
-export function generateStaticParams() {
-    return VALID_CATEGORIES.map(categoria => ({ categoria }))
-}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { categoria } = await params
