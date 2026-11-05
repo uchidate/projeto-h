@@ -60,6 +60,31 @@
       "dessert": "Sobremesas",
       "drink": "Bebidas",
       "snack": "Snacks"
+    },
+    "ui": {
+      "breadcrumb": "Comidas",
+      "spicy0": "Sem pimenta",
+      "spicy1": "Levemente picante",
+      "spicy2": "Picante",
+      "spicy3": "Bem picante",
+      "spicy4": "Muito picante",
+      "spicy5": "Extremamente picante",
+      "vegan": "Vegano",
+      "vegetarian": "Vegetariano",
+      "inDramas": "Aparece em K-Dramas",
+      "ingredients": "Ingredientes principais",
+      "whereToEat": "Onde comer",
+      "viewOnMap": "Ver no mapa",
+      "defaultPlace": "Coreia do Sul",
+      "occasion": "Ocasião",
+      "season": "Melhor época",
+      "trivia": "Curiosidades",
+      "allergens": "Alérgenos",
+      "related": "Mais da culinária coreana",
+      "inStore": "Na loja",
+      "seeAll": "← Ver todas as comidas",
+      "shopTitle": "Para provar em casa",
+      "shopSeeAll": "Ver tudo"
     }
   },
   "production": {
