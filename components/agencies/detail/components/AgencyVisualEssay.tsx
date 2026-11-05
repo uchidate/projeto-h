@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+import { href } from '@/lib/i18n/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ExternalLink, ChevronRight } from 'lucide-react'
@@ -5,6 +7,7 @@ import { stripHtml } from '@/lib/utils'
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyVisualEssay({ view }: { view: AgencyView }) {
+    const t = useTranslations('entity.agency.ui')
     const { name, mark, interfaceAccent, editorialVisualStories } = view
     return (
         <section aria-labelledby="ensaio-visual-agencia" className="overflow-hidden border border-border bg-surface">
@@ -14,9 +17,9 @@ export function AgencyVisualEssay({ view }: { view: AgencyView }) {
                         {mark}
                     </div>
                     <div className="relative z-10">
-                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-(--ac-brand)">Leitura visual</p>
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-(--ac-brand)">{t('essay.label')}</p>
                         <h2 id="ensaio-visual-agencia" className="mt-4 max-w-lg text-3xl font-black leading-[0.98] tracking-[-0.045em] sm:text-5xl">
-                            A identidade da {name}, vista de perto.
+                            {t('essay.identity', { name })}
                         </h2>
                     </div>
                     <ol className="relative z-10 my-10 hidden border-y border-background/15 py-3 lg:block">
@@ -29,13 +32,13 @@ export function AgencyVisualEssay({ view }: { view: AgencyView }) {
                     </ol>
                     <div className="relative z-10 max-w-md border-t border-background/20 pt-5">
                         <p className="text-[14px] leading-7 text-background/70 sm:text-[15px]">
-                            Imagens, espaços e artistas ajudam a revelar como a empresa transforma uma direção criativa em presença reconhecível.
+                            {t('essay.body')}
                         </p>
                         <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.14em] text-background/45">
-                            {editorialVisualStories.length} capítulos visuais
+                            {t('essay.visualChapters', { count: editorialVisualStories.length })}
                         </p>
                         <p className="mt-2 flex items-center gap-2 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-background/55 lg:hidden">
-                            Deslize para explorar <span aria-hidden="true">→</span>
+                            {t('essay.swipe')} <span aria-hidden="true">→</span>
                         </p>
                     </div>
                 </div>
@@ -51,7 +54,7 @@ export function AgencyVisualEssay({ view }: { view: AgencyView }) {
                                 <figure className="relative min-h-[250px] overflow-hidden lg:min-h-full">
                                     <Image
                                         src={story.image.src}
-                                        alt={story.visual_alt || (groupName ? `${groupName}, grupo relacionado à ${name}` : '')}
+                                        alt={story.visual_alt || (groupName ? t('dev.altGroup', { group: groupName, name }) : '')}
                                         fill
                                         className="object-cover object-center transition duration-700 group-hover/story:scale-[1.045] group-hover/story:saturate-[1.1] motion-reduce:transition-none"
                                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 40vw, 28vw"
@@ -67,7 +70,7 @@ export function AgencyVisualEssay({ view }: { view: AgencyView }) {
                                 <div className="relative flex flex-col justify-between p-5 sm:p-7">
                                     <span aria-hidden="true" className="absolute right-4 top-2 font-mono text-[58px] font-black leading-none text-foreground/[0.035]">0{index + 1}</span>
                                     <div className="relative">
-                                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-(--ac)">Capítulo 0{index + 1}</p>
+                                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-(--ac)">{t('essay.chapterN', { n: index + 1 })}</p>
                                         <h3 className="mt-5 text-2xl font-black leading-tight tracking-[-0.035em]">{story.title}</h3>
                                         {story.quote_text && story.quote_author && (
                                             <blockquote className="mt-5 border-l-2 pl-4" style={{ borderColor: interfaceAccent }}>
@@ -81,7 +84,7 @@ export function AgencyVisualEssay({ view }: { view: AgencyView }) {
                                                     </cite>
                                                     {story.quote_source_url && (
                                                         <a href={story.quote_source_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 py-1.5 font-mono text-[10px] font-black uppercase tracking-widest text-muted underline decoration-border underline-offset-4 hover:text-(--ac)">
-                                                            Ler citação na fonte <ExternalLink size={9} />
+                                                            {t('essay.readQuote')} <ExternalLink size={9} />
                                                         </a>
                                                     )}
                                                 </footer>
@@ -90,7 +93,7 @@ export function AgencyVisualEssay({ view }: { view: AgencyView }) {
                                         <p className="mt-3 hidden text-[13px] leading-6 text-foreground/68 lg:block">{story.description}</p>
                                         <details className="group/details mt-5 border-t border-border pt-3 lg:hidden">
                                             <summary className="flex cursor-pointer list-none items-center justify-between font-mono text-[10px] font-black uppercase tracking-widest text-muted marker:content-none">
-                                                Contexto
+                                                {t('essay.context')}
                                                 <span aria-hidden="true" className="text-base font-light transition-transform group-open/details:rotate-45">+</span>
                                             </summary>
                                             <p className="mt-3 text-[13px] leading-6 text-foreground/68">{story.description}</p>
@@ -99,12 +102,12 @@ export function AgencyVisualEssay({ view }: { view: AgencyView }) {
                                     <div className="relative mt-6 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[10px] font-black uppercase tracking-widest">
                                         {story.visual_source_url && (
                                             <a href={story.visual_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 text-muted hover:text-(--ac)">
-                                                Fonte da imagem <ExternalLink size={10} />
+                                                {t('essay.imageSource')} <ExternalLink size={10} />
                                             </a>
                                         )}
                                         {groupName && !story.hasCuratedVisual && (
-                                            <Link href={`/groups/${story.group!.slug}`} prefetch={false} className="inline-flex items-center gap-1 text-muted hover:text-(--ac)">
-                                                Ver {groupName} <ChevronRight size={10} />
+                                            <Link href={href('group', { slug: story.group!.slug }, view.locale)} prefetch={false} className="inline-flex items-center gap-1 text-muted hover:text-(--ac)">
+                                                {t('essay.viewGroup', { group: groupName })} <ChevronRight size={10} />
                                             </Link>
                                         )}
                                     </div>

@@ -17,7 +17,258 @@
   },
   "agency": {
     "metaTitle": "{name}: artistas, grupos e história",
-    "metaDescription": "Conheça a {name}, sua história, seus grupos, artistas e sua atuação na indústria do entretenimento coreano."
+    "metaDescription": "Conheça a {name}, sua história, seus grupos, artistas e sua atuação na indústria do entretenimento coreano.",
+    "ui": {
+      "back": "Agências",
+      "breadcrumb": "Agências",
+      "tierBig4": "Big 4",
+      "types": {
+        "major": "Grande agência",
+        "mid": "Mid-tier",
+        "indie": "Independente",
+        "subsidiary": "Subsidiária"
+      },
+      "kinds": {
+        "conglomerate": "Conglomerado",
+        "label": "Label",
+        "agency": "Agência",
+        "joint_venture": "Joint venture",
+        "division": "Divisão"
+      },
+      "entityIndie": "Agência independente",
+      "entityDefault": "Empresa de entretenimento",
+      "countryKR": "Coreia do Sul",
+      "lens": {
+        "network": {
+          "eyebrow": "Como a rede funciona",
+          "title": "{name} não é uma única agência. É uma rede.",
+          "body": "Conglomerados reúnem labels, subsidiárias e operações com responsabilidades diferentes. Por isso, o {site} preserva o vínculo direto de cada artista e também mostra a organização controladora."
+        },
+        "piece": {
+          "eyebrow": "Onde ela se encaixa",
+          "title": "{name} é uma peça do sistema — não o sistema inteiro.",
+          "body": "Uma label pode administrar repertório e carreira sem representar sozinha todo o conglomerado. Os vínculos exibidos aqui distinguem o elenco direto das relações com empresas controladoras."
+        },
+        "data": {
+          "eyebrow": "Sobre os dados",
+          "title": "Os números mostram o acervo. A história explica a empresa.",
+          "body": "As contagens abaixo representam perfis disponíveis no {site}, não um roster oficial completo. Relações históricas ou encerradas são identificadas separadamente quando há dados estruturados."
+        }
+      },
+      "pillars": {
+        "conglomerate": {
+          "label": "Como a empresa funciona",
+          "title": "O modelo de negócio da {name}"
+        },
+        "joint_venture": {
+          "label": "Como a parceria funciona",
+          "title": "A proposta da {name}"
+        },
+        "label": {
+          "label": "Identidade da label",
+          "title": "O que define a {name}"
+        },
+        "other": {
+          "label": "Como a organização funciona",
+          "title": "A atuação da {name}"
+        }
+      },
+      "about1": "{name} é uma agência de entretenimento da {country}.",
+      "about2": "Sua trajetória tem origem em {year}.",
+      "about3": "A cobertura do {site} reúne {groups, plural, =1 {# grupo relacionado} other {# grupos relacionados}} e {artists, plural, =1 {# perfil de artista} other {# perfis de artistas}}.",
+      "chapterCount": "{count, plural, =0 {} =1 {Uma virada} =2 {Duas viradas} =3 {Três viradas} =4 {Quatro viradas} =5 {Cinco viradas} =6 {Seis viradas} other {# viradas}}",
+      "videoTitle": "{group} — vídeo oficial",
+      "nav": {
+        "about": "Sobre",
+        "numbers": "Números",
+        "history": "História",
+        "impact": "Impacto",
+        "model": "Modelo",
+        "now": "Agora",
+        "videos": "Vídeos",
+        "ecosystem": "Ecossistema",
+        "groups": "Grupos",
+        "artists": "Artistas",
+        "articles": "Artigos",
+        "faq": "FAQ"
+      },
+      "facts": {
+        "country": "País",
+        "ceo": "CEO",
+        "verifiedOn": "Verificado em {date}",
+        "trajectory": "Trajetória",
+        "trajectoryBoth": "{origin} · identidade atual desde {since}",
+        "trajectorySince": "Desde {year}",
+        "coverage": "Cobertura {site}",
+        "coverageValue": "{groups} grupos · {artists} perfis"
+      },
+      "faq": {
+        "q1": "O que é {name}?",
+        "a1": "{name} é uma empresa de entretenimento da {country}. Esta página apresenta seu contexto, seus marcos e os perfis relacionados disponíveis no {site}.",
+        "a1Since": "{name} é uma empresa de entretenimento da {country}, com trajetória registrada desde {year}. Esta página apresenta seu contexto, seus marcos e os perfis relacionados disponíveis no {site}.",
+        "q2": "Quais grupos estão relacionados à {name}?",
+        "a2": "A cobertura atual do {site} relaciona {count, plural, =1 {# grupo} other {# grupos}} à {name}. O vínculo institucional específico deve ser conferido no perfil de cada grupo, pois conglomerado, agência e label não são necessariamente a mesma entidade.",
+        "q3": "Quais artistas estão relacionados à {name}?",
+        "a3": "O {site} possui {count, plural, =1 {# perfil de artista relacionado} other {# perfis de artistas relacionados}} à {name}, incluindo integrantes de grupos e eventuais carreiras solo.",
+        "q4": "{name} faz parte do Big 4 do K-Pop?",
+        "a4": "Sim. Na cobertura editorial do setor, {name} integra o grupo conhecido como Big Four ao lado de SM Entertainment, JYP Entertainment e YG Entertainment."
+      },
+      "mvEyebrow": "Para ver e ouvir",
+      "mvTitle": "Assista ao catálogo ligado à {name}",
+      "mvDescription": "Uma seleção de vídeos oficiais dos grupos relacionados ajuda a perceber, em imagem e som, a variedade de identidades que convivem sob a mesma estrutura corporativa.",
+      "shopTitle": "Produtos ligados à {name}",
+      "faqTitle": "Perguntas rápidas sobre {name}",
+      "aboutLabel": "Perfil institucional",
+      "aboutTitle": "Contexto e trajetória",
+      "continueReading": "Continuar a leitura",
+      "impactLabel": "Impacto",
+      "impactTitle": "Marcos e impacto",
+      "mainMilestone": "Marco principal",
+      "moreMilestones": "Ver mais {count} marcos",
+      "artistsLabel": "Perfis relacionados",
+      "artistsTitle": "Artistas",
+      "featuredProfile": "● Perfil em destaque",
+      "fullProfile": "Ver perfil completo",
+      "moreArtists": "Ver mais {count} artistas",
+      "pillarSource": "Fonte do pilar {title}",
+      "pillarsIntro": "Frentes declaradas pela própria organização, contextualizadas para distinguir produção musical, plataformas e outras operações.",
+      "catalog": {
+        "cast": "Elenco",
+        "title": "Um mapa visual do catálogo",
+        "total": "{count} total",
+        "active": "{count} ativos",
+        "intro": "Comece pelos destaques e avance pelas gerações. A relação pode ser direta ou ocorrer por meio de uma label ou subsidiária; cada perfil detalha o vínculo específico.",
+        "startHere": "Comece por aqui",
+        "activeBadge": "Ativo",
+        "inactiveBadge": "Inativo",
+        "since": "desde {year}",
+        "today": "hoje",
+        "others": "Outros",
+        "noGeneration": "Sem geração informada",
+        "legacy": "Legado",
+        "inactiveGroups": "Grupos inativos ou disbandados"
+      },
+      "generations": {
+        "g1": {
+          "label": "1ª Geração",
+          "short": "1ª Gen"
+        },
+        "g2": {
+          "label": "2ª Geração",
+          "short": "2ª Gen"
+        },
+        "g3": {
+          "label": "3ª Geração",
+          "short": "3ª Gen"
+        },
+        "g4": {
+          "label": "4ª Geração",
+          "short": "4ª Gen"
+        },
+        "g5": {
+          "label": "5ª Geração",
+          "short": "5ª Gen"
+        }
+      },
+      "dev": {
+        "updates": "Atualizações",
+        "recentTitle": "O que mudou recentemente na {name}",
+        "altGroup": "{group}, grupo relacionado à {name}",
+        "scale": "A escala no acervo",
+        "groupsUnit": "grupos",
+        "profilesUnit": "perfis",
+        "frontsUnit": "frentes",
+        "captionWithGroup": "{group} integra o recorte visual desta página. Os números representam a cobertura disponível no {site}.",
+        "caption": "Os números representam a cobertura disponível no {site}.",
+        "checkSource": "Conferir fonte"
+      },
+      "hero": {
+        "logoAlt": "{name} — logo",
+        "origin": "origem {year}",
+        "pathSince": "trajetória desde",
+        "groupsCovered": "grupos cobertos",
+        "profilesInArchive": "perfis no acervo",
+        "officialSite": "Site oficial"
+      },
+      "history": {
+        "chapters": "A história em capítulos",
+        "turns": "As viradas que definiram a {name}.",
+        "intro": "Uma leitura da formação da empresa, das viradas de catálogo e do ciclo que começa agora.",
+        "years": "anos de trajetória documentada",
+        "chaptersDocumented": "capítulos documentados",
+        "chapterSource": "Fonte do capítulo",
+        "relatedProfile": "Ver perfil relacionado"
+      },
+      "journey": {
+        "navLabel": "Percurso da história",
+        "route": "O percurso",
+        "subtitle": "{count} para entender a evolução da {name}"
+      },
+      "metrics": {
+        "inNumbers": "Em números",
+        "scaleOf": "A escala da {name}, em dados com fonte",
+        "eachNumber": "Cada número liga para a fonte primária",
+        "refAsOf": "ref. {date}",
+        "source": "Fonte"
+      },
+      "lensPanel": {
+        "scope": "Escopo desta página",
+        "many": "{orgs} organizações conectadas · {groups} grupos · {artists} perfis.",
+        "one": "{groups} grupos e {artists} perfis relacionados no acervo editorial."
+      },
+      "milestones": {
+        "chronology": "Cronologia",
+        "timeline": "Linha do tempo",
+        "exploreAll": "Explorar todos os artistas & grupos"
+      },
+      "sources": {
+        "howWeVerify": "Como apuramos",
+        "count": "{citations} citações · {outlets} veículos",
+        "body": "Números, capítulos e citações deste perfil apontam para a fonte primária no ponto em que aparecem. Priorizamos material institucional e imprensa verificável; opinião só entra atribuída."
+      },
+      "summary": {
+        "inShort": "Em resumo",
+        "whatToKnow": "O que você precisa saber sobre {name}",
+        "curated": "Curadoria {site}",
+        "updatedOn": "Atualizado em",
+        "institutionalSource": "Fonte institucional"
+      },
+      "essay": {
+        "label": "Leitura visual",
+        "identity": "A identidade da {name}, vista de perto.",
+        "body": "Imagens, espaços e artistas ajudam a revelar como a empresa transforma uma direção criativa em presença reconhecível.",
+        "visualChapters": "{count} capítulos visuais",
+        "swipe": "Deslize para explorar",
+        "chapterN": "Capítulo 0{n}",
+        "readQuote": "Ler citação na fonte",
+        "context": "Contexto",
+        "imageSource": "Fonte da imagem",
+        "viewGroup": "Ver {group}"
+      },
+      "map": {
+        "eyebrow": "Quem responde por quem",
+        "title": "Como a {name} se organiza",
+        "relations": "{count} relações",
+        "parentLinked": "O vínculo com a controladora aparece de forma explícita, sem misturar o catálogo desta organização com o de labels irmãs.",
+        "mainLevel": "A organização principal ocupa o primeiro nível. Labels, divisões, subsidiárias e joint ventures aparecem abaixo sem serem tratadas como equivalentes entre si.",
+        "parentKicker": "Conglomerado controlador · acesse o perfil",
+        "parentFallback": "Organização controladora",
+        "parentNote": "A controladora define o nível corporativo; o catálogo desta página continua restrito à organização aberta.",
+        "focus": "Organização em foco",
+        "level1": "Nível 1",
+        "mainFallback": "Organização principal",
+        "focusWithParent": "Identidade criativa, elenco e atuação próprios dentro da estrutura controladora.",
+        "focusMain": "Estratégia, controle ou coordenação da rede apresentada nesta página.",
+        "level2": "Nível 2 · Organizações relacionadas",
+        "relatedFallback": "Organização relacionada",
+        "counts": "{groups} grupos · {artists} perfis",
+        "level3": "Nível 3 · Catálogo relacionado",
+        "direct": "Catálogo direto",
+        "level3Body": "Grupos e artistas mantêm o vínculo direto com a organização responsável. O catálogo seguinte pode agregar toda a rede sem apagar essa origem.",
+        "directBody": "Os grupos e artistas abaixo estão ligados diretamente a esta organização, sem incorporar o elenco de outras empresas do conglomerado.",
+        "logoAlt": "{name} — logo"
+      }
+    }
   },
   "company": {
     "metaTitle": "{name} — {industry}",

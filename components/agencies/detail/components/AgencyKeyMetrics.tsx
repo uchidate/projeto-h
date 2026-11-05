@@ -1,17 +1,19 @@
+import { useTranslations } from 'next-intl'
 import { ExternalLink } from 'lucide-react'
 import type { WPAgency } from '@/lib/wordpress/types'
 
 type KeyMetric = NonNullable<NonNullable<WPAgency['acf']>['key_metrics']>[number]
 
 export function AgencyKeyMetrics({ name, keyMetrics }: { name: string; keyMetrics: KeyMetric[] }) {
+    const t = useTranslations('entity.agency.ui')
     return (
         <section id="numeros" aria-labelledby="numeros-agencia" className="scroll-mt-(--scroll-anchor-offset,106px) overflow-hidden border border-border bg-surface">
             <div className="flex flex-wrap items-end justify-between gap-2 border-b border-border px-5 py-4 sm:px-6">
                 <div>
-                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-(--ac)">Em números</p>
-                    <h2 id="numeros-agencia" className="mt-1 text-sm font-bold text-foreground/75">A escala da {name}, em dados com fonte</h2>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-(--ac)">{t('metrics.inNumbers')}</p>
+                    <h2 id="numeros-agencia" className="mt-1 text-sm font-bold text-foreground/75">{t('metrics.scaleOf', { name })}</h2>
                 </div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">Cada número liga para a fonte primária</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">{t('metrics.eachNumber')}</p>
             </div>
             <dl className="grid sm:grid-cols-2 lg:grid-cols-3">
                 {keyMetrics.map((metric, index) => (
@@ -21,10 +23,10 @@ export function AgencyKeyMetrics({ name, keyMetrics }: { name: string; keyMetric
                             <strong className="block text-3xl font-black leading-none tracking-[-0.04em] transition-colors group-hover/metric:text-(--ac) sm:text-4xl">{metric.value}</strong>
                             {metric.context && <span className="mt-3 block max-w-[36ch] text-[12px] leading-5 text-foreground/60">{metric.context}</span>}
                             <span className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] font-black uppercase tracking-[0.11em]">
-                                {metric.as_of && <span className="text-muted">ref. {metric.as_of}</span>}
+                                {metric.as_of && <span className="text-muted">{t('metrics.refAsOf', { date: metric.as_of })}</span>}
                                 {metric.source_url && (
                                     <a href={metric.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 text-muted underline decoration-border underline-offset-4 hover:text-(--ac)">
-                                        Fonte <ExternalLink size={9} />
+                                        {t('metrics.source')} <ExternalLink size={9} />
                                     </a>
                                 )}
                             </span>

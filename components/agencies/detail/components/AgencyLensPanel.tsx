@@ -1,7 +1,9 @@
+import { useTranslations } from 'next-intl'
 import { Network, BookOpenCheck } from 'lucide-react'
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyLensPanel({ view }: { view: AgencyView }) {
+    const t = useTranslations('entity.agency.ui')
     const { mark, network, allArtists, allGroups, editorialLens } = view
     return (
         <aside className="profile-panel relative overflow-hidden" aria-labelledby="chave-leitura-agencia">
@@ -25,12 +27,12 @@ export function AgencyLensPanel({ view }: { view: AgencyView }) {
                 <div className="border-t border-border pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
                     <div className="flex items-center gap-2 text-(--ac)">
                         <Network size={14} />
-                        <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em]">Escopo desta página</span>
+                        <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em]">{t('lensPanel.scope')}</span>
                     </div>
                     <p className="mt-3 text-[12px] leading-5 text-muted">
                         {network.organizations.length > 1
-                            ? `${network.organizations.length} organizações conectadas · ${allGroups.length} grupos · ${allArtists.length} perfis.`
-                            : `${allGroups.length} grupos e ${allArtists.length} perfis relacionados no acervo editorial.`}
+                            ? t('lensPanel.many', { orgs: network.organizations.length, groups: allGroups.length, artists: allArtists.length })
+                            : t('lensPanel.one', { groups: allGroups.length, artists: allArtists.length })}
                     </p>
                 </div>
             </div>

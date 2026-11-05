@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+import { href } from '@/lib/i18n/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
@@ -7,10 +9,11 @@ import { SectionHeader } from '@/components/agencies/detail/components/SectionHe
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyArtists({ view }: { view: AgencyView }) {
-    const { interfaceAccent, allArtists, topArtist } = view
+    const t = useTranslations('entity.agency.ui')
+    const { interfaceAccent, allArtists, topArtist, locale } = view
     return (
         <section id="artistas" className="scroll-mt-(--scroll-anchor-offset,106px)">
-            <SectionHeader label="Perfis relacionados" title="Artistas" count={allArtists.length} />
+            <SectionHeader label={t('artistsLabel')} title={t('artistsTitle')} count={allArtists.length} />
 
             {/* Spotlight — perfil com maior sinal editorial de destaque */}
             {topArtist && (() => {
@@ -18,7 +21,7 @@ export function AgencyArtists({ view }: { view: AgencyView }) {
                 const aname = stripHtml(topArtist.title.rendered)
                 const roles = topArtist.acf?.roles ?? []
                 return (
-                    <Link href={`/artists/${topArtist.slug}`} prefetch={false} className="group mt-6 mb-8 flex items-stretch gap-0 border border-border bg-surface overflow-hidden hover:border-(--ac) transition-colors">
+                    <Link href={href('artist', { slug: topArtist.slug }, locale)} prefetch={false} className="group mt-6 mb-8 flex items-stretch gap-0 border border-border bg-surface overflow-hidden hover:border-(--ac) transition-colors">
                         <div className="relative w-[120px] sm:w-[160px] shrink-0 aspect-3/4">
                             {img ? (
                                 <Image src={img.src} alt={aname} fill
@@ -33,7 +36,7 @@ export function AgencyArtists({ view }: { view: AgencyView }) {
                         <div className="flex flex-col justify-between p-5 sm:p-7 flex-1 min-w-0 [border-left:2px_solid_var(--ac)]">
                             <div>
                                 <span className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-(--ac) mb-3 block">
-                                    ● Perfil em destaque
+                                    {t('featuredProfile')}
                                 </span>
                                 <p className="text-[24px] sm:text-[32px] font-black leading-tight tracking-tight group-hover:text-(--ac) transition-colors">{aname}</p>
                                 {topArtist.acf?.name_hangul && (
@@ -48,7 +51,7 @@ export function AgencyArtists({ view }: { view: AgencyView }) {
                                 )}
                             </div>
                             <p className="font-mono text-[11px] text-muted/60 mt-4 flex items-center gap-1 group-hover:text-muted transition-colors">
-                                Ver perfil completo <ChevronRight size={11} />
+                                {t('fullProfile')} <ChevronRight size={11} />
                             </p>
                         </div>
                     </Link>
@@ -61,6 +64,8 @@ export function AgencyArtists({ view }: { view: AgencyView }) {
                     .filter(a => a.id !== topArtist?.id)}
                 accent={interfaceAccent}
                 initialCount={11}
+                locale={locale}
+                moreLabel={t('moreArtists', { count: Math.max(allArtists.length - 1 - 11, 0) })}
             />
         </section>
     )

@@ -9,6 +9,7 @@ import { GroupPosts } from '@/components/groups/GroupPosts'
 import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
 import { EntityFAQ } from '@/components/seo/EntityFAQ'
 import { ADSENSE } from '@/lib/config/ads'
+import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { carregarAgencia } from './lib/carregarAgencia'
@@ -43,6 +44,9 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
     const { slug, locale = DEFAULT_LOCALE } = await params
     const view = await carregarAgencia(slug, locale)
     if (!view) notFound()
+    const ui = await getTranslations({ locale, namespace: 'entity.agency.ui' })
+    // Blog, loja e quiz existem só em português: fora dele a ficha não os mostra.
+    const soPt = locale === DEFAULT_LOCALE
 
     const {
         agency, name, logo, acf, accent, interfaceAccent, tierLabel, milestones, originYear, achievements,
@@ -72,7 +76,7 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
 
             <ReadingBar
                 backHref={href('agencies', undefined, locale)}
-                backLabel="Agências"
+                backLabel={ui('back')}
                 tagLabel={tierLabel ?? undefined}
                 tagColor={accent}
                 title={name}
@@ -109,18 +113,18 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
                     <GroupMVPlayer
                         videos={agencyVideos}
                         accent={interfaceAccent}
-                        eyebrow="Para ver e ouvir"
-                        title={`Assista ao catálogo ligado à ${name}`}
-                        description="Uma seleção de vídeos oficiais dos grupos relacionados ajuda a perceber, em imagem e som, a variedade de identidades que convivem sob a mesma estrutura corporativa."
+                        eyebrow={ui('mvEyebrow')}
+                        title={ui('mvTitle', { name })}
+                        description={ui('mvDescription')}
                     />
                 )}
 
                 {narrativeChapters.length === 0 && <AgencyAbout view={view} />}
                 {narrativeChapters.length === 0 && achievements.length > 0 && <AgencyAchievements view={view} />}
 
-                <AgencyOrganizationMap agency={agency} network={network} groups={allGroups} artists={allArtists} />
+                <AgencyOrganizationMap agency={agency} network={network} groups={allGroups} artists={allArtists} locale={locale} />
 
-                <LojaEmLinha products={shopProducts} bloco="agencia-ficha" contexto={`agencia:${slug}`} title={`Produtos ligados à ${name}`} />
+                {soPt && <LojaEmLinha products={shopProducts} bloco="agencia-ficha" contexto={`agencia:${slug}`} title={ui('shopTitle', { name })} />}
 
                 {ADSENSE.slots.leaderboard && (allGroups.length > 0 || allArtists.length > 0) && (
                     <AdSlotInline
@@ -133,22 +137,22 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
                 {allGroups.length > 0 && <AgencyCatalog view={view} />}
                 {allArtists.length > 0 && <AgencyArtists view={view} />}
 
-                {relatedPosts.length > 0 && (
+                {soPt && relatedPosts.length > 0 && (
                     <section id="artigos" className="scroll-mt-(--scroll-anchor-offset,106px)">
                         <GroupPosts posts={relatedPosts} name={name} accent={interfaceAccent} />
                     </section>
                 )}
 
-                <QuizFacts entitySlug={slug} entityType="agency" entityName={name} groupIds={allGroups.map(g => g.id)} artistIds={allArtists.map(a => a.id)} />
+                {soPt && <QuizFacts entitySlug={slug} entityType="agency" entityName={name} groupIds={allGroups.map(g => g.id)} artistIds={allArtists.map(a => a.id)} />}
 
                 {narrativeChapters.length === 0 && milestones.length > 0 && (
-                    <AgencyMilestones milestones={milestones} interfaceAccent={interfaceAccent} />
+                    <AgencyMilestones milestones={milestones} interfaceAccent={interfaceAccent} locale={locale} />
                 )}
 
                 <EntityFAQ
                     items={faqItems}
                     className="scroll-mt-(--scroll-anchor-offset,106px)"
-                    title={`Perguntas rápidas sobre ${name}`}
+                    title={ui('faqTitle', { name })}
                 />
 
                 {sourcesByHost.length > 0 && (

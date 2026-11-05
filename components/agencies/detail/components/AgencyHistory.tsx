@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+import { href } from '@/lib/i18n/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ExternalLink, ChevronRight } from 'lucide-react'
@@ -5,23 +7,24 @@ import { stripHtml } from '@/lib/utils'
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyHistory({ view }: { view: AgencyView }) {
+    const t = useTranslations('entity.agency.ui')
     const { name, originYear, narrativeChapters } = view
     return (
         <section id="historia" className="scroll-mt-(--scroll-anchor-offset,106px) overflow-clip border border-border bg-foreground text-background">
             <div className="grid lg:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)]">
                 <header className="relative border-b border-background/15 p-6 sm:p-8 lg:border-b-0 lg:border-r">
                     <div className="lg:sticky lg:top-[220px]">
-                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.17em] text-(--ac-brand)">A história em capítulos</p>
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.17em] text-(--ac-brand)">{t('history.chapters')}</p>
                         <h2 className="mt-4 max-w-md text-4xl font-black leading-[0.96] tracking-tighter sm:text-5xl">
-                            As viradas que definiram a {name}.
+                            {t('history.turns', { name })}
                         </h2>
                         <p className="mt-6 max-w-sm text-sm leading-7 text-background/65">
-                            Uma leitura da formação da empresa, das viradas de catálogo e do ciclo que começa agora.
+                            {t('history.intro')}
                         </p>
                         <div className="mt-8 flex items-end gap-3 border-t border-background/15 pt-5">
                             <strong className="font-mono text-4xl leading-none">{originYear ? new Date().getFullYear() - originYear : narrativeChapters.length}</strong>
                             <span className="max-w-[130px] font-mono text-[10px] uppercase leading-4 tracking-[0.12em] text-background/45">
-                                {originYear ? 'anos de trajetória documentada' : 'capítulos documentados'}
+                                {originYear ? t('history.years') : t('history.chaptersDocumented')}
                             </span>
                         </div>
                     </div>
@@ -58,11 +61,11 @@ export function AgencyHistory({ view }: { view: AgencyView }) {
                                 <p className="mt-4 max-w-2xl text-[14px] leading-7 text-background/68">{chapter.description}</p>
                                 <div className="mt-6 flex flex-wrap gap-4 font-mono text-[10px] font-black uppercase tracking-[0.11em]">
                                     <a href={chapter.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 text-background/45 hover:text-background">
-                                        Fonte do capítulo <ExternalLink size={9} />
+                                        {t('history.chapterSource')} <ExternalLink size={9} />
                                     </a>
                                     {chapter.relatedGroup && (
-                                        <Link href={`/groups/${chapter.relatedGroup.slug}`} prefetch={false} className="inline-flex items-center gap-1 text-background/45 hover:text-background">
-                                            Ver perfil relacionado <ChevronRight size={9} />
+                                        <Link href={href('group', { slug: chapter.relatedGroup.slug }, view.locale)} prefetch={false} className="inline-flex items-center gap-1 text-background/45 hover:text-background">
+                                            {t('history.relatedProfile')} <ChevronRight size={9} />
                                         </Link>
                                     )}
                                 </div>

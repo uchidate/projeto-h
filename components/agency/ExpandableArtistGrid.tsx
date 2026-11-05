@@ -5,15 +5,21 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import type { WPArtist } from '@/lib/wordpress/types'
+import { href } from '@/lib/i18n/routes'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getWPImage, stripHtml } from '@/lib/utils'
 
 interface Props {
     artists: WPArtist[]
     accent: string
     initialCount?: number
+    /** Idioma dos links das fichas. */
+    locale?: Locale
+    /** Texto do botão de expandir, já no idioma da página. */
+    moreLabel?: string
 }
 
-export function ExpandableArtistGrid({ artists, accent, initialCount = 16 }: Props) {
+export function ExpandableArtistGrid({ artists, accent, initialCount = 16, locale = DEFAULT_LOCALE, moreLabel }: Props) {
     const [expanded, setExpanded] = useState(false)
     const visible = expanded ? artists : artists.slice(0, initialCount)
     const hasMore = artists.length > initialCount
@@ -25,7 +31,7 @@ export function ExpandableArtistGrid({ artists, accent, initialCount = 16 }: Pro
                     const img = getWPImage(artist._embedded, artist.featured_image_url)
                     const name = stripHtml(artist.title.rendered)
                     return (
-                        <Link key={artist.id} href={`/artists/${artist.slug}`} className="group flex flex-col items-center text-center">
+                        <Link key={artist.id} href={href('artist', { slug: artist.slug }, locale)} className="group flex flex-col items-center text-center">
                             <div className="relative w-full aspect-square mb-2 overflow-hidden border border-border bg-surface group-hover:border-(--ac) transition-colors">
                                 {img ? (
                                     <Image
@@ -58,7 +64,7 @@ export function ExpandableArtistGrid({ artists, accent, initialCount = 16 }: Pro
                     style={{ '--ac': accent } as React.CSSProperties}
                 >
                     <ChevronDown size={13} />
-                    Ver mais {artists.length - initialCount} artistas
+                    {moreLabel ?? `Ver mais ${artists.length - initialCount} artistas`}
                 </button>
             )}
         </div>

@@ -1,8 +1,10 @@
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { ExternalLink, Globe, Users, Calendar, Star, Music2 } from 'lucide-react'
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyHero({ view }: { view: AgencyView }) {
+    const t = useTranslations('entity.agency.ui')
     const { name, mark, logo, acf, isBig4, tierLabel, entityLabel, originYear, allArtists, allGroups, heroImages } = view
     return (
         <div className="page-wrap pt-4 sm:pt-6">
@@ -40,7 +42,7 @@ export function AgencyHero({ view }: { view: AgencyView }) {
                         {/* Logo / fallback mark */}
                         {logo ? (
                             <div className="relative h-16 w-16 shrink-0 overflow-hidden border-2 border-white/20 bg-black/60 backdrop-blur-xs sm:h-28 sm:w-28">
-                                <Image src={logo.src} alt={`${name} — logo`} fill priority className="object-contain p-2.5" sizes="(max-width: 640px) 64px, 112px" />
+                                <Image src={logo.src} alt={t('hero.logoAlt', { name })} fill priority className="object-contain p-2.5" sizes="(max-width: 640px) 64px, 112px" />
                             </div>
                         ) : (
                             <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden border-2 border-white/20 bg-black/55 backdrop-blur-xs sm:h-28 sm:w-28">
@@ -67,7 +69,7 @@ export function AgencyHero({ view }: { view: AgencyView }) {
                                 )}
                                 {originYear && (
                                     <span className="border border-white/20 bg-black/30 px-2.5 py-1 font-mono text-[10px] text-white/60 backdrop-blur-xs">
-                                        origem {originYear}
+                                        {t('hero.origin', { year: originYear })}
                                     </span>
                                 )}
                             </div>
@@ -86,25 +88,25 @@ export function AgencyHero({ view }: { view: AgencyView }) {
                                 {originYear && (
                                     <span className="flex items-center gap-1.5">
                                         <Calendar size={11} className="opacity-60" />
-                                        trajetória desde <strong className="text-white">{originYear}</strong>
+                                        {t('hero.pathSince')} <strong className="text-white">{originYear}</strong>
                                     </span>
                                 )}
                                 {allGroups.length > 0 && (
                                     <span className="flex items-center gap-1.5">
                                         <Music2 size={11} className="opacity-60" />
-                                        <strong className="text-white">{allGroups.length}</strong> grupos cobertos
+                                        <strong className="text-white">{allGroups.length}</strong> {t('hero.groupsCovered')}
                                     </span>
                                 )}
                                 {allArtists.length > 0 && (
                                     <span className="flex items-center gap-1.5">
                                         <Users size={11} className="opacity-60" />
-                                        <strong className="text-white">{allArtists.length}</strong> perfis no acervo
+                                        <strong className="text-white">{allArtists.length}</strong> {t('hero.profilesInArchive')}
                                     </span>
                                 )}
                                 {acf.website && (
                                     <a href={acf.website} target="_blank" rel="noopener noreferrer"
                                         className="flex items-center gap-1 text-white/50 hover:text-white transition-colors">
-                                        <Globe size={11} /> Site oficial <ExternalLink size={9} />
+                                        <Globe size={11} /> {t('hero.officialSite')} <ExternalLink size={9} />
                                     </a>
                                 )}
                             </div>
