@@ -79,6 +79,10 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     // Os capítulos são numerados em sequência: sem os blocos só-PT (Aprenda, Jogue, Temas, Loja) a contagem não pula números.
     // Capa só com matéria fresca (ver lib/home/frescor.ts); sem nenhuma, o hero é uma produção.
     // Os slides extras nunca tomam as matérias escolhidas à mão para os destaques (nada some nem se repete).
+    // Faixa de assuntos: em português são os hubs configurados no WP; nos outros idiomas, os guias já traduzidos.
+    const assuntos = soPt
+        ? homeSettings.hubs
+        : guiasPorTema.map(g => ({ label: g.titulo, href: rota('guide', { slug: g.slug }, locale), hangul: '', detail: '', color: g.cor }))
     const heroPosts = escolherCapas(posts, homeSettings.heroPostId, 4, new Date(), new Set(homeSettings.highlightPostIds))
     const heroIds = new Set(heroPosts.map(post => post.id))
     const withoutHero = posts.filter(post => !heroIds.has(post.id))
@@ -96,7 +100,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
 
     return (
         <section className="bg-[var(--color-home-page)]" aria-label={t('rotulo')}>
-            {soPt && <div data-bloco="home-assuntos" className="mx-auto hidden max-w-[1440px] bg-[var(--color-home-card)] lg:block"><HomeAssuntos hubs={homeSettings.hubs} locale={locale} /></div>}
+            {assuntos.length > 0 && <div data-bloco="home-assuntos" className="mx-auto hidden max-w-[1440px] bg-[var(--color-home-card)] lg:block"><HomeAssuntos hubs={assuntos} locale={locale} /></div>}
             <div className="mx-auto flex max-w-[1440px] flex-col gap-3.5 px-3.5 pb-3.5 lg:gap-5 lg:px-6 lg:pb-5">
                 <div className="pt-3.5 lg:pt-5"><HomeCapitulo n={1} chave="agora" cor="#ff246e" locale={locale} /></div>
                 <div className="flex flex-col gap-3.5 lg:grid lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-5">

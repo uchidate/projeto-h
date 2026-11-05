@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
@@ -9,11 +8,10 @@ import { HomeFrontPage } from '@/components/home/HomeFrontPage'
 import { IS_BUILD } from '@/lib/wordpress/config'
 import { carregarHome } from '@/lib/home/carregar-home'
 import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
-import { EntityGrid, fetchCatalog, type CatalogKind } from '@/components/features/LocalizedCatalog'
+import { fetchCatalog, type CatalogKind } from '@/components/features/LocalizedCatalog'
 
 
 const SECOES = ['groups', 'artists', 'productions'] as const satisfies readonly CatalogKind[]
-const POR_SECAO = 12
 
 const MIN_ARTIGOS_TRADUZIDOS = 3
 
@@ -48,17 +46,11 @@ export async function generateMetadataHomeIntl(locale: Locale): Promise<Metadata
 
 /**
  * Home de um idioma além do português: a mesma `HomeFrontPage` da home PT, com a
- * interface traduzida e sem os blocos só-PT (hubs, loja, streaming BR, quiz).
- * Só aparecem artigos com tradução publicada (mínimo de 3, senão a seção some). Abaixo ficam as fichas
- * já traduzidas e publicadas, que são o conteúdo indexável da página.
+ * interface traduzida e sem os blocos só-PT (loja, streaming BR).
+ * Só aparecem artigos com tradução publicada (mínimo de 3, senão a seção some); nada além da home em si.
  */
 export async function HomeIntl({ locale }: { locale: Locale }) {
-    const [t, tc, secoes, dados] = await Promise.all([
-        getTranslations({ locale, namespace: 'entity.home' }),
-        getTranslations({ locale, namespace: 'entity.catalog' }),
-        carregarSecoes(locale),
-        carregarHome({ comercio: false, locale }),
-    ])
+    const dados = await carregarHome({ comercio: false, locale })
 
     // Mesma guarda da home PT, mas pelas produções: artigo traduzido pode não existir ainda, produção sempre existe.
     if (!IS_BUILD && dados.productions.length === 0) {
@@ -89,41 +81,6 @@ export async function HomeIntl({ locale }: { locale: Locale }) {
                 guiasPorTema={dados.guiasPorTema}
                 pergunta={<Suspense fallback={null}><PerguntaDoDiaServer locale={locale} /></Suspense>}
             />
-            <div className="page-wrap py-10 sm:py-14">
-                <header className="mb-8 border-b-2 border-foreground pb-6">
-                    <p className="font-mono text-[11px] font-black uppercase tracking-[0.14em] text-accent">{t('eyebrow')}</p>
-                    <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-foreground/75">{t('intro')}</p>
-                </header>
-
-                {secoes.length === 0 && (
-                    <p className="text-[15px] text-muted">
-                        {tc('empty')}{' '}
-                        <Link href="/" hrefLang={LOCALE_META[DEFAULT_LOCALE].htmlLang} className="font-semibold text-accent hover:underline">{t('ptLink')} →</Link>
-                    </p>
-                )}
-
-                <div className="space-y-12">
-                    {secoes.map((secao) => (
-                        <section key={secao.kind} aria-labelledby={`secao-${secao.kind}`}>
-                            <div className="mb-5 flex items-end justify-between gap-4 border-b border-border pb-3">
-                                <h2 id={`secao-${secao.kind}`} className="text-[22px] font-black tracking-[-0.02em] sm:text-[28px]">
-                                    {t(`sections.${secao.kind}`)}
-                                </h2>
-                                <Link href={href(secao.kind, undefined, locale)} className="shrink-0 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent hover:underline">
-                                    {t('seeAll', { count: secao.total })} →
-                                </Link>
-                            </div>
-                            <EntityGrid items={secao.items} kind={secao.kind} locale={locale} limite={POR_SECAO} />
-                        </section>
-                    ))}
-                </div>
-
-                {secoes.length > 0 && (
-                    <p className="mt-14 border-t border-border pt-6 text-[14px] text-muted">
-                        <Link href="/" hrefLang={LOCALE_META[DEFAULT_LOCALE].htmlLang} className="font-semibold text-foreground hover:text-accent">{t('ptLink')} →</Link>
-                    </p>
-                )}
-            </div>
         </>
     )
 }
