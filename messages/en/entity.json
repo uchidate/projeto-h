@@ -60,6 +60,31 @@
       "dessert": "Desserts",
       "drink": "Drinks",
       "snack": "Snacks"
+    },
+    "ui": {
+      "breadcrumb": "Foods",
+      "spicy0": "Not spicy",
+      "spicy1": "Mildly spicy",
+      "spicy2": "Spicy",
+      "spicy3": "Very spicy",
+      "spicy4": "Extra spicy",
+      "spicy5": "Extremely spicy",
+      "vegan": "Vegan",
+      "vegetarian": "Vegetarian",
+      "inDramas": "Seen in K-Dramas",
+      "ingredients": "Main ingredients",
+      "whereToEat": "Where to eat it",
+      "viewOnMap": "View on map",
+      "defaultPlace": "South Korea",
+      "occasion": "Occasion",
+      "season": "Best season",
+      "trivia": "Trivia",
+      "allergens": "Allergens",
+      "related": "More Korean cuisine",
+      "inStore": "In the store",
+      "seeAll": "← See all foods",
+      "shopTitle": "To try at home",
+      "shopSeeAll": "See all"
     }
   },
   "production": {

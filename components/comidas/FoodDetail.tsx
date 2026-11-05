@@ -75,13 +75,14 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     })
 }
 
-const SPICY_LABELS = ['Sem pimenta', 'Levemente picante', 'Picante', 'Bem picante', 'Muito picante', 'Extremamente picante']
-
 export default async function FoodPage({ params }: { params: Params }) {
     const { slug, locale = DEFAULT_LOCALE } = await params
     const sourceFood = await getFoodBySlug(slug)
     if (!sourceFood) notFound()
     const food = localizeEntity(sourceFood, locale, 'food')
+    const ui = await getTranslations({ locale, namespace: 'entity.food.ui' })
+    // Receita, matérias do blog e loja existem só em português: fora dele a ficha não os mostra.
+    const soPt = locale === DEFAULT_LOCALE
 
     const acf = food.acf ?? {}
     const name = stripHtml(food.title.rendered)
@@ -108,11 +109,11 @@ export default async function FoodPage({ params }: { params: Params }) {
 
     const breadcrumbSchema = buildBreadcrumbSchema([
         { name: `${SITE_NAME}`, url: SITE_URL },
-        { name: 'Comidas', url: `${SITE_URL}${href('foods', undefined, locale)}` },
+        { name: ui('breadcrumb'), url: `${SITE_URL}${href('foods', undefined, locale)}` },
         { name: name, url: foodUrl },
     ])
 
-    const receita = getReceita(slug)
+    const receita = soPt ? getReceita(slug) : null
 
     const recipeSchema = buildRecipeSchema({
         name,
@@ -184,17 +185,17 @@ export default async function FoodPage({ params }: { params: Params }) {
                                 {spicy >= 0 && (
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface font-mono text-[11px]">
                                         {spicy === 0 ? '✅' : '🌶️'.repeat(Math.min(spicy, 3))}
-                                        <span className="text-muted">{SPICY_LABELS[spicy] ?? 'Picante'}</span>
+                                        <span className="text-muted">{ui(`spicy${Math.min(spicy, 5)}` as 'spicy2')}</span>
                                     </span>
                                 )}
                                 {acf.is_vegan && (
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-green-600/40 bg-green-600/10 font-mono text-[11px] text-green-600">
-                                        🌱 Vegano
+                                        🌱 {ui('vegan')}
                                     </span>
                                 )}
                                 {!acf.is_vegan && acf.is_vegetarian && (
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-green-600/40 bg-green-600/10 font-mono text-[11px] text-green-600">
-                                        🥦 Vegetariano
+                                        🥦 {ui('vegetarian')}
                                     </span>
                                 )}
                                 {acf.price_range && (
@@ -245,13 +246,13 @@ export default async function FoodPage({ params }: { params: Params }) {
                     {/* Dramas que mencionam este prato */}
                     {dramasInFood.length > 0 && (
                         <section className="mt-10 pt-8 border-t border-border">
-                            <h2 className="text-[18px] font-black tracking-tight mb-5">Aparece em K-Dramas</h2>
+                            <h2 className="text-[18px] font-black tracking-tight mb-5">{ui('inDramas')}</h2>
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 {dramasInFood.map(prod => {
                                     const title = stripHtml(prod.title.rendered)
                                     const prodImg = prod.featured_image_url
                                     return (
-                                        <Link key={prod.id} href={`/productions/${prod.slug}`}
+                                        <Link key={prod.id} href={href('production', { slug: prod.slug }, locale)}
                                             className="group flex items-center gap-3 p-3 rounded-xl border border-border hover:border-accent transition-colors bg-surface/40">
                                             {prodImg && (
                                                 <div className="relative w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-surface">
@@ -274,7 +275,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                     {/* Ingredientes */}
                     {acf.main_ingredients && acf.main_ingredients.length > 0 && (
                         <div className="rounded-xl border border-border bg-surface/40 p-5">
-                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">Ingredientes principais</h3>
+                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">{ui('ingredients')}</h3>
                             <ul className="space-y-1">
                                 {acf.main_ingredients.map(ing => (
                                     <li key={ing} className="text-[13px] text-foreground/80">• {ing}</li>
@@ -286,15 +287,15 @@ export default async function FoodPage({ params }: { params: Params }) {
                     {/* Onde comer */}
                     {acf.where_to_find && (
                         <div className="rounded-xl border border-border bg-surface/40 p-5">
-                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">Onde comer</h3>
+                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-3">{ui('whereToEat')}</h3>
                             <p className="text-[13px] text-foreground/80 leading-relaxed">{acf.where_to_find}</p>
                             <a
-                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} ${acf.region ?? 'Coreia do Sul'}`)}`}
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} ${acf.region ?? ui('defaultPlace')}`)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1.5 mt-3 text-[12px] font-semibold text-accent hover:underline"
                             >
-                                📍 Ver no mapa
+                                📍 {ui('viewOnMap')}
                             </a>
                         </div>
                     )}
@@ -304,7 +305,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                         <div className="rounded-xl border border-border bg-surface/40 p-5 space-y-4">
                             {acf.occasion && acf.occasion.length > 0 && (
                                 <div>
-                                    <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-2">Ocasião</h3>
+                                    <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-2">{ui('occasion')}</h3>
                                     <div className="flex flex-wrap gap-1.5">
                                         {acf.occasion.map(occ => (
                                             <span key={occ} className="px-2 py-0.5 rounded-full border border-border font-mono text-[10px] text-muted">{occ}</span>
@@ -314,7 +315,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                             )}
                             {acf.season && acf.season.length > 0 && (
                                 <div>
-                                    <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-2">Melhor época</h3>
+                                    <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-2">{ui('season')}</h3>
                                     <div className="flex flex-wrap gap-1.5">
                                         {acf.season.map(s => (
                                             <span key={s} className="px-2 py-0.5 rounded-full border border-border font-mono text-[10px] text-muted">{s}</span>
@@ -328,7 +329,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                     {/* Curiosidades */}
                     {acf.curiosidades && acf.curiosidades.length > 0 && (
                         <div className="rounded-xl border border-surface-editorial bg-surface-editorial/30 p-5">
-                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent mb-3">Curiosidades</h3>
+                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent mb-3">{ui('trivia')}</h3>
                             <ul className="space-y-2">
                                 {acf.curiosidades.map((c, i) => (
                                     <li key={i} className="text-[13px] text-foreground/80 leading-relaxed">💡 {c}</li>
@@ -340,7 +341,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                     {/* Alérgenos */}
                     {acf.allergens && acf.allergens.length > 0 && (
                         <div className="rounded-xl border border-border bg-surface/40 p-5">
-                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-2">Alérgenos</h3>
+                            <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted mb-2">{ui('allergens')}</h3>
                             <div className="flex flex-wrap gap-1.5">
                                 {acf.allergens.map(a => (
                                     <span key={a} className="px-2 py-0.5 rounded-full border border-border font-mono text-[10px] text-muted">⚠️ {a}</span>
@@ -355,7 +356,7 @@ export default async function FoodPage({ params }: { params: Params }) {
             {/* Comidas relacionadas */}
             {relatedFoods.length > 0 && (
                 <ProfileSection id="relacionadas" indented={false}>
-                    <h2 className="text-[18px] font-black tracking-tight mb-5">Mais da culinária coreana</h2>
+                    <h2 className="text-[18px] font-black tracking-tight mb-5">{ui('related')}</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         {relatedFoods.map(f => {
                             const fname = stripHtml(f.title.rendered)
@@ -378,8 +379,8 @@ export default async function FoodPage({ params }: { params: Params }) {
                                         {f.acf?.name_korean && (
                                             <p className="text-[10px] text-muted mt-0.5">{f.acf.name_korean}</p>
                                         )}
-                                        {naLojaMatcher([fname, ...(f.acf?.main_ingredients ?? [])]) && (
-                                            <p className="font-mono text-[10px] font-semibold text-accent mt-0.5">🛍️ Na loja</p>
+                                        {soPt && naLojaMatcher([fname, ...(f.acf?.main_ingredients ?? [])]) && (
+                                            <p className="font-mono text-[10px] font-semibold text-accent mt-0.5">🛍️ {ui('inStore')}</p>
                                         )}
                                     </div>
                                 </Link>
@@ -388,18 +389,18 @@ export default async function FoodPage({ params }: { params: Params }) {
                     </div>
                     <div className="mt-6">
                         <Link href={href('foods', undefined, locale)} className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
-                            ← Ver todas as comidas
+                            {ui('seeAll')}
                         </Link>
                     </div>
                 </ProfileSection>
             )}
 
             {/* Loja e blog */}
-            {(vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
+            {soPt && (vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
                 <ProfileSection id="loja-blog" indented={false}>
                     <div className="space-y-6">
-                        <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto={`comida:${slug}`} title="Para provar em casa"
-                            href={`/loja/comida/${slug}`} verTudoLabel="Ver tudo" />
+                        <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto={`comida:${slug}`} title={ui('shopTitle')}
+                            href={`/loja/comida/${slug}`} verTudoLabel={ui('shopSeeAll')} />
                         <CitadoNoBlog posts={posts} />
                         <MencionadoAcervo mentions={mentions} />
                     </div>
