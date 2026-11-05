@@ -1,22 +1,35 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { getAgencyBySlug } from '@/lib/wordpress/agencies'
 import { buildOgImageUrl, SITE_URL } from '@/lib/constants/site'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { metaDescription } from '@/lib/seo/metaDescription'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { buildAlternates } from '@/lib/i18n/alternates'
+import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
+import { href } from '@/lib/i18n/routes'
 import { LEGACY_AGENCY_TITLE, sameImageAsset } from './helpers'
 
-export async function metadataDaAgencia(slug: string): Promise<Metadata> {
-    const agency = await getAgencyBySlug(slug)
-    if (!agency) return {}
+export async function metadataDaAgencia(slug: string, locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
+    const found = await getAgencyBySlug(slug)
+    if (!found) return {}
+    // Sem tradução publicada: a ficha em português, fora do índice e com canonical no original.
+    if (semTraducao(found, locale)) {
+        return { ...(await metadataDaAgencia(slug, DEFAULT_LOCALE)), robots: { index: false, follow: true } }
+    }
+    const agency = localizeEntity(found, locale, 'agency')
     const name = stripHtml(agency.title.rendered)
     const desc = metaDescription(stripHtml(agency.excerpt?.rendered ?? ''))
-    const url = `${SITE_URL}/agencies/${slug}`
+    const url = `${SITE_URL}${href('agency', { slug }, locale)}`
     const logo = getWPImage(agency._embedded, agency.featured_image_url)
-    const fallbackTitle = `${name}: artistas, grupos e história`
+    const t = await getTranslations({ locale, namespace: 'entity.agency' })
+    const fallbackTitle = t('metaTitle', { name })
     const seoImageIsLogo = sameImageAsset(agency.yoast_head_json?.og_image?.[0]?.url, logo?.src)
-    const seo = agency.yoast_head_json
-        ? {
+    // O SEO do Yoast é do português; em outro idioma vale o título/descrição traduzidos.
+    const seo = locale === DEFAULT_LOCALE && agency.yoast_head_json
+        ?
+ {
             ...agency.yoast_head_json,
             title: agency.yoast_head_json.title?.replace(LEGACY_AGENCY_TITLE, '') === name
                 ? fallbackTitle
@@ -30,17 +43,19 @@ export async function metadataDaAgencia(slug: string): Promise<Metadata> {
         : undefined
     const ogImage = buildOgImageUrl({
         title: fallbackTitle,
-        subtitle: desc || `História, grupos e artistas relacionados à ${name}.`,
+        subtitle: desc || t('metaDescription', { name }),
         image: logo?.src,
         type: 'agency',
     })
 
     return buildWordPressMetadata({
         title: fallbackTitle,
-        description: desc || `Conheça a ${name}, sua história, seus grupos, artistas e sua atuação na indústria do entretenimento coreano.`,
+        description: desc || t('metaDescription', { name }),
         url,
         image: logo ? { src: logo.src, alt: `${name} — logo` } : undefined,
         ogImageOverride: ogImage,
         seo,
+        languages: buildAlternates('agency', { slug }, locale, availableLocales(found)).languages,
+        ogLocale: LOCALE_META[locale].ogLocale,
     })
 }

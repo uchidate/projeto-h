@@ -330,6 +330,8 @@ export type WPGroup = {
 
 export type WPAgency = {
     id: number
+    /** Traduções publicadas (só texto) — ver lib/i18n/entity-translation.ts. */
+    translations?: Partial<Record<string, EntityTranslation>> | null
     slug: string
     status: 'publish' | 'draft'
     date: string
@@ -424,6 +426,8 @@ export type CompanyIndustry =
 
 export type WPCompany = {
     id: number
+    /** Traduções publicadas (só texto) — ver lib/i18n/entity-translation.ts. */
+    translations?: Partial<Record<string, EntityTranslation>> | null
     slug: string
     status: 'publish' | 'draft'
     date: string
@@ -472,6 +476,8 @@ export type FoodCategory =
 
 export type WPFood = {
     id: number
+    /** Traduções publicadas (só texto) — ver lib/i18n/entity-translation.ts. */
+    translations?: Partial<Record<string, EntityTranslation>> | null
     slug: string
     status: 'publish' | 'draft'
     date: string

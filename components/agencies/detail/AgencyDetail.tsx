@@ -9,6 +9,8 @@ import { GroupPosts } from '@/components/groups/GroupPosts'
 import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
 import { EntityFAQ } from '@/components/seo/EntityFAQ'
 import { ADSENSE } from '@/lib/config/ads'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import { carregarAgencia } from './lib/carregarAgencia'
 import { metadataDaAgencia } from './lib/metadata'
 import { AgencyHero } from './components/AgencyHero'
@@ -30,16 +32,16 @@ import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizFacts } from '@/components/ui/QuizFacts'
 
 
-type Params = Promise<{ slug: string }>
+type Params = Promise<{ slug: string; locale?: Locale }>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-    const { slug } = await params
-    return metadataDaAgencia(slug)
+    const { slug, locale = DEFAULT_LOCALE } = await params
+    return metadataDaAgencia(slug, locale)
 }
 
 export default async function AgencyDetailPage({ params }: { params: Params }) {
-    const { slug } = await params
-    const view = await carregarAgencia(slug)
+    const { slug, locale = DEFAULT_LOCALE } = await params
+    const view = await carregarAgencia(slug, locale)
     if (!view) notFound()
 
     const {
@@ -69,7 +71,7 @@ export default async function AgencyDetailPage({ params }: { params: Params }) {
             <JsonLd data={breadcrumbSchema} />
 
             <ReadingBar
-                backHref="/agencies"
+                backHref={href('agencies', undefined, locale)}
                 backLabel="Agências"
                 tagLabel={tierLabel ?? undefined}
                 tagColor={accent}

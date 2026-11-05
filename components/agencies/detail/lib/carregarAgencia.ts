@@ -1,4 +1,7 @@
 import { SITE_NAME } from '@/lib/constants/site'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { localizeEntity } from '@/lib/i18n/entity-translation'
+import { href } from '@/lib/i18n/routes'
 import { intlLocale } from '@/lib/i18n/format'
 import { getAgencies, getAgencyBySlug } from '@/lib/wordpress/agencies'
 import { getArtists } from '@/lib/wordpress/artists'
@@ -19,10 +22,10 @@ import { BIG4_SLUGS, GENERATIONS } from '@/components/agencies/detail/lib/helper
 
 // Tudo o que a página da agência precisa, já resolvido: os componentes de
 // seção só desenham. Devolve null quando a agência não existe.
-export async function carregarAgencia(slug: string) {
+export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOCALE) {
     const sourceAgency = await getAgencyBySlug(slug)
     if (!sourceAgency) return null
-    const agency = await applyAgencyManifestPreview(sourceAgency)
+    const agency = localizeEntity(await applyAgencyManifestPreview(sourceAgency), locale, 'agency')
 
     const name = stripHtml(agency.title.rendered)
     const mark = agencyMark(name)
@@ -54,7 +57,7 @@ export async function carregarAgencia(slug: string) {
     const contentHtml = agency.content?.rendered ?? ''
     const [contentLead, contentRest] = splitContentForAd(contentHtml, 2)
     const excerptText = stripHtml(agency.excerpt?.rendered ?? '')
-    const pageUrl = `${SITE_URL}/agencies/${slug}`
+    const pageUrl = `${SITE_URL}${href('agency', { slug }, locale)}`
     const updatedAtLabel = agency.modified
         ? new Intl.DateTimeFormat(intlLocale(), { month: 'long', year: 'numeric' }).format(new Date(agency.modified))
         : null
@@ -209,7 +212,7 @@ export async function carregarAgencia(slug: string) {
 
     const breadcrumbSchema = buildBreadcrumbSchema([
         { name: `${SITE_NAME}`, url: SITE_URL },
-        { name: 'Agências', url: `${SITE_URL}/agencies` },
+        { name: 'Agências', url: `${SITE_URL}${href('agencies', undefined, locale)}` },
         { name, url: pageUrl },
     ])
 
@@ -273,6 +276,7 @@ export async function carregarAgencia(slug: string) {
     ].filter(Boolean).slice(0, 5) as EntityFAQItem[]
     return {
         slug,
+        locale,
         
         agency,
         name,
