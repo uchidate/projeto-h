@@ -5,6 +5,7 @@ const DIA_MS = 86_400_000
 const PALAVRAS: Record<Locale, { hoje: string; ontem: string }> = {
     pt: { hoje: 'hoje', ontem: 'ontem' },
     en: { hoje: 'today', ontem: 'yesterday' },
+    es: { hoje: 'hoy', ontem: 'ayer' },
 }
 
 /** Dia civil (AAAA-MM-DD) de um instante, no fuso de Brasília. */

@@ -18,7 +18,7 @@ describe('config', () => {
     })
 
     it('does not mistake a two-letter segment for a locale', () => {
-        expect(splitLocale('/es/x')).toEqual({ locale: 'pt', path: '/es/x' })
+        expect(splitLocale('/fr/x')).toEqual({ locale: 'pt', path: '/fr/x' })
         expect(splitLocale('/english')).toEqual({ locale: 'pt', path: '/english' })
     })
 

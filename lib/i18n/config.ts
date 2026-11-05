@@ -6,12 +6,13 @@
  * só existe com tradução `published` (sophia-katseye e katseye no piloto);
  * as demais continuam 404 em inglês.
  */
-const LOCALES = ['pt', 'en'] as const
+import { LOCALES, DEFAULT_LOCALE as DEFAULT, ACTIVE_LOCALES as ACTIVE } from './idiomas.mjs'
+
 export type Locale = (typeof LOCALES)[number]
 
-export const DEFAULT_LOCALE: Locale = 'pt'
+export const DEFAULT_LOCALE: Locale = DEFAULT
 
-export const ACTIVE_LOCALES: readonly Locale[] = ['pt', 'en']
+export const ACTIVE_LOCALES: readonly Locale[] = ACTIVE
 
 interface LocaleMeta {
     /** Valor de `<html lang>`, hreflang e `inLanguage` do JSON-LD. */
@@ -25,6 +26,7 @@ interface LocaleMeta {
 export const LOCALE_META: Record<Locale, LocaleMeta> = {
     pt: { htmlLang: 'pt-BR', ogLocale: 'pt_BR', intl: 'pt-BR' },
     en: { htmlLang: 'en', ogLocale: 'en_US', intl: 'en' },
+    es: { htmlLang: 'es', ogLocale: 'es_ES', intl: 'es' },
 }
 
 export function isLocale(value: string): value is Locale {

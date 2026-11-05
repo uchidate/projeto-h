@@ -36,7 +36,13 @@ export type Messages = typeof pt
 /** Mensagens em português, síncronas — para testes e o mock de next-intl. */
 export const PT_MESSAGES: Messages = pt
 
-const loaders: Record<Locale, () => Promise<Messages>> = {
+/**
+ * Idioma sem catálogo próprio usa o de outro até ser traduzido (namespace por namespace, em `loaders`).
+ * O espanhol começa com as mensagens em inglês; só vale algo quando o idioma for ativado.
+ */
+const FALLBACK: Partial<Record<Locale, Locale>> = { es: 'en' }
+
+const loaders: Partial<Record<Locale, () => Promise<Messages>>> = {
     pt: async () => pt,
     en: async () => {
         const [entity, profile, client, institucional, home]: [Messages['entity'], Messages['profile'], Messages['client'], Messages['institucional'], Messages['home']] = await Promise.all([
@@ -51,5 +57,9 @@ const loaders: Record<Locale, () => Promise<Messages>> = {
 }
 
 export function loadMessages(locale: Locale): Promise<Messages> {
-    return loaders[locale]()
+    const carregar = loaders[locale]
+    if (carregar) return carregar()
+    const alternativo = FALLBACK[locale]
+    if (!alternativo) throw new Error(`Idioma "${locale}" sem mensagens nem idioma alternativo (lib/i18n/messages.ts)`)
+    return loadMessages(alternativo)
 }
