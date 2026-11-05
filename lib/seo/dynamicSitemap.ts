@@ -6,6 +6,7 @@ import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { href } from '@/lib/i18n/routes'
 import { buildPostAlternates } from '@/lib/blog/translations'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
+import { SHARDS_TRADUZIVEIS } from '@/lib/i18n/entidades-traduziveis'
 
 const SITEMAP_SHARDS = [
     'pages',
@@ -27,7 +28,7 @@ type WPEntry = { slug: string; date?: string; modified?: string; translations?: 
  * Shards com versão em outros idiomas — docs/I18N-ARQUITETURA.md (D7). O
  * arquivo é `<shard>-<locale>.xml` e só lista fichas com tradução publicada.
  */
-const LOCALIZED_SHARDS = ['artists', 'groups', 'productions'] as const
+const LOCALIZED_SHARDS = SHARDS_TRADUZIVEIS
 /** Posts traduzidos (D5-a) têm modelo próprio (um post por idioma) e só entram no índice quando existe algum. */
 const POSTS_SHARD = 'posts'
 type LocalizedShard = (typeof LOCALIZED_SHARDS)[number] | typeof POSTS_SHARD
