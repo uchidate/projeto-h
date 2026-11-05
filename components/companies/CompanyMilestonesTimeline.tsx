@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 interface Props {
     milestones: string[]
     accent: string
@@ -8,6 +9,7 @@ interface Props {
  * empresa tem 2-4 marcos, não dezenas, então agrupar em eras seria ruído.
  */
 export function CompanyMilestonesTimeline({ milestones, accent }: Props) {
+    const t = useTranslations('entity.company.ui')
     const items = milestones
         .map(m => { const [year, ...rest] = m.split('|'); return { year: year.trim(), text: rest.join('|').trim() } })
         .filter(i => i.year && i.text)
@@ -18,8 +20,8 @@ export function CompanyMilestonesTimeline({ milestones, accent }: Props) {
     return (
         <section id="historia">
             <div className="mb-5 border-b border-foreground pb-3">
-                <p className="font-mono text-[10px] font-black uppercase leading-4 tracking-[0.12em] text-muted">Linha do tempo</p>
-                <h2 className="text-xl font-black tracking-[-0.03em]">Marcos da história</h2>
+                <p className="font-mono text-[10px] font-black uppercase leading-4 tracking-[0.12em] text-muted">{t('timelineEyebrow')}</p>
+                <h2 className="text-xl font-black tracking-[-0.03em]">{t('timeline')}</h2>
             </div>
             <div className="flex flex-col gap-3">
                 {items.map((item, i) => (
