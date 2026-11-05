@@ -282,5 +282,22 @@
       "hoje": "hoje",
       "ontem": "ontem",
       "sobre": "Sobre {nome}"
+  },
+  "perguntaDoDia": {
+    "titulo": "Pergunta do dia",
+    "certo": "Certo",
+    "certoExcl": "Certo!",
+    "sequencia": "{n, plural, one {# dia seguido} other {# dias seguidos}}",
+    "comece": "comece sua sequência",
+    "volte": "Volte amanhã para manter.",
+    "voltePrimeira": "Volte amanhã para começar sua sequência.",
+    "jogar": "Jogar o quiz completo →"
+  },
+  "consentimento": {
+    "sequencia": "sua sequência de dias",
+    "placar": "seu placar e suas estatísticas",
+    "texto": "Para guardar {recurso} neste navegador precisamos da sua permissão para cookies. Sem ela, o quiz e o site funcionam normalmente, só não lembram de você.",
+    "rever": "Rever minha escolha",
+    "privacidade": "Como usamos os dados"
   }
 }

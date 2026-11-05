@@ -73,6 +73,8 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     // Fora do português a faixa de guias só entra com guias traduzidos; os capítulos seguem em sequência.
     const temGuias = soPt || guiasPorTema.length > 0
     const g = temGuias ? 1 : 0
+    // Fora do português só a pergunta do dia (o quiz completo e o cartão do quiz ainda não existem no idioma).
+    const temJogo = soPt || !!pergunta
     const temTemas = soPt || !!temas && [temas.gastronomia, temas.beleza].some(t => t.artigos.length + t.pratos.length + t.marcas.length > 0)
     // Os capítulos são numerados em sequência: sem os blocos só-PT (Aprenda, Jogue, Temas, Loja) a contagem não pula números.
     // Capa só com matéria fresca (ver lib/home/frescor.ts); sem nenhuma, o hero é uma produção.
@@ -135,18 +137,18 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="home_feed" />
                     </div>
                 )}
-                {soPt && (
+                {temJogo && (
                     <>
-                        <HomeCapitulo n={6} chave="jogue" cor="#8a5a00" locale={locale} />
+                        <HomeCapitulo n={soPt ? 6 : 5 + g} chave="jogue" cor="#8a5a00" locale={locale} />
                         <div className="-mx-3.5 border-t-4 border-t-[#8a5a00] bg-[#fff3d6] px-3.5 py-4 dark:bg-[#271d08] lg:-mx-6 lg:px-6 lg:py-5">
-                            <div className="grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.5fr)] lg:gap-5">
+                            <div className={soPt ? 'grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.5fr)] lg:gap-5' : ''}>
                                 {pergunta}
-                                <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
+                                {soPt && <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>}
                             </div>
                         </div>
                     </>
                 )}
-                {temTemas && <HomeCapitulo n={soPt ? 7 : 5 + g} chave="temas" cor="#b4531a" locale={locale} />}
+                {temTemas && <HomeCapitulo n={soPt ? 7 : 5 + g + (temJogo ? 1 : 0)} chave="temas" cor="#b4531a" locale={locale} />}
                 {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href={rota('foods', undefined, locale)} bloco="home-gastronomia" locale={locale} />}
                 {explore.length > 0 && <div data-bloco="home-explore" className="border border-border bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>}
                 {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#0e7490" href={soPt ? '/blog?category=k-beauty' : rota('blog', undefined, locale)} bloco="home-beleza" locale={locale} />}

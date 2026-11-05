@@ -282,5 +282,22 @@
       "hoje": "today",
       "ontem": "yesterday",
       "sobre": "About {nome}"
+  },
+  "perguntaDoDia": {
+    "titulo": "Question of the day",
+    "certo": "Correct",
+    "certoExcl": "Correct!",
+    "sequencia": "{n, plural, one {# day in a row} other {# days in a row}}",
+    "comece": "start your streak",
+    "volte": "Come back tomorrow to keep it going.",
+    "voltePrimeira": "Come back tomorrow to start your streak.",
+    "jogar": "Play the full quiz →"
+  },
+  "consentimento": {
+    "sequencia": "your daily streak",
+    "placar": "your score and stats",
+    "texto": "To save {recurso} in this browser we need your permission to use cookies. Without it, the quiz and the site work normally; they just won't remember you.",
+    "rever": "Review my choice",
+    "privacidade": "How we use data"
   }
 }

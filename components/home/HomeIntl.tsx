@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
@@ -7,6 +8,7 @@ import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { HomeFrontPage } from '@/components/home/HomeFrontPage'
 import { IS_BUILD } from '@/lib/wordpress/config'
 import { carregarHome } from '@/lib/home/carregar-home'
+import { PerguntaDoDiaServer } from '@/components/quiz/PerguntaDoDiaServer'
 import { EntityGrid, fetchCatalog, type CatalogKind } from '@/components/features/LocalizedCatalog'
 
 
@@ -85,6 +87,7 @@ export async function HomeIntl({ locale }: { locale: Locale }) {
                 temas={dados.temas}
                 explore={dados.explore}
                 guiasPorTema={dados.guiasPorTema}
+                pergunta={<Suspense fallback={null}><PerguntaDoDiaServer locale={locale} /></Suspense>}
             />
             <div className="page-wrap py-10 sm:py-14">
                 <header className="mb-8 border-b-2 border-foreground pb-6">

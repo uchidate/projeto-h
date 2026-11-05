@@ -313,7 +313,7 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
                         <Flame className="w-4 h-4" />{exploreLabel}
                     </Link>
                 </div>
-                <AvisoConsentimento recurso="seu placar e suas estatísticas" className="mb-10" />
+                <AvisoConsentimento recurso="placar" className="mb-10" />
 
                 {/* Categoria mais forte */}
                 {strongestCat && (
