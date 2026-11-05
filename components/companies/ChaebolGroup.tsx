@@ -11,11 +11,9 @@ import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 
-export const revalidate = 1800
-
 type Params = Promise<{ slug: string }>
 
-export async function generateStaticParams() {
+export async function slugsPreGerados() {
     try {
         const all = await getAllCompaniesRaw()
         const groups = new Set(all.map(c => c.acf?.chaebol_group).filter((g): g is string => !!g))
