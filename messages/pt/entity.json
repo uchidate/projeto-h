@@ -4,7 +4,10 @@
     "artists": "Artistas",
     "groups": "Grupos",
     "productions": "Produções",
-    "blog": "Artigos"
+    "blog": "Artigos",
+    "guides": "Guias",
+    "foods": "Gastronomia",
+    "quiz": "Quiz"
   },
   "artist": {
     "metaTitle": "{name} — Perfil, carreira e curiosidades",

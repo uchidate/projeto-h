@@ -441,5 +441,11 @@
       "ultimas": "Recent games",
       "pts": "{n} pts"
     }
+  },
+  "cookies": {
+    "titulo": "Before you continue: your cookie choice",
+    "texto": "We use cookies to measure audience and personalize ads. If you decline, the site stays open for reading, but features that save your choices on this device, such as quiz results and the fan space, are turned off, and ads are not personalized. See our <link>privacy policy</link>.",
+    "recusar": "Decline",
+    "aceitar": "Accept"
   }
 }
