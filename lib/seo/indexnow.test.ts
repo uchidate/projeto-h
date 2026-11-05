@@ -196,6 +196,12 @@ describe('buildLocalizedIndexNowUrls', () => {
         expect(buildLocalizedIndexNowUrls('artist', 'nayeon', ['es'])).toEqual([])
     })
 
+    it('usa o caminho do idioma do registro de rotas (comida, empresa e agência)', () => {
+        expect(buildLocalizedIndexNowUrls('food', 'gochujang', ['en'])).toEqual(['https://www.example.com/en/foods/gochujang'])
+        expect(buildLocalizedIndexNowUrls('company', 'cj-enm', ['en'])).toEqual(['https://www.example.com/en/companies/cj-enm'])
+        expect(buildLocalizedIndexNowUrls('agency', 'hybe', ['en'])).toEqual(['https://www.example.com/en/agencies/hybe'])
+    })
+
     it('ignora tipos sem versão em outro idioma e slug inválido', () => {
         expect(buildLocalizedIndexNowUrls('post', 'meu-post', ['en'])).toEqual([])
         expect(buildLocalizedIndexNowUrls('artist', '../x', ['en'])).toEqual([])

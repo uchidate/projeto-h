@@ -36,7 +36,8 @@ describe('sitemap dinâmico', () => {
         expect(resolveLocalizedShard('artists-es')).toBeNull()
         expect(resolveLocalizedShard('posts-en')).toEqual({ shard: 'posts', locale: 'en' })
         expect(resolveLocalizedShard('posts-pt')).toBeNull()
-        expect(resolveLocalizedShard('agencies-en')).toBeNull()
+        expect(resolveLocalizedShard('agencies-en')).toEqual({ shard: 'agencies', locale: 'en' })
+        expect(resolveLocalizedShard('fandoms-en')).toBeNull()
         expect(buildSitemapIndex()).toContain('-en.xml')
     })
 

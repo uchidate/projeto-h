@@ -18,7 +18,7 @@
 import { SITE_URL } from '@/lib/constants/site'
 import type { WPPostType } from '@/lib/wordpress/cache'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
-import { ENTIDADES_TRADUZIVEIS, TIPOS_PUBLICOS, type TipoTraduzivel } from '@/lib/i18n/entidades-traduziveis'
+import { ENTIDADES_TRADUZIVEIS, caminhoDaFicha, TIPOS_PUBLICOS, type TipoTraduzivel } from '@/lib/i18n/entidades-traduziveis'
 import { href, type RouteName } from '@/lib/i18n/routes'
 
 export const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
@@ -73,10 +73,9 @@ export function buildLocalizedIndexNowUrls(type: WPPostType, slug: string, publi
     if (!INDEXNOW_LOCALIZED_TYPES.includes(type)) return []
     const base = buildIndexNowUrl(type, slug)
     if (!base) return []
-    const path = base.slice(SITE_URL.length)
     return ACTIVE_LOCALES
         .filter((locale): locale is Locale => locale !== DEFAULT_LOCALE && published.includes(locale))
-        .map((locale) => `${SITE_URL}/${locale}${path}`)
+        .map((locale) => `${SITE_URL}${caminhoDaFicha(type as TipoTraduzivel, slug, locale)}`)
 }
 
 const LISTAGEM_DO_TIPO = Object.fromEntries(TIPOS_PUBLICOS.map((tipo) => [tipo, ENTIDADES_TRADUZIVEIS[tipo].listagem])) as Record<TipoTraduzivel, RouteName>
