@@ -22,7 +22,7 @@ describe('HomePage — proteção contra cachear página degradada', () => {
     beforeEach(() => vi.clearAllMocks())
 
     it('lança quando não há nenhum post, em vez de renderizar home vazia', async () => {
-        const { default: HomePage } = await import('./page')
+        const { default: HomePage } = await import('./HomePt')
         await expect(HomePage()).rejects.toThrow(/WordPress indisponível/)
     })
 })

@@ -11,12 +11,11 @@ import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
 import { IS_BUILD } from '@/lib/wordpress/config'
 import { carregarHome } from '@/lib/home/carregar-home'
 
+// (O `revalidate` de 600 s mora em app/(intl)/[locale]/page.tsx.)
 // 10 minutos em vez de 60 s: publicar dispara revalidação sob demanda pelo
 // webhook, então o tempo aqui é só a rede de segurança. Com 60 s a home ficava
 // permanentemente STALE (x-nextjs-cache: STALE em toda requisição), regerando à
 // toa, e limitava a 60 s qualquer cache de borda que venha a ser ligado.
-export const revalidate = 600
-
 export async function generateMetadata(): Promise<Metadata> {
     // Home em outro idioma so entra no hreflang se tiver ficha publicada: a
     // versao vazia e noindex e nao deve ser apontada. Tambem e o que faz o
