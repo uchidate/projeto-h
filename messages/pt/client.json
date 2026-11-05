@@ -441,5 +441,11 @@
       "ultimas": "Últimas partidas",
       "pts": "{n} pts"
     }
+  },
+  "cookies": {
+    "titulo": "Antes de continuar: sua escolha sobre cookies",
+    "texto": "Usamos cookies para medir audiência e personalizar anúncios. Se você recusar, o site continua aberto para leitura, mas recursos que guardam suas escolhas neste aparelho, como resultados de quiz e o espaço do fã, ficam desativados, e os anúncios não são personalizados. Veja a <link>política de privacidade</link>.",
+    "recusar": "Recusar",
+    "aceitar": "Aceitar"
   }
 }

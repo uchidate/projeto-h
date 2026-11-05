@@ -1,6 +1,9 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
+import type { Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import {
     getBannerState,
     getServerBannerState,
@@ -11,6 +14,8 @@ import {
 import { trackConsentBannerExibido, trackConsentDecidido } from '@/lib/analytics'
 
 export function CookieBanner() {
+    const t = useTranslations('client.cookies')
+    const locale = useLocale() as Locale
     // Decisão salva e chegada do CMP do Google são estado externo ao React;
     // o componente só lê o snapshot. Ver lib/consent.ts.
     const estado = useSyncExternalStore(subscribeBanner, getBannerState, getServerBannerState)
@@ -91,27 +96,23 @@ export function CookieBanner() {
             >
                 <div className="mx-auto max-w-xl rounded-2xl border border-border bg-surface p-4 shadow-2xl sm:p-7">
                     <p id="consentimento-titulo" className="text-[18px] sm:text-[20px] font-black leading-tight tracking-[-0.01em] text-foreground">
-                        Antes de continuar: sua escolha sobre cookies
+                        {t('titulo')}
                     </p>
                     <p id="consentimento-texto" className="mt-2 text-[14px] sm:text-[15px] text-muted leading-relaxed">
-                        Usamos cookies para medir audiência e personalizar anúncios. Se você recusar, o
-                        site continua aberto para leitura, mas recursos que guardam suas escolhas neste
-                        aparelho, como resultados de quiz e o espaço do fã, ficam desativados, e os
-                        anúncios não são personalizados. Veja a{' '}
-                        <a href="/privacidade" className="text-accent underline">política de privacidade</a>.
+                        {t.rich('texto', { link: c => <a href={href('privacy', undefined, locale)} className="text-accent underline">{c}</a> })}
                     </p>
                     <div className="mt-5 grid grid-cols-2 gap-3">
                         <button
                             onClick={() => decidir('denied')}
                             className="w-full rounded-full border-2 border-border px-4 py-3 text-[15px] font-bold text-foreground transition-colors hover:bg-background"
                         >
-                            Recusar
+                            {t('recusar')}
                         </button>
                         <button
                             onClick={() => decidir('granted')}
                             className="w-full rounded-full border-2 border-transparent bg-(--color-fg) px-4 py-3 text-[15px] font-bold text-(--color-bg) transition-colors hover:bg-(--color-accent) hover:text-white"
                         >
-                            Aceitar
+                            {t('aceitar')}
                         </button>
                     </div>
                 </div>
