@@ -17,7 +17,6 @@ const PAGE_URL = `${SITE_URL}/cultura-coreana-101`
 const TITLE = 'Cultura Coreana: Guias, Festas e Tradições'
 const DESCRIPTION = 'Hangeul, honoríficos, festas tradicionais, etiqueta e vida cotidiana: o essencial da cultura coreana reunido num lugar só, com guias para quem está começando.'
 
-export const revalidate = 3600
 
 export const metadata: Metadata = {
     title: TITLE,

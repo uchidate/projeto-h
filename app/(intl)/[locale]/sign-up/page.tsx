@@ -13,14 +13,14 @@ type Params = Promise<{ locale: string }>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
-    if (!idiomaValido(locale)) return {}
+    if (!idiomaValido(locale, { servePt: true })) return {}
     const t = await getTranslations({ locale, namespace: 'client.auth.signup' })
     return { title: t('title'), robots: { index: false, follow: true } }
 }
 
 export default async function SignUpPage({ params }: { params: Params }) {
     const { locale } = await params
-    entrarNaPagina(locale)
+    entrarNaPagina(locale, { servePt: true })
     return (
         <Suspense>
             <CadastroForm googleAtivo={googleAtivo()} />
