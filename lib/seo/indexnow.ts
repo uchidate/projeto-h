@@ -18,7 +18,7 @@
 import { SITE_URL } from '@/lib/constants/site'
 import type { WPPostType } from '@/lib/wordpress/cache'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
-import { ENTIDADES_TRADUZIVEIS, TIPOS_TRADUZIVEIS, type TipoTraduzivel } from '@/lib/i18n/entidades-traduziveis'
+import { ENTIDADES_TRADUZIVEIS, TIPOS_PUBLICOS, type TipoTraduzivel } from '@/lib/i18n/entidades-traduziveis'
 import { href, type RouteName } from '@/lib/i18n/routes'
 
 export const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
@@ -62,7 +62,7 @@ const INDEXNOW_PUBLIC_BASE: Partial<Record<WPPostType, string>> = {
 }
 
 /** Tipos com versão em outros idiomas (`/en/artists/<slug>`) — docs/I18N-ARQUITETURA.md. */
-export const INDEXNOW_LOCALIZED_TYPES: readonly WPPostType[] = TIPOS_TRADUZIVEIS
+export const INDEXNOW_LOCALIZED_TYPES: readonly WPPostType[] = TIPOS_PUBLICOS
 
 /**
  * URLs das versões em outros idiomas de um conteúdo. `published` são os idiomas
@@ -79,7 +79,7 @@ export function buildLocalizedIndexNowUrls(type: WPPostType, slug: string, publi
         .map((locale) => `${SITE_URL}/${locale}${path}`)
 }
 
-const LISTAGEM_DO_TIPO = Object.fromEntries(TIPOS_TRADUZIVEIS.map((tipo) => [tipo, ENTIDADES_TRADUZIVEIS[tipo].listagem])) as Record<TipoTraduzivel, RouteName>
+const LISTAGEM_DO_TIPO = Object.fromEntries(TIPOS_PUBLICOS.map((tipo) => [tipo, ENTIDADES_TRADUZIVEIS[tipo].listagem])) as Record<TipoTraduzivel, RouteName>
 
 /**
  * URLs a expurgar na borda quando o item muda: a original e a de TODO idioma
