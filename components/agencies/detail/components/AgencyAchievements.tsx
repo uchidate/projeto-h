@@ -1,16 +1,18 @@
+import { useTranslations } from 'next-intl'
 import { Trophy, ChevronRight } from 'lucide-react'
 import { SectionHeader } from '@/components/agencies/detail/components/SectionHeader'
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyAchievements({ view }: { view: AgencyView }) {
+    const t = useTranslations('entity.agency.ui')
     const { achievements } = view
     return (
         <section id="conquistas" className="scroll-mt-(--scroll-anchor-offset,106px)">
-            <SectionHeader label="Impacto" title="Marcos e impacto" count={achievements.length} />
+            <SectionHeader label={t('impactLabel')} title={t('impactTitle')} count={achievements.length} />
             <div className={`profile-panel mt-6 grid gap-0 overflow-hidden ${achievements.length > 1 ? 'lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]' : ''}`}>
                 <div className={`p-6 lg:p-8 ${achievements.length > 1 ? 'border-b border-border/70 lg:border-b-0 lg:border-r' : ''}`}>
                     <Trophy size={22} className="mb-5 text-(--ac)" />
-                    <p className="profile-kicker mb-3 text-(--ac)">Marco principal</p>
+                    <p className="profile-kicker mb-3 text-(--ac)">{t('mainMilestone')}</p>
                     <p className="max-w-2xl text-xl font-black leading-snug tracking-tight sm:text-2xl">{achievements[0]}</p>
                 </div>
                 {achievements.length > 1 && (
@@ -26,7 +28,7 @@ export function AgencyAchievements({ view }: { view: AgencyView }) {
                                 <summary className="cursor-pointer list-none p-4 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-muted transition-colors hover:text-foreground marker:content-none">
                                     <span className="inline-flex items-center gap-2">
                                         <ChevronRight size={12} className="transition-transform group-open/details:rotate-90" />
-                                        Ver mais {achievements.length - 5} marcos
+                                        {t('moreMilestones', { count: achievements.length - 5 })}
                                     </span>
                                 </summary>
                                 <div className="divide-y divide-border/70 border-t border-border/70">

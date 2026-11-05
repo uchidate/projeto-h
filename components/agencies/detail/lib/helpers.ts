@@ -13,9 +13,9 @@ export function sameImageAsset(first?: string | null, second?: string | null) {
 }
 
 export const GENERATIONS = [
-    { label: '1ª Geração', shortLabel: '1ª Gen', from: 1990, to: 2002 },
-    { label: '2ª Geração', shortLabel: '2ª Gen', from: 2003, to: 2011 },
-    { label: '3ª Geração', shortLabel: '3ª Gen', from: 2012, to: 2017 },
-    { label: '4ª Geração', shortLabel: '4ª Gen', from: 2018, to: 2022 },
-    { label: '5ª Geração', shortLabel: '5ª Gen', from: 2023, to: 9999 },
-]
+    { id: 'g1', label: '1ª Geração', shortLabel: '1ª Gen', from: 1990, to: 2002 },
+    { id: 'g2', label: '2ª Geração', shortLabel: '2ª Gen', from: 2003, to: 2011 },
+    { id: 'g3', label: '3ª Geração', shortLabel: '3ª Gen', from: 2012, to: 2017 },
+    { id: 'g4', label: '4ª Geração', shortLabel: '4ª Gen', from: 2018, to: 2022 },
+    { id: 'g5', label: '5ª Geração', shortLabel: '5ª Gen', from: 2023, to: 9999 },
+] as const

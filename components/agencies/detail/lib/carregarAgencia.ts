@@ -1,4 +1,5 @@
 import { SITE_NAME } from '@/lib/constants/site'
+import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { localizeEntity } from '@/lib/i18n/entity-translation'
 import { href } from '@/lib/i18n/routes'
@@ -17,8 +18,11 @@ import { entityBelongsToOrganizations, resolveAgencyNetwork } from '@/lib/agenci
 import { getStoreProductsByGroupId, type StoreProduct } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { applyAgencyDirectoryManifestPreview, applyAgencyManifestPreview, applyEntityAffiliationsManifestPreview } from '@/lib/agencies/preview'
-import { agencyMark, accessibleAccent, countryLabel, normalizeAccent, toRgba, type CSSVariableProperties, AGENCY_TYPE_LABELS, ORGANIZATION_KIND_LABELS } from '@/lib/agencies/presentation'
+import { agencyMark, accessibleAccent, normalizeAccent, toRgba, type CSSVariableProperties } from '@/lib/agencies/presentation'
 import { BIG4_SLUGS, GENERATIONS } from '@/components/agencies/detail/lib/helpers'
+
+const TIPOS = { major: 1, mid: 1, indie: 1, subsidiary: 1 } as const
+const KINDS = { conglomerate: 1, label: 1, agency: 1, joint_venture: 1, division: 1 } as const
 
 // Tudo o que a página da agência precisa, já resolvido: os componentes de
 // seção só desenham. Devolve null quando a agência não existe.
@@ -27,6 +31,8 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
     if (!sourceAgency) return null
     const agency = localizeEntity(await applyAgencyManifestPreview(sourceAgency), locale, 'agency')
 
+    const ui = await getTranslations({ locale, namespace: 'entity.agency.ui' })
+    const country = !agency.country || agency.country === 'KR' || agency.country === 'Korea, Republic of' ? ui('countryKR') : agency.country
     const name = stripHtml(agency.title.rendered)
     const mark = agencyMark(name)
     const logo = getWPImage(agency._embedded, agency.featured_image_url)
@@ -35,10 +41,10 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
     const interfaceAccent = accessibleAccent(accent)
     const isBig4 = BIG4_SLUGS.has(slug)
     const tierLabel = isBig4
-        ? 'Big 4'
-        : agency.agency_type ? (AGENCY_TYPE_LABELS[agency.agency_type] ?? null) : null
-    const entityLabel = ORGANIZATION_KIND_LABELS[acf.organization_kind ?? '']
-        ?? (agency.agency_type === 'indie' ? 'Agência independente' : 'Empresa de entretenimento')
+        ? ui('tierBig4')
+        : agency.agency_type && agency.agency_type in TIPOS ? ui(`types.${agency.agency_type as keyof typeof TIPOS}`) : null
+    const entityLabel = acf.organization_kind && acf.organization_kind in KINDS ? ui(`kinds.${acf.organization_kind as keyof typeof KINDS}`)
+        : (agency.agency_type === 'indie' ? ui('entityIndie') : ui('entityDefault'))
     const milestones = (agency.milestones ?? [])
         .map(m => { const [year, ...rest] = m.split('|'); return { year: year.trim(), desc: rest.join('|').trim() } })
         .filter(m => m.year && m.desc)
@@ -59,13 +65,13 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
     const excerptText = stripHtml(agency.excerpt?.rendered ?? '')
     const pageUrl = `${SITE_URL}${href('agency', { slug }, locale)}`
     const updatedAtLabel = agency.modified
-        ? new Intl.DateTimeFormat(intlLocale(), { month: 'long', year: 'numeric' }).format(new Date(agency.modified))
+        ? new Intl.DateTimeFormat(intlLocale(locale), { month: 'long', year: 'numeric' }).format(new Date(agency.modified))
         : null
     const leadershipUpdatedDate = /^\d{4}-\d{2}-\d{2}$/.test(acf.leadership_updated_at ?? '')
         ? new Date(`${acf.leadership_updated_at}T00:00:00Z`)
         : null
     const leadershipUpdatedLabel = leadershipUpdatedDate && !Number.isNaN(leadershipUpdatedDate.getTime())
-        ? new Intl.DateTimeFormat(intlLocale(), { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(leadershipUpdatedDate)
+        ? new Intl.DateTimeFormat(intlLocale(locale), { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(leadershipUpdatedDate)
         : null
 
     const agencyDirectory = await getAgencies({ perPage: 100, orderby: 'title', order: 'asc' })
@@ -111,7 +117,7 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
         ? acf.featured_videos
         : activeGroups
             .filter(group => group.acf?.mv_url)
-            .map(group => ({ title: `${stripHtml(group.title.rendered)} — vídeo oficial`, url: group.acf!.mv_url! })))
+            .map(group => ({ title: ui('videoTitle', { group: stripHtml(group.title.rendered) }), url: group.acf!.mv_url! })))
         .slice(0, 4)
 
     const groupsByGen = GENERATIONS.map(gen => ({
@@ -125,33 +131,33 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
     const topArtist = [...allArtists].sort((a, b) => (b.acf?.trending_score ?? 0) - (a.acf?.trending_score ?? 0))[0]
     const editorialLens = acf.organization_kind === 'conglomerate'
         ? {
-            eyebrow: 'Como a rede funciona',
-            title: `${name} não é uma única agência. É uma rede.`,
-            body: `Conglomerados reúnem labels, subsidiárias e operações com responsabilidades diferentes. Por isso, o ${SITE_NAME} preserva o vínculo direto de cada artista e também mostra a organização controladora.`,
+            eyebrow: ui('lens.network.eyebrow'),
+            title: ui('lens.network.title', { name }),
+            body: ui('lens.network.body', { site: SITE_NAME }),
         }
         : acf.organization_kind === 'label' || agency.agency_type === 'subsidiary'
             ? {
-                eyebrow: 'Onde ela se encaixa',
-                title: `${name} é uma peça do sistema — não o sistema inteiro.`,
-                body: 'Uma label pode administrar repertório e carreira sem representar sozinha todo o conglomerado. Os vínculos exibidos aqui distinguem o elenco direto das relações com empresas controladoras.',
+                eyebrow: ui('lens.piece.eyebrow'),
+                title: ui('lens.piece.title', { name }),
+                body: ui('lens.piece.body'),
             }
             : {
-                eyebrow: 'Sobre os dados',
-                title: 'Os números mostram o acervo. A história explica a empresa.',
-                body: `As contagens abaixo representam perfis disponíveis no ${SITE_NAME}, não um roster oficial completo. Relações históricas ou encerradas são identificadas separadamente quando há dados estruturados.`,
+                eyebrow: ui('lens.data.eyebrow'),
+                title: ui('lens.data.title'),
+                body: ui('lens.data.body', { site: SITE_NAME }),
             }
     const pillarsHeading = acf.organization_kind === 'conglomerate'
-        ? { label: 'Como a empresa funciona', title: `O modelo de negócio da ${name}` }
+        ? { label: ui('pillars.conglomerate.label'), title: ui('pillars.conglomerate.title', { name }) }
         : acf.organization_kind === 'joint_venture'
-            ? { label: 'Como a parceria funciona', title: `A proposta da ${name}` }
+            ? { label: ui('pillars.joint_venture.label'), title: ui('pillars.joint_venture.title', { name }) }
             : acf.organization_kind === 'label'
-                ? { label: 'Identidade da label', title: `O que define a ${name}` }
-                : { label: 'Como a organização funciona', title: `A atuação da ${name}` }
+                ? { label: ui('pillars.label.label'), title: ui('pillars.label.title', { name }) }
+                : { label: ui('pillars.other.label'), title: ui('pillars.other.title', { name }) }
     const aboutFallback = [
-        `${name} é uma agência de entretenimento da ${countryLabel(agency.country)}.`,
-        originYear ? `Sua trajetória tem origem em ${originYear}.` : null,
+        ui('about1', { name, country }),
+        originYear ? ui('about2', { year: originYear }) : null,
         allGroups.length || allArtists.length
-            ? `A cobertura do ${SITE_NAME} reúne ${allGroups.length} ${allGroups.length === 1 ? 'grupo relacionado' : 'grupos relacionados'} e ${allArtists.length} ${allArtists.length === 1 ? 'perfil de artista' : 'perfis de artistas'}.`
+            ? ui('about3', { site: SITE_NAME, groups: allGroups.length, artists: allArtists.length })
             : null,
     ].filter(Boolean).join(' ')
 
@@ -159,12 +165,12 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
     const visualContext = businessPillars
         .map(pillar => `${pillar.title} ${pillar.description}`)
         .join(' ')
-        .toLocaleLowerCase(intlLocale())
+        .toLocaleLowerCase(intlLocale(locale))
     const heroVisuals = [...groupsSorted]
         .filter(g => getWPImage(g._embedded, g.featured_image_url))
         .sort((first, second) => {
-            const firstMentioned = visualContext.includes(stripHtml(first.title.rendered).toLocaleLowerCase(intlLocale()))
-            const secondMentioned = visualContext.includes(stripHtml(second.title.rendered).toLocaleLowerCase(intlLocale()))
+            const firstMentioned = visualContext.includes(stripHtml(first.title.rendered).toLocaleLowerCase(intlLocale(locale)))
+            const secondMentioned = visualContext.includes(stripHtml(second.title.rendered).toLocaleLowerCase(intlLocale(locale)))
             return Number(secondMentioned) - Number(firstMentioned)
         })
         .slice(0, 3)
@@ -190,7 +196,7 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
             imageSrc: chapter.visual_url || relatedImage?.src || null,
         }
     })
-    const chapterCountLabel = ['', 'Uma virada', 'Duas viradas', 'Três viradas', 'Quatro viradas', 'Cinco viradas', 'Seis viradas'][narrativeChapters.length] ?? `${narrativeChapters.length} viradas`
+    const chapterCountLabel = ui('chapterCount', { count: narrativeChapters.length })
     const keyMetrics = (acf.key_metrics ?? []).filter(metric => metric.value && metric.label)
     // Transparência editorial: toda URL citada nos dados curados vira uma fonte listada no rodapé.
     const citedSources = [
@@ -212,24 +218,24 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
 
     const breadcrumbSchema = buildBreadcrumbSchema([
         { name: `${SITE_NAME}`, url: SITE_URL },
-        { name: 'Agências', url: `${SITE_URL}${href('agencies', undefined, locale)}` },
+        { name: ui('breadcrumb'), url: `${SITE_URL}${href('agencies', undefined, locale)}` },
         { name, url: pageUrl },
     ])
 
     // Build nav anchors dynamically
     const navLinks = [
-        { href: '#sobre', label: 'Sobre' },
-        ...(keyMetrics.length > 0 ? [{ href: '#numeros', label: 'Números' }] : []),
-        ...(narrativeChapters.length > 0 || milestones.length > 0 ? [{ href: '#historia', label: 'História' }] : []),
-        ...(narrativeChapters.length === 0 && achievements.length > 0 ? [{ href: '#conquistas', label: 'Impacto' }] : []),
-        ...(businessPillars.length > 0 ? [{ href: '#modelo', label: 'Modelo' }] : []),
-        ...(currentDevelopments.length > 0 ? [{ href: '#agora', label: 'Agora' }] : []),
-        ...(agencyVideos.length > 0 ? [{ href: '#mvs', label: 'Vídeos' }] : []),
-        ...(network.organizations.length > 1 ? [{ href: '#ecossistema', label: 'Ecossistema' }] : []),
-        ...(allGroups.length > 0 ? [{ href: '#catalogo', label: 'Grupos' }] : []),
-        ...(allArtists.length > 0 ? [{ href: '#artistas', label: 'Artistas' }] : []),
-        ...(relatedPosts.length > 0 ? [{ href: '#artigos', label: 'Artigos' }] : []),
-        { href: '#faq', label: 'FAQ' },
+        { href: '#sobre', label: ui('nav.about') },
+        ...(keyMetrics.length > 0 ? [{ href: '#numeros', label: ui('nav.numbers') }] : []),
+        ...(narrativeChapters.length > 0 || milestones.length > 0 ? [{ href: '#historia', label: ui('nav.history') }] : []),
+        ...(narrativeChapters.length === 0 && achievements.length > 0 ? [{ href: '#conquistas', label: ui('nav.impact') }] : []),
+        ...(businessPillars.length > 0 ? [{ href: '#modelo', label: ui('nav.model') }] : []),
+        ...(currentDevelopments.length > 0 ? [{ href: '#agora', label: ui('nav.now') }] : []),
+        ...(agencyVideos.length > 0 ? [{ href: '#mvs', label: ui('nav.videos') }] : []),
+        ...(network.organizations.length > 1 ? [{ href: '#ecossistema', label: ui('nav.ecosystem') }] : []),
+        ...(allGroups.length > 0 ? [{ href: '#catalogo', label: ui('nav.groups') }] : []),
+        ...(allArtists.length > 0 ? [{ href: '#artistas', label: ui('nav.artists') }] : []),
+        ...(relatedPosts.length > 0 ? [{ href: '#artigos', label: ui('nav.articles') }] : []),
+        { href: '#faq', label: ui('nav.faq') },
     ]
     const pageStyle: CSSVariableProperties = {
         '--ac': interfaceAccent,
@@ -238,39 +244,39 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
         '--ac-15': toRgba(interfaceAccent, 0.15),
     }
     const summaryFacts = [
-        { label: 'País', value: countryLabel(agency.country) },
+        { label: ui('facts.country'), value: country },
         acf.ceo && leadershipUpdatedLabel && {
-            label: 'CEO',
+            label: ui('facts.ceo'),
             value: acf.ceo,
-            description: `Verificado em ${leadershipUpdatedLabel}`,
+            description: ui('facts.verifiedOn', { date: leadershipUpdatedLabel }),
         },
         originYear && {
-            label: 'Trajetória',
-            value: currentIdentitySince ? `${originYear} · identidade atual desde ${currentIdentitySince}` : `Desde ${originYear}`,
+            label: ui('facts.trajectory'),
+            value: currentIdentitySince ? ui('facts.trajectoryBoth', { origin: originYear, since: currentIdentitySince }) : ui('facts.trajectorySince', { year: originYear }),
         },
-        { label: `Cobertura ${SITE_NAME}`, value: `${allGroups.length} grupos · ${allArtists.length} perfis` },
+        { label: ui('facts.coverage', { site: SITE_NAME }), value: ui('facts.coverageValue', { groups: allGroups.length, artists: allArtists.length }) },
     ].filter(Boolean) as FactItem[]
     const faqItems = [
         {
-            question: `O que é ${name}?`,
-            answer: `${name} é uma empresa de entretenimento da ${countryLabel(agency.country)}${originYear ? `, com trajetória registrada desde ${originYear}` : ''}. Esta página apresenta seu contexto, seus marcos e os perfis relacionados disponíveis no ${SITE_NAME}.`,
+            question: ui('faq.q1', { name }),
+            answer: originYear ? ui('faq.a1Since', { name, country, year: originYear, site: SITE_NAME }) : ui('faq.a1', { name, country, site: SITE_NAME }),
         },
         allGroups.length > 0
             ? {
-                question: `Quais grupos estão relacionados à ${name}?`,
-                answer: `A cobertura atual do ${SITE_NAME} relaciona ${allGroups.length} ${allGroups.length === 1 ? 'grupo' : 'grupos'} à ${name}. O vínculo institucional específico deve ser conferido no perfil de cada grupo, pois conglomerado, agência e label não são necessariamente a mesma entidade.`,
+                question: ui('faq.q2', { name }),
+                answer: ui('faq.a2', { site: SITE_NAME, count: allGroups.length, name }),
             }
             : null,
         allArtists.length > 0
             ? {
-                question: `Quais artistas estão relacionados à ${name}?`,
-                answer: `O ${SITE_NAME} possui ${allArtists.length} ${allArtists.length === 1 ? 'perfil de artista relacionado' : 'perfis de artistas relacionados'} à ${name}, incluindo integrantes de grupos e eventuais carreiras solo.`,
+                question: ui('faq.q3', { name }),
+                answer: ui('faq.a3', { site: SITE_NAME, count: allArtists.length, name }),
             }
             : null,
         isBig4
             ? {
-                question: `${name} faz parte do Big 4 do K-Pop?`,
-                answer: `Sim. Na cobertura editorial do setor, ${name} integra o grupo conhecido como Big Four ao lado de SM Entertainment, JYP Entertainment e YG Entertainment.`,
+                question: ui('faq.q4', { name }),
+                answer: ui('faq.a4', { name }),
             }
             : null,
     ].filter(Boolean).slice(0, 5) as EntityFAQItem[]

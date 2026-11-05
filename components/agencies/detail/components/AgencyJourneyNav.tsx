@@ -1,13 +1,15 @@
+import { useTranslations } from 'next-intl'
 
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyJourneyNav({ view }: { view: AgencyView }) {
+    const t = useTranslations('entity.agency.ui')
     const { name, narrativeChapters, chapterCountLabel } = view
     return (
-        <nav aria-label="Percurso da história" className="overflow-hidden border border-border bg-surface">
+        <nav aria-label={t('journey.navLabel')} className="overflow-hidden border border-border bg-surface">
             <div className="border-b border-border px-5 py-4 sm:px-6">
-                <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-(--ac)">O percurso</p>
-                <p className="mt-1 text-sm font-bold text-foreground/75">{chapterCountLabel} para entender a evolução da {name}</p>
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-(--ac)">{t('journey.route')}</p>
+                <p className="mt-1 text-sm font-bold text-foreground/75">{t('journey.subtitle', { count: chapterCountLabel, name })}</p>
             </div>
             <div className="flex snap-x snap-mandatory overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden lg:grid" style={{ gridTemplateColumns: `repeat(${narrativeChapters.length}, minmax(0, 1fr))` }}>
                 {narrativeChapters.map((chapter, index) => (

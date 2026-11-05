@@ -1,12 +1,14 @@
+import { useTranslations } from 'next-intl'
 import { CollapsibleProse } from '@/components/profiles/CollapsibleProse'
 import { SectionHeader } from '@/components/agencies/detail/components/SectionHeader'
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
 
 export function AgencyAbout({ view }: { view: AgencyView }) {
+    const t = useTranslations('entity.agency.ui')
     const { contentHtml, contentLead, contentRest, excerptText, aboutFallback } = view
     return (
         <section id="sobre" className="scroll-mt-(--scroll-anchor-offset,106px)">
-            <SectionHeader label="Perfil institucional" title="Contexto e trajetória" count={null} />
+            <SectionHeader label={t('aboutLabel')} title={t('aboutTitle')} count={null} />
             <div className="mt-6 border-l-2 border-(--ac) pl-4 sm:pl-6">
                 {contentHtml ? (
                     <div className="max-w-4xl">
@@ -15,7 +17,7 @@ export function AgencyAbout({ view }: { view: AgencyView }) {
                             dangerouslySetInnerHTML={{ __html: contentLead }}
                         />
                         {contentRest && (
-                            <CollapsibleProse label="Continuar a leitura">
+                            <CollapsibleProse label={t('continueReading')}>
                                 <div
                                     className="profile-prose prose prose-base max-w-none prose-headings:font-black prose-a:text-accent dark:prose-invert"
                                     dangerouslySetInnerHTML={{ __html: contentRest }}

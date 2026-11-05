@@ -1,3 +1,6 @@
+import { useTranslations } from 'next-intl'
+import { href } from '@/lib/i18n/routes'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { toRgba } from '@/lib/agencies/presentation'
@@ -5,10 +8,11 @@ import { SectionHeader } from './SectionHeader'
 
 type Milestone = { year: string; desc: string }
 
-export function AgencyMilestones({ milestones, interfaceAccent }: { milestones: Milestone[]; interfaceAccent: string }) {
+export function AgencyMilestones({ milestones, interfaceAccent, locale = DEFAULT_LOCALE }: { milestones: Milestone[]; interfaceAccent: string; locale?: Locale }) {
+    const t = useTranslations('entity.agency.ui')
     return (
         <section id="historia" className="scroll-mt-(--scroll-anchor-offset,106px)">
-            <SectionHeader label="Cronologia" title="Linha do tempo" count={null} />
+            <SectionHeader label={t('milestones.chronology')} title={t('milestones.timeline')} count={null} />
             <div className="mt-8 relative">
                 {/* Vertical line */}
                 <div className="absolute left-[39px] top-0 bottom-6 w-px hidden sm:block [background:var(--ac-15)]" />
@@ -46,10 +50,10 @@ export function AgencyMilestones({ milestones, interfaceAccent }: { milestones: 
 
                 <div className="mt-10 flex items-center justify-center">
                     <Link
-                        href="/groups"
+                        href={href('groups', undefined, locale)}
                         className="inline-flex items-center gap-2 border border-border px-5 py-3 font-mono text-[11px] font-black uppercase tracking-wider hover:border-(--ac) hover:text-(--ac) transition-colors group"
                     >
-                        Explorar todos os artistas & grupos
+                        {t('milestones.exploreAll')}
                         <ChevronRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
                     </Link>
                 </div>

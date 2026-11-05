@@ -1,10 +1,14 @@
+import { useTranslations } from 'next-intl'
+import { href } from '@/lib/i18n/routes'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getWPImage, stripHtml, getYear } from '@/lib/utils'
 import { optionalAccent, type CSSVariableProperties } from '@/lib/agencies/presentation'
 import type { getGroups } from '@/lib/wordpress/groups'
 
-export function GroupCard({ group }: { group: Awaited<ReturnType<typeof getGroups>>['items'][number] }) {
+export function GroupCard({ group, locale = DEFAULT_LOCALE }: { group: Awaited<ReturnType<typeof getGroups>>['items'][number]; locale?: Locale }) {
+    const t = useTranslations('entity.agency.ui')
     const img = getWPImage(group._embedded, group.featured_image_url)
     const gname = stripHtml(group.title.rendered)
     const debutYear = getYear(group.acf?.debut_date)
@@ -13,7 +17,7 @@ export function GroupCard({ group }: { group: Awaited<ReturnType<typeof getGroup
     const cardStyle: CSSVariableProperties | undefined = groupColor ? { '--gc': groupColor } : undefined
     return (
         <Link
-            href={`/groups/${group.slug}`}
+            href={href('group', { slug: group.slug }, locale)}
             prefetch={false}
             style={cardStyle}
             className="group border border-border bg-surface hover:border-foreground/20 transition-colors [border-top:2px_solid_var(--gc,var(--ac))]"
@@ -33,7 +37,7 @@ export function GroupCard({ group }: { group: Awaited<ReturnType<typeof getGroup
                     </div>
                 )}
                 <div className={`absolute top-2 right-2 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white ${isActive ? '[background:var(--gc,var(--ac))]' : 'bg-muted/60'}`}>
-                    {isActive ? 'Ativo' : 'Inativo'}
+                    {isActive ? t('catalog.activeBadge') : t('catalog.inactiveBadge')}
                 </div>
             </div>
             <div className="p-3">
@@ -42,7 +46,7 @@ export function GroupCard({ group }: { group: Awaited<ReturnType<typeof getGroup
                     <p className="font-mono text-[10px] text-muted mt-0.5">{group.acf.name_hangul}</p>
                 )}
                 {debutYear && (
-                    <p className="font-mono text-[10px] text-muted/50 mt-1">desde {debutYear}</p>
+                    <p className="font-mono text-[10px] text-muted/50 mt-1">{t('catalog.since', { year: debutYear })}</p>
                 )}
             </div>
         </Link>

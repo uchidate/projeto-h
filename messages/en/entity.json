@@ -17,7 +17,258 @@
   },
   "agency": {
     "metaTitle": "{name}: artists, groups and history",
-    "metaDescription": "Meet {name}: its history, groups, artists and role in the Korean entertainment industry."
+    "metaDescription": "Meet {name}: its history, groups, artists and role in the Korean entertainment industry.",
+    "ui": {
+      "back": "Agencies",
+      "breadcrumb": "Agencies",
+      "tierBig4": "Big 4",
+      "types": {
+        "major": "Major agency",
+        "mid": "Mid-tier",
+        "indie": "Independent",
+        "subsidiary": "Subsidiary"
+      },
+      "kinds": {
+        "conglomerate": "Conglomerate",
+        "label": "Label",
+        "agency": "Agency",
+        "joint_venture": "Joint venture",
+        "division": "Division"
+      },
+      "entityIndie": "Independent agency",
+      "entityDefault": "Entertainment company",
+      "countryKR": "South Korea",
+      "lens": {
+        "network": {
+          "eyebrow": "How the network works",
+          "title": "{name} is not a single agency. It is a network.",
+          "body": "Conglomerates bring together labels, subsidiaries and operations with different responsibilities. That is why {site} keeps each artist's direct affiliation and also shows the parent organization."
+        },
+        "piece": {
+          "eyebrow": "Where it fits",
+          "title": "{name} is one piece of the system — not the whole system.",
+          "body": "A label can manage repertoire and careers without representing the entire conglomerate on its own. The affiliations shown here separate the direct roster from relationships with parent companies."
+        },
+        "data": {
+          "eyebrow": "About the data",
+          "title": "The numbers show the archive. The history explains the company.",
+          "body": "The counts below represent profiles available on {site}, not a complete official roster. Historical or ended relationships are flagged separately when structured data exists."
+        }
+      },
+      "pillars": {
+        "conglomerate": {
+          "label": "How the company works",
+          "title": "{name}'s business model"
+        },
+        "joint_venture": {
+          "label": "How the partnership works",
+          "title": "What {name} proposes"
+        },
+        "label": {
+          "label": "Label identity",
+          "title": "What defines {name}"
+        },
+        "other": {
+          "label": "How the organization works",
+          "title": "What {name} does"
+        }
+      },
+      "about1": "{name} is an entertainment company from {country}.",
+      "about2": "Its history goes back to {year}.",
+      "about3": "{site} covers {groups, plural, =1 {# related group} other {# related groups}} and {artists, plural, =1 {# artist profile} other {# artist profiles}}.",
+      "chapterCount": "{count, plural, =0 {} =1 {One turning point} =2 {Two turning points} =3 {Three turning points} =4 {Four turning points} =5 {Five turning points} =6 {Six turning points} other {# turning points}}",
+      "videoTitle": "{group} — official video",
+      "nav": {
+        "about": "About",
+        "numbers": "Numbers",
+        "history": "History",
+        "impact": "Impact",
+        "model": "Model",
+        "now": "Now",
+        "videos": "Videos",
+        "ecosystem": "Ecosystem",
+        "groups": "Groups",
+        "artists": "Artists",
+        "articles": "Articles",
+        "faq": "FAQ"
+      },
+      "facts": {
+        "country": "Country",
+        "ceo": "CEO",
+        "verifiedOn": "Verified in {date}",
+        "trajectory": "History",
+        "trajectoryBoth": "{origin} · current identity since {since}",
+        "trajectorySince": "Since {year}",
+        "coverage": "{site} coverage",
+        "coverageValue": "{groups} groups · {artists} profiles"
+      },
+      "faq": {
+        "q1": "What is {name}?",
+        "a1": "{name} is an entertainment company from {country}. This page presents its background, milestones and the related profiles available on {site}.",
+        "a1Since": "{name} is an entertainment company from {country}, with a documented history since {year}. This page presents its background, milestones and the related profiles available on {site}.",
+        "q2": "Which groups are related to {name}?",
+        "a2": "{site}'s current coverage links {count, plural, =1 {# group} other {# groups}} to {name}. The specific institutional affiliation should be checked on each group's profile, since conglomerate, agency and label are not necessarily the same entity.",
+        "q3": "Which artists are related to {name}?",
+        "a3": "{site} has {count, plural, =1 {# artist profile} other {# artist profiles}} related to {name}, including group members and any solo careers.",
+        "q4": "Is {name} part of K-Pop's Big 4?",
+        "a4": "Yes. In the industry's editorial coverage, {name} is part of the group known as the Big Four, alongside SM Entertainment, JYP Entertainment and YG Entertainment."
+      },
+      "mvEyebrow": "To watch and listen",
+      "mvTitle": "Watch the catalog tied to {name}",
+      "mvDescription": "A selection of official videos from related groups helps show, in image and sound, the variety of identities that coexist under the same corporate structure.",
+      "shopTitle": "Products tied to {name}",
+      "faqTitle": "Quick questions about {name}",
+      "aboutLabel": "Institutional profile",
+      "aboutTitle": "Background and history",
+      "continueReading": "Keep reading",
+      "impactLabel": "Impact",
+      "impactTitle": "Milestones and impact",
+      "mainMilestone": "Key milestone",
+      "moreMilestones": "See {count} more milestones",
+      "artistsLabel": "Related profiles",
+      "artistsTitle": "Artists",
+      "featuredProfile": "● Featured profile",
+      "fullProfile": "See full profile",
+      "moreArtists": "See {count} more artists",
+      "pillarSource": "Source for the {title} pillar",
+      "pillarsIntro": "Areas declared by the organization itself, put in context to tell music production, platforms and other operations apart.",
+      "catalog": {
+        "cast": "Roster",
+        "title": "A visual map of the catalog",
+        "total": "{count} total",
+        "active": "{count} active",
+        "intro": "Start with the highlights and move through the generations. The relationship can be direct or run through a label or subsidiary; each profile details the specific affiliation.",
+        "startHere": "Start here",
+        "activeBadge": "Active",
+        "inactiveBadge": "Inactive",
+        "since": "since {year}",
+        "today": "today",
+        "others": "Others",
+        "noGeneration": "Generation not specified",
+        "legacy": "Legacy",
+        "inactiveGroups": "Inactive or disbanded groups"
+      },
+      "generations": {
+        "g1": {
+          "label": "1st Generation",
+          "short": "1st Gen"
+        },
+        "g2": {
+          "label": "2nd Generation",
+          "short": "2nd Gen"
+        },
+        "g3": {
+          "label": "3rd Generation",
+          "short": "3rd Gen"
+        },
+        "g4": {
+          "label": "4th Generation",
+          "short": "4th Gen"
+        },
+        "g5": {
+          "label": "5th Generation",
+          "short": "5th Gen"
+        }
+      },
+      "dev": {
+        "updates": "Updates",
+        "recentTitle": "What changed recently at {name}",
+        "altGroup": "{group}, a group related to {name}",
+        "scale": "Scale in the archive",
+        "groupsUnit": "groups",
+        "profilesUnit": "profiles",
+        "frontsUnit": "business areas",
+        "captionWithGroup": "{group} is part of this page's visual selection. The numbers represent the coverage available on {site}.",
+        "caption": "The numbers represent the coverage available on {site}.",
+        "checkSource": "Check the source"
+      },
+      "hero": {
+        "logoAlt": "{name} — logo",
+        "origin": "origin {year}",
+        "pathSince": "history since",
+        "groupsCovered": "groups covered",
+        "profilesInArchive": "profiles in the archive",
+        "officialSite": "Official site"
+      },
+      "history": {
+        "chapters": "The story in chapters",
+        "turns": "The turning points that defined {name}.",
+        "intro": "A reading of the company's formation, its catalog shifts and the cycle that begins now.",
+        "years": "years of documented history",
+        "chaptersDocumented": "documented chapters",
+        "chapterSource": "Chapter source",
+        "relatedProfile": "See related profile"
+      },
+      "journey": {
+        "navLabel": "The story's path",
+        "route": "The path",
+        "subtitle": "{count} to understand how {name} evolved"
+      },
+      "metrics": {
+        "inNumbers": "In numbers",
+        "scaleOf": "The scale of {name}, in sourced data",
+        "eachNumber": "Every number links to the primary source",
+        "refAsOf": "as of {date}",
+        "source": "Source"
+      },
+      "lensPanel": {
+        "scope": "Scope of this page",
+        "many": "{orgs} connected organizations · {groups} groups · {artists} profiles.",
+        "one": "{groups} groups and {artists} related profiles in the editorial archive."
+      },
+      "milestones": {
+        "chronology": "Chronology",
+        "timeline": "Timeline",
+        "exploreAll": "Explore all artists & groups"
+      },
+      "sources": {
+        "howWeVerify": "How we verify",
+        "count": "{citations} citations · {outlets} outlets",
+        "body": "Numbers, chapters and quotes in this profile point to the primary source where they appear. We favor institutional material and verifiable press; opinion only appears attributed."
+      },
+      "summary": {
+        "inShort": "In short",
+        "whatToKnow": "What you need to know about {name}",
+        "curated": "Curated by {site}",
+        "updatedOn": "Updated on",
+        "institutionalSource": "Institutional source"
+      },
+      "essay": {
+        "label": "Visual reading",
+        "identity": "{name}'s identity, up close.",
+        "body": "Images, places and artists help show how the company turns a creative direction into a recognizable presence.",
+        "visualChapters": "{count} visual chapters",
+        "swipe": "Swipe to explore",
+        "chapterN": "Chapter 0{n}",
+        "readQuote": "Read the quote at the source",
+        "context": "Context",
+        "imageSource": "Image source",
+        "viewGroup": "See {group}"
+      },
+      "map": {
+        "eyebrow": "Who answers to whom",
+        "title": "How {name} is organized",
+        "relations": "{count} relationships",
+        "parentLinked": "The link to the parent company is shown explicitly, without mixing this organization's catalog with that of sister labels.",
+        "mainLevel": "The main organization sits at the first level. Labels, divisions, subsidiaries and joint ventures appear below without being treated as equivalent to one another.",
+        "parentKicker": "Parent conglomerate · open the profile",
+        "parentFallback": "Parent organization",
+        "parentNote": "The parent company defines the corporate level; this page's catalog stays limited to the organization being viewed.",
+        "focus": "Organization in focus",
+        "level1": "Level 1",
+        "mainFallback": "Main organization",
+        "focusWithParent": "Its own creative identity, roster and operations within the parent structure.",
+        "focusMain": "Strategy, control or coordination of the network presented on this page.",
+        "level2": "Level 2 · Related organizations",
+        "relatedFallback": "Related organization",
+        "counts": "{groups} groups · {artists} profiles",
+        "level3": "Level 3 · Related catalog",
+        "direct": "Direct catalog",
+        "level3Body": "Groups and artists keep their direct link to the responsible organization. The catalog that follows may aggregate the whole network without erasing that origin.",
+        "directBody": "The groups and artists below are linked directly to this organization, without including the roster of other companies in the conglomerate.",
+        "logoAlt": "{name} — logo"
+      }
+    }
   },
   "company": {
     "metaTitle": "{name} — {industry}",

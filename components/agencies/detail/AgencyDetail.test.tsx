@@ -12,6 +12,18 @@ import type { WPAgency, WPArtist, WPGroup } from '@/lib/wordpress/types'
 const notFound = vi.fn(() => { throw new Error('NEXT_NOT_FOUND') })
 vi.mock('next/navigation', () => ({ notFound }))
 
+// Textos em português vindos de messages/pt: o servidor usa getTranslations, os componentes useTranslations.
+vi.mock('next-intl/server', async () => {
+    const { createTranslator } = await import('next-intl')
+    const { PT_MESSAGES } = await import('@/lib/i18n/messages')
+    return { getTranslations: async ({ namespace }: { namespace: string }) => createTranslator({ locale: 'pt', messages: PT_MESSAGES, namespace: namespace as 'entity' }) }
+})
+vi.mock('next-intl', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('next-intl')>()
+    const { PT_MESSAGES } = await import('@/lib/i18n/messages')
+    return { ...actual, useTranslations: (namespace: string) => actual.createTranslator({ locale: 'pt', messages: PT_MESSAGES, namespace: namespace as 'entity' }) }
+})
+
 // QuizFacts é async (Server Component) — o render síncrono do RTL não suporta
 // componente async que não seja a própria raiz: precisa de um stub síncrono aqui.
 vi.mock('@/components/ui/QuizFacts', () => ({ QuizFacts: () => null }))

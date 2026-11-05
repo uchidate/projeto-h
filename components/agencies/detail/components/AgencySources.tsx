@@ -1,17 +1,18 @@
+import { useTranslations } from 'next-intl'
 type SourceHost = { host: string; count: number; sample: string }
 
 export function AgencySources({ citedSourcesCount, sourcesByHost }: { citedSourcesCount: number; sourcesByHost: SourceHost[] }) {
+    const t = useTranslations('entity.agency.ui')
     return (
-        <aside aria-label="Como apuramos" className="border border-border bg-surface px-5 py-5 sm:px-6">
+        <aside aria-label={t('sources.howWeVerify')} className="border border-border bg-surface px-5 py-5 sm:px-6">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-(--ac)">Como apuramos</p>
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-(--ac)">{t('sources.howWeVerify')}</p>
                 <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
-                    {citedSourcesCount} citações · {sourcesByHost.length} veículos
+                    {t('sources.count', { citations: citedSourcesCount, outlets: sourcesByHost.length })}
                 </p>
             </div>
             <p className="mt-3 max-w-3xl text-[13px] leading-6 text-foreground/65">
-                Números, capítulos e citações deste perfil apontam para a fonte primária no ponto em que aparecem.
-                Priorizamos material institucional e imprensa verificável; opinião só entra atribuída.
+                {t('sources.body')}
             </p>
             <ul className="mt-4 flex flex-wrap gap-2">
                 {sourcesByHost.map(source => (
