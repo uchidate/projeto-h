@@ -73,6 +73,9 @@ export async function HomeIntl({ locale }: { locale: Locale }) {
                 homeSettings={dados.siteSettings.home}
                 streamingByPlatform={dados.streamingByPlatform}
                 categoryMap={dados.categoryMap}
+                postsEditorias={dados.postsEditorias}
+                capasAlbum={dados.capasAlbum}
+                producoesEmAlta={dados.producoesEmAlta}
                 produtosMaisVendidos={dados.produtosMaisVendidos}
                 aniversarios={dados.aniversarios}
                 hoje={dados.hoje}
