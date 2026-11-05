@@ -13,6 +13,8 @@ import { EntityGrid, fetchCatalog, type CatalogKind } from '@/components/feature
 const SECOES: CatalogKind[] = ['groups', 'artists', 'productions']
 const POR_SECAO = 12
 
+const MIN_ARTIGOS_TRADUZIDOS = 3
+
 async function carregarSecoes(locale: Locale) {
     const resultados = await Promise.all(SECOES.map((kind) => fetchCatalog(kind, locale, 1)))
     return SECOES.map((kind, i) => ({ kind, ...resultados[i] })).filter((secao) => secao.total > 0)
@@ -45,7 +47,7 @@ export async function generateMetadataHomeIntl(locale: Locale): Promise<Metadata
 /**
  * Home de um idioma além do português: a mesma `HomeFrontPage` da home PT, com a
  * interface traduzida e sem os blocos só-PT (hubs, loja, streaming BR, quiz).
- * Os artigos aparecem com selo "PT" e abrem no original. Abaixo ficam as fichas
+ * Só aparecem artigos com tradução publicada (mínimo de 3, senão a seção some). Abaixo ficam as fichas
  * já traduzidas e publicadas, que são o conteúdo indexável da página.
  */
 export async function HomeIntl({ locale }: { locale: Locale }) {
@@ -53,19 +55,21 @@ export async function HomeIntl({ locale }: { locale: Locale }) {
         getTranslations({ locale, namespace: 'entity.home' }),
         getTranslations({ locale, namespace: 'entity.catalog' }),
         carregarSecoes(locale),
-        carregarHome({ comercio: false }),
+        carregarHome({ comercio: false, locale }),
     ])
 
-    // Mesma guarda da home PT: sem posts o WordPress falhou, e a versão degradada não pode ser cacheada.
-    if (!IS_BUILD && dados.posts.length === 0) {
-        throw new Error('Home sem posts — WordPress indisponível; não cachear esta renderização')
+    // Mesma guarda da home PT, mas pelas produções: artigo traduzido pode não existir ainda, produção sempre existe.
+    if (!IS_BUILD && dados.productions.length === 0) {
+        throw new Error('Home sem produções — WordPress indisponível; não cachear esta renderização')
     }
+    // Poucos artigos traduzidos deixariam as vitrines quase vazias: abaixo do mínimo a seção some e o hero vira uma produção.
+    const posts = dados.posts.length >= MIN_ARTIGOS_TRADUZIDOS ? dados.posts : []
 
     return (
         <>
             <HomeFrontPage
                 locale={locale}
-                posts={dados.posts}
+                posts={posts}
                 productions={dados.productions}
                 artists={dados.artists}
                 spotlightArtists={dados.spotlightArtists}

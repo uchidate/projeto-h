@@ -14,6 +14,7 @@ import { escolherCapas } from '@/lib/home/frescor'
 import { carregarExplore } from '@/lib/home/explore'
 import { carregarTemas } from '@/lib/home/temas'
 import { carregarGuiasPorTema } from '@/lib/home/guias'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
 
 /**
@@ -21,7 +22,9 @@ import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
  * `comercio: false` pula o que só existe no Brasil (loja e streaming do TMDB-BR):
  * os blocos correspondentes também somem fora do português.
  */
-export async function carregarHome({ comercio }: { comercio: boolean }) {
+export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { comercio: boolean; locale?: Locale }) {
+    // Fora do português só entram artigos com tradução publicada: o resto está em português e não serve a quem lê neste idioma.
+    const emPt = locale === DEFAULT_LOCALE
     const siteSettings = await getSiteSettings()
     const hoje = hojeEmBrasilia()
     const curatedIds = [
@@ -36,12 +39,12 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
-        getPosts({ perPage: 22, includeContent: false }),
-        curatedIds.length
+        getPosts({ perPage: 22, includeContent: false, ...(emPt ? {} : { lang: locale }) }),
+        emPt && curatedIds.length
             ? getPosts({ perPage: curatedIds.length, includeIds: curatedIds })
             : Promise.resolve({ items: [], total: 0, totalPages: 0 }),
         // Uma busca por editoria: o feed geral é dominado pelo assunto da semana e deixaria colunas vazias.
-        Promise.allSettled(COLUNAS_EDITORIAS.map(c => getPosts({ category: c.categoria, perPage: 16, includeContent: false }))),
+        Promise.allSettled((emPt ? COLUNAS_EDITORIAS : []).map(c => getPosts({ category: c.categoria, perPage: 16, includeContent: false }))),
         getProductions({ perPage: 6, orderby: 'date' }),
         getMostAccessedArtists(8),
         getTrendingGroups(8),
@@ -68,7 +71,7 @@ export async function carregarHome({ comercio }: { comercio: boolean }) {
     const postsEditorias: PostsPorEditoria = editoriasResult.status === 'fulfilled'
         ? Object.fromEntries(COLUNAS_EDITORIAS.map((c, i) => {
             const r = editoriasResult.value[i]
-            return [c.chave, r.status === 'fulfilled' ? r.value.items : []]
+            return [c.chave, r?.status === 'fulfilled' ? r.value.items : []]
         }))
         : {}
     // Capa de álbum: a ficha e as faixas saem do texto da matéria, que a listagem não traz; busca só as da capa.

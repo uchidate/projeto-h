@@ -6,7 +6,7 @@ describe('postLink', () => {
         expect(postLink('meu-post', 'pt')).toEqual({ href: '/blog/meu-post' })
     })
 
-    it('em inglês aponta ao original em português e avisa o idioma', () => {
-        expect(postLink('meu-post', 'en')).toEqual({ href: '/blog/meu-post', hrefLang: 'pt-BR' })
+    it('em inglês aponta à versão traduzida, sem aviso de idioma', () => {
+        expect(postLink('my-post', 'en')).toEqual({ href: '/en/blog/my-post' })
     })
 })

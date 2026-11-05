@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server'
-import { HomePtBadge } from '@/components/home/HomePtBadge'
 import { postLink } from '@/components/home/postLink'
 import { href as rota } from '@/lib/i18n/routes'
 import { SITE_NAME } from '@/lib/constants/site'
@@ -58,7 +57,6 @@ async function HeroPost({ post, locale, primeiro = true, album }: { post: WPPost
                             <span className="text-white/80">{tc('minutosDeLeitura', { mins })}</span>
                         </>
                     )}
-                    <HomePtBadge locale={locale} />
                 </div>
                 <Link {...postLink(post.slug, locale)} className="group pointer-events-auto mt-3 min-w-0">
                     <Titulo className="min-w-0 max-w-[22ch] wrap-anywhere font-serif text-[clamp(1.4rem,6.4vw,2.1rem)] font-medium lg:text-[2.1rem] leading-[1.05] tracking-[-0.035em] text-white transition-colors group-hover:text-white">
