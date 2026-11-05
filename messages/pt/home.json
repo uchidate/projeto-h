@@ -220,5 +220,20 @@
     "jogue": { "titulo": "Jogue", "sub": "um minuto por dia" },
     "temas": { "titulo": "Temas", "sub": "assuntos para acompanhar" },
     "loja": { "titulo": "Loja", "sub": "mais vendidos" }
+  },
+  "categorias": {
+    "k-pop": "K-Pop",
+    "k-drama": "K-Drama",
+    "k-film": "K-Film",
+    "cultura": "Cultura",
+    "grupos": "Grupos",
+    "k-beauty": "K-Beauty",
+    "artistas": "Artistas",
+    "noticias-k-pop": "Notícias K-pop",
+    "reality-shows": "Reality shows",
+    "webtoons": "Webtoons",
+    "comida": "Comida",
+    "merch": "Merch",
+    "uncategorized": "Notícias"
   }
 }

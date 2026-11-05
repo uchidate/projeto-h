@@ -82,6 +82,7 @@ export async function HomeIntl({ locale }: { locale: Locale }) {
                 produtosMaisVendidos={dados.produtosMaisVendidos}
                 aniversarios={dados.aniversarios}
                 hoje={dados.hoje}
+                temas={dados.temas}
             />
             <div className="page-wrap py-10 sm:py-14">
                 <header className="mb-8 border-b-2 border-foreground pb-6">

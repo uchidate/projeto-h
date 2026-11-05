@@ -14,6 +14,7 @@ import { escolherCapas } from '@/lib/home/frescor'
 import { carregarExplore } from '@/lib/home/explore'
 import { carregarTemas } from '@/lib/home/temas'
 import { carregarGuiasPorTema } from '@/lib/home/guias'
+import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { localizeEntity } from '@/lib/i18n/entity-translation'
 import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
@@ -45,7 +46,7 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
             ? getPosts({ perPage: curatedIds.length, includeIds: curatedIds })
             : Promise.resolve({ items: [], total: 0, totalPages: 0 }),
         // Uma busca por editoria: o feed geral é dominado pelo assunto da semana e deixaria colunas vazias.
-        Promise.allSettled((emPt ? COLUNAS_EDITORIAS : []).map(c => getPosts({ category: c.categoria, perPage: 16, includeContent: false }))),
+        Promise.allSettled(COLUNAS_EDITORIAS.map(c => getPosts({ category: c.categoria, perPage: 16, includeContent: false, ...(emPt ? {} : { lang: locale }) }))),
         getProductions({ perPage: 6, orderby: 'date' }),
         getMostAccessedArtists(8),
         getTrendingGroups(8),
@@ -61,7 +62,7 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
             .then(r => r.flatMap(x => x.items))
             .then(itens => emPt ? itens : itens.filter(a => a.translations?.[locale] && !a.translations[locale]?.stale).map(a => localizeEntity(a, locale, 'artist'))),
         comercio ? carregarGuiasPorTema() : Promise.resolve([]),
-        comercio ? carregarTemas() : Promise.resolve(null),
+        comercio || !emPt ? carregarTemas(locale) : Promise.resolve(null),
         comercio ? carregarExplore() : Promise.resolve([]),
         comercio ? carregarPrateleirasEditorias() : Promise.resolve({}),
     ])
@@ -96,7 +97,9 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
     const trendingGroupsList = trendingGroupsResult.status === 'fulfilled' ? trendingGroupsResult.value : []
     const streamingByPlatform = streamingShows.status === 'fulfilled' ? streamingShows.value : {}
     const categories = categoriesResult.status === 'fulfilled' ? categoriesResult.value : []
-    const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
+    // O WordPress guarda o nome da categoria em português; fora dele o rótulo vem das mensagens (slug → nome).
+    const rotulos = emPt ? null : (await getTranslations({ locale, namespace: 'home.categorias' })) as unknown as { has(chave: string): boolean; raw(chave: string): unknown }
+    const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: rotulos?.has(c.slug) ? rotulos.raw(c.slug) as string : c.name, slug: c.slug }]))
     const produtosMaisVendidos = maisVendidosResult.status === 'fulfilled' ? maisVendidosResult.value : []
 
     const aniversarios: AniversariosHome = montarAniversarios(aniversariosResult.status === 'fulfilled' ? aniversariosResult.value : [], hoje)

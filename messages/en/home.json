@@ -220,5 +220,20 @@
     "jogue": { "titulo": "Play", "sub": "one minute a day" },
     "temas": { "titulo": "Topics", "sub": "subjects to follow" },
     "loja": { "titulo": "Shop", "sub": "best sellers" }
+  },
+  "categorias": {
+    "k-pop": "K-Pop",
+    "k-drama": "K-Drama",
+    "k-film": "K-Film",
+    "cultura": "Culture",
+    "grupos": "Groups",
+    "k-beauty": "K-Beauty",
+    "artistas": "Artists",
+    "noticias-k-pop": "K-Pop News",
+    "reality-shows": "Reality shows",
+    "webtoons": "Webtoons",
+    "comida": "Food",
+    "merch": "Merch",
+    "uncategorized": "News"
   }
 }

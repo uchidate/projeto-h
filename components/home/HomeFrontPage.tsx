@@ -12,6 +12,7 @@ import { montarEditorias, type PostsPorEditoria } from '@/lib/home/editorias'
 import { HomeLoja } from '@/components/home/HomeLoja'
 import { HomeExplore } from '@/components/home/HomeExplore'
 import { HomeTema } from '@/components/home/HomeTema'
+import { href as rota } from '@/lib/i18n/routes'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HomeAssuntos } from '@/components/home/HomeAssuntos'
 import { HomeCalendario } from '@/components/home/HomeCalendario'
@@ -68,6 +69,8 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
     // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
     const soPt = locale === DEFAULT_LOCALE
+    // Fora do português o painel de temas só entra se houver alguma ficha ou artigo traduzido (senão o capítulo ficaria sozinho).
+    const temTemas = soPt || !!temas && [temas.gastronomia, temas.beleza].some(t => t.artigos.length + t.pratos.length + t.marcas.length > 0)
     // Os capítulos são numerados em sequência: sem os blocos só-PT (Aprenda, Jogue, Temas, Loja) a contagem não pula números.
     // Capa só com matéria fresca (ver lib/home/frescor.ts); sem nenhuma, o hero é uma produção.
     // Os slides extras nunca tomam as matérias escolhidas à mão para os destaques (nada some nem se repete).
@@ -138,12 +141,12 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                                 <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
                             </div>
                         </div>
-                        <HomeCapitulo n={7} chave="temas" cor="#b4531a" locale={locale} />
-                        {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href="/comidas" bloco="home-gastronomia" locale={locale} />}
-                        <div data-bloco="home-explore" className="border border-border bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>
-                        {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#0e7490" href="/blog?category=k-beauty" bloco="home-beleza" locale={locale} />}
                     </>
                 )}
+                {temTemas && <HomeCapitulo n={soPt ? 7 : 5} chave="temas" cor="#b4531a" locale={locale} />}
+                {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href={rota('foods', undefined, locale)} bloco="home-gastronomia" locale={locale} />}
+                {soPt && <div data-bloco="home-explore" className="border border-border bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>}
+                {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#0e7490" href={soPt ? '/blog?category=k-beauty' : rota('blog', undefined, locale)} bloco="home-beleza" locale={locale} />}
                 {aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}
                 {soPt && <HomeCapitulo n={8} chave="loja" cor="#ff246e" locale={locale} />}
                 {soPt && <div data-bloco="home-loja" className="-mx-3.5 lg:mx-0"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
