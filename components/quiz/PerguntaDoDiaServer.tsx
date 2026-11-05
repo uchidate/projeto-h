@@ -10,8 +10,8 @@ const SUBJETIVA = /\b(mais (amad|famos|popular|marcante|import)|melhor|maior suc
 
 /**
  * Escolhe a pergunta do dia no servidor. Sem perguntas (WordPress fora), some em vez de quebrar a página.
- * Fora do português só entram as perguntas com tradução (já escolhidas à mão, sem as de opinião) e o link do
- * quiz completo some enquanto o quiz não existir no idioma.
+ * Fora do português só entram as perguntas com tradução (já escolhidas à mão, sem as de opinião) e o quiz completo
+ * tem a própria versão no idioma.
  */
 export async function PerguntaDoDiaServer({ variante = 'padrao', locale = DEFAULT_LOCALE }: { variante?: 'padrao' | 'alegre'; locale?: Locale } = {}) {
     const chave = chaveDia()
@@ -21,5 +21,5 @@ export async function PerguntaDoDiaServer({ variante = 'padrao', locale = DEFAUL
     if (!pergunta) return null
     const dataExtenso = new Intl.DateTimeFormat(LOCALE_META[locale].htmlLang, { timeZone: 'America/Sao_Paulo', day: 'numeric', month: 'long' }).format(new Date())
     const { id, question, options, correct, explanation } = pergunta
-    return <PerguntaDoDia pergunta={{ id, question, options, correct, explanation }} chave={chave} dataExtenso={dataExtenso} variante={variante} quizHref={emPt ? href('quiz', undefined, locale) : null} />
+    return <PerguntaDoDia pergunta={{ id, question, options, correct, explanation }} chave={chave} dataExtenso={dataExtenso} variante={variante} quizHref={href('quiz', undefined, locale)} />
 }

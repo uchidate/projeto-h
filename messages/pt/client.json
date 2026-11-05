@@ -299,5 +299,147 @@
     "texto": "Para guardar {recurso} neste navegador precisamos da sua permissão para cookies. Sem ela, o quiz e o site funcionam normalmente, só não lembram de você.",
     "rever": "Rever minha escolha",
     "privacidade": "Como usamos os dados"
+  },
+  "quiz": {
+    "categorias": {
+      "k-pop": "K-Pop",
+      "k-drama": "K-Drama",
+      "cultura": "Cultura",
+      "historia": "História"
+    },
+    "categoriasSub": {
+      "k-pop": "Grupos e artistas",
+      "k-drama": "Séries e cinema",
+      "cultura": "Tradições coreanas",
+      "historia": "Passado e presente"
+    },
+    "niveis": {
+      "easy": "Iniciante",
+      "medium": "Intermediário",
+      "hard": "Expert"
+    },
+    "tudoMisturado": "Tudo misturado",
+    "resultado": {
+      "perfeito": {
+        "titulo": "Perfeito!",
+        "sub": "Expert Hallyu"
+      },
+      "excelente": {
+        "titulo": "Excelente!",
+        "sub": "Fã dedicado"
+      },
+      "muitoBom": {
+        "titulo": "Muito bom!",
+        "sub": "Bom conhecimento"
+      },
+      "quaseLa": {
+        "titulo": "Quase lá!",
+        "sub": "Continue explorando"
+      },
+      "continue": {
+        "titulo": "Continue tentando!",
+        "sub": "Iniciante"
+      }
+    },
+    "links": {
+      "boyGroups": "Boy groups",
+      "girlGroups": "Girl groups",
+      "soloArtists": "Artistas solo",
+      "dramaCatalog": "Catálogo de doramas",
+      "romanceDramas": "Doramas românticos",
+      "bestDramas": "Melhores doramas",
+      "cultureArticles": "Artigos de cultura",
+      "blog": "Blog",
+      "koreanArtists": "Artistas coreanos",
+      "historicalDramas": "Doramas históricos",
+      "historyGuide": "Guia histórico",
+      "kpopGroups": "Grupos K-Pop",
+      "artists": "Artistas"
+    },
+    "explorar": {
+      "k-drama": "Explorar doramas",
+      "k-pop": "Explorar grupos K-Pop",
+      "cultura": "Explorar cultura coreana",
+      "historia": "Explorar história coreana",
+      "padrao": "Explorar conteúdo",
+      "mais": "Explorar mais"
+    },
+    "capa": {
+      "perguntas": "{n} PERGUNTAS",
+      "tituloSr": "Quiz de K-Pop e K-Drama: ",
+      "titulo": "Bora testar seu<br></br>lado <fa>fã</fa>? <marca>✦</marca>",
+      "melhorSequencia": "melhor sequência",
+      "deAcerto": "de acerto",
+      "melhorPlacar": "melhor placar",
+      "semPerguntas": "Nenhuma pergunta encontrada. Adicione perguntas no WordPress Admin → Quiz Questions.",
+      "convite": "Quer mais? Uma rodada de {n}!",
+      "jogar": "Jogar agora",
+      "soN": "Só {n} perguntas neste filtro: todas serão usadas.",
+      "escolhaTime": "Escolha seu time",
+      "seu": " · {pct}% seu",
+      "nPerguntas": "{n} perguntas",
+      "ritmo": "Qual é o seu ritmo?",
+      "tempoPts": "{time} s por pergunta · até {pts} pts",
+      "atalhos": "Use <kbd>A B C D</kbd> ou <kbd>1 2 3 4</kbd> para responder",
+      "jogarNivel": "Jogar · {nivel}"
+    },
+    "partida": {
+      "perguntaDe": "Pergunta {n} de {total}",
+      "bonus": "🔥 Sequência de {n}! +{pts} pts de bônus",
+      "acertou": "🎉 Acertou!",
+      "tempo": "⏰ Tempo esgotado!",
+      "quase": "😅 Quase!",
+      "saibaMais": "Saiba mais",
+      "verResultado": "Ver resultado",
+      "proxima": "Próxima",
+      "proximaSeg": "Próxima ({s}s)"
+    },
+    "res": {
+      "sequenciaDe": "Sequência de {n}!",
+      "melhorSequencia": "melhor sequência",
+      "deTotal": "de {total}",
+      "porCategoria": "Por categoria",
+      "saibaErrou": "Saiba mais sobre o que você errou",
+      "mapa": "Mapa de respostas",
+      "mapaLegenda": "cada bloco = 1 pergunta · ícone = categoria",
+      "tempoPorPergunta": "Tempo por pergunta",
+      "media": "média",
+      "rapidas": "rápidas",
+      "rapido": "rápido (≤40%)",
+      "medio": "médio",
+      "lento": "lento",
+      "revisar": "Revisar erros",
+      "erradas": "{n} erradas",
+      "novamente": "Jogar novamente",
+      "compartilhar": "Compartilhar resultado",
+      "mandaEm": "Você manda em",
+      "certas": "{c}/{t} certas",
+      "vaiFundo": "Vai fundo — tem muito mais conteúdo esperando por você.",
+      "estude": "Estude mais sobre",
+      "dificuldade": "Você teve mais dificuldade nesta categoria — explore o conteúdo do site para melhorar.",
+      "compartilharTexto": "Fiz o Quiz Hallyu na {site}! Acertei {score}/{total} e fiz {pts} pts{streak} — tente você também!",
+      "compartilharSeq": " 🔥{n}x sequência",
+      "certo": "Certo",
+      "errado": "Errado",
+      "compartilharTitulo": "Quiz Hallyu"
+    },
+    "cartao": {
+      "meuResultado": "Meu resultado no quiz",
+      "deTotal": "{score} de {total} · {pts} pts",
+      "sequencia": "🔥 sequência de {n}",
+      "faca": "Faça o seu em {host}"
+    },
+    "estat": {
+      "titulo": "Suas estatísticas",
+      "partidas": "partidas",
+      "taxa": "taxa de acerto",
+      "melhorPts": "melhor pts",
+      "melhorStreak": "melhor streak",
+      "catForte": "categoria forte"
+    },
+    "hist": {
+      "ultimas": "Últimas partidas",
+      "pts": "{n} pts"
+    }
   }
 }

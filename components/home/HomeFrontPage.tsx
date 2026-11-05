@@ -141,9 +141,9 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     <>
                         <HomeCapitulo n={soPt ? 6 : 5 + g} chave="jogue" cor="#8a5a00" locale={locale} />
                         <div className="-mx-3.5 border-t-4 border-t-[#8a5a00] bg-[#fff3d6] px-3.5 py-4 dark:bg-[#271d08] lg:-mx-6 lg:px-6 lg:py-5">
-                            <div className={soPt ? 'grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.5fr)] lg:gap-5' : ''}>
+                            <div className="grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.5fr)] lg:gap-5">
                                 {pergunta}
-                                {soPt && <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>}
+                                <div data-bloco="home-quiz" className="contents"><HomeQuizBanner locale={locale} /></div>
                             </div>
                         </div>
                     </>

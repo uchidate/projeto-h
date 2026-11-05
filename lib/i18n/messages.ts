@@ -4,6 +4,7 @@ import ptProfile from '@/messages/pt/profile.json'
 import ptClient from '@/messages/pt/client.json'
 import ptInstitucional from '@/messages/pt/institucional.json'
 import ptHome from '@/messages/pt/home.json'
+import ptQuiz from '@/messages/pt/quiz.json'
 import { SITE_NAME } from '@/lib/constants/identidade.mjs'
 
 /**
@@ -29,7 +30,7 @@ function comNomeDoSite<T>(valor: T): T {
  * Um namespace = um arquivo em messages/<locale>/. Ao criar um namespace,
  * registre-o nos dois objetos abaixo.
  */
-const pt = comNomeDoSite({ entity: ptEntity, profile: ptProfile, client: ptClient, institucional: ptInstitucional, home: ptHome })
+const pt = comNomeDoSite({ entity: ptEntity, profile: ptProfile, client: ptClient, institucional: ptInstitucional, home: ptHome, quiz: ptQuiz })
 
 export type Messages = typeof pt
 
@@ -45,14 +46,15 @@ const FALLBACK: Partial<Record<Locale, Locale>> = { es: 'en' }
 const loaders: Partial<Record<Locale, () => Promise<Messages>>> = {
     pt: async () => pt,
     en: async () => {
-        const [entity, profile, client, institucional, home]: [Messages['entity'], Messages['profile'], Messages['client'], Messages['institucional'], Messages['home']] = await Promise.all([
+        const [entity, profile, client, institucional, home, quiz]: [Messages['entity'], Messages['profile'], Messages['client'], Messages['institucional'], Messages['home'], Messages['quiz']] = await Promise.all([
             import('@/messages/en/entity.json').then((m) => m.default),
             import('@/messages/en/profile.json').then((m) => m.default),
             import('@/messages/en/client.json').then((m) => m.default),
             import('@/messages/en/institucional.json').then((m) => m.default),
             import('@/messages/en/home.json').then((m) => m.default),
+            import('@/messages/en/quiz.json').then((m) => m.default),
         ])
-        return comNomeDoSite({ entity, profile, client, institucional, home })
+        return comNomeDoSite({ entity, profile, client, institucional, home, quiz })
     },
 }
 

@@ -2,8 +2,9 @@
 
 import { useState, useMemo, type ReactNode } from 'react'
 import {
-    Layers, Music, Tv, Globe, Clock, Play, ArrowRight, Keyboard,
+    Music, Tv, Globe, Clock, Play, ArrowRight, Keyboard,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'
 import type { QuizStats } from '../lib/stats'
 import { type CategoryFilter, DIFFICULTY_CONFIG, QUIZ_SIZE, TEMA_VISUAL as TOM } from '../lib/config'
@@ -23,6 +24,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
     initialCategory?: CategoryFilter
     initialSubcategory?: string
 }) {
+    const t = useTranslations('client.quiz')
     const [category, setCategory] = useState<CategoryFilter>(initialCategory)
     const [difficulty, setDifficulty] = useState<QuizDifficulty>('medium')
 
@@ -35,19 +37,15 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
         return byDiff.length >= 5 ? byDiff.length : pool.length
     }, [allQuestions, category, difficulty, initialSubcategory])
 
-    const categories: { value: CategoryFilter; label: string; Icon: React.FC<{ className?: string }>; sub: string }[] = [
-        { value: 'all',      label: 'Todas',    Icon: Layers, sub: 'K-Pop, Drama, Cultura' },
-        { value: 'k-pop',    label: 'K-Pop',    Icon: Music,  sub: 'Grupos e artistas'      },
-        { value: 'k-drama',  label: 'K-Drama',  Icon: Tv,     sub: 'Séries e cinema'        },
-        { value: 'cultura',  label: 'Cultura',  Icon: Globe,  sub: 'Tradições coreanas'     },
-        { value: 'historia', label: 'História', Icon: Clock,  sub: 'Passado e presente'     },
+    const categories: { value: Exclude<CategoryFilter, 'all'>; Icon: React.FC<{ className?: string }> }[] = [
+        { value: 'k-pop', Icon: Music },
+        { value: 'k-drama', Icon: Tv },
+        { value: 'cultura', Icon: Globe },
+        { value: 'historia', Icon: Clock },
     ]
-
-    const difficulties: { value: QuizDifficulty; label: string; desc: string; detail: string }[] = [
-        { value: 'easy',   label: 'Iniciante',     desc: '20s / pergunta', detail: '80 pts/acerto'  },
-        { value: 'medium', label: 'Intermediário', desc: '15s / pergunta', detail: '100 pts/acerto' },
-        { value: 'hard',   label: 'Expert',        desc: '10s / pergunta', detail: '150 pts/acerto' },
-    ]
+    // Idioma com tradução parcial: só aparecem os temas que têm perguntas.
+    const temas = categories.filter(c => allQuestions.some(q => q.category === c.value))
+    const niveis: QuizDifficulty[] = ['easy', 'medium', 'hard']
 
     const bestScore = stats.scores[0]?.points ?? null
     const totalAvailable = allQuestions.length
@@ -56,7 +54,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
     const avgPct = stats.totalQuestions > 0 ? Math.round((stats.totalCorrect / stats.totalQuestions) * 100) : null
     const bestStreak = stats.scores.length > 0 ? Math.max(...stats.scores.map(s => s.streak ?? 0)) : 0
 
-    const alvo = category === 'all' ? 'Tudo misturado' : categories.find(c => c.value === category)?.label ?? ''
+    const alvo = category === 'all' ? t('tudoMisturado') : t(`categorias.${category}`)
 
     return (
         <>
@@ -70,23 +68,23 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
 
                 <div className="relative mb-8 flex flex-col gap-5 lg:mb-10 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <span className="inline-block -rotate-2 bg-[#ffe14d] px-3 py-1 text-[12px] font-black tracking-[0.08em] text-[#15102b]">{totalAvailable} PERGUNTAS</span>
+                        <span className="inline-block -rotate-2 bg-[#ffe14d] px-3 py-1 text-[12px] font-black tracking-[0.08em] text-[#15102b]">{t('capa.perguntas', { n: totalAvailable })}</span>
                         <h1 className="mt-3 font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-[1] sm:text-[52px] lg:text-[64px]">
-                            <span className="sr-only">Quiz de K-Pop e K-Drama: </span>Bora testar seu{' '}<br />lado <span className="text-[#ff5fa2]">fã</span>? <span className="text-[#38e1c0]">✦</span>
+                            <span className="sr-only">{t('capa.tituloSr')}</span>{t.rich('capa.titulo', { br: () => <br />, fa: c => <span className="text-[#ff5fa2]">{c}</span>, marca: c => <span className="text-[#38e1c0]">{c}</span> })}
                         </h1>
                     </div>
                     {stats.totalGames > 0 && (
                         <div className="flex flex-wrap gap-3">
-                            {bestStreak >= 2 && <div className="bg-[#ffe14d] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">🔥 {bestStreak}</div><div className="text-[11px] font-bold">melhor sequência</div></div>}
-                            <div className="bg-[#38e1c0] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">{avgPct}%</div><div className="text-[11px] font-bold">de acerto</div></div>
-                            {bestScore !== null && <div className="bg-[#ff5fa2] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">{bestScore.toLocaleString()}</div><div className="text-[11px] font-bold">melhor placar</div></div>}
+                            {bestStreak >= 2 && <div className="bg-[#ffe14d] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">🔥 {bestStreak}</div><div className="text-[11px] font-bold">{t('capa.melhorSequencia')}</div></div>}
+                            <div className="bg-[#38e1c0] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">{avgPct}%</div><div className="text-[11px] font-bold">{t('capa.deAcerto')}</div></div>
+                            {bestScore !== null && <div className="bg-[#ff5fa2] px-4 py-2.5 font-black text-[#15102b] shadow-[5px_5px_0_#15102b] dark:shadow-[5px_5px_0_#000]"><div className="text-[24px] leading-tight">{bestScore.toLocaleString()}</div><div className="text-[11px] font-bold">{t('capa.melhorPlacar')}</div></div>}
                         </div>
                     )}
                 </div>
 
                 {totalAvailable === 0 && (
                     <div className="mb-8 border border-amber-400/30 bg-amber-400/5 px-4 py-4 text-[13px] text-amber-400">
-                        Nenhuma pergunta encontrada. Adicione perguntas no WordPress Admin → Quiz Questions.
+                        {t('capa.semPerguntas')}
                     </div>
                 )}
 
@@ -95,20 +93,20 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                     {aposTitulo}
                     <div className="flex flex-col justify-center gap-3 bg-[#1f1840] p-6 text-white shadow-[10px_10px_0_#15102b] dark:shadow-[10px_10px_0_#000] lg:-ml-px">
                         <span aria-hidden className="text-[30px]">🎉</span>
-                        <p className="font-[family-name:var(--font-playfair)] text-[24px] font-extrabold leading-tight">Quer mais? Uma rodada de {QUIZ_SIZE}!</p>
-                        <p className="text-[13px] text-[#c9c2ee]">{alvo} · {DIFFICULTY_CONFIG[difficulty].label}</p>
+                        <p className="font-[family-name:var(--font-playfair)] text-[24px] font-extrabold leading-tight">{t('capa.convite', { n: QUIZ_SIZE })}</p>
+                        <p className="text-[13px] text-[#c9c2ee]">{alvo} · {t(`niveis.${difficulty}`)}</p>
                         <button type="button" onClick={() => onStart(category, difficulty)} disabled={totalAvailable === 0}
                             className="flex h-[54px] items-center justify-center gap-2 bg-[#ff5fa2] text-[16px] font-black text-[#15102b] shadow-[4px_4px_0_#15102b] dark:shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-40">
-                            <Play className="h-5 w-5 fill-current" />Jogar agora<ArrowRight className="h-5 w-5" />
+                            <Play className="h-5 w-5 fill-current" />{t('capa.jogar')}<ArrowRight className="h-5 w-5" />
                         </button>
-                        {availableCount < QUIZ_SIZE && <p className="text-[12px] text-[#ffe14d]">Só {availableCount} perguntas neste filtro: todas serão usadas.</p>}
+                        {availableCount < QUIZ_SIZE && <p className="text-[12px] text-[#ffe14d]">{t('capa.soN', { n: availableCount })}</p>}
                     </div>
                 </div>
 
                 {/* Temas */}
-                <h2 className="mt-12 font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">Escolha seu time</h2>
+                <h2 className="mt-12 font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">{t('capa.escolhaTime')}</h2>
                 <div className="mt-5 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
-                    {categories.filter(c => c.value !== 'all').map(c => {
+                    {temas.map(c => {
                         const active = category === c.value
                         const { cor, emoji } = TOM[c.value]
                         const countInCat = allQuestions.filter(q => q.category === c.value).length
@@ -120,12 +118,12 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                                 className={`relative flex h-[150px] flex-col justify-between overflow-hidden p-4 text-left text-[#15102b] shadow-[6px_6px_0_#15102b] dark:shadow-[6px_6px_0_#000] transition-transform hover:-translate-y-1 sm:h-[210px] sm:p-5 ${active ? 'outline outline-4 outline-offset-2 outline-[#15102b] dark:outline-white' : ''}`}>
                                 <span aria-hidden className="absolute -right-1 top-3 text-[56px] leading-none sm:top-4 sm:text-[84px]">{emoji}</span>
                                 <span className="relative flex items-center justify-between text-[12px] font-black uppercase tracking-[0.1em]">
-                                    {c.label}
+                                    {t(`categorias.${c.value}`)}
                                     {active && <span className="bg-[#15102b] px-1.5 text-white">✓</span>}
                                 </span>
                                 <span className="relative">
                                     <span className="block font-[family-name:var(--font-playfair)] text-[44px] font-extrabold leading-none sm:text-[58px]">{countInCat}</span>
-                                    <span className="block text-[13px] font-bold sm:text-[15px]">{c.sub}{catPct !== null ? ` · ${catPct}% seu` : ''}</span>
+                                    <span className="block text-[13px] font-bold sm:text-[15px]">{t(`categoriasSub.${c.value}`)}{catPct !== null ? t('capa.seu', { pct: catPct }) : ''}</span>
                                 </span>
                             </button>
                         )
@@ -133,22 +131,22 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
                 </div>
                 <button type="button" aria-pressed={category === 'all'} onClick={() => setCategory('all')}
                     className={`mt-5 flex h-[60px] w-full items-center justify-between bg-white px-6 text-[17px] font-black text-[#15102b] shadow-[6px_6px_0_#15102b] dark:shadow-[6px_6px_0_#000] transition-transform hover:-translate-y-0.5 ${category === 'all' ? 'outline outline-4 outline-offset-2 outline-[#ffe14d]' : ''}`}>
-                    <span>🎲 Tudo misturado</span>
-                    <span className="text-[14px]">{allQuestions.length} perguntas</span>
+                    <span>🎲 {t('tudoMisturado')}</span>
+                    <span className="text-[14px]">{t('capa.nPerguntas', { n: allQuestions.length })}</span>
                 </button>
 
                 {/* Ritmo */}
-                <h2 className="mt-12 font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">Qual é o seu ritmo?</h2>
+                <h2 className="mt-12 font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">{t('capa.ritmo')}</h2>
                 <div className="mt-5 grid gap-4 sm:grid-cols-3 sm:gap-5">
-                    {difficulties.map(d => {
-                        const active = difficulty === d.value
-                        const cfg = DIFFICULTY_CONFIG[d.value]
+                    {niveis.map(d => {
+                        const active = difficulty === d
+                        const cfg = DIFFICULTY_CONFIG[d]
                         return (
-                            <button type="button" key={d.value} aria-pressed={active} onClick={() => setDifficulty(d.value)}
+                            <button type="button" key={d} aria-pressed={active} onClick={() => setDifficulty(d)}
                                 className={`p-5 text-left transition-transform hover:-translate-y-0.5 ${active ? 'bg-[#ffe14d] text-[#15102b] shadow-[6px_6px_0_#15102b] dark:shadow-[6px_6px_0_#000]' : 'border-[3px] border-[#b9aee6] bg-white text-[#15102b] dark:border-[#5a4d99] dark:bg-[#1f1840] dark:text-white'}`}>
-                                <span aria-hidden className="text-[26px]">{NIVEL_EMOJI[d.value]}</span>
-                                <span className="mt-1 block text-[20px] font-black">{d.label}</span>
-                                <span className={`mt-1 block text-[14px] font-bold ${active ? '' : 'text-[#5a4d99] dark:text-[#c9c2ee]'}`}>{cfg.time} s por pergunta · até {cfg.pts * QUIZ_SIZE} pts</span>
+                                <span aria-hidden className="text-[26px]">{NIVEL_EMOJI[d]}</span>
+                                <span className="mt-1 block text-[20px] font-black">{t(`niveis.${d}`)}</span>
+                                <span className={`mt-1 block text-[14px] font-bold ${active ? '' : 'text-[#5a4d99] dark:text-[#c9c2ee]'}`}>{t('capa.tempoPts', { time: cfg.time, pts: cfg.pts * QUIZ_SIZE })}</span>
                             </button>
                         )
                     })}
@@ -156,7 +154,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
 
                 <div className="mt-6 hidden items-center gap-2 text-[12px] text-[#5a4d99] dark:text-[#c9c2ee] sm:flex">
                     <Keyboard className="h-3.5 w-3.5 shrink-0" />
-                    <span>Use <kbd className="font-mono font-black">A B C D</kbd> ou <kbd className="font-mono font-black">1 2 3 4</kbd> para responder</span>
+                    <span>{t.rich('capa.atalhos', { kbd: c => <kbd className="font-mono font-black">{c}</kbd> })}</span>
                 </div>
 
                 {stats.totalGames > 0 && <div className="mt-10"><ScoreHistory scores={stats.scores} /></div>}
@@ -169,7 +167,7 @@ export function StartScreen({ onStart, stats, allQuestions, initialCategory = 'a
             <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 border-t-[3px] border-black bg-[#ffe14d] p-3">
                 <button type="button" onClick={() => onStart(category, difficulty)} disabled={totalAvailable === 0}
                     className="flex h-[52px] w-full items-center justify-center gap-3 bg-[#ff5fa2] text-[16px] font-black text-[#15102b] shadow-[4px_4px_0_#15102b] dark:shadow-[4px_4px_0_#000] active:translate-y-0.5 disabled:opacity-40">
-                    <Play className="h-5 w-5 fill-current" />Jogar · {DIFFICULTY_CONFIG[difficulty].label}
+                    <Play className="h-5 w-5 fill-current" />{t('capa.jogarNivel', { nivel: t(`niveis.${difficulty}`) })}
                 </button>
             </div>
             <div className="h-24 sm:hidden" />
