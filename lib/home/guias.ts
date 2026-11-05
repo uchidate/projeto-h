@@ -1,5 +1,9 @@
 import { getHub } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
+import { getTranslations } from 'next-intl/server'
+import { getPostBySlug } from '@/lib/wordpress/posts'
+import { href } from '@/lib/i18n/routes'
+import type { BestOfList } from '@/lib/wordpress/site-settings'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { hasLocale } from '@/lib/i18n/entity-translation'
 import { localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
@@ -68,4 +72,23 @@ export async function carregarGuiasPorTema(locale: Locale = DEFAULT_LOCALE): Pro
     const guias = lidos.filter((g): g is NonNullable<typeof g> => g !== null && g.capas.length > 0)
     const capas = escolherCapas(guias)
     return guias.map(g => ({ slug: g.slug, titulo: g.titulo, cor: g.cor, total: g.total, capas: capas[g.slug] }))
+}
+
+/**
+ * "Comece aqui" fora do português: os passos são os mesmos posts do WP, em outro idioma. Só entra o passo cujo post tem
+ * versão publicada no idioma e rótulo em `home.passos` (chave = slug do post em português); o link vai para essa versão.
+ */
+export async function carregarPassos(passosPt: BestOfList[], locale: Locale): Promise<BestOfList[]> {
+    if (locale === DEFAULT_LOCALE) return passosPt
+    const t = (await getTranslations({ locale, namespace: 'home.passos' })) as unknown as { has(chave: string): boolean; raw(chave: string): { label: string; apoio?: string } }
+    const resolvidos = await Promise.all(passosPt.map(async (p): Promise<BestOfList | null> => {
+        const slugPt = p.href.match(/^\/blog\/([^/?#]+)$/)?.[1]
+        if (!slugPt || !t.has(slugPt)) return null
+        const post = await getPostBySlug(slugPt).catch(() => null)
+        const slug = post?.translations?.[locale]
+        if (!slug) return null
+        const { label, apoio } = t.raw(slugPt)
+        return { label, apoio, emoji: p.emoji, href: href('post', { slug }, locale) }
+    }))
+    return resolvidos.filter((p): p is BestOfList => p !== null)
 }

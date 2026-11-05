@@ -66,6 +66,14 @@
       "verTodos": "Ver todos os guias",
       "titulos": "{total} títulos"
   },
+  "passos": {
+    "o-que-e-hallyu-onda-coreana-explicada": { "label": "O que é Hallyu?", "apoio": "a onda coreana, em poucos minutos" },
+    "como-comecar-no-kpop-guia-para-iniciantes": { "label": "Como começar no K-Pop", "apoio": "por onde ouvir primeiro" },
+    "idol-vs-artist-diferenca-carreira-kpop": { "label": "Idol vs. Artist", "apoio": "quem é quem" },
+    "posicoes-grupo-kpop-lider-vocal-visual-maknae-guia": { "label": "Posições em um grupo de K-Pop", "apoio": "líder, vocal, rapper" },
+    "line-kpop-vocal-dance-maknae-line-guia": { "label": "Line no K-pop (vocal/dance/maknae)", "apoio": "vocal, dance, maknae" },
+    "hangeul-guia-basico-fas-brasileiros": { "label": "Hangeul em 30 minutos", "apoio": "leia o alfabeto coreano" }
+  },
   "assuntos": {
     "rotulo": "Assuntos"
   },

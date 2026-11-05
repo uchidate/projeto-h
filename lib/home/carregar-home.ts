@@ -13,7 +13,7 @@ import { extrairCapaAlbum, type CapaAlbum } from '@/lib/home/capa-album'
 import { escolherCapas } from '@/lib/home/frescor'
 import { carregarExplore } from '@/lib/home/explore'
 import { carregarTemas } from '@/lib/home/temas'
-import { carregarGuiasPorTema } from '@/lib/home/guias'
+import { carregarGuiasPorTema, carregarPassos } from '@/lib/home/guias'
 import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { localizeEntity } from '@/lib/i18n/entity-translation'
@@ -112,5 +112,7 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
 
     const prateleirasEditorias = prateleirasResult.status === 'fulfilled' ? prateleirasResult.value : {}
 
-    return { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum, producoesEmAlta: await producoesEmAltaP, hoje }
+    const passos = await carregarPassos(siteSettings.cultureGuides, locale).catch(() => [])
+
+    return { siteSettings, passos, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum, producoesEmAlta: await producoesEmAltaP, hoje }
 }

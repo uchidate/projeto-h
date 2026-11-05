@@ -52,6 +52,8 @@ export type BestOfList = {
     label: string
     href: string
     emoji: string
+    /** Texto de apoio do passo; sem ele vale o de `APOIO_DOS_PASSOS` (português). */
+    apoio?: string
 }
 
 type BlogCategory = {
