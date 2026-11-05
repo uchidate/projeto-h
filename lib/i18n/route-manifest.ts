@@ -23,7 +23,6 @@ export type EstadoDaRota =
 export type RotaDoManifesto = { tipo: TipoDeRota } & EstadoDaRota
 
 const pronta: EstadoDaRota = { estado: 'pronta' }
-const pendente: EstadoDaRota = { estado: 'pendente' }
 
 /** Chave = caminho PT como em `app/(site)`, com `[param]` para segmentos dinâmicos. */
 export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
@@ -76,13 +75,13 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/corrections': { tipo: 'estatica', ...pronta },
     '/cultura-coreana-101': { tipo: 'estatica', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
     // Textos legais exigem revisão humana por idioma (docs/I18N-V2.md, §7).
-    '/privacidade': { tipo: 'estatica', ...pendente },
-    '/termos': { tipo: 'estatica', ...pendente },
+    '/privacidade': { tipo: 'estatica', estado: 'parcial', falta: 'texto legal em português com aviso e noindex até haver tradução revisada por humano' },
+    '/termos': { tipo: 'estatica', estado: 'parcial', falta: 'texto legal em português com aviso e noindex até haver tradução revisada por humano' },
 
     // Conta
     '/entrar': { tipo: 'conta', ...pronta },
     '/cadastro': { tipo: 'conta', ...pronta },
-    '/perfil': { tipo: 'conta', ...pendente },
-    '/minhas-listas': { tipo: 'conta', ...pendente },
+    '/perfil': { tipo: 'conta', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página ainda não traduzidos' },
+    '/minhas-listas': { tipo: 'conta', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página ainda não traduzidos' },
     '/dashboard': { tipo: 'conta', estado: 'somentePt', motivo: 'painel interno da operação, sem público externo' },
 }

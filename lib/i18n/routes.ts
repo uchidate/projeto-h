@@ -42,6 +42,10 @@ const ROUTES = {
     corrections: { pt: '/corrections', en: '/corrections' },
     login: { pt: '/entrar', en: '/sign-in' },
     signup: { pt: '/cadastro', en: '/sign-up' },
+    profile: { pt: '/perfil', en: '/profile' },
+    myLists: { pt: '/minhas-listas', en: '/my-lists' },
+    privacy: { pt: '/privacidade', en: '/privacy' },
+    terms: { pt: '/termos', en: '/terms' },
 } as const satisfies Record<string, Record<Locale, string>>
 
 export type RouteName = keyof typeof ROUTES
