@@ -35,7 +35,7 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
     ].filter(Boolean)
 
     // Começa já, em paralelo com o resto; sem ela o ranking de produções simplesmente não aparece.
-    const producoesEmAltaP = getProductions({ perPage: 3, orderby: 'trending_score' }).then(r => r.items).catch(() => [])
+    const producoesEmAltaP = getProductions({ perPage: 3, orderby: 'trending_score', ...(emPt ? {} : { locale }) }).then(r => r.items).catch(() => [])
 
     const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult, prateleirasResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
@@ -80,7 +80,7 @@ export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { come
         : {}
     // Capa de álbum: a ficha e as faixas saem do texto da matéria, que a listagem não traz; busca só as da capa.
     const capasAlbum: Record<number, CapaAlbum> = {}
-    if (comercio) {
+    if (comercio || !emPt) {
         const idsCapa = escolherCapas(posts, siteSettings.home.heroPostId, 4, new Date(), new Set(siteSettings.home.highlightPostIds)).map(post => post.id)
         const comTexto = idsCapa.length ? await getPosts({ includeIds: idsCapa, perPage: idsCapa.length }).catch(() => null) : null
         for (const post of comTexto?.items ?? []) {
