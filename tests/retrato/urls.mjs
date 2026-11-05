@@ -69,7 +69,8 @@ export const COM_FILTRO = [
 export const SO_PT = ['/loja', '/privacidade', '/termos', '/merch']
 
 /** Devem responder 404 hoje e continuar assim (D3: `/pt/...` não existe como URL pública). */
-export const DEVEM_DAR_404 = ['/pt', '/pt/about', '/pt/groups/bts', '/en/pagina-que-nao-existe', '/xx/about']
+export const DEVEM_DAR_404 = ['/pt', '/pt/about', '/pt/groups/bts', '/en/pagina-que-nao-existe', '/xx/about',
+    '/artists/nao-existe-xyz', '/en/artists/nao-existe-xyz', '/productions/nao-existe-xyz', '/fandoms/nao-existe-xyz', '/positions/nao-existe']
 
 export function todasAsUrls() {
     const urls = new Set(SO_PT)

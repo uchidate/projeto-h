@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+import { getProductions } from '@/lib/wordpress/productions'
 import { ProductionRoute, buildProductionMetadata } from '@/components/productions/ProductionRoute'
+import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 // 6h (era 600s). O `s-maxage` da borda vem daqui, e com 600s a cauda longa quase nunca
@@ -11,20 +13,28 @@ export const revalidate = 21600
 
 type Params = Promise<{ locale: string; slug: string }>
 
-// Sem pré-geração: só itens com tradução publicada terão página, e isso é
-// decidido na Fase 3 (D5-b). Até lá, renderização sob demanda com ISR.
-export function generateStaticParams() {
-    return []
+// Pré-geração só do português. O filho devolve SEMPRE `{ locale, slug }` completos: se devolvesse
+// vazio para `en`, o Next repassaria `{ locale: 'en' }` sem `slug` e, por haver um conjunto
+// incompleto, desistiria de pré-gerar TODOS os slugs (o build caía de 1005 para 639 páginas).
+// Os outros idiomas renderizam sob demanda com ISR; só itens com tradução publicada têm página (D5-b).
+export async function generateStaticParams() {
+    if (process.env.SKIP_BUILD_STATIC_GENERATION) return []
+    try {
+        const { items } = await getProductions({ perPage: 100 })
+        return items.map(item => ({ locale: DEFAULT_LOCALE, slug: item.slug }))
+    } catch {
+        return []
+    }
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale, slug } = await params
-    if (!idiomaValido(locale)) return {}
+    if (!idiomaValido(locale, { servePt: true })) return {}
     return buildProductionMetadata(slug, locale)
 }
 
-export default async function IntlProductionPage({ params }: { params: Params }) {
+export default async function Page({ params }: { params: Params }) {
     const { locale, slug } = await params
-    entrarNaPagina(locale)
+    entrarNaPagina(locale, { servePt: true })
     return <ProductionRoute slug={slug} locale={locale} />
 }

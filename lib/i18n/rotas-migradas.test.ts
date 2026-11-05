@@ -4,8 +4,14 @@ import { describe, expect, it } from 'vitest'
 import { ROTAS_MIGRADAS, rewritesDasRotasMigradas } from './rotas-migradas.mjs'
 import { href } from './routes'
 
+// `href` tipa os params por rota; aqui a rota vem de uma lista, então usamos uma assinatura solta.
+const hrefSolto = href as unknown as (rota: string, params: Record<string, string> | undefined, locale: 'pt' | 'en') => string
+
 const RAIZ = process.cwd()
-const pagina = (grupo: string, caminho: string) => join(RAIZ, 'app', grupo, caminho, 'page.tsx')
+// `:slug` (rewrite do Next) e `[slug]` (pasta do App Router) descrevem o mesmo segmento.
+const comoPasta = (caminho: string) => caminho.replace(/:(\w+)/g, '[$1]')
+const comoRewrite = (caminho: string) => caminho.replace(/\[(\w+)\]/g, ':$1')
+const pagina = (grupo: string, caminho: string) => join(RAIZ, 'app', grupo, comoPasta(caminho), 'page.tsx')
 
 describe('rotas migradas para a árvore única', () => {
     it('toda página de (intl) que serve o português está registrada (senão /<rota> dá 404, sem rewrite para /pt/...)', () => {
@@ -13,9 +19,9 @@ describe('rotas migradas para a árvore única', () => {
         const servemPt: string[] = []
         const varrer = (dir: string, prefixo: string) => {
             for (const d of readdirSync(dir, { withFileTypes: true })) {
-                if (!d.isDirectory() || d.name.startsWith('[') || d.name === 'filtrado') continue
+                if (!d.isDirectory() || d.name === '[locale]' || d.name === 'filtrado') continue
                 const arquivo = join(dir, d.name, 'page.tsx')
-                const caminho = `${prefixo}${d.name}`
+                const caminho = `${prefixo}${comoRewrite(d.name)}`
                 if (existsSync(arquivo) && readFileSync(arquivo, 'utf8').includes('servePt: true')) servemPt.push(caminho)
                 varrer(join(dir, d.name), `${caminho}/`)
             }
@@ -23,6 +29,24 @@ describe('rotas migradas para a árvore única', () => {
         varrer(base, '')
         const registradas = ROTAS_MIGRADAS.map((r) => r.interno.slice(1))
         expect(servemPt.filter((n) => !registradas.includes(n))).toEqual([])
+    })
+
+    it('fichas pré-geradas devolvem { locale, ... } completo (senão o Next desiste de pré-gerar todos os slugs)', () => {
+        const base = join(RAIZ, 'app', '(intl)', '[locale]')
+        const ruins: string[] = []
+        const varrer = (dir: string) => {
+            for (const d of readdirSync(dir, { withFileTypes: true })) {
+                if (!d.isDirectory()) continue
+                const arquivo = join(dir, d.name, 'page.tsx')
+                if (d.name.startsWith('[') && d.name !== '[locale]' && existsSync(arquivo)) {
+                    const texto = readFileSync(arquivo, 'utf8')
+                    if (texto.includes('servePt: true') && /generateStaticParams/.test(texto) && !texto.includes('locale: DEFAULT_LOCALE')) ruins.push(arquivo.replace(RAIZ, ''))
+                }
+                varrer(join(dir, d.name))
+            }
+        }
+        varrer(base)
+        expect(ruins).toEqual([])
     })
 
     it('não repete rota', () => {
@@ -38,10 +62,15 @@ describe('rotas migradas para a árvore única', () => {
 
     it.each(ROTAS_MIGRADAS)('$pt: bate com o registro de caminhos por idioma', ({ pt, interno }) => {
         // O caminho em inglês de ROUTES é o nome da pasta; o em português é a URL pública.
-        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending', 'agencies', 'companies', 'fandoms', 'calendar', 'quiz', 'search', 'birthdays'] as const
-        const achada = rotas.find((r) => href(r, undefined, 'pt') === pt)
+        const rotas = ['about', 'contact', 'ethics', 'editorialStandards', 'corrections', 'groups', 'artists', 'productions', 'blog', 'foods', 'guides', 'positions', 'trending', 'agencies', 'companies', 'fandoms', 'calendar', 'quiz', 'search', 'birthdays', 'artist', 'production', 'fandom', 'position'] as const
+        // Rotas com parâmetro: `/artists/:slug` vira `/artists/X` dos dois lados antes de comparar.
+        const params = Object.fromEntries([...pt.matchAll(/:(\w+)/g)].map((m) => [m[1], 'X']))
+        const esperado = pt.replace(/:(\w+)/g, 'X')
+        const achada = rotas.find((r) => {
+            try { return hrefSolto(r, params, 'pt') === esperado } catch { return false }
+        })
         expect(achada, `${pt} não está em ROUTES`).toBeDefined()
-        expect(href(achada!, undefined, 'en')).toBe(`/en${interno}`)
+        expect(hrefSolto(achada!, params, 'en')).toBe(`/en${interno}`.replace(/:(\w+)/g, 'X'))
     })
 
     it.each(ROTAS_MIGRADAS.filter((r) => r.filtrado))('$pt: a variante filtrado existe, serve o português e não sobrou cópia em (site)', ({ pt, interno }) => {
@@ -63,6 +92,14 @@ describe('rotas migradas para a árvore única', () => {
         const primeiroSimples = todos.findIndex((r) => !('has' in r))
         expect(ultimoDesvio).toBeGreaterThanOrEqual(0)
         expect(ultimoDesvio).toBeLessThan(primeiroSimples)
+    })
+
+    it('rotas fixas vêm antes das com parâmetro (/artists/birthdays antes de /artists/:slug)', () => {
+        const simples = rewritesDasRotasMigradas().filter((r) => !('has' in r)).map((r) => r.source)
+        expect(simples.indexOf('/artists/birthdays')).toBeGreaterThanOrEqual(0)
+        expect(simples.indexOf('/artists/birthdays')).toBeLessThan(simples.indexOf('/artists/:slug'))
+        const primeiraDinamica = simples.findIndex((x) => x.includes(':'))
+        expect(simples.slice(primeiraDinamica).every((x) => x.includes(':'))).toBe(true)
     })
 
     it('/groups desvia por query nos dois idiomas, para o filtrado do idioma certo', () => {
