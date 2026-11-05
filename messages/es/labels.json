@@ -1,0 +1,66 @@
+{
+  "role": {
+    "singer": "Cantante",
+    "actor": "Actor/Actriz",
+    "dancer": "Bailarín/Bailarina",
+    "rapper": "Rapero/Rapera",
+    "model": "Modelo",
+    "host": "Presentador/Presentadora",
+    "composer": "Compositor/Compositora",
+    "idol": "Ídolo",
+    "producer": "Productor/Productora",
+    "mc": "MC",
+    "director": "Director/Directora"
+  },
+  "roleM": {
+    "singer": "Cantante",
+    "actor": "Actor",
+    "dancer": "Bailarín",
+    "host": "Presentador",
+    "composer": "Compositor",
+    "producer": "Productor",
+    "director": "Director"
+  },
+  "roleF": {
+    "singer": "Cantante",
+    "actor": "Actriz",
+    "dancer": "Bailarina",
+    "host": "Presentadora",
+    "composer": "Compositora",
+    "producer": "Productora",
+    "director": "Directora"
+  },
+  "groupType": {
+    "girl_group": "Grupo femenino",
+    "boy_group": "Grupo masculino",
+    "co_ed": "Grupo mixto",
+    "solo": "Artista solista"
+  },
+  "generation": "{n}.ª generación",
+  "productionType": {
+    "drama": "Drama",
+    "movie": "Película",
+    "special": "Especial",
+    "variety": "Programa de variedades",
+    "dramaDisplay": "Serie"
+  },
+  "productionStatus": {
+    "airing": "En emisión",
+    "completed": "Finalizada",
+    "upcoming": "Próximamente"
+  },
+  "age": "{age} años",
+  "officialSite": "Sitio oficial",
+  "fact": {
+    "debut": "Debut",
+    "birth": "Nacimiento",
+    "death": "Fallecimiento",
+    "height": "Estatura",
+    "zodiac": "Signo zodiacal"
+  },
+  "groupStatus": {
+    "disbandedIn": "disuelto · {year}",
+    "active": "activo",
+    "disbanded": "disuelto"
+  }
+}

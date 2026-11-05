@@ -47,14 +47,21 @@ const ROUTES = {
     myLists: { pt: '/minhas-listas', en: '/my-lists' },
     privacy: { pt: '/privacidade', en: '/privacy' },
     terms: { pt: '/termos', en: '/terms' },
-} as const satisfies Record<string, Record<Locale, string>>
+} as const satisfies Record<string, { pt: string; en: string } & Partial<Record<Locale, string>>>
+
+type Rota = { pt: string; en: string } & Partial<Record<Locale, string>>
+
+/** Caminho da rota no idioma. Idioma sem caminho próprio herda o do inglês (o nome da pasta em `app/[locale]`). */
+export function caminhoDe(rota: Rota, locale: Locale): string {
+    return rota[locale] ?? rota.en
+}
 
 export type RouteName = keyof typeof ROUTES
 
 /** Caminho sem prefixo de idioma → caminho em português (`/sign-in` → `/entrar`). Rotas com o mesmo caminho nos dois idiomas ficam de fora. */
 export function caminhoPtDe(locale: Locale): Record<string, string> {
     return Object.fromEntries(
-        Object.values(ROUTES).filter((r) => r[locale] !== r[DEFAULT_LOCALE]).map((r) => [r[locale], r[DEFAULT_LOCALE]]),
+        Object.values(ROUTES).filter((r) => caminhoDe(r, locale) !== r.pt).map((r) => [caminhoDe(r, locale), r.pt]),
     )
 }
 
@@ -71,7 +78,7 @@ export function href<R extends RouteName>(
         ? [params?: undefined, locale?: Locale]
         : [params: RouteParams<R>, locale?: Locale]
 ): string {
-    const pattern: string = ROUTES[route][locale]
+    const pattern: string = caminhoDe(ROUTES[route], locale)
     const path = pattern.replace(/\[([^\]]+)\]/g, (_, key: string) => {
         const value = (params as Record<string, string> | undefined)?.[key]
         if (!value) throw new Error(`href('${route}'): parâmetro "${key}" ausente`)
