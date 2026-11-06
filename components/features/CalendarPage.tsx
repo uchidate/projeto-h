@@ -1,6 +1,8 @@
 'use client'
 
 import { intlLocale } from '@/lib/i18n/format'
+import { useLocale, useTranslations } from 'next-intl'
+import type { Locale } from '@/lib/i18n/config'
 import React, { useState, useMemo, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -26,12 +28,16 @@ import type { CalendarEvent } from '@/lib/calendario/tipos'
  * a data num trilho à esquerda — mesmo vocabulário dos perfis de artista.
  */
 
-const MONTH_NAMES = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
-]
-const MONTH_SHORT = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-const WEEKDAYS_SHORT = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
+/** Textos do calendário no idioma da página; meses e dias vêm das mensagens (o curto do português não é o do `Intl`). */
+function useCal() {
+    const t = useTranslations('client.calendar')
+    const locale = useLocale() as Locale
+    return { t, locale, MONTH_NAMES: t.raw('meses') as string[], MONTH_SHORT: t.raw('mesesCurtos') as string[], WEEKDAYS_SHORT: t.raw('diasSemana') as string[] }
+}
+type CalT = ReturnType<typeof useCal>['t']
+
+/** "5 de nov" em português, "Nov 5" em inglês. */
+function diaMes(t: CalT, dia: number, mes: string) { return t('diaMes', { dia, mes }) }
 
 type FilterType = 'all' | 'birthday' | 'debut'
 
@@ -44,14 +50,14 @@ interface Props {
 
 /** Contagem regressiva em texto. O accent fica reservado ao que é urgente —
  *  hoje e amanhã. Depois disso a distância é informação neutra. */
-function countdown(n: number): { text: string; urgent: boolean } {
-    if (n === 0) return { text: 'Hoje', urgent: true }
-    if (n === 1) return { text: 'Amanhã', urgent: true }
-    return { text: `em ${n} dias`, urgent: false }
+function countdown(n: number, t: CalT): { text: string; urgent: boolean } {
+    if (n === 0) return { text: t('hoje'), urgent: true }
+    if (n === 1) return { text: t('amanha'), urgent: true }
+    return { text: t('emDias', { n }), urgent: false }
 }
 
-function typeLabel(ev: CalendarEvent) {
-    return ev.type === 'birthday' ? 'Aniversário' : 'Debut'
+function typeLabel(ev: CalendarEvent, t: CalT) {
+    return ev.type === 'birthday' ? t('aniversario') : t('debut')
 }
 
 function TypeMark({ type, size = 10 }: { type: CalendarEvent['type']; size?: number }) {
@@ -69,6 +75,7 @@ function TypeMark({ type, size = 10 }: { type: CalendarEvent['type']; size?: num
  * que um calendário precisa fazer.
  */
 function CalendarHero({ today, next }: { today: CalendarEvent[]; next: CalendarEvent | null }) {
+    const { t, locale, MONTH_SHORT, MONTH_NAMES } = useCal()
     const isToday = today.length > 0
     const shown = isToday ? today.slice(0, 4) : next ? [next] : []
     const overflow = isToday ? today.length - shown.length : 0
@@ -79,12 +86,12 @@ function CalendarHero({ today, next }: { today: CalendarEvent[]; next: CalendarE
         <section className="border-t border-border pt-6">
             <div className="mb-5 flex items-baseline gap-3">
                 <h2 className="font-mono text-[11px] font-black uppercase tracking-[0.16em] text-accent">
-                    {isToday ? 'Hoje' : 'A seguir'}
+                    {isToday ? t('hoje') : t('aSeguir')}
                 </h2>
                 <p className="font-mono text-[11px] text-muted">
                     {isToday
-                        ? `${today.length} ${today.length === 1 ? 'evento' : 'eventos'}`
-                        : `${countdown(next!.daysUntil).text} · ${next!.day} de ${MONTH_SHORT[next!.month - 1]}`}
+                        ? t('eventos', { n: today.length })
+                        : `${countdown(next!.daysUntil, t).text} · ${diaMes(t, next!.day, MONTH_SHORT[next!.month - 1])}`}
                 </p>
             </div>
 
@@ -109,14 +116,14 @@ function CalendarHero({ today, next }: { today: CalendarEvent[]; next: CalendarE
                 <div className="flex flex-col lg:pt-2">
                     <Link href={lead.href} className="group block">
                         <p className="flex items-center gap-1.5 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
-                            <TypeMark type={lead.type} /> {typeLabel(lead)}
+                            <TypeMark type={lead.type} /> {typeLabel(lead, t)}
                         </p>
                         <p className="mt-2 font-serif text-[clamp(1.75rem,3.2vw,2.75rem)] font-medium leading-[1.02] tracking-[-0.02em] text-foreground transition-colors group-hover:text-accent">
                             {lead.name}
                         </p>
                         {lead.extra && <p className="mt-2 text-[15px] text-muted">{lead.extra}</p>}
                         <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted">
-                            {lead.day} de {MONTH_NAMES[lead.month - 1].toLowerCase()}
+                            {diaMes(t, lead.day, locale === 'pt' ? MONTH_NAMES[lead.month - 1].toLowerCase() : MONTH_NAMES[lead.month - 1])}
                         </p>
                     </Link>
 
@@ -128,7 +135,7 @@ function CalendarHero({ today, next }: { today: CalendarEvent[]; next: CalendarE
 
                     {overflow > 0 && (
                         <p className="mt-4 font-mono text-[11px] text-muted">
-                            + {overflow} {overflow === 1 ? 'outro evento hoje' : 'outros eventos hoje'}, na lista abaixo
+                            {t('maisHoje', { n: overflow })}
                         </p>
                     )}
                 </div>
@@ -143,7 +150,8 @@ function CalendarHero({ today, next }: { today: CalendarEvent[]; next: CalendarE
  *  de uma lista com moldura, com o avatar em mais uma moldura — três retângulos
  *  aninhados para um dado de uma linha. */
 function EventRow({ ev, showDate = false, showCountdown = true }: { ev: CalendarEvent; showDate?: boolean; showCountdown?: boolean }) {
-    const c = countdown(ev.daysUntil)
+    const { t, MONTH_SHORT } = useCal()
+    const c = countdown(ev.daysUntil, t)
     return (
         <Link href={ev.href}
             className="group flex items-center gap-4 border-t border-border py-3 transition-colors hover:bg-surface/40">
@@ -159,7 +167,7 @@ function EventRow({ ev, showDate = false, showCountdown = true }: { ev: Calendar
             <div className="min-w-0 flex-1">
                 {showDate && (
                     <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
-                        {ev.day} de {MONTH_SHORT[ev.month - 1]}
+                        {diaMes(t, ev.day, MONTH_SHORT[ev.month - 1])}
                     </p>
                 )}
                 <p className="truncate text-[15px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent">
@@ -167,7 +175,7 @@ function EventRow({ ev, showDate = false, showCountdown = true }: { ev: Calendar
                 </p>
                 <p className="mt-0.5 flex items-center gap-1.5 text-[12px] text-muted">
                     <TypeMark type={ev.type} size={9} />
-                    {ev.extra ?? typeLabel(ev)}
+                    {ev.extra ?? typeLabel(ev, t)}
                 </p>
             </div>
             {/* Dentro do bloco "Hoje" a contagem regressiva de cada linha diria
@@ -191,6 +199,7 @@ function EventRow({ ev, showDate = false, showCountdown = true }: { ev: Calendar
 function MiniCalendar({ year, month, events, todayStr }: {
     year: number; month: number; events: CalendarEvent[]; todayStr: string
 }) {
+    const { MONTH_SHORT, WEEKDAYS_SHORT } = useCal()
     const firstDow = new Date(year, month - 1, 1).getDay()
     const daysInMonth = new Date(year, month, 0).getDate()
     const birthdayDays = new Set(events.filter(e => e.type === 'birthday' && e.month === month && e.year === year).map(e => e.day))
@@ -236,6 +245,7 @@ function MiniCalendar({ year, month, events, todayStr }: {
 /** Espinha mensal: a data mora num trilho à esquerda e os eventos correm à
  *  direita — o mesmo trilho assimétrico dos perfis de artista. */
 function MonthSection({ monthKey, events }: { monthKey: string; events: CalendarEvent[] }) {
+    const { t, locale, MONTH_NAMES } = useCal()
     const [monthNum, yearNum] = monthKey.split('-').map(Number)
     const byDate = useMemo(() => {
         const map = new Map<string, CalendarEvent[]>()
@@ -255,14 +265,14 @@ function MonthSection({ monthKey, events }: { monthKey: string; events: Calendar
                 </h2>
                 <span className="font-mono text-[11px] text-muted">{yearNum}</span>
                 <span className="ml-auto font-mono text-[11px] text-muted">
-                    {events.length} {events.length === 1 ? 'evento' : 'eventos'}
+                    {t('eventos', { n: events.length })}
                 </span>
             </div>
 
             {byDate.map(([date, evs]) => {
                 const d = new Date(date + 'T12:00:00')
                 const dayNum = d.getDate()
-                const weekday = d.toLocaleDateString(intlLocale(), { weekday: 'short' }).replace('.', '')
+                const weekday = d.toLocaleDateString(intlLocale(locale), { weekday: 'short' }).replace('.', '')
                 return (
                     <div key={date} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-4 sm:grid-cols-[4rem_minmax(0,1fr)] sm:gap-x-6">
                         <div className="border-t border-border pt-3">
@@ -284,6 +294,7 @@ function MonthSection({ monthKey, events }: { monthKey: string; events: Calendar
 // ─── CalendarPage ─────────────────────────────────────────────────────────────
 
 export function CalendarPage({ events, todayStr }: Props) {
+    const { t, MONTH_NAMES } = useCal()
     const [filter, setFilter] = useState<FilterType>('all')
     const [search, setSearch] = useState('')
     const [activeMonth, setActiveMonth] = useState<string | null>(null)
@@ -346,11 +357,11 @@ export function CalendarPage({ events, todayStr }: Props) {
        a seção de mesmo nome contava 1..7 — o cartão dizia 11 e a seção 9, na
        mesma tela. Agora ambos derivam do mesmo recorte e usam o mesmo rótulo. */
     const stats = useMemo(() => [
-        { label: 'Hoje', value: filtered.filter(e => e.daysUntil === 0).length, accent: true },
-        { label: 'Próximos 7 dias', value: filtered.filter(e => e.daysUntil >= 1 && e.daysUntil <= 7).length, accent: false },
-        { label: 'Aniversários', value: filtered.filter(e => e.type === 'birthday').length, accent: false },
-        { label: 'Debuts', value: filtered.filter(e => e.type === 'debut').length, accent: false },
-    ], [filtered])
+        { label: t('hoje'), value: filtered.filter(e => e.daysUntil === 0).length, accent: true },
+        { label: t('proximos7'), value: filtered.filter(e => e.daysUntil >= 1 && e.daysUntil <= 7).length, accent: false },
+        { label: t('aniversarios'), value: filtered.filter(e => e.type === 'birthday').length, accent: false },
+        { label: t('debuts'), value: filtered.filter(e => e.type === 'debut').length, accent: false },
+    ], [filtered, t])
 
     const handleMonthClick = (key: string) => {
         setActiveMonth(key === activeMonth ? null : key)
@@ -365,10 +376,10 @@ export function CalendarPage({ events, todayStr }: Props) {
             {/* Cabeçalho */}
             <header className="mb-6">
                 <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
-                    Calendário K-Pop · próximos 90 dias
+                    {t('cabecalho')}
                 </p>
                 <h1 className="font-serif text-[clamp(2rem,1.35rem+3vw,3.25rem)] font-medium leading-[1.02] tracking-[-0.03em]">
-                    Quem comemora agora
+                    {t('titulo')}
                 </h1>
             </header>
 
@@ -381,9 +392,9 @@ export function CalendarPage({ events, todayStr }: Props) {
             <div className="mb-6 flex flex-col gap-3 border-t border-border pt-5 sm:flex-row sm:items-center">
                 <div className="flex items-center gap-5">
                     {([
-                        { value: 'all', label: 'Todos' },
-                        { value: 'birthday', label: 'Aniversários' },
-                        { value: 'debut', label: 'Debuts' },
+                        { value: 'all', label: t('todos') },
+                        { value: 'birthday', label: t('aniversarios') },
+                        { value: 'debut', label: t('debuts') },
                     ] as { value: FilterType; label: string }[]).map(f => (
                         <button key={f.value} type="button" aria-pressed={filter === f.value}
                             onClick={() => setFilter(f.value)}
@@ -399,11 +410,11 @@ export function CalendarPage({ events, todayStr }: Props) {
                 </div>
                 <div className="relative sm:ml-auto sm:w-64">
                     <Search size={14} className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-muted" />
-                    <input type="search" placeholder="Buscar idol ou grupo…" aria-label="Buscar idol ou grupo"
+                    <input type="search" placeholder={t('buscar')} aria-label={t('buscarAria')}
                         value={search} onChange={e => setSearch(e.target.value)}
                         className="h-9 w-full border-b border-border bg-transparent pl-6 pr-7 text-[13px] placeholder:text-muted focus:border-accent focus:outline-hidden" />
                     {search && (
-                        <button type="button" title="Limpar busca" aria-label="Limpar busca" onClick={() => setSearch('')}
+                        <button type="button" title={t('limpar')} aria-label={t('limpar')} onClick={() => setSearch('')}
                             className="absolute right-0 top-1/2 -translate-y-1/2 text-muted hover:text-foreground">
                             <X size={14} />
                         </button>
@@ -430,14 +441,14 @@ export function CalendarPage({ events, todayStr }: Props) {
                     {filtered.length === 0 ? (
                         <div className="border-t border-border py-16 text-center">
                             <Calendar size={28} className="mx-auto mb-3 text-muted opacity-40" />
-                            <p className="text-[14px] text-muted">Nenhum evento encontrado.</p>
+                            <p className="text-[14px] text-muted">{t('nenhum')}</p>
                         </div>
                     ) : (
                         <>
                             {todayOverflow.length > 0 && (
                                 <section className="mb-10">
                                     <h2 className="mb-1 border-b-2 border-foreground pb-2 font-serif text-[1.5rem] font-medium leading-none">
-                                        Também hoje
+                                        {t('tambemHoje')}
                                     </h2>
                                     {todayOverflow.map(ev => <EventRow key={`${ev.type}-${ev.id}`} ev={ev} showCountdown={false} />)}
                                 </section>
@@ -446,9 +457,9 @@ export function CalendarPage({ events, todayStr }: Props) {
                             {weekEvents.length > 0 && (
                                 <section className="mb-10">
                                     <div className="mb-1 flex items-baseline gap-3 border-b-2 border-foreground pb-2">
-                                        <h2 className="font-serif text-[1.5rem] font-medium leading-none">Próximos 7 dias</h2>
+                                        <h2 className="font-serif text-[1.5rem] font-medium leading-none">{t('proximos7')}</h2>
                                         <span className="ml-auto font-mono text-[11px] text-muted">
-                                            {weekEvents.length} {weekEvents.length === 1 ? 'evento' : 'eventos'}
+                                            {t('eventos', { n: weekEvents.length })}
                                         </span>
                                     </div>
                                     {weekEvents.map(ev => <EventRow key={`${ev.type}-${ev.id}`} ev={ev} showDate />)}
@@ -476,7 +487,7 @@ export function CalendarPage({ events, todayStr }: Props) {
                     {byMonth.length > 1 && (
                         <nav ref={monthNavRef} className="mb-8">
                             <p className="mb-3 border-t border-border pt-3 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
-                                Ir para
+                                {t('irPara')}
                             </p>
                             <ul>
                                 {byMonth.map(([key, evs]) => {
@@ -500,7 +511,7 @@ export function CalendarPage({ events, todayStr }: Props) {
                             {activeMonth && (
                                 <button type="button" onClick={() => setActiveMonth(null)}
                                     className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted hover:text-foreground">
-                                    ← Ver todos os meses
+                                    {t('verTodosMeses')}
                                 </button>
                             )}
                         </nav>
@@ -510,7 +521,7 @@ export function CalendarPage({ events, todayStr }: Props) {
                         com dias de 9px que ninguém lê nem clica. */}
                     <div className="border-t border-border pt-3">
                         <p className="mb-4 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
-                            Visão do mês
+                            {t('visaoMes')}
                         </p>
                         <div className="space-y-5">
                             <MiniCalendar year={todayYear} month={todayMonth} events={events} todayStr={todayStr} />
@@ -518,10 +529,10 @@ export function CalendarPage({ events, todayStr }: Props) {
                         </div>
                         <div className="mt-4 flex items-center gap-4 border-t border-border pt-3">
                             <span className="flex items-center gap-1.5 font-mono text-[10px] text-muted">
-                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" /> Aniversário
+                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" /> {t('aniversario')}
                             </span>
                             <span className="flex items-center gap-1.5 font-mono text-[10px] text-muted">
-                                <span className="h-1.5 w-1.5 shrink-0 rounded-full border border-foreground/70" /> Debut
+                                <span className="h-1.5 w-1.5 shrink-0 rounded-full border border-foreground/70" /> {t('debut')}
                             </span>
                         </div>
                     </div>

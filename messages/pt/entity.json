@@ -7,7 +7,8 @@
     "blog": "Artigos",
     "guides": "Guias",
     "foods": "Gastronomia",
-    "quiz": "Quiz"
+    "quiz": "Quiz",
+    "calendar": "Calendário"
   },
   "artist": {
     "metaTitle": "{name} — Perfil, carreira e curiosidades",

@@ -12,7 +12,7 @@ import type { FooterColumn, SiteLink } from '@/lib/wordpress/site-settings'
  * `routes.ts`), com rótulo traduzido. Rota que em outro idioma só mostra o texto em português
  * (calendário, cultura 101, fandoms) fica de fora até ter tradução.
  */
-export type NavLabels = { home: string; productions: string; artists: string; groups: string; blog: string; guides: string; foods: string; quiz: string }
+export type NavLabels = { home: string; productions: string; artists: string; groups: string; blog: string; guides: string; foods: string; quiz: string; calendar: string }
 
 export function localizedNavigation(locale: Locale, labels: NavLabels): SiteLink[] {
     if (locale === DEFAULT_LOCALE) return []
@@ -25,6 +25,7 @@ export function localizedNavigation(locale: Locale, labels: NavLabels): SiteLink
         { label: labels.guides, href: href('guides', undefined, locale) },
         { label: labels.foods, href: href('foods', undefined, locale) },
         { label: labels.quiz, href: href('quiz', undefined, locale) },
+        { label: labels.calendar, href: href('calendar', undefined, locale) },
     ]
 }
 
@@ -45,6 +46,7 @@ export function localizedFooterColumns(locale: Locale, footer: FooterLabelsI18n,
             { label: labels.guides, href: href('guides', undefined, locale) },
             { label: labels.foods, href: href('foods', undefined, locale) },
             { label: labels.quiz, href: href('quiz', undefined, locale) },
+            { label: labels.calendar, href: href('calendar', undefined, locale) },
         ] },
         { heading: footer.about, links: [
             { label: footer.aboutUs, href: href('about', undefined, locale) },

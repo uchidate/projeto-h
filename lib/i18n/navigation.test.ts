@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { localizedNavigation, localizedFooterColumns } from './navigation'
 
-const labels = { home: 'Home', productions: 'Productions', artists: 'Artists', groups: 'Groups', blog: 'Articles', guides: 'Guides', foods: 'Food', quiz: 'Quiz' }
+const labels = { home: 'Home', productions: 'Productions', artists: 'Artists', groups: 'Groups', blog: 'Articles', guides: 'Guides', foods: 'Food', quiz: 'Quiz', calendar: 'Calendar' }
 
 const footer = { catalog: 'Catalog', explore: 'Explore', about: 'About', agencies: 'Agencies', aboutUs: 'About HallyuHub', contact: 'Contact' }
 
@@ -17,6 +17,7 @@ describe('navegação por idioma', () => {
             { label: 'Guides', href: '/en/guides' },
             { label: 'Food', href: '/en/foods' },
             { label: 'Quiz', href: '/en/quiz' },
+            { label: 'Calendar', href: '/en/calendar' },
         ])
     })
 
@@ -30,7 +31,7 @@ describe('navegação por idioma', () => {
         expect(colunas.map(c => c.heading)).toEqual(['Catalog', 'Explore', 'About'])
         expect(colunas.flatMap(c => c.links.map(l => l.href))).toEqual([
             '/en/productions', '/en/artists', '/en/groups', '/en/agencies',
-            '/en/blog', '/en/guides', '/en/foods', '/en/quiz', '/en/about', '/en/contact',
+            '/en/blog', '/en/guides', '/en/foods', '/en/quiz', '/en/calendar', '/en/about', '/en/contact',
         ])
     })
 })
