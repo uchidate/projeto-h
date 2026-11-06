@@ -5,6 +5,9 @@ import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { useLocale, useTranslations } from 'next-intl'
+import { href } from '@/lib/i18n/routes'
+import type { Locale } from '@/lib/i18n/config'
 import { getUserContentStates, setContentState } from '@/lib/wordpress/userApi'
 import { estaPendente, alternarPendente, lerPendentes } from '@/lib/estadoPendente'
 import { contorno, tinta } from '@/lib/fandoms/cor'
@@ -101,19 +104,21 @@ function useTorcidasEscolhidas() {
 
 /** Selo "aniversário perto" nos cartões da grade — só quando há uma estreia comemorada nos próximos 14 dias. */
 function SeloData({ dias }: { dias: number | null }) {
+    const t = useTranslations('client.fandoms')
     if (dias == null) return null
-    const texto = dias === 0 ? 'hoje 🎂' : dias === 1 ? 'amanhã 🎂' : `em ${dias}d 🎂`
+    const texto = dias === 0 ? t('dateToday') : dias === 1 ? t('dateTomorrow') : t('dateInDays', { days: dias })
     return <span className="mt-1 block text-[11px] font-black">{texto}</span>
 }
 
 function BotaoSou({ grupoId, marcada, onAlternar, cor }: { grupoId: number | null; marcada: boolean; onAlternar: (grupoId: number) => void; cor: string }) {
+    const t = useTranslations('client.fandoms')
     if (grupoId == null) return null
     return (
         <button type="button" aria-pressed={marcada} onClick={e => { e.preventDefault(); e.stopPropagation(); onAlternar(grupoId) }}
             className="touch-target px-2.5 py-1.5 text-[11px] font-black"
             style={{ background: marcada ? '#15102b' : 'rgba(255,255,255,0.75)', color: marcada ? '#fff' : '#15102b' }}
-            title={marcada ? 'Tirar das minhas torcidas' : 'Sou dessa torcida'}>
-            {marcada ? '✓ Sou dessa' : '＋ Sou dessa'}
+            title={marcada ? t('removeTitle') : t('imOn')}>
+            {marcada ? t('imOnDone') : t('imOnShort')}
             <span className="sr-only"> {cor}</span>
         </button>
     )
@@ -121,6 +126,7 @@ function BotaoSou({ grupoId, marcada, onAlternar, cor }: { grupoId: number | nul
 
 /** Botão "Sou dessa torcida" da página de cada fandom: é o mesmo "seguir grupo" da conta. */
 export function BotaoTorcida({ grupoId, ink, cor }: { grupoId: number | null; ink: string; cor: string }) {
+    const t = useTranslations('client.fandoms')
     const { data: session, status } = useSession()
     const [marcada, setMarcada] = useState(false)
     const [pronto, setPronto] = useState(false)
@@ -156,7 +162,7 @@ export function BotaoTorcida({ grupoId, ink, cor }: { grupoId: number | null; in
         <button type="button" aria-pressed={marcada} onClick={alternar} disabled={!pronto}
             className="touch-target inline-flex items-center px-5 py-3 text-[14px] font-black disabled:opacity-60"
             style={marcada ? { background: '#ffe14d', color: '#15102b' } : { background: ink, color: cor }}>
-            {marcada ? '✓ Sua torcida' : '＋ Sou dessa torcida'}
+            {marcada ? t('yourFanClubBtn') : t('imOnBtn')}
         </button>
     )
 }
@@ -166,11 +172,13 @@ interface DataProxima { tipo: 'estreia' | 'aniversario'; quem: string; dia: stri
 
 /** Últimos artigos e próximas datas da torcida. Cada bloco some sozinho se não houver dado ou se a consulta falhar. */
 function Novidades({ torcidaSlug, ink }: { torcidaSlug: string; ink: string }) {
+    const t = useTranslations('client.fandoms')
+    const locale = useLocale() as Locale
     const [artigos, setArtigos] = useState<Artigo[]>([])
     const [datas, setDatas] = useState<DataProxima[]>([])
     useEffect(() => {
         let vivo = true
-        fetch(`/api/fandoms/novidades?torcida=${encodeURIComponent(torcidaSlug)}`)
+        fetch(`/api/fandoms/novidades?torcida=${encodeURIComponent(torcidaSlug)}&lang=${locale}`)
             .then(r => (r.ok ? r.json() : { artigos: [], datas: [] }))
             .then(d => {
                 if (!vivo) return
@@ -179,19 +187,24 @@ function Novidades({ torcidaSlug, ink }: { torcidaSlug: string; ink: string }) {
             })
             .catch(() => {})
         return () => { vivo = false }
-    }, [torcidaSlug])
+    }, [torcidaSlug, locale])
     if (artigos.length === 0 && datas.length === 0) return null
-    const quando = (d: DataProxima) => (d.dias === 0 ? 'hoje' : d.dias === 1 ? 'amanhã' : `em ${d.dias} dias`)
+    const quando = (d: DataProxima) => (d.dias === 0 ? t('whenToday') : d.dias === 1 ? t('whenTomorrow') : t('whenInDays', { days: d.dias }))
+    // O servidor manda o dia como dd/mm; fora do português isso leria-se mm/dd, então vira "5 Jul".
+    const diaLegivel = (dia: string) => {
+        const m = /^(\d{2})\/(\d{2})$/.exec(dia)
+        return m && locale !== 'pt' ? new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(Date.UTC(2000, Number(m[2]) - 1, Number(m[1]))) : dia
+    }
     return (
         <div className="space-y-4">
             {datas.length > 0 && (
                 <div className="border-t-2 pt-4" style={{ borderColor: `${ink}55` }}>
-                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">Próximas datas 🎂</p>
+                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">{t('nextDates')}</p>
                     <ul className="mt-2 space-y-1.5">
                         {datas.map(d => (
                             <li key={`${d.tipo}-${d.quem}`} className="text-[15px] font-bold leading-snug">
-                                {d.tipo === 'estreia' ? `${d.quem} completa ${d.anos} ${d.anos === 1 ? 'ano' : 'anos'} de estreia` : `${d.quem} faz ${d.anos} anos`}
-                                <span className="font-medium opacity-80"> · {d.dia}, {quando(d)}</span>
+                                {d.tipo === 'estreia' ? t('debutAnniv', { who: d.quem, years: d.anos }) : t('birthday', { who: d.quem, years: d.anos })}
+                                <span className="font-medium opacity-80"> · {diaLegivel(d.dia)}, {quando(d)}</span>
                             </li>
                         ))}
                     </ul>
@@ -199,7 +212,7 @@ function Novidades({ torcidaSlug, ink }: { torcidaSlug: string; ink: string }) {
             )}
             {artigos.length > 0 && (
                 <div className="border-t-2 pt-4" style={{ borderColor: `${ink}55` }}>
-                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">Novidades</p>
+                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">{t('news')}</p>
                     <ul className="mt-2 space-y-2">
                         {artigos.map(a => (
                             <li key={a.slug}>
@@ -215,6 +228,8 @@ function Novidades({ torcidaSlug, ink }: { torcidaSlug: string; ink: string }) {
 
 /** Espaço do fã: escolher a(s) torcida(s), um painel só delas e o catálogo completo em cartões coloridos. */
 export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca?: string }) {
+    const t = useTranslations('client.fandoms')
+    const locale = useLocale() as Locale
     const { data: session } = useSession()
     const { idsEscolhidos, alternar } = useTorcidasEscolhidas()
     const escolhidas = useMemo(() => cartoes.filter(c => c.grupoId != null && idsEscolhidos.includes(c.grupoId)).map(c => c.slug), [cartoes, idsEscolhidos])
@@ -228,9 +243,9 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
             {minhas.length > 0 && (
                 <section aria-labelledby="minhas-titulo" className="mb-12">
                     <div className="flex flex-wrap items-baseline justify-between gap-3">
-                        <h2 id="minhas-titulo" className="font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">Sua torcida 💜</h2>
+                        <h2 id="minhas-titulo" className="font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">{t('yours')}</h2>
                         {session?.user && (
-                            <Link href="/perfil" className="text-[13px] font-black underline underline-offset-2">Ver no seu perfil →</Link>
+                            <Link href="/perfil" className="text-[13px] font-black underline underline-offset-2">{t('seeProfile')}</Link>
                         )}
                     </div>
                     <div className="mt-5 grid gap-5 md:grid-cols-2">
@@ -238,13 +253,13 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                             const ink = tinta(c.cor)
                             return (
                                 <div key={c.slug} className={`relative flex flex-col gap-4 overflow-hidden p-6 sm:p-8 ${SOMBRA_G} ${contorno(c.cor)}`} style={{ background: c.cor, color: ink }}>
-                                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">Sua torcida · {c.grupos[0]}</p>
+                                    <p className="text-[12px] font-black uppercase tracking-[0.1em]">{t('yoursEyebrow', { group: c.grupos[0] })}</p>
                                     <p className="font-[family-name:var(--font-playfair)] text-[56px] font-extrabold leading-[0.95] sm:text-[80px]">{c.nome}</p>
                                     <div className="flex flex-wrap gap-3">
-                                        <Link href={`/fandoms/${c.slug}`} className="touch-target inline-flex items-center px-5 py-3 text-[14px] font-black" style={{ background: ink, color: c.cor }}>Ver a torcida →</Link>
-                                        <Link href="/quiz" className="touch-target inline-flex items-center bg-[#ffe14d] px-5 py-3 text-[14px] font-black text-[#15102b]">Fazer o quiz 🎯</Link>
+                                        <Link href={`/fandoms/${c.slug}`} className="touch-target inline-flex items-center px-5 py-3 text-[14px] font-black" style={{ background: ink, color: c.cor }}>{t('seeFanClub')}</Link>
+                                        <Link href="/quiz" className="touch-target inline-flex items-center bg-[#ffe14d] px-5 py-3 text-[14px] font-black text-[#15102b]">{t('doQuiz')}</Link>
                                         {c.grupoId != null && (
-                                            <button type="button" onClick={() => alternar(c.grupoId!)} className="touch-target px-2 py-3 text-[13px] font-bold underline">Tirar</button>
+                                            <button type="button" onClick={() => alternar(c.grupoId!)} className="touch-target px-2 py-3 text-[13px] font-bold underline">{t('remove')}</button>
                                         )}
                                     </div>
                                     <Novidades torcidaSlug={c.slug} ink={ink} />
@@ -254,7 +269,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                     </div>
                     {!session?.user && (
                         <p className="mt-3 text-[12px] text-muted">
-                            <Link href={`/entrar?callbackUrl=${encodeURIComponent('/fandoms')}`} className="font-bold underline">Entre na sua conta</Link> pra sua torcida acompanhar você em qualquer aparelho.
+                            <Link href={`/entrar?callbackUrl=${encodeURIComponent(href('fandoms', undefined, locale))}`} className="font-bold underline">{t('loginLink')}</Link>{t('loginPost')}
                         </p>
                     )}
                 </section>
@@ -262,7 +277,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
 
             {minhas.length === 0 && destaques.length > 0 && !busca && (
                 <section aria-labelledby="comece-titulo" className="mb-12">
-                    <h2 id="comece-titulo" className="font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">Comece por aqui 🔥</h2>
+                    <h2 id="comece-titulo" className="font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">{t('startHere')}</h2>
                     <div className="mt-5 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
                         {destaques.map(c => {
                             const ink = tinta(c.cor)
@@ -270,7 +285,7 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
                                 <div key={c.slug} className={`group relative flex h-[190px] flex-col justify-between overflow-hidden p-4 transition-transform hover:-translate-y-1 sm:h-[220px] sm:p-5 ${SOMBRA_G} ${contorno(c.cor)}`} style={{ background: c.cor, color: ink }}>
                                     <span className="relative z-10 flex items-start justify-between gap-2">
                                         <span className="relative block h-14 w-14 overflow-hidden bg-[#15102b]">
-                                            {c.foto && <Image src={c.foto} alt={`Foto de ${c.grupos[0]}, grupo da torcida ${c.nome}`} fill sizes="56px" className="object-cover object-top" />}
+                                            {c.foto && <Image src={c.foto} alt={t('photoAlt', { group: c.grupos[0], fandom: c.nome })} fill sizes="56px" className="object-cover object-top" />}
                                         </span>
                                         <BotaoSou grupoId={c.grupoId} marcada={c.grupoId != null && idsEscolhidos.includes(c.grupoId)} onAlternar={alternar} cor={c.nome} />
                                     </span>
@@ -287,20 +302,20 @@ export function EspacoDoFa({ cartoes, busca }: { cartoes: CartaoTorcida[]; busca
             )}
 
             <section aria-labelledby="todas-titulo">
-                <h2 id="todas-titulo" className="font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">{minhas.length > 0 ? 'Descubra outras torcidas' : 'Todas as torcidas'}</h2>
+                <h2 id="todas-titulo" className="font-[family-name:var(--font-playfair)] text-[28px] font-extrabold sm:text-[34px]">{minhas.length > 0 ? t('discover') : t('all')}</h2>
                 <div className="mt-5 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {resto.map(c => {
                         const ink = tinta(c.cor)
-                        const legenda = c.grupos.length > 2 ? `${c.grupos.length} grupos` : c.grupos.join(' · ')
+                        const legenda = c.grupos.length > 2 ? t('groupsCount', { count: c.grupos.length }) : c.grupos.join(' · ')
                         return (
                             <div key={c.slug} className={`group relative flex min-h-[96px] items-center gap-3 p-3.5 transition-transform hover:-translate-y-0.5 ${SOMBRA} ${contorno(c.cor)}`} style={{ background: c.cor, color: ink }}>
                                 <span className="relative h-[52px] w-[52px] shrink-0 overflow-hidden bg-[#15102b]">
-                                    {c.foto && <Image src={c.foto} alt={`Foto de ${c.grupos[0]}, grupo da torcida ${c.nome}`} fill sizes="52px" className={`object-cover object-top ${c.encerrado ? 'grayscale' : ''}`} />}
+                                    {c.foto && <Image src={c.foto} alt={t('photoAlt', { group: c.grupos[0], fandom: c.nome })} fill sizes="52px" className={`object-cover object-top ${c.encerrado ? 'grayscale' : ''}`} />}
                                 </span>
                                 <span className="min-w-0 flex-1">
                                     <Link href={`/fandoms/${c.slug}`} className="block truncate text-[19px] font-black leading-tight after:absolute after:inset-0 after:content-['']">{c.nome}</Link>
                                     <span className="block truncate text-[12px] font-bold opacity-85">{legenda}{c.ano ? ` · ${c.ano}` : ''}</span>
-                                    {c.encerrado && <span className="block text-[10px] font-black uppercase tracking-widest opacity-75">encerrado</span>}
+                                    {c.encerrado && <span className="block text-[10px] font-black uppercase tracking-widest opacity-75">{t('ended')}</span>}
                                     <SeloData dias={c.diasProximaData} />
                                 </span>
                                 <span className="relative z-10"><BotaoSou grupoId={c.grupoId} marcada={c.grupoId != null && idsEscolhidos.includes(c.grupoId)} onAlternar={alternar} cor={c.nome} /></span>
