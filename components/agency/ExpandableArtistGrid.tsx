@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import type { WPArtist } from '@/lib/wordpress/types'

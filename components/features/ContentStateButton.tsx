@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 /* eslint-disable react-hooks/set-state-in-effect -- remote state hydrates after the session resolves */
 
 import { useEffect, useState, useTransition } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { BellPlus, BookmarkPlus, CheckCircle2, Heart, LogIn } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { getContentState, setContentState, type ContentObjectType, type ContentState } from '@/lib/wordpress/userApi'

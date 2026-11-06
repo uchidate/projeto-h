@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 import { useState, useEffect, useTransition } from 'react'
 import { useSession } from 'next-auth/react'
 import { Bookmark, CheckCircle2, Eye, Heart, ListChecks, LogIn, PlayCircle } from 'lucide-react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useLocalList } from '@/lib/hooks/useLocalList'
 import {
     getProductionStatus,

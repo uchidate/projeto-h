@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { PrateleiraRotativa } from '@/components/ui/PrateleiraRotativa'
 

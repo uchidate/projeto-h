@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import { Search, Film, Mic2, BookOpen, Users, X, Building2, UtensilsCrossed, ShoppingBag } from 'lucide-react'

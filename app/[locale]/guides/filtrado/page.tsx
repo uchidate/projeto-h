@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
-import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
+import { EmFallback } from '@/components/i18n/EmFallback'
 import { GuiasIndice, buildGuiasMetadata } from '@/components/guias/GuiasIndice'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
@@ -23,11 +23,9 @@ export default async function Page({ params, searchParams }: { params: Params; s
     entrarNaPagina(locale, { servePt: true })
     const { kind } = await searchParams
     if (!kind) redirect(href('guides', undefined, locale))
-    if (locale === DEFAULT_LOCALE) return <GuiasIndice kind={kind} />
     return (
-        <>
-            <AvisoSemTraducao locale={locale} hrefOriginal={href('guides', undefined, DEFAULT_LOCALE)} />
+        <EmFallback locale={locale} hrefOriginal={href('guides', undefined, DEFAULT_LOCALE)}>
             <GuiasIndice kind={kind} />
-        </>
+        </EmFallback>
     )
 }

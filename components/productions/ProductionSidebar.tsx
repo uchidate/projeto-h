@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ExternalLink, Tv, Film, Star, ShieldCheck } from 'lucide-react'
 import type { WPTerm, WPArtist } from '@/lib/wordpress/types'
 import { ProfileSidebarAd } from '@/components/profiles/ProfileSidebarAd'

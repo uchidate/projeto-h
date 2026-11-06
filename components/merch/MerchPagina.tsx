@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { BlogGuiaCard } from '@/components/blog/BlogGuiaCard'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'

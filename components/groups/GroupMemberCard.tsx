@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { intlLocale } from '@/lib/i18n/format'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { MemberSummary } from '@/lib/artists/memberSummary'
 import { formatDate, getAge, getWPImage, parseAcfDate, stripHtml } from '@/lib/utils'
 import { getZodiac } from '@/lib/artists/zodiac'

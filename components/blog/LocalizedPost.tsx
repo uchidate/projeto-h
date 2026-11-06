@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import type { WPPost } from '@/lib/wordpress/types'

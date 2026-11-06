@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 
 import { useMemo, useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { CalendarDays, ExternalLink, LayoutGrid, List, Music, Play } from 'lucide-react'
 import { BlockHeader } from '@/components/blocks/BlockHeader'
 

@@ -2,7 +2,7 @@
 import { SITE_NAME } from '@/lib/constants/site'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ExternalLink, Star } from 'lucide-react'
 import { calcularDesconto, ehMenorPrecoEmDias, ehNovo, quedaDePreco, type StoreProduct } from '@/lib/wordpress/store'
 import { stripHtml } from '@/lib/utils'

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useLocale, useTranslations } from 'next-intl'
 import { href } from '@/lib/i18n/routes'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'

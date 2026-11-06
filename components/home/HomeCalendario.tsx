@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import type { AniversariosHome } from '@/lib/home/aniversarios'

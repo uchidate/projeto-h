@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useSyncExternalStore } from 'react'
 import { getBannerState, getServerBannerState, subscribeBanner } from '@/lib/consent'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useTranslations } from 'next-intl'
 import { Trophy, ChevronRight, CheckCircle2, XCircle, BookOpen } from 'lucide-react'
 import type { QuizQuestion, QuizDifficulty } from '@/lib/wordpress/quiz'

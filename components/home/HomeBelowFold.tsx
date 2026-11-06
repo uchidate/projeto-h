@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Cake } from 'lucide-react'
 import { getGroups, getGroupsByIds } from '@/lib/wordpress/groups'
 import { getArtists } from '@/lib/wordpress/artists'

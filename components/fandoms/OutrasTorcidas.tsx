@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { contorno, tinta } from '@/lib/fandoms/cor'
 
 export interface TorcidaVizinha { slug: string; nome: string; cor: string; grupo: string }

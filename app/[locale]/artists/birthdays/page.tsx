@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
-import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
+import { EmFallback } from '@/components/i18n/EmFallback'
 import BirthdaysPage, { generateMetadata as metadataEmPortugues } from '@/components/birthdays/BirthdaysIndex'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
@@ -22,11 +22,9 @@ export async function generateMetadata({ params, searchParams }: { params: Param
 export default async function Page({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
     const { locale } = await params
     entrarNaPagina(locale, { servePt: true })
-    if (locale === DEFAULT_LOCALE) return <BirthdaysPage searchParams={searchParams} />
     return (
-        <>
-            <AvisoSemTraducao locale={locale} hrefOriginal={href('birthdays', undefined, DEFAULT_LOCALE)} />
+        <EmFallback locale={locale} hrefOriginal={href('birthdays', undefined, DEFAULT_LOCALE)}>
             <BirthdaysPage searchParams={searchParams} />
-        </>
+        </EmFallback>
     )
 }

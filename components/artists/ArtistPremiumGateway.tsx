@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { WPGroup, WPPost, WPProduction } from '@/lib/wordpress/types'
 import type { ArtistProfileModel } from '@/lib/profiles/artistProfile'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'

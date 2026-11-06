@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { postLink } from '@/components/home/postLink'
 import { href as rota } from '@/lib/i18n/routes'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'

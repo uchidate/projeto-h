@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Trophy, CheckCircle2, XCircle, ArrowRight, RotateCcw, ChevronRight } from 'lucide-react'
 import type { QuizQuestion, QuizCategory } from '@/lib/wordpress/quiz'
 

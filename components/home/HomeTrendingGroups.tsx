@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { href as rota } from '@/lib/i18n/routes'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { WPGroup } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'

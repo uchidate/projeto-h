@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Check, X, ArrowRight, Trophy, Star, Sparkles, BookOpen } from 'lucide-react'
 import { quizCategoryTone, type QuizCategoryTone } from '@/lib/quiz/categoryMeta'
 

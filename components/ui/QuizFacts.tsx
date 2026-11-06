@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Trophy, ArrowRight, Lightbulb } from 'lucide-react'
 import { MiniQuiz } from './MiniQuiz'
 import { getQuizQuestions } from '@/lib/wordpress/quiz'

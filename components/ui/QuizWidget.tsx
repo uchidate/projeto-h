@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Trophy, ArrowRight, Sparkles } from 'lucide-react'
 import type { QuizCategory } from '@/lib/wordpress/quiz'
 import { quizCategoryTone } from '@/lib/quiz/categoryMeta'

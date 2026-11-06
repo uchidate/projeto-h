@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
-import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
+import { EmFallback } from '@/components/i18n/EmFallback'
 import Fandoms, { generateMetadata as metadataEmPortugues } from '@/components/fandoms/FandomsIndex'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
@@ -22,11 +22,9 @@ export async function generateMetadata({ params, searchParams }: { params: Param
 export default async function Page({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
     const { locale } = await params
     entrarNaPagina(locale, { servePt: true })
-    if (locale === DEFAULT_LOCALE) return <Fandoms searchParams={searchParams} />
     return (
-        <>
-            <AvisoSemTraducao locale={locale} hrefOriginal={href('fandoms', undefined, DEFAULT_LOCALE)} />
+        <EmFallback locale={locale} hrefOriginal={href('fandoms', undefined, DEFAULT_LOCALE)}>
             <Fandoms searchParams={searchParams} />
-        </>
+        </EmFallback>
     )
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Users } from 'lucide-react'
 import { getGroups } from '@/lib/wordpress/groups'
 import type { GroupsQuery } from '@/lib/wordpress/groups'

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { getFoods, KOREA_REGIONS, type KoreaRegion } from '@/lib/wordpress/foods'
 
 type Props = { activeRegion?: string }

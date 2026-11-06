@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { BookmarkCheck, CheckCircle2, Compass, Film, Heart, ListChecks, PlayCircle } from 'lucide-react'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { ProductionCard } from '@/components/productions/ProductionCard'

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useTransition } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Bell, Check, X } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { getUserNotifications, markAllUserNotificationsRead, updateUserNotification, type UserNotification } from '@/lib/wordpress/userApi'

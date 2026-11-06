@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { comoFallback } from '@/lib/i18n/fallback-ficha'
-import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
+import { EmFallback } from '@/components/i18n/EmFallback'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 import Pagina, { metadata as metadataEmPortugues } from '@/components/conta/MinhasListasPagina'
 
@@ -23,11 +23,9 @@ export async function generateMetadata({ params }: Pick<Props, 'params'>): Promi
 export default async function Page({ params, searchParams }: Props) {
     const { locale } = await params
     entrarNaPagina(locale, { servePt: true })
-    if (locale === DEFAULT_LOCALE) return <Pagina locale={locale} searchParams={searchParams} />
     return (
-        <>
-            <AvisoSemTraducao locale={locale} hrefOriginal={href('myLists', undefined, DEFAULT_LOCALE)} />
+        <EmFallback locale={locale} hrefOriginal={href('myLists', undefined, DEFAULT_LOCALE)}>
             <Pagina locale={locale} searchParams={searchParams} />
-        </>
+        </EmFallback>
     )
 }

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { BookOpen, Sparkles, ArrowRight } from 'lucide-react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import type { ArchiveHub } from '@/lib/guias'

@@ -21,7 +21,7 @@ vi.mock('next-intl/server', async () => {
 vi.mock('next-intl', async (importOriginal) => {
     const actual = await importOriginal<typeof import('next-intl')>()
     const { PT_MESSAGES } = await import('@/lib/i18n/messages')
-    return { ...actual, useTranslations: (namespace: string) => actual.createTranslator({ locale: 'pt', messages: PT_MESSAGES, namespace: namespace as 'entity' }) }
+    return { ...actual, useLocale: () => 'pt', useTranslations: (namespace: string) => actual.createTranslator({ locale: 'pt', messages: PT_MESSAGES, namespace: namespace as 'entity' }) }
 })
 
 // QuizFacts é async (Server Component) — o render síncrono do RTL não suporta

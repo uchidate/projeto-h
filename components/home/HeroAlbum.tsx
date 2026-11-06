@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { postLink } from '@/components/home/postLink'
 import type { Locale } from '@/lib/i18n/config'
 import type { CapaAlbum } from '@/lib/home/capa-album'

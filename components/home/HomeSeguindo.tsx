@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/set-state-in-effect -- o bloco só existe depois que a sessão resolve e a API responde (a home é estática) */
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'

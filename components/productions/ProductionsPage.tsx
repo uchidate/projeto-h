@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Fragment } from 'react'
 import Image from 'next/image'
 import { Film } from 'lucide-react'

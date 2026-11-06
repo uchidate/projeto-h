@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { WPProduction } from '@/lib/wordpress/types'
 import { stripHtml, getWPImage } from '@/lib/utils'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'

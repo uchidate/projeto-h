@@ -1,5 +1,5 @@
 import React from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { BlockHeader } from '@/components/blocks/BlockHeader'
 
 interface Props {

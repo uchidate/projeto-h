@@ -516,5 +516,15 @@
     "metaTitulo": "Calendário K-Pop",
     "metaDescricao": "Aniversários de idols e datas de debut de grupos K-Pop. Fique por dentro dos próximos eventos.",
     "metaDescricaoCurta": "Aniversários de idols e datas de debut de grupos K-Pop."
+  },
+  "notFound": {
+    "erro": "Erro 404",
+    "titulo": "Página não encontrada",
+    "texto": "O link pode estar desatualizado ou o conteúdo mudou de endereço. Continue por aqui:",
+    "inicio": "Página inicial →",
+    "noticias": "Últimas notícias",
+    "producoes": "Doramas e filmes",
+    "artistas": "Artistas",
+    "metaTitulo": "Página não encontrada"
   }
 }

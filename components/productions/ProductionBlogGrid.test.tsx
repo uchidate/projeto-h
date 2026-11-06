@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
-vi.mock('next-intl', () => ({ useTranslations: () => (chave: string) => chave }))
+vi.mock('next-intl', () => ({ useLocale: () => 'pt', useTranslations: () => (chave: string) => chave }))
 
 import { ProductionBlogGrid } from './ProductionBlogGrid'
 import type { WPPost } from '@/lib/wordpress/types'

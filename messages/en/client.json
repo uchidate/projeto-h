@@ -516,5 +516,15 @@
     "metaTitulo": "K-Pop Calendar",
     "metaDescricao": "Idol birthdays and debut dates of K-pop groups. See what is coming up.",
     "metaDescricaoCurta": "Idol birthdays and debut dates of K-pop groups."
+  },
+  "notFound": {
+    "erro": "Error 404",
+    "titulo": "Page not found",
+    "texto": "The link may be outdated or the content may have moved. Keep going from here:",
+    "inicio": "Home page →",
+    "noticias": "Latest news",
+    "producoes": "K-dramas and films",
+    "artistas": "Artists",
+    "metaTitulo": "Page not found"
   }
 }

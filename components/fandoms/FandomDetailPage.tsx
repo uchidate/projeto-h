@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { SITE_NAME } from '@/lib/constants/site'
 import { BotaoTorcida } from '@/components/fandoms/EspacoDoFa'
 import { contorno, tinta } from '@/lib/fandoms/cor'

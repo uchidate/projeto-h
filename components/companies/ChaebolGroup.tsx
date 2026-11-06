@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { getCompaniesByChaebolGroup, getAllCompaniesRaw, rotuloDoSetor, emojiDoSetor } from '@/lib/wordpress/companies'
 import { getVitrineVinculada } from '@/lib/wordpress/vitrine'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
