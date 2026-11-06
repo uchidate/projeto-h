@@ -8,7 +8,9 @@
     "guides": "Guias",
     "foods": "Gastronomia",
     "quiz": "Quiz",
-    "calendar": "Calendário"
+    "calendar": "Calendário",
+    "culture": "Cultura",
+    "fandoms": "Fandoms"
   },
   "artist": {
     "metaTitle": "{name} — Perfil, carreira e curiosidades",

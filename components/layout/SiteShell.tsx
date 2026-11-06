@@ -78,6 +78,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         foods: messages.entity.breadcrumb.foods,
         quiz: messages.entity.breadcrumb.quiz,
         calendar: messages.entity.breadcrumb.calendar,
+        culture: messages.entity.breadcrumb.culture,
+        fandoms: messages.entity.breadcrumb.fandoms,
     }
     const navigation = locale === DEFAULT_LOCALE ? siteSettings.navigation : localizedNavigation(locale, navLabels)
     // Assinatura, subtítulos do logo e rodapé legal vinham do WordPress, sempre
