@@ -1,7 +1,10 @@
 import Link from '@/components/i18n/LocalizedLink'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import { getFoods, KOREA_REGIONS, type KoreaRegion } from '@/lib/wordpress/foods'
 
-type Props = { activeRegion?: string }
+type Props = { activeRegion?: string; locale?: Locale }
 
 // Contorno real das 16 divisões de primeiro nível da Coreia do Sul (Sejong,
 // a mais nova, é pequena demais para um polígono legível nesta escala — vira
@@ -30,13 +33,6 @@ const REGION_POLYGONS: Record<Exclude<KoreaRegion, 'Sejong'>, string> = {
 // Sejong é pequeno demais para virar polígono legível nesta escala — ponto perto de Daejeon
 const SEJONG_POINT = { x: 216, y: 460 }
 
-const LABELS: Record<KoreaRegion, string> = {
-    Seoul: 'Seul', Busan: 'Busan', Daegu: 'Daegu', Incheon: 'Incheon',
-    Gwangju: 'Gwangju', Daejeon: 'Daejeon', Ulsan: 'Ulsan', Sejong: 'Sejong',
-    Gyeonggi: 'Gyeonggi', Gangwon: 'Gangwon', Chungbuk: 'Chungbuk', Chungnam: 'Chungnam',
-    Jeonbuk: 'Jeonbuk', Jeonnam: 'Jeonnam', Gyeongbuk: 'Gyeongbuk', Gyeongnam: 'Gyeongnam',
-    Jeju: 'Jeju',
-}
 
 // Posição do texto do nome — nudged a partir do centroide real do polígono
 // para não colidir no aglomerado Seul/Incheon/Gyeonggi/Sejong/Daejeon.
@@ -60,10 +56,13 @@ const LABEL_POS: Record<KoreaRegion, { x: number; y: number; anchor?: 'start' | 
     Jeju:      { x: 75,  y: 1114 },
 }
 
-export async function KoreaRegionMap({ activeRegion }: Props) {
+export async function KoreaRegionMap({ activeRegion, locale = DEFAULT_LOCALE }: Props) {
+    const t = await getTranslations({ locale, namespace: 'entity.foodsList' })
+    const LABELS = Object.fromEntries(KOREA_REGIONS.map(r => [r, t(`regions.${r}`)])) as Record<KoreaRegion, string>
+    const lista = href('foods', undefined, locale)
     const counts = await Promise.all(
         KOREA_REGIONS.map(async region => {
-            const { total } = await getFoods({ region, perPage: 1 })
+            const { total } = await getFoods({ region, perPage: 1, locale: locale === DEFAULT_LOCALE ? undefined : locale })
             return [region, total] as const
         }),
     )
@@ -74,8 +73,8 @@ export async function KoreaRegionMap({ activeRegion }: Props) {
         <details open={isFiltering} className="group rounded-2xl border border-border bg-surface/30 open:pb-5 sm:open:pb-8">
             <summary className="flex items-center justify-between gap-3 cursor-pointer list-none p-5 sm:p-8 sm:pb-5">
                 <div>
-                    <h2 className="text-[15px] font-black tracking-tight">🗺️ Explore por região</h2>
-                    <p className="text-[12px] text-muted mt-0.5">Clique para abrir o mapa da Coreia e ver os pratos por região.</p>
+                    <h2 className="text-[15px] font-black tracking-tight">{t('regionTitle')}</h2>
+                    <p className="text-[12px] text-muted mt-0.5">{t('regionHint')}</p>
                 </div>
                 <span className="font-mono text-[11px] text-muted shrink-0 transition-transform group-open:rotate-180">▾</span>
             </summary>
@@ -95,7 +94,7 @@ export async function KoreaRegionMap({ activeRegion }: Props) {
                                         : 'fill-surface stroke-border/60'}
                                     strokeWidth={2}
                                 >
-                                    <title>{`${LABELS[region]} — ${count} prato${count !== 1 ? 's' : ''}`}</title>
+                                    <title>{t('regionTip', { region: LABELS[region], count })}</title>
                                 </polygon>
                                 <text
                                     x={pos.x} y={pos.y}
@@ -107,7 +106,7 @@ export async function KoreaRegionMap({ activeRegion }: Props) {
                             </>
                         )
                         return hasFood ? (
-                            <Link key={region} href={`/comidas?region=${region}`} scroll={false} aria-label={`Pratos de ${LABELS[region]} (${count})`}>
+                            <Link key={region} href={`${lista}?region=${region}`} scroll={false} aria-label={t('regionAria', { region: LABELS[region], count })}>
                                 {shape}
                             </Link>
                         ) : (
@@ -127,19 +126,19 @@ export async function KoreaRegionMap({ activeRegion }: Props) {
                                         ? `fill-accent-a11y transition-opacity ${isActive ? 'opacity-90' : 'opacity-60 hover:opacity-90'}`
                                         : 'fill-border/60'}
                                 >
-                                    <title>{`Sejong — ${count} prato${count !== 1 ? 's' : ''}`}</title>
+                                    <title>{t('regionTip', { region: LABELS.Sejong, count })}</title>
                                 </circle>
                                 <text
                                     x={pos.x} y={pos.y}
                                     textAnchor={pos.anchor ?? 'middle'}
                                     className={`pointer-events-none font-bold text-[20px] ${hasFood ? 'fill-foreground' : 'fill-muted/50'}`}
                                 >
-                                    Sejong
+                                    {LABELS.Sejong}
                                 </text>
                             </>
                         )
                         return hasFood ? (
-                            <Link href="/comidas?region=Sejong" scroll={false} aria-label={`Pratos de Sejong (${count})`}>{dot}</Link>
+                            <Link href={`${lista}?region=Sejong`} scroll={false} aria-label={t('regionAria', { region: LABELS.Sejong, count })}>{dot}</Link>
                         ) : dot
                     })()}
                 </svg>
@@ -151,7 +150,7 @@ export async function KoreaRegionMap({ activeRegion }: Props) {
                         return hasFood ? (
                             <Link
                                 key={region}
-                                href={`/comidas?region=${region}`}
+                                href={`${lista}?region=${region}`}
                                 scroll={false}
                                 className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border font-mono text-[10px] transition-colors ${
                                     isActive
@@ -165,11 +164,11 @@ export async function KoreaRegionMap({ activeRegion }: Props) {
                     })}
                     {isFiltering && (
                         <Link
-                            href="/comidas"
+                            href={lista}
                             scroll={false}
                             className="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-border font-mono text-[10px] text-muted hover:text-foreground transition-colors"
                         >
-                            ✕ Limpar
+                            {t('regionClear')}
                         </Link>
                     )}
                 </div>

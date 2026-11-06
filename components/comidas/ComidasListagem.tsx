@@ -1,4 +1,9 @@
-import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
+import { getTranslations } from 'next-intl/server'
+import { defaultCatalogLanguages, buildCatalogMetadata } from '@/components/features/LocalizedCatalog'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
+import { localizarCaminho } from '@/lib/i18n/localizar-caminho'
+import { href } from '@/lib/i18n/routes'
 import type { Metadata } from 'next'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
@@ -36,42 +41,45 @@ function buildComidasPath(sp: ComidasParams) {
     return `/comidas${ps.toString() ? `?${ps}` : ''}`
 }
 
-function buildComidasUrl(sp: ComidasParams) {
-    return `${SITE_URL}${buildComidasPath(sp)}`
+function buildComidasUrl(sp: ComidasParams, locale: Locale = DEFAULT_LOCALE) {
+    return `${SITE_URL}${localizarCaminho(buildComidasPath(sp), locale)}`
 }
 
 const VALID_CATEGORIES = Object.keys(FOOD_CATEGORY_LABELS) as FoodCategory[]
 
-const CURATED_COLLECTIONS: Array<{ label: string; emoji: string; params: { occasion?: string; season?: string; vegetarian?: string; maxSpicy?: string } }> = [
-    { label: 'Pratos de inverno', emoji: '❄️', params: { season: 'winter' } },
-    { label: 'Comida de festival', emoji: '🎉', params: { occasion: 'celebration' } },
-    { label: 'Comfort food', emoji: '🤗', params: { occasion: 'comfort' } },
-    { label: 'Cura de ressaca', emoji: '🍶', params: { occasion: 'hangover' } },
-    { label: '100% vegetariano', emoji: '🥦', params: { vegetarian: 'true' } },
-    { label: 'Sem pimenta', emoji: '✅', params: { maxSpicy: '0' } },
+const CURATED_COLLECTIONS: Array<{ id: 'winter' | 'festival' | 'comfort' | 'hangover' | 'vegetarian' | 'noSpice'; emoji: string; params: { occasion?: string; season?: string; vegetarian?: string; maxSpicy?: string } }> = [
+    { id: 'winter', emoji: '❄️', params: { season: 'winter' } },
+    { id: 'festival', emoji: '🎉', params: { occasion: 'celebration' } },
+    { id: 'comfort', emoji: '🤗', params: { occasion: 'comfort' } },
+    { id: 'hangover', emoji: '🍶', params: { occasion: 'hangover' } },
+    { id: 'vegetarian', emoji: '🥦', params: { vegetarian: 'true' } },
+    { id: 'noSpice', emoji: '✅', params: { maxSpicy: '0' } },
 ]
 
-export async function metadataComidas({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
-    const sp = await searchParams
+export async function metadataComidas({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }): Promise<Metadata> {
+    const [sp, t] = await Promise.all([searchParams, getTranslations({ locale, namespace: 'entity.foodsList' })])
+    const emPt = locale === DEFAULT_LOCALE
     const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
-    const url = buildComidasUrl(sp)
+    const url = buildComidasUrl(sp, locale)
     const category = VALID_CATEGORIES.includes(sp.category as FoodCategory) ? (sp.category as FoodCategory) : undefined
     const vegetarian = sp.vegetarian === 'true' ? true : undefined
     const maxSpicy = sp.maxSpicy !== undefined ? parseInt(sp.maxSpicy, 10) : undefined
     const region = (KOREA_REGIONS as readonly string[]).includes(sp.region ?? '') ? sp.region : undefined
-    const { totalPages } = await getFoods({ page, perPage: 48, search: sp.search, category, vegetarian, occasion: sp.occasion, season: sp.season, maxSpicy, region, orderby: 'date', order: 'desc' })
+    const { totalPages } = await getFoods({ page, perPage: 48, search: sp.search, category, vegetarian, occasion: sp.occasion, season: sp.season, maxSpicy, region, orderby: 'date', order: 'desc', locale: emPt ? undefined : locale })
     const hasFacets = Boolean(sp.search || sp.category || sp.vegetarian || sp.occasion || sp.season || sp.maxSpicy || sp.region)
     const invalidPage = page > Math.max(1, totalPages)
-    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('foods') : undefined
+    const languages = page === 1 && !hasFacets
+        ? (emPt ? await defaultCatalogLanguages('foods') : (await buildCatalogMetadata('foods', locale)).alternates?.languages)
+        : undefined
 
     return {
-        title: 'Comidas Coreanas — Guia Completo',
-        description: 'Descubra a culinária coreana: bibimbap, tteokbokki, samgyeopsal e muito mais. Guia completo em português.',
+        title: t('metaTitle'),
+        description: t('metaDescription'),
         alternates: {
             canonical: url,
             ...(languages ? { languages } : {}),
-            ...(page > 1 ? { prev: buildComidasUrl({ ...sp, page: String(page - 1) }) } : {}),
-            ...(page < totalPages ? { next: buildComidasUrl({ ...sp, page: String(page + 1) }) } : {}),
+            ...(page > 1 ? { prev: buildComidasUrl({ ...sp, page: String(page - 1) }, locale) } : {}),
+            ...(page < totalPages ? { next: buildComidasUrl({ ...sp, page: String(page + 1) }, locale) } : {}),
         },
         ...(hasFacets || invalidPage ? { robots: { index: false, follow: true } } : {}),
         openGraph: baseOG(url),
@@ -79,8 +87,14 @@ export async function metadataComidas({ searchParams }: { searchParams: SearchPa
     }
 }
 
-export async function ComidasListagem({ searchParams }: { searchParams: SearchParams }) {
-    const sp = await searchParams
+export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {
+    const [sp, t, tCat] = await Promise.all([
+        searchParams,
+        getTranslations({ locale, namespace: 'entity.foodsList' }),
+        getTranslations({ locale, namespace: 'entity.food.categories' }),
+    ])
+    const emPt = locale === DEFAULT_LOCALE
+    const rotuloCategoria = (c: string) => tCat(c as 'rice')
     const page = Math.max(1, parseInt(sp.page ?? '1', 10) || 1)
     const category = VALID_CATEGORIES.includes(sp.category as FoodCategory) ? (sp.category as FoodCategory) : undefined
     const vegetarian = sp.vegetarian === 'true' ? true : undefined
@@ -96,7 +110,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
     // Guias e vitrine do tema só na primeira página sem filtro: com filtro ou busca, a lista de pratos é o assunto.
     const semFiltro = page === 1 && !(sp.search || sp.category || sp.vegetarian || sp.occasion || sp.season || sp.maxSpicy || sp.region)
     const cfgLoja = CATEGORIAS_COM_LOJA['comida']
-    const [{ items: foods, total, totalPages }, temVitrine, artigos, lojaDoTema, todosPratos] = await Promise.all([
+    const [{ items: foodsBrutos, total, totalPages }, temVitrine, artigos, lojaDoTema, todosPratos] = await Promise.all([
         getFoods({
             page,
             perPage: 48,
@@ -109,29 +123,33 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
             region,
             orderby: 'date',
             order: 'desc',
+            locale: emPt ? undefined : locale,
         }),
+        // Loja, marcas e receitas com preço em reais e link de afiliado são só em português (manifesto de rotas).
         buildVitrineMatcher(),
-        semFiltro ? artigosDoTema('comida') : Promise.resolve(null),
-        semFiltro && cfgLoja ? carregarLojaDoTema(cfgLoja, 'comidas:lista') : Promise.resolve(undefined),
+        semFiltro ? artigosDoTema('comida', locale) : Promise.resolve(null),
+        emPt && semFiltro && cfgLoja ? carregarLojaDoTema(cfgLoja, 'comidas:lista') : Promise.resolve(undefined),
         // As receitas saem do acervo todo: as 48 mais novas da página podem não incluir nenhuma com modo de preparo.
-        semFiltro ? getFoods({ perPage: 100 }).catch(() => null) : Promise.resolve(null),
+        emPt && semFiltro ? getFoods({ perPage: 100 }).catch(() => null) : Promise.resolve(null),
     ])
+    // Outro idioma: só prato com ficha traduzida, já com o texto do idioma.
+    const foods = emPt ? foodsBrutos : foodsBrutos.filter(f => hasLocale(f, locale)).map(f => localizeEntity(f, locale, 'food'))
     const receitas = todosPratos ? receitasEmDestaque(todosPratos.items) : []
     if (page > Math.max(1, totalPages)) notFound()
 
     return (
         <>
-            <PageBreadcrumb items={[{ name: 'Comidas', path: '/comidas' }]} />
+            <PageBreadcrumb items={[{ name: t('breadcrumb'), path: href('foods', undefined, locale) }]} />
         <div>
             {/* Header */}
             <div className="border-b border-border/40">
                 <div className="page-wrap py-6 sm:py-10">
-                    <p className="font-mono text-[11px] text-muted uppercase tracking-[0.06em] mb-1">Gastronomia Coreana</p>
+                    <p className="font-mono text-[11px] text-muted uppercase tracking-[0.06em] mb-1">{t('kicker')}</p>
                     <h1 className="text-[28px] sm:text-[40px] font-black tracking-[-0.03em] leading-tight">
-                        Comidas Coreanas
+                        {t('h1')}
                     </h1>
                     <p className="text-[14px] leading-relaxed text-foreground/70 mt-3 max-w-2xl">
-                        Da cozinha tradicional ao street food de Seul — conheça os pratos que definem a culinária coreana, com dicas de onde comer, ingredientes e curiosidades.
+                        {t('intro')}
                     </p>
                 </div>
             </div>
@@ -148,7 +166,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                 : 'border-border text-muted hover:text-foreground hover:border-border-strong'
                         }`}
                     >
-                        Todos
+                        {t('all')}
                     </Link>
                     {VALID_CATEGORIES.map(cat => (
                         <Link
@@ -162,7 +180,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                             }`}
                         >
                             <span>{FOOD_CATEGORY_EMOJI[cat]}</span>
-                            {FOOD_CATEGORY_LABELS[cat]}
+                            {rotuloCategoria(cat)}
                         </Link>
                     ))}
                 </div>
@@ -175,7 +193,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                         const isActive = col === activeCollection
                         return (
                             <Link
-                                key={col.label}
+                                key={col.id}
                                 href={buildComidasPath(col.params)}
                                 scroll={false}
                                 className={`inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold transition-colors border ${
@@ -185,7 +203,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                 }`}
                             >
                                 <span>{col.emoji}</span>
-                                {col.label}
+                                {t(`curated.${col.id}`)}
                             </Link>
                         )
                     })}
@@ -197,11 +215,11 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                 <section data-bloco="comidas-artigos" className="border-b border-border/40">
                     <div className="page-wrap py-8">
                         <div className="mb-4 flex items-baseline gap-3">
-                            <h2 className="font-serif text-[24px] font-semibold leading-tight sm:text-[28px]">Guias e artigos de comida</h2>
-                            <Link href="/blog?category=comida" className="ml-auto shrink-0 font-mono text-[11px] text-muted transition-colors hover:text-accent">todos os artigos →</Link>
+                            <h2 className="font-serif text-[24px] font-semibold leading-tight sm:text-[28px]">{t('articlesTitle')}</h2>
+                            <Link href="/blog?category=comida" className="ml-auto shrink-0 font-mono text-[11px] text-muted transition-colors hover:text-accent">{t('articlesAll')}</Link>
                         </div>
                         <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            {artigos.posts.map(p => <BlogGuiaCard key={p.id} post={p} categoryMap={artigos.categoryMap} />)}
+                            {artigos.posts.map(p => <BlogGuiaCard key={p.id} post={p} categoryMap={artigos.categoryMap} locale={locale} />)}
                         </div>
                     </div>
                 </section>
@@ -216,7 +234,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
             {/* Mapa por região */}
             {page === 1 && (
                 <div className="page-wrap py-8">
-                    <KoreaRegionMap activeRegion={region} />
+                    <KoreaRegionMap activeRegion={region} locale={locale} />
                 </div>
             )}
 
@@ -225,27 +243,27 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                 {foods.length === 0 ? (
                     <div className="flex flex-col items-center py-20 text-center">
                         <p className="text-[48px] mb-4">🍜</p>
-                        <p className="text-[16px] font-bold mb-1">Nenhuma comida encontrada</p>
-                        <p className="text-[13px] text-muted mb-4">Em breve mais pratos no catálogo.</p>
+                        <p className="text-[16px] font-bold mb-1">{t('emptyTitle')}</p>
+                        <p className="text-[13px] text-muted mb-4">{t('emptyText')}</p>
                         <Link href="/comidas" className="text-[13px] font-semibold text-accent hover:underline">
-                            ← Ver todas as comidas
+                            {t('emptyBack')}
                         </Link>
                     </div>
                 ) : (
                     <>
                         <p className="font-mono text-[11px] text-muted mb-6">
-                            {total} prato{total !== 1 ? 's' : ''}
-                            {category ? ` em ${FOOD_CATEGORY_LABELS[category]}` : ''}
+                            {t('count', { count: total })}
+                            {category ? t('countIn', { category: rotuloCategoria(category) }) : ''}
                         </p>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                             {foods.map(food => {
                                 const name = stripHtml(food.title.rendered)
                                 const acf = food.acf ?? {}
                                 const img = food.featured_image_url
-                                const catLabel = acf.category ? FOOD_CATEGORY_LABELS[acf.category] : null
+                                const catLabel = acf.category ? rotuloCategoria(acf.category) : null
                                 const catEmoji = acf.category ? FOOD_CATEGORY_EMOJI[acf.category] : '🍽️'
                                 const spicy = acf.spicy_level ?? 0
-                                const naLoja = temVitrine([name, ...(acf.main_ingredients ?? [])])
+                                const naLoja = emPt && temVitrine([name, ...(acf.main_ingredients ?? [])])
 
                                 return (
                                     <Link
@@ -289,7 +307,7 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                                 <p className="font-mono text-[10px] text-muted/60 mt-1">{catLabel}</p>
                                             )}
                                             {naLoja && (
-                                                <p className="font-mono text-[10px] font-semibold text-accent mt-1">🛍️ Na loja</p>
+                                                <p className="font-mono text-[10px] font-semibold text-accent mt-1">{t('inStore')}</p>
                                             )}
                                         </div>
                                     </Link>
@@ -310,16 +328,16 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
                                 {page > 1 && (
                                     <Link href={buildComidasPath({ ...sp, page: String(page - 1) })}
                                         className="font-mono text-[12px] font-semibold text-muted hover:text-foreground transition-colors">
-                                        ← Anterior
+                                        {t('prev')}
                                     </Link>
                                 )}
                                 <span className="font-mono text-[11px] text-muted ml-auto">
-                                    Página {page} de {totalPages}
+                                    {t('pageOf', { page, total: totalPages })}
                                 </span>
                                 {page < totalPages && (
                                     <Link href={buildComidasPath({ ...sp, page: String(page + 1) })}
                                         className="font-mono text-[12px] font-semibold text-accent hover:underline">
-                                        Próxima →
+                                        {t('next')}
                                     </Link>
                                 )}
                             </div>
@@ -367,13 +385,17 @@ export async function ComidasListagem({ searchParams }: { searchParams: SearchPa
 }
 
 /** Artigos mais recentes da categoria do blog; falha do WordPress não derruba o catálogo. */
-async function artigosDoTema(categoria: string) {
+async function artigosDoTema(categoria: string, locale: Locale) {
     try {
-        const [{ items }, categorias] = await Promise.all([
-            getPosts({ category: categoria, perPage: 4, includeContent: false }),
+        const emPt = locale === DEFAULT_LOCALE
+        const [{ items }, categorias, rotulos] = await Promise.all([
+            getPosts({ category: categoria, perPage: 4, includeContent: false, lang: emPt ? undefined : locale }),
             getCategories(),
+            getTranslations({ locale, namespace: 'home.categorias' }) as unknown as Promise<{ (chave: string): string; has(chave: string): boolean }>,
         ])
-        return { posts: items, categoryMap: Object.fromEntries(categorias.map(c => [c.id, { name: c.name, slug: c.slug }])) }
+        // Categorias vêm do WordPress em português; fora dele o rótulo traduzido, quando existe.
+        const nome = (c: { name: string; slug: string }) => (!emPt && rotulos.has(c.slug) ? rotulos(c.slug) : c.name)
+        return { posts: items, categoryMap: Object.fromEntries(categorias.map(c => [c.id, { name: nome(c), slug: c.slug }])) }
     } catch {
         return null
     }
