@@ -48,8 +48,14 @@
       }
     ],
     "relatedSearches": [
-      { "label": "Korean dramas on Netflix", "to": "doramas-coreanos-netflix" },
-      { "label": "Best Korean dramas of all time", "to": "melhores-doramas-de-todos-os-tempos" }
+      {
+        "label": "Korean dramas on Netflix",
+        "to": "doramas-coreanos-netflix"
+      },
+      {
+        "label": "Best Korean dramas of all time",
+        "to": "melhores-doramas-de-todos-os-tempos"
+      }
     ]
   },
   "doramas-acao-coreanos": {
@@ -93,8 +99,14 @@
       }
     ],
     "relatedSearches": [
-      { "label": "Romance dramas", "to": "doramas-romanticos" },
-      { "label": "Korean dramas on Netflix", "to": "doramas-coreanos-netflix" }
+      {
+        "label": "Romance dramas",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Korean dramas on Netflix",
+        "to": "doramas-coreanos-netflix"
+      }
     ]
   },
   "filmes-coreanos": {
@@ -134,6 +146,832 @@
       {
         "question": "Does HallyuHub say where to watch?",
         "answer": "When data is available, production pages show platforms, cast, synopsis and editorial context to help with discovery."
+      }
+    ]
+  },
+  "doramas-policiais-coreanos": {
+    "slug": "korean-crime-dramas",
+    "title": "Korean Crime Dramas",
+    "shortTitle": "Crime dramas",
+    "description": "Korean crime dramas with investigations, detectives, prosecutors and suspense, with English profiles.",
+    "intro": [
+      "In Korean crime dramas, the case of the week shares the stage with what an investigation demands of the people running it: teams of detectives, prosecutors and reporters split the lead, and corruption inside the institution weighs as much as the crime itself. Signal (tvN, 2016), in which a radio links detectives from two eras, is one of the most cited titles of the format.",
+      "There are two rhythms: series that close a case per episode and series that follow a single case across the whole season. The list below follows recent interest, with the best-rated titles highlighted."
+    ],
+    "whatYouWillFind": "Stories of investigation, crime, police stations, prosecutors, detectives and criminal suspense, with links to related productions and artists.",
+    "faq": [
+      {
+        "question": "What is the difference between a crime drama and a thriller?",
+        "answer": "A crime drama is built around the investigation: police stations, detectives, prosecutors and the case to be solved. A thriller can do without the police and rely on tension and threat; the two often blend."
+      },
+      {
+        "question": "Do crime dramas have a case per episode?",
+        "answer": "Some close a case per episode; others follow a single case through the whole season. Many combine both, with a larger case in the background."
+      },
+      {
+        "question": "Where should I start?",
+        "answer": "Signal (tvN, 2016), which is in the catalog, is a common starting point: it mixes cold cases, travel between eras and team investigation."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Legal dramas",
+        "to": "doramas-juridicos-coreanos"
+      },
+      {
+        "label": "Mystery dramas",
+        "to": "doramas-misterio-coreanos"
+      },
+      {
+        "label": "Thriller dramas",
+        "to": "doramas-thriller-coreanos"
+      }
+    ]
+  },
+  "doramas-thriller-coreanos": {
+    "slug": "korean-thriller-dramas",
+    "title": "Korean Thriller Dramas",
+    "shortTitle": "Thriller dramas",
+    "description": "The best Korean thriller and suspense dramas, with synopsis, cast, platforms and ratings in English.",
+    "intro": [
+      "Thriller covers psychological suspense, crime, mystery and heavy-atmosphere horror, and many productions also appear in the crime, horror and mystery guides.",
+      "The list mixes series and films, ordered by recent interest; the Type filter at the top separates the formats. To start, Stranger (tvN, 2017) and Signal (tvN, 2016) are in the catalog."
+    ],
+    "faq": [
+      {
+        "question": "What goes into the thriller list?",
+        "answer": "Productions tagged with the thriller genre in the catalog: psychological suspense, crime, mystery and horror, among others. Many also carry another genre tag."
+      },
+      {
+        "question": "Can I see only series?",
+        "answer": "Yes. The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "What is the difference between a thriller and a crime drama?",
+        "answer": "A crime drama is built around the investigation. A thriller can do without the police and rely on tension and threat; the two often blend."
+      }
+    ]
+  },
+  "doramas-tvn": {
+    "slug": "tvn-dramas",
+    "title": "Korean Dramas on tvN",
+    "shortTitle": "tvN dramas",
+    "description": "Dramas from tvN, the cable channel of the CJ ENM group, with cast, synopsis and where to watch.",
+    "intro": [
+      "tvN is a South Korean cable channel owned by the CJ ENM group, on air since 2006. The catalog includes Signal (2016), Stranger (2017), Crash Landing on You (2019), It's Okay to Not Be Okay (2020) and Vincenzo (2021), among others.",
+      "The list below follows recent interest."
+    ],
+    "faq": [
+      {
+        "question": "What is tvN?",
+        "answer": "A South Korean cable channel of the CJ ENM group, on air since 2006."
+      },
+      {
+        "question": "Which tvN series are in the catalog?",
+        "answer": "Among others, Signal (2016), Stranger (2017), Crash Landing on You (2019), It's Okay to Not Be Okay (2020) and Vincenzo (2021). The list on the page shows the rest, from newest to oldest."
+      },
+      {
+        "question": "What is the difference between tvN and free-to-air broadcasters such as SBS?",
+        "answer": "tvN is a cable channel; KBS, MBC and SBS are the three major free-to-air broadcasters. Both types air series, and the difference lies in how they are distributed."
+      }
+    ]
+  },
+  "doramas-terror-coreanos": {
+    "slug": "korean-horror-dramas",
+    "title": "Korean Horror Dramas",
+    "shortTitle": "Horror dramas",
+    "description": "The best Korean horror dramas with synopsis, cast, platforms and ratings in English.",
+    "intro": [
+      "Korean horror has built a language of its own in global entertainment — from \"Kingdom\" (zombies in Joseon) to \"Sweet Home\" (urban creatures), horror K-Dramas combine genuine fear with deep human drama.",
+      "This guide gathers the Korean horror productions cataloged on HallyuHub to help you find your next chilling drama."
+    ],
+    "faq": [
+      {
+        "question": "Is Korean horror different from American horror?",
+        "answer": "Yes. Korean horror often combines scares with social metaphors, emotional drama and cinematic production. \"Train to Busan\" and \"Kingdom\" show how the genre approaches human themes through the supernatural."
+      },
+      {
+        "question": "What are the best horror dramas?",
+        "answer": "\"Kingdom\", \"Sweet Home\", \"All of Us Are Dead\" and \"The Haunting of Villa Margarita\" are among the most praised in the category in recent years."
+      }
+    ]
+  },
+  "doramas-comedia-coreanos": {
+    "slug": "korean-comedy-dramas",
+    "title": "Korean Comedy Dramas",
+    "shortTitle": "Comedy dramas",
+    "description": "The best Korean comedy and romantic comedy dramas with synopsis, cast and ratings in English.",
+    "intro": [
+      "Korean comedy has a unique timing: the mix of awkwardness, physical humor and absurd situations created a style that fans around the world love and recognize immediately.",
+      "This guide gathers the Korean comedy productions cataloged on HallyuHub to help you find your next drama that will make you laugh and feel good."
+    ],
+    "faq": [
+      {
+        "question": "What makes a good Korean comedy?",
+        "answer": "Korean comedies are known for precise timing, eccentric leads and awkward situations that build empathy. The romantic comedy genre is especially popular, with memorable OSTs."
+      },
+      {
+        "question": "What are the best comedy dramas?",
+        "answer": "\"My Love from the Star\", \"She Was Pretty\", \"Strong Woman Do Bong-soon\" and \"What's Wrong with Secretary Kim\" are among the favorites of K-Drama comedy fans."
+      }
+    ]
+  },
+  "doramas-fantasia-coreanos": {
+    "slug": "korean-fantasy-dramas",
+    "title": "Korean Fantasy Dramas",
+    "shortTitle": "Fantasy dramas",
+    "description": "The best Korean fantasy dramas, with magic, supernatural beings and parallel worlds, with English profiles.",
+    "intro": [
+      "Korean fantasy dramas create unique universes — gods, demons, time travel and magical kingdoms — with striking visual production and stories that stay with you.",
+      "This guide gathers the Korean fantasy productions cataloged on HallyuHub to help you dive into worlds beyond the real."
+    ],
+    "faq": [
+      {
+        "question": "What makes Korean fantasy dramas unique?",
+        "answer": "Korean fantasy often blends Korean mythology and folklore with romance and human drama. Creatures such as the gumiho (nine-tailed fox), dokkaebi and gods from Korean folklore appear frequently."
+      },
+      {
+        "question": "What are the best fantasy dramas?",
+        "answer": "\"Goblin\", \"Legend of the Blue Sea\", \"My Love from the Star\", \"Tale of the Nine-Tailed\" and \"Alchemy of Souls\" are among the most loved in the genre."
+      }
+    ]
+  },
+  "doramas-esportes-coreanos": {
+    "slug": "korean-sports-dramas",
+    "title": "Korean Sports Dramas",
+    "shortTitle": "Sports dramas",
+    "description": "Korean sports dramas with competition, perseverance, youth, teamwork and romance.",
+    "intro": [
+      "Korean sports dramas tend to use competition as a language to talk about discipline, friendship, pressure, failure and starting over.",
+      "This guide gathers sports-themed productions from the HallyuHub catalog, ideal for anyone who likes stories of perseverance and youthful energy."
+    ],
+    "whatYouWillFind": "Stories with athletes, teams, tournaments, coaches, rivalries, youth and perseverance in or around sport.",
+    "faq": [
+      {
+        "question": "Are sports dramas only about competition?",
+        "answer": "No. Competition is usually the setting, but the core is typically growing up, friendship, romance, psychological pressure and perseverance."
+      },
+      {
+        "question": "Does this guide include sports romances?",
+        "answer": "Yes. When a production is tagged with sports, it can appear even when it mixes in romance, youth or comedy."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "School dramas",
+        "to": "doramas-escolares-coreanos"
+      },
+      {
+        "label": "Romance dramas",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Action dramas",
+        "to": "doramas-acao-coreanos"
+      }
+    ]
+  },
+  "doramas-kbs": {
+    "slug": "kbs-dramas",
+    "title": "Korean Dramas on KBS",
+    "shortTitle": "KBS dramas",
+    "description": "Dramas from KBS, South Korea's public broadcaster, with cast, synopsis and where to watch.",
+    "intro": [
+      "KBS (Korea Broadcasting System) is South Korea's public broadcaster. In the catalog, series appear as KBS2, and Descendants of the Sun (2016) is one of them.",
+      "The list below follows recent interest."
+    ],
+    "faq": [
+      {
+        "question": "What is KBS?",
+        "answer": "Korea Broadcasting System, South Korea's public broadcaster. Series in the catalog are listed as KBS2, the channel that airs them."
+      },
+      {
+        "question": "Which KBS series are in the catalog?",
+        "answer": "Among others, Descendants of the Sun (2016) and the recent productions listed on the page."
+      }
+    ]
+  },
+  "doramas-tving": {
+    "slug": "tving-dramas",
+    "title": "Korean Dramas on TVING",
+    "shortTitle": "TVING dramas",
+    "description": "Dramas from TVING, the South Korean streaming service of the CJ ENM group, with cast, synopsis and where to watch.",
+    "intro": [
+      "TVING is a South Korean streaming service of the CJ ENM group. The catalog includes Spirit Fingers, Study Group and Street Food Vendor (2025), among others.",
+      "The list below follows recent interest."
+    ],
+    "faq": [
+      {
+        "question": "What is TVING?",
+        "answer": "A South Korean streaming service of the CJ ENM group."
+      },
+      {
+        "question": "Is TVING related to tvN?",
+        "answer": "Yes. Both belong to the CJ ENM group."
+      }
+    ]
+  },
+  "doramas-familia-coreanos": {
+    "slug": "korean-family-dramas",
+    "title": "Korean Family Dramas",
+    "shortTitle": "Family dramas",
+    "description": "Korean dramas about family, relationships between generations, reconciliation, inheritance, marriage and emotional bonds.",
+    "intro": [
+      "Family is one of the strongest themes in K-Dramas: parents and children, siblings, grandparents, marriages, old secrets and reconciliations show up in romances, melodramas and comedies.",
+      "This guide gathers Korean productions with a family focus from the HallyuHub catalog, for anyone who likes emotional stories and characters in transformation."
+    ],
+    "whatYouWillFind": "Productions with family relationships, conflicts between generations, secrets, reconciliations, marriages and emotional dilemmas.",
+    "faq": [
+      {
+        "question": "Are family dramas always long?",
+        "answer": "Not always. There are long family dramas on free-to-air TV, but also 12- to 16-episode dramas in which family is an important emotional axis."
+      },
+      {
+        "question": "Does this guide include family romance?",
+        "answer": "Yes. Many K-Dramas mix romance and family, especially when marriage, relatives, inheritance or family approval are part of the conflict."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Medical dramas",
+        "to": "doramas-medicos-coreanos"
+      },
+      {
+        "label": "Romance dramas",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Comedy dramas",
+        "to": "doramas-comedia-coreanos"
+      }
+    ]
+  },
+  "doramas-coreanos-2016": {
+    "slug": "korean-dramas-2016",
+    "title": "Korean Dramas 2016",
+    "shortTitle": "K-Dramas 2016",
+    "description": "Korean dramas and films from 2016 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2016 that are in the catalog, including Descendants of the Sun (KBS2) and Signal (tvN).",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2016 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2016 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-mbc": {
+    "slug": "mbc-dramas",
+    "title": "Korean Dramas on MBC",
+    "shortTitle": "MBC dramas",
+    "description": "Dramas from MBC, one of South Korea's three major free-to-air broadcasters, with cast, synopsis and where to watch.",
+    "intro": [
+      "MBC (Munhwa Broadcasting Corporation) is one of South Korea's three major free-to-air broadcasters. In the catalog, the most recent productions include In Your Brilliant Season and The Judge Returns (2026).",
+      "The list below follows recent interest."
+    ],
+    "faq": [
+      {
+        "question": "What is MBC?",
+        "answer": "Munhwa Broadcasting Corporation, one of South Korea's three major free-to-air broadcasters, alongside KBS and SBS."
+      },
+      {
+        "question": "Which MBC series are in the catalog?",
+        "answer": "Among the most recent, In Your Brilliant Season and The Judge Returns (2026). The list on the page shows the rest."
+      }
+    ]
+  },
+  "doramas-ena": {
+    "slug": "ena-dramas",
+    "title": "Korean Dramas on ENA",
+    "shortTitle": "ENA dramas",
+    "description": "Dramas from ENA, a South Korean cable channel of the SK Broadband group, with cast, synopsis and where to watch.",
+    "intro": [
+      "ENA is a South Korean cable channel of the SK Broadband group. The catalog includes Extraordinary Attorney Woo (2022) and Honour (2026), among others.",
+      "The list below follows recent interest."
+    ],
+    "faq": [
+      {
+        "question": "What is ENA?",
+        "answer": "A South Korean cable channel of the SK Broadband group."
+      },
+      {
+        "question": "Which ENA series are in the catalog?",
+        "answer": "Among others, Extraordinary Attorney Woo (2022) and Honour (2026). The list on the page shows the rest."
+      }
+    ]
+  },
+  "doramas-medicos-coreanos": {
+    "slug": "korean-medical-dramas",
+    "title": "Korean Medical Dramas",
+    "shortTitle": "Medical dramas",
+    "description": "The best Korean medical dramas, with hospitals, surgeries, romance, cast and ratings in English.",
+    "intro": [
+      "Korean medical dramas combine intense hospital cases, human relationships and characters who grow under pressure. It is one of the strongest subgenres for anyone who likes emotional drama with the rhythm of a procedural.",
+      "This guide gathers the Korean medical productions cataloged on HallyuHub to make it easier to find synopsis, cast, ratings and similar titles."
+    ],
+    "whatYouWillFind": "Dramas set in hospitals, clinics and medical teams, with patient cases, romance, friendship, professional ethics and journeys of perseverance.",
+    "faq": [
+      {
+        "question": "What themes appear in Korean medical dramas?",
+        "answer": "They usually mix hospital routine, ethical dilemmas, friendship, romance and stories of perseverance among doctors, patients and families."
+      },
+      {
+        "question": "Are medical dramas a good way to start with K-Drama?",
+        "answer": "Yes. Many have an episodic structure that is easy to follow, but they also develop long emotional arcs and memorable characters."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Legal dramas",
+        "to": "doramas-juridicos-coreanos"
+      },
+      {
+        "label": "Family dramas",
+        "to": "doramas-familia-coreanos"
+      },
+      {
+        "label": "Romance dramas",
+        "to": "doramas-romanticos"
+      }
+    ]
+  },
+  "doramas-escolares-coreanos": {
+    "slug": "korean-school-dramas",
+    "title": "Korean School Dramas",
+    "shortTitle": "School dramas",
+    "description": "Korean school and university dramas with romance, friendship, bullying, youth and coming of age.",
+    "intro": [
+      "Korean school dramas are one of the most popular gateways into K-Drama: they mix friendship, first love, rivalry, pressure over grades and family conflict.",
+      "This guide organizes productions tagged with a school theme in the HallyuHub catalog, making it easier to find stories of youth and coming of age."
+    ],
+    "whatYouWillFind": "Productions set in schools and universities, with coming of age, young romance, groups of friends and conflicts typical of Korean youth.",
+    "faq": [
+      {
+        "question": "What defines a Korean school drama?",
+        "answer": "They are usually stories centered on students, schools or universities, with themes such as friendship, bullying, academic pressure, first love and coming of age."
+      },
+      {
+        "question": "Are school dramas only romance?",
+        "answer": "No. Many have romance, but the subgenre also shows up in suspense, fantasy, family drama, comedy and stories about mental health or academic rivalry."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Romance dramas",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Comedy dramas",
+        "to": "doramas-comedia-coreanos"
+      }
+    ]
+  },
+  "doramas-jtbc": {
+    "slug": "jtbc-dramas",
+    "title": "Korean Dramas on JTBC",
+    "shortTitle": "JTBC dramas",
+    "description": "Dramas from JTBC, a South Korean cable channel launched in 2011, with cast, synopsis and where to watch.",
+    "intro": [
+      "JTBC is a South Korean cable channel launched in 2011 by the JoongAng group. The catalog includes Beyond the Bar and Good Boy (2025), among others.",
+      "The list below follows recent interest."
+    ],
+    "faq": [
+      {
+        "question": "What is JTBC?",
+        "answer": "A South Korean cable channel launched in 2011 by the JoongAng group."
+      },
+      {
+        "question": "Which JTBC series are in the catalog?",
+        "answer": "Among the most recent, Beyond the Bar and Good Boy (2025). The list on the page shows the rest."
+      }
+    ]
+  },
+  "doramas-kocowa": {
+    "slug": "kocowa-dramas",
+    "title": "Korean Dramas on Kocowa",
+    "shortTitle": "Kocowa dramas",
+    "description": "See Korean dramas available on Kocowa, with synopsis, cast, ratings and context in English.",
+    "intro": [
+      "Kocowa gathers content from the main Korean broadcasters and is a reference for anyone following K-Dramas, variety shows and releases close to their original airing.",
+      "This guide organizes Korean productions associated with Kocowa within HallyuHub, connecting pages for dramas, cast and related artists."
+    ],
+    "faq": [
+      {
+        "question": "Does Kocowa have Korean dramas?",
+        "answer": "Yes. Kocowa is focused on Korean entertainment and gathers dramas, variety shows and other content from Korea's main broadcasters."
+      }
+    ]
+  },
+  "doramas-ocn": {
+    "slug": "ocn-dramas",
+    "title": "Korean Dramas on OCN",
+    "shortTitle": "OCN dramas",
+    "description": "Dramas from OCN, a cable channel of the CJ ENM group with crime, suspense and supernatural series.",
+    "intro": [
+      "OCN is a cable channel of the CJ ENM group. In the catalog, the channel's series are crime, suspense and supernatural, such as Tunnel and Save Me (2017), Life on Mars (2018) and The Uncanny Counter (2020).",
+      "The list below follows recent interest."
+    ],
+    "faq": [
+      {
+        "question": "What is OCN?",
+        "answer": "A South Korean cable channel of the CJ ENM group."
+      },
+      {
+        "question": "Which OCN series are in the catalog?",
+        "answer": "Among others, Tunnel and Save Me (2017), Life on Mars (2018), Hell Is Other People (2019) and The Uncanny Counter (2020)."
+      }
+    ]
+  },
+  "doramas-disney-plus": {
+    "slug": "disney-plus-dramas",
+    "title": "Korean Dramas on Disney+",
+    "shortTitle": "Disney+ dramas",
+    "description": "Discover Korean dramas available on Disney+, with synopsis, cast, ratings and links to artists.",
+    "intro": [
+      "Disney+ entered the K-Drama market strongly, with high-budget originals and exclusive licenses that do not appear on other platforms.",
+      "This guide gathers the Korean productions associated with Disney+ cataloged on HallyuHub, with English pages to understand the cast, synopsis and context of each title."
+    ],
+    "faq": [
+      {
+        "question": "Does Disney+ have original Korean dramas?",
+        "answer": "Yes. Disney+ has been investing in original and exclusive K-Dramas, with high-budget productions that compete directly with Netflix originals."
+      },
+      {
+        "question": "Does HallyuHub show information about Disney+?",
+        "answer": "When data is available, production pages show platforms, cast, synopsis and editorial context to help with discovery."
+      }
+    ]
+  },
+  "doramas-culinaria-coreanos": {
+    "slug": "korean-food-dramas",
+    "title": "Korean Cooking and Food Dramas",
+    "shortTitle": "Food dramas",
+    "description": "Korean dramas about cooking, restaurants, chefs, Korean food, romance and heartfelt stories around the table.",
+    "intro": [
+      "Food in a K-Drama is almost never just food: it marks meetings, reconciliations, family memories and the emotional comfort that many Korean stories build so well.",
+      "This guide gathers productions about cooking, chefs, restaurants and Korean food in the HallyuHub catalog."
+    ],
+    "whatYouWillFind": "Productions with restaurants, chefs, recipes, Korean food, culinary romance and heartfelt stories tied to cooking.",
+    "faq": [
+      {
+        "question": "Are food dramas light?",
+        "answer": "Many have a light or romantic tone, but the theme can also appear in family dramas, stories of perseverance and narratives about work."
+      },
+      {
+        "question": "Does this guide help me discover Korean food?",
+        "answer": "Yes. Beyond the plot, many food dramas present Korean dishes, restaurants and eating habits that spark curiosity about the culture."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Family dramas",
+        "to": "doramas-familia-coreanos"
+      },
+      {
+        "label": "Romance dramas",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Comedy dramas",
+        "to": "doramas-comedia-coreanos"
+      }
+    ]
+  },
+  "doramas-coreanos-2021": {
+    "slug": "korean-dramas-2021",
+    "title": "Korean Dramas 2021",
+    "shortTitle": "K-Dramas 2021",
+    "description": "Korean dramas and films from 2021 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2021 that are in the catalog, including Vincenzo and Mouse (tvN).",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2021 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2021 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-coreanos-2018": {
+    "slug": "korean-dramas-2018",
+    "title": "Korean Dramas 2018",
+    "shortTitle": "K-Dramas 2018",
+    "description": "Korean dramas and films from 2018 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2018 that are in the catalog.",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2018 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2018 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-amazon-prime": {
+    "slug": "amazon-prime-video-dramas",
+    "title": "Korean Dramas on Amazon Prime Video",
+    "shortTitle": "Prime Video dramas",
+    "description": "A list of the best Korean dramas available on Amazon Prime Video, with profiles, synopsis and cast in English.",
+    "intro": [
+      "Amazon Prime Video has significantly expanded its catalog of Korean dramas, bringing exclusive and co-produced titles.",
+      "This guide gathers the Korean productions cataloged on HallyuHub that are available on Prime Video so you can easily find your next drama to watch."
+    ],
+    "faq": [
+      {
+        "question": "Does Amazon Prime have Korean dramas?",
+        "answer": "Yes. Amazon Prime Video has been investing in original and licensed Korean dramas for subscribers."
+      },
+      {
+        "question": "What are the best dramas on Amazon Prime?",
+        "answer": "The catalog includes a variety of romance, thriller and historical titles. Available productions vary by region — check the guide for the cataloged titles."
+      }
+    ]
+  },
+  "doramas-sbs": {
+    "slug": "sbs-dramas",
+    "title": "Korean Dramas on SBS",
+    "shortTitle": "SBS dramas",
+    "description": "Dramas from SBS, one of South Korea's three major free-to-air broadcasters, with cast, synopsis and where to watch.",
+    "intro": [
+      "SBS (Seoul Broadcasting System) is one of South Korea's three major free-to-air broadcasters, alongside KBS and MBC. In the catalog, Secret Garden (2010) is one of the broadcaster's series.",
+      "The list below follows recent interest."
+    ],
+    "faq": [
+      {
+        "question": "What is SBS?",
+        "answer": "Seoul Broadcasting System, one of South Korea's three major free-to-air broadcasters, alongside KBS and MBC."
+      },
+      {
+        "question": "Which SBS series are in the catalog?",
+        "answer": "Among others, Secret Garden (2010) and the recent productions listed on the page, from newest to oldest."
+      }
+    ]
+  },
+  "doramas-coreanos-2025": {
+    "slug": "korean-dramas-2025",
+    "title": "Korean Dramas 2025",
+    "shortTitle": "K-Dramas 2025",
+    "description": "Korean dramas and films from 2025 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2025 that are in the catalog.",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2025 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2025 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-misterio-coreanos": {
+    "slug": "korean-mystery-dramas",
+    "title": "Korean Mystery Dramas",
+    "shortTitle": "Mystery dramas",
+    "description": "Korean mystery dramas with riddles, dark secrets, private detectives and plots that hook you from start to finish.",
+    "intro": [
+      "Korean mystery dramas are one of the most addictive categories of the genre: each episode brings new clues, revelations and twists that keep viewers glued to the screen.",
+      "From serial killers to corporate conspiracies, from the paranormal to the psychological thriller — the mystery K-Drama offers a huge variety of premises and atmospheres.",
+      "This guide organizes Korean productions with mystery, riddles and investigation narratives cataloged on HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "What defines a mystery drama?",
+        "answer": "A mystery drama has at its center a secret, riddle or crime that must be solved over the course of the story. It can mix romance, horror or thriller into the main plot."
+      },
+      {
+        "question": "Do mystery dramas usually have a revealing ending?",
+        "answer": "Most do, although some deliberately leave loose ends. The mystery K-Drama is known for plot twists and revelations at the end of episodes."
+      },
+      {
+        "question": "Are mystery and thriller the same thing in dramas?",
+        "answer": "Not exactly. A thriller focuses on tension and imminent danger; a mystery focuses on discovering the truth behind something hidden. Many K-Dramas mix the two."
+      }
+    ]
+  },
+  "doramas-juridicos-coreanos": {
+    "slug": "korean-legal-dramas",
+    "title": "Korean Legal Dramas",
+    "shortTitle": "Legal dramas",
+    "description": "Korean legal dramas with lawyers, prosecutors, courtrooms, investigation and moral dilemmas.",
+    "intro": [
+      "Korean legal dramas usually combine courtroom cases with human drama, investigation and social criticism. The result is stories with high binge potential and strong moral debates.",
+      "This guide gathers productions with a legal theme from the HallyuHub catalog — from courtroom dramas to series with prosecutors, lawyers and investigators."
+    ],
+    "whatYouWillFind": "Productions with lawyers, prosecutors, trials, crimes, ethical dilemmas and characters tied to the Korean justice system.",
+    "faq": [
+      {
+        "question": "Are Korean legal dramas similar to crime series?",
+        "answer": "Sometimes. The difference is that the legal focus is on courtrooms, lawyers, prosecutors and legal consequences, while crime series usually prioritize investigation and fieldwork."
+      },
+      {
+        "question": "Does this type of drama have a case per episode?",
+        "answer": "Some follow episodic cases; others develop one big case across the season. Many mix both formats."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Crime dramas",
+        "to": "doramas-policiais-coreanos"
+      },
+      {
+        "label": "Mystery dramas",
+        "to": "doramas-misterio-coreanos"
+      },
+      {
+        "label": "Thriller dramas",
+        "to": "doramas-thriller-coreanos"
+      }
+    ]
+  },
+  "doramas-apple-tv-plus": {
+    "slug": "apple-tv-plus-dramas",
+    "title": "Korean Dramas on Apple TV+",
+    "shortTitle": "Apple TV+ dramas",
+    "description": "Discover Korean dramas available on Apple TV+, with synopsis, cast, ratings and links to artists.",
+    "intro": [
+      "Apple TV+ is one of the platforms betting on co-producing and licensing high-quality K-Dramas, with a focus on more mature narratives and cinematic productions.",
+      "This guide gathers the Korean productions associated with Apple TV+ cataloged on HallyuHub, with English pages to understand the cast, synopsis and where to watch."
+    ],
+    "faq": [
+      {
+        "question": "Does Apple TV+ have Korean dramas?",
+        "answer": "Yes. Apple TV+ has partnered on Korean productions of cinematic quality, generally focused on thrillers, drama and narratives with global appeal."
+      }
+    ]
+  },
+  "doramas-viki": {
+    "slug": "viki-dramas",
+    "title": "Korean Dramas on Viki",
+    "shortTitle": "Viki dramas",
+    "description": "Find Korean dramas available on Viki, with synopsis, cast, ratings and related pages in English.",
+    "intro": [
+      "Viki is one of the platforms best known to K-Drama fans, with a strong catalog of romances, historical dramas, romantic comedies and classic series that do not always appear on general streaming services.",
+      "This guide gathers the Korean productions associated with Viki cataloged on HallyuHub to make it easier to discover cast, synopsis, ratings and related content."
+    ],
+    "faq": [
+      {
+        "question": "Does Viki have subtitled Korean dramas?",
+        "answer": "Yes. Viki is known for its catalog of Asian dramas with subtitles in many languages."
+      }
+    ]
+  },
+  "doramas-coreanos-2026": {
+    "slug": "korean-dramas-2026",
+    "title": "Korean Dramas 2026",
+    "shortTitle": "K-Dramas 2026",
+    "description": "Korean dramas and films from 2026 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2026 that are in the catalog.",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2026 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2026 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-coreanos-2024": {
+    "slug": "korean-dramas-2024",
+    "title": "Korean Dramas 2024",
+    "shortTitle": "K-Dramas 2024",
+    "description": "Korean dramas and films from 2024 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2024 that are in the catalog.",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2024 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2024 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-coreanos-2023": {
+    "slug": "korean-dramas-2023",
+    "title": "Korean Dramas 2023",
+    "shortTitle": "K-Dramas 2023",
+    "description": "Korean dramas and films from 2023 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2023 that are in the catalog.",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2023 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2023 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-coreanos-2022": {
+    "slug": "korean-dramas-2022",
+    "title": "Korean Dramas 2022",
+    "shortTitle": "K-Dramas 2022",
+    "description": "Korean dramas and films from 2022 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2022 that are in the catalog, including Extraordinary Attorney Woo (ENA) and All of Us Are Dead (Netflix).",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2022 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2022 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-coreanos-2020": {
+    "slug": "korean-dramas-2020",
+    "title": "Korean Dramas 2020",
+    "shortTitle": "K-Dramas 2020",
+    "description": "Korean dramas and films from 2020 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2020 that are in the catalog, including It's Okay to Not Be Okay (tvN).",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2020 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2020 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-coreanos-2019": {
+    "slug": "korean-dramas-2019",
+    "title": "Korean Dramas 2019",
+    "shortTitle": "K-Dramas 2019",
+    "description": "Korean dramas and films from 2019 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2019 that are in the catalog, including Crash Landing on You (tvN).",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2019 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2019 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
+      }
+    ]
+  },
+  "doramas-coreanos-2017": {
+    "slug": "korean-dramas-2017",
+    "title": "Korean Dramas 2017",
+    "shortTitle": "K-Dramas 2017",
+    "description": "Korean dramas and films from 2017 with synopsis, cast and where to watch.",
+    "intro": [
+      "Korean productions released in 2017 that are in the catalog, including Stranger (tvN).",
+      "The list mixes series and films and follows recent interest; the type and platform filters at the top separate the formats and show where to watch."
+    ],
+    "faq": [
+      {
+        "question": "How do I see only the 2017 series?",
+        "answer": "The Type filter at the top of the page separates series, films, specials and variety shows."
+      },
+      {
+        "question": "Where can I watch the 2017 productions?",
+        "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
       }
     ]
   }

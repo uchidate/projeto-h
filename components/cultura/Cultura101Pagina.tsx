@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
@@ -11,20 +12,29 @@ import { dataRelativa } from '@/lib/home/data-relativa'
 import { getCategories, getPostBySlug, getPosts } from '@/lib/wordpress/posts'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getWPImage, stripHtml } from '@/lib/utils'
+import type { WPPost } from '@/lib/wordpress/types'
 import { metaDescription } from '@/lib/seo/metaDescription'
-import { formatDate } from '@/lib/i18n/format'
+import { formatDate, htmlLang } from '@/lib/i18n/format'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
+import { postsTraduzidosPorSlugPt } from '@/lib/cultura/guias-traduzidos'
+import { slugPublicoDoPost } from '@/lib/blog/translations'
 
-const PAGE_URL = `${SITE_URL}/cultura-coreana-101`
-const TITLE = 'Cultura Coreana: Guias, Festas e Tradições'
-const DESCRIPTION = 'Hangeul, honoríficos, festas tradicionais, etiqueta e vida cotidiana: o essencial da cultura coreana reunido num lugar só, com guias para quem está começando.'
-
-
-export const metadata: Metadata = {
-    title: TITLE,
-    description: DESCRIPTION,
-    alternates: { canonical: PAGE_URL },
-    openGraph: { ...baseOG(PAGE_URL), title: TITLE, description: DESCRIPTION },
-    twitter: { ...baseTwitter(), title: TITLE, description: DESCRIPTION },
+/** Metadados da página no idioma; o canonical e o hreflang usam a URL de cada idioma. */
+export async function buildCulturaMetadata(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
+    const t = await getTranslations({ locale, namespace: 'entity.cultura101' })
+    const url = `${SITE_URL}${href('cultura101', undefined, locale)}`
+    const languages = Object.fromEntries([
+        ...Object.entries(LOCALE_META).filter(([l]) => l === DEFAULT_LOCALE || l === 'en').map(([l, m]) => [m.htmlLang, `${SITE_URL}${href('cultura101', undefined, l as Locale)}`]),
+        ['x-default', `${SITE_URL}${href('cultura101', undefined, DEFAULT_LOCALE)}`],
+    ])
+    return {
+        title: t('title'),
+        description: t('description'),
+        alternates: { canonical: url, languages },
+        openGraph: { ...baseOG(url), title: t('title'), description: t('description') },
+        twitter: { ...baseTwitter(), title: t('title'), description: t('description') },
+    }
 }
 
 const MONO = 'font-mono text-[10px] font-bold uppercase tracking-[0.14em]'
@@ -38,11 +48,11 @@ type Guia = { label: string; href: string; emoji: string }
 const INICIO = ['o-que-e-hallyu-onda-coreana-explicada', 'como-comecar-no-kpop-guia-para-iniciantes']
 
 /** Trilhas de leitura: a lista vem do WordPress sem agrupamento, então o agrupamento é daqui. Guia fora do mapa cai em "Mais guias". */
-const TRILHAS: { titulo: string; cor: string; slugs: string[] }[] = [
-    { titulo: 'Língua e convivência', cor: '#0e7490', slugs: ['hangeul-guia-basico-fas-brasileiros', 'nomes-coreanos-estrutura-nome-artistico-guia', 'oppa-unnie-hyung-noona-termos-coreanos-guia', 'sistema-idade-coreana-man-nai-guia', 'nunchi-arte-coreana-ler-ambiente-k-drama', 'han-conceito-coreano-tristeza-k-drama', 'etiqueta-mesa-bebida-coreana-hoesik-guia'] },
-    { titulo: 'Tradições e dia a dia', cor: '#b4531a', slugs: ['chuseok-seollal-festas-tradicionais-coreanas-explicadas', 'casamento-coreano-tradicional-pyebaek-guia', 'namoro-coreano-100-dias-couple-items-guia', 'comida-coreana-101-banchan-bap-guk-guia', 'loja-conveniencia-coreana-pyeonuijeom-guia', 'noraebang-karaoke-coreano-guia', 'pc-bang-lan-house-coreana-guia', 'uniforme-colegio-coreano-tipos-escola-guia', 'supersticoes-coreanas-guia-numero-4-fan-death-saju', 'tipo-sanguineo-personalidade-coreia-guia', 'cirurgia-plastica-coreia-contexto-cultural-guia'] },
-    { titulo: 'K-pop por dentro', cor: '#c61153', slugs: ['idol-vs-artist-diferenca-carreira-kpop', 'posicoes-grupo-kpop-lider-vocal-visual-maknae-guia', 'line-kpop-vocal-dance-maknae-line-guia', 'band-idol-vs-idol-group-diferenca-kpop-guia', 'sm-hybe-yg-jyp-como-as-grandes-agencias-kpop-funcionam', 'daesang-all-kill-comeback-glossario-kpop', 'charts-kpop-melon-circle-chart-hanteo-music-show-guia', 'fandoms-kpop-light-sticks-fan-chants-fansigns', 'servico-militar-obrigatorio-coreia-idols-guia'] },
-    { titulo: 'K-drama e mídia', cor: '#6d3fc0', slugs: ['glossario-tropes-kdrama-chaebol-makjang-second-lead', 'sunbae-hoobae-hierarquia-k-drama-escritorio', 'osts-de-k-drama-as-trilhas-sonoras-que-definiram-geracoes-de-fas', 'bl-gl-genero-boys-love-girls-love-coreano-guia'] },
+const TRILHAS: { id: 'language' | 'traditions' | 'kpop' | 'drama'; cor: string; slugs: string[] }[] = [
+    { id: 'language', cor: '#0e7490', slugs: ['hangeul-guia-basico-fas-brasileiros', 'nomes-coreanos-estrutura-nome-artistico-guia', 'oppa-unnie-hyung-noona-termos-coreanos-guia', 'sistema-idade-coreana-man-nai-guia', 'nunchi-arte-coreana-ler-ambiente-k-drama', 'han-conceito-coreano-tristeza-k-drama', 'etiqueta-mesa-bebida-coreana-hoesik-guia'] },
+    { id: 'traditions', cor: '#b4531a', slugs: ['chuseok-seollal-festas-tradicionais-coreanas-explicadas', 'casamento-coreano-tradicional-pyebaek-guia', 'namoro-coreano-100-dias-couple-items-guia', 'comida-coreana-101-banchan-bap-guk-guia', 'loja-conveniencia-coreana-pyeonuijeom-guia', 'noraebang-karaoke-coreano-guia', 'pc-bang-lan-house-coreana-guia', 'uniforme-colegio-coreano-tipos-escola-guia', 'supersticoes-coreanas-guia-numero-4-fan-death-saju', 'tipo-sanguineo-personalidade-coreia-guia', 'cirurgia-plastica-coreia-contexto-cultural-guia'] },
+    { id: 'kpop', cor: '#c61153', slugs: ['idol-vs-artist-diferenca-carreira-kpop', 'posicoes-grupo-kpop-lider-vocal-visual-maknae-guia', 'line-kpop-vocal-dance-maknae-line-guia', 'band-idol-vs-idol-group-diferenca-kpop-guia', 'sm-hybe-yg-jyp-como-as-grandes-agencias-kpop-funcionam', 'daesang-all-kill-comeback-glossario-kpop', 'charts-kpop-melon-circle-chart-hanteo-music-show-guia', 'fandoms-kpop-light-sticks-fan-chants-fansigns', 'servico-militar-obrigatorio-coreia-idols-guia'] },
+    { id: 'drama', cor: '#6d3fc0', slugs: ['glossario-tropes-kdrama-chaebol-makjang-second-lead', 'sunbae-hoobae-hierarquia-k-drama-escritorio', 'osts-de-k-drama-as-trilhas-sonoras-que-definiram-geracoes-de-fas', 'bl-gl-genero-boys-love-girls-love-coreano-guia'] },
 ]
 
 function agruparGuias(guias: Guia[]) {
@@ -51,25 +61,27 @@ function agruparGuias(guias: Guia[]) {
     const inicio = INICIO.map(s => guias.find(g => slug(g) === s)).filter((g): g is Guia => !!g)
     const trilhas = TRILHAS.map(t => {
         t.slugs.forEach(s => usados.add(s))
-        return { titulo: t.titulo, cor: t.cor, guias: t.slugs.map(s => guias.find(g => slug(g) === s)).filter((g): g is Guia => !!g) }
+        return { id: t.id as string, cor: t.cor, guias: t.slugs.map(s => guias.find(g => slug(g) === s)).filter((g): g is Guia => !!g) }
     })
     const resto = guias.filter(g => !usados.has(slug(g)))
-    if (resto.length > 0) trilhas.push({ titulo: 'Mais guias', cor: '#6d3fc0', guias: resto })
+    if (resto.length > 0) trilhas.push({ id: 'more', cor: '#6d3fc0', guias: resto })
     return { inicio, trilhas: trilhas.filter(t => t.guias.length > 0) }
 }
 
-const FESTAS: { nome: string; hangul: string; data: string; nota: string; guia?: string }[] = [
-    { nome: 'Seollal', hangul: '설날', data: '2027-02-07', nota: 'Ano-Novo lunar', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
-    { nome: 'Daeboreum', hangul: '정월대보름', data: '2027-02-21', nota: 'Primeira lua cheia do ano' },
-    { nome: 'Samiljeol', hangul: '삼일절', data: '2027-03-01', nota: 'Movimento de 1º de março' },
-    { nome: 'Dano', hangul: '단오', data: '2027-06-09', nota: '5º dia do 5º mês lunar' },
-    { nome: 'Gwangbokjeol', hangul: '광복절', data: '2027-08-15', nota: 'Dia da Libertação' },
-    { nome: 'Chuseok', hangul: '추석', data: '2027-09-15', nota: 'Festa da colheita', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
-    { nome: 'Hangeul-nal', hangul: '한글날', data: '2027-10-09', nota: 'Dia do alfabeto coreano', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
-    { nome: 'Seollal', hangul: '설날', data: '2028-01-26', nota: 'Ano-Novo lunar', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
-    { nome: 'Samiljeol', hangul: '삼일절', data: '2028-03-01', nota: 'Movimento de 1º de março' },
-    { nome: 'Gwangbokjeol', hangul: '광복절', data: '2028-08-15', nota: 'Dia da Libertação' },
-    { nome: 'Hangeul-nal', hangul: '한글날', data: '2028-10-09', nota: 'Dia do alfabeto coreano', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
+type NotaFesta = 'lunarNewYear' | 'firstFullMoon' | 'march1' | 'dano' | 'liberation' | 'harvest' | 'hangeulDay'
+
+const FESTAS: { nome: string; hangul: string; data: string; nota: NotaFesta; guia?: string }[] = [
+    { nome: 'Seollal', hangul: '설날', data: '2027-02-07', nota: 'lunarNewYear', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
+    { nome: 'Daeboreum', hangul: '정월대보름', data: '2027-02-21', nota: 'firstFullMoon' },
+    { nome: 'Samiljeol', hangul: '삼일절', data: '2027-03-01', nota: 'march1' },
+    { nome: 'Dano', hangul: '단오', data: '2027-06-09', nota: 'dano' },
+    { nome: 'Gwangbokjeol', hangul: '광복절', data: '2027-08-15', nota: 'liberation' },
+    { nome: 'Chuseok', hangul: '추석', data: '2027-09-15', nota: 'harvest', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
+    { nome: 'Hangeul-nal', hangul: '한글날', data: '2027-10-09', nota: 'hangeulDay', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
+    { nome: 'Seollal', hangul: '설날', data: '2028-01-26', nota: 'lunarNewYear', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
+    { nome: 'Samiljeol', hangul: '삼일절', data: '2028-03-01', nota: 'march1' },
+    { nome: 'Gwangbokjeol', hangul: '광복절', data: '2028-08-15', nota: 'liberation' },
+    { nome: 'Hangeul-nal', hangul: '한글날', data: '2028-10-09', nota: 'hangeulDay', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
 ]
 
 /** Datas lunares de 2027 (Seollal, Daeboreum, Dano, Chuseok) conferidas no calendário oficial e o Seollal de 2028 em duas fontes; as demais de 2028 são datas fixas. Chuseok, Daeboreum e Dano de 2028 ficam de fora até haver fonte. Ao esgotar a lista, o bloco some até ser atualizada. */
@@ -81,7 +93,7 @@ function proximasFestas(agora = new Date()) {
         .slice(0, 4)
 }
 
-const formatoData = { format: (data: number) => formatDate(data, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) }
+const formatoData = (data: number, locale: Locale) => formatDate(data, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }, locale)
 
 const lista = { items: [], total: 0, totalPages: 0 }
 const ou = <T,>(valor: T) => (r: PromiseSettledResult<T>) => (r.status === 'fulfilled' ? r.value : valor)
@@ -103,47 +115,62 @@ function VerTodos({ href, children, cor }: { href: string; children: React.React
     )
 }
 
-export default async function CulturaCoreanaPage() {
-    const [settings, culturaPosts, categorias, ...capasInicio] = await Promise.allSettled([
+export default async function CulturaCoreanaPage({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
+    const t = await getTranslations({ locale, namespace: 'entity.cultura101' })
+    const emPt = locale === DEFAULT_LOCALE
+    const [settings, culturaPosts, categorias, ...resto] = await Promise.allSettled([
         getSiteSettings(),
         // Margem larga: guias e posts de outros temas ocupam o topo da categoria, e as reportagens vêm depois deles.
-        getPosts({ category: 'cultura', perPage: 40, includeContent: false }),
+        getPosts({ category: 'cultura', perPage: 40, includeContent: false, lang: emPt ? undefined : locale }),
         getCategories(),
-        ...INICIO.map(slug => getPostBySlug(slug)),
+        // Em outro idioma as capas e resumos vêm dos posts traduzidos, não dos originais.
+        ...INICIO.map(slug => (emPt ? getPostBySlug(slug) : Promise.resolve(null))),
+        postsTraduzidosPorSlugPt(locale),
     ])
-    const guias = ou<Awaited<ReturnType<typeof getSiteSettings>> | null>(null)(settings)?.cultureGuides ?? []
+    const capasInicio = resto.slice(0, INICIO.length)
+    const traduzidos = ou<Map<string, WPPost>>(new Map())(resto[INICIO.length] as PromiseSettledResult<Map<string, WPPost>>)
+    const slugDoGuia = (g: Guia) => g.href.replace('/blog/', '')
+    const guiasPt = ou<Awaited<ReturnType<typeof getSiteSettings>> | null>(null)(settings)?.cultureGuides ?? []
+    // Em outro idioma só entra guia com tradução publicada, com o título da versão traduzida; o link segue o slug do original.
+    const guias: Guia[] = emPt ? guiasPt : guiasPt.flatMap(g => {
+        const post = traduzidos.get(slugDoGuia(g))
+        return post ? [{ ...g, label: stripHtml(post.title.rendered) }] : []
+    })
     const { inicio, trilhas } = agruparGuias(guias)
-    const slugsGuias = new Set(guias.map(g => g.href.replace('/blog/', '')))
+    const slugsGuias = new Set(guias.map(slugDoGuia))
     // "Cultura" no WordPress é a categoria mais ampla: o que tem categoria própria (comida, K-beauty, merch) fica no tema dele.
     const idsDeOutroTema = new Set(ou<Awaited<ReturnType<typeof getCategories>>>([])(categorias).filter(c => c.slug === 'comida' || c.slug === 'k-beauty' || c.slug === 'merch').map(c => c.id))
     const reportagens = ou<Awaited<ReturnType<typeof getPosts>>>(lista)(culturaPosts).items
-        .filter(p => !slugsGuias.has(p.slug) && !p.categories?.some(id => idsDeOutroTema.has(id)) && getWPImage(p._embedded, p.featured_image_url))
+        .filter(p => !slugsGuias.has(slugPublicoDoPost(p.translations, p.slug)) && !p.categories?.some(id => idsDeOutroTema.has(id)) && getWPImage(p._embedded, p.featured_image_url))
         .slice(0, 4)
     const capas = new Map<string, string>()
     const resumos = new Map<string, string>()
     capasInicio.forEach((r, i) => {
-        const post = ou<Awaited<ReturnType<typeof getPostBySlug>>>(null)(r as PromiseSettledResult<Awaited<ReturnType<typeof getPostBySlug>>>)
+        const post = emPt
+            ? ou<Awaited<ReturnType<typeof getPostBySlug>>>(null)(r as PromiseSettledResult<Awaited<ReturnType<typeof getPostBySlug>>>)
+            : traduzidos.get(INICIO[i]) ?? null
         const imagem = post && getWPImage(post._embedded, post.featured_image_url)
         if (imagem) capas.set(INICIO[i], imagem.src)
         const resumo = post && (post.acf?.subtitle?.trim() || stripHtml(post.excerpt.rendered))
         if (resumo) resumos.set(INICIO[i], metaDescription(resumo, 120))
     })
     const itensBusca: ItemBusca[] = [
-        ...guias.map(g => ({ rotulo: g.label, href: g.href, tipo: 'Guia' as const })),
+        ...guias.map(g => ({ rotulo: g.label, href: g.href, tipo: t('searchTag') })),
     ]
     const festas = proximasFestas()
 
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        name: TITLE,
-        description: DESCRIPTION,
-        url: PAGE_URL,
+        name: t('title'),
+        description: t('description'),
+        url: `${SITE_URL}${href('cultura101', undefined, locale)}`,
+        inLanguage: htmlLang(locale),
     }
 
     const atalhos = [
-        guias.length > 0 && { id: 'guias', rotulo: 'Guias de cultura', n: guias.length, cor: COR_CULTURA },
-        festas.length > 0 && { id: 'festas', rotulo: 'Festas', n: festas.length, cor: COR_FESTA },
+        guias.length > 0 && { id: 'guias', rotulo: t('shortcutGuides'), n: guias.length, cor: COR_CULTURA },
+        festas.length > 0 && { id: 'festas', rotulo: t('shortcutFestivals'), n: festas.length, cor: COR_FESTA },
     ].filter(Boolean) as { id: string; rotulo: string; n: number; cor: string }[]
 
     let n = 0
@@ -151,30 +178,30 @@ export default async function CulturaCoreanaPage() {
     return (
         <>
             <JsonLd data={jsonLd} />
-            <PageBreadcrumb items={[{ name: 'Cultura', path: '/cultura-coreana-101' }]} />
+            <PageBreadcrumb items={[{ name: t('breadcrumb'), path: href('cultura101', undefined, locale) }]} />
 
             {/* Topo no padrão de /artists: título, busca e atalhos numa faixa só. */}
             <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
                 <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
                     <h1 className="whitespace-nowrap font-[family-name:var(--font-playfair)] text-[34px] font-bold leading-none sm:text-[44px]">
-                        Cultura<span className="text-accent">.</span>
+                        {t('h1')}<span className="text-accent">.</span>
                     </h1>
-                    <HubBusca itens={itensBusca} />
+                    <HubBusca itens={itensBusca} placeholder={t('searchPlaceholder')} />
                     {atalhos.length > 0 && (
-                        <nav aria-label="Seções desta página" className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0">
+                        <nav aria-label={t('sectionsAria')} className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0">
                             {atalhos.map(a => (
                                 <a key={a.id} href={`#${a.id}`} className="touch-target flex h-10 shrink-0 items-center border border-border-strong px-4 text-[14px] font-semibold text-foreground transition-colors hover:border-accent/60">{a.rotulo}</a>
                             ))}
                         </nav>
                     )}
                 </div>
-                <p className="mt-3 text-[13px] text-muted">{`${guias.length} guias · do alfabeto às festas, explicado em português`}</p>
+                <p className="mt-3 text-[13px] text-muted">{t('count', { count: guias.length })}</p>
             </section>
 
             <div className="page-wrap space-y-10 py-8">
                 {guias.length > 0 && (
-                    <section aria-label="Guias de cultura" className="space-y-5">
-                        <Capitulo n={++n} id="guias" titulo="Cultura" sub={`${guias.length} guias para entender a Coreia`} cor={COR_CULTURA} />
+                    <section aria-label={t('guidesAria')} className="space-y-5">
+                        <Capitulo n={++n} id="guias" titulo={t('chapterTitle')} sub={t('chapterSub', { count: guias.length })} cor={COR_CULTURA} />
                         {inicio.length > 0 && (
                             <div className="grid gap-3 sm:grid-cols-2">
                                 {inicio.map(g => {
@@ -190,7 +217,7 @@ export default async function CulturaCoreanaPage() {
                                             <span className="flex items-center gap-4 px-5 py-4">
                                                 <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">{g.emoji}</span>
                                                 <span className="min-w-0">
-                                                    <span className={`block text-[10px] ${MONO}`} style={{ color: COR_CULTURA }}>Comece por aqui</span>
+                                                    <span className={`block text-[10px] ${MONO}`} style={{ color: COR_CULTURA }}>{t('startHere')}</span>
                                                     <span className="block font-serif text-[22px] font-medium leading-tight text-foreground group-hover:text-accent">{g.label}</span>
                                                     {resumo && <span className="mt-1 line-clamp-2 block text-[13px] leading-snug text-foreground/70">{resumo}</span>}
                                                 </span>
@@ -201,9 +228,9 @@ export default async function CulturaCoreanaPage() {
                             </div>
                         )}
                         <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {trilhas.map(t => {
-                                const visiveis = t.guias.slice(0, 5)
-                                const demais = t.guias.slice(5)
+                            {trilhas.map(tr => {
+                                const visiveis = tr.guias.slice(0, 5)
+                                const demais = tr.guias.slice(5)
                                 const item = (g: Guia) => (
                                     <li key={g.href} className="border-t border-border first:border-t-0">
                                         <Link href={g.href} className="group flex items-center gap-2.5 py-2.5">
@@ -213,17 +240,17 @@ export default async function CulturaCoreanaPage() {
                                     </li>
                                 )
                                 return (
-                                    <div key={t.titulo} className="border-t-4 pt-3" style={{ borderColor: t.cor }}>
+                                    <div key={tr.id} className="border-t-4 pt-3" style={{ borderColor: tr.cor }}>
                                         <h3 className="mb-1 flex items-baseline justify-between gap-2 font-serif text-[20px] font-medium leading-tight text-foreground">
-                                            {t.titulo}
-                                            <span className={`text-[10px] text-muted ${MONO}`}>{t.guias.length}</span>
+                                            {t(`trails.${tr.id as 'language'}`)}
+                                            <span className={`text-[10px] text-muted ${MONO}`}>{tr.guias.length}</span>
                                         </h3>
                                         <ul>{visiveis.map(item)}</ul>
                                         {demais.length > 0 && (
                                             <details className="group/mais">
                                                 <summary className={`cursor-pointer border-t border-border py-2.5 text-[10px] text-muted hover:text-foreground ${MONO}`}>
-                                                    <span className="group-open/mais:hidden">+ {demais.length} guias</span>
-                                                    <span className="hidden group-open/mais:inline">Mostrar menos</span>
+                                                    <span className="group-open/mais:hidden">{t('more', { count: demais.length })}</span>
+                                                    <span className="hidden group-open/mais:inline">{t('less')}</span>
                                                 </summary>
                                                 <ul>{demais.map(item)}</ul>
                                             </details>
@@ -234,18 +261,18 @@ export default async function CulturaCoreanaPage() {
                         </div>
                         {reportagens.length > 0 && (
                             <div className="border-t border-border pt-5">
-                                <p className={`mb-3 text-[10px] ${MONO}`} style={{ color: COR_CULTURA }}>Reportagens e análises</p>
+                                <p className={`mb-3 text-[10px] ${MONO}`} style={{ color: COR_CULTURA }}>{t('reports')}</p>
                                 <ul className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
                                     {reportagens.map(post => {
                                         const imagem = getWPImage(post._embedded, post.featured_image_url)
                                         return (
                                             <li key={post.id}>
-                                                <Link href={`/blog/${post.slug}`} className="group block">
+                                                <Link href={`/blog/${slugPublicoDoPost(post.translations, post.slug)}`} className="group block">
                                                     <span className="relative block aspect-video overflow-hidden bg-surface">
                                                         {imagem && <Image src={imagem.src} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition-transform group-hover:scale-[1.03]" />}
                                                     </span>
                                                     <span className="mt-2 line-clamp-3 block font-serif text-[17px] font-medium leading-snug text-foreground group-hover:text-accent">{stripHtml(post.title.rendered)}</span>
-                                                    <span className={`mt-1 block text-[10px] text-muted ${MONO}`}>{dataRelativa(post.date, 'pt')}</span>
+                                                    <span className={`mt-1 block text-[10px] text-muted ${MONO}`}>{dataRelativa(post.date, locale)}</span>
                                                 </Link>
                                             </li>
                                         )
@@ -254,8 +281,8 @@ export default async function CulturaCoreanaPage() {
                             </div>
                         )}
                         <div className="flex flex-wrap gap-x-6 gap-y-2">
-                            <VerTodos href="/guias" cor={COR_CULTURA}>Ver todos os guias →</VerTodos>
-                            <VerTodos href="/blog?category=cultura" cor={COR_CULTURA}>Mais reportagens de cultura →</VerTodos>
+                            <VerTodos href="/guias" cor={COR_CULTURA}>{t('seeAllGuides')}</VerTodos>
+                            <VerTodos href="/blog?category=cultura" cor={COR_CULTURA}>{t('moreReports')}</VerTodos>
                         </div>
                     </section>
                 )}
@@ -267,8 +294,8 @@ export default async function CulturaCoreanaPage() {
                 )}
 
                 {festas.length > 0 && (
-                    <section aria-label="Próximas festas" className="space-y-5">
-                        <Capitulo n={++n} id="festas" titulo="Calendário" sub="Próximas datas da Coreia" cor={COR_FESTA} />
+                    <section aria-label={t('festivalsAria')} className="space-y-5">
+                        <Capitulo n={++n} id="festas" titulo={t('festivalsTitle')} sub={t('festivalsSub')} cor={COR_FESTA} />
                         <ul className="-mx-4 grid auto-cols-[78%] grid-flow-col gap-3 overflow-x-auto px-4 pb-1 no-scrollbar sm:mx-0 sm:auto-cols-auto sm:grid-flow-row sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
                             {festas.map(f => {
                                 const corpo = (
@@ -278,9 +305,9 @@ export default async function CulturaCoreanaPage() {
                                             <span className="text-[15px] leading-none text-muted" lang="ko">{f.hangul}</span>
                                         </span>
                                         <span className="mt-3 block font-mono text-[11px] font-black uppercase tracking-[0.14em]" style={{ color: COR_FESTA }}>
-                                            {f.dias === 0 ? 'Hoje' : f.dias === 1 ? 'Amanhã' : `Em ${f.dias} dias`}
+                                            {f.dias === 0 ? t('today') : f.dias === 1 ? t('tomorrow') : t('inDays', { days: f.dias })}
                                         </span>
-                                        <span className="mt-1 block text-[13px] text-foreground/70">{formatoData.format(Date.parse(f.data))} · {f.nota}</span>
+                                        <span className="mt-1 block text-[13px] text-foreground/70">{formatoData(Date.parse(f.data), locale)} · {t(`festivals.${f.nota}`)}</span>
                                     </>
                                 )
                                 const cls = 'block h-full border border-border border-t-4 bg-background p-4'
@@ -296,23 +323,26 @@ export default async function CulturaCoreanaPage() {
                     </section>
                 )}
 
-                <section aria-label="Outros temas" className="grid gap-4 md:grid-cols-2">
+                <section aria-label={t('othersAria')} className="grid gap-4 md:grid-cols-2">
                     <Link href="/comidas" className="group flex items-center gap-4 border-2 px-5 py-4 transition-colors hover:bg-surface" style={{ borderColor: COR_COMIDA }}>
                         <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">🍜</span>
                         <span className="min-w-0">
-                            <span className={`block text-[10px] ${MONO}`} style={{ color: COR_COMIDA }}>Gastronomia</span>
-                            <span className="block font-serif text-[20px] font-medium leading-tight text-foreground group-hover:text-accent">Pratos, receitas, marcas e a loja de comida coreana</span>
-                            <span className={`mt-2 block text-foreground ${MONO}`}>Ver gastronomia →</span>
+                            <span className={`block text-[10px] ${MONO}`} style={{ color: COR_COMIDA }}>{t('foodKicker')}</span>
+                            <span className="block font-serif text-[20px] font-medium leading-tight text-foreground group-hover:text-accent">{t('foodTitle')}</span>
+                            <span className={`mt-2 block text-foreground ${MONO}`}>{t('foodCta')}</span>
                         </span>
                     </Link>
+                    {/* Merch é vitrine da loja brasileira (somentePt no manifesto de rotas): fora do inglês. */}
+                    {emPt && (
                     <Link href="/merch" className="group flex items-center gap-4 border-2 px-5 py-4 transition-colors hover:bg-surface" style={{ borderColor: COR_MERCH }}>
                         <span className="shrink-0 text-[36px] leading-none" aria-hidden="true">🪄</span>
                         <span className="min-w-0">
                             <span className={`block text-[10px] ${MONO}`} style={{ color: COR_MERCH }}>Merch</span>
-                            <span className="block font-serif text-[20px] font-medium leading-tight text-foreground group-hover:text-accent">Lightstick, photocard, álbum físico e o que comprar</span>
-                            <span className={`mt-2 block text-foreground ${MONO}`}>Ver merch →</span>
+                            <span className="block font-serif text-[20px] font-medium leading-tight text-foreground group-hover:text-accent">{t('merchTitle')}</span>
+                            <span className={`mt-2 block text-foreground ${MONO}`}>{t('merchCta')}</span>
                         </span>
                     </Link>
+                    )}
                 </section>
             </div>
         </>

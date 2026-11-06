@@ -526,5 +526,11 @@
     "producoes": "K-dramas and films",
     "artistas": "Artists",
     "metaTitulo": "Page not found"
+  },
+  "hubBusca": {
+    "empty": "No guide matches “{termo}”.",
+    "searchSite": "Search the whole site",
+    "mostRead": "Most read",
+    "seeAll": "See all {count} results on the site →"
   }
 }
