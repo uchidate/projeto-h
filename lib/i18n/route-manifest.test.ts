@@ -20,8 +20,8 @@ function paginasDe(grupo: string): string[] {
     return achadas.sort()
 }
 
-/** `filtrado` é destino interno de rewrite (listagens estáticas), não uma rota pública. */
-const ehInterna = (caminho: string) => caminho.split('/').includes('filtrado')
+/** `filtrado` é destino interno de rewrite (listagens estáticas) e `[...resto]` só devolve 404 no idioma; nenhum é rota pública. */
+const ehInterna = (caminho: string) => caminho.split('/').some(parte => parte === 'filtrado' || parte === '[...resto]')
 
 /** Páginas de `app/[locale]`, trazidas ao caminho em português via `ROUTES` (`/sign-in` → `/entrar`). */
 const paginasEmIntl = () => {
