@@ -526,5 +526,11 @@
     "producoes": "Doramas e filmes",
     "artistas": "Artistas",
     "metaTitulo": "Página não encontrada"
+  },
+  "hubBusca": {
+    "empty": "Nenhum guia com “{termo}”.",
+    "searchSite": "Buscar no site todo",
+    "mostRead": "Mais lidos",
+    "seeAll": "Ver todos os {count} resultados no site →"
   }
 }

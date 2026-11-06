@@ -3,6 +3,7 @@
 import Link from '@/components/i18n/LocalizedLink'
 import { useMemo, useRef, useState } from 'react'
 import { Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export type ItemBusca = { rotulo: string; href: string; tipo: string; /** termos extras que também encontram o item (palavras-chave do guia) */ palavras?: string }
 
@@ -24,7 +25,8 @@ const semAcento = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLo
 const MAX = 8
 
 /** Busca ao vivo dos hubs: filtra os itens já carregados na página; sem JS cai na busca do site. */
-export function HubBusca({ itens, placeholder = 'Buscar guia ou festa', sugestoes = [] }: { itens: ItemBusca[]; placeholder?: string; sugestoes?: ItemBusca[] }) {
+export function HubBusca({ itens, placeholder, sugestoes = [] }: { itens: ItemBusca[]; placeholder: string; sugestoes?: ItemBusca[] }) {
+    const t = useTranslations('client.hubBusca')
     const [q, setQ] = useState('')
     const [aberto, setAberto] = useState(false)
     const campo = useRef<HTMLInputElement>(null)
@@ -64,10 +66,10 @@ export function HubBusca({ itens, placeholder = 'Buscar guia ou festa', sugestoe
                 <div className="absolute left-0 right-0 top-full z-30 mt-1 border border-border-strong bg-background shadow-lg">
                     {visiveis.length === 0 ? (
                         <div className="px-4 py-3 text-[14px] text-muted">
-                            <p>Nenhum guia com “{q.trim()}”. <button type="submit" className="font-semibold text-accent underline">Buscar no site todo</button></p>
+                            <p>{t('empty', { termo: q.trim() })} <button type="submit" className="font-semibold text-accent underline">{t('searchSite')}</button></p>
                             {sugestoes.length > 0 && (
                                 <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-                                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em]">Mais lidos</span>
+                                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em]">{t('mostRead')}</span>
                                     {sugestoes.map(g => <Link key={g.href} href={g.href} className="font-semibold text-foreground hover:text-accent">{g.rotulo}</Link>)}
                                 </p>
                             )}
@@ -84,7 +86,7 @@ export function HubBusca({ itens, placeholder = 'Buscar guia ou festa', sugestoe
                             ))}
                             {achados.length > MAX && (
                                 <li className="border-t border-border">
-                                    <button type="submit" className="w-full px-4 py-2.5 text-left font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{`Ver todos os ${achados.length} resultados no site →`}</button>
+                                    <button type="submit" className="w-full px-4 py-2.5 text-left font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{t('seeAll', { count: achados.length })}</button>
                                 </li>
                             )}
                         </ul>
