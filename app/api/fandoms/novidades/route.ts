@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPosts } from '@/lib/wordpress/posts'
+import { isActiveLocale, DEFAULT_LOCALE } from '@/lib/i18n/config'
+import { slugPublicoDoPost } from '@/lib/blog/translations'
 import { getFandomBySlug } from '@/lib/wordpress/fandoms'
 import { getArtistsByIds } from '@/lib/wordpress/artists'
 import { stripHtml } from '@/lib/utils'
@@ -20,6 +22,8 @@ const limiter = createRateLimiter({ max: 30, windowMs: 60 * 1000 })
 export async function GET(req: NextRequest) {
     const torcida = req.nextUrl.searchParams.get('torcida')?.trim() ?? ''
     const grupo = req.nextUrl.searchParams.get('grupo')?.trim() ?? ''
+    const lang = req.nextUrl.searchParams.get('lang') ?? DEFAULT_LOCALE
+    const idioma = isActiveLocale(lang) && lang !== DEFAULT_LOCALE ? lang : undefined
     const valido = (s: string) => /^[a-z0-9-]{1,80}$/.test(s)
     if (!valido(torcida) && !valido(grupo)) return NextResponse.json({ artigos: [], datas: [] })
     if (limiter.check(clientIpOrUnknown(req.headers))) return NextResponse.json({ error: 'Muitas consultas, aguarde alguns segundos' }, { status: 429 })
@@ -27,9 +31,9 @@ export async function GET(req: NextRequest) {
     try {
         const fandom = valido(torcida) ? await getFandomBySlug(torcida) : null
         const slugs = fandom ? fandom.groups.map(g => g.slug).slice(0, 3) : [grupo]
-        const listas = await Promise.all(slugs.map(s => getPosts({ mentionsType: 'group', mentionsSlug: s, perPage: 3, includeContent: false }).then(r => r.items).catch(() => [])))
+        const listas = await Promise.all(slugs.map(s => getPosts({ mentionsType: 'group', mentionsSlug: s, perPage: 3, includeContent: false, lang: idioma }).then(r => r.items).catch(() => [])))
         const posts = Array.from(new Map(listas.flat().map(p => [p.id, p])).values()).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3)
-        const artigos = posts.map(p => ({ slug: p.slug, titulo: stripHtml(p.title.rendered), foto: p.featured_image_url ?? null, data: p.date }))
+        const artigos = posts.map(p => ({ slug: slugPublicoDoPost(p.translations, p.slug), titulo: stripHtml(p.title.rendered), foto: p.featured_image_url ?? null, data: p.date }))
 
         let datas: ReturnType<typeof proximasDatas> = []
         if (fandom) {

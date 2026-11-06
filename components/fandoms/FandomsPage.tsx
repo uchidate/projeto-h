@@ -1,5 +1,8 @@
 import Link from '@/components/i18n/LocalizedLink'
+import { getTranslations } from 'next-intl/server'
 import { htmlLang } from '@/lib/i18n/format'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import { Heart } from 'lucide-react'
 import { getWPImage, stripHtml, getYear } from '@/lib/utils'
 import type { Fandom } from '@/lib/wordpress/fandoms'
@@ -16,9 +19,12 @@ import { EmptyState } from '@/components/ui/EmptyState'
 interface Props {
     fandoms: Fandom[]
     search?: string
+    locale?: Locale
 }
 
-export function FandomsPage({ fandoms, search }: Props) {
+export async function FandomsPage({ fandoms, search, locale = DEFAULT_LOCALE }: Props) {
+    const t = await getTranslations({ locale, namespace: 'client.fandoms' })
+    const base = href('fandoms', undefined, locale)
     const hoje = chaveDia()
     // Só o que o espaço do fã precisa, já em formato serializável para o componente de cliente.
     const cartoes: CartaoTorcida[] = fandoms.map(fandom => {
@@ -44,26 +50,26 @@ export function FandomsPage({ fandoms, search }: Props) {
             <JsonLd data={{
                 '@context': 'https://schema.org',
                 '@type': 'CollectionPage',
-                name: `Fandoms K-Pop | ${SITE_NAME}`,
-                description: 'Fandoms de K-Pop — cores oficiais, lightsticks e os grupos de cada torcida.',
+                name: t('schemaName', { site: SITE_NAME }),
+                description: t('schemaDescription'),
                 mainEntity: {
                     '@type': 'ItemList',
                     numberOfItems: fandoms.length,
-                    itemListElement: fandoms.slice(0, 50).map((f, i) => ({ '@type': 'ListItem', position: i + 1, name: f.name, url: `${SITE_URL}/fandoms/${f.slug}` })),
+                    itemListElement: fandoms.slice(0, 50).map((f, i) => ({ '@type': 'ListItem', position: i + 1, name: f.name, url: `${SITE_URL}${href('fandom', { slug: f.slug }, locale)}` })),
                 },
-                url: `${SITE_URL}/fandoms`,
-                inLanguage: htmlLang(),
+                url: `${SITE_URL}${base}`,
+                inLanguage: htmlLang(locale),
                 publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
             }} />
 
             <div className="page-wrap py-6 sm:py-10">
-                <span className="inline-block -rotate-2 bg-[#ffe14d] px-3 py-1 text-[12px] font-black tracking-[0.08em] text-[#15102b]">{fandoms.length} TORCIDAS</span>
+                <span className="inline-block -rotate-2 bg-[#ffe14d] px-3 py-1 text-[12px] font-black tracking-[0.08em] text-[#15102b]">{t('badge', { count: fandoms.length })}</span>
                 <h1 className="mt-3 font-[family-name:var(--font-playfair)] text-[38px] font-extrabold leading-[1] sm:text-[56px]">
-                    <span className="sr-only">Fandoms de K-Pop: </span>Qual é a sua <span className="text-[#ff5fa2]">torcida</span>? <span className="text-[#38e1c0]">✦</span>
+                    <span className="sr-only">{t('h1Sr')}</span>{t('h1Pre')}<span className="text-[#ff5fa2]">{t('h1Hi')}</span>{t('h1Post')} <span className="text-[#38e1c0]">✦</span>
                 </h1>
-                <p className="mt-3 max-w-2xl text-[16px] text-foreground/70">Fandoms de K-Pop são as torcidas oficiais de cada grupo: ARMY é a do BTS, BLINK a do BLACKPINK, ONCE a do TWICE. Marque a sua (ou as suas) e este espaço passa a ser seu, com novidades, datas e o quiz da sua torcida.</p>
+                <p className="mt-3 max-w-2xl text-[16px] text-foreground/70">{t('intro')}</p>
                 <div className="mt-5 max-w-sm">
-                    <SearchInput placeholder="Buscar fandom..." current={search} />
+                    <SearchInput placeholder={t('searchPlaceholder')} current={search} />
                 </div>
             </div>
 
@@ -71,10 +77,10 @@ export function FandomsPage({ fandoms, search }: Props) {
                 {fandoms.length === 0 ? (
                     <EmptyState
                         icon={<Heart size={48} />}
-                        title="Nenhuma fandom encontrada"
-                        description={search ? `Nenhum resultado para "${search}"` : 'Sem fandoms disponíveis'}
-                        actionHref="/fandoms"
-                        actionLabel="Ver todas"
+                        title={t('emptyTitle')}
+                        description={search ? t('emptySearch', { search }) : t('emptyNone')}
+                        actionHref={base}
+                        actionLabel={t('emptyAction')}
                     />
                 ) : (
                     <EspacoDoFa cartoes={cartoes} busca={search} />
@@ -82,9 +88,9 @@ export function FandomsPage({ fandoms, search }: Props) {
 
                 {fandoms.length > 0 && (
                     <section aria-labelledby="oque-fandom" className="mt-14 max-w-3xl space-y-3 text-[16px] leading-relaxed">
-                        <h2 id="oque-fandom" className="font-[family-name:var(--font-playfair)] text-[26px] font-extrabold leading-tight sm:text-[30px]">O que é um fandom de K-Pop?</h2>
-                        <p>Fandom é o conjunto de fãs de um artista ou grupo. No K-Pop cada torcida tem um nome oficial, uma cor e, em geral, um lightstick, o bastão de luz levado aos shows. O nome costuma ter uma história: ARMY, por exemplo, nasceu junto com o BTS, em 2013.</p>
-                        <p>Aqui você encontra {fandoms.length} torcidas, cada uma com o grupo, a origem do nome, as próximas datas comemoradas (estreia do grupo e aniversário dos membros) e as últimas notícias. Quer testar o que sabe? Faça o <Link href="/quiz" className="font-bold underline">quiz de K-Pop</Link>.</p>
+                        <h2 id="oque-fandom" className="font-[family-name:var(--font-playfair)] text-[26px] font-extrabold leading-tight sm:text-[30px]">{t('whatTitle')}</h2>
+                        <p>{t('whatP1')}</p>
+                        <p>{t('whatP2Pre', { count: fandoms.length })}<Link href="/quiz" className="font-bold underline">{t('whatQuiz')}</Link>{t('whatP2Post')}</p>
                     </section>
                 )}
 
