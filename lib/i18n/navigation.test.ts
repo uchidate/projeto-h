@@ -37,3 +37,16 @@ describe('navegação por idioma', () => {
         ])
     })
 })
+
+describe('menu x manifesto de rotas', () => {
+    it('todo item do menu em inglês aponta para rota que existe no idioma (pronta ou parcial), nunca só-PT', async () => {
+        const { NAV_ITEMS } = await import('./navigation')
+        const { ROUTES } = await import('./routes')
+        const { MANIFESTO_DE_ROTAS } = await import('./route-manifest')
+        for (const item of NAV_ITEMS) {
+            const entrada = MANIFESTO_DE_ROTAS[ROUTES[item.route].pt]
+            expect(entrada, `${item.route} sem entrada no manifesto`).toBeDefined()
+            expect(['pronta', 'parcial']).toContain(entrada.estado)
+        }
+    })
+})
