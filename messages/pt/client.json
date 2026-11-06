@@ -527,6 +527,12 @@
     "artistas": "Artistas",
     "metaTitulo": "Página não encontrada"
   },
+  "hubBusca": {
+    "empty": "Nenhum guia com “{termo}”.",
+    "searchSite": "Buscar no site todo",
+    "mostRead": "Mais lidos",
+    "seeAll": "Ver todos os {count} resultados no site →"
+  },
   "fandoms": {
     "metaTitle": "Fandoms de K-Pop: nome de cada torcida",
     "metaDescription": "Fandoms de K-Pop: descubra o nome da torcida de cada grupo, de ARMY a ONCE, com cor oficial, próximas datas e novidades. Escolha a sua e acompanhe.",

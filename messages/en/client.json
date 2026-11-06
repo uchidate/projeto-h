@@ -527,6 +527,12 @@
     "artistas": "Artists",
     "metaTitulo": "Page not found"
   },
+  "hubBusca": {
+    "empty": "No guide matches “{termo}”.",
+    "searchSite": "Search the whole site",
+    "mostRead": "Most read",
+    "seeAll": "See all {count} results on the site →"
+  },
   "fandoms": {
     "metaTitle": "K-Pop Fandoms: the Name of Every Fan Club",
     "metaDescription": "K-Pop fandoms: find the fan club name of every group, from ARMY to ONCE, with official color, upcoming dates and news. Pick yours and follow along.",
