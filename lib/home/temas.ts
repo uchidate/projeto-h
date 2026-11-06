@@ -39,21 +39,31 @@ export function escolherFichas(itens: ComAcf[], n: number, comLoja = true): Fich
 const vazio = <T,>(valor: T) => (r: PromiseSettledResult<T>) => (r.status === 'fulfilled' ? r.value : valor)
 
 /**
- * Fora do português só entram fichas e artigos com tradução publicada (a loja é em reais, então a prateleira fica vazia).
- * A busca por idioma devolve só o que está traduzido; o nome da ficha vem da versão no idioma.
+ * Fora do português só entram pratos e artigos com tradução publicada (a loja é em reais, então a prateleira fica vazia).
+ * Marcas completam com as não traduzidas, depois das traduzidas. O nome da ficha vem da versão no idioma.
  */
 export async function carregarTemas(locale: Locale = DEFAULT_LOCALE): Promise<{ gastronomia: TemaHome; beleza: TemaHome }> {
     const emPt = locale === DEFAULT_LOCALE
     const lang = emPt ? {} : { lang: locale }
     const idioma = emPt ? {} : { locale }
     const lista = { items: [], total: 0, totalPages: 0 }
+    // Marca é nome próprio: fora do português, as traduzidas vêm primeiro e as demais completam a lista (a ficha abre com o aviso de falta de tradução).
+    const empresasDoSetor = (industry: 'food_beverage' | 'beauty') =>
+        Promise.all([
+            getCompanies({ industry, perPage: 100, ...idioma }),
+            emPt ? Promise.resolve(null) : getCompanies({ industry, perPage: 100 }),
+        ]).then(([traduzidas, todas]) => {
+            if (!todas) return traduzidas
+            const ja = new Set(traduzidas.items.map(c => c.slug))
+            return { ...todas, items: [...traduzidas.items, ...todas.items.filter(c => !ja.has(c.slug))] }
+        })
     const [postsComida, comidas, empresasComida, prateleiraComida, postsBeleza, empresasBeleza, prateleiraBeleza] = await Promise.allSettled([
         getPosts({ tag: 'comida-coreana', perPage: 2, includeContent: false, ...lang }),
         getFoods({ perPage: 100, ...idioma }),
-        getCompanies({ industry: 'food_beverage', perPage: 100, ...idioma }),
+        empresasDoSetor('food_beverage'),
         emPt ? getVitrinePorTermos([], 'home_gastronomia', { limit: 5, temas: ['culinaria'] }) : Promise.resolve([]),
         getPosts({ category: 'k-beauty', perPage: 2, includeContent: false, ...lang }),
-        getCompanies({ industry: 'beauty', perPage: 100, ...idioma }),
+        empresasDoSetor('beauty'),
         emPt ? getVitrinePorTermos([], 'home_beleza', { limit: 5, temas: ['beleza'] }) : Promise.resolve([]),
     ])
     const pc = vazio<Awaited<ReturnType<typeof getPosts>>>(lista)(postsComida)
