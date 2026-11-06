@@ -121,27 +121,3 @@ export async function buildLocalizedGuidesIndexMetadata(locale: Locale): Promise
         robots: { index: slugsPtTraduzidos(locale).length > 0, follow: true },
     }
 }
-
-export async function LocalizedGuidesIndex({ locale }: { locale: Locale }) {
-    const t = await getTranslations({ locale, namespace: 'entity.guides' })
-    const guias = Object.values(traducoesDoIdioma(locale))
-    return (
-        <div className="page-wrap py-10 sm:py-14">
-            <header className="mb-8 border-b border-border pb-6">
-                <h1 className="text-[32px] font-black leading-tight tracking-[-0.03em] sm:text-[44px]">{t('title')}</h1>
-                <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-foreground/70">{t('description')}</p>
-                <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">{t('count', { count: guias.length })}</p>
-            </header>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {guias.map((g) => (
-                    <li key={g.slug} className="border border-border">
-                        <Link href={href('guide', { slug: g.slug }, locale)} className="group block p-4">
-                            <span className="block text-[18px] font-black leading-snug group-hover:text-accent">{g.shortTitle}</span>
-                            <span className="mt-1 block text-[13px] leading-relaxed text-muted line-clamp-3">{g.description}</span>
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    )
-}

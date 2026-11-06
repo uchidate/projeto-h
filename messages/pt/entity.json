@@ -471,7 +471,50 @@
     "faq": "Perguntas frequentes",
     "related": "Guias relacionados",
     "empty": "Nenhuma produção com página neste idioma neste guia ainda.",
-    "back": "Todos os guias"
+    "back": "Todos os guias",
+    "index": {
+      "title": "Guias",
+      "titleSr": "de K-Drama, K-Pop e cultura coreana",
+      "searchPlaceholder": "Buscar guia, gênero, plataforma ou agência",
+      "categoriesAria": "Categorias de guias",
+      "sectionsAria": "Seções de guias",
+      "filterAll": "Todos",
+      "culture": "Cultura",
+      "cultureTag": "Cultura",
+      "count": "{count} guias · para descobrir o que assistir, quem acompanhar e por onde começar",
+      "countWithCulture": "{count} guias · {culture} de cultura · para descobrir o que assistir, quem acompanhar e por onde começar",
+      "kinds": {
+        "productions": "Produções",
+        "artists": "Artistas",
+        "groups": "Grupos"
+      },
+      "kindSub": {
+        "productions": "Doramas, filmes e séries por gênero, plataforma, emissora e ano",
+        "artists": "Atores e cantores por perfil, agência e grupo de origem",
+        "groups": "Girl groups, boy groups e as agências por trás deles"
+      },
+      "chapterSub": "{count} guias · {sub}",
+      "groups": {
+        "genre": "Por gênero e tema",
+        "platform": "Por plataforma",
+        "network": "Por emissora",
+        "year": "Por ano",
+        "profile": "Por perfil",
+        "artistAgency": "Por agência",
+        "solo": "Solistas",
+        "members": "Integrantes de grupos",
+        "type": "Por tipo",
+        "groupAgency": "Por agência"
+      },
+      "mostRead": "Mais lidos",
+      "more": "+ {count} guias",
+      "less": "Mostrar menos",
+      "alsoIn": "Também nos guias",
+      "cultureTitle": "Cultura coreana",
+      "cultureText": "Hangeul, honoríficos, festas e vida cotidiana: {count} guias para entender a Coreia.",
+      "cultureMany": "dezenas de",
+      "open": "Abrir"
+    }
   },
   "blog": {
     "categories": "Categorias",

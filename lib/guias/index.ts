@@ -56,33 +56,33 @@ export async function getRelatedHubs(hub: ArchiveHub, limit = 6): Promise<Archiv
 export const ALL_HUBS = STATIC_HUBS
 export const HUB_BY_SLUG = Object.fromEntries(STATIC_HUBS.map(h => [h.slug, h]))
 
-export type GrupoDeGuias = { titulo: string; hubs: ArchiveHub[] }
+export type GrupoDeGuias = { id: string; titulo: string; hubs: ArchiveHub[] }
 
 /** Como a página /guias organiza os guias: por tipo (kind) e, dentro dele, pela lista de origem de cada guia. */
 export const GRUPOS_DE_GUIAS: { kind: ArchiveHub['kind']; grupos: GrupoDeGuias[] }[] = [
     {
         kind: 'productions',
         grupos: [
-            { titulo: 'Por gênero e tema', hubs: productionsGenreHubs },
-            { titulo: 'Por plataforma', hubs: productionsPlatformHubs },
-            { titulo: 'Por emissora', hubs: productionsNetworkHubs },
-            { titulo: 'Por ano', hubs: productionsYearHubs },
+            { id: 'genre', titulo: 'Por gênero e tema', hubs: productionsGenreHubs },
+            { id: 'platform', titulo: 'Por plataforma', hubs: productionsPlatformHubs },
+            { id: 'network', titulo: 'Por emissora', hubs: productionsNetworkHubs },
+            { id: 'year', titulo: 'Por ano', hubs: productionsYearHubs },
         ],
     },
     {
         kind: 'artists',
         grupos: [
-            { titulo: 'Por perfil', hubs: artistsCategoriesHubs },
-            { titulo: 'Por agência', hubs: artistsAgenciesHubs },
-            { titulo: 'Solistas', hubs: artistsSoloHubs },
-            { titulo: 'Integrantes de grupos', hubs: groupsMembersHubs },
+            { id: 'profile', titulo: 'Por perfil', hubs: artistsCategoriesHubs },
+            { id: 'artistAgency', titulo: 'Por agência', hubs: artistsAgenciesHubs },
+            { id: 'solo', titulo: 'Solistas', hubs: artistsSoloHubs },
+            { id: 'members', titulo: 'Integrantes de grupos', hubs: groupsMembersHubs },
         ],
     },
     {
         kind: 'groups',
         grupos: [
-            { titulo: 'Por tipo', hubs: groupsCategoriesHubs },
-            { titulo: 'Por agência', hubs: groupsAgenciesHubs },
+            { id: 'type', titulo: 'Por tipo', hubs: groupsCategoriesHubs },
+            { id: 'groupAgency', titulo: 'Por agência', hubs: groupsAgenciesHubs },
         ],
     },
 ]
