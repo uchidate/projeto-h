@@ -1,3 +1,4 @@
+import { localizarLinksEm } from '@/lib/i18n/localizar-caminho'
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { getTranslations } from 'next-intl/server'
@@ -60,7 +61,9 @@ function corpo(post: WPPost, produtos: StoreProduct[]) {
     return <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
 }
 
-export async function LocalizedPost({ post, locale }: { post: WPPost; locale: Locale }) {
+export async function LocalizedPost({ post: postOriginal, locale }: { post: WPPost; locale: Locale }) {
+    // Links internos do corpo traduzido apontam para o caminho em português; levam ao idioma da página.
+    const post: WPPost = { ...postOriginal, content: localizarLinksEm(postOriginal.content, locale), article_blocks: localizarLinksEm(postOriginal.article_blocks, locale) }
     const t = await getTranslations({ locale, namespace: 'entity.blog' })
     const produtos = await getProdutosDosBlocos(post)
     const { titulo, descricao } = tituloEDescricao(post)

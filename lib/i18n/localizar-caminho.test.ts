@@ -26,3 +26,16 @@ describe('localizarCaminho', () => {
         }
     })
 })
+
+import { localizarHtml, localizarLinksEm } from './localizar-caminho'
+
+describe('localizarHtml', () => {
+    it('reescreve href interno e deixa externo, âncora e texto', () => {
+        const h = '<a href="/artists/lisa">Lisa</a> <a href=\'/comidas/kimchi\'>k</a> <a href="https://x.com/a">x</a> <a href="#n">n</a> /artists/iu'
+        expect(localizarHtml(h, 'en')).toBe('<a href="/en/artists/lisa">Lisa</a> <a href=\'/en/foods/kimchi\'>k</a> <a href="https://x.com/a">x</a> <a href="#n">n</a> /artists/iu')
+        expect(localizarHtml(h, 'pt')).toBe(h)
+    })
+    it('percorre objetos e listas', () => {
+        expect(localizarLinksEm({ a: ['<a href="/groups/bts">b</a>', 3], b: null }, 'en')).toEqual({ a: ['<a href="/en/groups/bts">b</a>', 3], b: null })
+    })
+})

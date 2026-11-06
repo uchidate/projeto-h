@@ -1,4 +1,5 @@
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, isActiveLocale, type Locale } from './config'
+import { localizarLinksEm } from './localizar-caminho'
 import { TRANSLATABLE_ACF, pickTranslatable, type TranslatableType } from './translatable-fields'
 
 /**
@@ -90,7 +91,7 @@ export function localizeEntity<T extends TranslatableEntity>(entity: T, locale: 
     const rendered = (field: { rendered: string } | undefined, value: string | undefined) =>
         field ? { ...field, rendered: mergeText(field.rendered, value) as string } : field
 
-    return {
+    const traduzida = {
         ...entity,
         title: rendered(entity.title, tr.title)!,
         content: rendered(entity.content, tr.content),
@@ -104,6 +105,14 @@ export function localizeEntity<T extends TranslatableEntity>(entity: T, locale: 
         },
         acf: entity.acf ? (mergeText(entity.acf, pickTranslatable(tr.acf, TRANSLATABLE_ACF[type])) as T['acf']) : entity.acf,
         ...espelhosDeTopo(entity, tr, type),
+    }
+    // Os links internos do texto traduzido continuam como no original em português.
+    return {
+        ...traduzida,
+        content: localizarLinksEm(traduzida.content, locale),
+        excerpt: localizarLinksEm(traduzida.excerpt, locale),
+        acf: localizarLinksEm(traduzida.acf, locale),
+        ...localizarLinksEm(espelhosDeTopo(entity, tr, type), locale),
     }
 }
 
