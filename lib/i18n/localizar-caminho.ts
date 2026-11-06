@@ -42,3 +42,25 @@ export function localizarCaminho(caminho: string, locale: Locale): string {
     }
     return caminho
 }
+
+/**
+ * Reescreve os `href="/..."` de um trecho de HTML (corpo de ficha ou artigo vindo do WordPress).
+ * Os textos traduzidos mantêm os links internos como no original em português; sem isto,
+ * quem lê em inglês sai do idioma no primeiro clique.
+ */
+export function localizarHtml(html: string, locale: Locale): string {
+    if (locale === DEFAULT_LOCALE || !html.includes('href=')) return html
+    return html.replace(/(\bhref=)(["'])(\/[^"']*)\2/g, (_, attr: string, aspas: string, caminho: string) =>
+        `${attr}${aspas}${localizarCaminho(caminho, locale)}${aspas}`)
+}
+
+/** Aplica `localizarHtml` a toda string de um valor (objeto, lista ou texto); o resto passa intacto. */
+export function localizarLinksEm<T>(valor: T, locale: Locale): T {
+    if (locale === DEFAULT_LOCALE) return valor
+    if (typeof valor === 'string') return localizarHtml(valor, locale) as T
+    if (Array.isArray(valor)) return valor.map((v) => localizarLinksEm(v, locale)) as T
+    if (valor && typeof valor === 'object') {
+        return Object.fromEntries(Object.entries(valor).map(([k, v]) => [k, localizarLinksEm(v, locale)])) as T
+    }
+    return valor
+}
