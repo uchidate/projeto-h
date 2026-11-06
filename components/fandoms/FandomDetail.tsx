@@ -12,6 +12,7 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { FandomDetailPage } from '@/components/fandoms/FandomDetailPage'
+import { htmlLang } from '@/lib/i18n/format'
 
 
 type Params = Promise<{ slug: string }>
@@ -66,7 +67,7 @@ export default async function FandomPage({ params }: { params: Params }) {
     return (
         <>
             <JsonLd data={breadcrumbSchema} />
-            <JsonLd data={{ '@context': 'https://schema.org', '@type': 'WebPage', name: `${fandom.name}: torcida do ${fandom.groups.map(g => stripHtml(g.title.rendered)).join(', ')}`, url: fandomUrl, inLanguage: 'pt-BR', about: fandom.groups.map(g => ({ '@type': 'MusicGroup', name: stripHtml(g.title.rendered), url: `${SITE_URL}/groups/${g.slug}` })) }} />
+            <JsonLd data={{ '@context': 'https://schema.org', '@type': 'WebPage', name: `${fandom.name}: torcida do ${fandom.groups.map(g => stripHtml(g.title.rendered)).join(', ')}`, url: fandomUrl, inLanguage: htmlLang(), about: fandom.groups.map(g => ({ '@type': 'MusicGroup', name: stripHtml(g.title.rendered), url: `${SITE_URL}/groups/${g.slug}` })) }} />
             <FandomDetailPage fandom={fandom} artists={artists} outras={outras} shopProducts={shopProducts} />
         </>
     )

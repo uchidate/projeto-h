@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { useMemo, useSyncExternalStore } from 'react'
 import { interpretarContexto, lerContextoCru, vizinhos, type ItemLista, type Vizinhanca } from '@/lib/artists/listaContexto'
+import { formatNumber } from '@/lib/i18n/format'
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
 const KICKER = 'font-mono text-[10px] font-black uppercase tracking-[0.14em] sm:text-[11px]'
@@ -15,7 +16,7 @@ function useVizinhanca(slug: string): Vizinhanca | null {
     return useMemo(() => vizinhos(interpretarContexto(cru), slug), [cru, slug])
 }
 
-const numero = (n: number) => n.toLocaleString('pt-BR')
+const numero = (n: number) => formatNumber(n)
 
 function Foto({ item, tamanho }: { item: ItemLista; tamanho: number }) {
     return item.foto

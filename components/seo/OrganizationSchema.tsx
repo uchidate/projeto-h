@@ -1,6 +1,7 @@
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildOrganizationSchema } from '@/lib/seo/jsonld'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/constants/site'
+import { htmlLang } from '@/lib/i18n/format'
 
 // Montado aqui, não buscado no WordPress: a rota organization-schema nunca
 // existiu no CMS (404), e a home ficou sem Organization sem nenhum aviso.
@@ -18,7 +19,7 @@ export function OrganizationSchema() {
                 }),
                 '@type': 'NewsMediaOrganization',
                 '@id': `${SITE_URL}/#organization`,
-                inLanguage: 'pt-BR',
+                inLanguage: htmlLang(),
                 publishingPrinciples: `${SITE_URL}/editorial-standards`,
                 correctionsPolicy: `${SITE_URL}/corrections`,
                 ethicsPolicy: `${SITE_URL}/ethics`,

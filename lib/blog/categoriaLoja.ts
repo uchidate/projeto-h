@@ -2,6 +2,7 @@ import type { StoreProduct } from '@/lib/wordpress/store'
 import type { CompanyIndustry, WPCompany } from '@/lib/wordpress/types'
 import { stripHtml } from '@/lib/utils'
 import { temasComLoja } from '@/lib/temas'
+import { intlLocale } from '@/lib/i18n/format'
 
 /**
  * Categoria do blog que tem loja e marcas na listagem: liga o slug do blog à
@@ -58,5 +59,5 @@ export function marcasComProdutos(empresas: WPCompany[], produtos: StoreProduct[
         if (total === 0) continue
         marcas.push({ slug: e.slug, nome, logo: e.featured_image_url ?? null, produtos: total })
     }
-    return marcas.sort((a, b) => b.produtos - a.produtos || a.nome.localeCompare(b.nome, 'pt-BR'))
+    return marcas.sort((a, b) => b.produtos - a.produtos || a.nome.localeCompare(b.nome, intlLocale()))
 }

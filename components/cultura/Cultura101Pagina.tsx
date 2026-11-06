@@ -12,6 +12,7 @@ import { getCategories, getPostBySlug, getPosts } from '@/lib/wordpress/posts'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { metaDescription } from '@/lib/seo/metaDescription'
+import { formatDate } from '@/lib/i18n/format'
 
 const PAGE_URL = `${SITE_URL}/cultura-coreana-101`
 const TITLE = 'Cultura Coreana: Guias, Festas e Tradições'
@@ -80,7 +81,7 @@ function proximasFestas(agora = new Date()) {
         .slice(0, 4)
 }
 
-const formatoData = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+const formatoData = { format: (data: number) => formatDate(data, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) }
 
 const lista = { items: [], total: 0, totalPages: 0 }
 const ou = <T,>(valor: T) => (r: PromiseSettledResult<T>) => (r.status === 'fulfilled' ? r.value : valor)
