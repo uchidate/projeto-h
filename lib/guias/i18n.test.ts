@@ -34,6 +34,6 @@ describe('guias traduzidos', () => {
         const en = localizarGuia(hub, 'en')!
         expect(en.title).toBe('Korean Romance Dramas')
         expect(en.filter).toEqual(hub.filter)
-        expect(localizarGuia(STATIC_HUBS_PARA_TESTE.find((h) => h.slug === 'doramas-tvn')!, 'en')).toBeNull()
+        expect(localizarGuia(STATIC_HUBS_PARA_TESTE.find((h) => h.slug === 'artistas-hybe')!, 'en')).toBeNull()
     })
 })
