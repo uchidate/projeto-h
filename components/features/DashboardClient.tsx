@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react'
 import { BookmarkCheck, BookOpen, CalendarDays, CheckCircle2, ChevronRight, Compass, Film, Heart, LogOut, Mic2, PlayCircle, Search, Sparkles, Trophy, User, Users } from 'lucide-react'

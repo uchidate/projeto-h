@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { getWpToken } from '@/lib/auth/wpToken'

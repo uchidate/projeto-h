@@ -3,7 +3,7 @@
 import { intlLocale } from '@/lib/i18n/format'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useRouter } from 'next/navigation'
 import { BookmarkCheck, BookOpen, Calendar, CheckCircle2, Compass, Heart, Mic2, Pencil, Save, ShieldCheck, Sparkles, Trophy, Users, X } from 'lucide-react'
 import { BrandDot } from '@/components/ui/BrandDot'

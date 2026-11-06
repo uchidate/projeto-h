@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { SectionTitleBar } from '@/components/ui/SectionTitleBar'
 import type { HomeSettings } from '@/lib/wordpress/site-settings'

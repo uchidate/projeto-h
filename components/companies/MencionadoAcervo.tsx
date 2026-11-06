@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { User, Users, Clapperboard, UtensilsCrossed, Building2 } from 'lucide-react'
 import type { MencaoAcervo } from '@/lib/wordpress/mentions'
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { htmlLang, intlLocale } from '@/lib/i18n/format'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { usePathname } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import { Mic2, Search, X } from 'lucide-react'

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/set-state-in-effect -- remote/pendente state hydrates depois que a sessão resolve, mesmo padrão do ContentStateButton */
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { getUserContentStates, setContentState } from '@/lib/wordpress/userApi'

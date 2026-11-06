@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ChevronRight, Network } from 'lucide-react'
 import type { EntityOrganizationContext } from '@/lib/agencies/network'
 import { stripHtml } from '@/lib/utils'

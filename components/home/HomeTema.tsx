@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { HomeProdutoMini } from '@/components/home/HomeProdutoMini'
 import { postLink } from '@/components/home/postLink'
 import { StoreCard } from '@/components/ui/StoreCard'

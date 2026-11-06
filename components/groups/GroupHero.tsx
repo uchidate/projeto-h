@@ -1,6 +1,6 @@
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { ReportButton } from '@/components/ui/ReportButton'
 import { labelsFor } from '@/lib/i18n/labels'

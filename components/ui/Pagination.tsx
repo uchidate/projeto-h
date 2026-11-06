@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Props {

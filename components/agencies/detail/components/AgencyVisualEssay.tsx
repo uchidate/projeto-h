@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { href } from '@/lib/i18n/routes'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ExternalLink, ChevronRight } from 'lucide-react'
 import { stripHtml } from '@/lib/utils'
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'

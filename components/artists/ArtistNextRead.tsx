@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { WPArtist, WPGroup, WPAgency } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 

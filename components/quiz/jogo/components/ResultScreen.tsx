@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useLocale, useTranslations } from 'next-intl'
 import {
     Share2, Flame, Zap, BookOpen, ChevronDown, ChevronUp,

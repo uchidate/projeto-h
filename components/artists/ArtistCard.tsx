@@ -1,7 +1,7 @@
 import { useLocale } from 'next-intl'
 import { labelsFor } from '@/lib/i18n/labels'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { WPArtist } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { GanchoArtista, destaqueDe } from '@/components/artists/lista/GanchoArtista'

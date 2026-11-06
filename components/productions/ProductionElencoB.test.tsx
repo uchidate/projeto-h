@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
 vi.mock('next-intl', () => ({
+    useLocale: () => 'pt',
     useTranslations: () => (chave: string, valores?: Record<string, unknown>) => (valores ? `${chave}:${JSON.stringify(valores)}` : chave),
 }))
 

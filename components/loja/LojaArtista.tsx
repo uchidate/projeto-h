@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { notFound } from 'next/navigation'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
 import { getArtistBySlug } from '@/lib/wordpress/artists'

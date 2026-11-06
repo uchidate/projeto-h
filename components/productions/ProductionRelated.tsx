@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { WPProduction, WPTerm } from '@/lib/wordpress/types'
 import { ProductionCard } from '@/components/productions/ProductionCard'
 

@@ -3,7 +3,7 @@
 import { intlLocale } from '@/lib/i18n/format'
 import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { X, Clock, ArrowRight } from 'lucide-react'
 import type { WPPost } from '@/lib/wordpress/types'
 import { slugsLidos } from '@/lib/leitura-local'

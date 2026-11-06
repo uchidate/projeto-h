@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { WPGroup } from '@/lib/wordpress/types'
 import { getWPImage, getYear, stripHtml } from '@/lib/utils'
 

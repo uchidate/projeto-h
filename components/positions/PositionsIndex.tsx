@@ -1,6 +1,6 @@
 import { SITE_NAME } from '@/lib/constants/site'
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { POSITION_LABELS } from '@/lib/constants/positions'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'

@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { WPGroup } from '@/lib/wordpress/types'
 
 const TIPO: Record<string, string> = { girl_group: 'Girl group', boy_group: 'Boy group', co_ed: 'Misto', solo: 'Solo' }

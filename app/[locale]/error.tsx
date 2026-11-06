@@ -1,7 +1,7 @@
 'use client'
 
 import { capturarErro } from '@/lib/sentryCliente'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useEffect } from 'react'
 
 export default function SiteError({

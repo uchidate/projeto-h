@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useEffect, useMemo, useSyncExternalStore } from 'react'
 import { getServerConsent, recusouConsentimento, subscribeConsent } from '@/lib/consent'
 import { assinarRecentes, interpretarRecentes, lerRecentesCru, limparRecentes } from '@/lib/artists/recentes'

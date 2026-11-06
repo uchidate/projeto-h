@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 
 export interface BreadcrumbItem {
     label: string

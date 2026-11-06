@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Star } from 'lucide-react'
 import type { WPProduction } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'

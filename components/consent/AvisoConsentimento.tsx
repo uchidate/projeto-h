@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useSyncExternalStore } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { getBannerState, podeGuardarHistorico, resetConsent, subscribeBanner, subscribeConsent } from '@/lib/consent'

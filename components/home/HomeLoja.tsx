@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { HomeLojaCard } from '@/components/home/HomeLojaCard'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { formatNumber } from '@/lib/i18n/format'

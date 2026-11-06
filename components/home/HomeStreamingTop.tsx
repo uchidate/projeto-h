@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Star } from 'lucide-react'
 import type { ShowsByPlatform } from '@/lib/tmdb/streaming'
 import { STREAMING_PLATFORMS, PLATFORM_ORDER } from '@/lib/tmdb/streaming'

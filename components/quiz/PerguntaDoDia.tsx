@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { useCallback, useState, useSyncExternalStore } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { podeGuardarHistorico } from '@/lib/consent'

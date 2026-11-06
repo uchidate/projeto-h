@@ -1,7 +1,7 @@
 import { intlLocale } from '@/lib/i18n/format'
 import Image from 'next/image'
 import { BrandDot } from '@/components/ui/BrandDot'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Clock, Calendar, Eye, Tag, Film, User } from 'lucide-react'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import { QuizEmbedLoader } from '@/components/blog/QuizEmbedLoader'

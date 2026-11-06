@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { href } from '@/lib/i18n/routes'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { getWPImage, stripHtml, getYear } from '@/lib/utils'
 import { optionalAccent, toRgba, type CSSVariableProperties } from '@/lib/agencies/presentation'
 import { GroupCard } from '@/components/agencies/detail/components/GroupCard'

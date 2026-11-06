@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 
 export interface EntidadeDoCard { name: string; href: string; image: string | null; tipo: 'grupo' | 'artista' | 'producao' }
 

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { getTrendingArtists, getStreamingArtists } from '@/lib/wordpress/artists'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
 import { exigirListagemComConteudo } from '@/lib/wordpress/client'

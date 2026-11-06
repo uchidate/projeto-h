@@ -3,7 +3,7 @@
 import { intlLocale } from '@/lib/i18n/format'
 import React, { useState, useMemo, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Cake, Star, Search, X, Calendar } from 'lucide-react'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'

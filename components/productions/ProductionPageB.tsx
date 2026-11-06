@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import Image from 'next/image'
 import { useLocale, useTranslations } from 'next-intl'
 import { Images } from 'lucide-react'

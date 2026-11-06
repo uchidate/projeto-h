@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { SearchInput } from '@/components/ui/SearchInput'
 
 export interface FilterPill {

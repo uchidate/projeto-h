@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import type { ReactNode } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { Check, ChevronLeft, Share2 } from 'lucide-react'
 import { CompartilharBotao } from '@/components/ui/CompartilharBotao'
 import { BarraAncorada } from '@/components/ui/BarraAncorada'

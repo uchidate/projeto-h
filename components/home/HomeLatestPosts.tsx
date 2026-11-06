@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { postLink } from '@/components/home/postLink'
 import { href as rota } from '@/lib/i18n/routes'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { CSSProperties } from 'react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import { stripHtml, formatDatePt } from '@/lib/utils'
