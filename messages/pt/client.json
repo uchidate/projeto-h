@@ -275,13 +275,13 @@
     "irPara": "Ir para o destaque {n}"
   },
   "homeSeguindo": {
-      "titulo": "Novidades de quem você segue",
-      "caixa": "Para você",
-      "seguirMais": "+ Seguir mais",
-      "novo": "Novo",
-      "hoje": "hoje",
-      "ontem": "ontem",
-      "sobre": "Sobre {nome}"
+    "titulo": "Novidades de quem você segue",
+    "caixa": "Para você",
+    "seguirMais": "+ Seguir mais",
+    "novo": "Novo",
+    "hoje": "hoje",
+    "ontem": "ontem",
+    "sobre": "Sobre {nome}"
   },
   "perguntaDoDia": {
     "titulo": "Pergunta do dia",
@@ -447,5 +447,15 @@
     "texto": "Usamos cookies para medir audiência e personalizar anúncios. Se você recusar, o site continua aberto para leitura, mas recursos que guardam suas escolhas neste aparelho, como resultados de quiz e o espaço do fã, ficam desativados, e os anúncios não são personalizados. Veja a <link>política de privacidade</link>.",
     "recusar": "Recusar",
     "aceitar": "Aceitar"
+  },
+  "notFound": {
+    "erro": "Erro 404",
+    "titulo": "Página não encontrada",
+    "texto": "O link pode estar desatualizado ou o conteúdo mudou de endereço. Continue por aqui:",
+    "inicio": "Página inicial →",
+    "noticias": "Últimas notícias",
+    "producoes": "Doramas e filmes",
+    "artistas": "Artistas",
+    "metaTitulo": "Página não encontrada"
   }
 }

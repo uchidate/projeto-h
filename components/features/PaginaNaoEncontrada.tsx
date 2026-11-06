@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import Link from '@/components/i18n/LocalizedLink'
 import { RastreioDeNaoEncontrado } from '@/components/analytics/RastreioDeNaoEncontrado'
 
@@ -10,28 +11,29 @@ import { RastreioDeNaoEncontrado } from '@/components/analytics/RastreioDeNaoEnc
  * medição. Agora mede (page_not_found, com a origem) e oferece caminhos.
  */
 export function PaginaNaoEncontrada() {
+    const t = useTranslations('client.notFound')
     return (
         <div className="page-wrap py-24 text-center">
             <RastreioDeNaoEncontrado />
-            <p className="font-mono text-[11px] text-muted tracking-[0.08em] uppercase mb-4">Erro 404</p>
+            <p className="font-mono text-[11px] text-muted tracking-[0.08em] uppercase mb-4">{t('erro')}</p>
             <h1 className="text-[48px] font-black tracking-[-0.04em] leading-none mb-4">
-                Página não encontrada<span className="text-accent">.</span>
+                {t('titulo')}<span className="text-accent">.</span>
             </h1>
             <p className="text-[15px] text-muted max-w-md mx-auto mb-8">
-                O link pode estar desatualizado ou o conteúdo mudou de endereço. Continue por aqui:
+                {t('texto')}
             </p>
             <div data-bloco="pagina-404" className="flex flex-wrap items-center justify-center gap-3">
                 <Link href="/" className="font-mono text-[12px] font-semibold border border-accent-a11y bg-accent-a11y text-white px-5 py-2.5 hover:opacity-90 transition-opacity">
-                    Página inicial →
+                    {t('inicio')}
                 </Link>
                 <Link href="/blog" className="font-mono text-[12px] font-semibold border border-border px-5 py-2.5 hover:border-accent hover:text-accent transition-colors">
-                    Últimas notícias
+                    {t('noticias')}
                 </Link>
                 <Link href="/productions" className="font-mono text-[12px] font-semibold border border-border px-5 py-2.5 hover:border-accent hover:text-accent transition-colors">
-                    Doramas e filmes
+                    {t('producoes')}
                 </Link>
                 <Link href="/artists" className="font-mono text-[12px] font-semibold border border-border px-5 py-2.5 hover:border-accent hover:text-accent transition-colors">
-                    Artistas
+                    {t('artistas')}
                 </Link>
             </div>
         </div>
