@@ -6,7 +6,7 @@ import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { GuiasIndice, buildGuiasMetadata } from '@/components/guias/GuiasIndice'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 import { slugsPtTraduzidos } from '@/lib/guias/i18n'
-import { LocalizedGuidesIndex, buildLocalizedGuidesIndexMetadata } from '@/components/guias/LocalizedGuide'
+import { buildLocalizedGuidesIndexMetadata } from '@/components/guias/LocalizedGuide'
 
 // Estática de propósito: ler `searchParams` aqui tornaria a rota dinâmica
 // (`cache-control: no-store`, Cloudflare em BYPASS). O filtro `?kind=` é desviado para
@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: Params }) {
     const { locale } = await params
     entrarNaPagina(locale, { servePt: true })
     if (locale === DEFAULT_LOCALE) return <GuiasIndice />
-    if (slugsPtTraduzidos(locale).length > 0) return <LocalizedGuidesIndex locale={locale} />
+    if (slugsPtTraduzidos(locale).length > 0) return <GuiasIndice locale={locale} />
     return (
         <>
             <AvisoSemTraducao locale={locale} hrefOriginal={href('guides', undefined, DEFAULT_LOCALE)} />

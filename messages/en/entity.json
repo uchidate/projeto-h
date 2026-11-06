@@ -471,7 +471,50 @@
     "faq": "Frequently asked questions",
     "related": "Related guides",
     "empty": "No productions with an English page in this guide yet.",
-    "back": "All guides"
+    "back": "All guides",
+    "index": {
+      "title": "Guides",
+      "titleSr": "to K-Drama, K-Pop and Korean culture",
+      "searchPlaceholder": "Search a guide, genre, platform or agency",
+      "categoriesAria": "Guide categories",
+      "sectionsAria": "Guide sections",
+      "filterAll": "All",
+      "culture": "Culture",
+      "cultureTag": "Culture",
+      "count": "{count, plural, one {# guide} other {# guides}} · to find what to watch, who to follow and where to start",
+      "countWithCulture": "{count, plural, one {# guide} other {# guides}} · {culture} on culture · to find what to watch, who to follow and where to start",
+      "kinds": {
+        "productions": "Productions",
+        "artists": "Artists",
+        "groups": "Groups"
+      },
+      "kindSub": {
+        "productions": "Dramas, films and series by genre, platform, network and year",
+        "artists": "Actors and singers by profile, agency and group",
+        "groups": "Girl groups, boy groups and the agencies behind them"
+      },
+      "chapterSub": "{count, plural, one {# guide} other {# guides}} · {sub}",
+      "groups": {
+        "genre": "By genre and theme",
+        "platform": "By platform",
+        "network": "By network",
+        "year": "By year",
+        "profile": "By profile",
+        "artistAgency": "By agency",
+        "solo": "Solo artists",
+        "members": "Group members",
+        "type": "By type",
+        "groupAgency": "By agency"
+      },
+      "mostRead": "Most read",
+      "more": "+ {count, plural, one {# guide} other {# guides}}",
+      "less": "Show less",
+      "alsoIn": "Also in the guides",
+      "cultureTitle": "Korean culture",
+      "cultureText": "Hangul, honorifics, holidays and daily life: {count} guides to understand Korea.",
+      "cultureMany": "dozens of",
+      "open": "Open"
+    }
   },
   "blog": {
     "categories": "Categories",
