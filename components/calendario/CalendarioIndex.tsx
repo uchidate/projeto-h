@@ -2,27 +2,38 @@ import type { Metadata } from 'next'
 import { getArtists } from '@/lib/wordpress/artists'
 import { getGroups } from '@/lib/wordpress/groups'
 import { CalendarPage } from '@/components/features/CalendarPage'
-import { SITE_URL, compartilhamento } from '@/lib/constants/site'
+import { compartilhamento } from '@/lib/constants/site'
 import { parseAcfDate, stripHtml, getWPImage } from '@/lib/utils'
 import type { CalendarEvent } from '@/lib/calendario/tipos'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
+import { buildAlternates } from '@/lib/i18n/alternates'
 
 
-export const metadata: Metadata = {
-    title: 'Calendário K-Pop',
-    description: 'Aniversários de idols e datas de debut de grupos K-Pop. Fique por dentro dos próximos eventos.',
-    alternates: { canonical: `${SITE_URL}/calendario` },
-    ...compartilhamento({
-        titulo: 'Calendário K-Pop',
-        descricao: 'Aniversários de idols e datas de debut de grupos K-Pop.',
-        caminho: '/calendario',
-    }),
+/** O calendário existe em português e inglês. */
+const IDIOMAS_DO_CALENDARIO: readonly Locale[] = ['pt', 'en']
+
+export async function generateMetadata({ locale = DEFAULT_LOCALE }: { locale?: Locale } = {}): Promise<Metadata> {
+    const t = await getTranslations({ locale, namespace: 'client.calendar' })
+    return {
+        title: t('metaTitulo'),
+        description: t('metaDescricao'),
+        alternates: buildAlternates('calendar', undefined, locale, IDIOMAS_DO_CALENDARIO),
+        ...compartilhamento({
+            titulo: t('metaTitulo'),
+            descricao: t('metaDescricaoCurta'),
+            caminho: href('calendar', undefined, locale),
+        }),
+    }
 }
 
-export default async function CalendarioPage() {
+export default async function CalendarioPage({ locale = DEFAULT_LOCALE }: { locale?: Locale } = {}) {
+    const t = await getTranslations({ locale, namespace: 'client.calendar' })
     const now = new Date()
     now.setHours(0, 0, 0, 0)
     const todayStr = now.toISOString().slice(0, 10)
@@ -87,9 +98,9 @@ export default async function CalendarioPage() {
                 type: 'birthday',
                 name: stripHtml(artist.title.rendered),
                 slug: artist.slug,
-                href: `/artists/${artist.slug}`,
+                href: href('artist', { slug: artist.slug }, locale),
                 image: getWPImage(artist._embedded, artist.featured_image_url),
-                extra: `${age} anos`,
+                extra: t('idade', { n: age }),
             })
         } catch { /* skip */ }
     }
@@ -125,22 +136,23 @@ export default async function CalendarioPage() {
                 type: 'debut',
                 name: stripHtml(group.title.rendered),
                 slug: group.slug,
-                href: `/groups/${group.slug}`,
+                href: href('group', { slug: group.slug }, locale),
                 image: getWPImage(group._embedded, group.featured_image_url, stripHtml(group.title.rendered)),
-                extra: years === 0 ? 'Estreia' : `${years} anos de debut`,
+                extra: years === 0 ? t('estreia') : t('anosDebut', { n: years }),
             })
         } catch { /* skip */ }
     }
 
-    const shopProducts = await getVitrineGeral('calendario', 6, 'kpop')
+    // A loja só existe em português (preços em reais, afiliado brasileiro).
+    const shopProducts = locale === DEFAULT_LOCALE ? await getVitrineGeral('calendario', 6, 'kpop') : []
     events.sort((a, b) => a.daysUntil - b.daysUntil || a.name.localeCompare(b.name))
 
     return (
         <>
-            <PageBreadcrumb items={[{ name: 'Calendário', path: '/calendario' }]} />
+            <PageBreadcrumb items={[{ name: t('breadcrumb'), path: href('calendar', undefined, locale) }]} />
             <CalendarPage events={events} todayStr={todayStr} />
             <div className="page-wrap pb-10">
-                <LojaEmLinha bloco="calendario-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="calendario:meio" />
+                {locale === DEFAULT_LOCALE && <LojaEmLinha bloco="calendario-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="calendario:meio" />}
                 <QuizWidget category="k-pop" />
             </div>
         </>

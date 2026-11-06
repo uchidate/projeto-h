@@ -6,6 +6,7 @@ import { loadMessages } from '@/lib/i18n/messages'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { localizedFooterColumns, localizedNavigation } from '@/lib/i18n/navigation'
 import { href } from '@/lib/i18n/routes'
+import { traducoesDoIdioma } from '@/lib/guias/i18n'
 import { Outfit, Inter, Sora, Playfair_Display } from 'next/font/google'
 import '@/styles/globals.css'
 import { SITE_URL, SITE_NAME, UMAMI, CLARITY } from '@/lib/constants/site'
@@ -77,6 +78,9 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         guides: messages.entity.breadcrumb.guides,
         foods: messages.entity.breadcrumb.foods,
         quiz: messages.entity.breadcrumb.quiz,
+        calendar: messages.entity.breadcrumb.calendar,
+        culture: messages.entity.breadcrumb.culture,
+        fandoms: messages.entity.breadcrumb.fandoms,
     }
     const navigation = locale === DEFAULT_LOCALE ? siteSettings.navigation : localizedNavigation(locale, navLabels)
     // Assinatura, subtítulos do logo e rodapé legal vinham do WordPress, sempre
@@ -104,7 +108,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
             : col)
     const footerColumns = locale === DEFAULT_LOCALE
         ? comLoja
-        : localizedFooterColumns(locale, messages.entity.footer, navLabels)
+        : localizedFooterColumns(locale, messages.entity.footer, navLabels,
+            Object.values(traducoesDoIdioma(locale)).map(g => ({ label: g.shortTitle, href: href('guide', { slug: g.slug }, locale) })))
 
     return (
         <html lang={htmlLang(locale)} suppressHydrationWarning>

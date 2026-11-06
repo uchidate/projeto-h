@@ -7,7 +7,10 @@
     "blog": "Articles",
     "guides": "Guides",
     "foods": "Food",
-    "quiz": "Quiz"
+    "quiz": "Quiz",
+    "calendar": "Calendar",
+    "culture": "Culture",
+    "fandoms": "Fandoms"
   },
   "artist": {
     "metaTitle": "{name} — Profile, career and trivia",
@@ -422,6 +425,7 @@
   },
   "footer": {
     "catalog": "Catalog",
+    "guides": "Guides",
     "explore": "Explore",
     "about": "About",
     "agencies": "Agencies",

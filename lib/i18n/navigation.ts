@@ -9,42 +9,54 @@ import type { FooterColumn, SiteLink } from '@/lib/wordpress/site-settings'
  * traduzida (`/calendario`, `/blog`, `/guias/...`). No piloto EN isso deixava a
  * ficha em inglês cercada de links em português — conferido em produção em
  * 2026-09-16. Aqui o menu lista apenas o que EXISTE no idioma (registro em
- * `routes.ts`), com rótulo traduzido. Rota que em outro idioma só mostra o texto em português
- * (calendário, cultura 101, fandoms) fica de fora até ter tradução.
+ * `routes.ts`), com rótulo traduzido. Cultura 101 e fandoms entram mesmo mostrando o texto em
+ * português com o aviso de falta de tradução: esconder o link deixava o menu
+ * em inglês menor que o do português.
+ *
+ * Fonte única: `NAV_ITEMS` define os itens uma vez; menu e rodapé derivam dela.
  */
-export type NavLabels = { home: string; productions: string; artists: string; groups: string; blog: string; guides: string; foods: string; quiz: string }
+export type NavLabels = { home: string; productions: string; artists: string; groups: string; blog: string; guides: string; foods: string; quiz: string; calendar: string; culture: string; fandoms: string }
+
+type NavItem = { route: 'home' | 'productions' | 'artists' | 'groups' | 'blog' | 'guides' | 'foods' | 'quiz' | 'calendar' | 'cultura101' | 'fandoms'; label: keyof NavLabels }
+
+/** Itens do menu fora do português, na ordem do menu em português. */
+export const NAV_ITEMS: readonly NavItem[] = [
+    { route: 'home', label: 'home' },
+    { route: 'productions', label: 'productions' },
+    { route: 'artists', label: 'artists' },
+    { route: 'groups', label: 'groups' },
+    { route: 'blog', label: 'blog' },
+    { route: 'guides', label: 'guides' },
+    { route: 'cultura101', label: 'culture' },
+    { route: 'foods', label: 'foods' },
+    { route: 'fandoms', label: 'fandoms' },
+    { route: 'calendar', label: 'calendar' },
+    { route: 'quiz', label: 'quiz' },
+]
+
+function navLink(item: NavItem, locale: Locale, labels: NavLabels): SiteLink {
+    return { label: labels[item.label], href: href(item.route, undefined, locale) }
+}
 
 export function localizedNavigation(locale: Locale, labels: NavLabels): SiteLink[] {
     if (locale === DEFAULT_LOCALE) return []
-    return [
-        { label: labels.home, href: href('home', undefined, locale) },
-        { label: labels.productions, href: href('productions', undefined, locale) },
-        { label: labels.artists, href: href('artists', undefined, locale) },
-        { label: labels.groups, href: href('groups', undefined, locale) },
-        { label: labels.blog, href: href('blog', undefined, locale) },
-        { label: labels.guides, href: href('guides', undefined, locale) },
-        { label: labels.foods, href: href('foods', undefined, locale) },
-        { label: labels.quiz, href: href('quiz', undefined, locale) },
-    ]
+    return NAV_ITEMS.map(item => navLink(item, locale, labels))
 }
 
-export type FooterLabelsI18n = { catalog: string; explore: string; about: string; agencies: string; aboutUs: string; contact: string }
+export type FooterLabelsI18n = { catalog: string; explore: string; guides: string; about: string; agencies: string; aboutUs: string; contact: string }
 
 /** Rodapé fora do português: as mesmas famílias de links do rodapé em PT (catálogo, explorar, sobre), só com rotas que existem no idioma. */
-export function localizedFooterColumns(locale: Locale, footer: FooterLabelsI18n, labels: NavLabels): FooterColumn[] {
+export function localizedFooterColumns(locale: Locale, footer: FooterLabelsI18n, labels: NavLabels, guides: SiteLink[] = []): FooterColumn[] {
     if (locale === DEFAULT_LOCALE) return []
     return [
         { heading: footer.catalog, links: [
-            { label: labels.productions, href: href('productions', undefined, locale) },
-            { label: labels.artists, href: href('artists', undefined, locale) },
-            { label: labels.groups, href: href('groups', undefined, locale) },
+            ...(['productions', 'artists', 'groups'] as const).map(route => navLink(NAV_ITEMS.find(i => i.route === route)!, locale, labels)),
             { label: footer.agencies, href: href('agencies', undefined, locale) },
         ] },
+        ...(guides.length > 0 ? [{ heading: footer.guides, links: guides }] : []),
         { heading: footer.explore, links: [
-            { label: labels.blog, href: href('blog', undefined, locale) },
-            { label: labels.guides, href: href('guides', undefined, locale) },
-            { label: labels.foods, href: href('foods', undefined, locale) },
-            { label: labels.quiz, href: href('quiz', undefined, locale) },
+            ...(['blog', 'guides', 'cultura101', 'foods', 'fandoms', 'calendar', 'quiz'] as const)
+                .map(route => navLink(NAV_ITEMS.find(i => i.route === route)!, locale, labels)),
         ] },
         { heading: footer.about, links: [
             { label: footer.aboutUs, href: href('about', undefined, locale) },
