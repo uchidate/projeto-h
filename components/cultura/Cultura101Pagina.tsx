@@ -68,9 +68,9 @@ function agruparGuias(guias: Guia[]) {
     return { inicio, trilhas: trilhas.filter(t => t.guias.length > 0) }
 }
 
-const NOTAS_FESTAS = { lunarNewYear: 1, firstFullMoon: 1, march1: 1, dano: 1, liberation: 1, harvest: 1, hangeulDay: 1 } as const
+type NotaFesta = 'lunarNewYear' | 'firstFullMoon' | 'march1' | 'dano' | 'liberation' | 'harvest' | 'hangeulDay'
 
-const FESTAS: { nome: string; hangul: string; data: string; nota: keyof typeof NOTAS_FESTAS; guia?: string }[] = [
+const FESTAS: { nome: string; hangul: string; data: string; nota: NotaFesta; guia?: string }[] = [
     { nome: 'Seollal', hangul: '설날', data: '2027-02-07', nota: 'lunarNewYear', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
     { nome: 'Daeboreum', hangul: '정월대보름', data: '2027-02-21', nota: 'firstFullMoon' },
     { nome: 'Samiljeol', hangul: '삼일절', data: '2027-03-01', nota: 'march1' },

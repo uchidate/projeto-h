@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import CulturaCoreana101Page, { buildCulturaMetadata } from '@/components/cultura/Cultura101Pagina'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
