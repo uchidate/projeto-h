@@ -7,18 +7,19 @@ import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { href } from '@/lib/i18n/routes'
-import type { Locale } from '@/lib/i18n/config'
 import type { Seguindo } from '@/lib/home/seguindo'
+import { intlLocale } from '@/lib/i18n/format'
+import type { Locale } from '@/lib/i18n/config'
 
 const MONO = 'font-mono text-[11px] font-bold uppercase tracking-[0.12em]'
 
-function quando(iso: string, hoje: string, ontem: string, locale: string) {
+function quando(iso: string, hoje: string, ontem: string, locale: Locale) {
     const dia = new Date(iso.endsWith('Z') || /[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`)
     const f = (d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(d)
     const agora = new Date()
     if (f(dia) === f(agora)) return hoje
     if (f(dia) === f(new Date(agora.getTime() - 86_400_000))) return ontem
-    return new Intl.DateTimeFormat(locale === 'pt' ? 'pt-BR' : locale, { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' }).format(dia)
+    return new Intl.DateTimeFormat(intlLocale(locale), { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' }).format(dia)
 }
 
 /**
