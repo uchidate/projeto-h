@@ -170,7 +170,8 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
             if (lista.length >= 2) integrantes[g.id] = lista
         }
     } catch { /* sem hover */ }
-    if (unfiltered && page === 1) exigirListagemComConteudo(items, '/groups')
+    // Só no idioma do conteúdo: em outro idioma a lista traduzida pode estar legitimamente vazia (idioma novo).
+    if (emPt && unfiltered && page === 1) exigirListagemComConteudo(items, '/groups')
     if (paginaInvalida(page, totalPages)) notFound()
 
     const shopProducts = inicio && emPt
