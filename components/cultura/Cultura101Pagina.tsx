@@ -125,7 +125,7 @@ export default async function CulturaCoreanaPage({ locale = DEFAULT_LOCALE }: { 
         getCategories(),
         // Em outro idioma as capas e resumos vêm dos posts traduzidos, não dos originais.
         ...INICIO.map(slug => (emPt ? getPostBySlug(slug) : Promise.resolve(null))),
-        postsTraduzidosPorSlugPt(locale),
+        postsTraduzidosPorSlugPt(locale, [...INICIO, ...TRILHAS.flatMap(t => t.slugs)]),
     ])
     const capasInicio = resto.slice(0, INICIO.length)
     const traduzidos = ou<Map<string, WPPost>>(new Map())(resto[INICIO.length] as PromiseSettledResult<Map<string, WPPost>>)
