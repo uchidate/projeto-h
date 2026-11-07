@@ -10,7 +10,6 @@
  * o campo fica nulo e a tabela mostra um traço: nada é inferido.
  */
 import { getAge, parseAcfDate, stripHtml } from '@/lib/utils'
-import { POSITION_LABELS } from '@/lib/constants/positions'
 import type { MemberSummary } from '@/lib/artists/memberSummary'
 
 export interface LinhaIntegrante {
@@ -35,6 +34,8 @@ export function linhasIntegrantes(
     membros: MemberSummary[],
     posicoes: Record<string, string[] | undefined> = {},
     hoje: Date = new Date(),
+    /** Rótulo da posição no idioma da página; sem ele a posição vai com o código (`leader`). */
+    rotuloDaPosicao: (posicao: string) => string = posicao => posicao,
 ): LinhaIntegrante[] {
     return membros.map(m => {
         const nascimento = isoValido(m.acf?.birth_date)
@@ -46,7 +47,7 @@ export function linhasIntegrantes(
             hangul: m.acf?.name_hangul?.trim() || null,
             nascimento,
             idade,
-            posicoes: (posicoes[m.slug] ?? []).map(p => POSITION_LABELS[p] ?? p),
+            posicoes: (posicoes[m.slug] ?? []).map(rotuloDaPosicao),
         }
     })
 }

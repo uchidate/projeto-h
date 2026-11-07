@@ -5,14 +5,14 @@ import { ADSENSE } from '@/lib/config/ads'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
-import { href } from '@/lib/i18n/routes'
+import { metadataDaRota } from '@/lib/i18n/metadata-pagina'
 import Link from '@/components/i18n/LocalizedLink'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getGroupsByPosition } from '@/lib/wordpress/groups'
 import { getArtistsByIds } from '@/lib/wordpress/artists'
-import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { isValidPosition } from '@/lib/constants/positions'
+import { rotuloDaPosicao } from '@/lib/constants/rotulo-posicao'
 import { getWPImage, stripHtml } from '@/lib/utils'
 
 
@@ -22,15 +22,8 @@ export async function metadataDaPagina({ params, locale = DEFAULT_LOCALE }: { pa
     const { position } = await params
     if (!isValidPosition(position)) return {}
     const t = await getTranslations({ locale, namespace: 'client.positionsPage' })
-    const label = t(`labels.${position}` as 'labels.leader')
-    const url = `${SITE_URL}${href('position', { position }, locale)}`
-    return {
-        title: t('detailTitle', { label }),
-        description: t('detailDescription', { label, site: SITE_NAME }),
-        alternates: { canonical: url },
-        openGraph: baseOG(url),
-        twitter: baseTwitter(),
-    }
+    const label = rotuloDaPosicao(t, position)
+    return metadataDaRota({ locale, rota: 'position', params: { position }, titulo: t('detailTitle', { label }), descricao: t('detailDescription', { label, site: SITE_NAME }) })
 }
 
 export default async function PositionDetailPage({ params, locale = DEFAULT_LOCALE }: { params: Params; locale?: Locale }) {
@@ -38,7 +31,7 @@ export default async function PositionDetailPage({ params, locale = DEFAULT_LOCA
     if (!isValidPosition(position)) notFound()
 
     const t = await getTranslations({ locale, namespace: 'client.positionsPage' })
-    const label = t(`labels.${position}` as 'labels.leader')
+    const label = rotuloDaPosicao(t, position)
     const groups = await getGroupsByPosition(position)
 
     const entries = await Promise.all(groups.map(async group => {

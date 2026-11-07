@@ -20,6 +20,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { GENERATIONS, getGeneration } from '@/lib/constants/generations'
+import { temRecurso } from '@/lib/i18n/recursos'
 
 const TEXTOS_CARTAO = {
     pt: { ended: 'encerrado', hot: 'em alta', since: (y: number | string) => `desde ${y}` },
@@ -433,11 +434,11 @@ export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, total
                 </div>
             </section>
 
-            {inicio && emPt && shopProducts.length > 0 && (
+            {inicio && temRecurso('loja', locale) && shopProducts.length > 0 && (
                 <ShopRelatedSection title={t('merch')} products={shopProducts} verTudoLabel={t('seeStore')} contexto="listagem:grupos" />
             )}
 
-            {inicio && emPt && <QuizWidget category="k-pop" title={t('quizTitle')} description={t('quizText')} />}
+            {inicio && temRecurso('quiz', locale) && <QuizWidget category="k-pop" title={t('quizTitle')} description={t('quizText')} />}
         </>
     )
 }

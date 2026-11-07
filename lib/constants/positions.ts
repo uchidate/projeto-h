@@ -1,26 +1,12 @@
-/** Mantido em sincronia com oc_valid_positions() e oc_position_labels() em plugin de CPTs do WordPress */
-export const POSITION_LABELS: Record<string, string> = {
-    leader: 'Líder',
-    main_vocal: 'Main Vocal',
-    lead_vocal: 'Lead Vocal',
-    sub_vocal: 'Sub-Vocal',
-    main_dancer: 'Main Dancer',
-    lead_dancer: 'Lead Dancer',
-    main_rapper: 'Main Rapper',
-    sub_rapper: 'Sub-Rapper',
-    visual: 'Visual',
-    center: 'Center',
-    maknae: 'Maknae',
-}
+/** Mantido em sincronia com oc_valid_positions() em plugin de CPTs do WordPress. O rótulo de cada
+ *  posição mora em messages (client.positionsPage.labels), por idioma. */
+export const POSITIONS = [
+    'leader', 'main_vocal', 'lead_vocal', 'sub_vocal', 'main_dancer', 'lead_dancer',
+    'main_rapper', 'sub_rapper', 'visual', 'center', 'maknae',
+] as const
 
-export const VALID_POSITIONS = Object.keys(POSITION_LABELS)
+export const VALID_POSITIONS: string[] = [...POSITIONS]
 
 export function isValidPosition(value: string): boolean {
     return VALID_POSITIONS.includes(value)
-}
-
-/** Só `leader` muda de grafia entre os idiomas; as demais são termos do próprio k-pop. */
-export function rotuloDaPosicao(position: string, locale: string): string {
-    if (locale !== 'pt' && position === 'leader') return 'Leader'
-    return POSITION_LABELS[position] ?? position
 }

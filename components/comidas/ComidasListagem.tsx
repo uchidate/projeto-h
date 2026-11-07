@@ -4,6 +4,7 @@ import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import { localizarCaminho } from '@/lib/i18n/localizar-caminho'
 import { href } from '@/lib/i18n/routes'
+import { temRecurso } from '@/lib/i18n/recursos'
 import type { Metadata } from 'next'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
@@ -128,7 +129,7 @@ export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }:
         // Loja, marcas e receitas com preço em reais e link de afiliado são só em português (manifesto de rotas).
         buildVitrineMatcher(),
         semFiltro ? artigosDoTema('comida', locale) : Promise.resolve(null),
-        emPt && semFiltro && cfgLoja ? carregarLojaDoTema(cfgLoja, 'comidas:lista') : Promise.resolve(undefined),
+        temRecurso('loja', locale) && semFiltro && cfgLoja ? carregarLojaDoTema(cfgLoja, 'comidas:lista') : Promise.resolve(undefined),
         // As receitas saem do acervo todo: as 48 mais novas da página podem não incluir nenhuma com modo de preparo.
         semFiltro ? getFoods({ perPage: 100, locale: emPt ? undefined : locale }).catch(() => null) : Promise.resolve(null),
     ])
@@ -266,7 +267,7 @@ export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }:
                                 const catLabel = acf.category ? rotuloCategoria(acf.category) : null
                                 const catEmoji = acf.category ? FOOD_CATEGORY_EMOJI[acf.category] : '🍽️'
                                 const spicy = acf.spicy_level ?? 0
-                                const naLoja = emPt && temVitrine([name, ...(acf.main_ingredients ?? [])])
+                                const naLoja = temRecurso('loja', locale) && temVitrine([name, ...(acf.main_ingredients ?? [])])
 
                                 return (
                                     <Link

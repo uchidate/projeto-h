@@ -26,6 +26,7 @@ import { ProfileSection } from '@/components/profiles/ProfileSection'
 import { getVitrineVinculada, buildVitrineMatcher } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getReceita } from '@/lib/receitas'
+import { temRecurso } from '@/lib/i18n/recursos'
 import { ReceitaPreparo } from '@/components/food/ReceitaPreparo'
 import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
@@ -82,7 +83,7 @@ export default async function FoodPage({ params }: { params: Params }) {
     const food = localizeEntity(sourceFood, locale, 'food')
     const ui = await getTranslations({ locale, namespace: 'entity.food.ui' })
     // Receita, matérias do blog e loja existem só em português: fora dele a ficha não os mostra.
-    const soPt = locale === DEFAULT_LOCALE
+    const loja = temRecurso('loja', locale)
 
     const acf = food.acf ?? {}
     const name = stripHtml(food.title.rendered)
@@ -380,7 +381,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                                         {f.acf?.name_korean && (
                                             <p className="text-[10px] text-muted mt-0.5">{f.acf.name_korean}</p>
                                         )}
-                                        {soPt && naLojaMatcher([fname, ...(f.acf?.main_ingredients ?? [])]) && (
+                                        {loja && naLojaMatcher([fname, ...(f.acf?.main_ingredients ?? [])]) && (
                                             <p className="font-mono text-[10px] font-semibold text-accent mt-0.5">🛍️ {ui('inStore')}</p>
                                         )}
                                     </div>
@@ -397,7 +398,7 @@ export default async function FoodPage({ params }: { params: Params }) {
             )}
 
             {/* Loja e blog */}
-            {soPt && (vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
+            {loja && (vitrine.length > 0 || posts.length > 0 || mentions.length > 0) && (
                 <ProfileSection id="loja-blog" indented={false}>
                     <div className="space-y-6">
                         <LojaEmLinha products={vitrine} bloco="comida-ficha" contexto={`comida:${slug}`} title={ui('shopTitle')}
