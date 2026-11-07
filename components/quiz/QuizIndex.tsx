@@ -12,7 +12,7 @@ import { categoriasDoIdioma, paramsDoTema } from './disponibilidade'
 type SearchParams = Promise<{ sub?: string; category?: string }>
 
 /** Idiomas em que o /quiz existe, para hreflang. */
-const IDIOMAS_DO_QUIZ: readonly Locale[] = ['pt', 'en']
+const IDIOMAS_DO_QUIZ: readonly Locale[] = ['pt', 'en', 'es']
 
 export async function generateMetadata({ locale = DEFAULT_LOCALE }: { locale?: Locale } = {}): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'quiz.meta' })

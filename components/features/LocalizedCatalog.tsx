@@ -120,12 +120,14 @@ function pageUrl(kind: CatalogKind, locale: Locale, page: number) {
  * hreflang da listagem em português para as versões em outros idiomas — só as
  * que têm itens (a versão vazia é `noindex` e não deve ser apontada).
  */
-export async function defaultCatalogLanguages(kind: CatalogKind): Promise<Record<string, string> | undefined> {
+export async function defaultCatalogLanguages(kind: CatalogKind, atual: Locale = DEFAULT_LOCALE): Promise<Record<string, string> | undefined> {
     const others = ACTIVE_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
     if (others.length === 0) return undefined
     const withItems = (await Promise.all(others.map(async (locale) => ((await fetchCatalog(kind, locale, 1)).total > 0 ? locale : null))))
         .filter((locale): locale is Locale => locale !== null)
     if (withItems.length === 0) return undefined
+    // Numa versão que não é a do idioma-fonte, a própria página só se declara se tiver itens (senão é noindex).
+    if (atual !== DEFAULT_LOCALE && !withItems.includes(atual)) return undefined
     const pt = `${SITE_URL}${href(kind)}`
     return Object.fromEntries([
         [LOCALE_META[DEFAULT_LOCALE].htmlLang, pt],
@@ -149,13 +151,8 @@ export async function buildCatalogMetadata(kind: CatalogKind, locale: Locale, pa
         description: t(`${kind}.description`),
         alternates: {
             canonical: url,
-            ...(!thin ? {
-                languages: {
-                    [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}${href(kind)}`,
-                    [LOCALE_META[locale].htmlLang]: url,
-                    'x-default': `${SITE_URL}${href(kind)}`,
-                },
-            } : {}),
+            // Todas as versões com itens, recíprocas: o seletor de idioma do cabeçalho lê estas tags.
+            ...(!thin ? { languages: await defaultCatalogLanguages(kind, locale) } : {}),
         },
         ...(thin ? { robots: { index: false, follow: true } } : {}),
         openGraph: { ...baseOG(url), locale: LOCALE_META[locale].ogLocale },

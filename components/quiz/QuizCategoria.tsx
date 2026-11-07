@@ -24,7 +24,7 @@ export async function generateMetadata({ params, locale = DEFAULT_LOCALE }: { pa
     ])
     const label = tc(cat)
     const minusculo = locale === DEFAULT_LOCALE ? label.toLowerCase() : label
-    const alternates = buildAlternates('quizCategory', paramsDoTema(cat), locale, await idiomasDoTema(cat, ['pt', 'en']))
+    const alternates = buildAlternates('quizCategory', paramsDoTema(cat), locale, await idiomasDoTema(cat, ['pt', 'en', 'es']))
     return {
         title: t('categoryTitle', { label }),
         description: t('categoryDescription', { label }),

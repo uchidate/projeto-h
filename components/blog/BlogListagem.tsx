@@ -14,7 +14,7 @@ import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { idsGuiaDeCompra } from '@/lib/blog/guiasDeCompra'
 import { getTranslations } from 'next-intl/server'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { localizarGuia, slugPublicoDoGuia } from '@/lib/guias/i18n'
 import type { WPTerm } from '@/lib/wordpress/types'
@@ -80,11 +80,24 @@ export async function metadataBlogListagem({ searchParams, locale = DEFAULT_LOCA
     const { totalPages } = await getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false, lang, ...consulta.extra })
     const shouldNoIndex = Boolean(sp.search || sp.tag || sp.order || consulta.tipo) || paginaInvalida(page, totalPages)
 
+    // hreflang só na primeira página sem filtro, e só para idiomas com ao menos um artigo traduzido (a versão vazia não deve ser apontada).
+    const semFiltro = page === 1 && !sp.category && !sp.tag && !sp.search && !sp.order && !consulta.tipo
+    let languages: Record<string, string> | undefined
+    if (semFiltro) {
+        const outros = ACTIVE_LOCALES.filter((l) => l !== DEFAULT_LOCALE)
+        const comPosts = (await Promise.all(outros.map(async (l) => ((await getPosts({ perPage: 1, includeContent: false, lang: l }).catch(() => ({ total: 0 }))).total > 0 ? l : null)))).filter((l): l is Locale => l !== null)
+        if (comPosts.length > 0 && (locale === DEFAULT_LOCALE || comPosts.includes(locale))) {
+            const pt = buildBlogUrl(SITE_URL, 1, {}, DEFAULT_LOCALE)
+            languages = { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: pt, ...Object.fromEntries(comPosts.map((l) => [LOCALE_META[l].htmlLang, buildBlogUrl(SITE_URL, 1, {}, l)])), 'x-default': pt }
+        }
+    }
+
     return {
         title,
         description: t('metaDescription'),
         alternates: {
             canonical,
+            ...(languages ? { languages } : {}),
             ...linksDePaginacao({ page, totalPages, urlDaPagina: (p) => buildBlogUrl(SITE_URL, p, sp, locale) }),
         },
         ...robotsDaListagem(shouldNoIndex),

@@ -63,7 +63,7 @@ export async function metadataGroupsListagem({ searchParams, locale = DEFAULT_LO
     const hasFacets = Boolean(sp.search || sp.type || sp.active || sp.letter || sp.generation || sp.order)
     const invalidPage = paginaInvalida(page, totalPages)
 
-    const languages = emPt && page === 1 && !hasFacets ? await defaultCatalogLanguages('groups') : undefined
+    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('groups', locale) : undefined
 
     return {
         title: t('metaTitle'),
