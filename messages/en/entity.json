@@ -514,7 +514,13 @@
       "cultureText": "Hangul, honorifics, holidays and daily life: {count} guides to understand Korea.",
       "cultureMany": "dozens of",
       "open": "Open"
-    }
+    },
+    "artists": "{count, plural, one {# artist} other {# artists}}",
+    "groups": "{count, plural, one {# group} other {# groups}}",
+    "seeAllArtists": "See all artists",
+    "seeAllGroups": "See all groups",
+    "emptyArtists": "No artists with an English page in this guide yet.",
+    "emptyGroups": "No groups with an English page in this guide yet."
   },
   "blog": {
     "categories": "Categories",
