@@ -9,13 +9,17 @@ import { href } from '@/lib/i18n/routes'
 import { getHub } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
 import { localizarGuia, slugPtDoGuia, slugPublicoDoGuia, slugsPtTraduzidos, traducoesDoIdioma } from '@/lib/guias/i18n'
+import type { WPArtist, WPGroup, WPProduction } from '@/lib/wordpress/types'
 import { EntityGrid } from '@/components/features/LocalizedCatalog'
 
 /**
  * Guia em outro idioma: o texto vem de `lib/guias/traducoes/<idioma>.json` e a grade lista só as produções com
- * página traduzida (`oc_locale`), com o mesmo filtro do guia em português. Só guias de produções por enquanto.
+ * página traduzida (`oc_locale`), com o mesmo filtro do guia em português. Vale para guias de produções, artistas e grupos.
  */
 const POR_GUIA = 48
+
+const TIPO_DA_FICHA = { productions: 'production', artists: 'artist', groups: 'group' } as const
+const ROTA_DA_LISTAGEM = { productions: 'productions', artists: 'artists', groups: 'groups' } as const
 
 const caminhoPt = (slugPt: string) => `/guias/${slugPt}`
 
@@ -26,10 +30,10 @@ async function carregar(slugPublico: string, locale: Locale) {
     const hub = original && localizarGuia(original, locale)
     if (!hub) return null
     const r = await getHubItems(hub, { locale, perPage: POR_GUIA })
-    if (r.kind !== 'productions') return null
-    const produtos = r.items.filter((p) => hasLocale(p, locale)).map((p) => localizeEntity(p, locale, 'production'))
+    const tipo = TIPO_DA_FICHA[r.kind]
+    const produtos = (r.items as Array<WPArtist | WPGroup | WPProduction>).filter((p) => hasLocale(p, locale)).map((p) => localizeEntity(p, locale, tipo))
     const total = r.total
-    return { slugPt, hub, produtos, total }
+    return { slugPt, hub, produtos, total, kind: r.kind }
 }
 
 export async function buildLocalizedGuideMetadata(slugPublico: string, locale: Locale): Promise<Metadata> {
@@ -54,7 +58,8 @@ export async function buildLocalizedGuideMetadata(slugPublico: string, locale: L
 export async function LocalizedGuide({ slugPublico, locale }: { slugPublico: string; locale: Locale }) {
     const [t, dados] = await Promise.all([getTranslations({ locale, namespace: 'entity.guides' }), carregar(slugPublico, locale)])
     if (!dados) notFound()
-    const { hub, produtos, total } = dados
+    const { hub, produtos, total, kind } = dados
+    const sufixo = kind === 'artists' ? 'Artists' : kind === 'groups' ? 'Groups' : ''
     const traducoes = traducoesDoIdioma(locale)
     const relacionados = (traducoes[dados.slugPt]?.relatedSearches ?? []).filter((r) => traducoes[r.to])
     return (
@@ -68,14 +73,14 @@ export async function LocalizedGuide({ slugPublico, locale }: { slugPublico: str
                     {hub.intro.map((p) => <p key={p}>{p}</p>)}
                 </div>
                 {hub.whatYouWillFind && <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-muted">{hub.whatYouWillFind}</p>}
-                {total > 0 && <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">{t('productions', { count: total })}</p>}
+                {total > 0 && <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">{t(kind, { count: total })}</p>}
             </header>
 
             {produtos.length === 0
-                ? <p className="text-[15px] text-muted">{t('empty')}</p>
-                : <EntityGrid items={produtos} kind="productions" locale={locale} />}
+                ? <p className="text-[15px] text-muted">{t(`empty${sufixo}` as 'empty')}</p>
+                : <EntityGrid items={produtos} kind={kind} locale={locale} />}
             {total > produtos.length && (
-                <p className="mt-6"><Link href={href('productions', undefined, locale)} className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent hover:underline">{t('seeAll')} →</Link></p>
+                <p className="mt-6"><Link href={href(ROTA_DA_LISTAGEM[kind], undefined, locale)} className="font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent hover:underline">{t(`seeAll${sufixo}` as 'seeAll')} →</Link></p>
             )}
 
             {hub.faq.length > 0 && (
