@@ -8,7 +8,7 @@ import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import { href } from '@/lib/i18n/routes'
 import { getHub } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
-import { localizarGuia, slugPtDoGuia, slugPublicoDoGuia, slugsPtTraduzidos, traducoesDoIdioma } from '@/lib/guias/i18n'
+import { alternativasDoGuia, alternativasDoIndice, localizarGuia, slugPtDoGuia, slugPublicoDoGuia, slugsPtTraduzidos, traducoesDoIdioma } from '@/lib/guias/i18n'
 import type { WPArtist, WPGroup, WPProduction } from '@/lib/wordpress/types'
 import { EntityGrid } from '@/components/features/LocalizedCatalog'
 
@@ -45,7 +45,7 @@ export async function buildLocalizedGuideMetadata(slugPublico: string, locale: L
         description: dados.hub.description,
         alternates: {
             canonical: url,
-            languages: {
+            languages: alternativasDoGuia(dados.slugPt) ?? {
                 [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}${caminhoPt(dados.slugPt)}`,
                 [LOCALE_META[locale].htmlLang]: url,
                 'x-default': `${SITE_URL}${caminhoPt(dados.slugPt)}`,
@@ -121,7 +121,7 @@ export async function buildLocalizedGuidesIndexMetadata(locale: Locale): Promise
         description: t('description'),
         alternates: {
             canonical: url,
-            languages: { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias`, [LOCALE_META[locale].htmlLang]: url, 'x-default': `${SITE_URL}/guias` },
+            languages: alternativasDoIndice() ?? { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias`, [LOCALE_META[locale].htmlLang]: url, 'x-default': `${SITE_URL}/guias` },
         },
         robots: { index: slugsPtTraduzidos(locale).length > 0, follow: true },
     }

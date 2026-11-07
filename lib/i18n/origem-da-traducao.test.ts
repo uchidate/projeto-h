@@ -23,12 +23,19 @@ describe('hashDoTexto / compararOrigem', () => {
 const origemDosGuias = () => Object.fromEntries(ALL_HUBS.map(h => [h.slug, hashDoTexto({
     title: h.title, shortTitle: h.shortTitle, description: h.description, intro: h.intro, whatYouWillFind: h.whatYouWillFind ?? null, faq: h.faq,
 })]))
+const slugsTraduzidos = (arquivo: string) => Object.keys(JSON.parse(readFileSync(join(RAIZ, arquivo), 'utf8')) as Record<string, unknown>)
+/** Idioma com tradução parcial: a origem cobre só os guias que já têm texto. */
+const origemDosGuiasEm = (arquivo: string) => () => {
+    const todos = origemDosGuias()
+    return Object.fromEntries(slugsTraduzidos(arquivo).map(slug => [slug, todos[slug]]).filter(([, hash]) => hash))
+}
 const origemDasReceitas = () => Object.fromEntries(Object.entries(todasReceitas('pt')).map(([slug, r]) => [slug, hashDoTexto({
     rendimento: r.rendimento ?? null, ingredientes: r.ingredientes, passos: r.passos, dicas: r.dicas ?? [],
 })]))
 
 const FONTES: Array<{ nome: string; arquivo: string; atual: () => Record<string, string>; comoRever: string }> = [
     { nome: 'guias em inglês', arquivo: 'lib/guias/traducoes/en.origem.json', atual: origemDosGuias, comoRever: 'revise o guia em lib/guias/traducoes/en.json' },
+    { nome: 'guias em espanhol', arquivo: 'lib/guias/traducoes/es.origem.json', atual: origemDosGuiasEm('lib/guias/traducoes/es.json'), comoRever: 'revise o guia em lib/guias/traducoes/es.json' },
     { nome: 'receitas em inglês', arquivo: 'data/receitas.en.origem.json', atual: origemDasReceitas, comoRever: 'revise a receita em data/receitas.en.json' },
 ]
 

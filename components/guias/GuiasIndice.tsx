@@ -10,7 +10,7 @@ import { ALL_HUBS, GRUPOS_DE_GUIAS, type ArchiveHub } from '@/lib/guias'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
 import { VISITAS_POR_GUIA, porDemanda, resumoDoGuia } from '@/lib/guias/demanda'
-import { localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
+import { alternativasDoIndice, localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
 import GUIAS_DE_CULTURA from '@/lib/cultura/guias-traduzidos.json'
 import { carregarGuiasPorTema, carregarPassos } from '@/lib/home/guias'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
@@ -21,7 +21,7 @@ export function buildGuiasMetadata(): Metadata {
     return {
         title: 'Guias de K-Drama, K-Pop e Cinema Coreano',
         description: 'Explore guias editoriais sobre produções, artistas e grupos do entretenimento coreano. Doramas por gênero, plataforma, artistas por agência e muito mais.',
-        alternates: { canonical: `${SITE_URL}/guias`, languages: { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias`, [LOCALE_META.en.htmlLang]: `${SITE_URL}${href('guides', undefined, 'en')}`, 'x-default': `${SITE_URL}/guias` } },
+        alternates: { canonical: `${SITE_URL}/guias`, languages: alternativasDoIndice() ?? { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias` } },
         ...compartilhamento({
             titulo: 'Guias de K-Drama, K-Pop e Cinema Coreano',
             descricao: 'Doramas por gênero e plataforma, artistas por agência e muito mais.',

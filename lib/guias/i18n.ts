@@ -1,5 +1,8 @@
-import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
+import { ACTIVE_LOCALES, LOCALE_META, SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SITE_URL } from '@/lib/constants/site'
+import { href } from '@/lib/i18n/routes'
 import en from './traducoes/en.json'
+import es from './traducoes/es.json'
 import type { ArchiveHub } from './types'
 
 /**
@@ -19,7 +22,7 @@ export type TraducaoDoGuia = {
     relatedSearches?: Array<{ label: string; to: string }>
 }
 
-const TRADUCOES: Partial<Record<Locale, Record<string, TraducaoDoGuia>>> = { en: en as Record<string, TraducaoDoGuia> }
+const TRADUCOES: Partial<Record<Locale, Record<string, TraducaoDoGuia>>> = { en: en as Record<string, TraducaoDoGuia>, es: es as Record<string, TraducaoDoGuia> }
 
 export function traducoesDoIdioma(locale: Locale): Record<string, TraducaoDoGuia> {
     return locale === SOURCE_LOCALE ? {} : TRADUCOES[locale] ?? {}
@@ -47,4 +50,23 @@ export function localizarGuia(hub: ArchiveHub, locale: Locale): ArchiveHub | nul
     const tr = traducoesDoIdioma(locale)[hub.slug]
     if (!tr) return null
     return { ...hub, title: tr.title, shortTitle: tr.shortTitle, description: tr.description, intro: tr.intro, whatYouWillFind: tr.whatYouWillFind, faq: tr.faq, keywords: [], relatedSearches: undefined }
+}
+
+const outrosIdiomas = (): Locale[] => ACTIVE_LOCALES.filter(l => l !== SOURCE_LOCALE)
+
+/**
+ * hreflang do guia: o idioma-fonte e todo idioma ativo com o texto traduzido, recíprocos entre si
+ * (o seletor de idioma do cabeçalho lê estas tags). Sem tradução em nenhum idioma, `undefined`.
+ */
+export function alternativasDoGuia(slugPt: string): Record<string, string> | undefined {
+    const pt = `${SITE_URL}/guias/${slugPt}`
+    const versoes = outrosIdiomas().flatMap(l => { const s = slugPublicoDoGuia(slugPt, l); return s ? [[LOCALE_META[l].htmlLang, `${SITE_URL}${href('guide', { slug: s }, l)}`]] : [] })
+    return versoes.length ? Object.fromEntries([[LOCALE_META[SOURCE_LOCALE].htmlLang, pt], ...versoes, ['x-default', pt]]) : undefined
+}
+
+/** hreflang do índice de guias: idiomas ativos com ao menos um guia traduzido. */
+export function alternativasDoIndice(): Record<string, string> | undefined {
+    const pt = `${SITE_URL}/guias`
+    const versoes = outrosIdiomas().filter(l => slugsPtTraduzidos(l).length > 0).map(l => [LOCALE_META[l].htmlLang, `${SITE_URL}${href('guides', undefined, l)}`])
+    return versoes.length ? Object.fromEntries([[LOCALE_META[SOURCE_LOCALE].htmlLang, pt], ...versoes, ['x-default', pt]]) : undefined
 }

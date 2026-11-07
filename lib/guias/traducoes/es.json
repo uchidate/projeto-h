@@ -1,0 +1,449 @@
+{
+  "doramas-historicos-coreanos": {
+    "slug": "doramas-historicos-coreanos",
+    "title": "Doramas históricos coreanos (sageuk)",
+    "shortTitle": "Sageuk",
+    "description": "Los mejores doramas históricos coreanos (sageuk), con fichas, reparto, plataformas y dónde verlos.",
+    "intro": [
+      "Los sageuk, los doramas históricos de Corea, llevan al espectador a dinastías como Joseon y Goryeo, con vestuario elaborado, intrigas políticas y romances épicos que enganchan del primer al último episodio.",
+      "HallyuHub organiza los mejores sageuk de su catálogo para que encuentres dónde verlos, conozcas al reparto y explores las historias que marcaron a Corea."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es un sageuk?",
+        "answer": "Sageuk es el término coreano para el drama histórico. Se ambienta en períodos como la dinastía Joseon (1392–1897) o Goryeo, y combina historia, política, romance y, a veces, fantasía."
+      },
+      {
+        "question": "¿Cuáles son los sageuk más conocidos?",
+        "answer": "\"Mr. Sunshine\", \"Jewel in the Palace\", \"Six Flying Dragons\" y \"Kingdom\" figuran entre los más aclamados. \"Kingdom\", en Netflix, llevó el género a una audiencia internacional."
+      }
+    ]
+  },
+  "doramas-romanticos": {
+    "slug": "doramas-romanticos-coreanos",
+    "title": "Doramas románticos coreanos",
+    "shortTitle": "Doramas románticos",
+    "description": "Descubre los mejores doramas románticos coreanos, con sinopsis, reparto, valoraciones y dónde verlos.",
+    "intro": [
+      "Los romances coreanos crearon un género propio: bandas sonoras inolvidables, química entre los protagonistas e historias que equilibran drama y ligereza de una forma poco común.",
+      "Esta guía reúne las producciones románticas coreanas catalogadas en HallyuHub, con fichas para conocer el reparto, la sinopsis y dónde verlas."
+    ],
+    "whatYouWillFind": "Aquí encontrarás los doramas románticos coreanos catalogados en HallyuHub, con sinopsis, valoraciones, reparto e información sobre dónde verlos, desde los grandes éxitos de Netflix hasta los clásicos de las cadenas coreanas.",
+    "faq": [
+      {
+        "question": "¿Qué hace bueno a un dorama romántico coreano?",
+        "answer": "Un buen dorama romántico coreano combina química entre los protagonistas, una banda sonora memorable, conflictos emocionales bien desarrollados y la famosa tensión lenta antes de que la pareja se una."
+      },
+      {
+        "question": "¿Qué es el \"slow burn\" en los doramas románticos?",
+        "answer": "El slow burn es la tensión romántica que crece poco a poco a lo largo de los episodios, con la pareja resistiéndose a sus sentimientos antes de ceder. Es uno de los rasgos más queridos de los K-dramas y mantiene al público pendiente durante toda la serie."
+      },
+      {
+        "question": "¿Los doramas románticos tienen final feliz?",
+        "answer": "La mayoría de los doramas románticos coreanos termina bien. Hay excepciones aclamadas con finales más abiertos o melancólicos, como \"My Mister\" y \"Nevertheless\"."
+      },
+      {
+        "question": "¿Hay doramas románticos cortos para empezar?",
+        "answer": "Sí. Doramas como \"Business Proposal\" (12 episodios), \"Nevertheless\" (10 episodios) y \"What's Wrong with Secretary Kim\" (16 episodios) son buenas puertas de entrada, por ser más breves y ligeros."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Doramas coreanos en Netflix",
+        "to": "doramas-coreanos-netflix"
+      },
+      {
+        "label": "Los mejores doramas coreanos de todos los tiempos",
+        "to": "melhores-doramas-de-todos-os-tempos"
+      }
+    ]
+  },
+  "doramas-acao-coreanos": {
+    "slug": "doramas-accion-coreanos",
+    "title": "Doramas de acción coreanos",
+    "shortTitle": "Doramas de acción",
+    "description": "Los mejores doramas de acción coreanos, con escenas de lucha, espionaje y persecuciones, además de valoraciones y fichas.",
+    "intro": [
+      "En el catálogo, la acción reúne historias de espionaje, crimen, artes marciales y venganza, y muchas de ellas también aparecen en las guías de suspense y policiales.",
+      "La lista abre solo con series, ordenadas por interés reciente; el filtro Tipo, arriba, añade las películas."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué entra en la lista de acción?",
+        "answer": "Las producciones etiquetadas con el género de acción en el catálogo, del espionaje y el crimen a las artes marciales. Muchas llevan también la etiqueta de suspense o crimen."
+      },
+      {
+        "question": "¿Puedo ver las películas de acción?",
+        "answer": "Sí. La lista abre solo con series; en el filtro Tipo, arriba, elige Película (o Todo) para incluir largometrajes."
+      },
+      {
+        "question": "¿Cuál es la diferencia entre acción y suspense?",
+        "answer": "La acción pone el movimiento primero: peleas, persecuciones, misiones. El suspense apuesta por la tensión y la amenaza, y los dos se mezclan con frecuencia."
+      }
+    ]
+  },
+  "melhores-doramas-de-todos-os-tempos": {
+    "slug": "mejores-doramas-coreanos",
+    "title": "Los mejores doramas coreanos de todos los tiempos",
+    "shortTitle": "Mejores doramas",
+    "description": "Los doramas coreanos mejor valorados de todos los tiempos, con sinopsis, reparto, plataformas y valoraciones.",
+    "intro": [
+      "Algunos K-dramas sobrevivieron al momento de su estreno y se convirtieron en hitos culturales, vistos y revistos por fans de todo el mundo durante años o décadas.",
+      "Esta guía reúne las producciones coreanas con mejores valoraciones y mayor impacto cultural catalogadas en HallyuHub, una referencia para quien quiere empezar o profundizar en el mundo de los K-dramas."
+    ],
+    "whatYouWillFind": "Una puerta de entrada a los doramas más relevantes del catálogo: romances populares, thrillers, clásicos, series por plataforma y producciones por año.",
+    "faq": [
+      {
+        "question": "¿Por dónde empiezo con los doramas coreanos?",
+        "answer": "Para quien empieza, \"Crash Landing on You\" y \"Goblin\" son buenas puertas de entrada. Para los fans de la acción, \"Vincenzo\". Para romance puro, \"My Love from the Star\"."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Doramas coreanos en Netflix",
+        "to": "doramas-coreanos-netflix"
+      }
+    ]
+  },
+  "filmes-coreanos": {
+    "slug": "peliculas-coreanas",
+    "title": "Películas coreanas",
+    "shortTitle": "Películas coreanas",
+    "description": "Películas coreanas con sinopsis, reparto, valoraciones y páginas relacionadas.",
+    "intro": [
+      "El cine coreano va mucho más allá de los doramas: thrillers, romances, acción, terror y dramas de autor ayudaron a consolidar a Corea como potencia audiovisual.",
+      "Esta guía reúne las películas coreanas catalogadas en HallyuHub para que explores por sinopsis, reparto, valoración y artistas relacionados."
+    ],
+    "faq": [
+      {
+        "question": "¿Esta guía incluye solo doramas?",
+        "answer": "No. A diferencia de las guías de K-dramas, esta está dedicada a las películas coreanas catalogadas como producciones de cine."
+      },
+      {
+        "question": "¿Las páginas muestran el reparto?",
+        "answer": "Cuando está sincronizado, cada película puede mostrar su reparto, artistas relacionados, valoración y otros datos editoriales."
+      }
+    ]
+  },
+  "doramas-coreanos-netflix": {
+    "slug": "doramas-coreanos-netflix",
+    "title": "Doramas coreanos en Netflix",
+    "shortTitle": "Doramas en Netflix",
+    "description": "Descubre los doramas coreanos disponibles en Netflix o asociados a la plataforma, con sinopsis, reparto, valoraciones y enlaces a artistas.",
+    "intro": [
+      "Netflix ayudó a que muchos doramas coreanos llegaran a públicos que no habían seguido de cerca el K-drama.",
+      "Esta guía reúne producciones coreanas vinculadas a la plataforma, con fichas para entender el reparto, la sinopsis y el contexto de cada título."
+    ],
+    "faq": [
+      {
+        "question": "¿Todos los doramas de esta guía están en Netflix?",
+        "answer": "La disponibilidad puede variar según el país y la fecha. La guía reúne producciones coreanas asociadas a Netflix o etiquetadas en el catálogo como presentes en la plataforma."
+      },
+      {
+        "question": "¿HallyuHub dice dónde ver cada título?",
+        "answer": "Cuando hay datos disponibles, las fichas de las producciones muestran plataformas, reparto, sinopsis y contexto editorial para facilitar el descubrimiento."
+      }
+    ]
+  },
+  "doramas-policiais-coreanos": {
+    "slug": "doramas-policiales-coreanos",
+    "title": "Doramas policiales coreanos",
+    "shortTitle": "Doramas policiales",
+    "description": "Doramas policiales coreanos con investigaciones, detectives, fiscales y suspense, con fichas.",
+    "intro": [
+      "En los doramas policiales coreanos, el caso de la semana comparte escena con lo que una investigación exige a quienes la llevan: equipos de detectives, fiscales y periodistas se reparten el protagonismo, y la corrupción dentro de la institución pesa tanto como el crimen. Signal (tvN, 2016), en el que una radio conecta a detectives de dos épocas, es uno de los títulos más citados del formato.",
+      "Hay dos ritmos: series que cierran un caso por episodio y series que siguen un único caso durante toda la temporada. La lista de abajo sigue el interés reciente, con los títulos mejor valorados destacados."
+    ],
+    "whatYouWillFind": "Historias de investigación, crimen, comisarías, fiscales, detectives y suspense criminal, con enlaces a producciones y artistas relacionados.",
+    "faq": [
+      {
+        "question": "¿Cuál es la diferencia entre un dorama policial y un thriller?",
+        "answer": "El dorama policial se construye en torno a la investigación: comisarías, detectives, fiscales y el caso por resolver. El thriller puede prescindir de la policía y apoyarse en la tensión y la amenaza; los dos suelen mezclarse."
+      },
+      {
+        "question": "¿Los doramas policiales tienen un caso por episodio?",
+        "answer": "Algunos cierran un caso por episodio; otros siguen un solo caso durante toda la temporada. Muchos combinan ambos, con un caso mayor de fondo."
+      },
+      {
+        "question": "¿Por dónde empiezo?",
+        "answer": "Signal (tvN, 2016), que está en el catálogo, es un punto de partida habitual: mezcla casos sin resolver, viajes entre épocas e investigación en equipo."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Doramas judiciales",
+        "to": "doramas-juridicos-coreanos"
+      },
+      {
+        "label": "Doramas de misterio",
+        "to": "doramas-misterio-coreanos"
+      },
+      {
+        "label": "Doramas de suspense",
+        "to": "doramas-thriller-coreanos"
+      }
+    ]
+  },
+  "doramas-thriller-coreanos": {
+    "slug": "doramas-suspense-coreanos",
+    "title": "Doramas de suspense coreanos",
+    "shortTitle": "Doramas de suspense",
+    "description": "Los mejores doramas coreanos de suspense y thriller, con sinopsis, reparto, plataformas y valoraciones.",
+    "intro": [
+      "El thriller abarca el suspense psicológico, el crimen, el misterio y el terror de atmósfera pesada, y muchas producciones aparecen también en las guías de policiales, terror y misterio.",
+      "La lista mezcla series y películas, ordenadas por interés reciente; el filtro Tipo, arriba, separa los formatos. Para empezar, Stranger (tvN, 2017) y Signal (tvN, 2016) están en el catálogo."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué entra en la lista de suspense?",
+        "answer": "Las producciones etiquetadas con el género thriller en el catálogo: suspense psicológico, crimen, misterio y terror, entre otros. Muchas llevan también otra etiqueta de género."
+      },
+      {
+        "question": "¿Puedo ver solo series?",
+        "answer": "Sí. El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Cuál es la diferencia entre un thriller y un dorama policial?",
+        "answer": "El dorama policial se construye en torno a la investigación. El thriller puede prescindir de la policía y apoyarse en la tensión y la amenaza; los dos suelen mezclarse."
+      }
+    ]
+  },
+  "doramas-tvn": {
+    "slug": "doramas-tvn",
+    "title": "Doramas coreanos en tvN",
+    "shortTitle": "Doramas de tvN",
+    "description": "Doramas de tvN, el canal de cable del grupo CJ ENM, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "tvN es un canal de cable surcoreano del grupo CJ ENM, en el aire desde 2006. El catálogo incluye Signal (2016), Stranger (2017), Crash Landing on You (2019), It's Okay to Not Be Okay (2020) y Vincenzo (2021), entre otros.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es tvN?",
+        "answer": "Un canal de cable surcoreano del grupo CJ ENM, en el aire desde 2006."
+      },
+      {
+        "question": "¿Qué series de tvN están en el catálogo?",
+        "answer": "Entre otras, Signal (2016), Stranger (2017), Crash Landing on You (2019), It's Okay to Not Be Okay (2020) y Vincenzo (2021). La lista de la página muestra el resto, de la más nueva a la más antigua."
+      },
+      {
+        "question": "¿Cuál es la diferencia entre tvN y las cadenas abiertas como SBS?",
+        "answer": "tvN es un canal de cable; KBS, MBC y SBS son las tres grandes cadenas abiertas. Ambos tipos emiten series, y la diferencia está en cómo se distribuyen."
+      }
+    ]
+  },
+  "doramas-terror-coreanos": {
+    "slug": "doramas-terror-coreanos",
+    "title": "Doramas de terror coreanos",
+    "shortTitle": "Doramas de terror",
+    "description": "Los mejores doramas de terror coreanos con sinopsis, reparto, plataformas y valoraciones.",
+    "intro": [
+      "El terror coreano ha construido un lenguaje propio en el entretenimiento global: de \"Kingdom\" (zombis en Joseon) a \"Sweet Home\" (criaturas urbanas), los K-dramas de terror combinan miedo genuino con un profundo drama humano.",
+      "Esta guía reúne las producciones coreanas de terror catalogadas en HallyuHub para ayudarte a encontrar tu próximo dorama escalofriante."
+    ],
+    "faq": [
+      {
+        "question": "¿El terror coreano es distinto del estadounidense?",
+        "answer": "Sí. El terror coreano suele combinar sustos con metáforas sociales, drama emocional y producción cinematográfica. \"Train to Busan\" y \"Kingdom\" muestran cómo el género aborda temas humanos a través de lo sobrenatural."
+      },
+      {
+        "question": "¿Cuáles son los mejores doramas de terror?",
+        "answer": "\"Kingdom\", \"Sweet Home\", \"All of Us Are Dead\" y \"The Haunting of Villa Margarita\" están entre los más elogiados de la categoría en los últimos años."
+      }
+    ]
+  },
+  "doramas-comedia-coreanos": {
+    "slug": "doramas-comedia-coreanos",
+    "title": "Doramas de comedia coreanos",
+    "shortTitle": "Doramas de comedia",
+    "description": "Los mejores doramas coreanos de comedia y comedia romántica con sinopsis, reparto y valoraciones.",
+    "intro": [
+      "La comedia coreana tiene un timing único: la mezcla de torpeza, humor físico y situaciones absurdas creó un estilo que los fans de todo el mundo aman y reconocen al instante.",
+      "Esta guía reúne las producciones coreanas de comedia catalogadas en HallyuHub para ayudarte a encontrar tu próximo dorama que te haga reír y sentirte bien."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué hace buena a una comedia coreana?",
+        "answer": "Las comedias coreanas son conocidas por su timing preciso, protagonistas excéntricos y situaciones incómodas que generan empatía. La comedia romántica es especialmente popular, con bandas sonoras memorables."
+      },
+      {
+        "question": "¿Cuáles son los mejores doramas de comedia?",
+        "answer": "\"My Love from the Star\", \"She Was Pretty\", \"Strong Woman Do Bong-soon\" y \"What's Wrong with Secretary Kim\" están entre los favoritos de los fans de la comedia K-drama."
+      }
+    ]
+  },
+  "doramas-fantasia-coreanos": {
+    "slug": "doramas-fantasia-coreanos",
+    "title": "Doramas de fantasía coreanos",
+    "shortTitle": "Doramas de fantasía",
+    "description": "Los mejores doramas coreanos de fantasía, con magia, seres sobrenaturales y mundos paralelos, con fichas.",
+    "intro": [
+      "Los doramas de fantasía coreanos crean universos únicos —dioses, demonios, viajes en el tiempo y reinos mágicos— con una producción visual llamativa e historias que se quedan contigo.",
+      "Esta guía reúne las producciones coreanas de fantasía catalogadas en HallyuHub para ayudarte a sumergirte en mundos más allá de lo real."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué hace únicos a los doramas de fantasía coreanos?",
+        "answer": "La fantasía coreana suele mezclar la mitología y el folclore coreanos con romance y drama humano. Criaturas como el gumiho (zorro de nueve colas), el dokkaebi y dioses del folclore coreano aparecen con frecuencia."
+      },
+      {
+        "question": "¿Cuáles son los mejores doramas de fantasía?",
+        "answer": "\"Goblin\", \"Legend of the Blue Sea\", \"My Love from the Star\", \"Tale of the Nine-Tailed\" y \"Alchemy of Souls\" están entre los más queridos del género."
+      }
+    ]
+  },
+  "doramas-esportes-coreanos": {
+    "slug": "doramas-deportivos-coreanos",
+    "title": "Doramas deportivos coreanos",
+    "shortTitle": "Doramas deportivos",
+    "description": "Doramas deportivos coreanos con competición, superación, juventud, trabajo en equipo y romance.",
+    "intro": [
+      "Los doramas deportivos coreanos suelen usar la competición como lenguaje para hablar de disciplina, amistad, presión, fracaso y volver a empezar.",
+      "Esta guía reúne producciones de temática deportiva del catálogo de HallyuHub, ideal para quien disfruta de historias de superación y energía juvenil."
+    ],
+    "whatYouWillFind": "Historias con atletas, equipos, torneos, entrenadores, rivalidades, juventud y superación dentro o alrededor del deporte.",
+    "faq": [
+      {
+        "question": "¿Los doramas deportivos tratan solo de competición?",
+        "answer": "No. La competición suele ser el escenario, pero el núcleo es, por lo general, el crecimiento personal, la amistad, el romance, la presión psicológica y la superación."
+      },
+      {
+        "question": "¿Esta guía incluye romances deportivos?",
+        "answer": "Sí. Cuando una producción está etiquetada con deporte, puede aparecer aunque mezcle romance, juventud o comedia."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Doramas escolares",
+        "to": "doramas-escolares-coreanos"
+      },
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Doramas de acción",
+        "to": "doramas-acao-coreanos"
+      }
+    ]
+  },
+  "doramas-kbs": {
+    "slug": "doramas-kbs",
+    "title": "Doramas coreanos en KBS",
+    "shortTitle": "Doramas de KBS",
+    "description": "Doramas de KBS, la televisión pública de Corea del Sur, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "KBS (Korea Broadcasting System) es la televisión pública de Corea del Sur. En el catálogo, las series aparecen como KBS2, y Descendants of the Sun (2016) es una de ellas.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es KBS?",
+        "answer": "Korea Broadcasting System, la televisión pública de Corea del Sur. Las series del catálogo figuran como KBS2, el canal que las emite."
+      },
+      {
+        "question": "¿Qué series de KBS están en el catálogo?",
+        "answer": "Entre otras, Descendants of the Sun (2016) y las producciones recientes que aparecen en la página."
+      }
+    ]
+  },
+  "doramas-tving": {
+    "slug": "doramas-tving",
+    "title": "Doramas coreanos en TVING",
+    "shortTitle": "Doramas de TVING",
+    "description": "Doramas de TVING, el servicio de streaming surcoreano del grupo CJ ENM, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "TVING es un servicio de streaming surcoreano del grupo CJ ENM. El catálogo incluye Spirit Fingers, Study Group y Street Food Vendor (2025), entre otros.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es TVING?",
+        "answer": "Un servicio de streaming surcoreano del grupo CJ ENM."
+      },
+      {
+        "question": "¿TVING tiene relación con tvN?",
+        "answer": "Sí. Ambos pertenecen al grupo CJ ENM."
+      }
+    ]
+  },
+  "doramas-familia-coreanos": {
+    "slug": "doramas-familiares-coreanos",
+    "title": "Doramas familiares coreanos",
+    "shortTitle": "Doramas familiares",
+    "description": "Doramas coreanos sobre la familia, las relaciones entre generaciones, la reconciliación, la herencia, el matrimonio y los lazos emocionales.",
+    "intro": [
+      "La familia es uno de los temas más fuertes de los K-dramas: padres e hijos, hermanos, abuelos, matrimonios, viejos secretos y reconciliaciones aparecen en romances, melodramas y comedias.",
+      "Esta guía reúne producciones coreanas centradas en la familia del catálogo de HallyuHub, para quien disfruta de historias emotivas y personajes en transformación."
+    ],
+    "whatYouWillFind": "Producciones con relaciones familiares, conflictos entre generaciones, secretos, reconciliaciones, matrimonios y dilemas emocionales.",
+    "faq": [
+      {
+        "question": "¿Los doramas familiares son siempre largos?",
+        "answer": "No siempre. Hay doramas familiares largos en la televisión abierta, pero también doramas de 12 a 16 episodios en los que la familia es un eje emocional importante."
+      },
+      {
+        "question": "¿Esta guía incluye romance familiar?",
+        "answer": "Sí. Muchos K-dramas mezclan romance y familia, sobre todo cuando el matrimonio, los parientes, la herencia o la aprobación familiar forman parte del conflicto."
+      }
+    ],
+    "relatedSearches": [
+      {
+        "label": "Doramas médicos",
+        "to": "doramas-medicos-coreanos"
+      },
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Doramas de comedia",
+        "to": "doramas-comedia-coreanos"
+      }
+    ]
+  },
+  "doramas-coreanos-2016": {
+    "slug": "doramas-coreanos-2016",
+    "title": "Doramas coreanos de 2016",
+    "shortTitle": "K-Dramas 2016",
+    "description": "Doramas y películas coreanas de 2016 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2016 que están en el catálogo, entre ellas Descendants of the Sun (KBS2) y Signal (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2016?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2016?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-mbc": {
+    "slug": "doramas-mbc",
+    "title": "Doramas coreanos en MBC",
+    "shortTitle": "Doramas de MBC",
+    "description": "Doramas de MBC, una de las tres grandes cadenas abiertas de Corea del Sur, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "MBC (Munhwa Broadcasting Corporation) es una de las tres grandes cadenas abiertas de Corea del Sur. En el catálogo, las producciones más recientes incluyen In Your Brilliant Season y The Judge Returns (2026).",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es MBC?",
+        "answer": "Munhwa Broadcasting Corporation, una de las tres grandes cadenas abiertas de Corea del Sur, junto con KBS y SBS."
+      },
+      {
+        "question": "¿Qué series de MBC están en el catálogo?",
+        "answer": "Entre las más recientes, In Your Brilliant Season y The Judge Returns (2026). La lista de la página muestra el resto."
+      }
+    ]
+  }
+}
