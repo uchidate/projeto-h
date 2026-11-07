@@ -14,6 +14,15 @@ function settings(overrides: Partial<MonetizationSettings> = {}): MonetizationSe
     }
 }
 
+// jsdom só cria evento com isTrusted=false: o gesto real é simulado pelo detail.
+vi.mock('@/lib/gesto-confiavel', () => ({
+    gestoConfiavel: (e: Event) => (e as CustomEvent).detail?.confiavel !== false,
+}))
+
+function gesto(tipo: string, confiavel = true) {
+    window.dispatchEvent(new CustomEvent(tipo, { detail: { confiavel } }))
+}
+
 describe('AdSenseLoader', () => {
     afterEach(() => {
         vi.unstubAllEnvs()
@@ -48,27 +57,30 @@ describe('AdSenseLoader', () => {
     it('injeta com o client correto ao primeiro sinal de uso', () => {
         vi.stubEnv('NODE_ENV', 'test')
         render(<AdsProvider settings={settings()}><AdSenseLoader /></AdsProvider>)
-        window.dispatchEvent(new Event('scroll'))
+        gesto('touchstart')
         const script = document.querySelector('script#adsense-init, script[src*="adsbygoogle"]')
         expect(script).toHaveAttribute('src', expect.stringContaining('client=ca-pub-123'))
         expect(script).toHaveAttribute('crossorigin', 'anonymous')
         expect(script).not.toHaveAttribute('data-nscript')
     })
 
-    it('carrega sozinho em menos de 1 s, sem nenhuma interação', () => {
+    // Robô que executa JS esperava o prazo de 800 ms e gerava impressão inválida.
+    it('não carrega sozinho: sem gesto confiável o script não entra', () => {
         vi.stubEnv('NODE_ENV', 'test')
         vi.useFakeTimers()
         render(<AdsProvider settings={settings()}><AdSenseLoader /></AdsProvider>)
-        vi.advanceTimersByTime(900)
-        expect(document.querySelector('script[src*="adsbygoogle"]')).not.toBeNull()
+        vi.advanceTimersByTime(10_000)
+        gesto('pointerdown', false)
+        window.dispatchEvent(new Event('scroll'))
+        expect(document.querySelector('script[src*="adsbygoogle"]')).toBeNull()
         vi.useRealTimers()
     })
 
     it('injeta uma única vez mesmo com vários sinais', () => {
         vi.stubEnv('NODE_ENV', 'test')
         render(<AdsProvider settings={settings()}><AdSenseLoader /></AdsProvider>)
-        window.dispatchEvent(new Event('scroll'))
-        window.dispatchEvent(new Event('keydown'))
+        gesto('wheel')
+        gesto('keydown')
         expect(document.querySelectorAll('script[src*="adsbygoogle"]')).toHaveLength(1)
     })
 
@@ -79,7 +91,7 @@ describe('AdSenseLoader', () => {
         document.head.appendChild(siteKit)
 
         render(<AdsProvider settings={settings()}><AdSenseLoader /></AdsProvider>)
-        window.dispatchEvent(new Event('scroll'))
+        gesto('keydown')
 
         expect(document.querySelectorAll('script[src*="adsbygoogle"]')).toHaveLength(1)
     })
@@ -96,7 +108,7 @@ describe('AdSenseLoader', () => {
         const { AdSenseLoader: Loader } = await import('./AdSenseLoader')
         const { AdsProvider: Provider } = await import('@/components/providers/AdsProvider')
         render(<Provider settings={settings()}><Loader /></Provider>)
-        window.dispatchEvent(new Event('scroll'))
+        gesto('keydown')
         expect(document.querySelector('script[src*="adsbygoogle"]')).toBeNull()
         estado = 'oculto'
         avisar()

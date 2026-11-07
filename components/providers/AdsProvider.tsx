@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { roboEvidente } from '@/lib/robo-evidente'
 import type { ReactNode } from 'react'
 import type { MonetizationSettings } from '@/lib/wordpress/monetization'
 
@@ -44,7 +45,7 @@ export function useNaoAutomatizado(): boolean {
     const [hidratado, setHidratado] = useState(false)
     // eslint-disable-next-line react-hooks/set-state-in-effect -- gate de hidratação: precisa distinguir o 1º render (SSR-safe) do restante
     useEffect(() => setHidratado(true), [])
-    return hidratado && navigator.webdriver === true
+    return hidratado && roboEvidente(navigator)
 }
 
 /** Desliga os anúncios de tudo o que estiver dentro (página sem conteúdo suficiente). */
