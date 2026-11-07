@@ -15,13 +15,18 @@ import { parseFormerMembers } from '@/lib/profiles/groupProfile'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
+import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
+import type { WPGroup } from '@/lib/wordpress/types'
 
 export type SearchParams = Promise<{ search?: string; page?: string; type?: string; active?: string; letter?: string; generation?: string; order?: string }>
 
 const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
 
-function buildGroupsUrl(sp: { type?: string; active?: string; letter?: string; generation?: string; order?: string; page?: string }) {
-    return urlDaListagem('/groups', ['type', 'active', 'letter', 'generation', 'order'], sp)
+function buildGroupsUrl(sp: { type?: string; active?: string; letter?: string; generation?: string; order?: string; page?: string }, locale: Locale = DEFAULT_LOCALE) {
+    return urlDaListagem(href('groups', undefined, locale), ['type', 'active', 'letter', 'generation', 'order'], sp)
 }
 
 // Rotas estáticas equivalentes em /groups/[slug] (TIPO_CONFIGS) — quando o
@@ -34,12 +39,14 @@ const TYPE_TO_STATIC_SLUG: Record<string, string> = {
     solo: 'solos',
 }
 
-export async function metadataGroupsListagem({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+export async function metadataGroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }): Promise<Metadata> {
     const sp = await searchParams
     const page = paginaDe(sp.page)
+    const emPt = locale === DEFAULT_LOCALE
+    const t = await getTranslations({ locale, namespace: 'client.groupsLista' })
     const isPureTypeFilter = sp.type && !sp.active && !sp.letter && !sp.generation && !sp.order && (!sp.page || sp.page === '1')
-    const staticSlug = isPureTypeFilter ? TYPE_TO_STATIC_SLUG[sp.type!] : undefined
-    const url = staticSlug ? `${SITE_URL}/groups/${staticSlug}` : buildGroupsUrl(sp)
+    const staticSlug = emPt && isPureTypeFilter ? TYPE_TO_STATIC_SLUG[sp.type!] : undefined
+    const url = staticSlug ? `${SITE_URL}/groups/${staticSlug}` : buildGroupsUrl(sp, locale)
 
     const validTypes = ['girl_group', 'boy_group', 'co_ed', 'solo'] as const
     const type = validTypes.includes(sp.type as never) ? sp.type as typeof validTypes[number] : undefined
@@ -48,7 +55,7 @@ export async function metadataGroupsListagem({ searchParams }: { searchParams: S
     const { totalPages } = staticSlug
         ? { totalPages: 1 }
         : await getGroups({
-            page, perPage: 48, search: sp.search, type, active: activeFilter,
+            page, perPage: 48, search: sp.search, type, active: activeFilter, ...(emPt ? {} : { locale }),
             letter: sp.letter?.toUpperCase().slice(0, 1),
             debutMin: generation ? `${generation.min}0101` : undefined,
             debutMax: generation ? `${generation.max}1231` : undefined,
@@ -56,15 +63,15 @@ export async function metadataGroupsListagem({ searchParams }: { searchParams: S
     const hasFacets = Boolean(sp.search || sp.type || sp.active || sp.letter || sp.generation || sp.order)
     const invalidPage = paginaInvalida(page, totalPages)
 
-    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('groups') : undefined
+    const languages = emPt && page === 1 && !hasFacets ? await defaultCatalogLanguages('groups') : undefined
 
     return {
-        title: 'Grupos K-Pop',
-        description: 'Conheça todos os grupos K-Pop — integrantes, discografia, curiosidades e mais, em português.',
+        title: t('metaTitle'),
+        description: t('metaDescription'),
         alternates: {
             canonical: url,
             ...(languages ? { languages } : {}),
-            ...linksDePaginacao({ page, totalPages, ativa: !staticSlug, urlDaPagina: (p) => buildGroupsUrl({ ...sp, page: String(p) }) }),
+            ...linksDePaginacao({ page, totalPages, ativa: !staticSlug, urlDaPagina: (p) => buildGroupsUrl({ ...sp, page: String(p) }, locale) }),
         },
         ...robotsDaListagem(hasFacets || invalidPage),
         openGraph: baseOG(url),
@@ -72,7 +79,9 @@ export async function metadataGroupsListagem({ searchParams }: { searchParams: S
     }
 }
 
-export async function GroupsListagem({ searchParams }: { searchParams: SearchParams }) {
+export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {
+    const emPt = locale === DEFAULT_LOCALE
+    const idioma = emPt ? {} : { locale }
     const sp = await searchParams
     const page = paginaDe(sp.page)
     const letter = sp.letter?.toUpperCase().slice(0, 1)
@@ -84,8 +93,9 @@ export async function GroupsListagem({ searchParams }: { searchParams: SearchPar
     const order = sp.order === 'az' || sp.order === 'novos' ? sp.order : undefined
     const inicio = page === 1 && !sp.search && !type && activeFilter === undefined && !letter && !generation && !order
 
-    const [{ items, total, totalPages }, letterCounts] = await Promise.all([
+    const [{ items: itensBrutos, total, totalPages }, letterCountsPt] = await Promise.all([
         getGroups({
+            ...idioma,
             page,
             perPage: 48,
             search: sp.search,
@@ -97,9 +107,20 @@ export async function GroupsListagem({ searchParams }: { searchParams: SearchPar
             orderby: order === 'az' ? 'title' : order === 'novos' ? 'date' : 'popularity',
             order: order === 'az' ? 'asc' : 'desc',
         }),
-        wpFetch<Record<string, number>>('/oc/v1/group-letter-counts', { revalidate: 3600 })
-            .catch(() => ({} as Record<string, number>)),
+        emPt ? wpFetch<Record<string, number>>('/oc/v1/group-letter-counts', { revalidate: 3600 })
+            .catch(() => ({} as Record<string, number>)) : Promise.resolve({} as Record<string, number>),
     ])
+    const items = emPt ? itensBrutos : itensBrutos.filter(g => hasLocale(g, locale)).map(g => localizeEntity(g, locale, 'group'))
+    // Contagem por letra: o endpoint só conta o acervo em português; no outro idioma sai do catálogo traduzido.
+    let letterCounts = letterCountsPt
+    if (!emPt) {
+        const traduzidos = await getAllGroups({ ...idioma, orderby: 'title', order: 'asc' }).catch(() => [] as WPGroup[])
+        letterCounts = {}
+        for (const g of traduzidos) {
+            const letra = stripHtml(g.title.rendered).trim().charAt(0).toUpperCase()
+            if (/[A-Z]/.test(letra)) letterCounts[letra] = (letterCounts[letra] ?? 0) + 1
+        }
+    }
 
     // Faixas de descoberta só na página inicial sem filtro; falha aqui não derruba a lista.
     let emAlta: typeof items = []
@@ -108,16 +129,17 @@ export async function GroupsListagem({ searchParams }: { searchParams: SearchPar
     const hoje = hojeEmSaoPaulo()
     if (inicio) {
         const [trending, todos] = await Promise.all([
-            getTrendingGroups(6).catch(() => []),
-            getAllGroups({ orderby: 'popularity', order: 'desc' }).catch(() => []),
+            emPt ? getTrendingGroups(6).catch(() => []) : Promise.resolve([] as WPGroup[]),
+            getAllGroups({ ...idioma, orderby: 'popularity', order: 'desc' }).catch(() => []),
         ])
         emAlta = trending.length >= 6 ? trending : items.slice(0, 6)
         // `todos` já vem por popularidade: as quatro primeiras de cada geração são as mais conhecidas.
+        const todosNoIdioma = emPt ? todos : todos.filter(g => hasLocale(g, locale)).map(g => localizeEntity(g, locale, 'group'))
         geracoes = GENERATIONS.filter(g => g.slug !== '1').map(g => ({
             slug: g.slug, label: g.label,
-            fotos: todos.filter(x => getGeneration(getYear(x.acf?.debut_date))?.slug === g.slug && x.featured_image_url).slice(0, 4),
+            fotos: todosNoIdioma.filter(x => getGeneration(getYear(x.acf?.debut_date))?.slug === g.slug && x.featured_image_url).slice(0, 4),
         })).filter(g => g.fotos.length >= 2)
-        debutaram = todos.flatMap(g => {
+        debutaram = todosNoIdioma.flatMap(g => {
             const d = String(g.acf?.debut_date ?? '').replace(/-/g, '')
             if (!/^\d{8}$/.test(d) || Number(d.slice(4, 6)) !== hoje.mes) return []
             return [{ slug: g.slug, nome: stripHtml(g.title.rendered), dia: Number(d.slice(6)), ano: Number(d.slice(0, 4)) }]
@@ -151,7 +173,7 @@ export async function GroupsListagem({ searchParams }: { searchParams: SearchPar
     if (unfiltered && page === 1) exigirListagemComConteudo(items, '/groups')
     if (paginaInvalida(page, totalPages)) notFound()
 
-    const shopProducts = inicio
+    const shopProducts = inicio && emPt
         ? ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'listagem:grupos')
         : []
 
@@ -159,6 +181,7 @@ export async function GroupsListagem({ searchParams }: { searchParams: SearchPar
         <>
             <PageBreadcrumb items={[{ name: 'Grupos', path: '/groups' }]} />
         <GroupsPage
+            locale={locale}
             groups={items}
             total={total}
             totalPages={totalPages}
@@ -173,7 +196,7 @@ export async function GroupsListagem({ searchParams }: { searchParams: SearchPar
             emAlta={emAlta}
             geracoes={geracoes}
             debutaram={debutaram}
-            mesNome={MESES[hoje.mes - 1]}
+            mesNome={emPt ? MESES[hoje.mes - 1] : new Intl.DateTimeFormat(LOCALE_META[locale].intl, { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2026, hoje.mes - 1, 1)))}
             integrantes={integrantes}
             shopProducts={shopProducts}
         />

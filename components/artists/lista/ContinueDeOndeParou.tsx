@@ -9,7 +9,7 @@ import { assinarRecentes, interpretarRecentes, lerRecentesCru, limparRecentes } 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
 
 /** Faixa dos últimos artistas vistos. Não aparece para quem nunca abriu uma ficha. */
-export function ContinueDeOndeParou({ apenas }: { apenas?: 'grupo' | 'producao' | 'artigo' } = {}) {
+export function ContinueDeOndeParou({ apenas, textos = { titulo: 'Continue de onde parou', limpar: 'Limpar' } }: { apenas?: 'grupo' | 'producao' | 'artigo'; textos?: { titulo: string; limpar: string } } = {}) {
     // No servidor e na hidratação o snapshot é vazio: a faixa só aparece depois, sem descompasso de HTML.
     const cru = useSyncExternalStore(assinarRecentes, lerRecentesCru, () => '')
     // Quem recusa o consentimento não vê a faixa e tem o histórico já guardado apagado (nunca no servidor: snapshot falso).
@@ -20,8 +20,8 @@ export function ContinueDeOndeParou({ apenas }: { apenas?: 'grupo' | 'producao' 
     return (
         <section aria-labelledby="continue-titulo" data-bloco="lista-continue" className="page-wrap pt-5">
             <div className="flex items-baseline justify-between gap-4">
-                <h2 id="continue-titulo" className={`${SERIF} text-[22px] font-semibold leading-tight sm:text-[26px]`}>Continue de onde parou</h2>
-                <button type="button" onClick={limparRecentes} className="touch-target text-[13px] font-semibold text-muted hover:text-foreground">Limpar</button>
+                <h2 id="continue-titulo" className={`${SERIF} text-[22px] font-semibold leading-tight sm:text-[26px]`}>{textos.titulo}</h2>
+                <button type="button" onClick={limparRecentes} className="touch-target text-[13px] font-semibold text-muted hover:text-foreground">{textos.limpar}</button>
             </div>
             <ul className="-mx-4 mt-3.5 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:gap-3 sm:overflow-visible sm:px-0">
                 {itens.map((r, i) => (

@@ -107,7 +107,7 @@ describe('rotas migradas para a árvore única', () => {
         const todos = rewritesDasRotasMigradas()
         expect(todos).toContainEqual({ source: '/groups', has: [{ type: 'query', key: 'type' }], destination: '/pt/groups/filtrado' })
         expect(todos).toContainEqual({ source: '/en/groups', has: [{ type: 'query', key: 'page' }], destination: '/en/groups/filtrado' })
-        // Chaves do português não desviam o inglês: o catálogo traduzido só pagina.
-        expect(todos).not.toContainEqual({ source: '/en/groups', has: [{ type: 'query', key: 'type' }], destination: '/en/groups/filtrado' })
+        // A listagem é a mesma nos dois idiomas, então os filtros também desviam o inglês.
+        expect(todos).toContainEqual({ source: '/en/groups', has: [{ type: 'query', key: 'type' }], destination: '/en/groups/filtrado' })
     })
 })
