@@ -854,5 +854,333 @@
         "answer": "Sí. Viki es conocida por su catálogo de doramas asiáticos con subtítulos en muchos idiomas."
       }
     ]
+  },
+  "doramas-coreanos-2024": {
+    "slug": "doramas-coreanos-2024",
+    "title": "Doramas coreanos de 2024",
+    "shortTitle": "K-Dramas 2024",
+    "description": "Doramas y películas coreanas de 2024 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2024 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2024?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2024?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2023": {
+    "slug": "doramas-coreanos-2023",
+    "title": "Doramas coreanos de 2023",
+    "shortTitle": "K-Dramas 2023",
+    "description": "Doramas y películas coreanas de 2023 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2023 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2023?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2023?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2022": {
+    "slug": "doramas-coreanos-2022",
+    "title": "Doramas coreanos de 2022",
+    "shortTitle": "K-Dramas 2022",
+    "description": "Doramas y películas coreanas de 2022 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2022 que están en el catálogo, entre ellas Extraordinary Attorney Woo (ENA) y All of Us Are Dead (Netflix).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2022?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2022?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2020": {
+    "slug": "doramas-coreanos-2020",
+    "title": "Doramas coreanos de 2020",
+    "shortTitle": "K-Dramas 2020",
+    "description": "Doramas y películas coreanas de 2020 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2020 que están en el catálogo, entre ellas It's Okay to Not Be Okay (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2020?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2020?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2019": {
+    "slug": "doramas-coreanos-2019",
+    "title": "Doramas coreanos de 2019",
+    "shortTitle": "K-Dramas 2019",
+    "description": "Doramas y películas coreanas de 2019 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2019 que están en el catálogo, entre ellas Crash Landing on You (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2019?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2019?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2017": {
+    "slug": "doramas-coreanos-2017",
+    "title": "Doramas coreanos de 2017",
+    "shortTitle": "K-Dramas 2017",
+    "description": "Doramas y películas coreanas de 2017 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2017 que están en el catálogo, entre ellas Stranger (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2017?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2017?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "cantoras-kpop": {
+    "slug": "cantantes-femeninas-kpop",
+    "title": "Cantantes femeninas de K-Pop",
+    "shortTitle": "Cantantes de K-Pop",
+    "description": "Conoce a las cantantes femeninas de K-Pop, idols y solistas, con fichas, trayectorias, grupos, canciones y curiosidades.",
+    "intro": [
+      "Las cantantes femeninas de K-Pop impulsan buena parte de la cultura Hallyu: desde las vocalistas de girl groups hasta solistas con discografías propias, conectan música, performance, moda y fandom.",
+      "Esta guía reúne fichas de artistas que cantan, con atajos a los grupos relacionados y a trayectorias que merecen una lectura más atenta. Las artistas que reparten su tiempo entre la música y la actuación también aparecen aquí."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué convierte a alguien en cantante femenina de K-Pop?",
+        "answer": "En HallyuHub contamos a las mujeres coreanas, o vinculadas a la industria coreana, que trabajan como vocalistas, idols, raperas o solistas en carreras musicales."
+      },
+      {
+        "question": "¿Las actrices que también cantan entran en la lista?",
+        "answer": "Sí. Cuando una ficha registra actividad musical, la artista aparece aquí aunque también actúe en doramas y películas."
+      },
+      {
+        "question": "¿Esta lista incluye integrantes de grupos?",
+        "answer": "Sí. La guía puede incluir vocalistas e idols de girl groups, además de artistas con carrera en solitario o actividades musicales individuales."
+      }
+    ]
+  },
+  "cantores-kpop": {
+    "slug": "cantantes-masculinos-kpop",
+    "title": "Cantantes masculinos de K-Pop",
+    "shortTitle": "Cantantes masculinos de K-Pop",
+    "description": "Conoce a los cantantes masculinos de K-Pop, idols y solistas, con fichas, trayectorias, grupos, canciones y curiosidades.",
+    "intro": [
+      "Los cantantes masculinos de K-Pop, de vocalistas a raperos y de idols a solistas, representan una enorme variedad de estilos, trayectorias e historias.",
+      "Esta guía reúne fichas de artistas masculinos que cantan, con atajos a los grupos relacionados y a trayectorias que merecen tu atención. Los artistas que reparten su tiempo entre la música y la actuación también aparecen aquí."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye integrantes de grupos?",
+        "answer": "Sí. La guía puede incluir vocalistas, raperos e idols de boy groups, además de artistas con carrera en solitario o actividades musicales individuales."
+      }
+    ]
+  },
+  "atrizes-coreanas": {
+    "slug": "actrices-coreanas",
+    "title": "Actrices coreanas",
+    "shortTitle": "Actrices coreanas",
+    "description": "Conoce a las actrices coreanas, con fichas, filmografías, doramas, música y trayectorias en el entretenimiento coreano.",
+    "intro": [
+      "Las actrices coreanas están en el corazón del fenómeno K-drama: de protagonistas románticas a villanas complejas, definen buena parte de la cultura Hallyu.",
+      "Esta guía reúne fichas de actrices que aparecen en producciones coreanas, incluidas las idols que también actúan, para facilitar el descubrimiento y la navegación."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye idols que actúan?",
+        "answer": "Sí. Muchas idols de K-Pop tienen también carrera como actrices en doramas, películas o producciones especiales, y pueden aparecer en esta guía."
+      }
+    ]
+  },
+  "atores-coreanos": {
+    "slug": "actores-coreanos",
+    "title": "Actores coreanos",
+    "shortTitle": "Actores coreanos",
+    "description": "Conoce a los actores coreanos, con fichas, filmografías, doramas, trayectorias y curiosidades del entretenimiento coreano.",
+    "intro": [
+      "Los actores coreanos han conquistado al mundo no solo con los K-dramas, sino con un nivel de oficio que va del romance a la acción y al drama psicológico.",
+      "Esta guía reúne fichas de actores del entretenimiento coreano para facilitar el descubrimiento, la navegación por producciones y el seguimiento de sus trayectorias."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye idols que actúan?",
+        "answer": "Sí. Varios idols de K-Pop también actúan en doramas y películas. Cuando una ficha tiene producciones vinculadas, pueden aparecer en esta guía."
+      }
+    ]
+  },
+  "kpop-idols-famosos": {
+    "slug": "idols-de-kpop",
+    "title": "Idols de K-Pop",
+    "shortTitle": "Idols de K-Pop",
+    "description": "Conoce a los idols de K-Pop, con fichas, trayectorias, grupos, canciones y curiosidades.",
+    "intro": [
+      "El fenómeno de los idols coreanos va más allá de la música: implica un entrenamiento riguroso, conceptos visuales distintivos, fandoms globales y una industria que mueve miles de millones cada año.",
+      "Esta guía reúne a los idols más destacados de HallyuHub para facilitar la búsqueda de fichas, grupos relacionados y cobertura editorial."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es un idol coreano?",
+        "answer": "Un idol coreano es un artista formado por una agencia de entretenimiento, tras años de práctica de canto, baile e interpretación, antes de debutar en un grupo o como solista."
+      },
+      {
+        "question": "¿Qué idols están en esta guía?",
+        "answer": "Las fichas de idols del catálogo, en orden alfabético. Para un grupo concreto, usa la guía de integrantes del grupo o el buscador de arriba."
+      }
+    ]
+  },
+  "artistas-solo-kpop": {
+    "slug": "solistas-de-kpop",
+    "title": "Solistas de K-Pop",
+    "shortTitle": "Solistas de K-Pop",
+    "description": "Explora a los solistas de K-Pop, con fichas, trayectorias musicales, discografías, videos y vínculos con grupos coreanos.",
+    "intro": [
+      "Las carreras en solitario en el K-Pop permiten a los fans seguir un lado más personal de idols, vocalistas, raperos e intérpretes.",
+      "En esta selección, HallyuHub destaca a artistas con presencia musical individual, para facilitar la búsqueda de fichas, canciones y trayectorias fuera o más allá de sus grupos."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es un solista de K-Pop?",
+        "answer": "Un artista con lanzamientos o presencia musical propios, ya sea un solista a tiempo completo o un idol que también desarrolla trabajo fuera del grupo."
+      }
+    ]
+  },
+  "idols-que-atuam-em-doramas": {
+    "slug": "idols-que-actuan-en-doramas",
+    "title": "Idols que actúan en doramas",
+    "shortTitle": "Idols que actúan",
+    "description": "Una lista de idols de K-Pop que también aparecen en doramas, películas y series coreanas, con fichas y filmografías.",
+    "intro": [
+      "Muchos idols construyen carreras paralelas en doramas y películas, acercando a los fans del K-Pop al mundo de los K-dramas.",
+      "Esta guía organiza a los artistas que hacen música y también actúan, enlazando fichas, grupos y producciones para facilitar la navegación entre la música y el dorama coreano."
+    ],
+    "faq": [
+      {
+        "question": "¿Por qué los idols actúan en doramas?",
+        "answer": "Muchos idols amplían su carrera a la actuación mediante doramas, películas y series, acercando a los fandoms del K-Pop a la audiencia del K-drama."
+      }
+    ]
+  },
+  "modelos-coreanas": {
+    "slug": "modelos-coreanas",
+    "title": "Modelos coreanas",
+    "shortTitle": "Modelos coreanas",
+    "description": "Conoce a las modelos coreanas, con fichas, trayectorias, moda, campañas y vínculos con el entretenimiento coreano.",
+    "intro": [
+      "Las modelos coreanas están cada vez más presentes en la escena internacional, combinando belleza, estilo y una influencia cultural que llega más allá de la pasarela.",
+      "Esta guía reúne fichas de modelos del catálogo de HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye modelos que también son idols?",
+        "answer": "Sí. Muchas idols de K-Pop trabajan también como modelos y embajadoras de marcas de moda internacionales."
+      }
+    ]
+  },
+  "modelos-coreanos": {
+    "slug": "modelos-coreanos",
+    "title": "Modelos coreanos",
+    "shortTitle": "Modelos coreanos",
+    "description": "Conoce a los modelos coreanos, con fichas, trayectorias, moda, campañas y vínculos con el entretenimiento coreano.",
+    "intro": [
+      "Los modelos coreanos se han ganado un lugar en las marcas de lujo internacionales, a menudo combinando el modelaje con carreras como idols o actores.",
+      "Esta guía reúne fichas de modelos masculinos del catálogo de HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye idols que son modelos?",
+        "answer": "Sí. Varios idols son embajadores de marcas de moda de lujo y pueden aparecer en esta guía cuando tienen ficha en el catálogo."
+      }
+    ]
+  },
+  "artistas-jyp-entertainment": {
+    "slug": "artistas-jyp-entertainment",
+    "title": "Artistas de JYP Entertainment",
+    "shortTitle": "JYP",
+    "description": "Conoce a los artistas y grupos de JYP Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "JYP Entertainment es una de las tres grandes discográficas del K-Pop, fundada por Park Jin-young en 1997, con un elenco que ha incluido a 2PM, TWICE, ITZY, Stray Kids y muchos otros.",
+      "Esta guía reúne a los artistas y grupos vinculados a JYP en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de JYP?",
+        "answer": "Entre los grupos más conocidos de JYP Entertainment, pasados y presentes, están TWICE, Stray Kids, ITZY, 2PM, 2AM, miss A, Wonder Girls, GOT7 y DAY6."
+      },
+      {
+        "question": "¿Quién fundó JYP Entertainment?",
+        "answer": "JYP Entertainment fue fundada en 1997 por el cantante y productor Park Jin-young."
+      }
+    ]
+  },
+  "artistas-sm-entertainment": {
+    "slug": "artistas-sm-entertainment",
+    "title": "Artistas de SM Entertainment",
+    "shortTitle": "SM",
+    "description": "Conoce a los artistas y grupos de SM Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "SM Entertainment es pionera del K-Pop moderno, fundada por Lee Soo-man en 1995 y responsable de dar forma al sistema de idols que influye en toda la industria.",
+      "Esta guía reúne a los artistas y grupos vinculados a SM en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de SM?",
+        "answer": "Entre los mayores grupos de SM Entertainment están EXO, NCT (NCT 127, NCT Dream, WayV), aespa, Red Velvet, SHINee, Girls' Generation, Super Junior y TVXQ."
+      }
+    ]
+  },
+  "artistas-yg-entertainment": {
+    "slug": "artistas-yg-entertainment",
+    "title": "Artistas de YG Entertainment",
+    "shortTitle": "YG",
+    "description": "Conoce a los artistas y grupos de YG Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "YG Entertainment es conocida por su estilo hip-hop y streetwear en el K-Pop, con un elenco que incluye a BLACKPINK, BIGBANG, 2NE1, WINNER, iKON y TREASURE.",
+      "Esta guía reúne a los artistas y grupos vinculados a YG en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de YG?",
+        "answer": "Entre los mayores grupos de YG Entertainment están BLACKPINK, BIGBANG, 2NE1, WINNER, iKON y TREASURE, además de solistas como G-Dragon y CL."
+      }
+    ]
   }
 }
