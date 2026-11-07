@@ -1,10 +1,7 @@
 import type { Metadata } from 'next'
-import { DEFAULT_LOCALE } from '@/lib/i18n/config'
-import { href } from '@/lib/i18n/routes'
-import { comoFallback } from '@/lib/i18n/fallback-ficha'
-import { EmFallback } from '@/components/i18n/EmFallback'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { VALID_POSITIONS } from '@/lib/constants/positions'
-import PositionPage, { generateMetadata as metadataEmPortugues } from '@/components/positions/PositionDetail'
+import PositionPage, { metadataDaPagina } from '@/components/positions/PositionDetail'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 
 export const revalidate = 1800
@@ -22,16 +19,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale, position } = await params
     if (!idiomaValido(locale, { servePt: true })) return {}
-    const metadata = await metadataEmPortugues({ params: Promise.resolve({ position }) })
-    return locale === DEFAULT_LOCALE ? metadata : comoFallback(metadata)
+    return metadataDaPagina({ params: Promise.resolve({ position }), locale: locale as Locale })
 }
 
 export default async function Page({ params }: { params: Params }) {
     const { locale, position } = await params
     entrarNaPagina(locale, { servePt: true })
-    return (
-        <EmFallback locale={locale} hrefOriginal={href('position', { position }, DEFAULT_LOCALE)}>
-            <PositionPage params={Promise.resolve({ position })} />
-        </EmFallback>
-    )
+    return <PositionPage params={Promise.resolve({ position })} locale={locale as Locale} />
 }

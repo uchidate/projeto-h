@@ -13,7 +13,7 @@ import { SITE_URL } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { GroupHero } from '@/components/groups/GroupHero'
-import { POSITION_LABELS } from '@/lib/constants/positions'
+import { rotuloDaPosicao } from '@/lib/constants/positions'
 import { ScrollToTop } from '@/components/ui/ScrollToTop'
 import { ReadingBar } from '@/components/ui/ReadingBar'
 import { QuizWidget } from '@/components/ui/QuizWidget'
@@ -193,7 +193,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                             '@type': 'Person',
                             name: stripHtml(member.title.rendered),
                             url: `${SITE_URL}${href('artist', { slug: member.slug }, locale)}`,
-                            ...(positions.length > 0 ? { jobTitle: positions.map(p => POSITION_LABELS[p] ?? p).join(', ') } : {}),
+                            ...(positions.length > 0 ? { jobTitle: positions.map(p => rotuloDaPosicao(p, locale)).join(', ') } : {}),
                         }
                     }) : undefined,
                 }}

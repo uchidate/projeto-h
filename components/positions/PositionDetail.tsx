@@ -3,38 +3,42 @@ import { SITE_NAME } from '@/lib/constants/site'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import Link from '@/components/i18n/LocalizedLink'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getGroupsByPosition } from '@/lib/wordpress/groups'
 import { getArtistsByIds } from '@/lib/wordpress/artists'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
-import { POSITION_LABELS, isValidPosition } from '@/lib/constants/positions'
+import { isValidPosition } from '@/lib/constants/positions'
 import { getWPImage, stripHtml } from '@/lib/utils'
 
 
 type Params = Promise<{ position: string }>
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function metadataDaPagina({ params, locale = DEFAULT_LOCALE }: { params: Params; locale?: Locale }): Promise<Metadata> {
     const { position } = await params
     if (!isValidPosition(position)) return {}
-    const label = POSITION_LABELS[position]
-    const title = `Quem é ${label} em cada grupo de K-Pop`
-    const description = `Veja todos os idols que ocupam a posição de ${label} nos grupos de k-pop cadastrados no ${SITE_NAME}.`
-    const url = `${SITE_URL}/positions/${position}`
+    const t = await getTranslations({ locale, namespace: 'client.positionsPage' })
+    const label = t(`labels.${position}` as 'labels.leader')
+    const url = `${SITE_URL}${href('position', { position }, locale)}`
     return {
-        title, description,
+        title: t('detailTitle', { label }),
+        description: t('detailDescription', { label, site: SITE_NAME }),
         alternates: { canonical: url },
         openGraph: baseOG(url),
         twitter: baseTwitter(),
     }
 }
 
-export default async function PositionDetailPage({ params }: { params: Params }) {
+export default async function PositionDetailPage({ params, locale = DEFAULT_LOCALE }: { params: Params; locale?: Locale }) {
     const { position } = await params
     if (!isValidPosition(position)) notFound()
 
-    const label = POSITION_LABELS[position]
+    const t = await getTranslations({ locale, namespace: 'client.positionsPage' })
+    const label = t(`labels.${position}` as 'labels.leader')
     const groups = await getGroupsByPosition(position)
 
     const entries = await Promise.all(groups.map(async group => {
@@ -57,13 +61,13 @@ export default async function PositionDetailPage({ params }: { params: Params })
     return (
         <div className="mx-auto max-w-4xl px-4 py-10">
             <p className="text-xs font-mono uppercase tracking-wide text-muted">
-                <Link href="/positions" className="hover:text-accent">Posições</Link> / {label}
+                <Link href="/positions" className="hover:text-accent">{t('crumb')}</Link> / {label}
             </p>
-            <h1 className="mt-1 text-2xl font-black text-foreground sm:text-3xl">Quem é {label} em cada grupo</h1>
+            <h1 className="mt-1 text-2xl font-black text-foreground sm:text-3xl">{t('detailTitleH1', { label })}</h1>
             <p className="mt-2 max-w-2xl text-sm text-muted">
-                {rows.length} grupo{rows.length === 1 ? '' : 's'} com {label.toLowerCase()} cadastrado.{' '}
+                {t('detailCount', { count: rows.length, label: locale === DEFAULT_LOCALE ? label.toLowerCase() : label })}{' '}
                 <Link href="/blog/posicoes-grupo-kpop-lider-vocal-visual-maknae-guia" className="underline decoration-dotted underline-offset-2 hover:text-accent">
-                    Entenda o que essa posição significa
+                    {t('detailGuide')}
                 </Link>.
             </p>
 
@@ -111,7 +115,7 @@ export default async function PositionDetailPage({ params }: { params: Params })
             </div>
 
             {rows.length === 0 && (
-                <p className="mt-6 text-sm text-muted">Nenhum grupo com essa posição cadastrada ainda.</p>
+                <p className="mt-6 text-sm text-muted">{t('empty')}</p>
             )}
         </div>
     )

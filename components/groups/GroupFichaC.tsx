@@ -10,7 +10,7 @@ import { CollapsibleProse } from '@/components/profiles/CollapsibleProse'
 import { highlightProse } from '@/lib/profiles/highlightProse'
 import { MapaConexoes, type NoMapa } from '@/components/artists/MapaConexoes'
 import { extractYoutubeId, getWPImage, stripHtml } from '@/lib/utils'
-import { POSITION_LABELS } from '@/lib/constants/positions'
+import { rotuloDaPosicao } from '@/lib/constants/positions'
 import { GroupMVPlayer } from '@/components/groups/GroupMVPlayer'
 import { GroupDiscography, type DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { GroupSpotifyEmbed } from '@/components/groups/GroupSpotifyEmbed'
@@ -61,7 +61,8 @@ function Anuncio({ placement, layout = 'content' }: { placement: string; layout?
  */
 export function GroupFichaC({ group, model, activeMembers, formerMembers, formerSemFicha, memberPositions, relatedGroups, relatedPosts, discography, soloReleases, agencyName, generation, magra, nodes, resto , quiz, lojaLateral }: Props) {
     const t = useTranslations('profile.groupC')
-    const labels = labelsFor(useLocale())
+    const locale = useLocale()
+    const labels = labelsFor(locale)
     const accent = model.accent
     const { name, acf, contentBefore, contentAfter, videoList } = model
     const spotify = acf.spotify ?? ''
@@ -132,7 +133,7 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                                 const foto = getWPImage(m._embedded, m.featured_image_url)
                                 const nome = stripHtml(m.title?.rendered ?? '')
                                 const linha = linhaDe(m.slug)
-                                const pos = (memberPositions[m.slug] ?? []).map(p => POSITION_LABELS[p] ?? p)
+                                const pos = (memberPositions[m.slug] ?? []).map(p => rotuloDaPosicao(p, locale))
                                 const meta = [...pos, linha?.idade != null ? t('years', { count: linha.idade }) : null].filter(Boolean).join(t('positionSep'))
                                 return (
                                     <li key={m.id}>
@@ -193,7 +194,7 @@ export function GroupFichaC({ group, model, activeMembers, formerMembers, former
                                     {porIntegrante.map(m => {
                                         const foto = getWPImage(m._embedded, m.featured_image_url)
                                         const nome = stripHtml(m.title?.rendered ?? '')
-                                        const pos = (memberPositions[m.slug] ?? []).map(p => POSITION_LABELS[p] ?? p).join(t('positionSep'))
+                                        const pos = (memberPositions[m.slug] ?? []).map(p => rotuloDaPosicao(p, locale)).join(t('positionSep'))
                                         return (
                                             <li key={m.id}>
                                                 <Link href={`/artists/${m.slug}`} className="touch-target flex items-center gap-3.5 bg-background/40 p-2">

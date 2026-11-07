@@ -18,3 +18,9 @@ export const VALID_POSITIONS = Object.keys(POSITION_LABELS)
 export function isValidPosition(value: string): boolean {
     return VALID_POSITIONS.includes(value)
 }
+
+/** Só `leader` muda de grafia entre os idiomas; as demais são termos do próprio k-pop. */
+export function rotuloDaPosicao(position: string, locale: string): string {
+    if (locale !== 'pt' && position === 'leader') return 'Leader'
+    return POSITION_LABELS[position] ?? position
+}

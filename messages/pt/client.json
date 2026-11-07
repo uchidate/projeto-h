@@ -114,7 +114,8 @@
     "grid": "Grade",
     "list": "Lista",
     "less": "↑ menos",
-    "more": "{count, plural, one {↓ # faixa a mais} other {↓ # faixas a mais}}"
+    "more": "{count, plural, one {↓ # faixa a mais} other {↓ # faixas a mais}}",
+    "releases": "{count, plural, one {# lançamento} other {# lançamentos}}"
   },
   "member": {
     "role": {
@@ -782,5 +783,103 @@
     "clear": "Limpar",
     "metaTitle": "Doramas & Filmes Coreanos",
     "metaDescription": "Catálogo completo de doramas e filmes coreanos — de romances épicos a thrillers de tirar o fôlego, tudo em português."
+  },
+  "trendingPage": {
+    "title": "Em Alta no K-Pop",
+    "description": "Artistas e grupos de k-pop em alta agora — ranking dinâmico por popularidade e presença nos charts.",
+    "crumbHome": "Início",
+    "crumb": "Em Alta",
+    "intro": "Ranking dinâmico — atualiza conforme o engajamento e a presença nos charts mudam, sem curadoria manual.",
+    "chartsTitle": "Nos charts agora",
+    "chartsDesc": "Artistas com presença confirmada no Top 10 das plataformas de streaming.",
+    "groupsTitle": "Grupos em alta",
+    "groupsDesc": "Ordenado por trending score — atividade recente e engajamento do fandom.",
+    "artistsTitle": "Artistas em alta"
+  },
+  "positionsPage": {
+    "title": "Posições em Grupos de K-Pop",
+    "description": "Veja quem é líder, main vocal, visual, center e maknae em cada grupo de k-pop cadastrado no {site}.",
+    "crumb": "Posições",
+    "intro": "Cada posição define uma função real dentro do grupo — não é rótulo de perfil.",
+    "guideLink": "Entenda o sistema completo",
+    "detailTitle": "Quem é {label} em cada grupo de K-Pop",
+    "detailTitleH1": "Quem é {label} em cada grupo",
+    "detailDescription": "Veja todos os idols que ocupam a posição de {label} nos grupos de k-pop cadastrados no {site}.",
+    "detailCount": "{count, plural, one {# grupo} other {# grupos}} com {label} cadastrado.",
+    "detailGuide": "Entenda o que essa posição significa",
+    "empty": "Nenhum grupo com essa posição cadastrada ainda.",
+    "labels": {
+      "leader": "Líder",
+      "main_vocal": "Main Vocal",
+      "lead_vocal": "Lead Vocal",
+      "sub_vocal": "Sub-Vocal",
+      "main_dancer": "Main Dancer",
+      "lead_dancer": "Lead Dancer",
+      "main_rapper": "Main Rapper",
+      "sub_rapper": "Sub-Rapper",
+      "visual": "Visual",
+      "center": "Center",
+      "maknae": "Maknae"
+    },
+    "descriptions": {
+      "leader": "porta-voz oficial do grupo, escolhido pela agência",
+      "main_vocal": "voz técnica mais forte do grupo",
+      "lead_vocal": "apoio vocal direto ao main vocal",
+      "sub_vocal": "canta sem centralidade técnica principal",
+      "main_dancer": "referência técnica de coreografia",
+      "lead_dancer": "apoio direto na coreografia",
+      "main_rapper": "referência técnica de rap",
+      "sub_rapper": "apoio no rap",
+      "visual": "rosto mais associado à imagem pública do grupo",
+      "center": "posição física central em coreografias e capas",
+      "maknae": "membro mais novo do grupo"
+    }
+  },
+  "searchPage": {
+    "titleQuery": "Busca: {q}",
+    "title": "Busca",
+    "placeholder": "Buscar artistas, doramas, artigos…",
+    "aria": "Buscar artistas, doramas e artigos",
+    "clear": "Limpar busca",
+    "results": "{count, plural, one {# resultado} other {# resultados}} para",
+    "minChars": "Digite pelo menos 2 caracteres para buscar",
+    "noneTitle": "Nenhum resultado",
+    "noneDesc": "Tente buscar por outro termo.",
+    "hot": "Em alta agora",
+    "types": {
+      "production": "Produção",
+      "artist": "Artista",
+      "group": "Grupo",
+      "post": "Artigo",
+      "company": "Empresa",
+      "food": "Comida",
+      "store_product": "Loja"
+    },
+    "sections": {
+      "production": "Produções",
+      "artist": "Artistas",
+      "group": "Grupos",
+      "company": "Empresas",
+      "food": "Comidas",
+      "store_product": "Na loja",
+      "post": "Artigos"
+    }
+  },
+  "groupCard": {
+    "ended": "encerrado",
+    "hot": "em alta",
+    "since": "desde {year}"
+  },
+  "birthdaysPage": {
+    "crumbArtists": "Artistas",
+    "crumb": "Aniversários",
+    "title": "Aniversários de {month}",
+    "description": "Artistas K-Pop e K-Drama que fazem aniversário em {month}.",
+    "kicker": "Aniversários",
+    "count": "{count, plural, one {# artista faz} other {# artistas fazem}} aniversário em {month}",
+    "today": "Hoje",
+    "age": "{age} anos",
+    "emptyTitle": "Nenhum aniversário encontrado",
+    "emptyDesc": "Sem artistas cadastrados com aniversário em {month}."
   }
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { toRgba } from '@/lib/theme/color'
 
 function hexToRgb(hex: string): string {
@@ -39,6 +40,7 @@ interface Props {
 }
 
 export function GroupColorIdentity({ officialColor, groupName, fanClubName, lightstick }: Props) {
+    const t = useTranslations('profile.ui')
     const [copied, setCopied] = useState(false)
 
     const copy = () => {
@@ -55,7 +57,7 @@ export function GroupColorIdentity({ officialColor, groupName, fanClubName, ligh
         <div className="border border-border bg-background overflow-hidden">
             <div className="px-4 pt-4 pb-3 border-b border-border">
                 <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">
-                    Identidade Visual · {groupName}
+                    {t('colorIdentity')} · {groupName}
                 </p>
             </div>
 
@@ -63,17 +65,17 @@ export function GroupColorIdentity({ officialColor, groupName, fanClubName, ligh
             <button
                 type="button"
                 onClick={copy}
-                title="Clique para copiar o hex"
+                title={t('colorCopyTitle')}
                 className="relative w-full h-28 sm:h-36 flex items-end p-4 transition-opacity hover:opacity-90 active:opacity-75 focus:outline-hidden"
                 style={{ background: `linear-gradient(135deg, ${toRgba(officialColor, 0.7)} 0%, ${officialColor} 60%, #000 160%)` }}
             >
                 <div className="flex items-baseline gap-3">
                     <span className="font-mono text-2xl sm:text-3xl font-black text-white drop-shadow-sm">
-                        {copied ? '✓ copiado!' : officialColor.toUpperCase()}
+                        {copied ? t('colorCopied') : officialColor.toUpperCase()}
                     </span>
                     {!copied && (
                         <span className="font-mono text-[10px] font-black uppercase tracking-widest text-white/60">
-                            toque para copiar
+                            {t('colorTapToCopy')}
                         </span>
                     )}
                 </div>

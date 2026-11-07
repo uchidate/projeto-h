@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import Link from '@/components/i18n/LocalizedLink'
@@ -14,16 +17,22 @@ import { QuizWidget } from '@/components/ui/QuizWidget'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 
-export const metadata: Metadata = {
-    title: 'Em Alta no K-Pop',
-    description: 'Artistas e grupos de k-pop em alta agora — ranking dinâmico por popularidade e presença nos charts.',
-    alternates: { canonical: `${SITE_URL}/trending` },
-    openGraph: baseOG(`${SITE_URL}/trending`),
-    twitter: baseTwitter(),
+export async function metadataDaPagina(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
+    const t = await getTranslations({ locale, namespace: 'client.trendingPage' })
+    const url = `${SITE_URL}${href('trending', undefined, locale)}`
+    return {
+        title: t('title'),
+        description: t('description'),
+        alternates: { canonical: url },
+        openGraph: baseOG(url),
+        twitter: baseTwitter(),
+    }
 }
 
-export default async function TrendingPage() {
-    const shopProducts = await getVitrineGeral('trending', 6, 'kpop')
+export default async function TrendingPage({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
+    const t = await getTranslations({ locale, namespace: 'client.trendingPage' })
+    const emPt = locale === DEFAULT_LOCALE
+    const shopProducts = emPt ? await getVitrineGeral('trending', 6, 'kpop') : []
     const [streamingArtists, trendingArtists, trendingGroups] = await Promise.all([
         getStreamingArtists(24),
         getTrendingArtists(24),
@@ -36,20 +45,20 @@ export default async function TrendingPage() {
 
     return (
         <>
-            <PageBreadcrumb items={[{ name: 'Em Alta', path: '/trending' }]} />
+            <PageBreadcrumb items={[{ name: t('crumb'), path: '/trending' }]} />
         <div className="mx-auto max-w-6xl px-4 py-10">
             <nav className="mb-2 font-mono text-[10px] text-muted">
-                <Link href="/" className="hover:text-foreground">Início</Link> / Em Alta
+                <Link href="/" className="hover:text-foreground">{t('crumbHome')}</Link> / {t('crumb')}
             </nav>
-            <h1 className="text-2xl font-black text-foreground sm:text-3xl">Em Alta no K-Pop</h1>
+            <h1 className="text-2xl font-black text-foreground sm:text-3xl">{t('title')}</h1>
             <p className="mt-2 max-w-2xl text-sm text-muted">
-                Ranking dinâmico — atualiza conforme o engajamento e a presença nos charts mudam, sem curadoria manual.
+                {t('intro')}
             </p>
 
             {streamingArtists.length > 0 && (
                 <section className="mt-8">
-                    <h2 className="text-lg font-bold text-foreground">Nos charts agora</h2>
-                    <p className="mt-1 text-xs text-muted">Artistas com presença confirmada no Top 10 das plataformas de streaming.</p>
+                    <h2 className="text-lg font-bold text-foreground">{t('chartsTitle')}</h2>
+                    <p className="mt-1 text-xs text-muted">{t('chartsDesc')}</p>
                     <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
                         {streamingArtists.map((artist, i) => (
                             <ArtistCard key={artist.id} artist={artist} variant="catalog" priority={i < 6} />
@@ -68,21 +77,21 @@ export default async function TrendingPage() {
 
             {trendingGroups.length > 0 && (
                 <section className="mt-10">
-                    <h2 className="text-lg font-bold text-foreground">Grupos em alta</h2>
-                    <p className="mt-1 text-xs text-muted">Ordenado por trending score — atividade recente e engajamento do fandom.</p>
+                    <h2 className="text-lg font-bold text-foreground">{t('groupsTitle')}</h2>
+                    <p className="mt-1 text-xs text-muted">{t('groupsDesc')}</p>
                     <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-6">
                         {trendingGroups.map(group => (
-                            <GroupCard key={group.id} group={group} />
+                            <GroupCard key={group.id} group={group} locale={locale} />
                         ))}
                     </div>
                 </section>
             )}
 
-            <LojaEmLinha bloco="trending-loja-meio" products={shopProducts} title="Merch dos que estão em alta" contexto="trending:meio" className="mt-10" />
+            {emPt && <LojaEmLinha bloco="trending-loja-meio" products={shopProducts} title="Merch dos que estão em alta" contexto="trending:meio" className="mt-10" />}
 
             {trendingArtists.length > 0 && (
                 <section className="mt-10">
-                    <h2 className="text-lg font-bold text-foreground">Artistas em alta</h2>
+                    <h2 className="text-lg font-bold text-foreground">{t('artistsTitle')}</h2>
                     <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
                         {trendingArtists.map(artist => (
                             <ArtistCard key={artist.id} artist={artist} variant="catalog" />
@@ -91,7 +100,7 @@ export default async function TrendingPage() {
                 </section>
             )}
 
-            <QuizWidget category="k-pop" title="Testou seu conhecimento hoje?" description="Veja se você acompanha de verdade quem está em alta" />
+            {emPt && <QuizWidget category="k-pop" title="Testou seu conhecimento hoje?" description="Veja se você acompanha de verdade quem está em alta" />}
         </div>
         </>
     )
