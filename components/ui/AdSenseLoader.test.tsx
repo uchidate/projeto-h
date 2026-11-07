@@ -76,6 +76,20 @@ describe('AdSenseLoader', () => {
         vi.useRealTimers()
     })
 
+    it('o movimento do mouse confiável libera o script, sem exigir clique', () => {
+        vi.stubEnv('NODE_ENV', 'test')
+        render(<AdsProvider settings={settings()}><AdSenseLoader /></AdsProvider>)
+        gesto('pointermove')
+        expect(document.getElementById('adsense-init')).not.toBeNull()
+    })
+
+    it('movimento do mouse disparado por script não libera', () => {
+        vi.stubEnv('NODE_ENV', 'test')
+        render(<AdsProvider settings={settings()}><AdSenseLoader /></AdsProvider>)
+        gesto('pointermove', false)
+        expect(document.getElementById('adsense-init')).toBeNull()
+    })
+
     it('injeta uma única vez mesmo com vários sinais', () => {
         vi.stubEnv('NODE_ENV', 'test')
         render(<AdsProvider settings={settings()}><AdSenseLoader /></AdsProvider>)

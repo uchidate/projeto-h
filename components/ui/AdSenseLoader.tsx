@@ -55,8 +55,11 @@ export function AdSenseLoader() {
         // interação, e o crawler de 2026-11 (Chrome falsificado, executa JS)
         // passava por ele e gerava impressão inválida no AdSense. Rolagem fica
         // de fora: script também rola a página. No celular rolar é tocar, então
-        // o leitor real libera no primeiro movimento.
-        const eventos: Array<keyof WindowEventMap> = ['pointerdown', 'keydown', 'touchstart', 'wheel']
+        // o leitor real libera no primeiro movimento. No computador, o mouse
+        // (pointermove) libera sem exigir clique: só com gesto de clique ou tecla
+        // o anúncio demorava ou nem aparecia para quem apenas lia (2026-11-07).
+        // Movimento disparado por script (dispatchEvent) segue sem valer.
+        const eventos: Array<keyof WindowEventMap> = ['pointerdown', 'pointermove', 'keydown', 'touchstart', 'touchmove', 'wheel']
         const liberar = (evento: Event) => {
             if (gestoConfiavel(evento)) injetar()
         }
