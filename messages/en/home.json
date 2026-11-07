@@ -64,7 +64,7 @@
       "comece": "Start here",
       "porTema": "Guides by theme",
       "verTodos": "All guides",
-      "titulos": "{total} titles"
+      "titulos": "{total, plural, one {# title} other {# titles}}"
   },
   "passos": {
     "o-que-e-hallyu-onda-coreana-explicada": { "label": "What is Hallyu?", "apoio": "the Korean wave, in a few minutes" },

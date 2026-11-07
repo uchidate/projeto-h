@@ -3,7 +3,6 @@ import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
-import { formatNumber } from '@/lib/i18n/format'
 import { APOIO_DOS_PASSOS, type GuiaDaHome } from '@/lib/home/guias'
 import type { BestOfList } from '@/lib/wordpress/site-settings'
 
@@ -70,7 +69,7 @@ export async function HomeGuias({ passos, guias, locale = DEFAULT_LOCALE, naIndi
                         {!naIndice && <Link href={href('guides', undefined, locale)} className={`hidden border-b border-[#ff7aa6] pb-0.5 text-white lg:inline-block ${MONO}`}>{t('verTodos')}</Link>}
                     </div>
                     <div className="-mx-4 grid auto-cols-[210px] grid-flow-col gap-3.5 overflow-x-auto px-4 pb-2 no-scrollbar sm:-mx-6 sm:px-6 lg:mx-0 lg:grid-flow-row lg:auto-cols-auto lg:grid-cols-3 lg:overflow-visible lg:px-0">
-                        {guias.map(g => <CartaoGuia key={g.slug} guia={g} locale={locale} titulos={t('titulos', { total: formatNumber(g.total, undefined, locale) })} />)}
+                        {guias.map(g => <CartaoGuia key={g.slug} guia={g} locale={locale} titulos={t('titulos', { total: g.total })} />)}
                     </div>
                     {!naIndice && <Link href={href('guides', undefined, locale)} className={`mt-4 inline-block border-b border-[#ff7aa6] pb-0.5 text-white lg:hidden ${MONO}`}>{t('verTodos')}</Link>}
                 </div>

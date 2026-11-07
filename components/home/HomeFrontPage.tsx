@@ -72,7 +72,6 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     // Fora do português o painel de temas só entra se houver alguma ficha ou artigo traduzido (senão o capítulo ficaria sozinho).
     // Fora do português a faixa de guias só entra com guias traduzidos; os capítulos seguem em sequência.
     const temGuias = soPt || guiasPorTema.length > 0
-    const g = temGuias ? 1 : 0
     // Fora do português só a pergunta do dia (o quiz completo e o cartão do quiz ainda não existem no idioma).
     const temJogo = soPt || !!pergunta
     const temTemas = soPt || !!temas && [temas.gastronomia, temas.beleza].some(t => t.artigos.length + t.pratos.length + t.marcas.length > 0)
@@ -97,6 +96,11 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     // Cada matéria aparece em uma só vitrine: as editorias pulam o que já está no carrossel, nos destaques e nos longreads,
     // e o que foi para elas sai de "Últimas publicações".
     const editorias = montarEditorias(postsEditorias, new Set([...usedIds, ...longreads.map(post => post.id)]))
+    // Fora do português, capítulo sem conteúdo (editorias e longreads só aparecem com posts no idioma) não ganha título nem número.
+    const temEditorias = soPt || editorias.length > 0
+    const temLongreads = soPt || longreads.length > 0
+    let capitulo = 1
+    const proximo = () => ++capitulo
 
     return (
         <section className="bg-[var(--color-home-page)]" aria-label={t('rotulo')}>
@@ -114,10 +118,10 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     </div>
                 )}
                 <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>
-                {temGuias && <HomeCapitulo n={2} chave="aprenda" cor="#0b6b63" locale={locale} />}
+                {temGuias && <HomeCapitulo n={proximo()} chave="aprenda" cor="#0b6b63" locale={locale} />}
                 {temGuias && <div data-bloco="home-guias" className="-mx-3.5 lg:mx-0"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
-                <HomeCapitulo n={2 + g} chave="editoria" cor="#6d3fc0" locale={locale} />
-                <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>
+                {temEditorias && <HomeCapitulo n={proximo()} chave="editoria" cor="#6d3fc0" locale={locale} />}
+                {temEditorias && <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>}
                 {/*
                   * Daqui para baixo, nada aparece no carregamento em nenhum
                   * viewport, e cada bloco leva `cv-auto` (content-visibility):
@@ -128,13 +132,15 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                   * mede visibilidade com IntersectionObserver, e a mudança não
                   * deve mexer em como o AdSense enxerga a página.
                   */}
-                <HomeCapitulo n={3 + g} chave="reportagem" cor="#6d3fc0" locale={locale} />
+                {temLongreads && <HomeCapitulo n={proximo()} chave="reportagem" cor="#6d3fc0" locale={locale} />}
+                {temLongreads && (
                 <div className="cv-auto [--cv-h:1500px] lg:[--cv-h:860px] -mx-3.5 border-t-4 border-t-[#6d3fc0] bg-[#efe9fb] px-3.5 py-5 dark:bg-[#1c1530] lg:-mx-6 lg:px-6 lg:py-7">
                     <div className="border border-border bg-[var(--color-home-card)]">
                         <div data-bloco="home-longreads" className="contents"><HomeLongreads posts={longreads} locale={locale} /></div>
                     </div>
                 </div>
-                <HomeCapitulo n={4 + g} chave="dados" cor="#c61153" locale={locale} />
+                )}
+                <HomeCapitulo n={proximo()} chave="dados" cor="#c61153" locale={locale} />
                 <div data-bloco="home-populares" className="contents"><HomePopulares artistas={artists} grupos={trendingGroups} producoes={producoesEmAlta} hoje={hoje} locale={locale} /></div>
                 {ADSENSE.slots.inline && (
                     <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 empty:hidden sm:px-6 lg:px-4">
@@ -143,7 +149,7 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                 )}
                 {temJogo && (
                     <>
-                        <HomeCapitulo n={soPt ? 6 : 5 + g} chave="jogue" cor="#8a5a00" locale={locale} />
+                        <HomeCapitulo n={proximo()} chave="jogue" cor="#8a5a00" locale={locale} />
                         <div className="-mx-3.5 border-t-4 border-t-[#8a5a00] bg-[#fff3d6] px-3.5 py-4 dark:bg-[#271d08] lg:-mx-6 lg:px-6 lg:py-5">
                             <div className="grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.5fr)] lg:gap-5">
                                 {pergunta}
@@ -152,12 +158,12 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                         </div>
                     </>
                 )}
-                {temTemas && <HomeCapitulo n={soPt ? 7 : 5 + g + (temJogo ? 1 : 0)} chave="temas" cor="#b4531a" locale={locale} />}
+                {temTemas && <HomeCapitulo n={proximo()} chave="temas" cor="#b4531a" locale={locale} />}
                 {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href={rota('foods', undefined, locale)} bloco="home-gastronomia" locale={locale} />}
                 {explore.length > 0 && <div data-bloco="home-explore" className="border border-border bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>}
                 {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#0e7490" href={soPt ? '/blog?category=k-beauty' : rota('blog', undefined, locale)} bloco="home-beleza" locale={locale} />}
                 {aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}
-                {soPt && <HomeCapitulo n={8} chave="loja" cor="#ff246e" locale={locale} />}
+                {soPt && <HomeCapitulo n={proximo()} chave="loja" cor="#ff246e" locale={locale} />}
                 {soPt && <div data-bloco="home-loja" className="-mx-3.5 lg:mx-0"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
             </div>
         </section>
