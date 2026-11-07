@@ -431,6 +431,16 @@ export function marcarSessaoHumana() {
 }
 
 /**
+ * Perfil técnico da sessão, para separar e investigar acesso indevido no Umami
+ * sem esconder nada: `trafego = robo_evidente` (com `motivo`) e `chrome_versao`.
+ * Complementa `humano = true`: filtrar por `trafego` isola o robô; por `humano`,
+ * o público. Sessão que nem é uma nem outra é a que merece olhar.
+ */
+export function marcarPerfilTecnico(dados: Record<string, string | number>) {
+    chamarUmami(() => window.umami!.identify?.(dados))
+}
+
+/**
  * Bloco de recirculação que entrou na tela.
  *
  * Sem a exibição, o clique é um número absoluto: 12 cliques em 2,3 mil leituras
