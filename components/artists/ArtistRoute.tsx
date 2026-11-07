@@ -29,6 +29,7 @@ import { buildLanguageLinks } from '@/lib/i18n/language-links'
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
+import { fichaFina } from '@/lib/i18n/ficha-fina'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
 
@@ -69,7 +70,7 @@ export async function buildArtistMetadata(slug: string, locale: Locale): Promise
         type: 'artist',
     })
 
-    return buildWordPressMetadata({
+    const metadata = buildWordPressMetadata({
         title,
         description,
         url,
@@ -78,6 +79,10 @@ export async function buildArtistMetadata(slug: string, locale: Locale): Promise
         languages: buildAlternates('artist', { slug }, locale, availableLocales(found)).languages,
         ogLocale: LOCALE_META[locale].ogLocale,
     })
+    // Tradução de uma frase só é conteúdo raso: acessível, mas fora do índice.
+    return locale !== DEFAULT_LOCALE && fichaFina(artist.content.rendered)
+        ? { ...metadata, robots: { index: false, follow: true } }
+        : metadata
 }
 
 export async function ArtistRoute({ slug, locale }: { slug: string; locale: Locale }) {
