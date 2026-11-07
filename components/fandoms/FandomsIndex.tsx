@@ -16,7 +16,7 @@ export async function generateMetadata({ searchParams, locale = DEFAULT_LOCALE }
     const [sp, t] = await Promise.all([searchParams, getTranslations({ locale, namespace: 'client.fandoms' })])
     const url = `${SITE_URL}${href('fandoms', undefined, locale)}${sp.search ? `?search=${encodeURIComponent(sp.search)}` : ''}`
     const idiomas = Object.fromEntries([
-        ...(['pt', 'en'] as const).map(l => [LOCALE_META[l].htmlLang, `${SITE_URL}${href('fandoms', undefined, l)}`]),
+        ...(['pt', 'en', 'es'] as const).map(l => [LOCALE_META[l].htmlLang, `${SITE_URL}${href('fandoms', undefined, l)}`]),
         ['x-default', `${SITE_URL}${href('fandoms', undefined, DEFAULT_LOCALE)}`],
     ])
     return {

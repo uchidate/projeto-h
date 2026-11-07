@@ -53,7 +53,7 @@ export async function metadataProductionsListagem({ searchParams, locale = DEFAU
     const hasFacets = Boolean(sp.search || sp.genre || sp.platform || sp.type || sp.order)
     const invalidPage = paginaInvalida(page, totalPages)
 
-    const languages = emPt && page === 1 && !hasFacets ? await defaultCatalogLanguages('productions') : undefined
+    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('productions', locale) : undefined
 
     return {
         title: t('metaTitle'),

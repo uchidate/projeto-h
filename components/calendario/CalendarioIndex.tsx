@@ -17,7 +17,7 @@ import { buildAlternates } from '@/lib/i18n/alternates'
 
 
 /** O calendário existe em português e inglês. */
-const IDIOMAS_DO_CALENDARIO: readonly Locale[] = ['pt', 'en']
+const IDIOMAS_DO_CALENDARIO: readonly Locale[] = ['pt', 'en', 'es']
 
 export async function generateMetadata({ locale = DEFAULT_LOCALE }: { locale?: Locale } = {}): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'client.calendar' })

@@ -36,7 +36,7 @@ export async function metadataArtistsListagem({ searchParams, locale = DEFAULT_L
     const hasFacets = Boolean(sp.search || sp.role || sp.affiliation || sp.letter || sp.sortBy)
     const invalidPage = paginaInvalida(page, totalPages)
 
-    const languages = emPt && page === 1 && !hasFacets ? await defaultCatalogLanguages('artists') : undefined
+    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('artists', locale) : undefined
 
     return {
         title: t('metaTitle'),

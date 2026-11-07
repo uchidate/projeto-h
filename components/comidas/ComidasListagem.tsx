@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import { defaultCatalogLanguages, buildCatalogMetadata } from '@/components/features/LocalizedCatalog'
+import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import { localizarCaminho } from '@/lib/i18n/localizar-caminho'
@@ -70,7 +70,7 @@ export async function metadataComidas({ searchParams, locale = DEFAULT_LOCALE }:
     const hasFacets = Boolean(sp.search || sp.category || sp.vegetarian || sp.occasion || sp.season || sp.maxSpicy || sp.region)
     const invalidPage = page > Math.max(1, totalPages)
     const languages = page === 1 && !hasFacets
-        ? (emPt ? await defaultCatalogLanguages('foods') : (await buildCatalogMetadata('foods', locale)).alternates?.languages)
+        ? await defaultCatalogLanguages('foods', locale)
         : undefined
 
     return {
