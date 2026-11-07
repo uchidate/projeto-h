@@ -40,7 +40,7 @@ interface Props {
 }
 
 export function GroupColorIdentity({ officialColor, groupName, fanClubName, lightstick }: Props) {
-    const t = useTranslations('profile.ui')
+    const t = useTranslations('client.groupBlocks')
     const [copied, setCopied] = useState(false)
 
     const copy = () => {

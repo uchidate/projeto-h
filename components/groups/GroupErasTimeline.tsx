@@ -35,7 +35,7 @@ function groupIntoEras(items: EraItem[], eraNames: string[], fallback: (year: nu
 }
 
 export function GroupErasTimeline({ historico, accent, groupName }: Props) {
-    const t = useTranslations('profile.ui')
+    const t = useTranslations('client.groupBlocks')
     const [activeEra, setActiveEra] = useState(0)
     const eraNames = [t('eraDebut'), t('eraRise'), t('eraConsolidation'), t('eraGolden'), t('eraReinvention'), t('eraLegacy'), t('eraNew')]
 

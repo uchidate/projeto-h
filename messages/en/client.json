@@ -881,5 +881,23 @@
     "age": "{age} years old",
     "emptyTitle": "No birthdays found",
     "emptyDesc": "No listed artists have a birthday in {month}."
+  },
+  "groupBlocks": {
+    "dossier": "Dossier",
+    "timelineTitle": "Timeline",
+    "milestones": "{count} milestones",
+    "erasCount": "{count} eras",
+    "eraDebut": "Debut",
+    "eraRise": "Rise",
+    "eraConsolidation": "Consolidation",
+    "eraGolden": "Golden Era",
+    "eraReinvention": "Reinvention",
+    "eraLegacy": "Legacy",
+    "eraNew": "New Phase",
+    "eraFallback": "Era {year}",
+    "colorIdentity": "Visual Identity",
+    "colorCopyTitle": "Click to copy the hex",
+    "colorCopied": "✓ copied!",
+    "colorTapToCopy": "tap to copy"
   }
 }

@@ -881,5 +881,23 @@
     "age": "{age} anos",
     "emptyTitle": "Nenhum aniversário encontrado",
     "emptyDesc": "Sem artistas cadastrados com aniversário em {month}."
+  },
+  "groupBlocks": {
+    "dossier": "Dossiê",
+    "timelineTitle": "Linha do Tempo",
+    "milestones": "{count} marcos",
+    "erasCount": "{count} eras",
+    "eraDebut": "Debut",
+    "eraRise": "Ascensão",
+    "eraConsolidation": "Consolidação",
+    "eraGolden": "Era de Ouro",
+    "eraReinvention": "Reinvenção",
+    "eraLegacy": "Legado",
+    "eraNew": "Nova Fase",
+    "eraFallback": "Era {year}",
+    "colorIdentity": "Identidade Visual",
+    "colorCopyTitle": "Clique para copiar o hex",
+    "colorCopied": "✓ copiado!",
+    "colorTapToCopy": "toque para copiar"
   }
 }
