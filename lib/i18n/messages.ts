@@ -43,16 +43,30 @@ export const PT_MESSAGES: Messages = pt
  */
 const FALLBACK: Partial<Record<Locale, Locale>> = {}
 
-/** Namespaces de messages/<idioma>/<ns>.json. Ao criar um, registre-o também no `pt` acima. */
+/** Namespaces de messages/<idioma>/<ns>.json. Ao criar um, registre-o também no `pt` acima e em `IMPORTADORES`. */
 const NAMESPACES = ['entity', 'profile', 'client', 'institucional', 'home', 'quiz'] as const
+type Namespace = (typeof NAMESPACES)[number]
 
 /**
- * Idioma novo = pasta `messages/<idioma>/` com os mesmos arquivos do português; nada a registrar aqui.
- * O caminho é montado em tempo de execução, então a paridade de chaves (e de variáveis) com o português é
- * garantida pelos testes de `lib/i18n/*paridade*` e não mais pelo `tsc`.
+ * Imports com caminho literal: o bundler só inclui o JSON que enxerga. Um caminho montado em tempo de
+ * execução (`@/messages/${locale}/${ns}.json`) passou no vitest e quebrou o build ("Cannot find module").
+ * `Record<Exclude<Locale, 'pt'>, ...>` faz um idioma novo sem linha aqui falhar no `tsc`.
  */
-async function carregarIdioma(locale: Locale): Promise<Messages> {
-    const pares = await Promise.all(NAMESPACES.map(async (ns) => [ns, (await import(`@/messages/${locale}/${ns}.json`)).default] as const))
+const IMPORTADORES: Record<Exclude<Locale, 'pt'>, Record<Namespace, () => Promise<{ default: unknown }>>> = {
+    en: {
+        entity: () => import('@/messages/en/entity.json'), profile: () => import('@/messages/en/profile.json'),
+        client: () => import('@/messages/en/client.json'), institucional: () => import('@/messages/en/institucional.json'),
+        home: () => import('@/messages/en/home.json'), quiz: () => import('@/messages/en/quiz.json'),
+    },
+    es: {
+        entity: () => import('@/messages/es/entity.json'), profile: () => import('@/messages/es/profile.json'),
+        client: () => import('@/messages/es/client.json'), institucional: () => import('@/messages/es/institucional.json'),
+        home: () => import('@/messages/es/home.json'), quiz: () => import('@/messages/es/quiz.json'),
+    },
+}
+
+async function carregarIdioma(locale: Exclude<Locale, 'pt'>): Promise<Messages> {
+    const pares = await Promise.all(NAMESPACES.map(async (ns) => [ns, (await IMPORTADORES[locale][ns]()).default] as const))
     return comNomeDoSite(Object.fromEntries(pares) as Messages)
 }
 
@@ -64,5 +78,5 @@ export function loadMessages(locale: Locale): Promise<Messages> {
     const carregar = loaders[locale]
     if (carregar) return carregar()
     const alternativo = FALLBACK[locale]
-    return alternativo ? loadMessages(alternativo) : carregarIdioma(locale)
+    return alternativo ? loadMessages(alternativo) : carregarIdioma(locale as Exclude<Locale, 'pt'>)
 }
