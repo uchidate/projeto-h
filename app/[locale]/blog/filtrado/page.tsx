@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { BlogListagem, metadataBlogListagem, type SearchParams } from '@/components/blog/BlogListagem'
-import { LocalizedBlogList, buildLocalizedBlogMetadata } from '@/components/blog/LocalizedBlogList'
-import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 import { href } from '@/lib/i18n/routes'
 
@@ -15,9 +13,7 @@ type Params = Promise<{ locale: string }>
 export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: SearchParams }): Promise<Metadata> {
     const { locale } = await params
     if (!idiomaValido(locale, { servePt: true })) return {}
-    return locale === DEFAULT_LOCALE
-        ? metadataBlogListagem({ searchParams })
-        : buildLocalizedBlogMetadata(locale, (await searchParams).page, (await searchParams).category)
+    return metadataBlogListagem({ searchParams, locale })
 }
 
 export default async function Page({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
@@ -25,7 +21,5 @@ export default async function Page({ params, searchParams }: { params: Params; s
     entrarNaPagina(locale, { servePt: true })
     const sp = await searchParams
     if (Object.keys(sp).length === 0) redirect(href('blog', undefined, locale))
-    return locale === DEFAULT_LOCALE
-        ? <BlogListagem searchParams={searchParams} />
-        : <LocalizedBlogList locale={locale} pageParam={sp.page} categoryParam={sp.category} />
+    return <BlogListagem searchParams={searchParams} locale={locale} />
 }

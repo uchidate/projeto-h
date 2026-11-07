@@ -5,12 +5,15 @@ import { localizarGuia, slugPtDoGuia, slugPublicoDoGuia, slugsPtTraduzidos, trad
 describe('guias traduzidos', () => {
     const traduzidos = slugsPtTraduzidos('en')
 
-    it('todo guia traduzido existe no catálogo e é de produções (a grade só sabe listar produções traduzidas)', () => {
+    it('todo guia traduzido existe no catálogo', () => {
         for (const slug of traduzidos) {
             const hub = STATIC_HUBS_PARA_TESTE.find((h) => h.slug === slug)
             expect(hub, slug).toBeDefined()
-            expect(hub!.kind, slug).toBe('productions')
         }
+    })
+
+    it('todo guia do catálogo tem tradução em inglês', () => {
+        expect(STATIC_HUBS_PARA_TESTE.filter((h) => !traduzidos.includes(h.slug)).map((h) => h.slug)).toEqual([])
     })
 
     it('slug público é único e vai e volta', () => {
@@ -34,6 +37,6 @@ describe('guias traduzidos', () => {
         const en = localizarGuia(hub, 'en')!
         expect(en.title).toBe('Korean Romance Dramas')
         expect(en.filter).toEqual(hub.filter)
-        expect(localizarGuia(STATIC_HUBS_PARA_TESTE.find((h) => h.slug === 'artistas-hybe')!, 'en')).toBeNull()
+        expect(localizarGuia({ ...hub, slug: 'guia-sem-traducao' }, 'en')).toBeNull()
     })
 })

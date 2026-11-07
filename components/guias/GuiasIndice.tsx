@@ -11,7 +11,8 @@ import { HomeGuias } from '@/components/home/HomeGuias'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
 import { VISITAS_POR_GUIA, porDemanda, resumoDoGuia } from '@/lib/guias/demanda'
 import { localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
-import { carregarGuiasPorTema } from '@/lib/home/guias'
+import GUIAS_DE_CULTURA from '@/lib/cultura/guias-traduzidos.json'
+import { carregarGuiasPorTema, carregarPassos } from '@/lib/home/guias'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { PageBreadcrumb as BreadcrumbSchemaLd } from '@/components/seo/PageBreadcrumb'
@@ -107,12 +108,14 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
     const totalByKind = Object.fromEntries(KIND_ORDER.map(k => [k, hubsDoIdioma.filter(h => h.kind === k).length]))
     const rotuloDoTipo = (k: (typeof KIND_ORDER)[number]) => t(`kinds.${k}`)
 
-    // A faixa de entrada (trilha "Comece aqui" e guias por tema, com capas) vem do WordPress em português:
-    // só aparece sem filtro, em português, e some se o WordPress falhar.
-    const [settings, guiasPorTema] = activeKind || !emPt
+    // A faixa de entrada (trilha "Comece aqui" e guias por tema, com capas) só aparece sem filtro; some se o WordPress falhar.
+    // Fora do português, a trilha usa os posts com versão no idioma e os temas só os guias traduzidos.
+    const [settings, guiasPorTema] = activeKind
         ? [null, []]
-        : await Promise.all([lista(getSiteSettings, null), lista(carregarGuiasPorTema, [])])
-    const guiasDeCultura = settings?.cultureGuides ?? []
+        : await Promise.all([lista(getSiteSettings, null), lista(() => carregarGuiasPorTema(locale), [])])
+    const passosPt = settings?.cultureGuides ?? []
+    const guiasDeCultura = emPt ? passosPt : await carregarPassos(passosPt, locale).catch(() => [])
+    const totalCultura = emPt ? passosPt.length : Object.keys((GUIAS_DE_CULTURA as Record<string, Record<string, string>>)[locale] ?? {}).length
 
     const itensBusca: ItemBusca[] = [
         ...hubsDoIdioma.map(h => {
@@ -130,7 +133,7 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
     }))
     const rotulos: Rotulos = { mais: (count) => t('more', { count }), menos: t('less') }
     const listaUrl = href('guides', undefined, locale)
-    const filtros = [{ value: '', label: t('filterAll') }, ...KIND_ORDER.map(k => ({ value: k, label: rotuloDoTipo(k) }))]
+    const filtros = [{ value: '', label: t('filterAll') }, ...KIND_ORDER.filter(k => totalByKind[k] > 0).map(k => ({ value: k, label: rotuloDoTipo(k) }))]
 
     let n = 0
     return (
@@ -162,14 +165,14 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
                     </nav>
                 </div>
                 <p className="mt-3 text-[13px] text-muted">
-                    {!activeKind && guiasDeCultura.length > 0 ? t('countWithCulture', { count: visibleCount, culture: guiasDeCultura.length }) : t('count', { count: visibleCount })}
+                    {!activeKind && totalCultura > 0 ? t('countWithCulture', { count: visibleCount, culture: totalCultura }) : t('count', { count: visibleCount })}
                 </p>
             </section>
 
             {!activeKind && (
                 <nav aria-label={t('sectionsAria')} className="sticky top-0 z-30 border-y border-border bg-background/95 backdrop-blur">
                     <div className="page-wrap flex gap-5 overflow-x-auto py-2.5">
-                        {KIND_ORDER.map((k, i) => (
+                        {KIND_ORDER.filter(k => totalByKind[k] > 0).map((k, i) => (
                             <a key={k} href={`#${k}`} className={`flex shrink-0 items-center gap-2 text-foreground hover:text-accent ${MONO}`}>
                                 <span aria-hidden className="h-2 w-2" style={{ backgroundColor: KIND_COR[k] }} />
                                 {`0${i + 1} · ${rotuloDoTipo(k)}`}
@@ -182,7 +185,7 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
             <div className="page-wrap space-y-10 py-8">
                 {!activeKind && (guiasPorTema.length > 0 || guiasDeCultura.length > 0) && (
                     <div data-bloco="guias-entrada" className="-mx-3.5 lg:mx-0">
-                        <HomeGuias passos={guiasDeCultura} guias={guiasPorTema} naIndice />
+                        <HomeGuias passos={guiasDeCultura} guias={guiasPorTema} locale={locale} naIndice />
                     </div>
                 )}
 
@@ -218,7 +221,7 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
                         <span>
                             <span className={`block text-[10px] text-[#6d3fc0] ${MONO}`}>{t('alsoIn')}</span>
                             <span className="block font-serif text-[24px] font-medium leading-tight text-foreground group-hover:text-accent">{t('cultureTitle')}</span>
-                            <span className="mt-1 block text-[14px] text-foreground/70">{t('cultureText', { count: guiasDeCultura.length || t('cultureMany') })}</span>
+                            <span className="mt-1 block text-[14px] text-foreground/70">{t('cultureText', { count: totalCultura || t('cultureMany') })}</span>
                         </span>
                         <span className={`shrink-0 text-foreground ${MONO}`}>{t('open')} →</span>
                     </Link>

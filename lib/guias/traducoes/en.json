@@ -974,5 +974,1059 @@
         "answer": "The Platform filter at the top shows what is on each service; each production's page lists where to watch."
       }
     ]
+  },
+  "cantoras-kpop": {
+    "slug": "female-k-pop-singers",
+    "title": "Female K-Pop Singers",
+    "shortTitle": "Female K-Pop singers",
+    "description": "Meet female K-Pop singers, idols and soloists, with English profiles, careers, groups, songs and fun facts.",
+    "intro": [
+      "Female K-Pop singers drive a large part of Hallyu culture: from girl group vocalists to soloists with discographies of their own, they connect music, performance, fashion and fandom.",
+      "This guide gathers English profiles of artists who sing, with shortcuts to related groups and careers worth a closer read. Artists who split their time between music and acting appear here too."
+    ],
+    "faq": [
+      {
+        "question": "What makes someone a female K-Pop singer?",
+        "answer": "At HallyuHub, we count Korean women, or women tied to the Korean industry, who work as vocalists, idols, rappers or soloists in music careers."
+      },
+      {
+        "question": "Do actresses who also sing make the list?",
+        "answer": "Yes. When a profile records musical activity, the artist appears here even if she also acts in dramas and films."
+      },
+      {
+        "question": "Does this list include group members?",
+        "answer": "Yes. The guide can include vocalists and idols from girl groups, as well as artists with solo careers or individual musical activities."
+      }
+    ]
+  },
+  "cantores-kpop": {
+    "slug": "male-k-pop-singers",
+    "title": "Male K-Pop Singers",
+    "shortTitle": "Male K-Pop singers",
+    "description": "Meet male K-Pop singers, idols and soloists, with English profiles, careers, groups, songs and fun facts.",
+    "intro": [
+      "Male K-Pop singers, from vocalists to rappers and from idols to soloists, represent an enormous range of styles, careers and stories.",
+      "This guide gathers English profiles of male artists who sing, with shortcuts to related groups and careers worth your attention. Artists who split their time between music and acting appear here too."
+    ],
+    "faq": [
+      {
+        "question": "Does the guide include group members?",
+        "answer": "Yes. The guide can include vocalists, rappers and idols from boy groups, as well as artists with solo careers or individual musical activities."
+      }
+    ]
+  },
+  "atrizes-coreanas": {
+    "slug": "korean-actresses",
+    "title": "Korean Actresses",
+    "shortTitle": "Korean actresses",
+    "description": "Meet Korean actresses, with English profiles, filmographies, dramas, music and careers in Korean entertainment.",
+    "intro": [
+      "Korean actresses are at the heart of the K-Drama phenomenon: from romantic leads to complex villains, they define much of Hallyu culture.",
+      "This guide gathers English profiles of actresses who appear in Korean productions, idols who also act included, to make discovery and browsing easier."
+    ],
+    "faq": [
+      {
+        "question": "Does the guide include idols who act?",
+        "answer": "Yes. Many K-Pop idols also have careers as actresses in dramas, films or special productions, and they can appear in this guide."
+      }
+    ]
+  },
+  "atores-coreanos": {
+    "slug": "korean-actors",
+    "title": "Korean Actors",
+    "shortTitle": "Korean actors",
+    "description": "Meet Korean actors, with English profiles, filmographies, dramas, careers and fun facts about Korean entertainment.",
+    "intro": [
+      "Korean actors have won over the world not only through K-Dramas but through a level of craft that runs from romance to action to psychological drama.",
+      "This guide gathers English profiles of actors in Korean entertainment to make discovery, browsing by productions and following career histories easier."
+    ],
+    "faq": [
+      {
+        "question": "Does the guide include idols who act?",
+        "answer": "Yes. Several K-Pop idols also act in dramas and films. When a profile has linked productions, they can appear in this guide."
+      }
+    ]
+  },
+  "kpop-idols-famosos": {
+    "slug": "k-pop-idols",
+    "title": "K-Pop Idols",
+    "shortTitle": "K-Pop idols",
+    "description": "Meet K-Pop idols, with English profiles, careers, groups, songs and fun facts.",
+    "intro": [
+      "The Korean idol phenomenon goes beyond music: it involves rigorous training, distinctive visual concepts, global fandoms and an industry that generates billions every year.",
+      "This guide gathers the most prominent idols on HallyuHub to make it easier to find profiles, related groups and editorial coverage."
+    ],
+    "faq": [
+      {
+        "question": "What is a Korean idol?",
+        "answer": "A Korean idol is an artist trained by an entertainment agency, after years of practice in singing, dancing and performing, before debuting in a group or as a soloist."
+      },
+      {
+        "question": "Which idols are in this guide?",
+        "answer": "The idol profiles in the catalog, in alphabetical order. For a specific group, use the group's members guide or the search at the top."
+      }
+    ]
+  },
+  "artistas-solo-kpop": {
+    "slug": "k-pop-solo-artists",
+    "title": "K-Pop Solo Artists",
+    "shortTitle": "K-Pop soloists",
+    "description": "Explore K-Pop solo artists, with profiles, music careers, discographies, videos and ties to Korean groups.",
+    "intro": [
+      "Solo careers in K-Pop let fans follow a more personal side of idols, vocalists, rappers and performers.",
+      "In this selection, HallyuHub highlights artists with an individual musical presence, making it easier to find profiles, songs and careers outside or beyond their groups."
+    ],
+    "faq": [
+      {
+        "question": "What is a K-Pop solo artist?",
+        "answer": "An artist with releases or a musical presence of their own, whether a full-time soloist or an idol who also develops work outside the group."
+      }
+    ]
+  },
+  "idols-que-atuam-em-doramas": {
+    "slug": "idols-who-act-in-dramas",
+    "title": "Idols Who Act in Dramas",
+    "shortTitle": "Idols who act",
+    "description": "A list of K-Pop idols who also appear in Korean dramas, films and series, with English profiles and filmographies.",
+    "intro": [
+      "Many idols build parallel careers in dramas and films, bringing K-Pop fans closer to the world of K-Dramas.",
+      "This guide organizes artists who both make music and act, linking profiles, groups and productions to make browsing between music and Korean drama easier."
+    ],
+    "faq": [
+      {
+        "question": "Why do idols act in dramas?",
+        "answer": "Many idols expand their careers into acting through dramas, films and series, bringing K-Pop fandoms closer to the K-Drama audience."
+      }
+    ]
+  },
+  "modelos-coreanas": {
+    "slug": "korean-female-models",
+    "title": "Korean Female Models",
+    "shortTitle": "Korean female models",
+    "description": "Meet Korean female models, with English profiles, careers, fashion, campaigns and ties to Korean entertainment.",
+    "intro": [
+      "Korean models are increasingly present on the international stage, combining beauty, style and a cultural influence that reaches beyond the runway.",
+      "This guide gathers profiles of models in the HallyuHub catalog."
+    ],
+    "faq": [
+      {
+        "question": "Does the guide include models who are also idols?",
+        "answer": "Yes. Many K-Pop idols also work as models and ambassadors for international fashion brands."
+      }
+    ]
+  },
+  "modelos-coreanos": {
+    "slug": "korean-male-models",
+    "title": "Korean Male Models",
+    "shortTitle": "Korean male models",
+    "description": "Meet Korean male models, with English profiles, careers, fashion, campaigns and ties to Korean entertainment.",
+    "intro": [
+      "Korean male models have won a place with international luxury brands, often combining modeling with careers as idols or actors.",
+      "This guide gathers profiles of male models in the HallyuHub catalog."
+    ],
+    "faq": [
+      {
+        "question": "Does the guide include idols who are models?",
+        "answer": "Yes. Several male idols are ambassadors for luxury fashion brands and can appear in this guide when they have a profile in the catalog."
+      }
+    ]
+  },
+  "artistas-jyp-entertainment": {
+    "slug": "jyp-entertainment-artists",
+    "title": "JYP Entertainment Artists",
+    "shortTitle": "JYP",
+    "description": "Meet artists and groups from JYP Entertainment, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "JYP Entertainment is one of K-Pop's three big labels, founded by Park Jin-young in 1997, with a roster that has included 2PM, TWICE, ITZY, Stray Kids and many others.",
+      "This guide gathers artists and groups tied to JYP in the HallyuHub catalog, to make it easier to browse related profiles and coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which are JYP's biggest groups?",
+        "answer": "JYP Entertainment's best-known groups, past and present, include TWICE, Stray Kids, ITZY, 2PM, 2AM, miss A, Wonder Girls, GOT7 and DAY6."
+      },
+      {
+        "question": "Who founded JYP Entertainment?",
+        "answer": "JYP Entertainment was founded in 1997 by the singer and producer Park Jin-young."
+      }
+    ]
+  },
+  "artistas-sm-entertainment": {
+    "slug": "sm-entertainment-artists",
+    "title": "SM Entertainment Artists",
+    "shortTitle": "SM",
+    "description": "Meet artists and groups from SM Entertainment, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "SM Entertainment is a pioneer of modern K-Pop, founded by Lee Soo-man in 1995 and responsible for shaping the idol system that influences the whole industry.",
+      "This guide gathers artists and groups tied to SM in the HallyuHub catalog, to make it easier to browse related profiles and coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which are SM's biggest groups?",
+        "answer": "SM Entertainment's biggest groups include EXO, NCT (NCT 127, NCT Dream, WayV), aespa, Red Velvet, SHINee, Girls' Generation, Super Junior and TVXQ."
+      }
+    ]
+  },
+  "artistas-yg-entertainment": {
+    "slug": "yg-entertainment-artists",
+    "title": "YG Entertainment Artists",
+    "shortTitle": "YG",
+    "description": "Meet artists and groups from YG Entertainment, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "YG Entertainment is known for its hip-hop and streetwear style in K-Pop, with a roster that includes BLACKPINK, BIGBANG, 2NE1, WINNER, iKON and TREASURE.",
+      "This guide gathers artists and groups tied to YG in the HallyuHub catalog, to make it easier to browse related profiles and coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which are YG's biggest groups?",
+        "answer": "YG Entertainment's biggest groups include BLACKPINK, BIGBANG, 2NE1, WINNER, iKON and TREASURE, as well as solo artists such as G-Dragon and CL."
+      }
+    ]
+  },
+  "artistas-hybe": {
+    "slug": "hybe-artists",
+    "title": "HYBE (Big Hit) Artists",
+    "shortTitle": "HYBE",
+    "description": "Meet artists and groups from HYBE (Big Hit), with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "HYBE (formerly Big Hit Entertainment) is the company behind BTS and now houses labels such as BELIFT LAB, SOURCE MUSIC, ADOR and Pledis.",
+      "This guide gathers artists and groups tied to HYBE in the HallyuHub catalog, to make it easier to browse related profiles and coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which groups are part of HYBE?",
+        "answer": "HYBE is home to BTS, TOMORROW X TOGETHER (TXT), ENHYPEN (BELIFT LAB), LE SSERAFIM (SOURCE MUSIC), &TEAM and SEVENTEEN (Pledis), among others."
+      }
+    ]
+  },
+  "artistas-pledis-entertainment": {
+    "slug": "pledis-entertainment-artists",
+    "title": "Pledis Entertainment Artists",
+    "shortTitle": "Pledis",
+    "description": "Meet artists and groups from Pledis Entertainment, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "Pledis Entertainment, now part of HYBE, is the label behind SEVENTEEN and NU'EST, as well as former acts such as After School and Orange Caramel.",
+      "This guide gathers artists and groups tied to Pledis in the HallyuHub catalog, to make it easier to browse related profiles and coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which are Pledis's biggest groups?",
+        "answer": "Pledis Entertainment's biggest groups are SEVENTEEN and NU'EST."
+      }
+    ]
+  },
+  "artistas-cube-entertainment": {
+    "slug": "cube-entertainment-artists",
+    "title": "Cube Entertainment Artists",
+    "shortTitle": "Cube",
+    "description": "Meet artists and groups from Cube Entertainment, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "Cube Entertainment is known for groups such as (G)I-DLE and BTOB, and for artists who helped define 2nd and 3rd generation K-Pop, HyunA among them.",
+      "This guide gathers artists and groups tied to Cube in the HallyuHub catalog, to make it easier to browse related profiles and coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which are Cube's biggest groups?",
+        "answer": "Cube Entertainment's groups, past and present, include (G)I-DLE, BTOB, CLC, 4Minute and PENTAGON, along with soloists such as HyunA."
+      }
+    ]
+  },
+  "artistas-starship-entertainment": {
+    "slug": "starship-entertainment-artists",
+    "title": "Starship Entertainment Artists",
+    "shortTitle": "Starship",
+    "description": "Meet artists and groups from Starship Entertainment, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "Starship Entertainment is the label behind MONSTA X, IVE, SISTAR and other groups that marked different generations of K-Pop.",
+      "This guide gathers artists and groups tied to Starship in the HallyuHub catalog, to make it easier to browse related profiles and coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which are Starship's biggest groups?",
+        "answer": "Starship Entertainment's biggest groups include MONSTA X, SISTAR, WJSN, CRAVITY and IVE."
+      }
+    ]
+  },
+  "artistas-fnc-entertainment": {
+    "slug": "fnc-entertainment-artists",
+    "title": "FNC Entertainment Artists",
+    "shortTitle": "FNC",
+    "description": "Meet artists and groups from FNC Entertainment, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "FNC Entertainment is known for groups such as FTISLAND, CNBLUE, AOA and N.Flying, with a strong live-band identity and Korean rock.",
+      "This guide gathers artists and groups tied to FNC in the HallyuHub catalog, to make it easier to browse related profiles and coverage."
+    ],
+    "faq": [
+      {
+        "question": "What sets FNC apart from other labels?",
+        "answer": "FNC Entertainment is known for working with live bands (FTISLAND, CNBLUE, N.Flying) alongside performance groups, which sets it apart from most labels focused only on idol groups."
+      }
+    ]
+  },
+  "iu": {
+    "slug": "iu",
+    "title": "IU (Lee Ji-eun)",
+    "shortTitle": "IU",
+    "description": "Complete profile of IU (Lee Ji-eun): discography, solo career, dramas, achievements and fun facts.",
+    "intro": [
+      "IU (아이유), whose real name is Lee Ji-eun, debuted in 2008 under LOEN Entertainment and has built a career as a singer and actress ever since.",
+      "Besides singing, IU also acts: she starred in \"My Mister\" (2018) and \"Hotel Del Luna\" (2019)."
+    ],
+    "faq": [
+      {
+        "question": "What is IU's real name?",
+        "answer": "IU's real name is Lee Ji-eun (이지은). The stage name \"IU\" stands for the idea of \"I\" and \"You\" connected through music."
+      },
+      {
+        "question": "Is IU part of a group?",
+        "answer": "No. IU has had an exclusively solo career since her 2008 debut."
+      },
+      {
+        "question": "What are some of IU's singles?",
+        "answer": "IU's singles include \"Good Day\" (2010), \"You and I\" (2011), \"Palette\" (2017), \"BBIBBI\" (2018), \"Blueming\" (2019) and \"Celebrity\" (2021)."
+      }
+    ]
+  },
+  "taeyeon": {
+    "slug": "taeyeon",
+    "title": "Taeyeon (SNSD)",
+    "shortTitle": "Taeyeon",
+    "description": "Complete profile of Taeyeon: solo career, albums, leadership of SNSD/Girls' Generation, achievements and discography.",
+    "intro": [
+      "Kim Taeyeon is the leader and main vocalist of SNSD (Girls' Generation) and one of K-Pop's most acclaimed soloists. She debuted with SNSD in 2007 and began her solo career in 2015.",
+      "Widely regarded as one of the best voices in K-Pop, Taeyeon has released acclaimed albums and built a robust solo career alongside SNSD."
+    ],
+    "faq": [
+      {
+        "question": "Is Taeyeon part of SNSD?",
+        "answer": "Yes. Taeyeon is the leader and main vocalist of SNSD (Girls' Generation). She also has an extensive solo career that began in 2015."
+      },
+      {
+        "question": "What are some of Taeyeon's solo singles?",
+        "answer": "Taeyeon's singles include \"I\" (2015), \"Four Seasons\" (2019) and \"INVU\" (2022)."
+      }
+    ]
+  },
+  "g-dragon": {
+    "slug": "g-dragon",
+    "title": "G-Dragon (BIGBANG)",
+    "shortTitle": "G-Dragon",
+    "description": "Complete profile of G-Dragon: solo career, albums, leadership of BIGBANG, fashion influence and K-Pop achievements.",
+    "intro": [
+      "Kwon Ji-yong, known as G-Dragon, is the leader and main creative force of BIGBANG. He is widely regarded as one of the greatest K-Pop artists of all time, for both his music and his influence on fashion.",
+      "G-Dragon's solo career includes the albums \"Heartbreaker\" (2009) and \"One of a Kind\" (2012)."
+    ],
+    "faq": [
+      {
+        "question": "Is G-Dragon part of BIGBANG?",
+        "answer": "Yes. G-Dragon is the leader and main songwriter of BIGBANG."
+      },
+      {
+        "question": "What is G-Dragon's real name?",
+        "answer": "G-Dragon's real name is Kwon Ji-yong (권지용)."
+      }
+    ]
+  },
+  "hyuna": {
+    "slug": "hyuna",
+    "title": "HyunA",
+    "shortTitle": "HyunA",
+    "description": "Complete profile of HyunA: solo career, former 4Minute and Wonder Girls member, iconic hits, style and discography.",
+    "intro": [
+      "Kim Hyun-ah, known as HyunA, is one of the boldest and most influential women in K-Pop. A former member of 4Minute and, briefly, of Wonder Girls, she built one of the most consistent solo careers among idols of her generation.",
+      "\"Bubble Pop!\" (2011) and \"Red\" (2013) became classics of Korean pop."
+    ],
+    "faq": [
+      {
+        "question": "Was HyunA part of any group?",
+        "answer": "Yes. HyunA was a founding member of 4Minute (2009–2016) and had a brief stint in Wonder Girls."
+      }
+    ]
+  },
+  "jungkook": {
+    "slug": "jungkook",
+    "title": "Jungkook (BTS)",
+    "shortTitle": "Jungkook",
+    "description": "Complete profile of Jungkook: solo career, the album \"GOLDEN\", the hits \"Seven\" and \"Standing Next to You\", and historic K-Pop achievements.",
+    "intro": [
+      "Jeon Jungkook is the maknae (youngest member) of BTS and launched his solo career in 2023. His single \"Seven\" (2023, feat. Latto) debuted at No. 1 on the Billboard Hot 100."
+    ],
+    "faq": [
+      {
+        "question": "Is Jungkook still in BTS?",
+        "answer": "Yes. Jungkook has been a BTS member since the group's 2013 debut."
+      },
+      {
+        "question": "What are Jungkook's solo singles?",
+        "answer": "His solo singles include \"Seven\" (2023, which debuted at No. 1 on the Billboard Hot 100), \"Standing Next to You\" (2023) and \"3D\" (feat. Jack Harlow, 2023)."
+      }
+    ]
+  },
+  "rose-blackpink": {
+    "slug": "rose-blackpink",
+    "title": "Rosé (BLACKPINK)",
+    "shortTitle": "Rosé (BLACKPINK)",
+    "description": "Complete profile of Rosé: BLACKPINK vocalist, solo album \"rosie\", the hits \"On The Ground\" and \"APT.\", and an international career.",
+    "intro": [
+      "Roseanne Park, known as Rosé, is the main vocalist of BLACKPINK and one of the K-Pop artists with the greatest international reach.",
+      "In 2024, Rosé released her solo album \"rosie\", which includes \"APT.\", a collaboration with Bruno Mars."
+    ],
+    "faq": [
+      {
+        "question": "What are some of Rosé's singles?",
+        "answer": "Rosé's singles include \"On The Ground\" (2021), \"Gone\" (2021) and \"APT.\" (feat. Bruno Mars, 2024)."
+      }
+    ]
+  },
+  "jennie": {
+    "slug": "jennie-blackpink",
+    "title": "Jennie (BLACKPINK)",
+    "shortTitle": "Jennie (BLACKPINK)",
+    "description": "Complete profile of Jennie: BLACKPINK rapper and vocalist, solo career, the hits \"SOLO\" and \"Mantra\", and a global fashion icon.",
+    "intro": [
+      "Jennie Kim is a rapper and vocalist of BLACKPINK and one of the most influential K-Pop artists on the global market, known for a magnetic stage presence and stylistic versatility.",
+      "In 2024, Jennie released the single \"Mantra\" through her own label, OA (Odd Atelier), marking a new phase of artistic independence."
+    ],
+    "faq": [
+      {
+        "question": "Does Jennie have her own label?",
+        "answer": "Yes. Jennie runs her own label, OA (Odd Atelier), through which she released \"Mantra\" in 2024."
+      }
+    ]
+  },
+  "lisa-blackpink": {
+    "slug": "lisa-blackpink",
+    "title": "Lisa (BLACKPINK)",
+    "shortTitle": "Lisa (BLACKPINK)",
+    "description": "Complete profile of Lisa: BLACKPINK main dancer, the hits \"LALISA\" and \"MONEY\", solo career and a global dance icon.",
+    "intro": [
+      "Lalisa Manoban, known as Lisa, is the main dancer and a rapper of BLACKPINK, and a global phenomenon with one of the largest individual fan bases in K-Pop. She was born in Thailand.",
+      "In 2024, Lisa signed with RCA Records in the US and released the acclaimed single \"Rockstar\"."
+    ],
+    "faq": [
+      {
+        "question": "Is Lisa Thai?",
+        "answer": "Yes. Lisa was born in Buriram, Thailand, and is one of the most prominent Thai artists in K-Pop."
+      }
+    ]
+  },
+  "jisoo": {
+    "slug": "jisoo-blackpink",
+    "title": "Jisoo (BLACKPINK)",
+    "shortTitle": "Jisoo (BLACKPINK)",
+    "description": "Complete profile of Jisoo: BLACKPINK vocalist and visual, solo album \"ME\", actress in \"Snowdrop\" and a beauty icon.",
+    "intro": [
+      "Kim Ji-soo, known as Jisoo, is the vocalist and visual of BLACKPINK, and the oldest member of the group.",
+      "Besides music, Jisoo is an actress: she starred in the drama \"Snowdrop\" (2021–2022) opposite Jung Hae-in."
+    ],
+    "faq": [
+      {
+        "question": "Does Jisoo act in dramas?",
+        "answer": "Yes. Jisoo starred in the drama \"Snowdrop\" (2021–2022), which aired on Disney+, opposite Jung Hae-in."
+      }
+    ]
+  },
+  "karina-aespa": {
+    "slug": "karina-aespa",
+    "title": "Karina (aespa)",
+    "shortTitle": "Karina (aespa)",
+    "description": "Complete profile of Karina from aespa: the group's leader and center, and a beauty icon of 4th generation K-Pop.",
+    "intro": [
+      "Yoo Ji-min, known as Karina, is the leader and one of the main faces of aespa. She is considered one of the biggest visual and fashion icons of 4th generation K-Pop."
+    ],
+    "faq": [
+      {
+        "question": "Why is Karina so famous in K-Pop?",
+        "answer": "Karina is known for a striking look, dance technique, stage presence and a personality that resonates especially with 4th generation fans."
+      }
+    ]
+  },
+  "wonyoung-ive": {
+    "slug": "wonyoung-ive",
+    "title": "Wonyoung (IVE)",
+    "shortTitle": "Wonyoung (IVE)",
+    "description": "Complete profile of Wonyoung from IVE: the group's center, fashion icon, brand ambassador and K-Pop career.",
+    "intro": [
+      "Jang Wonyoung is the center and visual of IVE, and one of the youngest trendsetters in K-Pop today."
+    ],
+    "faq": [
+      {
+        "question": "Was Wonyoung in IZ*ONE?",
+        "answer": "Yes. Before IVE, Wonyoung was part of IZ*ONE (2018–2021)."
+      }
+    ]
+  },
+  "jimin-bts": {
+    "slug": "jimin-bts",
+    "title": "Jimin (BTS)",
+    "shortTitle": "Jimin (BTS)",
+    "description": "Complete profile of Jimin from BTS: solo album \"FACE\", global hit \"Like Crazy\", individual career, iconic dances and fun facts.",
+    "intro": [
+      "Park Jimin is a vocalist and main dancer of BTS. In 2023, his solo debut \"FACE\" produced \"Like Crazy\", which reached No. 1 on the Billboard Hot 100, making him the first Korean solo singer to top the American chart."
+    ],
+    "faq": [
+      {
+        "question": "What is Jimin's solo album?",
+        "answer": "\"FACE\" (2023) is Jimin's first solo album, featuring the hit \"Like Crazy\", which reached No. 1 on the Billboard Hot 100."
+      }
+    ]
+  },
+  "grupos-femininos-kpop": {
+    "slug": "k-pop-girl-groups",
+    "title": "K-Pop Girl Groups",
+    "shortTitle": "Girl groups",
+    "description": "Meet K-Pop girl groups, with members, discographies, careers, videos and full English profiles.",
+    "intro": [
+      "Girl groups are one of the engines of global K-Pop, combining visual concepts, choreography, vocals and very active fandoms.",
+      "Here you will find girl groups with links to members, songs, videos and related pages on HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "What is a K-Pop girl group?",
+        "answer": "A girl group from the Korean industry, usually made up of idols and focused on music, performance, visual concepts and fandom."
+      },
+      {
+        "question": "Does the guide include active and inactive groups?",
+        "answer": "Yes. The list can include active, inactive or disbanded groups when they have cultural relevance and a public profile on HallyuHub."
+      }
+    ]
+  },
+  "grupos-masculinos-kpop": {
+    "slug": "k-pop-boy-groups",
+    "title": "K-Pop Boy Groups",
+    "shortTitle": "Boy groups",
+    "description": "Discover K-Pop boy groups, with member profiles, discographies, fandoms, careers and fun facts in English.",
+    "intro": [
+      "Boy groups are a pillar of K-Pop: from BTS to Stray Kids, from SHINee to SEVENTEEN, each group brings its own identity that connects fans around the world.",
+      "In this guide you will find boy groups with links to members, songs, videos and related pages on HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "What is a K-Pop boy group?",
+        "answer": "A boy group from the Korean industry, usually made up of idols and focused on music, dance, performance and an active fandom."
+      },
+      {
+        "question": "Does the guide include groups from every generation?",
+        "answer": "Yes. The list can include active or disbanded groups from different K-Pop generations."
+      }
+    ]
+  },
+  "grupos-3a-geracao-kpop": {
+    "slug": "3rd-generation-k-pop-groups",
+    "title": "3rd Generation K-Pop Groups",
+    "shortTitle": "3rd gen K-Pop",
+    "description": "The biggest 3rd generation K-Pop groups, with English profiles, discographies, fandoms and fun facts.",
+    "intro": [
+      "3rd generation K-Pop (2012–2017) consolidated the genre globally: BTS, EXO, BLACKPINK, TWICE and GOT7 are the names that turned K-Pop from a niche into a worldwide pop culture phenomenon.",
+      "This guide gathers the most representative groups of the era that paved the way for K-Pop's success in the West."
+    ],
+    "faq": [
+      {
+        "question": "When was 3rd generation K-Pop?",
+        "answer": "The 3rd generation is generally dated from 2012 to 2017, with groups such as EXO, BTS, GOT7, TWICE and BLACKPINK."
+      },
+      {
+        "question": "Is BTS 3rd generation?",
+        "answer": "Yes. BTS debuted in 2013 and is considered the most representative group of the 3rd generation."
+      }
+    ]
+  },
+  "grupos-kpop-decada-2000": {
+    "slug": "2000s-k-pop-groups",
+    "title": "K-Pop Groups of the 2000s",
+    "shortTitle": "2000s K-Pop",
+    "description": "K-Pop groups that defined the 2000s: TVXQ, Super Junior, Girls' Generation, Wonder Girls, SHINee and other pioneers of the Hallyu wave.",
+    "intro": [
+      "The 2000s were the founding era of modern K-Pop. TVXQ, Super Junior, Girls' Generation, Wonder Girls, SHINee and 2NE1 laid the foundations for what K-Pop would become globally.",
+      "This guide gathers groups that debuted and were most active in the 2000s and are listed on HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "Which groups defined K-Pop in the 2000s?",
+        "answer": "TVXQ, Super Junior, Girls' Generation (SNSD), Wonder Girls, SHINee, 2NE1 and BIGBANG are the most iconic groups to emerge in the 2000s."
+      }
+    ]
+  },
+  "grupos-kpop-boy-groups-famosos": {
+    "slug": "famous-k-pop-boy-groups",
+    "title": "Famous K-Pop Boy Groups",
+    "shortTitle": "Famous boy groups",
+    "description": "K-Pop boy groups with members, discographies and careers: BTS, EXO, BIGBANG, Stray Kids, ATEEZ, TXT and more.",
+    "intro": [
+      "The catalog gathers boy groups from many generations, from BIGBANG (2006) and EXO (2012) to BTS (2013), Stray Kids and ATEEZ (2018) and TXT (2019).",
+      "This guide gathers the best-known male groups on HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "Which boy groups are in the catalog?",
+        "answer": "Among others, Super Junior (2005), BIGBANG (2006), EXO (2012), BTS (2013), MONSTA X (2015), NCT (2016), Stray Kids and ATEEZ (2018) and TXT (2019). The page's list shows the rest."
+      }
+    ]
+  },
+  "grupos-jyp-entertainment": {
+    "slug": "jyp-entertainment-groups",
+    "title": "JYP Entertainment Groups: TWICE, Stray Kids, ITZY and More",
+    "shortTitle": "JYP groups",
+    "description": "JYP Entertainment groups, from Wonder Girls and 2PM to TWICE, Stray Kids, ITZY and NMIXX, with members, careers and discographies in English.",
+    "intro": [
+      "JYP Entertainment has girl groups, boy groups and bands, among them TWICE, Stray Kids and ITZY.",
+      "This guide gathers JYP groups listed on HallyuHub to make it easier to browse members, careers, songs and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which groups are from JYP Entertainment?",
+        "answer": "JYP is known for groups such as TWICE, Stray Kids, ITZY, 2PM, Wonder Girls, miss A, GOT7 and DAY6, among others."
+      }
+    ]
+  },
+  "grupos-sm-entertainment": {
+    "slug": "sm-entertainment-groups",
+    "title": "SM Entertainment Groups",
+    "shortTitle": "SM groups",
+    "description": "Explore SM Entertainment groups, with members, careers, discographies and full English profiles.",
+    "intro": [
+      "SM Entertainment is one of the companies that shaped modern K-Pop, with groups that marked different generations and took the genre beyond Korea.",
+      "This guide organizes SM groups on HallyuHub to connect member pages, songs, videos and historical context."
+    ],
+    "faq": [
+      {
+        "question": "Which are SM's best-known groups?",
+        "answer": "EXO, NCT, aespa, Red Velvet, SHINee, Girls' Generation, Super Junior and TVXQ are among SM's best-known names."
+      }
+    ]
+  },
+  "grupos-yg-entertainment": {
+    "slug": "yg-entertainment-groups",
+    "title": "YG Entertainment Groups",
+    "shortTitle": "YG groups",
+    "description": "See YG Entertainment groups, with members, careers, hits, videos and English profiles.",
+    "intro": [
+      "YG Entertainment is associated with a more urban, hip-hop style within K-Pop, with groups that helped define the genre's global presence.",
+      "This guide gathers YG groups listed on HallyuHub, connecting member pages, discographies and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which groups are from YG Entertainment?",
+        "answer": "BLACKPINK, BIGBANG, 2NE1, WINNER, iKON, TREASURE and BABYMONSTER are among the main groups associated with YG."
+      }
+    ]
+  },
+  "grupos-hybe": {
+    "slug": "hybe-and-big-hit-music-groups",
+    "title": "HYBE and Big Hit Music Groups",
+    "shortTitle": "HYBE groups",
+    "description": "Meet HYBE and Big Hit Music groups, with members, careers, discographies and English profiles.",
+    "intro": [
+      "HYBE transformed K-Pop globally on the back of BTS's success and expanded its ecosystem with labels and groups aimed at international audiences.",
+      "This guide gathers groups tied to Big Hit Music listed on HallyuHub, with navigation to members, songs and related pages."
+    ],
+    "faq": [
+      {
+        "question": "Are HYBE and Big Hit Music the same thing?",
+        "answer": "Big Hit Entertainment became HYBE as the corporate group; Big Hit Music remains the label responsible for artists such as BTS and TXT."
+      }
+    ]
+  },
+  "grupos-starship-entertainment": {
+    "slug": "starship-entertainment-groups",
+    "title": "Starship Entertainment Groups",
+    "shortTitle": "Starship groups",
+    "description": "Discover Starship Entertainment groups, with members, careers, songs and English profiles.",
+    "intro": [
+      "Starship Entertainment built a strong identity in K-Pop with girl and boy groups known for performance, vocals and far-reaching hits.",
+      "This guide gathers Starship groups listed on HallyuHub to make it easier to discover members, discographies and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Which groups are from Starship?",
+        "answer": "IVE, MONSTA X, SISTAR, WJSN and CRAVITY are among the best-known groups associated with Starship Entertainment."
+      }
+    ]
+  },
+  "grupos-cube-entertainment": {
+    "slug": "cube-entertainment-groups",
+    "title": "Cube Entertainment Groups",
+    "shortTitle": "Cube groups",
+    "description": "See Cube Entertainment groups, with members, careers, discographies, videos and English profiles.",
+    "intro": [
+      "Cube Entertainment has launched groups with a strong creative identity, from producer idols to girl groups that set trends in K-Pop.",
+      "This guide organizes Cube groups listed on HallyuHub, connecting member pages, songs and career history."
+    ],
+    "faq": [
+      {
+        "question": "Which groups are from Cube Entertainment?",
+        "answer": "(G)I-DLE, BTOB, PENTAGON, CLC and 4Minute are among Cube's best-known names, past and present."
+      }
+    ]
+  },
+  "integrantes-do-bts": {
+    "slug": "bts-members",
+    "title": "BTS Members",
+    "shortTitle": "BTS",
+    "description": "Meet the members of BTS, with profiles, solo careers, songs, videos and fun facts in English.",
+    "intro": [
+      "BTS is a seven-member group that debuted in 2013 under Big Hit, now part of HYBE, and whose members have also launched solo projects.",
+      "This guide gathers the profiles of the members listed on HallyuHub so fans and newcomers can browse each individual career with ease."
+    ],
+    "whatYouWillFind": "In this guide you will find profiles of all seven BTS members — RM, Jin, Suga, J-Hope, Jimin, V and Jungkook — with solo discographies, videos, collaborations, fun facts and related links.",
+    "faq": [
+      {
+        "question": "Who are the members of BTS?",
+        "answer": "BTS has seven members: RM, Jin, Suga, J-Hope, Jimin, V and Jungkook. All have profiles on HallyuHub with discographies, videos and individual careers."
+      },
+      {
+        "question": "Do the BTS members have solo careers?",
+        "answer": "Yes. All have released solo projects: RM with \"Indigo\", Jin with \"The Astronaut\", Suga under his Agust D identity, J-Hope with \"Jack in the Box\", Jimin with \"FACE\", V with \"Layover\" and Jungkook with \"GOLDEN\"."
+      },
+      {
+        "question": "Did the BTS members complete military service?",
+        "answer": "Yes. All seven completed South Korea's mandatory military service, with discharges between 2024 and June 2025."
+      }
+    ]
+  },
+  "integrantes-do-blackpink": {
+    "slug": "blackpink-members",
+    "title": "BLACKPINK Members",
+    "shortTitle": "BLACKPINK",
+    "description": "Explore the members of BLACKPINK, with profiles, solo careers, songs, videos and facts in English.",
+    "intro": [
+      "BLACKPINK is a YG Entertainment girl group that debuted in 2016, and all four of its members also have solo careers.",
+      "This guide connects the members' individual pages for anyone who wants to follow their music, fashion, acting and international presence."
+    ],
+    "whatYouWillFind": "Here you will find individual profiles of each BLACKPINK member, with links to discographies, videos, dramas, fashion campaigns and connections to other artists.",
+    "faq": [
+      {
+        "question": "Do the members of BLACKPINK have solo careers?",
+        "answer": "Yes. Rosé released the album \"rosie\" (2024), Jennie has an extensive solo career with \"Solo\" and \"You & Me\", Lisa established herself globally with \"LALISA\" and \"MONEY\", and Jisoo starred in the drama \"Snowdrop\"."
+      },
+      {
+        "question": "How many members does BLACKPINK have?",
+        "answer": "Four: Jisoo, Jennie, Rosé and Lisa. The group debuted in 2016 under YG Entertainment."
+      }
+    ]
+  },
+  "integrantes-do-twice": {
+    "slug": "twice-members",
+    "title": "TWICE Members",
+    "shortTitle": "TWICE",
+    "description": "Meet the members of TWICE, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "TWICE is a JYP Entertainment girl group that debuted in 2015 and also releases music in Japan.",
+      "This guide gathers the members with public profiles on HallyuHub to make it easier to browse profiles, individual careers and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of TWICE?",
+        "answer": "This guide gathers the TWICE members with public profiles on HallyuHub, with links to their individual pages."
+      }
+    ]
+  },
+  "integrantes-do-aespa": {
+    "slug": "aespa-members",
+    "title": "aespa Members",
+    "shortTitle": "aespa",
+    "description": "Meet the members of aespa, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "aespa is an SM Entertainment girl group that debuted in 2020 with a concept that pairs the members with digital avatars.",
+      "In this guide you will find direct links to the members and can browse related profiles in the HallyuHub catalog."
+    ],
+    "faq": [
+      {
+        "question": "Does the guide include every aespa member?",
+        "answer": "The guide lists the aespa members who have public profiles on HallyuHub."
+      }
+    ]
+  },
+  "integrantes-do-ive": {
+    "slug": "ive-members",
+    "title": "IVE Members",
+    "shortTitle": "IVE",
+    "description": "Meet the members of IVE, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "IVE is a Starship Entertainment girl group that debuted in 2021.",
+      "This guide organizes the members' pages to make it easier to browse profiles, careers and connections on HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of IVE?",
+        "answer": "IVE is a K-Pop girl group. This guide gathers the members with profiles on HallyuHub, with links to their individual pages."
+      }
+    ]
+  },
+  "integrantes-do-newjeans": {
+    "slug": "newjeans-members",
+    "title": "NewJeans Members",
+    "shortTitle": "NewJeans",
+    "description": "Meet the members of NewJeans, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "NewJeans is a girl group that debuted in 2022 under ADOR, a HYBE label.",
+      "This guide organizes the members with profiles on HallyuHub to make discovery and browsing easier."
+    ],
+    "faq": [
+      {
+        "question": "Does the guide list every NewJeans member?",
+        "answer": "It lists the members with public profiles on HallyuHub."
+      }
+    ]
+  },
+  "integrantes-do-le-sserafim": {
+    "slug": "le-sserafim-members",
+    "title": "LE SSERAFIM Members",
+    "shortTitle": "LE SSERAFIM",
+    "description": "Meet the members of LE SSERAFIM, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "LE SSERAFIM is a girl group that debuted in 2022 under Source Music, a HYBE label.",
+      "This guide gathers the members with public profiles on HallyuHub and makes it easier to browse profiles and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Does the guide include individual activities?",
+        "answer": "When available, individual activities appear on the members' profiles."
+      }
+    ]
+  },
+  "integrantes-do-stray-kids": {
+    "slug": "stray-kids-members",
+    "title": "Stray Kids Members",
+    "shortTitle": "Stray Kids",
+    "description": "Meet the members of Stray Kids, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "Stray Kids is a JYP Entertainment boy group that debuted in 2018, whose members take part in writing and producing the music; the fandom is called STAY.",
+      "This guide organizes the members with profiles on HallyuHub to make it easier to browse profiles, individual activities and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of Stray Kids?",
+        "answer": "Stray Kids is made up of Bang Chan, Lee Know, Changbin, Hyunjin, Han, Felix, Seungmin and I.N."
+      },
+      {
+        "question": "Does Stray Kids produce its own music?",
+        "answer": "Yes. The sub-unit 3RACHA — Bang Chan, Changbin and Han — is responsible for much of the group's music production."
+      }
+    ]
+  },
+  "integrantes-do-exo": {
+    "slug": "exo-members",
+    "title": "EXO Members",
+    "shortTitle": "EXO",
+    "description": "Meet the members of EXO, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "EXO debuted in 2012 under SM Entertainment, and its fandom is called EXO-L.",
+      "This guide gathers the members with profiles on HallyuHub so you can browse profiles, sub-units and individual activities."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of EXO?",
+        "answer": "The current lineup includes Xiumin, Suho, Lay, Baekhyun, Chen, Chanyeol, D.O., Kai and Sehun."
+      }
+    ]
+  },
+  "integrantes-do-seventeen": {
+    "slug": "seventeen-members",
+    "title": "SEVENTEEN Members",
+    "shortTitle": "SEVENTEEN",
+    "description": "Meet the members of SEVENTEEN, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "SEVENTEEN is a Pledis Entertainment boy group that debuted in 2015, with thirteen members split into three units: vocal, hip-hop and performance.",
+      "This guide organizes the members with profiles on HallyuHub to make it easier to browse profiles, history and individual activities."
+    ],
+    "faq": [
+      {
+        "question": "How many members does SEVENTEEN have?",
+        "answer": "SEVENTEEN has 13 members: S.Coups, Jeonghan, Joshua, Jun, Hoshi, Wonwoo, Woozi, DK, Mingyu, The8, Seungkwan, Vernon and Dino."
+      }
+    ]
+  },
+  "integrantes-do-txt": {
+    "slug": "txt-members",
+    "title": "TXT Members",
+    "shortTitle": "TXT",
+    "description": "Explore the members of TXT (TOMORROW X TOGETHER), with profiles, careers, songs and fun facts in English.",
+    "intro": [
+      "TXT, short for TOMORROW X TOGETHER, is a boy group that debuted in 2019 under Big Hit, now part of HYBE.",
+      "This guide organizes the members with profiles on HallyuHub to make it easier to discover profiles, discographies and individual activities."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of TXT?",
+        "answer": "TXT is made up of Yeonjun, Soobin, Beomgyu, Taehyun and HueningKai, all under HYBE."
+      }
+    ]
+  },
+  "integrantes-do-ateez": {
+    "slug": "ateez-members",
+    "title": "ATEEZ Members",
+    "shortTitle": "ATEEZ",
+    "description": "Meet the members of ATEEZ, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "ATEEZ is a KQ Entertainment boy group that debuted in 2018; the fandom is called ATINY.",
+      "This guide organizes the members with profiles on HallyuHub so you can browse profiles and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of ATEEZ?",
+        "answer": "ATEEZ is made up of Hongjoong, Seonghwa, Yunho, Yeosang, San, Mingi, Wooyoung and Jongho."
+      }
+    ]
+  },
+  "integrantes-do-girls-generation": {
+    "slug": "girls-generation-members",
+    "title": "Girls' Generation Members",
+    "shortTitle": "Girls' Generation",
+    "description": "Meet the members of Girls' Generation (SNSD), with profiles, careers, songs and fun facts in English.",
+    "intro": [
+      "Girls' Generation, also known as SNSD, is an SM Entertainment girl group that debuted in 2007.",
+      "This guide organizes the members with public profiles on HallyuHub, making it easier to browse profiles, individual careers and the group's historical context."
+    ],
+    "faq": [
+      {
+        "question": "Is Girls' Generation still active?",
+        "answer": "Girls' Generation celebrated its 15th anniversary in 2022 with the album \"Forever 1\". The members also keep active solo careers."
+      }
+    ]
+  },
+  "integrantes-do-bigbang": {
+    "slug": "bigbang-members",
+    "title": "BIGBANG Members",
+    "shortTitle": "BIGBANG",
+    "description": "Explore the members of BIGBANG, with English profiles, solo careers, songs and the group's history.",
+    "intro": [
+      "BIGBANG is a YG Entertainment boy group that debuted in 2006.",
+      "This guide organizes the members with profiles on HallyuHub for anyone who wants to explore the individual careers of G-Dragon, T.O.P, Taeyang, Daesung and Seungri."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of BIGBANG?",
+        "answer": "BIGBANG is made up of G-Dragon, T.O.P, Taeyang and Daesung (Seungri left the group in 2019)."
+      }
+    ]
+  },
+  "integrantes-do-nct": {
+    "slug": "nct-members",
+    "title": "NCT Members",
+    "shortTitle": "NCT",
+    "description": "Meet the members of NCT, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "NCT is a group with no fixed number of members, split into several sub-units such as NCT 127, NCT Dream, WayV and NCT U.",
+      "This guide organizes the members with profiles on HallyuHub to make it easier to browse profiles and the group's different units."
+    ],
+    "faq": [
+      {
+        "question": "How does NCT's sub-unit system work?",
+        "answer": "NCT operates with rotating units — NCT 127 (based in Seoul), NCT Dream (the younger members), WayV (the Chinese unit) and NCT U (a variable special lineup)."
+      }
+    ]
+  },
+  "integrantes-do-got7": {
+    "slug": "got7-members",
+    "title": "GOT7 Members",
+    "shortTitle": "GOT7",
+    "description": "Meet the members of GOT7, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "GOT7 is a boy group that debuted in 2014 under JYP Entertainment.",
+      "This guide organizes the members with profiles on HallyuHub for anyone who wants to explore profiles, discography and the group's connections."
+    ],
+    "faq": [
+      {
+        "question": "Has GOT7 returned to perform together?",
+        "answer": "Yes. After leaving JYP Entertainment, the seven members regrouped in 2022."
+      }
+    ]
+  },
+  "integrantes-do-mamamoo": {
+    "slug": "mamamoo-members",
+    "title": "MAMAMOO Members",
+    "shortTitle": "MAMAMOO",
+    "description": "Meet the members of MAMAMOO, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "MAMAMOO is an RBW girl group that debuted in 2014.",
+      "This guide gathers the members with profiles on HallyuHub so you can browse profiles, individual careers and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of MAMAMOO?",
+        "answer": "MAMAMOO is made up of Solar, Moonbyul, Wheein and Hwasa, all with notable solo projects."
+      }
+    ]
+  },
+  "integrantes-do-itzy": {
+    "slug": "itzy-members",
+    "title": "ITZY Members",
+    "shortTitle": "ITZY",
+    "description": "Meet the members of ITZY, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "ITZY is a JYP Entertainment girl group that debuted in 2019.",
+      "This guide gathers the members with profiles on HallyuHub so you can browse profiles and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of ITZY?",
+        "answer": "ITZY is made up of Yeji, Lia, Ryujin, Chaeryeong and Yuna, all under JYP Entertainment."
+      }
+    ]
+  },
+  "integrantes-do-g-i-dle": {
+    "slug": "g-i-dle-members",
+    "title": "(G)I-DLE Members",
+    "shortTitle": "(G)I-DLE",
+    "description": "Meet the members of (G)I-DLE, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "(G)I-DLE is a Cube Entertainment girl group that debuted in 2018, whose members take part in writing the music.",
+      "This guide organizes the members with profiles on HallyuHub to make it easier to discover profiles and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of (G)I-DLE?",
+        "answer": "After Soojin's departure, (G)I-DLE is made up of Miyeon, Minnie, Soyeon, Yuqi and Shuhua, under Cube Entertainment."
+      }
+    ]
+  },
+  "integrantes-do-enhypen": {
+    "slug": "enhypen-members",
+    "title": "ENHYPEN Members",
+    "shortTitle": "ENHYPEN",
+    "description": "Meet the members of ENHYPEN, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "ENHYPEN is a BELIFT LAB boy group formed through the reality show \"I-LAND\" and debuted in 2020.",
+      "This guide gathers the members with profiles on HallyuHub to make it easier to browse profiles and related coverage."
+    ],
+    "faq": [
+      {
+        "question": "How many members does ENHYPEN have?",
+        "answer": "ENHYPEN has seven members: Jungwon, Heeseung, Jay, Jake, Sunghoon, Sunoo and Ni-ki."
+      }
+    ]
+  },
+  "integrantes-do-shinee": {
+    "slug": "shinee-members",
+    "title": "SHINee Members",
+    "shortTitle": "SHINee",
+    "description": "Meet the members of SHINee, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "SHINee is an SM Entertainment boy group that debuted in 2008.",
+      "This guide gathers the members with public profiles on HallyuHub so fans and newcomers can explore profiles, history and the group's connections."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of SHINee?",
+        "answer": "SHINee is made up of Onew, Key, Minho and Taemin (four active members). Jonghyun, one of the group's founders, died in 2017."
+      }
+    ]
+  },
+  "integrantes-do-red-velvet": {
+    "slug": "red-velvet-members",
+    "title": "Red Velvet Members",
+    "shortTitle": "Red Velvet",
+    "description": "Meet the members of Red Velvet, with English profiles, careers, songs and fun facts.",
+    "intro": [
+      "Red Velvet is an SM Entertainment girl group that debuted in 2014 and alternates between two concepts: \"Red\", more energetic, and \"Velvet\", softer.",
+      "This guide gathers the members with profiles on HallyuHub for anyone who wants to discover profiles, individual careers and music tied to the group."
+    ],
+    "faq": [
+      {
+        "question": "Who are the members of Red Velvet?",
+        "answer": "Red Velvet is made up of Irene, Seulgi, Wendy, Joy and Yeri, all under SM Entertainment."
+      }
+    ]
   }
 }
