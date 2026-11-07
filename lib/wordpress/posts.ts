@@ -152,9 +152,9 @@ export async function getRelatedPosts(post: WPPost, limit = 4): Promise<WPPost[]
  * arquivo" promete. Na última página o offset ultrapassa o total, a resposta
  * vem vazia e o bloco simplesmente não aparece.
  */
-export async function getSidebarPosts(currentPage = 1, perPage = 13, categoriesExclude: number[] = []) {
+export async function getSidebarPosts(currentPage = 1, perPage = 13, categoriesExclude: number[] = [], lang?: string) {
     return wpBuscarOpcional<WPPost[]>(
-        `/wp/v2/posts${buildParams({ per_page: 5, offset: currentPage * perPage, status: 'publish', orderby: 'date', order: 'desc', categories_exclude: categoriesExclude.length ? categoriesExclude.join(',') : undefined, _fields: 'id,slug,title,date,acf,featured_image_url,categories' })}`,
+        `/wp/v2/posts${buildParams({ per_page: 5, offset: currentPage * perPage, status: 'publish', orderby: 'date', order: 'desc', lang: lang ?? undefined, categories_exclude: categoriesExclude.length ? categoriesExclude.join(',') : undefined, _fields: 'id,slug,title,date,acf,featured_image_url,categories' })}`,
         { revalidate: 300, tags: [WP_CACHE_TAGS.posts] },
     )
 }

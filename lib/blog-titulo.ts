@@ -7,7 +7,16 @@
  *
  * Prioridade busca > tag > categoria: é a ordem em que o filtro mais estreita.
  */
-export function tituloDoBlog({ categoria, tag, busca }: { categoria?: string; tag?: string; busca?: string }): string {
+export function tituloDoBlog(
+    { categoria, tag, busca }: { categoria?: string; tag?: string; busca?: string },
+    t?: (chave: 'titleSearch' | 'titleTag' | 'titleCategory' | 'titleDefault', valores?: Record<string, string>) => string,
+): string {
+    if (t) {
+        if (busca) return t('titleSearch', { query: busca })
+        if (tag) return t('titleTag', { tag })
+        if (categoria) return t('titleCategory', { category: categoria })
+        return t('titleDefault')
+    }
     if (busca) return `Busca por “${busca}” no blog`
     if (tag) return `Artigos com a tag ${tag}`
     if (categoria) return `Artigos sobre ${categoria}`

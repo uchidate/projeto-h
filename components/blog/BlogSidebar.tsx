@@ -3,6 +3,7 @@ import Link from '@/components/i18n/LocalizedLink'
 import { Clock } from 'lucide-react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
+import { slugPublicoDoPost } from '@/lib/blog/translations'
 import { catStyleTema as catStyle, postReadingTime } from '@/lib/blog/catStyle'
 
 function RecentPost({ post, index }: { post: WPPost; index: number }) {
@@ -14,7 +15,7 @@ function RecentPost({ post, index }: { post: WPPost; index: number }) {
     const mins = postReadingTime(post)
 
     return (
-        <Link href={`/blog/${post.slug}`}
+        <Link href={`/blog/${slugPublicoDoPost(post.translations, post.slug)}`}
             className="group flex items-start gap-3 p-3 border-y border-border bg-background transition-colors hover:border-accent/40 hover:bg-surface/55">
             <span className="text-[17px] font-black leading-none w-5 shrink-0 mt-0.5 tabular-nums"
                 style={{ color: `hsl(330 80% ${Math.max(35, 65 - index * 8)}%)` }}>
@@ -51,9 +52,10 @@ interface BlogSidebarProps {
     recentPosts: WPPost[]
     categories: WPTerm[]
     currentCategory?: string
+    textos?: { continueArchive: string; moreCategories: string }
 }
 
-export function BlogSidebar({ recentPosts, categories, currentCategory }: BlogSidebarProps) {
+export function BlogSidebar({ recentPosts, categories, currentCategory, textos = { continueArchive: 'Continue no arquivo', moreCategories: 'Mais categorias' } }: BlogSidebarProps) {
     /* O rótulo vale em qualquer página porque a fonte passou a ser ancorada no
        offset: `getSidebarPosts` busca o que vem DEPOIS da página atual, então o
        bloco sempre aponta adiante. Enquanto ele trazia os mais recentes, na
@@ -67,7 +69,7 @@ export function BlogSidebar({ recentPosts, categories, currentCategory }: BlogSi
             {recentPosts.length > 0 && (
                 <div>
                     <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-4 flex items-center gap-1.5">
-                        <Clock size={11} className="text-accent" /> Continue no arquivo
+                        <Clock size={11} className="text-accent" /> {textos.continueArchive}
                     </p>
                     <div className="space-y-2">
                         {recentPosts.map((p, i) => <RecentPost key={p.id} post={p} index={i} />)}
@@ -77,7 +79,7 @@ export function BlogSidebar({ recentPosts, categories, currentCategory }: BlogSi
 
             {categories.length > 0 && (
                 <div>
-                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-3">Mais categorias</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-3">{textos.moreCategories}</p>
                     <div className="flex flex-wrap gap-1.5">
                         {categories.map(cat => {
                             const cs = catStyle(cat.slug)
