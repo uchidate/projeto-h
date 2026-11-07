@@ -43,7 +43,7 @@ export default async function LojaComidaPage({ params }: { params: Params }) {
     )
 
     return (
-        <main className="min-h-screen bg-background pb-20">
+        <main className="min-h-dvh bg-background pb-20">
             <section className="page-wrap pb-2 pt-6 sm:pt-7">
                 <div className="flex items-center gap-4">
                     {img && (

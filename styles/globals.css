@@ -499,6 +499,8 @@
     color: var(--color-fg);
     background-color: var(--color-bg);
     min-height: 100vh;
+    /* 100vh no Safari mobile inclui a área sob a barra de endereço. */
+    min-height: 100dvh;
     overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
