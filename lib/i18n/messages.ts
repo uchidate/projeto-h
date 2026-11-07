@@ -43,36 +43,40 @@ export const PT_MESSAGES: Messages = pt
  */
 const FALLBACK: Partial<Record<Locale, Locale>> = {}
 
+/** Namespaces de messages/<idioma>/<ns>.json. Ao criar um, registre-o também no `pt` acima e em `IMPORTADORES`. */
+const NAMESPACES = ['entity', 'profile', 'client', 'institucional', 'home', 'quiz'] as const
+type Namespace = (typeof NAMESPACES)[number]
+
+/**
+ * Imports com caminho literal: o bundler só inclui o JSON que enxerga. Um caminho montado em tempo de
+ * execução (`@/messages/${locale}/${ns}.json`) passou no vitest e quebrou o build ("Cannot find module").
+ * `Record<Exclude<Locale, 'pt'>, ...>` faz um idioma novo sem linha aqui falhar no `tsc`.
+ */
+const IMPORTADORES: Record<Exclude<Locale, 'pt'>, Record<Namespace, () => Promise<{ default: unknown }>>> = {
+    en: {
+        entity: () => import('@/messages/en/entity.json'), profile: () => import('@/messages/en/profile.json'),
+        client: () => import('@/messages/en/client.json'), institucional: () => import('@/messages/en/institucional.json'),
+        home: () => import('@/messages/en/home.json'), quiz: () => import('@/messages/en/quiz.json'),
+    },
+    es: {
+        entity: () => import('@/messages/es/entity.json'), profile: () => import('@/messages/es/profile.json'),
+        client: () => import('@/messages/es/client.json'), institucional: () => import('@/messages/es/institucional.json'),
+        home: () => import('@/messages/es/home.json'), quiz: () => import('@/messages/es/quiz.json'),
+    },
+}
+
+async function carregarIdioma(locale: Exclude<Locale, 'pt'>): Promise<Messages> {
+    const pares = await Promise.all(NAMESPACES.map(async (ns) => [ns, (await IMPORTADORES[locale][ns]()).default] as const))
+    return comNomeDoSite(Object.fromEntries(pares) as Messages)
+}
+
 const loaders: Partial<Record<Locale, () => Promise<Messages>>> = {
     pt: async () => pt,
-    en: async () => {
-        const [entity, profile, client, institucional, home, quiz]: [Messages['entity'], Messages['profile'], Messages['client'], Messages['institucional'], Messages['home'], Messages['quiz']] = await Promise.all([
-            import('@/messages/en/entity.json').then((m) => m.default),
-            import('@/messages/en/profile.json').then((m) => m.default),
-            import('@/messages/en/client.json').then((m) => m.default),
-            import('@/messages/en/institucional.json').then((m) => m.default),
-            import('@/messages/en/home.json').then((m) => m.default),
-            import('@/messages/en/quiz.json').then((m) => m.default),
-        ])
-        return comNomeDoSite({ entity, profile, client, institucional, home, quiz })
-    },
-    es: async () => {
-        const [entity, profile, client, institucional, home, quiz]: [Messages['entity'], Messages['profile'], Messages['client'], Messages['institucional'], Messages['home'], Messages['quiz']] = await Promise.all([
-            import('@/messages/es/entity.json').then((m) => m.default),
-            import('@/messages/es/profile.json').then((m) => m.default),
-            import('@/messages/es/client.json').then((m) => m.default),
-            import('@/messages/es/institucional.json').then((m) => m.default),
-            import('@/messages/es/home.json').then((m) => m.default),
-            import('@/messages/es/quiz.json').then((m) => m.default),
-        ])
-        return comNomeDoSite({ entity, profile, client, institucional, home, quiz })
-    },
 }
 
 export function loadMessages(locale: Locale): Promise<Messages> {
     const carregar = loaders[locale]
     if (carregar) return carregar()
     const alternativo = FALLBACK[locale]
-    if (!alternativo) throw new Error(`Idioma "${locale}" sem mensagens nem idioma alternativo (lib/i18n/messages.ts)`)
-    return loadMessages(alternativo)
+    return alternativo ? loadMessages(alternativo) : carregarIdioma(locale as Exclude<Locale, 'pt'>)
 }
