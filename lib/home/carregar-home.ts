@@ -47,7 +47,9 @@ export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comer
             : Promise.resolve({ items: [], total: 0, totalPages: 0 }),
         // Uma busca por editoria: o feed geral é dominado pelo assunto da semana e deixaria colunas vazias.
         Promise.allSettled(COLUNAS_EDITORIAS.map(c => getPosts({ category: c.categoria, perPage: 16, includeContent: false, ...(emPt ? {} : { lang: locale }) }))),
-        getProductions({ perPage: 6, orderby: 'date' }),
+        // Fora do português, o hero e as produções recentes saem das que têm tradução publicada; sem nenhuma, cai nas do idioma-fonte
+        // (a home não pode ficar sem produção) e o texto continua no idioma de origem até a primeira ser traduzida.
+        getProductions({ perPage: 6, orderby: 'date', ...(emPt ? {} : { locale }) }).then(async r => (emPt || r.items.length > 0 ? r : getProductions({ perPage: 6, orderby: 'date' }))),
         getMostAccessedArtists(8),
         getTrendingGroups(8),
         getStreamingArtists(12),
