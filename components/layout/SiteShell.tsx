@@ -17,6 +17,7 @@ import { CookieBanner } from '@/components/consent/CookieBanner'
 import { NavegacaoDeListagem } from '@/components/layout/NavegacaoDeListagem'
 import { RastreioDeRecirculacao } from '@/components/analytics/RastreioDeRecirculacao'
 import { SinalDeHumano } from '@/components/analytics/SinalDeHumano'
+import { SinalDeRobo } from '@/components/analytics/SinalDeRobo'
 import { AdSenseLoader } from '@/components/ui/AdSenseLoader'
 import { AdStickyBottom } from '@/components/ui/AdStickyBottom'
 import { ADSENSE } from '@/lib/config/ads'
@@ -227,6 +228,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
                 <NavegacaoDeListagem />
                 <RastreioDeRecirculacao />
             <SinalDeHumano />
+            <SinalDeRobo />
                 <RastreioDeExperiencia />
 
                 {/*
