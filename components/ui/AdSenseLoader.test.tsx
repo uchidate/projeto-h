@@ -110,22 +110,17 @@ describe('AdSenseLoader', () => {
         expect(document.querySelectorAll('script[src*="adsbygoogle"]')).toHaveLength(1)
     })
 
-    it('espera a decisão do banner de consentimento antes de injetar', async () => {
+    it('injeta mesmo com o banner de consentimento aberto', async () => {
         vi.stubEnv('NODE_ENV', 'test')
         vi.resetModules()
-        let estado: 'perguntar' | 'oculto' = 'perguntar'
-        let avisar = () => {}
         vi.doMock('@/lib/consent', () => ({
-            getBannerState: () => estado,
-            subscribeBanner: (cb: () => void) => { avisar = cb; return () => {} },
+            getBannerState: () => 'perguntar',
+            subscribeBanner: () => () => {},
         }))
         const { AdSenseLoader: Loader } = await import('./AdSenseLoader')
         const { AdsProvider: Provider } = await import('@/components/providers/AdsProvider')
         render(<Provider settings={settings()}><Loader /></Provider>)
-        gesto('keydown')
-        expect(document.querySelector('script[src*="adsbygoogle"]')).toBeNull()
-        estado = 'oculto'
-        avisar()
+        gesto('pointermove')
         expect(document.querySelector('script[src*="adsbygoogle"]')).not.toBeNull()
         vi.doUnmock('@/lib/consent')
     })

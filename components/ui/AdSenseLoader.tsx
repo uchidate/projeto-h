@@ -3,7 +3,6 @@
 import { useEffect } from 'react'
 import { useAds, useNaoAutomatizado } from '@/components/providers/AdsProvider'
 import { gestoConfiavel } from '@/lib/gesto-confiavel'
-import { getBannerState, subscribeBanner } from '@/lib/consent'
 
 export function AdSenseLoader() {
     const ads = useAds()
@@ -21,23 +20,16 @@ export function AdSenseLoader() {
         if (existing) return
 
         let injetado = false
-        let esperaBanner: (() => void) | null = null
         const injetar = () => {
             if (injetado) return
-            // O anúncio de âncora dos Anúncios automáticos do Google sobe com o
-            // maior z-index possível e cobre o banner de consentimento, que não
-            // tem como vencê-lo por camada. Com o banner aberto, o script só
-            // entra depois da decisão.
-            if (getBannerState() === 'perguntar') {
-                limpar()
-                esperaBanner ??= subscribeBanner(() => {
-                    if (getBannerState() !== 'perguntar') injetar()
-                })
-                return
-            }
+            // Com o banner de consentimento aberto o script entra igual: o
+            // Consent Mode segue em "negado" (anúncio não personalizado) e quem
+            // protege o banner é a camada dele, que ganha do anúncio de âncora
+            // (CookieBanner, z-2147483647 + âncora escondida; #256). Esperar a
+            // decisão aqui deixava sem anúncio quem mexia o mouse depois dos 4 s
+            // do CMP, quando o banner já estava na tela (2026-11-07).
             injetado = true
             limpar()
-            esperaBanner?.()
             const script = document.createElement('script')
             script.id = 'adsense-init'
             script.async = true
@@ -72,7 +64,6 @@ export function AdSenseLoader() {
 
         return () => {
             limpar()
-            esperaBanner?.()
         }
     }, [ads.enabled, ads.client, automatizado])
 
