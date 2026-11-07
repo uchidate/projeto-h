@@ -38,6 +38,8 @@ export function rotaPertenceAoItem(
 ): boolean {
     if (!pathname) return false
     if (href === '/') return pathname === '/'
+    // Raiz de um idioma (/en): é a Home, não o prefixo de todas as páginas daquele idioma.
+    if (/^\/[a-z]{2}$/.test(href)) return pathname === href || pathname === `${href}/`
     // /blog?category=comida é a vitrine do tema, não "Notícias": o pathname não traz a query.
     if (href === '/blog' && categoriaBlog && TEMAS.some(t => t.categoriaBlog === categoriaBlog)) return false
     return pathname === href || pathname.startsWith(`${href}/`)
