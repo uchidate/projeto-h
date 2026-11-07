@@ -2,7 +2,7 @@ import { getAgencies } from '@/lib/wordpress/agencies'
 import { getFoods } from '@/lib/wordpress/foods'
 import { getPosts } from '@/lib/wordpress/posts'
 import type { WPPost } from '@/lib/wordpress/types'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { DEFAULT_LOCALE, SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href as rota } from '@/lib/i18n/routes'
 
 export type UnidadeExplore = 'artigos' | 'fichas'
@@ -61,8 +61,8 @@ function destino(t: TemaExplore, locale: Locale): string {
  * Total e matéria mais recente de cada assunto. Assunto sem total (falha do WP) fica de fora em vez de mostrar zero.
  * Fora do português só conta o que está traduzido, e o assunto por tag (guias) não entra: a listagem traduzida só filtra por categoria.
  */
-export async function carregarExplore(locale: Locale = DEFAULT_LOCALE): Promise<CartaoExplore[]> {
-    const emPt = locale === DEFAULT_LOCALE
+export async function carregarExplore(locale: Locale = SOURCE_LOCALE): Promise<CartaoExplore[]> {
+    const emPt = locale === SOURCE_LOCALE
     const lang = emPt ? {} : { lang: locale }
     const idioma = emPt ? {} : { locale }
     const temas = emPt ? TEMAS_EXPLORE : TEMAS_EXPLORE.filter(t => !(t.feed && 'tag' in t.feed) || t.chave === 'gastronomia')

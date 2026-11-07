@@ -2,7 +2,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { LOCALES, DEFAULT_LOCALE } from './idiomas.mjs'
+import { LOCALES, SOURCE_LOCALE } from './idiomas.mjs'
 import { flattenMessages } from './message-lock'
 
 const RAIZ = join(__dirname, '../../messages')
@@ -32,8 +32,8 @@ export function variaveis(texto: string): string {
 
 // Tradução vazia (`''`) é chave deliberadamente sem uso naquele idioma (ex.: en quiz.sobre.p3) e não entra.
 describe('variáveis e tags iguais ao português, em todo idioma que tem catálogo', () => {
-    const pt = carregar(DEFAULT_LOCALE)
-    for (const locale of LOCALES.filter((l) => l !== DEFAULT_LOCALE)) {
+    const pt = carregar(SOURCE_LOCALE)
+    for (const locale of LOCALES.filter((l) => l !== SOURCE_LOCALE)) {
         it(locale, () => {
             const outro = carregar(locale)
             const diferentes = Object.keys(pt)

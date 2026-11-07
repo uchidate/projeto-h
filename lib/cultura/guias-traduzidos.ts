@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getPosts } from '@/lib/wordpress/posts'
 import type { WPPost } from '@/lib/wordpress/types'
 import { versoesDoPost } from '@/lib/blog/translations'
@@ -18,13 +18,13 @@ const SLUGS = slugsTraduzidos as Partial<Record<Locale, Record<string, string>>>
  */
 export async function postsTraduzidosPorSlugPt(locale: Locale, slugsPt: string[]): Promise<Map<string, WPPost>> {
     const mapa = new Map<string, WPPost>()
-    if (locale === DEFAULT_LOCALE) return mapa
+    if (locale === SOURCE_LOCALE) return mapa
     const tabela = SLUGS[locale] ?? {}
     const slugs = Array.from(new Set(slugsPt.map(s => tabela[s]).filter((s): s is string => !!s)))
     if (slugs.length === 0) return mapa
     const r = await getPosts({ lang: locale, slug: slugs.join(','), perPage: Math.min(100, slugs.length), includeContent: false }).catch(() => null)
     for (const p of r?.items ?? []) {
-        const slugPt = versoesDoPost(p.translations)[DEFAULT_LOCALE]
+        const slugPt = versoesDoPost(p.translations)[SOURCE_LOCALE]
         if (slugPt) mapa.set(slugPt, p)
     }
     return mapa

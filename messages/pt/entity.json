@@ -385,7 +385,7 @@
     "prompt": "Esta página está disponível em português.",
     "open": "Ler em português",
     "dismiss": "Dispensar",
-    "name": "Português"
+    "name": "Português (Brasil)"
   },
   "catalog": {
     "artists": {
@@ -409,7 +409,7 @@
     "translatedHeading": "Disponível neste idioma",
     "originalHeading": "Mais no site",
     "originalNote": "Estes perfis ainda não foram traduzidos. Abrem no original em português.",
-    "badge": "PT",
+    "badge": "PT-BR",
     "agencies": {
       "title": "Agências de K-Pop",
       "description": "Perfis de agências de K-Pop em português."

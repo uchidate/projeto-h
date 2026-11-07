@@ -2,7 +2,7 @@ import type { WPArtist } from '@/lib/wordpress/types'
 import { localizePlace } from '@/lib/i18n/place'
 import { labelsFor, type Labels } from '@/lib/i18n/labels'
 import { intlLocale } from '@/lib/i18n/format'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { buildSocialEntries } from '@/lib/artists/socials'
 import { getZodiac } from '@/lib/artists/zodiac'
 import { splitContentForAd } from '@/lib/utils/injectAd'
@@ -20,7 +20,7 @@ function buildHeroAgeMeta(
     return null
 }
 
-export function buildArtistProfileModel(artist: WPArtist, today = new Date(), locale: Locale = DEFAULT_LOCALE) {
+export function buildArtistProfileModel(artist: WPArtist, today = new Date(), locale: Locale = SOURCE_LOCALE) {
     const labels = labelsFor(locale)
     const dateLocale = intlLocale(locale)
     const name = stripHtml(artist.title.rendered) || artist.slug

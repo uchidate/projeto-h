@@ -6,11 +6,14 @@
  * só existe com tradução `published` (sophia-katseye e katseye no piloto);
  * as demais continuam 404 em inglês.
  */
-import { LOCALES, DEFAULT_LOCALE as DEFAULT, ACTIVE_LOCALES as ACTIVE } from './idiomas.mjs'
+import { LOCALES, DEFAULT_LOCALE as DEFAULT, SOURCE_LOCALE as SOURCE, ACTIVE_LOCALES as ACTIVE } from './idiomas.mjs'
 
 export type Locale = (typeof LOCALES)[number]
 
 export const DEFAULT_LOCALE: Locale = DEFAULT
+
+/** Idioma do conteúdo original (de onde se traduz). Ver `idiomas.mjs`. */
+export const SOURCE_LOCALE: Locale = SOURCE
 
 export const ACTIVE_LOCALES: readonly Locale[] = ACTIVE
 

@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import en from './traducoes/en.json'
 import type { ArchiveHub } from './types'
 
@@ -22,7 +22,7 @@ export type TraducaoDoGuia = {
 const TRADUCOES: Partial<Record<Locale, Record<string, TraducaoDoGuia>>> = { en: en as Record<string, TraducaoDoGuia> }
 
 export function traducoesDoIdioma(locale: Locale): Record<string, TraducaoDoGuia> {
-    return locale === DEFAULT_LOCALE ? {} : TRADUCOES[locale] ?? {}
+    return locale === SOURCE_LOCALE ? {} : TRADUCOES[locale] ?? {}
 }
 
 /** Slugs (em português) dos guias traduzidos no idioma. */
@@ -32,13 +32,13 @@ export function slugsPtTraduzidos(locale: Locale): string[] {
 
 /** Slug do guia na URL do idioma; em português, o próprio. Sem tradução, `undefined`. */
 export function slugPublicoDoGuia(slugPt: string, locale: Locale): string | undefined {
-    if (locale === DEFAULT_LOCALE) return slugPt
+    if (locale === SOURCE_LOCALE) return slugPt
     return traducoesDoIdioma(locale)[slugPt]?.slug
 }
 
 /** Slug em português do guia cuja URL no idioma é `slugPublico`. */
 export function slugPtDoGuia(slugPublico: string, locale: Locale): string | undefined {
-    if (locale === DEFAULT_LOCALE) return slugPublico
+    if (locale === SOURCE_LOCALE) return slugPublico
     return Object.entries(traducoesDoIdioma(locale)).find(([, t]) => t.slug === slugPublico)?.[0]
 }
 

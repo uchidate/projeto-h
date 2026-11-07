@@ -1,5 +1,5 @@
 import { formatDatePt } from '@/lib/utils'
-import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 
 const MIN = 60_000
 const HORA = 60 * MIN
@@ -29,8 +29,8 @@ export function tempoRelativoPt(date: string, agora: Date = new Date()): string 
 export type TextosTempo = { now: string; minutesAgo: string; hoursAgo: string; yesterday: string }
 
 /** Mesmo recorte de `tempoRelativoPt`, com os textos do idioma (`{n}` é o número) e a data no formato dele. */
-export function tempoRelativo(date: string, locale: Locale = DEFAULT_LOCALE, textos?: TextosTempo, agora: Date = new Date()): string {
-    if (locale === DEFAULT_LOCALE || !textos) return tempoRelativoPt(date, agora)
+export function tempoRelativo(date: string, locale: Locale = SOURCE_LOCALE, textos?: TextosTempo, agora: Date = new Date()): string {
+    if (locale === SOURCE_LOCALE || !textos) return tempoRelativoPt(date, agora)
     const data = formatDatePt(date, LOCALE_META[locale].intl)
     const idade = agora.getTime() - instanteDoPost(date).getTime()
     if (!Number.isFinite(idade) || idade < 0) return data
