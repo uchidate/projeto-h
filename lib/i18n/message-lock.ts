@@ -3,9 +3,9 @@ import { createHash } from 'node:crypto'
 /**
  * Lockfile dos textos de interface (D12 em docs/I18N-V2.md).
  *
- * `messages/.i18n-lock.json` guarda, por chave, o hash do valor em português
- * quando o inglês foi escrito/revisado. Se o PT muda e o lock não, o EN está
- * possivelmente desatualizado. Só funções puras; sem dependência do app.
+ * `messages/.i18n-lock.<idioma>.json` guarda, por chave, o hash do valor do idioma original
+ * quando a tradução foi escrita/revisada. Se o original muda e o lock não, a tradução
+ * está possivelmente desatualizada. Só funções puras; sem dependência do app.
  */
 
 export type MessageTree = { [key: string]: string | MessageTree }

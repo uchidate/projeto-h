@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto'
  * Detecta tradução desatualizada. Cada tradução guarda, num arquivo ao lado, o hash do texto de
  * ORIGEM (português) que foi traduzido. Se o português muda e o inglês não é revisto, o hash atual
  * deixa de bater e o teste acusa — sem isso a tradução fica errada sem aviso, porque os testes só
- * conferem estrutura. Mesma ideia do lock de `messages` (messages/.i18n-lock.json).
+ * conferem estrutura. Mesma ideia do lock de `messages` (messages/.i18n-lock.<idioma>.json).
  */
 
 /** Serialização estável (chaves ordenadas) para o hash não depender da ordem dos campos. */
