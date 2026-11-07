@@ -106,7 +106,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
 
     const [disponibilidade, episodios, avaliacao] = await Promise.all([
         disponibilidadePromise,
-        getEpisodios(production.acf?.tmdb_id, production.acf?.type),
+        getEpisodios(production.acf?.tmdb_id, production.acf?.type, locale),
         getAvaliacao(production.acf?.tmdb_id, production.acf?.type),
     ])
     const [castItems, related, { items: relatedPosts }, categories, allGenreTerms, foodsInProduction] = await Promise.all([

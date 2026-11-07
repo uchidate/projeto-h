@@ -58,15 +58,18 @@ export function painelViavel(eps: Episodio[]): boolean {
 }
 
 /**
- * Episódios da 1ª temporada (pt-BR) para o painel de notas da ficha de série.
+ * Episódios da 1ª temporada (no idioma da página) para o painel de notas da ficha de série.
  * `[]` sem chave, para filme, em falha ou quando a amostra de votos não sustenta o gráfico.
  * Cache de 24h (a página é ISR).
  */
-export async function getEpisodios(tmdbId: number | string | undefined, tipo: string | undefined): Promise<Episodio[]> {
+/** Idioma pedido ao TMDB para os títulos dos episódios; sem isso a ficha em outro idioma mostrava "Episódio 16". */
+const IDIOMA_TMDB: Record<string, string> = { pt: 'pt-BR', en: 'en-US', es: 'es-419' }
+
+export async function getEpisodios(tmdbId: number | string | undefined, tipo: string | undefined, locale: string = 'pt'): Promise<Episodio[]> {
     const chave = process.env.TMDB_API_KEY
     if (!chave || !tmdbId || tipo === 'movie') return []
     try {
-        const res = await fetch(`${TMDB_BASE}/tv/${tmdbId}/season/1?api_key=${chave}&language=pt-BR`, { next: { revalidate: 86400 } })
+        const res = await fetch(`${TMDB_BASE}/tv/${tmdbId}/season/1?api_key=${chave}&language=${IDIOMA_TMDB[locale] ?? 'pt-BR'}`, { next: { revalidate: 86400 } })
         if (!res.ok) return []
         const eps = normalizarEpisodios((await res.json()) as RespostaTemporada)
         return painelViavel(eps) ? eps : []
