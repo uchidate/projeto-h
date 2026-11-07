@@ -1182,5 +1182,313 @@
         "answer": "Entre los mayores grupos de YG Entertainment están BLACKPINK, BIGBANG, 2NE1, WINNER, iKON y TREASURE, además de solistas como G-Dragon y CL."
       }
     ]
+  },
+  "artistas-hybe": {
+    "slug": "artistas-hybe",
+    "title": "Artistas de HYBE (Big Hit)",
+    "shortTitle": "HYBE",
+    "description": "Conoce a los artistas y grupos de HYBE (Big Hit), con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "HYBE (antes Big Hit Entertainment) es la empresa detrás de BTS y hoy reúne sellos como BELIFT LAB, SOURCE MUSIC, ADOR y Pledis.",
+      "Esta guía reúne a los artistas y grupos vinculados a HYBE en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué grupos forman parte de HYBE?",
+        "answer": "HYBE es la casa de BTS, TOMORROW X TOGETHER (TXT), ENHYPEN (BELIFT LAB), LE SSERAFIM (SOURCE MUSIC), &TEAM y SEVENTEEN (Pledis), entre otros."
+      }
+    ]
+  },
+  "artistas-pledis-entertainment": {
+    "slug": "artistas-pledis-entertainment",
+    "title": "Artistas de Pledis Entertainment",
+    "shortTitle": "Pledis",
+    "description": "Conoce a los artistas y grupos de Pledis Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Pledis Entertainment, hoy parte de HYBE, es el sello detrás de SEVENTEEN y NU'EST, además de grupos anteriores como After School y Orange Caramel.",
+      "Esta guía reúne a los artistas y grupos vinculados a Pledis en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de Pledis?",
+        "answer": "Los mayores grupos de Pledis Entertainment son SEVENTEEN y NU'EST."
+      }
+    ]
+  },
+  "artistas-cube-entertainment": {
+    "slug": "artistas-cube-entertainment",
+    "title": "Artistas de Cube Entertainment",
+    "shortTitle": "Cube",
+    "description": "Conoce a los artistas y grupos de Cube Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Cube Entertainment es conocida por grupos como (G)I-DLE y BTOB, y por artistas que ayudaron a definir el K-Pop de segunda y tercera generación, entre ellas HyunA.",
+      "Esta guía reúne a los artistas y grupos vinculados a Cube en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de Cube?",
+        "answer": "Entre los grupos de Cube Entertainment, pasados y presentes, están (G)I-DLE, BTOB, CLC, 4Minute y PENTAGON, además de solistas como HyunA."
+      }
+    ]
+  },
+  "artistas-starship-entertainment": {
+    "slug": "artistas-starship-entertainment",
+    "title": "Artistas de Starship Entertainment",
+    "shortTitle": "Starship",
+    "description": "Conoce a los artistas y grupos de Starship Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Starship Entertainment es el sello detrás de MONSTA X, IVE, SISTAR y otros grupos que marcaron distintas generaciones del K-Pop.",
+      "Esta guía reúne a los artistas y grupos vinculados a Starship en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de Starship?",
+        "answer": "Entre los mayores grupos de Starship Entertainment están MONSTA X, SISTAR, WJSN, CRAVITY e IVE."
+      }
+    ]
+  },
+  "artistas-fnc-entertainment": {
+    "slug": "artistas-fnc-entertainment",
+    "title": "Artistas de FNC Entertainment",
+    "shortTitle": "FNC",
+    "description": "Conoce a los artistas y grupos de FNC Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "FNC Entertainment es conocida por grupos como FTISLAND, CNBLUE, AOA y N.Flying, con una fuerte identidad de banda en vivo y de rock coreano.",
+      "Esta guía reúne a los artistas y grupos vinculados a FNC en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué distingue a FNC de otras discográficas?",
+        "answer": "FNC Entertainment es conocida por trabajar con bandas en vivo (FTISLAND, CNBLUE, N.Flying) junto con grupos de performance, lo que la distingue de la mayoría de los sellos centrados solo en grupos de idols."
+      }
+    ]
+  },
+  "iu": {
+    "slug": "iu",
+    "title": "IU (Lee Ji-eun)",
+    "shortTitle": "IU",
+    "description": "Perfil completo de IU (Lee Ji-eun): discografía, carrera en solitario, doramas, logros y curiosidades.",
+    "intro": [
+      "IU (아이유), cuyo nombre real es Lee Ji-eun, debutó en 2008 bajo LOEN Entertainment y desde entonces ha construido una carrera como cantante y actriz.",
+      "Además de cantar, IU actúa: protagonizó \"My Mister\" (2018) y \"Hotel Del Luna\" (2019)."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuál es el nombre real de IU?",
+        "answer": "El nombre real de IU es Lee Ji-eun (이지은). El nombre artístico \"IU\" alude a la idea de \"I\" y \"You\" (yo y tú) unidos por la música."
+      },
+      {
+        "question": "¿IU forma parte de un grupo?",
+        "answer": "No. IU tiene una carrera exclusivamente en solitario desde su debut en 2008."
+      },
+      {
+        "question": "¿Cuáles son algunos sencillos de IU?",
+        "answer": "Entre los sencillos de IU están \"Good Day\" (2010), \"You and I\" (2011), \"Palette\" (2017), \"BBIBBI\" (2018), \"Blueming\" (2019) y \"Celebrity\" (2021)."
+      }
+    ]
+  },
+  "taeyeon": {
+    "slug": "taeyeon",
+    "title": "Taeyeon (SNSD)",
+    "shortTitle": "Taeyeon",
+    "description": "Perfil completo de Taeyeon: carrera en solitario, álbumes, liderazgo de SNSD/Girls' Generation, logros y discografía.",
+    "intro": [
+      "Kim Taeyeon es la líder y vocalista principal de SNSD (Girls' Generation) y una de las solistas más aclamadas del K-Pop. Debutó con SNSD en 2007 y comenzó su carrera en solitario en 2015.",
+      "Considerada una de las mejores voces del K-Pop, Taeyeon ha lanzado álbumes aclamados y ha construido una sólida carrera en solitario junto a SNSD."
+    ],
+    "faq": [
+      {
+        "question": "¿Taeyeon forma parte de SNSD?",
+        "answer": "Sí. Taeyeon es la líder y vocalista principal de SNSD (Girls' Generation). También tiene una extensa carrera en solitario que comenzó en 2015."
+      },
+      {
+        "question": "¿Cuáles son algunos sencillos en solitario de Taeyeon?",
+        "answer": "Entre los sencillos de Taeyeon están \"I\" (2015), \"Four Seasons\" (2019) e \"INVU\" (2022)."
+      }
+    ]
+  },
+  "g-dragon": {
+    "slug": "g-dragon",
+    "title": "G-Dragon (BIGBANG)",
+    "shortTitle": "G-Dragon",
+    "description": "Perfil completo de G-Dragon: carrera en solitario, álbumes, liderazgo de BIGBANG, influencia en la moda y logros en el K-Pop.",
+    "intro": [
+      "Kwon Ji-yong, conocido como G-Dragon, es el líder y la principal fuerza creativa de BIGBANG. Se le considera uno de los mejores artistas del K-Pop de todos los tiempos, tanto por su música como por su influencia en la moda.",
+      "La carrera en solitario de G-Dragon incluye los álbumes \"Heartbreaker\" (2009) y \"One of a Kind\" (2012)."
+    ],
+    "faq": [
+      {
+        "question": "¿G-Dragon forma parte de BIGBANG?",
+        "answer": "Sí. G-Dragon es el líder y principal compositor de BIGBANG."
+      },
+      {
+        "question": "¿Cuál es el nombre real de G-Dragon?",
+        "answer": "El nombre real de G-Dragon es Kwon Ji-yong (권지용)."
+      }
+    ]
+  },
+  "hyuna": {
+    "slug": "hyuna",
+    "title": "HyunA",
+    "shortTitle": "HyunA",
+    "description": "Perfil completo de HyunA: carrera en solitario, exintegrante de 4Minute y Wonder Girls, éxitos icónicos, estilo y discografía.",
+    "intro": [
+      "Kim Hyun-ah, conocida como HyunA, es una de las mujeres más audaces e influyentes del K-Pop. Exintegrante de 4Minute y, brevemente, de Wonder Girls, construyó una de las carreras en solitario más consistentes entre los idols de su generación.",
+      "\"Bubble Pop!\" (2011) y \"Red\" (2013) se convirtieron en clásicos del pop coreano."
+    ],
+    "faq": [
+      {
+        "question": "¿HyunA formó parte de algún grupo?",
+        "answer": "Sí. HyunA fue integrante fundadora de 4Minute (2009–2016) y tuvo un breve paso por Wonder Girls."
+      }
+    ]
+  },
+  "jungkook": {
+    "slug": "jungkook",
+    "title": "Jungkook (BTS)",
+    "shortTitle": "Jungkook",
+    "description": "Perfil completo de Jungkook: carrera en solitario, el álbum \"GOLDEN\", los éxitos \"Seven\" y \"Standing Next to You\" y logros históricos del K-Pop.",
+    "intro": [
+      "Jeon Jungkook es el maknae (el menor) de BTS y lanzó su carrera en solitario en 2023. Su sencillo \"Seven\" (2023, feat. Latto) debutó en el n.º 1 del Billboard Hot 100."
+    ],
+    "faq": [
+      {
+        "question": "¿Jungkook sigue en BTS?",
+        "answer": "Sí. Jungkook es integrante de BTS desde el debut del grupo en 2013."
+      },
+      {
+        "question": "¿Cuáles son los sencillos en solitario de Jungkook?",
+        "answer": "Entre sus sencillos en solitario están \"Seven\" (2023, que debutó en el n.º 1 del Billboard Hot 100), \"Standing Next to You\" (2023) y \"3D\" (feat. Jack Harlow, 2023)."
+      }
+    ]
+  },
+  "rose-blackpink": {
+    "slug": "rose-blackpink",
+    "title": "Rosé (BLACKPINK)",
+    "shortTitle": "Rosé (BLACKPINK)",
+    "description": "Perfil completo de Rosé: vocalista de BLACKPINK, álbum en solitario \"rosie\", los éxitos \"On The Ground\" y \"APT.\" y carrera internacional.",
+    "intro": [
+      "Roseanne Park, conocida como Rosé, es la vocalista principal de BLACKPINK y una de las artistas de K-Pop con mayor alcance internacional.",
+      "En 2024, Rosé lanzó su álbum en solitario \"rosie\", que incluye \"APT.\", una colaboración con Bruno Mars."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son algunos sencillos de Rosé?",
+        "answer": "Entre los sencillos de Rosé están \"On The Ground\" (2021), \"Gone\" (2021) y \"APT.\" (feat. Bruno Mars, 2024)."
+      }
+    ]
+  },
+  "jennie": {
+    "slug": "jennie-blackpink",
+    "title": "Jennie (BLACKPINK)",
+    "shortTitle": "Jennie (BLACKPINK)",
+    "description": "Perfil completo de Jennie: rapera y vocalista de BLACKPINK, carrera en solitario, los éxitos \"SOLO\" y \"Mantra\" e ícono global de la moda.",
+    "intro": [
+      "Jennie Kim es rapera y vocalista de BLACKPINK y una de las artistas de K-Pop más influyentes en el mercado global, conocida por su magnética presencia escénica y su versatilidad estilística.",
+      "En 2024, Jennie lanzó el sencillo \"Mantra\" a través de su propio sello, OA (Odd Atelier), que marcó una nueva etapa de independencia artística."
+    ],
+    "faq": [
+      {
+        "question": "¿Jennie tiene su propio sello?",
+        "answer": "Sí. Jennie dirige su propio sello, OA (Odd Atelier), con el que lanzó \"Mantra\" en 2024."
+      }
+    ]
+  },
+  "lisa-blackpink": {
+    "slug": "lisa-blackpink",
+    "title": "Lisa (BLACKPINK)",
+    "shortTitle": "Lisa (BLACKPINK)",
+    "description": "Perfil completo de Lisa: bailarina principal de BLACKPINK, los éxitos \"LALISA\" y \"MONEY\", carrera en solitario e ícono global del baile.",
+    "intro": [
+      "Lalisa Manoban, conocida como Lisa, es la bailarina principal y rapera de BLACKPINK, y un fenómeno global con una de las mayores bases de fans individuales del K-Pop. Nació en Tailandia.",
+      "En 2024, Lisa firmó con RCA Records en Estados Unidos y lanzó el aclamado sencillo \"Rockstar\"."
+    ],
+    "faq": [
+      {
+        "question": "¿Lisa es tailandesa?",
+        "answer": "Sí. Lisa nació en Buriram, Tailandia, y es una de las artistas tailandesas más destacadas del K-Pop."
+      }
+    ]
+  },
+  "jisoo": {
+    "slug": "jisoo-blackpink",
+    "title": "Jisoo (BLACKPINK)",
+    "shortTitle": "Jisoo (BLACKPINK)",
+    "description": "Perfil completo de Jisoo: vocalista y visual de BLACKPINK, álbum en solitario \"ME\", actriz en \"Snowdrop\" e ícono de belleza.",
+    "intro": [
+      "Kim Ji-soo, conocida como Jisoo, es la vocalista y visual de BLACKPINK, y la integrante de mayor edad del grupo.",
+      "Además de la música, Jisoo es actriz: protagonizó el dorama \"Snowdrop\" (2021–2022) junto a Jung Hae-in."
+    ],
+    "faq": [
+      {
+        "question": "¿Jisoo actúa en doramas?",
+        "answer": "Sí. Jisoo protagonizó el dorama \"Snowdrop\" (2021–2022), emitido en Disney+, junto a Jung Hae-in."
+      }
+    ]
+  },
+  "karina-aespa": {
+    "slug": "karina-aespa",
+    "title": "Karina (aespa)",
+    "shortTitle": "Karina (aespa)",
+    "description": "Perfil completo de Karina, de aespa: líder y centro del grupo, e ícono de belleza del K-Pop de cuarta generación.",
+    "intro": [
+      "Yoo Ji-min, conocida como Karina, es la líder y uno de los rostros principales de aespa. Se la considera uno de los mayores íconos visuales y de moda del K-Pop de cuarta generación."
+    ],
+    "faq": [
+      {
+        "question": "¿Por qué Karina es tan famosa en el K-Pop?",
+        "answer": "Karina es conocida por su aspecto llamativo, su técnica de baile, su presencia escénica y una personalidad que conecta especialmente con los fans de cuarta generación."
+      }
+    ]
+  },
+  "wonyoung-ive": {
+    "slug": "wonyoung-ive",
+    "title": "Wonyoung (IVE)",
+    "shortTitle": "Wonyoung (IVE)",
+    "description": "Perfil completo de Wonyoung, de IVE: centro del grupo, ícono de moda, embajadora de marcas y carrera en el K-Pop.",
+    "intro": [
+      "Jang Wonyoung es el centro y la visual de IVE, y una de las trendsetters más jóvenes del K-Pop actual."
+    ],
+    "faq": [
+      {
+        "question": "¿Wonyoung estuvo en IZ*ONE?",
+        "answer": "Sí. Antes de IVE, Wonyoung formó parte de IZ*ONE (2018–2021)."
+      }
+    ]
+  },
+  "jimin-bts": {
+    "slug": "jimin-bts",
+    "title": "Jimin (BTS)",
+    "shortTitle": "Jimin (BTS)",
+    "description": "Perfil completo de Jimin, de BTS: álbum en solitario \"FACE\", éxito global \"Like Crazy\", carrera individual, bailes icónicos y curiosidades.",
+    "intro": [
+      "Park Jimin es vocalista y bailarín principal de BTS. En 2023, su debut en solitario \"FACE\" dio \"Like Crazy\", que llegó al n.º 1 del Billboard Hot 100 y lo convirtió en el primer solista coreano en encabezar la lista estadounidense."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuál es el álbum en solitario de Jimin?",
+        "answer": "\"FACE\" (2023) es el primer álbum en solitario de Jimin, con el éxito \"Like Crazy\", que llegó al n.º 1 del Billboard Hot 100."
+      }
+    ]
+  },
+  "grupos-femininos-kpop": {
+    "slug": "girl-groups-de-kpop",
+    "title": "Girl groups de K-Pop",
+    "shortTitle": "Girl groups",
+    "description": "Conoce a los girl groups de K-Pop, con integrantes, discografías, trayectorias, videos y fichas completas.",
+    "intro": [
+      "Los girl groups son uno de los motores del K-Pop global: combinan conceptos visuales, coreografías, voces y fandoms muy activos.",
+      "Aquí encontrarás girl groups con enlaces a integrantes, canciones, videos y páginas relacionadas en HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es un girl group de K-Pop?",
+        "answer": "Un grupo femenino de la industria coreana, normalmente formado por idols y centrado en la música, la performance, los conceptos visuales y el fandom."
+      },
+      {
+        "question": "¿La guía incluye grupos activos e inactivos?",
+        "answer": "Sí. La lista puede incluir grupos activos, inactivos o disueltos cuando tienen relevancia cultural y un perfil público en HallyuHub."
+      }
+    ]
   }
 }
