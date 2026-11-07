@@ -114,7 +114,8 @@
     "grid": "Grid",
     "list": "List",
     "less": "↑ less",
-    "more": "{count, plural, one {↓ # more track} other {↓ # more tracks}}"
+    "more": "{count, plural, one {↓ # more track} other {↓ # more tracks}}",
+    "releases": "{count, plural, one {# release} other {# releases}}"
   },
   "member": {
     "role": {
@@ -782,5 +783,389 @@
     "clear": "Clear",
     "metaTitle": "Korean Dramas & Films",
     "metaDescription": "The full catalog of Korean dramas and films — from epic romances to breathtaking thrillers, in English."
+  },
+  "trendingPage": {
+    "title": "Trending in K-Pop",
+    "description": "K-pop artists and groups trending right now — a dynamic ranking by popularity and chart presence.",
+    "crumbHome": "Home",
+    "crumb": "Trending",
+    "intro": "A dynamic ranking — it updates as engagement and chart presence change, with no manual curation.",
+    "chartsTitle": "On the charts now",
+    "chartsDesc": "Artists confirmed in the Top 10 of the streaming platforms.",
+    "groupsTitle": "Trending groups",
+    "groupsDesc": "Sorted by trending score — recent activity and fandom engagement.",
+    "artistsTitle": "Trending artists"
+  },
+  "positionsPage": {
+    "title": "Positions in K-Pop Groups",
+    "description": "See who is the leader, main vocal, visual, center and maknae in each k-pop group listed on {site}.",
+    "crumb": "Positions",
+    "intro": "Each position defines a real role inside the group — it is not a profile label.",
+    "guideLink": "Understand the full system",
+    "detailTitle": "Who is the {label} in each K-Pop group",
+    "detailTitleH1": "Who is the {label} in each group",
+    "detailDescription": "See every idol who holds the {label} position in the k-pop groups listed on {site}.",
+    "detailCount": "{count, plural, one {# group} other {# groups}} with a listed {label}.",
+    "detailGuide": "Understand what this position means",
+    "empty": "No group with this position listed yet.",
+    "labels": {
+      "leader": "Leader",
+      "main_vocal": "Main Vocal",
+      "lead_vocal": "Lead Vocal",
+      "sub_vocal": "Sub-Vocal",
+      "main_dancer": "Main Dancer",
+      "lead_dancer": "Lead Dancer",
+      "main_rapper": "Main Rapper",
+      "sub_rapper": "Sub-Rapper",
+      "visual": "Visual",
+      "center": "Center",
+      "maknae": "Maknae"
+    },
+    "descriptions": {
+      "leader": "the group's official spokesperson, chosen by the agency",
+      "main_vocal": "the group's strongest technical voice",
+      "lead_vocal": "direct vocal support to the main vocal",
+      "sub_vocal": "sings without a main technical focus",
+      "main_dancer": "the technical reference for choreography",
+      "lead_dancer": "direct support in the choreography",
+      "main_rapper": "the technical reference for rap",
+      "sub_rapper": "support in the rap",
+      "visual": "the face most tied to the group's public image",
+      "center": "the central physical spot in choreography and covers",
+      "maknae": "the group's youngest member"
+    }
+  },
+  "searchPage": {
+    "titleQuery": "Search: {q}",
+    "title": "Search",
+    "placeholder": "Search artists, dramas, articles…",
+    "aria": "Search artists, dramas and articles",
+    "clear": "Clear search",
+    "results": "{count, plural, one {# result} other {# results}} for",
+    "minChars": "Type at least 2 characters to search",
+    "noneTitle": "No results",
+    "noneDesc": "Try a different search term.",
+    "hot": "Trending now",
+    "types": {
+      "production": "Production",
+      "artist": "Artist",
+      "group": "Group",
+      "post": "Article",
+      "company": "Company",
+      "food": "Food",
+      "store_product": "Shop"
+    },
+    "sections": {
+      "production": "Productions",
+      "artist": "Artists",
+      "group": "Groups",
+      "company": "Companies",
+      "food": "Foods",
+      "store_product": "In the shop",
+      "post": "Articles"
+    }
+  },
+  "groupCard": {
+    "ended": "ended",
+    "hot": "trending",
+    "since": "since {year}"
+  },
+  "birthdaysPage": {
+    "crumbArtists": "Artists",
+    "crumb": "Birthdays",
+    "title": "{month} Birthdays",
+    "description": "K-Pop and K-Drama artists with a birthday in {month}.",
+    "kicker": "Birthdays",
+    "count": "{count, plural, one {# artist has a} other {# artists have a}} birthday in {month}",
+    "today": "Today",
+    "age": "{age} years old",
+    "emptyTitle": "No birthdays found",
+    "emptyDesc": "No listed artists have a birthday in {month}."
+  },
+  "groupBlocks": {
+    "dossier": "Dossier",
+    "timelineTitle": "Timeline",
+    "milestones": "{count} milestones",
+    "erasCount": "{count} eras",
+    "eraDebut": "Debut",
+    "eraRise": "Rise",
+    "eraConsolidation": "Consolidation",
+    "eraGolden": "Golden Era",
+    "eraReinvention": "Reinvention",
+    "eraLegacy": "Legacy",
+    "eraNew": "New Phase",
+    "eraFallback": "Era {year}",
+    "colorIdentity": "Visual Identity",
+    "colorCopyTitle": "Click to copy the hex",
+    "colorCopied": "✓ copied!",
+    "colorTapToCopy": "tap to copy"
+  },
+  "minhasListas": {
+    "account": "Account",
+    "title": "My lists",
+    "intro": "Organize what you love and what you still want to watch. Everything stays in sync with your account.",
+    "statFavorites": "favorites",
+    "statWant": "want to watch",
+    "statWatching": "watching",
+    "statJourney": "journey",
+    "collection": "Collection",
+    "explore": "Browse the catalog",
+    "exploreProductions": "Browse productions",
+    "count": "{count, plural, one {# production} other {# productions}}",
+    "favoritos": {
+      "label": "Favorites",
+      "description": "Your emotional shelf: titles you want to remember, rewatch or recommend.",
+      "emptyTitle": "No favorites yet",
+      "emptyDescription": "Favorite dramas and films to build a collection that feels like yours."
+    },
+    "lista": {
+      "label": "Want to watch",
+      "description": "Your marathon queue: save everything that deserves a spot on your radar.",
+      "emptyTitle": "Empty list",
+      "emptyDescription": "Add productions to your \"Want to watch\" list to pick your next marathon without wasting time."
+    },
+    "assistindo": {
+      "label": "Watching",
+      "description": "Titles in progress, so you can pick up where you left off.",
+      "emptyTitle": "Nothing in progress",
+      "emptyDescription": "Mark a production as \"Watching\" to create your continue-watching area."
+    },
+    "assistidos": {
+      "label": "Watched",
+      "description": "Your history of finished dramas, films and specials.",
+      "emptyTitle": "Nothing watched yet",
+      "emptyDescription": "Mark productions as \"Watched\" to build your cultural history."
+    }
+  },
+  "conta": {
+    "common": {
+      "wave": "My Wave",
+      "seeAll": "See all →",
+      "seeBlog": "See the blog →",
+      "artists": "Artists",
+      "groups": "Groups",
+      "collection": "Collection",
+      "exploreProductions": "Browse productions",
+      "profile": "Profile"
+    },
+    "perfil": {
+      "saveError": "Could not save. Please try again.",
+      "memberSince": "Member since {date}",
+      "name": "Name",
+      "bio": "Bio",
+      "bioPlaceholder": "A sentence about you and your tastes...",
+      "saving": "Saving…",
+      "save": "Save",
+      "cancel": "Cancel",
+      "noBio": "No bio yet.",
+      "edit": "Edit profile",
+      "favorites": "Favorites",
+      "want": "Want to watch",
+      "overview": "Overview",
+      "following": "Following",
+      "readings": "Readings",
+      "fandomsTitle": "Your fandoms 💜",
+      "fandomsManage": "Manage in Fan Space →",
+      "fandomsEmptyA": "You haven't picked a fandom yet.",
+      "fandomsEmptyLink": "Choose yours",
+      "fandomsEmptyB": "to see news and dates specific to it here.",
+      "personalized": "Personalized experience",
+      "completeTitle": "Complete your profile",
+      "completeDesc": "These signals help turn your account into a useful place to follow dramas, K-pop, artists and readings.",
+      "completePct": "complete",
+      "task": {
+        "name": "Visible name",
+        "bio": "Bio filled in",
+        "favorite": "First favorite",
+        "want": "Want to watch list",
+        "follow": "Follow an artist or group",
+        "reading": "Save a reading",
+        "fandom": "Pick a fandom"
+      },
+      "cta": {
+        "discover": "Discover productions",
+        "discoverDesc": "Find the next title to save.",
+        "guides": "Read guides and lists",
+        "guidesDesc": "Use our curation to decide better.",
+        "groups": "Follow groups",
+        "groupsDesc": "Connect fandoms, members and articles.",
+        "artists": "Follow artists",
+        "artistsDesc": "Keep up with profiles, groups and filmography."
+      },
+      "achievements": "Achievements",
+      "unlocked": "{done}/{total} unlocked",
+      "howTo": "How to earn them",
+      "synced": "Synced account",
+      "syncedDesc": "Your profile, lists, follows and readings go with you on any device.",
+      "notifications": "Notifications",
+      "notificationsDesc": "Choose only the alerts that are useful in My Wave.",
+      "notifSaved": "Saved readings",
+      "notifSavedDesc": "Remind me of articles I saved to read.",
+      "notifWatching": "Continue watching",
+      "notifWatchingDesc": "Show titles marked as Watching."
+    },
+    "dashboard": {
+      "hello": "Hi, {name}",
+      "signOut": "Sign out",
+      "moment": "Your moment",
+      "levelTop": "Dedicated curator",
+      "levelHigh": "Explorer at full speed",
+      "levelStart": "Collection getting started",
+      "levelNew": "New here",
+      "emptyIntro": "Start by saving productions, following profiles or keeping readings. Your Wave takes shape bit by bit.",
+      "savedIntro": "{count, plural, one {You have saved # item.} other {You have saved # items.}} Use your Wave as a starting point to decide what to watch, read and follow.",
+      "discover": "Discover titles",
+      "goal": "{count, plural, one {Goal: # favorite} other {Goal: # favorites}}",
+      "goalDone": "Favorites goal complete",
+      "nextSteps": "Next steps",
+      "act": {
+        "favRevisit": "Revisit favorites",
+        "favRevisitDesc": "Open your collection to keep refining your taste.",
+        "favFirst": "Favorite your first production",
+        "favFirstDesc": "A single favorite already makes the dashboard yours.",
+        "wantOrganize": "Organize Want to watch",
+        "wantOrganizeDesc": "Pick the next drama or film in the queue.",
+        "wantCreate": "Create your Want to watch list",
+        "wantCreateDesc": "Save titles so you don't miss your next marathon.",
+        "watchContinue": "Continue watching",
+        "watchContinueDesc": "{count, plural, one {# title in progress on your journey.} other {# titles in progress on your journey.}}",
+        "watchMark": "Mark something as Watching",
+        "watchMarkDesc": "Open a production and mark where you stopped.",
+        "followKeep": "Keep up with pop culture",
+        "followKeepDesc": "{count, plural, one {# profile followed in My Wave.} other {# profiles followed in My Wave.}}",
+        "followStart": "Follow artists and groups",
+        "followStartDesc": "Follow artists and groups to connect dramas, K-pop and articles.",
+        "readResume": "Resume saved readings",
+        "readResumeDesc": "{count, plural, one {# article waiting in your library.} other {# articles waiting in your library.}}",
+        "readSave": "Save a reading",
+        "readSaveDesc": "Save guides and articles to come back to later.",
+        "explore": "Explore what's new",
+        "exploreWatched": "Use what you have already watched to find your next titles.",
+        "exploreLatest": "Use the recent readings to discover context and recommendations.",
+        "exploreDefault": "See featured guides, lists and productions."
+      },
+      "stat": {
+        "favorites": "Favorites",
+        "want": "Want to watch",
+        "watching": "Watching",
+        "following": "Following",
+        "readings": "Readings",
+        "achievements": "Achievements",
+        "days": "Days on the site"
+      },
+      "emptyTitle": "Build your collection",
+      "emptyDesc": "Favorite dramas, follow artists or save readings to build your My Wave.",
+      "favRecent": "Recent favorites",
+      "continuity": "Continuity",
+      "continueWatching": "Continue watching",
+      "list": "List",
+      "wantTitle": "Want to watch",
+      "followingTitle": "Following",
+      "artist": "Artist",
+      "group": "Group",
+      "fandom": "Fandom: {name}",
+      "library": "Library",
+      "savedToRead": "Saved to read",
+      "savedLabel": "Saved in My Wave",
+      "history": "History",
+      "recentlyRead": "Recently read",
+      "readLabel": "Marked as read",
+      "blog": "Blog",
+      "recentReadings": "Recent readings"
+    },
+    "conquistas": {
+      "title": "Achievements",
+      "metaTitle": "Achievements",
+      "intro": "Here it is clear what unlocks each achievement. All of them use simple actions on the site: favoriting productions, organizing your list, following artists and groups, saving readings and marking articles as read.",
+      "seeWave": "See My Wave",
+      "adjustProfile": "Adjust profile",
+      "unlockedLabel": "unlocked",
+      "nextClosest": "Closest next one",
+      "allDone": "Everything unlocked.",
+      "allDoneDesc": "Your My Wave is already quite complete. Now keep it alive with new readings and titles.",
+      "doneCount": "{done}/{total} completed",
+      "progress": "Progress",
+      "revisit": "Revisit the path",
+      "cat": {
+        "Colecao": {
+          "title": "Collection",
+          "desc": "Favorites and lists that make your taste clearer."
+        },
+        "Continuidade": {
+          "title": "Continuity",
+          "desc": "States to track what you want to watch, are watching and have finished."
+        },
+        "Fandom": {
+          "title": "Fandom",
+          "desc": "Artists and groups that connect K-pop, dramas and Korean culture."
+        },
+        "Leitura": {
+          "title": "Reading",
+          "desc": "Guides, lists and articles saved or marked as read."
+        }
+      },
+      "items": {
+        "first-favorite": {
+          "label": "First like",
+          "desc": "Favorite your first production.",
+          "howTo": "Open a drama, film or special and tap the favorite button.",
+          "cta": "Browse productions"
+        },
+        "cinefilo": {
+          "label": "Cinephile",
+          "desc": "Favorite 5 productions.",
+          "howTo": "Use favorites to keep the titles you love, want to rewatch or would recommend.",
+          "cta": "Add more favorites"
+        },
+        "colecionador": {
+          "label": "Collector",
+          "desc": "Favorite 20 productions.",
+          "howTo": "Keep refining your collection with Korean dramas, films and specials.",
+          "cta": "See the catalog"
+        },
+        "agenda-cheia": {
+          "label": "Full agenda",
+          "desc": "Add 5 titles to Want to watch.",
+          "howTo": "Mark productions as Want to watch to build your queue of upcoming marathons.",
+          "cta": "Build your list"
+        },
+        "em-andamento": {
+          "label": "In progress",
+          "desc": "Mark 3 titles as Watching.",
+          "howTo": "When you start a title, use the Watching state so it shows up under continuity.",
+          "cta": "Mark as watching"
+        },
+        "historico-vivo": {
+          "label": "Living history",
+          "desc": "Mark 5 titles as Watched.",
+          "howTo": "When you finish a drama, film or special, log it as Watched in the page actions.",
+          "cta": "See watched"
+        },
+        "radar-ligado": {
+          "label": "Radar on",
+          "desc": "Follow your first artist or group.",
+          "howTo": "Open an artist or group page and tap Follow.",
+          "cta": "Find artists"
+        },
+        "fandom-ativo": {
+          "label": "Active fandom",
+          "desc": "Follow 5 artists or groups.",
+          "howTo": "Follow profiles to connect K-pop, dramas, members and articles in your My Wave.",
+          "cta": "Explore groups"
+        },
+        "biblioteca-aberta": {
+          "label": "Open library",
+          "desc": "Save your first reading.",
+          "howTo": "Open an article, guide or list and use Save reading to come back later.",
+          "cta": "See articles"
+        },
+        "leitor-bastidores": {
+          "label": "Behind-the-scenes reader",
+          "desc": "Mark 3 articles as read.",
+          "howTo": "When you finish a text, use Mark as read in the article.",
+          "cta": "Keep reading"
+        }
+      }
+    }
   }
 }

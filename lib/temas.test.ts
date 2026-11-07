@@ -9,6 +9,11 @@ describe('rotaPertenceAoItem', () => {
         expect(rotaPertenceAoItem('/', '/')).toBe(true)
         expect(rotaPertenceAoItem('/blog', '/')).toBe(false)
     })
+    it('Home de um idioma (/en) só acende na própria raiz', () => {
+        expect(rotaPertenceAoItem('/en', '/en')).toBe(true)
+        expect(rotaPertenceAoItem('/en/foods', '/en')).toBe(false)
+        expect(rotaPertenceAoItem('/en/foods', '/en/foods')).toBe(true)
+    })
     it('Gastronomia acende em /comidas e nas fichas; Cultura só no hub dela', () => {
         expect(rotaPertenceAoItem('/comidas', '/comidas')).toBe(true)
         expect(rotaPertenceAoItem('/comidas/pepero', '/comidas')).toBe(true)

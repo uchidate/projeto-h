@@ -75,7 +75,7 @@ export function GroupDiscography({ albums, accent }: Props) {
                         </button>
                     </div>
                     <p className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-muted">
-                        {albums.length} lançamento{albums.length !== 1 ? 's' : ''}
+                        {tc('discography.releases', { count: albums.length })}
                     </p>
                 </div>} />
 

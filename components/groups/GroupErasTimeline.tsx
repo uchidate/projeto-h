@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { toRgba } from '@/lib/theme/color'
 
 interface EraItem {
@@ -14,7 +15,7 @@ interface Props {
     groupName: string
 }
 
-function groupIntoEras(items: EraItem[]): { label: string; years: string; items: EraItem[]; startYear: number }[] {
+function groupIntoEras(items: EraItem[], eraNames: string[], fallback: (year: number) => string): { label: string; years: string; items: EraItem[]; startYear: number }[] {
     if (items.length === 0) return []
     const sorted = [...items].sort((a, b) => parseInt(a.year) - parseInt(b.year))
     const groups: typeof sorted[] = []
@@ -25,17 +26,18 @@ function groupIntoEras(items: EraItem[]): { label: string; years: string; items:
         else { current.push(sorted[i]) }
     }
     groups.push(current)
-    const eraNames = ['Debut', 'Ascensão', 'Consolidação', 'Era de Ouro', 'Reinvenção', 'Legado', 'Nova Fase']
     return groups.map((g, i) => {
         const years = g.map(x => x.year)
         const minY = Math.min(...years.map(Number))
         const maxY = Math.max(...years.map(Number))
-        return { label: eraNames[i] ?? `Era ${minY}`, years: minY === maxY ? String(minY) : `${minY}–${maxY}`, items: g, startYear: minY }
+        return { label: eraNames[i] ?? fallback(minY), years: minY === maxY ? String(minY) : `${minY}–${maxY}`, items: g, startYear: minY }
     })
 }
 
 export function GroupErasTimeline({ historico, accent, groupName }: Props) {
+    const t = useTranslations('client.groupBlocks')
     const [activeEra, setActiveEra] = useState(0)
+    const eraNames = [t('eraDebut'), t('eraRise'), t('eraConsolidation'), t('eraGolden'), t('eraReinvention'), t('eraLegacy'), t('eraNew')]
 
     const items: EraItem[] = historico
         .filter(c => c.startsWith('HISTÓRICO|'))
@@ -43,14 +45,14 @@ export function GroupErasTimeline({ historico, accent, groupName }: Props) {
 
     if (items.length === 0) return null
 
-    const eras = groupIntoEras(items)
+    const eras = groupIntoEras(items, eraNames, year => t('eraFallback', { year }))
     const active = eras[activeEra]
 
     return (
         <section id="timeline">
             <div className="mb-5 border-b border-foreground pb-3">
-                <p className="font-mono text-[10px] font-black uppercase leading-4 tracking-[0.12em] text-muted">Dossiê</p>
-                <h2 className="text-xl font-black tracking-[-0.03em]">Linha do Tempo</h2>
+                <p className="font-mono text-[10px] font-black uppercase leading-4 tracking-[0.12em] text-muted">{t('dossier')}</p>
+                <h2 className="text-xl font-black tracking-[-0.03em]">{t('timelineTitle')}</h2>
             </div>
 
             {/* Era nav — pill buttons */}
@@ -78,7 +80,7 @@ export function GroupErasTimeline({ historico, accent, groupName }: Props) {
                                 </span>
                                 <span className="whitespace-nowrap font-mono text-[10px] leading-4"
                                     style={{ color: isActive ? toRgba(accent, 0.8) : 'var(--color-muted)' }}>
-                                    {era.years} · {era.items.length} marcos
+                                    {era.years} · {t('milestones', { count: era.items.length })}
                                 </span>
                             </button>
                         )
@@ -109,7 +111,7 @@ export function GroupErasTimeline({ historico, accent, groupName }: Props) {
             </div>
 
             <p className="mt-3 text-right font-mono text-[10px] uppercase leading-4 tracking-widest text-muted">
-                {groupName} · {items.length} marcos · {eras.length} eras
+                {groupName} · {t('milestones', { count: items.length })} · {t('erasCount', { count: eras.length })}
             </p>
         </section>
     )

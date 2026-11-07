@@ -45,6 +45,8 @@ export const ROUTES = {
     signup: { pt: '/cadastro', en: '/sign-up' },
     profile: { pt: '/perfil', en: '/profile' },
     myLists: { pt: '/minhas-listas', en: '/my-lists' },
+    dashboard: { pt: '/dashboard', en: '/dashboard' },
+    achievements: { pt: '/conquistas', en: '/achievements' },
     privacy: { pt: '/privacidade', en: '/privacy' },
     terms: { pt: '/termos', en: '/terms' },
 } as const satisfies Record<string, { pt: string; en: string } & Partial<Record<Locale, string>>>

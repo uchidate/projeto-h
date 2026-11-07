@@ -139,7 +139,7 @@ export function GroupStoryChapters({ chapters, accent, groupName, portrait, debu
                                 </a>
                                 {chapter.quote_source_url && (
                                     <a href={chapter.quote_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 text-featured-muted hover:text-featured-fg">
-                                        Ler citação na fonte <ExternalLink size={9} />
+                                        {t('quoteSource')} <ExternalLink size={9} />
                                     </a>
                                 )}
                                 {chapter.visual_source_url && (

@@ -1,4 +1,5 @@
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import Link from '@/components/i18n/LocalizedLink'
 import { Trophy, ArrowRight, Lightbulb } from 'lucide-react'
 import { MiniQuiz } from './MiniQuiz'
@@ -18,6 +19,8 @@ interface Props {
 }
 
 export async function QuizFacts({ entitySlug, entityType, entityName, entityId, groupIds, artistIds }: Props) {
+    // As perguntas do quiz existem só em português: fora dele o bloco não aparece.
+    if ((await getLocale()) !== DEFAULT_LOCALE) return null
     const t = await getTranslations('profile.ui')
     const path = entityType === 'artist' ? `/artists/${entitySlug}`
         : entityType === 'group' ? `/groups/${entitySlug}`

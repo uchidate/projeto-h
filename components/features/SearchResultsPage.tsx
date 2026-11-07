@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useState, useRef, useEffect } from 'react'
 import { Search, Film, Mic2, BookOpen, Users, X, Building2, UtensilsCrossed, ShoppingBag } from 'lucide-react'
 import type { SearchResult, SearchResultType } from '@/lib/search/types'
@@ -12,6 +13,7 @@ import { trackSearch, trackSearchClick, trackProductClick } from '@/lib/analytic
 import { EmptyState } from '@/components/ui/EmptyState'
 
 function ResultCard({ result, query, position }: { result: SearchResult; query: string; position: number }) {
+    const t = useTranslations('client.searchPage')
     const icons: Record<SearchResultType, React.ReactNode> = {
         production: <Film size={18} className="text-muted/40" />,
         artist:     <Mic2 size={18} className="text-muted/40" />,
@@ -20,15 +22,6 @@ function ResultCard({ result, query, position }: { result: SearchResult; query: 
         company:    <Building2 size={18} className="text-muted/40" />,
         food:       <UtensilsCrossed size={18} className="text-muted/40" />,
         store_product: <ShoppingBag size={18} className="text-muted/40" />,
-    }
-    const typeLabels: Record<SearchResultType, string> = {
-        production: 'Produção',
-        artist:     'Artista',
-        group:      'Grupo',
-        post:       'Artigo',
-        company:    'Empresa',
-        food:       'Comida',
-        store_product: 'Loja',
     }
     const registrarClique = () => {
         trackSearchClick({ query, position, type: result.type, href: result.href })
@@ -57,7 +50,7 @@ function ResultCard({ result, query, position }: { result: SearchResult; query: 
                     <p className="text-[12px] text-muted truncate mt-0.5">{result.subtitle}</p>
                 )}
                 <p className="font-mono text-[10px] text-muted uppercase tracking-[0.06em] mt-1">
-                    {typeLabels[result.type]}
+                    {t(`types.${result.type}`)}
                 </p>
             </div>
         </Link>
@@ -66,16 +59,15 @@ function ResultCard({ result, query, position }: { result: SearchResult; query: 
 
 const RESULT_SECTIONS: Array<{
     type: SearchResultType
-    label: string
     icon: React.ReactNode
 }> = [
-    { type: 'production', label: 'Produções', icon: <Film size={14} className="text-accent" /> },
-    { type: 'artist',     label: 'Artistas',  icon: <Mic2 size={14} className="text-accent" /> },
-    { type: 'group',      label: 'Grupos',    icon: <Users size={14} className="text-accent" /> },
-    { type: 'company',    label: 'Empresas',  icon: <Building2 size={14} className="text-accent" /> },
-    { type: 'food',       label: 'Comidas',   icon: <UtensilsCrossed size={14} className="text-accent" /> },
-    { type: 'store_product', label: 'Na loja', icon: <ShoppingBag size={14} className="text-accent" /> },
-    { type: 'post',       label: 'Artigos',   icon: <BookOpen size={14} className="text-accent" /> },
+    { type: 'production', icon: <Film size={14} className="text-accent" /> },
+    { type: 'artist',     icon: <Mic2 size={14} className="text-accent" /> },
+    { type: 'group',      icon: <Users size={14} className="text-accent" /> },
+    { type: 'company',    icon: <Building2 size={14} className="text-accent" /> },
+    { type: 'food',       icon: <UtensilsCrossed size={14} className="text-accent" /> },
+    { type: 'store_product', icon: <ShoppingBag size={14} className="text-accent" /> },
+    { type: 'post',       icon: <BookOpen size={14} className="text-accent" /> },
 ]
 
 interface Props {
@@ -85,6 +77,7 @@ interface Props {
 }
 
 export function SearchResultsPage({ query, results, suggestions = [] }: Props) {
+    const t = useTranslations('client.searchPage')
     const router = useRouter()
     const [value, setValue] = useState(query)
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -114,13 +107,13 @@ export function SearchResultsPage({ query, results, suggestions = [] }: Props) {
                         type="search"
                         value={value}
                         onChange={e => { setValue(e.target.value); navigate(e.target.value) }}
-                        placeholder="Buscar artistas, doramas, artigos…"
-                        aria-label="Buscar artistas, doramas e artigos"
+                        placeholder={t('placeholder')}
+                        aria-label={t('aria')}
                         autoFocus
                         className="w-full h-12 pl-11 pr-10 border border-border bg-background text-[16px] text-foreground placeholder:text-muted focus:border-accent focus:outline-hidden transition-colors"
                     />
                     {value && (
-                        <button type="button" aria-label="Limpar busca" onClick={() => { setValue(''); navigate('') }}
+                        <button type="button" aria-label={t('clear')} onClick={() => { setValue(''); navigate('') }}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground">
                             <X size={16} />
                         </button>
@@ -129,22 +122,22 @@ export function SearchResultsPage({ query, results, suggestions = [] }: Props) {
 
                 {hasQuery && (
                     <p className="font-mono text-[11px] text-muted uppercase tracking-[0.06em]">
-                        {total} resultado{total !== 1 ? 's' : ''} para <span className="text-foreground font-bold">&ldquo;{query}&rdquo;</span>
+                        {t('results', { count: total })} <span className="text-foreground font-bold">&ldquo;{query}&rdquo;</span>
                     </p>
                 )}
             </div>
 
             {!hasQuery && (
-                <EmptyState icon={<Search size={48} />} description="Digite pelo menos 2 caracteres para buscar" />
+                <EmptyState icon={<Search size={48} />} description={t('minChars')} />
             )}
 
             {hasQuery && total === 0 && (
                 <>
-                    <EmptyState icon={<Search size={48} />} title="Nenhum resultado" description="Tente buscar por outro termo." />
+                    <EmptyState icon={<Search size={48} />} title={t('noneTitle')} description={t('noneDesc')} />
                     {suggestions.length > 0 && (
                         <div className="mt-8">
                             <p className="font-mono text-[11px] font-black uppercase tracking-widest text-muted mb-3">
-                                Em alta agora
+                                {t('hot')}
                             </p>
                             <div data-bloco="busca-sugestoes" className="grid sm:grid-cols-2 gap-2">
                                 {suggestions.map((result, i) => (
@@ -168,7 +161,7 @@ export function SearchResultsPage({ query, results, suggestions = [] }: Props) {
                             <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
                                 {section.icon}
                                 <h2 className="font-mono text-[11px] font-black uppercase tracking-widest text-foreground">
-                                    {section.label}
+                                    {t(`sections.${section.type}`)}
                                 </h2>
                                 <span className="font-mono text-[10px] text-muted ml-auto">{sectionResults.length}</span>
                             </div>

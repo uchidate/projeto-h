@@ -53,3 +53,20 @@ describe('data/receitas.json', () => {
         expect(erros).toEqual([])
     })
 })
+
+describe('data/receitas.en.json', () => {
+    it('é válida e espelha a versão em português (mesmos pratos, tempos e fontes)', () => {
+        const pt = todasReceitas('pt')
+        const en = todasReceitas('en')
+        expect(Object.keys(en).sort()).toEqual(Object.keys(pt).sort())
+        const erros = Object.entries(en).flatMap(([slug, r]) => validarReceita(slug, r))
+        expect(erros).toEqual([])
+        for (const [slug, r] of Object.entries(en)) {
+            expect(r.preparoMin, slug).toBe(pt[slug].preparoMin)
+            expect(r.cozimentoMin, slug).toBe(pt[slug].cozimentoMin)
+            expect(r.ingredientes.length, slug).toBe(pt[slug].ingredientes.length)
+            expect(r.passos.length, slug).toBe(pt[slug].passos.length)
+            expect(r.fontes, slug).toEqual(pt[slug].fontes)
+        }
+    })
+})

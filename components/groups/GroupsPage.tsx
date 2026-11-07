@@ -21,6 +21,11 @@ import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { GENERATIONS, getGeneration } from '@/lib/constants/generations'
 
+const TEXTOS_CARTAO = {
+    pt: { ended: 'encerrado', hot: 'em alta', since: (y: number | string) => `desde ${y}` },
+    en: { ended: 'ended', hot: 'trending', since: (y: number | string) => `since ${y}` },
+}
+
 const TYPE_PT: Record<string, string> = {
     girl_group: 'Girl Group',
     boy_group:  'Boy Group',
@@ -39,7 +44,8 @@ function nameToGradient(name: string): string {
     return `linear-gradient(135deg, hsl(${hue},55%,16%) 0%, hsl(${(hue + 50) % 360},45%,10%) 100%)`
 }
 
-export function GroupCard({ group, priority }: { group: WPGroup; priority?: boolean }) {
+export function GroupCard({ group, priority, locale = DEFAULT_LOCALE }: { group: WPGroup; priority?: boolean; locale?: Locale }) {
+    const txt = TEXTOS_CARTAO[locale === DEFAULT_LOCALE ? 'pt' : 'en']
     const image = getWPImage(group._embedded, group.featured_image_url)
     const name = stripHtml(group.title.rendered)
     const acf = group.acf ?? {}
@@ -73,12 +79,12 @@ export function GroupCard({ group, priority }: { group: WPGroup; priority?: bool
                 <div className="absolute inset-0 hidden bg-linear-to-t from-black/75 via-black/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:block" />
                 {isInactive && (
                     <span className="absolute right-1.5 top-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white/80 sm:right-2 sm:top-2 sm:text-[10px]">
-                        encerrado
+                        {txt.ended}
                     </span>
                 )}
                 {!isInactive && (acf.trending_score ?? 0) >= 7 && (
                     <span className="absolute left-1.5 top-1.5 bg-accent-a11y px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white sm:left-2 sm:top-2 sm:text-[10px]">
-                        em alta
+                        {txt.hot}
                     </span>
                 )}
                 {memberCount > 0 && (
@@ -88,7 +94,7 @@ export function GroupCard({ group, priority }: { group: WPGroup; priority?: bool
                     </span>
                 )}
                 <div className="absolute inset-x-3 bottom-3 hidden translate-y-1 font-mono text-[10px] uppercase tracking-[0.06em] text-white/80 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 sm:block">
-                    {[acf.name_hangul, debutYear && `desde ${debutYear}`].filter(Boolean).join(' · ')}
+                    {[acf.name_hangul, debutYear && txt.since(debutYear)].filter(Boolean).join(' · ')}
                 </div>
             </div>
             <div className="flex min-w-0 flex-col justify-center px-3 py-2.5 sm:block sm:min-h-[94px] sm:px-3 sm:py-3">

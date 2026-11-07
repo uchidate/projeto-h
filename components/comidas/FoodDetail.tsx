@@ -113,7 +113,7 @@ export default async function FoodPage({ params }: { params: Params }) {
         { name: name, url: foodUrl },
     ])
 
-    const receita = soPt ? getReceita(slug) : null
+    const receita = getReceita(slug, locale)
 
     const recipeSchema = buildRecipeSchema({
         name,
@@ -130,6 +130,7 @@ export default async function FoodPage({ params }: { params: Params }) {
         datePublished: food.date,
         dateModified: food.modified,
         preparo: receita,
+        locale,
     })
 
     return (
@@ -234,7 +235,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                         />
                     )}
 
-                    {receita && <ReceitaPreparo nome={name} receita={receita} />}
+                    {receita && <ReceitaPreparo nome={name} receita={receita} locale={locale} />}
 
                     {/* Página sem anúncio nenhum até 2026-09-17 (inventário de todas as rotas no celular). */}
                     {ADSENSE.slots.inline && (

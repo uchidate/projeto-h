@@ -114,7 +114,8 @@
     "grid": "Grade",
     "list": "Lista",
     "less": "↑ menos",
-    "more": "{count, plural, one {↓ # faixa a mais} other {↓ # faixas a mais}}"
+    "more": "{count, plural, one {↓ # faixa a mais} other {↓ # faixas a mais}}",
+    "releases": "{count, plural, one {# lançamento} other {# lançamentos}}"
   },
   "member": {
     "role": {
@@ -782,5 +783,389 @@
     "clear": "Limpar",
     "metaTitle": "Doramas & Filmes Coreanos",
     "metaDescription": "Catálogo completo de doramas e filmes coreanos — de romances épicos a thrillers de tirar o fôlego, tudo em português."
+  },
+  "trendingPage": {
+    "title": "Em Alta no K-Pop",
+    "description": "Artistas e grupos de k-pop em alta agora — ranking dinâmico por popularidade e presença nos charts.",
+    "crumbHome": "Início",
+    "crumb": "Em Alta",
+    "intro": "Ranking dinâmico — atualiza conforme o engajamento e a presença nos charts mudam, sem curadoria manual.",
+    "chartsTitle": "Nos charts agora",
+    "chartsDesc": "Artistas com presença confirmada no Top 10 das plataformas de streaming.",
+    "groupsTitle": "Grupos em alta",
+    "groupsDesc": "Ordenado por trending score — atividade recente e engajamento do fandom.",
+    "artistsTitle": "Artistas em alta"
+  },
+  "positionsPage": {
+    "title": "Posições em Grupos de K-Pop",
+    "description": "Veja quem é líder, main vocal, visual, center e maknae em cada grupo de k-pop cadastrado no {site}.",
+    "crumb": "Posições",
+    "intro": "Cada posição define uma função real dentro do grupo — não é rótulo de perfil.",
+    "guideLink": "Entenda o sistema completo",
+    "detailTitle": "Quem é {label} em cada grupo de K-Pop",
+    "detailTitleH1": "Quem é {label} em cada grupo",
+    "detailDescription": "Veja todos os idols que ocupam a posição de {label} nos grupos de k-pop cadastrados no {site}.",
+    "detailCount": "{count, plural, one {# grupo} other {# grupos}} com {label} cadastrado.",
+    "detailGuide": "Entenda o que essa posição significa",
+    "empty": "Nenhum grupo com essa posição cadastrada ainda.",
+    "labels": {
+      "leader": "Líder",
+      "main_vocal": "Main Vocal",
+      "lead_vocal": "Lead Vocal",
+      "sub_vocal": "Sub-Vocal",
+      "main_dancer": "Main Dancer",
+      "lead_dancer": "Lead Dancer",
+      "main_rapper": "Main Rapper",
+      "sub_rapper": "Sub-Rapper",
+      "visual": "Visual",
+      "center": "Center",
+      "maknae": "Maknae"
+    },
+    "descriptions": {
+      "leader": "porta-voz oficial do grupo, escolhido pela agência",
+      "main_vocal": "voz técnica mais forte do grupo",
+      "lead_vocal": "apoio vocal direto ao main vocal",
+      "sub_vocal": "canta sem centralidade técnica principal",
+      "main_dancer": "referência técnica de coreografia",
+      "lead_dancer": "apoio direto na coreografia",
+      "main_rapper": "referência técnica de rap",
+      "sub_rapper": "apoio no rap",
+      "visual": "rosto mais associado à imagem pública do grupo",
+      "center": "posição física central em coreografias e capas",
+      "maknae": "membro mais novo do grupo"
+    }
+  },
+  "searchPage": {
+    "titleQuery": "Busca: {q}",
+    "title": "Busca",
+    "placeholder": "Buscar artistas, doramas, artigos…",
+    "aria": "Buscar artistas, doramas e artigos",
+    "clear": "Limpar busca",
+    "results": "{count, plural, one {# resultado} other {# resultados}} para",
+    "minChars": "Digite pelo menos 2 caracteres para buscar",
+    "noneTitle": "Nenhum resultado",
+    "noneDesc": "Tente buscar por outro termo.",
+    "hot": "Em alta agora",
+    "types": {
+      "production": "Produção",
+      "artist": "Artista",
+      "group": "Grupo",
+      "post": "Artigo",
+      "company": "Empresa",
+      "food": "Comida",
+      "store_product": "Loja"
+    },
+    "sections": {
+      "production": "Produções",
+      "artist": "Artistas",
+      "group": "Grupos",
+      "company": "Empresas",
+      "food": "Comidas",
+      "store_product": "Na loja",
+      "post": "Artigos"
+    }
+  },
+  "groupCard": {
+    "ended": "encerrado",
+    "hot": "em alta",
+    "since": "desde {year}"
+  },
+  "birthdaysPage": {
+    "crumbArtists": "Artistas",
+    "crumb": "Aniversários",
+    "title": "Aniversários de {month}",
+    "description": "Artistas K-Pop e K-Drama que fazem aniversário em {month}.",
+    "kicker": "Aniversários",
+    "count": "{count, plural, one {# artista faz} other {# artistas fazem}} aniversário em {month}",
+    "today": "Hoje",
+    "age": "{age} anos",
+    "emptyTitle": "Nenhum aniversário encontrado",
+    "emptyDesc": "Sem artistas cadastrados com aniversário em {month}."
+  },
+  "groupBlocks": {
+    "dossier": "Dossiê",
+    "timelineTitle": "Linha do Tempo",
+    "milestones": "{count} marcos",
+    "erasCount": "{count} eras",
+    "eraDebut": "Debut",
+    "eraRise": "Ascensão",
+    "eraConsolidation": "Consolidação",
+    "eraGolden": "Era de Ouro",
+    "eraReinvention": "Reinvenção",
+    "eraLegacy": "Legado",
+    "eraNew": "Nova Fase",
+    "eraFallback": "Era {year}",
+    "colorIdentity": "Identidade Visual",
+    "colorCopyTitle": "Clique para copiar o hex",
+    "colorCopied": "✓ copiado!",
+    "colorTapToCopy": "toque para copiar"
+  },
+  "minhasListas": {
+    "account": "Conta",
+    "title": "Minhas listas",
+    "intro": "Organize o que você ama e o que ainda quer assistir. Tudo fica sincronizado na sua conta.",
+    "statFavorites": "favoritos",
+    "statWant": "quero ver",
+    "statWatching": "assistindo",
+    "statJourney": "jornada",
+    "collection": "Coleção",
+    "explore": "Explorar catálogo",
+    "exploreProductions": "Explorar produções",
+    "count": "{count, plural, one {# produção} other {# produções}}",
+    "favoritos": {
+      "label": "Favoritos",
+      "description": "Sua prateleira afetiva: títulos que você quer lembrar, rever ou recomendar.",
+      "emptyTitle": "Nenhum favorito ainda",
+      "emptyDescription": "Favorite dramas e filmes para criar uma coleção com a sua cara."
+    },
+    "lista": {
+      "label": "Quero ver",
+      "description": "Sua fila de maratona: salve aqui tudo que merece entrar no radar.",
+      "emptyTitle": "Lista vazia",
+      "emptyDescription": "Adicione produções à sua lista de \"Quero ver\" para decidir a próxima maratona sem perder tempo."
+    },
+    "assistindo": {
+      "label": "Assistindo",
+      "description": "Títulos em andamento, para voltar ao que você já começou.",
+      "emptyTitle": "Nada em andamento",
+      "emptyDescription": "Marque uma produção como \"Assistindo\" para criar sua área de continuidade."
+    },
+    "assistidos": {
+      "label": "Assistidos",
+      "description": "Seu histórico de dramas, filmes e especiais concluídos.",
+      "emptyTitle": "Nenhum assistido ainda",
+      "emptyDescription": "Marque produções como \"Assistido\" para construir seu histórico cultural."
+    }
+  },
+  "conta": {
+    "common": {
+      "wave": "Minha Onda",
+      "seeAll": "Ver todos →",
+      "seeBlog": "Ver blog →",
+      "artists": "Artistas",
+      "groups": "Grupos",
+      "collection": "Coleção",
+      "exploreProductions": "Explorar produções",
+      "profile": "Perfil"
+    },
+    "perfil": {
+      "saveError": "Erro ao salvar. Tente novamente.",
+      "memberSince": "Membro desde {date}",
+      "name": "Nome",
+      "bio": "Bio",
+      "bioPlaceholder": "Uma frase sobre você e seus gostos...",
+      "saving": "Salvando…",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "noBio": "Nenhuma bio ainda.",
+      "edit": "Editar perfil",
+      "favorites": "Favoritos",
+      "want": "Quero ver",
+      "overview": "Visão geral",
+      "following": "Acompanhando",
+      "readings": "Leituras",
+      "fandomsTitle": "Suas torcidas 💜",
+      "fandomsManage": "Gerenciar no Espaço do Fã →",
+      "fandomsEmptyA": "Você ainda não marcou nenhuma torcida.",
+      "fandomsEmptyLink": "Escolha a sua",
+      "fandomsEmptyB": "pra ver novidades e datas específicas dela aqui.",
+      "personalized": "Experiência personalizada",
+      "completeTitle": "Complete seu perfil",
+      "completeDesc": "Esses sinais ajudam a transformar sua conta em uma área útil para acompanhar dramas, K-pop, artistas e leituras.",
+      "completePct": "completo",
+      "task": {
+        "name": "Nome visível",
+        "bio": "Bio preenchida",
+        "favorite": "Primeiro favorito",
+        "want": "Lista Quero ver",
+        "follow": "Seguir artista ou grupo",
+        "reading": "Salvar uma leitura",
+        "fandom": "Marcar uma torcida"
+      },
+      "cta": {
+        "discover": "Descobrir produções",
+        "discoverDesc": "Encontre o próximo título para salvar.",
+        "guides": "Ler guias e listas",
+        "guidesDesc": "Use a curadoria para decidir melhor.",
+        "groups": "Acompanhar grupos",
+        "groupsDesc": "Conecte fandoms, membros e artigos.",
+        "artists": "Seguir artistas",
+        "artistsDesc": "Acompanhe perfis, grupos e filmografia."
+      },
+      "achievements": "Conquistas",
+      "unlocked": "{done}/{total} desbloqueadas",
+      "howTo": "Como obter",
+      "synced": "Conta sincronizada",
+      "syncedDesc": "Perfil, listas, acompanhamentos e leituras acompanham você em qualquer dispositivo.",
+      "notifications": "Notificações",
+      "notificationsDesc": "Escolha apenas alertas úteis da sua Minha Onda.",
+      "notifSaved": "Leituras salvas",
+      "notifSavedDesc": "Lembrar artigos que você guardou para ler.",
+      "notifWatching": "Continuar assistindo",
+      "notifWatchingDesc": "Mostrar títulos marcados como Assistindo."
+    },
+    "dashboard": {
+      "hello": "Olá, {name}",
+      "signOut": "Sair",
+      "moment": "Seu momento",
+      "levelTop": "Curador dedicado",
+      "levelHigh": "Explorador em ritmo forte",
+      "levelStart": "Coleção começando",
+      "levelNew": "Novo por aqui",
+      "emptyIntro": "Comece salvando produções, seguindo perfis ou guardando leituras. Sua Onda vai tomando forma aos poucos.",
+      "savedIntro": "{count, plural, one {Você já salvou # item.} other {Você já salvou # itens.}} Use sua Onda como ponto de partida para decidir o que assistir, ler e acompanhar.",
+      "discover": "Descobrir títulos",
+      "goal": "{count, plural, one {Meta: # favorito} other {Meta: # favoritos}}",
+      "goalDone": "Meta de favoritos concluída",
+      "nextSteps": "Próximos passos",
+      "act": {
+        "favRevisit": "Revisitar favoritos",
+        "favRevisitDesc": "Abra sua coleção para continuar refinando seu gosto.",
+        "favFirst": "Favoritar a primeira produção",
+        "favFirstDesc": "Um favorito já deixa o painel com a sua cara.",
+        "wantOrganize": "Organizar Quero ver",
+        "wantOrganizeDesc": "Escolha o próximo drama ou filme da fila.",
+        "wantCreate": "Criar sua lista Quero ver",
+        "wantCreateDesc": "Salve títulos para não perder a próxima maratona.",
+        "watchContinue": "Continuar assistindo",
+        "watchContinueDesc": "{count, plural, one {# título em andamento na sua jornada.} other {# títulos em andamento na sua jornada.}}",
+        "watchMark": "Marcar algo como Assistindo",
+        "watchMarkDesc": "Abra uma produção e marque onde você parou.",
+        "followKeep": "Acompanhar cultura pop",
+        "followKeepDesc": "{count, plural, one {# perfil acompanhado na Minha Onda.} other {# perfis acompanhados na Minha Onda.}}",
+        "followStart": "Seguir artistas e grupos",
+        "followStartDesc": "Siga artistas e grupos para conectar dramas, K-pop e artigos.",
+        "readResume": "Retomar leituras salvas",
+        "readResumeDesc": "{count, plural, one {# artigo esperando na sua biblioteca.} other {# artigos esperando na sua biblioteca.}}",
+        "readSave": "Salvar uma leitura",
+        "readSaveDesc": "Salve guias e matérias para voltar depois.",
+        "explore": "Explorar novidades",
+        "exploreWatched": "Use o que você já assistiu para encontrar próximos títulos.",
+        "exploreLatest": "Use as leituras recentes para descobrir contexto e recomendações.",
+        "exploreDefault": "Veja guias, listas e produções em destaque."
+      },
+      "stat": {
+        "favorites": "Favoritos",
+        "want": "Quero ver",
+        "watching": "Assistindo",
+        "following": "Acompanhando",
+        "readings": "Leituras",
+        "achievements": "Conquistas",
+        "days": "Dias no site"
+      },
+      "emptyTitle": "Monte sua coleção",
+      "emptyDesc": "Favorite dramas, siga artistas ou salve leituras para construir sua Minha Onda.",
+      "favRecent": "Favoritos recentes",
+      "continuity": "Continuidade",
+      "continueWatching": "Continuar assistindo",
+      "list": "Lista",
+      "wantTitle": "Quero ver",
+      "followingTitle": "Acompanhando",
+      "artist": "Artista",
+      "group": "Grupo",
+      "fandom": "Fandom: {name}",
+      "library": "Biblioteca",
+      "savedToRead": "Salvos para ler",
+      "savedLabel": "Salvo na Minha Onda",
+      "history": "Histórico",
+      "recentlyRead": "Lidos recentemente",
+      "readLabel": "Marcado como lido",
+      "blog": "Blog",
+      "recentReadings": "Leituras recentes"
+    },
+    "conquistas": {
+      "title": "Conquistas",
+      "metaTitle": "Conquistas",
+      "intro": "Aqui fica claro o que desbloqueia cada conquista. Todas usam ações simples do site: favoritar produções, organizar sua lista, seguir artistas e grupos, salvar leituras e marcar artigos como lidos.",
+      "seeWave": "Ver Minha Onda",
+      "adjustProfile": "Ajustar perfil",
+      "unlockedLabel": "desbloqueadas",
+      "nextClosest": "Próxima mais perto",
+      "allDone": "Tudo desbloqueado.",
+      "allDoneDesc": "Sua Minha Onda já está bem completa. Agora é manter viva com novas leituras e títulos.",
+      "doneCount": "{done}/{total} concluídas",
+      "progress": "Progresso",
+      "revisit": "Revisitar caminho",
+      "cat": {
+        "Colecao": {
+          "title": "Coleção",
+          "desc": "Favoritos e listas que deixam seu gosto mais claro."
+        },
+        "Continuidade": {
+          "title": "Continuidade",
+          "desc": "Estados para acompanhar o que você quer ver, está vendo e já concluiu."
+        },
+        "Fandom": {
+          "title": "Fandom",
+          "desc": "Artistas e grupos que conectam K-pop, dramas e cultura coreana."
+        },
+        "Leitura": {
+          "title": "Leitura",
+          "desc": "Guias, listas e artigos salvos ou marcados como lidos."
+        }
+      },
+      "items": {
+        "first-favorite": {
+          "label": "Primeira curtida",
+          "desc": "Favorite sua primeira produção.",
+          "howTo": "Abra um drama, filme ou especial e toque no botão de favorito.",
+          "cta": "Explorar produções"
+        },
+        "cinefilo": {
+          "label": "Cinéfilo",
+          "desc": "Favorite 5 produções.",
+          "howTo": "Use favoritos para guardar títulos que você ama, quer rever ou recomendaria.",
+          "cta": "Aumentar favoritos"
+        },
+        "colecionador": {
+          "label": "Colecionador",
+          "desc": "Favorite 20 produções.",
+          "howTo": "Continue refinando sua coleção com dramas, filmes e especiais coreanos.",
+          "cta": "Ver catálogo"
+        },
+        "agenda-cheia": {
+          "label": "Agenda cheia",
+          "desc": "Adicione 5 títulos em Quero ver.",
+          "howTo": "Marque produções como Quero ver para montar sua fila de próximas maratonas.",
+          "cta": "Montar lista"
+        },
+        "em-andamento": {
+          "label": "Em andamento",
+          "desc": "Marque 3 títulos como Assistindo.",
+          "howTo": "Quando começar um título, use o estado Assistindo para ele aparecer na continuidade.",
+          "cta": "Marcar assistindo"
+        },
+        "historico-vivo": {
+          "label": "Histórico vivo",
+          "desc": "Marque 5 títulos como Assistido.",
+          "howTo": "Ao terminar um drama, filme ou especial, registre como Assistido nas ações da página.",
+          "cta": "Ver assistidos"
+        },
+        "radar-ligado": {
+          "label": "Radar ligado",
+          "desc": "Siga seu primeiro artista ou grupo.",
+          "howTo": "Entre em uma página de artista ou grupo e toque em Seguir.",
+          "cta": "Encontrar artistas"
+        },
+        "fandom-ativo": {
+          "label": "Fandom ativo",
+          "desc": "Siga 5 artistas ou grupos.",
+          "howTo": "Acompanhe perfis para conectar K-pop, dramas, membros e artigos na sua Minha Onda.",
+          "cta": "Explorar grupos"
+        },
+        "biblioteca-aberta": {
+          "label": "Biblioteca aberta",
+          "desc": "Salve sua primeira leitura.",
+          "howTo": "Abra um artigo, guia ou lista e use Salvar leitura para voltar depois.",
+          "cta": "Ver artigos"
+        },
+        "leitor-bastidores": {
+          "label": "Leitor de bastidores",
+          "desc": "Marque 3 artigos como lidos.",
+          "howTo": "Ao terminar um texto, use Marcar como lido no artigo.",
+          "cta": "Continuar lendo"
+        }
+      }
+    }
   }
 }

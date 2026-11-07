@@ -71,7 +71,7 @@ export function ArtistCarreira({ id, eyebrow, titulo, tituloPremios, capitulos, 
                                 </a>
                                 {c.quote_source_url && (
                                     <a href={c.quote_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 py-1.5 hover:text-foreground">
-                                        Ler citação na fonte <ExternalLink size={10} />
+                                        {t('quoteSource')} <ExternalLink size={10} />
                                     </a>
                                 )}
                             </div>

@@ -1,5 +1,8 @@
 import { Fragment } from 'react'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import Image from 'next/image'
@@ -15,21 +18,26 @@ import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 
 
-const MONTH_NAMES = [
-    'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-    'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro',
-]
+/** Nomes dos meses no idioma da página (o português mantém a grafia capitalizada de sempre). */
+function nomesDosMeses(locale: Locale): string[] {
+    const fmt = new Intl.DateTimeFormat(LOCALE_META[locale].intl, { month: 'long', timeZone: 'UTC' })
+    return Array.from({ length: 12 }, (_, i) => {
+        const nome = fmt.format(new Date(Date.UTC(2024, i, 1)))
+        return nome.charAt(0).toLocaleUpperCase(LOCALE_META[locale].intl) + nome.slice(1)
+    })
+}
 
 type SearchParams = Promise<{ month?: string }>
 
-export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+export async function metadataDaPagina({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }): Promise<Metadata> {
+    const t = await getTranslations({ locale, namespace: 'client.birthdaysPage' })
     const sp = await searchParams
     const month = Math.min(12, Math.max(1, parseInt(sp.month ?? '0', 10) || new Date().getMonth() + 1))
-    const monthName = MONTH_NAMES[month - 1]
+    const monthName = nomesDosMeses(locale)[month - 1]
     return {
-        title: `Aniversários de ${monthName}`,
-        description: `Artistas K-Pop e K-Drama que fazem aniversário em ${monthName}.`,
-        alternates: { canonical: `${SITE_URL}/artists/birthdays` },
+        title: t('title', { month: monthName }),
+        description: t('description', { month: monthName }),
+        alternates: { canonical: `${SITE_URL}${href('birthdays', undefined, locale)}` },
         robots: { index: true, follow: true },
     }
 }
@@ -46,7 +54,10 @@ type BirthdayArtist = {
     roles?: string[]
 }
 
-export default async function BirthdaysPage({ searchParams }: { searchParams: SearchParams }) {
+export default async function BirthdaysPage({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {
+    const t = await getTranslations({ locale, namespace: 'client.birthdaysPage' })
+    const emPt = locale === DEFAULT_LOCALE
+    const MONTH_NAMES = nomesDosMeses(locale)
     const sp = await searchParams
     const now = new Date()
     const currentMonth = Math.min(12, Math.max(1, parseInt(sp.month ?? '0', 10) || now.getMonth() + 1))
@@ -94,16 +105,16 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
     }
 
     // Quem abre a página de aniversários está pensando em presente: a faixa vem antes da lista.
-    const shopProducts = await getVitrineGeral('aniversarios', 6, 'kpop')
+    const shopProducts = emPt ? await getVitrineGeral('aniversarios', 6, 'kpop') : []
 
     return (
         <>
-            <PageBreadcrumb items={[{ name: 'Artistas', path: '/artists' }, { name: 'Aniversários', path: '/artists/birthdays' }]} />
+            <PageBreadcrumb items={[{ name: t('crumbArtists'), path: '/artists' }, { name: t('crumb'), path: '/artists/birthdays' }]} />
             <JsonLd data={{
                 '@context': 'https://schema.org',
                 '@type': 'CollectionPage',
-                name: `Aniversários de ${monthName}`,
-                url: `${SITE_URL}/artists/birthdays`,
+                name: t('title', { month: monthName }),
+                url: `${SITE_URL}${href('birthdays', undefined, locale)}`,
             }} />
 
             {/* Header */}
@@ -112,7 +123,7 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                     <div className="flex items-end gap-4 mt-4">
                         <div>
                             <p className="font-mono text-[11px] text-muted uppercase tracking-[0.06em] mb-1">
-                                Aniversários
+                                {t('kicker')}
                             </p>
                             <h1 className="text-[28px] sm:text-[40px] font-black tracking-[-0.03em] leading-tight">
                                 {monthName}
@@ -123,7 +134,7 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                         </span>
                     </div>
                     <p className="font-mono text-[11px] text-muted mt-2">
-                        {withBirthday.length} artista{withBirthday.length !== 1 ? 's' : ''} fazem aniversário em {monthName}
+                        {t('count', { count: withBirthday.length, month: monthName })}
                     </p>
                 </div>
             </div>
@@ -150,14 +161,14 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
             </div>
 
             <div className="page-wrap py-8">
-                {withBirthday.length > 0 && (
+                {emPt && withBirthday.length > 0 && (
                     <LojaEmLinha bloco="aniversarios-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="aniversarios:topo" className="mb-8" />
                 )}
                 {withBirthday.length === 0 ? (
                     <div className="flex flex-col items-center py-20 text-center">
                         <Cake size={48} className="text-muted/20 mb-4" />
-                        <p className="text-[16px] font-bold mb-1">Nenhum aniversário encontrado</p>
-                        <p className="text-[13px] text-muted">Sem artistas cadastrados com aniversário em {monthName}.</p>
+                        <p className="text-[16px] font-bold mb-1">{t('emptyTitle')}</p>
+                        <p className="text-[13px] text-muted">{t('emptyDesc', { month: monthName })}</p>
                     </div>
                 ) : (
                     <div className="space-y-8">
@@ -179,7 +190,7 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                                         <div className="flex-1 h-px bg-border" />
                                         {isToday && (
                                             <span className="flex items-center gap-1 font-mono text-[10px] font-bold text-accent uppercase tracking-[0.06em]">
-                                                <Cake size={11} /> Hoje
+                                                <Cake size={11} /> {t('today')}
                                             </span>
                                         )}
                                     </div>
@@ -202,7 +213,7 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                                                     {artist.name}
                                                 </span>
                                                 {artist.age && (
-                                                    <span className="font-mono text-[10px] text-muted mt-0.5">{artist.age} anos</span>
+                                                    <span className="font-mono text-[10px] text-muted mt-0.5">{t('age', { age: artist.age })}</span>
                                                 )}
                                                 {artist.hangul && (
                                                     <span className="font-mono text-[10px] text-muted/60">{artist.hangul}</span>
@@ -217,7 +228,7 @@ export default async function BirthdaysPage({ searchParams }: { searchParams: Se
                     </div>
                 )}
 
-                <QuizWidget category="all" title="Sabe quem mais faz aniversário este mês?" description="Teste seu conhecimento sobre os artistas do acervo" />
+                {emPt && <QuizWidget category="all" title="Sabe quem mais faz aniversário este mês?" description="Teste seu conhecimento sobre os artistas do acervo" />}
             </div>
         </>
     )

@@ -9,22 +9,25 @@ import { getArtistsByIds } from '@/lib/wordpress/artists'
 import { getGroupsByIds } from '@/lib/wordpress/groups'
 import { DashboardClient } from '@/components/features/DashboardClient'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
+import { href } from '@/lib/i18n/routes'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 
-export const metadata: Metadata = {
-    title: 'Minha Onda',
-    robots: { index: false, follow: true },
+export async function metadataDaPagina(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
+    const t = await getTranslations({ locale, namespace: 'client.conta.common' })
+    return { title: t('wave'), robots: { index: false, follow: true } }
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
     const session = await getServerSession(authOptions)
-    if (!session) redirect('/entrar?callbackUrl=/dashboard')
+    if (!session) redirect(`${href('login', undefined, locale)}?callbackUrl=${href('dashboard', undefined, locale)}`)
 
     const token = await getWpToken()
     const [stats, favoriteIds, watchlistIds, latestPosts, contentStates, productionStatuses] = await Promise.all([
         getUserStats(token).catch(() => ({ favoritesCount: 0, watchlistCount: 0, joinDate: '' })),
         getUserFavorites(token).catch(() => [] as number[]),
         getUserWatchlist(token).catch(() => [] as number[]),
-        getPosts({ perPage: 4 }).catch(() => ({ items: [], total: 0, totalPages: 0 })),
+        getPosts({ perPage: 4, lang: locale === DEFAULT_LOCALE ? undefined : locale }).catch(() => ({ items: [], total: 0, totalPages: 0 })),
         getUserContentStates(token).catch(() => ({ states: [], counts: { production: 0, artist: 0, group: 0, post: 0 }, countsByState: { favorite: 0, following: 0, saved: 0, read: 0 } })),
         getUserProductionStatuses(token).catch(() => ({ statuses: {}, counts: { want: 0, watching: 0, watched: 0 } })),
     ])
