@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
-import { href } from '@/lib/i18n/routes'
+import { temRecurso } from '@/lib/i18n/recursos'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import Link from '@/components/i18n/LocalizedLink'
 import { getTrendingArtists, getStreamingArtists } from '@/lib/wordpress/artists'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
 import { exigirListagemComConteudo } from '@/lib/wordpress/client'
-import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
+import { metadataDaRota } from '@/lib/i18n/metadata-pagina'
 import { ArtistCard } from '@/components/artists/ArtistCard'
 import { GroupCard } from '@/components/groups/GroupsPage'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
@@ -19,20 +19,14 @@ import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 export async function metadataDaPagina(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'client.trendingPage' })
-    const url = `${SITE_URL}${href('trending', undefined, locale)}`
-    return {
-        title: t('title'),
-        description: t('description'),
-        alternates: { canonical: url },
-        openGraph: baseOG(url),
-        twitter: baseTwitter(),
-    }
+    return metadataDaRota({ locale, rota: 'trending', titulo: t('title'), descricao: t('description') })
 }
 
 export default async function TrendingPage({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
     const t = await getTranslations({ locale, namespace: 'client.trendingPage' })
-    const emPt = locale === DEFAULT_LOCALE
-    const shopProducts = emPt ? await getVitrineGeral('trending', 6, 'kpop') : []
+    const loja = temRecurso('loja', locale)
+    const quiz = temRecurso('quiz', locale)
+    const shopProducts = loja ? await getVitrineGeral('trending', 6, 'kpop') : []
     const [streamingArtists, trendingArtists, trendingGroups] = await Promise.all([
         getStreamingArtists(24),
         getTrendingArtists(24),
@@ -87,7 +81,7 @@ export default async function TrendingPage({ locale = DEFAULT_LOCALE }: { locale
                 </section>
             )}
 
-            {emPt && <LojaEmLinha bloco="trending-loja-meio" products={shopProducts} title="Merch dos que estão em alta" contexto="trending:meio" className="mt-10" />}
+            {loja && <LojaEmLinha bloco="trending-loja-meio" products={shopProducts} title="Merch dos que estão em alta" contexto="trending:meio" className="mt-10" />}
 
             {trendingArtists.length > 0 && (
                 <section className="mt-10">
@@ -100,7 +94,7 @@ export default async function TrendingPage({ locale = DEFAULT_LOCALE }: { locale
                 </section>
             )}
 
-            {emPt && <QuizWidget category="k-pop" title="Testou seu conhecimento hoje?" description="Veja se você acompanha de verdade quem está em alta" />}
+            {quiz && <QuizWidget category="k-pop" title="Testou seu conhecimento hoje?" description="Veja se você acompanha de verdade quem está em alta" />}
         </div>
         </>
     )

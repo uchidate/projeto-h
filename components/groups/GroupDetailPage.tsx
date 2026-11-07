@@ -13,7 +13,7 @@ import { SITE_URL } from '@/lib/constants/site'
 import { JsonLd } from '@/components/seo/JsonLd'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
 import { GroupHero } from '@/components/groups/GroupHero'
-import { rotuloDaPosicao } from '@/lib/constants/positions'
+import { rotuloDaPosicao } from '@/lib/constants/rotulo-posicao'
 import { ScrollToTop } from '@/components/ui/ScrollToTop'
 import { ReadingBar } from '@/components/ui/ReadingBar'
 import { QuizWidget } from '@/components/ui/QuizWidget'
@@ -55,6 +55,8 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const tC = useTranslations('profile.groupC')
+    const tPos = useTranslations('client.positionsPage')
+    const rotuloPosicao = (p: string) => rotuloDaPosicao(tPos, p)
     const locale = useLocale()
     const model = buildGroupProfileModel(group, undefined, locale)
     const {
@@ -193,7 +195,7 @@ export function GroupDetailPage({ group, members = [], relatedPosts = [], agency
                             '@type': 'Person',
                             name: stripHtml(member.title.rendered),
                             url: `${SITE_URL}${href('artist', { slug: member.slug }, locale)}`,
-                            ...(positions.length > 0 ? { jobTitle: positions.map(p => rotuloDaPosicao(p, locale)).join(', ') } : {}),
+                            ...(positions.length > 0 ? { jobTitle: positions.map(rotuloPosicao).join(', ') } : {}),
                         }
                     }) : undefined,
                 }}

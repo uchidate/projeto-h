@@ -9,6 +9,7 @@ import { authOptions } from '@/lib/auth'
 import { getUserStats } from '@/lib/wordpress/userApi'
 import { buildUserAchievements, type UserAchievement } from '@/lib/userJourney'
 import { BrandDot } from '@/components/ui/BrandDot'
+import { traduzirChave } from '@/lib/i18n/chave-dinamica'
 import { textosDaConquista } from '@/lib/conta/conquistas'
 import { href } from '@/lib/i18n/routes'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
@@ -111,8 +112,8 @@ export default async function ConquistasPage({ locale = DEFAULT_LOCALE }: { loca
                                     </span>
                                     <div>
                                         <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('doneCount', { done: doneCount, total: items.length })}</p>
-                                        <h2 className="text-[22px] font-black tracking-tight">{t(`cat.${category}.title` as 'cat.Colecao.title')}</h2>
-                                        <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{t(`cat.${category}.desc` as 'cat.Colecao.desc')}</p>
+                                        <h2 className="text-[22px] font-black tracking-tight">{traduzirChave(t, `cat.${category}.title`)}</h2>
+                                        <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{traduzirChave(t, `cat.${category}.desc`)}</p>
                                     </div>
                                 </div>
                             </div>

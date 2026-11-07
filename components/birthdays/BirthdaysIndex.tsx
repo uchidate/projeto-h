@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
+import { temRecurso } from '@/lib/i18n/recursos'
+import { metadataDaRota } from '@/lib/i18n/metadata-pagina'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import Image from 'next/image'
@@ -34,12 +36,12 @@ export async function metadataDaPagina({ searchParams, locale = DEFAULT_LOCALE }
     const sp = await searchParams
     const month = Math.min(12, Math.max(1, parseInt(sp.month ?? '0', 10) || new Date().getMonth() + 1))
     const monthName = nomesDosMeses(locale)[month - 1]
-    return {
-        title: t('title', { month: monthName }),
-        description: t('description', { month: monthName }),
-        alternates: { canonical: `${SITE_URL}${href('birthdays', undefined, locale)}` },
+    return metadataDaRota({
+        locale, rota: 'birthdays',
+        titulo: t('title', { month: monthName }),
+        descricao: t('description', { month: monthName }),
         robots: { index: true, follow: true },
-    }
+    })
 }
 
 type BirthdayArtist = {
@@ -56,7 +58,8 @@ type BirthdayArtist = {
 
 export default async function BirthdaysPage({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {
     const t = await getTranslations({ locale, namespace: 'client.birthdaysPage' })
-    const emPt = locale === DEFAULT_LOCALE
+    const loja = temRecurso('loja', locale)
+    const quiz = temRecurso('quiz', locale)
     const MONTH_NAMES = nomesDosMeses(locale)
     const sp = await searchParams
     const now = new Date()
@@ -105,7 +108,7 @@ export default async function BirthdaysPage({ searchParams, locale = DEFAULT_LOC
     }
 
     // Quem abre a página de aniversários está pensando em presente: a faixa vem antes da lista.
-    const shopProducts = emPt ? await getVitrineGeral('aniversarios', 6, 'kpop') : []
+    const shopProducts = loja ? await getVitrineGeral('aniversarios', 6, 'kpop') : []
 
     return (
         <>
@@ -161,7 +164,7 @@ export default async function BirthdaysPage({ searchParams, locale = DEFAULT_LOC
             </div>
 
             <div className="page-wrap py-8">
-                {emPt && withBirthday.length > 0 && (
+                {loja && withBirthday.length > 0 && (
                     <LojaEmLinha bloco="aniversarios-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="aniversarios:topo" className="mb-8" />
                 )}
                 {withBirthday.length === 0 ? (
@@ -228,7 +231,7 @@ export default async function BirthdaysPage({ searchParams, locale = DEFAULT_LOC
                     </div>
                 )}
 
-                {emPt && <QuizWidget category="all" title="Sabe quem mais faz aniversário este mês?" description="Teste seu conhecimento sobre os artistas do acervo" />}
+                {quiz && <QuizWidget category="all" title="Sabe quem mais faz aniversário este mês?" description="Teste seu conhecimento sobre os artistas do acervo" />}
             </div>
         </>
     )

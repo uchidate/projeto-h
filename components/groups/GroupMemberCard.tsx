@@ -8,7 +8,7 @@ import Link from '@/components/i18n/LocalizedLink'
 import type { MemberSummary } from '@/lib/artists/memberSummary'
 import { formatDate, getAge, getWPImage, parseAcfDate, stripHtml } from '@/lib/utils'
 import { getZodiac } from '@/lib/artists/zodiac'
-import { rotuloDaPosicao } from '@/lib/constants/positions'
+import { rotuloDaPosicao } from '@/lib/constants/rotulo-posicao'
 import { toRgba } from '@/lib/theme/color'
 
 const ROLE_KEYS = { singer: 1, actor: 1, rapper: 1, dancer: 1, model: 1, host: 1, composer: 1 } as const
@@ -29,6 +29,7 @@ function buildAgeLabel(age: number | null, isDeceased: boolean, tc: ReturnType<t
 
 export function GroupMemberCard({ member, accent, positions, isFormer }: { member: MemberSummary; accent: string; positions?: string[]; isFormer?: boolean }) {
     const tc = useTranslations('client')
+    const tp = useTranslations('client.positionsPage')
     const locale = useLocale()
     const name = stripHtml(member.title.rendered)
     const image = getWPImage(member._embedded, member.featured_image_url, name)
@@ -45,7 +46,7 @@ export function GroupMemberCard({ member, accent, positions, isFormer }: { membe
         return role in ROLE_KEYS ? tc(`member.role.${role as keyof typeof ROLE_KEYS}`) : role
     })
     // posições canônicas dentro do grupo (leader, visual, maknae, ...) têm prioridade sobre a profissão genérica
-    const positionLabels = (positions ?? []).map(position => rotuloDaPosicao(position, locale))
+    const positionLabels = (positions ?? []).map(position => rotuloDaPosicao(tp, position))
     const displayRole = positionLabels.length > 0 ? positionLabels.join(' · ') : (roles[0] ?? null)
 
     return (

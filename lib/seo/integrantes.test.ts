@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import type { MemberSummary } from '@/lib/artists/memberSummary'
+import { createTranslator } from 'next-intl'
+import ptClient from '@/messages/pt/client.json'
+import { rotuloDaPosicao } from '@/lib/constants/rotulo-posicao'
 import { linhasIntegrantes, listaDeNomes } from './integrantes'
+
+const tPosicao = createTranslator({ locale: 'pt', messages: { client: ptClient }, namespace: 'client.positionsPage' })
 
 const HOJE = new Date(2026, 8, 22) // 22/09/2026
 
@@ -41,7 +46,7 @@ describe('linhasIntegrantes', () => {
     })
 
     it('traduz as posições e mantém a desconhecida como veio', () => {
-        const [l] = linhasIntegrantes([membro('a', 'A')], { a: ['leader', 'main_vocal', 'posicao_nova'] }, HOJE)
+        const [l] = linhasIntegrantes([membro('a', 'A')], { a: ['leader', 'main_vocal', 'posicao_nova'] }, HOJE, p => rotuloDaPosicao(tPosicao, p))
         expect(l.posicoes).toEqual(['Líder', 'Main Vocal', 'posicao_nova'])
     })
 

@@ -1,3 +1,4 @@
+import { temRecurso } from '@/lib/i18n/recursos'
 import type { Metadata } from 'next'
 import { getArtists } from '@/lib/wordpress/artists'
 import { getGroups } from '@/lib/wordpress/groups'
@@ -152,7 +153,7 @@ export default async function CalendarioPage({ locale = DEFAULT_LOCALE }: { loca
             <PageBreadcrumb items={[{ name: t('breadcrumb'), path: href('calendar', undefined, locale) }]} />
             <CalendarPage events={events} todayStr={todayStr} />
             <div className="page-wrap pb-10">
-                {locale === DEFAULT_LOCALE && <LojaEmLinha bloco="calendario-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="calendario:meio" />}
+                {temRecurso('loja', locale) && <LojaEmLinha bloco="calendario-loja" products={shopProducts} title="Presente para o aniversário do seu bias" contexto="calendario:meio" />}
                 <QuizWidget category="k-pop" />
             </div>
         </>
