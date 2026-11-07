@@ -39,9 +39,9 @@ export const PT_MESSAGES: Messages = pt
 
 /**
  * Idioma sem catálogo próprio usa o de outro até ser traduzido (namespace por namespace, em `loaders`).
- * O espanhol começa com as mensagens em inglês; só vale algo quando o idioma for ativado.
+ * Hoje todos os idiomas têm catálogo completo; o mapa fica para o próximo idioma novo.
  */
-const FALLBACK: Partial<Record<Locale, Locale>> = { es: 'en' }
+const FALLBACK: Partial<Record<Locale, Locale>> = {}
 
 const loaders: Partial<Record<Locale, () => Promise<Messages>>> = {
     pt: async () => pt,
@@ -53,6 +53,17 @@ const loaders: Partial<Record<Locale, () => Promise<Messages>>> = {
             import('@/messages/en/institucional.json').then((m) => m.default),
             import('@/messages/en/home.json').then((m) => m.default),
             import('@/messages/en/quiz.json').then((m) => m.default),
+        ])
+        return comNomeDoSite({ entity, profile, client, institucional, home, quiz })
+    },
+    es: async () => {
+        const [entity, profile, client, institucional, home, quiz]: [Messages['entity'], Messages['profile'], Messages['client'], Messages['institucional'], Messages['home'], Messages['quiz']] = await Promise.all([
+            import('@/messages/es/entity.json').then((m) => m.default),
+            import('@/messages/es/profile.json').then((m) => m.default),
+            import('@/messages/es/client.json').then((m) => m.default),
+            import('@/messages/es/institucional.json').then((m) => m.default),
+            import('@/messages/es/home.json').then((m) => m.default),
+            import('@/messages/es/quiz.json').then((m) => m.default),
         ])
         return comNomeDoSite({ entity, profile, client, institucional, home, quiz })
     },

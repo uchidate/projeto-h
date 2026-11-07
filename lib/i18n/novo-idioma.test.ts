@@ -49,8 +49,14 @@ describe('idioma novo (es) construído e desligado', () => {
         expect(dataRelativa(new Date().toISOString(), 'es')).toBe('hoy')
     })
 
-    it('sem catálogo próprio, usa as mensagens em inglês até ser traduzido', async () => {
-        expect(await loadMessages('es')).toEqual(await loadMessages('en'))
+    it('o espanhol tem catálogo próprio, com as mesmas chaves do português', async () => {
+        const chaves = (o: unknown, p = ''): string[] =>
+            o && typeof o === 'object' && !Array.isArray(o)
+                ? Object.entries(o).flatMap(([k, v]) => chaves(v, `${p}${k}.`))
+                : [p]
+        const es = await loadMessages('es')
+        expect(chaves(es)).toEqual(chaves(await loadMessages('pt')))
+        expect(es.client.nav.shop).toBe('Tienda')
     })
 
     it('listagens com filtro também desviam em /es (herdam as chaves do inglês)', () => {

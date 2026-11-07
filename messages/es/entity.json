@@ -1,0 +1,640 @@
+{
+  "breadcrumb": {
+    "home": "Inicio",
+    "artists": "Artistas",
+    "groups": "Grupos",
+    "productions": "Producciones",
+    "blog": "Artículos",
+    "guides": "Guías",
+    "foods": "Gastronomía",
+    "quiz": "Quiz",
+    "calendar": "Calendario",
+    "culture": "Cultura",
+    "fandoms": "Fandoms"
+  },
+  "artist": {
+    "metaTitle": "{name} — Perfil, carrera y curiosidades",
+    "metaDescription": "Perfil completo de {name}: biografía, carrera y curiosidades."
+  },
+  "group": {
+    "metaTitle": "{name} — Grupo de K-Pop",
+    "metaDescription": "Todo sobre el grupo {name}: integrantes, debut, fandom y más.",
+    "metaDescriptionHangul": "Todo sobre el grupo {name} ({hangul}): integrantes, debut, fandom y más."
+  },
+  "agency": {
+    "metaTitle": "{name}: artistas, grupos e historia",
+    "metaDescription": "Conoce a {name}: su historia, sus grupos, sus artistas y su papel en la industria del entretenimiento coreano.",
+    "ui": {
+      "back": "Agencias",
+      "breadcrumb": "Agencias",
+      "tierBig4": "Big 4",
+      "types": {
+        "major": "Gran agencia",
+        "mid": "Mid-tier",
+        "indie": "Independiente",
+        "subsidiary": "Subsidiaria"
+      },
+      "kinds": {
+        "conglomerate": "Conglomerado",
+        "label": "Label",
+        "agency": "Agencia",
+        "joint_venture": "Joint venture",
+        "division": "División"
+      },
+      "entityIndie": "Agencia independiente",
+      "entityDefault": "Empresa de entretenimiento",
+      "countryKR": "Corea del Sur",
+      "lens": {
+        "network": {
+          "eyebrow": "Cómo funciona la red",
+          "title": "{name} no es una sola agencia. Es una red.",
+          "body": "Los conglomerados reúnen labels, subsidiarias y operaciones con responsabilidades distintas. Por eso, {site} conserva el vínculo directo de cada artista y también muestra la organización controladora."
+        },
+        "piece": {
+          "eyebrow": "Dónde encaja",
+          "title": "{name} es una pieza del sistema, no el sistema entero.",
+          "body": "Una label puede administrar el repertorio y la carrera sin representar por sí sola a todo el conglomerado. Los vínculos que se muestran aquí distinguen el elenco directo de las relaciones con las empresas controladoras."
+        },
+        "data": {
+          "eyebrow": "Sobre los datos",
+          "title": "Los números muestran el acervo. La historia explica la empresa.",
+          "body": "Los conteos de abajo representan los perfiles disponibles en {site}, no un roster oficial completo. Las relaciones históricas o terminadas se identifican por separado cuando hay datos estructurados."
+        }
+      },
+      "pillars": {
+        "conglomerate": {
+          "label": "Cómo funciona la empresa",
+          "title": "El modelo de negocio de {name}"
+        },
+        "joint_venture": {
+          "label": "Cómo funciona la alianza",
+          "title": "La propuesta de {name}"
+        },
+        "label": {
+          "label": "Identidad de la label",
+          "title": "Lo que define a {name}"
+        },
+        "other": {
+          "label": "Cómo funciona la organización",
+          "title": "La actuación de {name}"
+        }
+      },
+      "about1": "{name} es una agencia de entretenimiento de {country}.",
+      "about2": "Su trayectoria tiene origen en {year}.",
+      "about3": "La cobertura de {site} reúne {groups, plural, =1 {# grupo relacionado} other {# grupos relacionados}} y {artists, plural, =1 {# perfil de artista} other {# perfiles de artistas}}.",
+      "chapterCount": "{count, plural, =0 {} =1 {Un giro} =2 {Dos giros} =3 {Tres giros} =4 {Cuatro giros} =5 {Cinco giros} =6 {Seis giros} other {# giros}}",
+      "videoTitle": "{group} — video oficial",
+      "nav": {
+        "about": "Acerca de",
+        "numbers": "Números",
+        "history": "Historia",
+        "impact": "Impacto",
+        "model": "Modelo",
+        "now": "Ahora",
+        "videos": "Videos",
+        "ecosystem": "Ecosistema",
+        "groups": "Grupos",
+        "artists": "Artistas",
+        "articles": "Artículos",
+        "faq": "FAQ"
+      },
+      "facts": {
+        "country": "País",
+        "ceo": "CEO",
+        "verifiedOn": "Verificado el {date}",
+        "trajectory": "Trayectoria",
+        "trajectoryBoth": "{origin} · identidad actual desde {since}",
+        "trajectorySince": "Desde {year}",
+        "coverage": "Cobertura de {site}",
+        "coverageValue": "{groups} grupos · {artists} perfiles"
+      },
+      "faq": {
+        "q1": "¿Qué es {name}?",
+        "a1": "{name} es una empresa de entretenimiento de {country}. Esta página presenta su contexto, sus hitos y los perfiles relacionados disponibles en {site}.",
+        "a1Since": "{name} es una empresa de entretenimiento de {country}, con trayectoria registrada desde {year}. Esta página presenta su contexto, sus hitos y los perfiles relacionados disponibles en {site}.",
+        "q2": "¿Qué grupos están relacionados con {name}?",
+        "a2": "La cobertura actual de {site} relaciona {count, plural, =1 {# grupo} other {# grupos}} con {name}. El vínculo institucional específico debe consultarse en el perfil de cada grupo, pues conglomerado, agencia y label no son necesariamente la misma entidad.",
+        "q3": "¿Qué artistas están relacionados con {name}?",
+        "a3": "{site} tiene {count, plural, =1 {# perfil de artista relacionado} other {# perfiles de artistas relacionados}} con {name}, que incluyen integrantes de grupos y eventuales carreras en solitario.",
+        "q4": "¿{name} forma parte del Big 4 del K-Pop?",
+        "a4": "Sí. En la cobertura editorial del sector, {name} integra el grupo conocido como Big Four junto con SM Entertainment, JYP Entertainment y YG Entertainment."
+      },
+      "mvEyebrow": "Para ver y escuchar",
+      "mvTitle": "Mira el catálogo ligado a {name}",
+      "mvDescription": "Una selección de videos oficiales de los grupos relacionados ayuda a percibir, en imagen y sonido, la variedad de identidades que conviven bajo una misma estructura corporativa.",
+      "shopTitle": "Productos ligados a {name}",
+      "faqTitle": "Preguntas rápidas sobre {name}",
+      "aboutLabel": "Perfil institucional",
+      "aboutTitle": "Contexto y trayectoria",
+      "continueReading": "Seguir leyendo",
+      "impactLabel": "Impacto",
+      "impactTitle": "Hitos e impacto",
+      "mainMilestone": "Hito principal",
+      "moreMilestones": "Ver {count} hitos más",
+      "artistsLabel": "Perfiles relacionados",
+      "artistsTitle": "Artistas",
+      "featuredProfile": "● Perfil destacado",
+      "fullProfile": "Ver perfil completo",
+      "moreArtists": "Ver {count} artistas más",
+      "pillarSource": "Fuente del pilar {title}",
+      "pillarsIntro": "Frentes declarados por la propia organización, contextualizados para distinguir la producción musical, las plataformas y otras operaciones.",
+      "catalog": {
+        "cast": "Elenco",
+        "title": "Un mapa visual del catálogo",
+        "total": "{count} en total",
+        "active": "{count} activos",
+        "intro": "Empieza por los destacados y avanza por las generaciones. La relación puede ser directa o darse a través de una label o subsidiaria; cada perfil detalla el vínculo específico.",
+        "startHere": "Empieza aquí",
+        "activeBadge": "Activo",
+        "inactiveBadge": "Inactivo",
+        "since": "desde {year}",
+        "today": "hoy",
+        "others": "Otros",
+        "noGeneration": "Sin generación indicada",
+        "legacy": "Legado",
+        "inactiveGroups": "Grupos inactivos o disueltos"
+      },
+      "generations": {
+        "g1": {
+          "label": "1.ª generación",
+          "short": "1.ª gen."
+        },
+        "g2": {
+          "label": "2.ª generación",
+          "short": "2.ª gen."
+        },
+        "g3": {
+          "label": "3.ª generación",
+          "short": "3.ª gen."
+        },
+        "g4": {
+          "label": "4.ª generación",
+          "short": "4.ª gen."
+        },
+        "g5": {
+          "label": "5.ª generación",
+          "short": "5.ª gen."
+        }
+      },
+      "dev": {
+        "updates": "Actualizaciones",
+        "recentTitle": "Qué cambió recientemente en {name}",
+        "altGroup": "{group}, grupo relacionado con {name}",
+        "scale": "La escala en el acervo",
+        "groupsUnit": "grupos",
+        "profilesUnit": "perfiles",
+        "frontsUnit": "frentes",
+        "captionWithGroup": "{group} forma parte del recorte visual de esta página. Los números representan la cobertura disponible en {site}.",
+        "caption": "Los números representan la cobertura disponible en {site}.",
+        "checkSource": "Consultar la fuente"
+      },
+      "hero": {
+        "logoAlt": "{name} — logo",
+        "origin": "origen {year}",
+        "pathSince": "trayectoria desde",
+        "groupsCovered": "grupos cubiertos",
+        "profilesInArchive": "perfiles en el acervo",
+        "officialSite": "Sitio oficial"
+      },
+      "history": {
+        "chapters": "La historia en capítulos",
+        "turns": "Los giros que definieron a {name}.",
+        "intro": "Una lectura de la formación de la empresa, de los cambios de catálogo y del ciclo que empieza ahora.",
+        "years": "años de trayectoria documentada",
+        "chaptersDocumented": "capítulos documentados",
+        "chapterSource": "Fuente del capítulo",
+        "relatedProfile": "Ver perfil relacionado"
+      },
+      "journey": {
+        "navLabel": "Recorrido de la historia",
+        "route": "El recorrido",
+        "subtitle": "{count} para entender la evolución de {name}"
+      },
+      "metrics": {
+        "inNumbers": "En números",
+        "scaleOf": "La escala de {name}, en datos con fuente",
+        "eachNumber": "Cada número enlaza a la fuente primaria",
+        "refAsOf": "ref. {date}",
+        "source": "Fuente"
+      },
+      "lensPanel": {
+        "scope": "Alcance de esta página",
+        "many": "{orgs} organizaciones conectadas · {groups} grupos · {artists} perfiles.",
+        "one": "{groups} grupos y {artists} perfiles relacionados en el acervo editorial."
+      },
+      "milestones": {
+        "chronology": "Cronología",
+        "timeline": "Línea de tiempo",
+        "exploreAll": "Explorar todos los artistas y grupos"
+      },
+      "sources": {
+        "howWeVerify": "Cómo lo verificamos",
+        "count": "{citations} citas · {outlets} medios",
+        "body": "Los números, capítulos y citas de este perfil apuntan a la fuente primaria en el punto en que aparecen. Damos prioridad al material institucional y a la prensa verificable; la opinión solo entra con atribución."
+      },
+      "summary": {
+        "inShort": "En resumen",
+        "whatToKnow": "Lo que necesitas saber sobre {name}",
+        "curated": "Curaduría de {site}",
+        "updatedOn": "Actualizado el",
+        "institutionalSource": "Fuente institucional"
+      },
+      "essay": {
+        "label": "Lectura visual",
+        "identity": "La identidad de {name}, vista de cerca.",
+        "body": "Las imágenes, los espacios y los artistas ayudan a revelar cómo la empresa convierte una dirección creativa en una presencia reconocible.",
+        "visualChapters": "{count} capítulos visuales",
+        "swipe": "Desliza para explorar",
+        "chapterN": "Capítulo 0{n}",
+        "readQuote": "Leer la cita en la fuente",
+        "context": "Contexto",
+        "imageSource": "Fuente de la imagen",
+        "viewGroup": "Ver {group}"
+      },
+      "map": {
+        "eyebrow": "Quién responde ante quién",
+        "title": "Cómo se organiza {name}",
+        "relations": "{count} relaciones",
+        "parentLinked": "El vínculo con la controladora aparece de forma explícita, sin mezclar el catálogo de esta organización con el de las labels hermanas.",
+        "mainLevel": "La organización principal ocupa el primer nivel. Las labels, divisiones, subsidiarias y joint ventures aparecen debajo sin tratarse como equivalentes entre sí.",
+        "parentKicker": "Conglomerado controlador · accede al perfil",
+        "parentFallback": "Organización controladora",
+        "parentNote": "La controladora define el nivel corporativo; el catálogo de esta página sigue limitado a la organización abierta.",
+        "focus": "Organización en foco",
+        "level1": "Nivel 1",
+        "mainFallback": "Organización principal",
+        "focusWithParent": "Identidad creativa, elenco y actuación propios dentro de la estructura controladora.",
+        "focusMain": "Estrategia, control o coordinación de la red presentada en esta página.",
+        "level2": "Nivel 2 · Organizaciones relacionadas",
+        "relatedFallback": "Organización relacionada",
+        "counts": "{groups} grupos · {artists} perfiles",
+        "level3": "Nivel 3 · Catálogo relacionado",
+        "direct": "Catálogo directo",
+        "level3Body": "Los grupos y artistas mantienen el vínculo directo con la organización responsable. El catálogo siguiente puede agregar toda la red sin borrar ese origen.",
+        "directBody": "Los grupos y artistas de abajo están ligados directamente a esta organización, sin incorporar el elenco de otras empresas del conglomerado.",
+        "logoAlt": "{name} — logo"
+      }
+    }
+  },
+  "company": {
+    "metaTitle": "{name} — {industry}",
+    "metaTitleKorean": "{name} ({korean}) — {industry}",
+    "defaultIndustry": "Empresa surcoreana",
+    "metaDescription": "{name}: empresa surcoreana de {industry}. Historia, productos y curiosidades.",
+    "metaDescriptionFounded": "{name}: empresa surcoreana de {industry}, fundada en {year}. Historia, productos y curiosidades.",
+    "industries": {
+      "tech": "Tecnología",
+      "semiconductor": "Semiconductores",
+      "automotive": "Automotriz",
+      "entertainment": "Entretenimiento",
+      "beauty": "Belleza (K-Beauty)",
+      "finance": "Finanzas",
+      "retail": "Comercio minorista",
+      "food_beverage": "Alimentos y bebidas",
+      "gaming": "Videojuegos",
+      "telecom": "Telecomunicaciones",
+      "media": "Medios",
+      "pharma": "Farmacéutica",
+      "construction": "Construcción",
+      "shipbuilding": "Naval",
+      "chemical": "Química",
+      "fashion": "Moda",
+      "ecommerce": "Comercio electrónico"
+    },
+    "ui": {
+      "breadcrumb": "Empresas",
+      "defaultIndustry": "Empresa surcoreana",
+      "chaebol": "Chaebol",
+      "officialSite": "Sitio oficial",
+      "knownProducts": "Productos y servicios más conocidos",
+      "fact": "Ficha",
+      "founder": "Fundador",
+      "ceo": "CEO",
+      "group": "Grupo",
+      "status": "Estado",
+      "trivia": "Curiosidades",
+      "updatedOn": "Actualizado el {date}",
+      "shopTitle": "Productos de la marca",
+      "shopSeeAll": "Ver todo",
+      "related": "Más empresas surcoreanas",
+      "inStore": "En la tienda",
+      "seeAll": "← Ver todas las empresas",
+      "founded": "Fundación",
+      "employees": "Empleados",
+      "revenue": "Ingresos",
+      "galleryEyebrow": "Imágenes",
+      "gallery": "Galería",
+      "photoAlt": "{name} — foto {n}",
+      "timelineEyebrow": "Línea de tiempo",
+      "timeline": "Hitos de la historia",
+      "connections": "🔗 Conexiones del grupo"
+    }
+  },
+  "food": {
+    "metaTitle": "{name} — Cocina coreana",
+    "metaTitleKorean": "{name} ({korean}) — Cocina coreana",
+    "metaDescription": "Todo sobre {name}: ingredientes, dónde comerlo, curiosidades y más.",
+    "categories": {
+      "rice": "Arroz",
+      "noodles": "Fideos",
+      "soup_stew": "Sopas y guisos",
+      "bbq": "Parrilla",
+      "pancake": "Jeon / Pajeon",
+      "street_food": "Comida callejera",
+      "banchan": "Banchan",
+      "dessert": "Postres",
+      "drink": "Bebidas",
+      "snack": "Snacks"
+    },
+    "ui": {
+      "breadcrumb": "Comidas",
+      "spicy0": "Sin picante",
+      "spicy1": "Ligeramente picante",
+      "spicy2": "Picante",
+      "spicy3": "Bastante picante",
+      "spicy4": "Muy picante",
+      "spicy5": "Extremadamente picante",
+      "vegan": "Vegano",
+      "vegetarian": "Vegetariano",
+      "inDramas": "Aparece en K-Dramas",
+      "ingredients": "Ingredientes principales",
+      "whereToEat": "Dónde comerlo",
+      "viewOnMap": "Ver en el mapa",
+      "defaultPlace": "Corea del Sur",
+      "occasion": "Ocasión",
+      "season": "Mejor época",
+      "trivia": "Curiosidades",
+      "allergens": "Alérgenos",
+      "related": "Más de la cocina coreana",
+      "inStore": "En la tienda",
+      "seeAll": "← Ver todas las comidas",
+      "shopTitle": "Para probar en casa",
+      "shopSeeAll": "Ver todo"
+    }
+  },
+  "production": {
+    "metaTitle": "{title} — {type}",
+    "type": {
+      "movie": "Película coreana",
+      "variety": "Programa de variedades coreano",
+      "drama": "Dorama coreano"
+    }
+  },
+  "switcher": {
+    "availableIn": "También disponible en",
+    "prompt": "Esta página está disponible en español.",
+    "open": "Leer en español",
+    "dismiss": "Descartar",
+    "name": "Español"
+  },
+  "catalog": {
+    "artists": {
+      "title": "Artistas de K-Pop",
+      "description": "Perfiles de artistas de K-Pop en español."
+    },
+    "groups": {
+      "title": "Grupos de K-Pop",
+      "description": "Perfiles de grupos de K-Pop en español."
+    },
+    "productions": {
+      "title": "Doramas y películas coreanas",
+      "description": "Fichas de doramas y películas coreanas en español."
+    },
+    "count": "{count, plural, one {# perfil} other {# perfiles}}",
+    "empty": "Todavía no hay perfiles publicados en este idioma.",
+    "emptyLink": "Ver el catálogo completo en portugués",
+    "previous": "← Anterior",
+    "next": "Siguiente →",
+    "pageOf": "Página {page} de {total}",
+    "translatedHeading": "Disponible en este idioma",
+    "originalHeading": "Más en el sitio",
+    "originalNote": "Estos perfiles todavía no se han traducido. Se abren en el original en portugués.",
+    "badge": "PT",
+    "agencies": {
+      "title": "Agencias de K-Pop",
+      "description": "Perfiles de agencias de K-Pop en español."
+    },
+    "companies": {
+      "title": "Empresas coreanas",
+      "description": "Perfiles de empresas y marcas coreanas en español."
+    },
+    "foods": {
+      "title": "Comida coreana",
+      "description": "Guías de platos coreanos en español."
+    }
+  },
+  "footer": {
+    "catalog": "Catálogo",
+    "guides": "Guías",
+    "explore": "Explorar",
+    "about": "Acerca de",
+    "agencies": "Agencias",
+    "aboutUs": "Acerca de HallyuHub",
+    "contact": "Contacto"
+  },
+  "layout": {
+    "tagline": "K-Drama, K-Pop y cultura coreana en español.",
+    "logoSubtitles": [
+      "k-pop · k-drama · cultura coreana, en español",
+      "artistas · grupos · producciones",
+      "tendencias · noticias · guías"
+    ],
+    "rights": "Todos los derechos reservados.",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "home": "{site} — página de inicio",
+    "footerNav": "Enlaces del pie de página"
+  },
+  "home": {
+    "title": "__SITE__ — K-Pop, K-Drama y cultura coreana",
+    "description": "Dramas, películas, artistas y grupos coreanos, con interfaz y perfiles traducidos. Los artículos siguen en portugués.",
+    "eyebrow": "Catálogo traducido",
+    "intro": "Perfiles seleccionados, traducidos y revisados por nuestro equipo editorial.",
+    "seeAll": "Ver todos ({count})",
+    "ptLink": "Ver el catálogo completo en portugués",
+    "sections": {
+      "artists": "Artistas",
+      "groups": "Grupos",
+      "productions": "Dramas y películas"
+    }
+  },
+  "fallback": {
+    "notice": "Esta página todavía no está disponible en este idioma. El contenido de abajo es el original en portugués.",
+    "readOriginal": "Ver la página en portugués"
+  },
+  "guides": {
+    "title": "Guías",
+    "description": "Guías de doramas y películas coreanas, por género, plataforma y más, con perfiles en español.",
+    "count": "{count, plural, one {# guía} other {# guías}}",
+    "productions": "{count, plural, one {# producción} other {# producciones}}",
+    "seeAll": "Ver todas las producciones",
+    "faq": "Preguntas frecuentes",
+    "related": "Guías relacionadas",
+    "empty": "Todavía no hay producciones con página en este idioma en esta guía.",
+    "back": "Todas las guías",
+    "index": {
+      "title": "Guías",
+      "titleSr": "de K-Drama, K-Pop y cultura coreana",
+      "searchPlaceholder": "Buscar guía, género, plataforma o agencia",
+      "categoriesAria": "Categorías de guías",
+      "sectionsAria": "Secciones de guías",
+      "filterAll": "Todas",
+      "culture": "Cultura",
+      "cultureTag": "Cultura",
+      "count": "{count} guías · para descubrir qué ver, a quién seguir y por dónde empezar",
+      "countWithCulture": "{count} guías · {culture} de cultura · para descubrir qué ver, a quién seguir y por dónde empezar",
+      "kinds": {
+        "productions": "Producciones",
+        "artists": "Artistas",
+        "groups": "Grupos"
+      },
+      "kindSub": {
+        "productions": "Doramas, películas y series por género, plataforma, cadena y año",
+        "artists": "Actores y cantantes por perfil, agencia y grupo de origen",
+        "groups": "Girl groups, boy groups y las agencias detrás de ellos"
+      },
+      "chapterSub": "{count} guías · {sub}",
+      "groups": {
+        "genre": "Por género y temática",
+        "platform": "Por plataforma",
+        "network": "Por cadena",
+        "year": "Por año",
+        "profile": "Por perfil",
+        "artistAgency": "Por agencia",
+        "solo": "Solistas",
+        "members": "Integrantes de grupos",
+        "type": "Por tipo",
+        "groupAgency": "Por agencia"
+      },
+      "mostRead": "Más leídas",
+      "more": "+ {count} guías",
+      "less": "Mostrar menos",
+      "alsoIn": "También en las guías",
+      "cultureTitle": "Cultura coreana",
+      "cultureText": "Hangul, honoríficos, festividades y vida cotidiana: {count} guías para entender Corea.",
+      "cultureMany": "decenas de",
+      "open": "Abrir"
+    },
+    "artists": "{count, plural, one {# artista} other {# artistas}}",
+    "groups": "{count, plural, one {# grupo} other {# grupos}}",
+    "seeAllArtists": "Ver todos los artistas",
+    "seeAllGroups": "Ver todos los grupos",
+    "emptyArtists": "Todavía no hay artistas con página en este idioma en esta guía.",
+    "emptyGroups": "Todavía no hay grupos con página en este idioma en esta guía."
+  },
+  "blog": {
+    "categories": "Categorías",
+    "title": "Blog",
+    "description": "Artículos, reseñas y guías sobre K-Drama, K-Pop y cultura coreana.",
+    "note": "Los artículos sin traducción se publican en portugués y se abren en el original.",
+    "count": "{count, plural, one {# artículo} other {# artículos}}",
+    "empty": "Todavía no hay artículos por aquí.",
+    "back": "Todos los artículos",
+    "publishedOn": "Publicado el {date}",
+    "translatedNote": "Traducción del artículo original en portugués.",
+    "readOriginal": "Leer el original en portugués"
+  },
+  "cultura101": {
+    "title": "Cultura coreana: guías, festividades y tradiciones",
+    "description": "Hangul, honoríficos, festividades tradicionales, etiqueta y vida cotidiana: lo esencial de la cultura coreana reunido en un solo lugar, con guías para quienes están empezando.",
+    "breadcrumb": "Cultura",
+    "h1": "Cultura",
+    "searchPlaceholder": "Buscar guía o festividad",
+    "searchTag": "Guía",
+    "sectionsAria": "Secciones de esta página",
+    "shortcutGuides": "Guías de cultura",
+    "shortcutFestivals": "Festividades",
+    "count": "{count} guías · del alfabeto a las festividades, explicado en español",
+    "guidesAria": "Guías de cultura",
+    "chapterTitle": "Cultura",
+    "chapterSub": "{count} guías para entender Corea",
+    "startHere": "Empieza aquí",
+    "trails": {
+      "language": "Idioma y convivencia",
+      "traditions": "Tradiciones y vida diaria",
+      "kpop": "K-pop por dentro",
+      "drama": "K-drama y medios",
+      "more": "Más guías"
+    },
+    "more": "+ {count} guías",
+    "less": "Mostrar menos",
+    "reports": "Reportajes y análisis",
+    "seeAllGuides": "Ver todas las guías →",
+    "moreReports": "Más reportajes de cultura →",
+    "festivalsAria": "Próximas festividades",
+    "festivalsTitle": "Calendario",
+    "festivalsSub": "Próximas fechas de Corea",
+    "today": "Hoy",
+    "tomorrow": "Mañana",
+    "inDays": "En {days} días",
+    "festivals": {
+      "lunarNewYear": "Año Nuevo lunar",
+      "firstFullMoon": "Primera luna llena del año",
+      "march1": "Movimiento del 1 de marzo",
+      "dano": "Quinto día del quinto mes lunar",
+      "liberation": "Día de la Liberación",
+      "harvest": "Fiesta de la cosecha",
+      "hangeulDay": "Día del alfabeto coreano"
+    },
+    "othersAria": "Otros temas",
+    "foodKicker": "Gastronomía",
+    "foodTitle": "Platos, recetas, marcas y la tienda de comida coreana",
+    "foodCta": "Ver gastronomía →",
+    "merchKicker": "Merch",
+    "merchTitle": "Lightstick, photocard, álbum físico y qué comprar",
+    "merchCta": "Ver merch →"
+  },
+  "foodsList": {
+    "metaTitle": "Comidas coreanas — Guía completa",
+    "metaDescription": "Descubre la cocina coreana: bibimbap, tteokbokki, samgyeopsal y mucho más. Guía completa en español.",
+    "breadcrumb": "Comidas",
+    "kicker": "Gastronomía coreana",
+    "h1": "Comidas coreanas",
+    "intro": "De la cocina tradicional a la comida callejera de Seúl: conoce los platos que definen la cocina coreana, con consejos sobre dónde comer, ingredientes y curiosidades.",
+    "all": "Todos",
+    "curated": {
+      "winter": "Platos de invierno",
+      "festival": "Comida de festival",
+      "comfort": "Comfort food",
+      "hangover": "Cura para la resaca",
+      "vegetarian": "100 % vegetariano",
+      "noSpice": "Sin picante"
+    },
+    "articlesTitle": "Guías y artículos de comida",
+    "articlesAll": "todos los artículos →",
+    "emptyTitle": "No se encontró ninguna comida",
+    "emptyText": "Pronto habrá más platos en el catálogo.",
+    "emptyBack": "← Ver todas las comidas",
+    "count": "{count, plural, one {# plato} other {# platos}}",
+    "countIn": " en {category}",
+    "prev": "← Anterior",
+    "pageOf": "Página {page} de {total}",
+    "next": "Siguiente →",
+    "inStore": "🛍️ En la tienda",
+    "regionTitle": "🗺️ Explora por región",
+    "regionHint": "Haz clic para abrir el mapa de Corea y ver los platos por región.",
+    "regionTip": "{region} — {count, plural, one {# plato} other {# platos}}",
+    "regionAria": "Platos de {region} ({count})",
+    "regionClear": "✕ Limpiar",
+    "regions": {
+      "Seoul": "Seúl",
+      "Busan": "Busan",
+      "Daegu": "Daegu",
+      "Incheon": "Incheon",
+      "Gwangju": "Gwangju",
+      "Daejeon": "Daejeon",
+      "Ulsan": "Ulsan",
+      "Sejong": "Sejong",
+      "Gyeonggi": "Gyeonggi",
+      "Gangwon": "Gangwon",
+      "Chungbuk": "Chungbuk",
+      "Chungnam": "Chungnam",
+      "Jeonbuk": "Jeonbuk",
+      "Jeonnam": "Jeonnam",
+      "Gyeongbuk": "Gyeongbuk",
+      "Gyeongnam": "Gyeongnam",
+      "Jeju": "Jeju"
+    },
+    "recipesKicker": "Para hacer en casa · con modo de preparación"
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "pagina": {
+    "rotulo": "Página de inicio de __SITE__"
+  },
+  "comum": {
+    "verTodos": "ver todos →",
+    "minutos": "{mins} min",
+    "minutosDeLeitura": "{mins} min de lectura",
+    "capa": "Portada",
+    "artigo": "Artículo",
+    "emDestaque": "Destacado"
+  },
+  "hero": {
+    "asFaixas": "Las {n} canciones",
+    "clipe": "Videoclip", "maisFaixas": "+ {n} canciones",
+    "lerAgora": "Leer ahora",
+    "continuarLeitura": "Seguir leyendo",
+    "filmeEmDestaque": "Película destacada",
+    "doramaEmDestaque": "Drama destacado",
+    "verProducao": "Ver producción",
+    "emExibicao": "En emisión",
+    "concluida": "Finalizada",
+    "emBreve": "Próximamente",
+    "classificacaoLivre": "Todo público",
+    "classificacaoIndicativa": "Clasificación por edades",
+    "notaVotos": "{count, plural, one {# voto} other {# votos}} · TMDB",
+    "elenco": "Reparto",
+    "tipoSerie": "Serie",
+    "tipoFilme": "Película",
+    "disponivelEm": "Disponible en",
+    "trailer": "Tráiler",
+    "verTrailer": "Ver el tráiler de {title}",
+    "fallbackEyebrow": "Edición en actualización",
+    "fallbackTitulo": "La cultura coreana en español.",
+    "fallbackSubtitulo": "Dramas, películas y artistas coreanos, cubiertos todos los días.",
+    "verArtigos": "Ver artículos",
+    "artistas": "Artistas"
+  },
+  "hubs": {
+    "titulo": "Explorar por categoría",
+    "verTodas": "ver todas →"
+  },
+  "spotlight": {
+    "titulo": "Lo más popular en Corea ahora",
+    "tag": "Ranking",
+    "artistas": "Artistas →",
+    "grupos": "Grupos →"
+  },
+  "destaques": {
+    "titulo": "Destacados"
+  },
+  "calendario": {
+    "rotulo": "Calendario",
+    "titulo": "Hoy en el calendario",
+    "estaSemana": "Esta semana", "tag": "Cumpleaños",
+    "hoje": "Hoy",
+    "aSeguir": "A continuación",
+    "abrir": "7 días →",
+    "anos": "años"
+  },
+  "guias": {
+      "titulo": "Guías",
+      "tag": "Atemporal",
+      "comece": "Empieza aquí",
+      "porTema": "Guías por tema",
+      "verTodos": "Ver todas las guías",
+      "titulos": "{total} títulos"
+  },
+  "passos": {
+    "o-que-e-hallyu-onda-coreana-explicada": { "label": "¿Qué es el Hallyu?", "apoio": "la ola coreana, en pocos minutos" },
+    "como-comecar-no-kpop-guia-para-iniciantes": { "label": "Cómo empezar en el K-Pop", "apoio": "qué escuchar primero" },
+    "idol-vs-artist-diferenca-carreira-kpop": { "label": "Idol vs. Artist", "apoio": "quién es quién" },
+    "posicoes-grupo-kpop-lider-vocal-visual-maknae-guia": { "label": "Posiciones en un grupo de K-Pop", "apoio": "líder, vocalista, rapero" },
+    "line-kpop-vocal-dance-maknae-line-guia": { "label": "Las «lines» del K-pop (vocal/dance/maknae)", "apoio": "vocal, dance, maknae" },
+    "hangeul-guia-basico-fas-brasileiros": { "label": "Hangul en 30 minutos", "apoio": "lee el alfabeto coreano" }
+  },
+  "assuntos": {
+    "rotulo": "Temas"
+  },
+  "temas": {
+      "gastronomia": {
+          "titulo": "Gastronomía coreana",
+          "caixa": "Tema de la semana",
+          "contaPratos": "{n} platos",
+          "contaMarcas": "{n} empresas",
+          "contaArtigos": "{n} artículos",
+          "abrir": "Abrir el tema",
+          "paraLer": "Para leer",
+          "pratos": "Platos",
+          "marcas": "Marcas",
+          "naLoja": "{n} en la tienda",
+          "prateleira": "En la tienda · comida coreana · afiliado",
+          "verPrateleira": "Ver estantería →"
+      },
+      "beleza": {
+          "titulo": "Belleza coreana",
+          "caixa": "En foco",
+          "contaPratos": "{n} platos",
+          "contaMarcas": "{n} marcas",
+          "contaArtigos": "{n} artículos sobre skincare, maquillaje y protector solar",
+          "abrir": "Abrir el tema",
+          "paraLer": "Para leer",
+          "pratos": "Platos",
+          "marcas": "Marcas",
+          "naLoja": "{n} en la tienda",
+          "prateleira": "En la tienda · K-Beauty · afiliado",
+          "verPrateleira": "Ver estantería →"
+      }
+  },
+  "explore": {
+      "titulo": "Explora por tema",
+      "caixa": "{n} temas",
+      "verTodos": "Ver todos los temas",
+      "artigos": "artículos",
+      "fichas": "fichas",
+      "ultimo": "Último",
+      "novo": "Nuevo",
+      "temas": {
+          "kpop": "K-Pop",
+          "cultura": "Cultura",
+          "gastronomia": "Gastronomía",
+          "kbeauty": "K-Beauty",
+          "guias": "Guías para principiantes",
+          "kdrama": "K-Drama",
+          "kfilm": "K-Film",
+          "reality": "Reality shows",
+          "webtoons": "Webtoons",
+          "agencias": "Agencias"
+      },
+      "apoio": {
+          "agencias": "SM, JYP, HYBE, YG y las demás agencias"
+      }
+  },
+  "loja": {
+      "titulo": "¿Te gustó? Llévatelo a casa.",
+      "caixa": "Más vendidos",
+      "verLoja": "Ver toda la tienda →",
+      "aviso": "Si compras a través de los enlaces, __SITE__ recibe una comisión, sin costo extra para ti.",
+      "vendidos": "{n} vendidos",
+      "comprar": "Comprar en la tienda →",
+      "precoCaiu": "Bajó de precio"
+  },
+  "editorias": {
+    "rotulo": "Secciones",
+    "kpop": "K-Pop",
+    "doramas": "Dramas y películas",
+    "cultura": "Cultura y K-Beauty",
+    "verMais": "ver más →",
+    "loja": {
+        "kpop": "K-Pop",
+        "doramas": "Comida coreana",
+        "cultura": "K-Beauty",
+        "naLoja": "En la tienda · {assunto} · afiliado"
+    }
+  },
+  "ultimas": {
+    "titulo": "Últimas publicaciones",
+    "verFeed": "ver feed →"
+  },
+  "longreads": {
+    "titulo": "En profundidad",
+    "tag": "Lectura larga",
+    "arquivo": "archivo →"
+  },
+  "artistasEmAlta": {
+    "eyebrow": "● ranking del sitio",
+    "titulo": "Lo más buscado en __SITE__",
+    "descricao": "Artistas con más visitas y búsquedas aquí en el sitio",
+    "perfilEmFoco": "Perfil en foco",
+    "escolhaEditorial": "Elección editorial",
+    "destaqueDaSemana": "Destacado de la semana",
+    "verTodos": "Ver todos los artistas"
+  },
+  "gruposEmAlta": {
+    "titulo": "Grupos en alza",
+    "aoVivo": "● en vivo",
+    "fandom": "Fandom: {nome}",
+    "perfilEmFoco": "Perfil en foco",
+    "grupoDaSemana": "Grupo de la semana",
+    "verTodos": "Ver todos los grupos"
+  },
+  "populares": {
+      "titulo": "Lo más popular en Corea ahora",
+      "tag": "Ranking",
+      "artistas": "Artistas en alza",
+      "grupos": "Grupos en alza",
+      "producoes": "Producciones en alza",
+      "verTodos": "Ver todos →",
+      "membros": "{n} miembros"
+  },
+  "tipoDeGrupo": {
+    "girl_group": "Girl Group",
+    "boy_group": "Boy Group",
+    "co_ed": "Co-Ed",
+    "solo": "Solista"
+  },
+  "producoes": {
+    "titulo": "Dramas y películas",
+    "eyebrow": "K-Drama y cine",
+    "verTodos": "ver todos →"
+  },
+  "quiz": {
+    "eyebrow": "Quiz",
+    "titulo": "¿Cuánto sabes de K-Pop y K-Drama?",
+    "descricao": "15 preguntas sobre cultura coreana. ¡Preguntas nuevas en cada ronda!",
+    "pergunta1": "¿Cómo se llama el fandom de BTS?",
+    "pergunta2": "¿Quién protagonizó Crash Landing on You?",
+    "pergunta3": "¿Qué significa «Hallyu»?",
+    "acao": "Hacer el quiz"
+  },
+  "abaixoDaDobra": {
+    "gruposTitulo": "Grupos de K-Pop",
+    "gruposEyebrow": "selección editorial",
+    "aniversariantesTitulo": "Cumpleañeros — {mes}",
+    "aniversariantesEyebrow": "nacidos este mes",
+    "membros": "{n} mbr",
+    "encerrado": "disuelto",
+    "encerradoCapitalizado": "Disuelto",
+    "emAtividade": "En actividad",
+    "dia": "día {dia}"
+  },
+  "capitulos": {
+    "agora": { "titulo": "Ahora", "sub": "lo que está pasando" },
+    "aprenda": { "titulo": "Aprende", "sub": "empieza por aquí" },
+    "editoria": { "titulo": "Por sección", "sub": "qué cambió en cada tema" },
+    "reportagem": { "titulo": "Reportaje", "sub": "lectura larga" },
+    "dados": { "titulo": "Datos", "sub": "lo más popular en Corea ahora" },
+    "jogue": { "titulo": "Juega", "sub": "un minuto al día" },
+    "temas": { "titulo": "Temas", "sub": "temas para seguir" },
+    "loja": { "titulo": "Tienda", "sub": "más vendidos" }
+  },
+  "categorias": {
+    "k-pop": "K-Pop",
+    "k-drama": "K-Drama",
+    "k-film": "K-Film",
+    "cultura": "Cultura",
+    "grupos": "Grupos",
+    "k-beauty": "K-Beauty",
+    "artistas": "Artistas",
+    "noticias-k-pop": "Noticias K-pop",
+    "reality-shows": "Reality shows",
+    "webtoons": "Webtoons",
+    "comida": "Comida",
+    "merch": "Merch",
+    "uncategorized": "Noticias"
+  }
+}
