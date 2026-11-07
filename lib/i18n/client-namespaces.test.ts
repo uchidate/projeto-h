@@ -17,7 +17,23 @@ function arquivos(dir: string, saida: string[] = []): string[] {
     return saida
 }
 
-const ehCliente = (fonte: string) => /^\s*(\/\*[\s\S]*?\*\/\s*|\/\/[^\n]*\n\s*)*['"]use client['"]/.test(fonte)
+/** Pula espaços e comentários iniciais (sem regex aninhada, que daria backtracking) e lê a diretiva. */
+function ehCliente(fonte: string): boolean {
+    let i = 0
+    for (;;) {
+        while (i < fonte.length && /\s/.test(fonte[i])) i++
+        if (fonte.startsWith('/*', i)) {
+            const fim = fonte.indexOf('*/', i + 2)
+            if (fim < 0) return false
+            i = fim + 2
+        } else if (fonte.startsWith('//', i)) {
+            const fim = fonte.indexOf('\n', i)
+            if (fim < 0) return false
+            i = fim + 1
+        } else break
+    }
+    return /^['"]use client['"]/.test(fonte.slice(i, i + 14))
+}
 
 describe('namespaces de useTranslations em componentes de cliente', () => {
     const clientes = [...arquivos(join(RAIZ, 'components')), ...arquivos(join(RAIZ, 'app'))]

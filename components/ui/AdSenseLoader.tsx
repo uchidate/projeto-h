@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useAds, useNaoAutomatizado } from '@/components/providers/AdsProvider'
+import { gestoConfiavel } from '@/lib/gesto-confiavel'
 import { getBannerState, subscribeBanner } from '@/lib/consent'
 
 export function AdSenseLoader() {
@@ -49,22 +50,22 @@ export function AdSenseLoader() {
         // com a imagem do LCP: medido em 2026-08-06, custava 27 pontos de
         // Lighthouse (89 -> 62) e levava o LCP de 2,7 s para 7,3 s.
         //
-        // A espera é curta e fixa, por decisão de produto: prioriza garantia de
-        // entrega do anúncio sobre pontuação. Medido em 2026-08-06 na home, em
-        // perfil móvel simulado: imediato = 62, 800 ms = 68 (mediana de seis
-        // execuções, variando entre 62 e 91), atrelado ao evento de LCP = 89.
-        // Ou seja, 800 ms recuperam parte do ganho e mantêm o anúncio quase
-        // junto com a página. Qualquer sinal de uso carrega na hora.
-        const ESPERA_MS = 800
-        const eventos: Array<keyof WindowEventMap> = ['scroll', 'pointerdown', 'keydown', 'touchstart']
-
-        const limpar = () => {
-            eventos.forEach(evento => window.removeEventListener(evento, injetar))
-            clearTimeout(prazo)
+        // Só um gesto confiável (toque, tecla, roda do mouse, clique) libera o
+        // script. Antes havia um prazo de 800 ms que carregava o anúncio sem
+        // interação, e o crawler de 2026-11 (Chrome falsificado, executa JS)
+        // passava por ele e gerava impressão inválida no AdSense. Rolagem fica
+        // de fora: script também rola a página. No celular rolar é tocar, então
+        // o leitor real libera no primeiro movimento.
+        const eventos: Array<keyof WindowEventMap> = ['pointerdown', 'keydown', 'touchstart', 'wheel']
+        const liberar = (evento: Event) => {
+            if (gestoConfiavel(evento)) injetar()
         }
 
-        eventos.forEach(evento => window.addEventListener(evento, injetar, { once: true, passive: true }))
-        const prazo = window.setTimeout(injetar, ESPERA_MS)
+        const limpar = () => {
+            eventos.forEach(evento => window.removeEventListener(evento, liberar))
+        }
+
+        eventos.forEach(evento => window.addEventListener(evento, liberar, { passive: true }))
 
         return () => {
             limpar()

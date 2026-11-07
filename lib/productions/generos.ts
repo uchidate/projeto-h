@@ -20,9 +20,15 @@ const GENEROS_EN: Record<string, string> = {
     variedades: 'Variety',
 }
 
-/** Gêneros com o nome no idioma; sem tradução conhecida, mantém o nome do WordPress. */
+/** Nome de um gênero no idioma; sem tradução conhecida, mantém o nome do WordPress. */
+export function nomeDoGenero(slug: string, nome: string, locale: Locale): string {
+    if (locale === DEFAULT_LOCALE) return nome
+    const nomes: Record<string, string> = locale === 'en' ? GENEROS_EN : {}
+    return nomes[slug] ?? nome
+}
+
+/** Gêneros com o nome no idioma. */
 export function generosNoIdioma(generos: WPTerm[], locale: Locale): WPTerm[] {
     if (locale === DEFAULT_LOCALE) return generos
-    const nomes = locale === 'en' ? GENEROS_EN : {}
-    return generos.map(g => (nomes[g.slug] ? { ...g, name: nomes[g.slug] } : g))
+    return generos.map(g => ({ ...g, name: nomeDoGenero(g.slug, g.name, locale) }))
 }
