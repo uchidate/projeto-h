@@ -18,18 +18,15 @@ import { getVitrineGeral, getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getStoreProductsByArtistId, getStoreProductsByGroupId } from '@/lib/wordpress/store'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
-import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
-import { href } from '@/lib/i18n/routes'
-import { slugPublicoDoGuia } from '@/lib/guias/i18n'
+import { alternativasDoGuia } from '@/lib/guias/i18n'
 import { HubPageContent } from '@/components/features/HubPageContent'
 
 export type SearchParamsGuia = Record<string, string | string[] | undefined>
 
 /** Versões traduzidas do guia (hreflang): só entram idiomas com o texto do guia traduzido. */
 function alternativasTraduzidas(slug: string) {
-    const en = slugPublicoDoGuia(slug, 'en')
-    if (!en) return {}
-    return { languages: { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias/${slug}`, [LOCALE_META.en.htmlLang]: `${SITE_URL}${href('guide', { slug: en }, 'en')}`, 'x-default': `${SITE_URL}/guias/${slug}` } }
+    const languages = alternativasDoGuia(slug)
+    return languages ? { languages } : {}
 }
 
 export async function buildGuiaMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
