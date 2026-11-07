@@ -23,6 +23,7 @@ import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
 import type { Locale } from '@/lib/i18n/config'
+import { nomeDoGenero } from '@/lib/productions/generos'
 import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
 import { buildAlternates } from '@/lib/i18n/alternates'
 import { buildLanguageLinks } from '@/lib/i18n/language-links'
@@ -129,7 +130,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         ? await getVitrineDoElenco(castItems.map(a => a.id), `producao:${slug}`, 6, 'drama', `${productionTitle} ${stripHtml(production.excerpt.rendered)}`)
         : []
 
-    const genreTermMap = Object.fromEntries(allGenreTerms.map(t => [t.id, { name: t.name, slug: t.slug }]))
+    const genreTermMap = Object.fromEntries(allGenreTerms.map(t => [t.id, { name: nomeDoGenero(t.slug, t.name, locale), slug: t.slug }]))
     const genres = (production.production_genre ?? [])
         .map(id => genreTermMap[id])
         .filter((t): t is { name: string; slug: string } => !!t)
