@@ -130,11 +130,14 @@ export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }:
         semFiltro ? artigosDoTema('comida', locale) : Promise.resolve(null),
         emPt && semFiltro && cfgLoja ? carregarLojaDoTema(cfgLoja, 'comidas:lista') : Promise.resolve(undefined),
         // As receitas saem do acervo todo: as 48 mais novas da página podem não incluir nenhuma com modo de preparo.
-        emPt && semFiltro ? getFoods({ perPage: 100 }).catch(() => null) : Promise.resolve(null),
+        semFiltro ? getFoods({ perPage: 100, locale: emPt ? undefined : locale }).catch(() => null) : Promise.resolve(null),
     ])
     // Outro idioma: só prato com ficha traduzida, já com o texto do idioma.
     const foods = emPt ? foodsBrutos : foodsBrutos.filter(f => hasLocale(f, locale)).map(f => localizeEntity(f, locale, 'food'))
-    const receitas = todosPratos ? receitasEmDestaque(todosPratos.items) : []
+    const pratosDasReceitas = todosPratos
+        ? (emPt ? todosPratos.items : todosPratos.items.filter(f => hasLocale(f, locale)).map(f => localizeEntity(f, locale, 'food')))
+        : []
+    const receitas = receitasEmDestaque(pratosDasReceitas, 4, locale)
     if (page > Math.max(1, totalPages)) notFound()
 
     return (
@@ -349,7 +352,7 @@ export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }:
             {receitas.length > 0 && (
                 <section data-bloco="comidas-receitas" className="border-b border-border/40">
                     <div className="page-wrap py-8">
-                        <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent">Para fazer em casa · com modo de preparo</p>
+                        <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{t('recipesKicker')}</p>
                         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                             {receitas.map(r => (
                                 <li key={r.slug}>

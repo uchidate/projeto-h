@@ -125,6 +125,8 @@ type RecipeSchemaInput = {
     datePublished?: string
     dateModified?: string
     preparo?: Receita | null
+    /** Idioma do texto da receita (só muda o rótulo do rendimento). */
+    locale?: string
 }
 
 // Duração ISO 8601 (PT1H30M) a partir de minutos.
@@ -138,7 +140,7 @@ export function duracaoIso(min: number): string {
 // do CPT food (sem inventar recipeInstructions/prepTime que não temos).
 export function buildRecipeSchema({
     name, nameKorean, description, image, url, category, region,
-    ingredients, keywords, isVegetarian, isVegan, datePublished, dateModified, preparo,
+    ingredients, keywords, isVegetarian, isVegan, datePublished, dateModified, preparo, locale,
 }: RecipeSchemaInput) {
     const suitableForDiet = isVegan
         ? 'https://schema.org/VeganDiet'
@@ -167,7 +169,7 @@ export function buildRecipeSchema({
             prepTime: duracaoIso(preparo.preparoMin),
             cookTime: duracaoIso(preparo.cozimentoMin),
             totalTime: duracaoIso(preparo.preparoMin + preparo.cozimentoMin),
-            recipeYield: preparo.rendimento ?? `${preparo.porcoes} porções`,
+            recipeYield: preparo.rendimento ?? `${preparo.porcoes} ${locale === 'en' ? 'servings' : 'porções'}`,
         }),
         ...(suitableForDiet && { suitableForDiet }),
         author: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },

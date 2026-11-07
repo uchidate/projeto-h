@@ -7,8 +7,8 @@ function minutosEmTexto(min: number) {
 }
 
 /** Pratos com modo de preparo cadastrado (data/receitas.json) que existem no acervo, com foto. Tempo longo demais (marinada, molho) não vira rótulo. */
-export function receitasEmDestaque(itens: { slug: string; title: { rendered: string }; featured_image_url?: string | null }[], limite = 4) {
-    const mapa = todasReceitas()
+export function receitasEmDestaque(itens: { slug: string; title: { rendered: string }; featured_image_url?: string | null }[], limite = 4, locale = 'pt') {
+    const mapa = todasReceitas(locale)
     return itens
         .filter(i => i.featured_image_url && mapa[i.slug])
         .slice(0, limite)

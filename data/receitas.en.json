@@ -1,0 +1,904 @@
+{
+  "kimbap": {
+    "porcoes": 5,
+    "rendimento": "5 rolls",
+    "preparoMin": 25,
+    "cozimentoMin": 25,
+    "ingredientes": [
+      {
+        "quantidade": "2 cups (about 400 g)",
+        "item": "short-grain Japanese rice, uncooked"
+      },
+      {
+        "quantidade": "2 cups (480 ml)",
+        "item": "water to cook the rice"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "toasted sesame oil (to season the rice)"
+      },
+      {
+        "quantidade": "½ teaspoon",
+        "item": "salt (to season the rice)"
+      },
+      {
+        "quantidade": "225 g",
+        "item": "sirloin or strip steak, sliced about 1 cm thick"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "soy sauce (for the beef)"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "mirin"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "sugar (for the beef)"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "sesame oil (for the beef)"
+      },
+      {
+        "quantidade": "2 cloves",
+        "item": "garlic, minced"
+      },
+      {
+        "quantidade": "225 g",
+        "item": "spinach"
+      },
+      {
+        "quantidade": "2",
+        "item": "carrots, cut into thin strips (julienne)"
+      },
+      {
+        "quantidade": "3",
+        "item": "large eggs"
+      },
+      {
+        "quantidade": "4 to 5 strips",
+        "item": "yellow pickled radish (danmuji), cut into strips"
+      },
+      {
+        "quantidade": "4 to 5 sheets",
+        "item": "roasted seaweed (gim)"
+      },
+      {
+        "quantidade": "2 sheets",
+        "item": "kamaboko (eomuk), cut into strips about 1 cm wide (optional)"
+      },
+      {
+        "quantidade": "1 teaspoon, ½ teaspoon and ½ teaspoon",
+        "item": "soy sauce, sugar and sesame oil (for the kamaboko)"
+      }
+    ],
+    "passos": [
+      "Cook the rice in a rice cooker or on the stove. While it is still hot, stir in 1 tablespoon of sesame oil and ½ teaspoon of salt.",
+      "Mix the beef with the soy sauce, mirin, sugar, sesame oil and garlic. Let it marinate for 15 minutes.",
+      "Blanch the spinach in boiling water for 30 seconds, move it to cold water and squeeze out all the water. Season with 1 teaspoon of sesame oil and a pinch of salt.",
+      "Sauté the carrot in 1 teaspoon of sesame oil with a pinch of salt for about 1 minute over medium-high heat.",
+      "Beat the eggs with a pinch of salt. In an oiled skillet over medium-high heat, let the bottom set (about 60%), fold the edge over twice and remove. Cut into strips about 0.6 cm wide.",
+      "If using, sauté the kamaboko mixed with soy sauce, sugar and sesame oil for about 2 minutes.",
+      "In the same skillet, fry the marinated beef for 2 to 3 minutes.",
+      "Place a sheet of seaweed on the bamboo mat, shiny side down. Spread about ¾ cup (180 ml) of rice, leaving a 2 to 3 cm strip of seaweed bare along the top edge.",
+      "Arrange the fillings in strips down the center of the rice, without touching the bare strip.",
+      "Lift the bottom edge with both hands, push the filling in with your fingers and roll tightly, pressing as you go.",
+      "Brush the roll with a little sesame oil and slice into pieces about 1.5 cm thick with a sharp, slightly damp knife."
+    ],
+    "dicas": [
+      "Let the rice cool a little before assembling: very hot rice tears the seaweed.",
+      "Wiping the knife with a damp cloth between cuts keeps the rice from sticking and the slices from falling apart."
+    ],
+    "fontes": [
+      {
+        "nome": "Takes Two Eggs",
+        "url": "https://takestwoeggs.com/kimbap/"
+      },
+      {
+        "nome": "Umami Cart",
+        "url": "https://www.umamicart.com/kimbap-recipe/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "japchae": {
+    "porcoes": 4,
+    "preparoMin": 20,
+    "cozimentoMin": 40,
+    "ingredientes": [
+      {
+        "quantidade": "225 g",
+        "item": "sweet potato noodles (dangmyeon)"
+      },
+      {
+        "quantidade": "2 teaspoons",
+        "item": "sesame oil (for the noodles)"
+      },
+      {
+        "quantidade": "290 g",
+        "item": "sirloin or strip steak, thinly sliced"
+      },
+      {
+        "quantidade": "2 tablespoons",
+        "item": "soy sauce (to marinate the beef)"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "garlic, minced"
+      },
+      {
+        "quantidade": "60 g (2 cups)",
+        "item": "spinach"
+      },
+      {
+        "quantidade": "½ teaspoon",
+        "item": "soy sauce (for the spinach)"
+      },
+      {
+        "quantidade": "¼ teaspoon",
+        "item": "sesame oil (for the spinach)"
+      },
+      {
+        "quantidade": "½ medium (130 g)",
+        "item": "yellow onion, cut into strips"
+      },
+      {
+        "quantidade": "3 stalks (28 g)",
+        "item": "scallions, cut into 5 cm pieces"
+      },
+      {
+        "quantidade": "60 g (1 cup)",
+        "item": "shiitake mushrooms, thinly sliced"
+      },
+      {
+        "quantidade": "1 medium (50 g)",
+        "item": "carrot, cut into thin strips (julienne)"
+      },
+      {
+        "quantidade": "¼ medium (72 g)",
+        "item": "red bell pepper, cut into thin strips"
+      },
+      {
+        "quantidade": "1",
+        "item": "large egg"
+      },
+      {
+        "quantidade": "3 tablespoons (52 g)",
+        "item": "soy sauce (for the sauce)"
+      },
+      {
+        "quantidade": "1 tablespoon (12 g)",
+        "item": "dark brown sugar"
+      },
+      {
+        "quantidade": "2 teaspoons (9 g)",
+        "item": "sesame oil (for the sauce)"
+      },
+      {
+        "quantidade": "¼ teaspoon",
+        "item": "black pepper"
+      },
+      {
+        "quantidade": "enough for sautéing",
+        "item": "vegetable oil and salt"
+      }
+    ],
+    "passos": [
+      "Mix the sauce ingredients (soy sauce, brown sugar, sesame oil and pepper) and set aside.",
+      "Mix the beef with the marinade soy sauce and garlic and set aside.",
+      "Blanch the spinach in boiling water for 1 minute, cool it, squeeze out the water and season with soy sauce and sesame oil.",
+      "Cook the noodles according to the package (about 10 minutes), drain, toss with sesame oil and cut into strips about 15 cm long with scissors.",
+      "Sauté the onion for 3 minutes, add the scallions for 2 more minutes and move to a large bowl.",
+      "Sauté the carrot and bell pepper for 2 minutes and add to the bowl.",
+      "Make a thin omelet with the egg, roll it up, cut into thin strips and set aside.",
+      "Sauté the shiitake for 3 minutes, until soft, and add to the bowl.",
+      "Brown the garlic for 30 seconds, add the marinated beef and cook for 2 minutes, until browned. Add to the bowl.",
+      "Pour the sauce over everything, toss until coated, adjust the seasoning and serve right away or chilled."
+    ],
+    "dicas": [
+      "Cutting the noodles with scissors after cooking makes them easier to toss and to eat."
+    ],
+    "fontes": [
+      {
+        "nome": "Hungry Huy",
+        "url": "https://www.hungryhuy.com/japchae-korean-glass-noodles/"
+      },
+      {
+        "nome": "Posh Journal",
+        "url": "https://poshjournal.com/sweet-potato-noodles-korean-japchae"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "bibimbap": {
+    "porcoes": 2,
+    "preparoMin": 30,
+    "cozimentoMin": 30,
+    "ingredientes": [
+      {
+        "quantidade": "3 cups (720 ml)",
+        "item": "cooked short-grain rice"
+      },
+      {
+        "quantidade": "225 g",
+        "item": "thinly sliced beef (strip steak, sirloin or tenderloin)"
+      },
+      {
+        "quantidade": "3 cloves",
+        "item": "garlic, minced (beef marinade)"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "soy sauce (beef marinade)"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "honey"
+      },
+      {
+        "quantidade": "2 teaspoons",
+        "item": "sesame oil (beef marinade)"
+      },
+      {
+        "quantidade": "1 cup",
+        "item": "bean sprouts (moyashi)"
+      },
+      {
+        "quantidade": "1 bunch (225 g)",
+        "item": "spinach"
+      },
+      {
+        "quantidade": "1",
+        "item": "carrot, cut into thin strips (julienne)"
+      },
+      {
+        "quantidade": "8",
+        "item": "shiitake mushrooms, stems removed, thinly sliced"
+      },
+      {
+        "quantidade": "1",
+        "item": "zucchini, cut into half-moons"
+      },
+      {
+        "quantidade": "2 cloves",
+        "item": "garlic, finely minced (vegetables)"
+      },
+      {
+        "quantidade": "1¼ teaspoons, divided",
+        "item": "salt (vegetables)"
+      },
+      {
+        "quantidade": "1¼ teaspoons, divided",
+        "item": "sesame oil (vegetables)"
+      },
+      {
+        "quantidade": "¼ cup (60 g)",
+        "item": "gochujang"
+      },
+      {
+        "quantidade": "2 cloves",
+        "item": "garlic, finely minced (sauce)"
+      },
+      {
+        "quantidade": "2 tablespoons",
+        "item": "rice vinegar"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "soy sauce (sauce)"
+      },
+      {
+        "quantidade": "2 tablespoons",
+        "item": "sugar"
+      },
+      {
+        "quantidade": "2 teaspoons",
+        "item": "sesame oil (sauce)"
+      },
+      {
+        "quantidade": "3",
+        "item": "fried eggs"
+      },
+      {
+        "quantidade": "to taste, to finish",
+        "item": "sesame seeds"
+      }
+    ],
+    "passos": [
+      "Mix the beef with the garlic, soy sauce, honey and sesame oil. Cover and marinate for at least 30 minutes.",
+      "Heat 1 tablespoon of oil over medium-high heat and fry the beef in batches, 3 to 4 minutes per side. Set aside.",
+      "Boil the bean sprouts for 5 minutes in salted water, cool in cold water and squeeze well. Season with ¼ teaspoon of garlic, salt and sesame oil.",
+      "In the same water, blanch the spinach for 30 seconds, cool, squeeze and season the same way.",
+      "Sauté the zucchini in 1 tablespoon of oil for 2 to 3 minutes, with salt and sesame oil.",
+      "Sauté the carrot the same way, for 2 to 3 minutes.",
+      "Sauté the shiitake for 4 to 5 minutes, until browned, with salt and sesame oil.",
+      "Mix the gochujang, garlic, vinegar, soy sauce, sugar and sesame oil for the sauce.",
+      "Assemble the bowls with the rice, beef and vegetables in separate portions, drizzle with the sauce and finish with the fried egg and sesame seeds. Mix everything together when you eat."
+    ],
+    "dicas": [
+      "Seasoning each vegetable separately is what gives the dish its variety of flavors: do not cook everything in the same pan."
+    ],
+    "fontes": [
+      {
+        "nome": "Takes Two Eggs",
+        "url": "https://takestwoeggs.com/bibimbap/"
+      },
+      {
+        "nome": "Carlsbad Cravings",
+        "url": "https://carlsbadcravings.com/bibimbap/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "jajangmyeon": {
+    "porcoes": 4,
+    "preparoMin": 10,
+    "cozimentoMin": 20,
+    "ingredientes": [
+      {
+        "quantidade": "680 g",
+        "item": "fresh wheat noodles for jajangmyeon (or thick wheat noodles)"
+      },
+      {
+        "quantidade": "285 g",
+        "item": "pork belly, cubed"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "grated ginger"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "mirin"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "soy sauce"
+      },
+      {
+        "quantidade": "¼ teaspoon",
+        "item": "black pepper"
+      },
+      {
+        "quantidade": "3 tablespoons",
+        "item": "vegetable oil"
+      },
+      {
+        "quantidade": "½ cup (about 120 g)",
+        "item": "chunjang (roasted black bean paste)"
+      },
+      {
+        "quantidade": "2 tablespoons",
+        "item": "brown sugar"
+      },
+      {
+        "quantidade": "1 cup (240 ml)",
+        "item": "chicken broth"
+      },
+      {
+        "quantidade": "1½ tablespoons",
+        "item": "oyster sauce"
+      },
+      {
+        "quantidade": "1½ tablespoons",
+        "item": "cornstarch"
+      },
+      {
+        "quantidade": "3 tablespoons",
+        "item": "water (to dissolve the cornstarch)"
+      },
+      {
+        "quantidade": "1 medium",
+        "item": "onion, diced"
+      },
+      {
+        "quantidade": "2 stalks",
+        "item": "scallions, chopped"
+      },
+      {
+        "quantidade": "1 cup",
+        "item": "potato, peeled and cubed"
+      },
+      {
+        "quantidade": "1 cup",
+        "item": "zucchini, cubed"
+      },
+      {
+        "quantidade": "1 cup",
+        "item": "cabbage, cubed"
+      },
+      {
+        "quantidade": "1",
+        "item": "cucumber, cut into thin strips, to serve"
+      },
+      {
+        "quantidade": "to serve",
+        "item": "yellow pickled radish (danmuji)"
+      }
+    ],
+    "passos": [
+      "Mix the pork belly with the ginger, mirin, soy sauce and pepper. Set aside.",
+      "In a large skillet over low heat, warm the oil and toast the chunjang paste with the sugar for 3 to 4 minutes, stirring constantly. Move to a bowl and discard the excess oil.",
+      "In the same skillet, over medium heat with 1 tablespoon of oil, lightly brown the edges of the pork and set aside.",
+      "Add 1 more tablespoon of oil and sauté the onion and scallions until translucent and fragrant. Add the potato and zucchini and stir for 3 to 5 minutes, until soft. Add the cabbage and cook for 2 to 3 minutes, until wilted.",
+      "Return the paste and the pork to the skillet, add the broth and oyster sauce and stir until it comes to a gentle boil, for 2 to 3 minutes.",
+      "Dissolve the cornstarch in the water, pour it into the simmering sauce and stir until thickened.",
+      "Cook the noodles in boiling water for 3 to 4 minutes, until al dente, and drain.",
+      "Divide the noodles among bowls, top with the sauce and finish with the cucumber and the danmuji."
+    ],
+    "dicas": [
+      "Both sources toast the chunjang in oil before building the sauce: the step makes the paste glossy and gives it a more roasted flavor."
+    ],
+    "fontes": [
+      {
+        "nome": "Takes Two Eggs",
+        "url": "https://takestwoeggs.com/jajangmyeon-korean-black-bean-noodles/"
+      },
+      {
+        "nome": "Umami Cart",
+        "url": "https://www.umamicart.com/jajangmyeon-recipe/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "hotteok": {
+    "porcoes": 12,
+    "rendimento": "12 pancakes",
+    "preparoMin": 80,
+    "cozimentoMin": 15,
+    "ingredientes": [
+      {
+        "quantidade": "1 cup (240 ml)",
+        "item": "warm water (27 to 38 °C / 80 to 100 °F)"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "active dry yeast"
+      },
+      {
+        "quantidade": "¼ cup (50 g), divided",
+        "item": "sugar"
+      },
+      {
+        "quantidade": "¼ cup (60 g)",
+        "item": "melted butter"
+      },
+      {
+        "quantidade": "¼ cup (60 ml)",
+        "item": "room-temperature milk"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "salt"
+      },
+      {
+        "quantidade": "1½ cups plus 2 tablespoons (about 195 g)",
+        "item": "bread flour"
+      },
+      {
+        "quantidade": "⅓ cup (about 45 g)",
+        "item": "glutinous rice flour (mochiko)"
+      },
+      {
+        "quantidade": "¼ cup (60 ml)",
+        "item": "vegetable oil for frying"
+      },
+      {
+        "quantidade": "¼ cup plus 2 tablespoons (about 75 g)",
+        "item": "brown sugar (filling)"
+      },
+      {
+        "quantidade": "¼ cup (about 30 g)",
+        "item": "chopped walnuts"
+      },
+      {
+        "quantidade": "2 tablespoons",
+        "item": "pine nuts"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "ground cinnamon"
+      }
+    ],
+    "passos": [
+      "Mix the warm water with 1 tablespoon of the sugar, add the yeast and let it sit for 8 to 10 minutes, until foamy.",
+      "Add the rest of the sugar, the melted butter, the milk and the salt.",
+      "In a large bowl, mix the bread flour and the glutinous rice flour.",
+      "Add the yeast mixture to the flour and stir with a spatula for about 5 minutes, until a dough forms. Cover and let it rise in a warm place for 30 to 60 minutes, until doubled in size.",
+      "Mix the brown sugar, walnuts, pine nuts and cinnamon for the filling.",
+      "Oil your hands. Take about 60 g of dough, flatten it into a 10 cm disc, put 1 tablespoon of filling in the center, close it by pulling the edges to the middle and pinch. Set it seam side down on parchment paper.",
+      "Heat the oil over medium-low heat, place the dough seam side down and flatten it with the spatula. Brown for 45 to 60 seconds, flip and brown the other side for 30 to 45 seconds.",
+      "Drain on paper towels and serve warm, with a scoop of vanilla ice cream if you like."
+    ],
+    "dicas": [
+      "A second source lets the dough rest for up to 3 hours: the longer rise gives more flavor.",
+      "The sugar in the filling melts inside the dough, so serve it warm."
+    ],
+    "fontes": [
+      {
+        "nome": "Beyond Sweet and Savory",
+        "url": "https://beyondsweetandsavory.com/hotteok-korean-sweet-pancakes/"
+      },
+      {
+        "nome": "Seonkyoung Longest",
+        "url": "https://seonkyounglongest.com/hotteok-korean-street-food/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "dakkochi": {
+    "porcoes": 4,
+    "rendimento": "6 to 8 skewers",
+    "preparoMin": 40,
+    "cozimentoMin": 8,
+    "ingredientes": [
+      {
+        "quantidade": "450 g",
+        "item": "skinless, boneless chicken breast and/or thigh, cut into 2.5 cm cubes"
+      },
+      {
+        "quantidade": "¼ teaspoon",
+        "item": "salt"
+      },
+      {
+        "quantidade": "¼ teaspoon",
+        "item": "black pepper"
+      },
+      {
+        "quantidade": "3 tablespoons",
+        "item": "cooking wine (or sake)"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "grated ginger"
+      },
+      {
+        "quantidade": "1 tablespoon (about 3 cloves)",
+        "item": "grated garlic"
+      },
+      {
+        "quantidade": "8 to 10 stalks",
+        "item": "scallions, cut into 4 cm pieces"
+      },
+      {
+        "quantidade": "6 to 8",
+        "item": "15 cm bamboo skewers"
+      },
+      {
+        "quantidade": "½ cup (120 ml)",
+        "item": "soy sauce (sweet glaze)"
+      },
+      {
+        "quantidade": "½ cup (about 170 g)",
+        "item": "honey (sweet glaze)"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "gochugaru (Korean chili flakes, spicy glaze)"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "sriracha (spicy glaze)"
+      }
+    ],
+    "passos": [
+      "Soak the skewers in water for 30 to 60 minutes.",
+      "Mix the chicken with the salt, pepper, cooking wine, ginger and garlic. Cover and marinate in the refrigerator for at least 20 minutes (overnight works too).",
+      "Whisk the soy sauce with the honey to make the sweet glaze. For the spicy glaze, mix half of it with the gochugaru, the sriracha and ¼ teaspoon of black pepper.",
+      "Thread the skewers, alternating a piece of scallion with one or two pieces of chicken.",
+      "Heat a grill, an oven on broil or a skillet over medium-high heat. Cook 4 to 5 minutes on one side, flip and brush with the glaze.",
+      "Cook 2 minutes on the other side and keep turning and brushing until the chicken is cooked through and as dark as you like. Serve right away."
+    ],
+    "dicas": [
+      "Brush the glaze on only after the first flip, so the honey does not burn before the chicken cooks.",
+      "Another source uses a glaze of gochujang, sugar and garlic for those who want a deep red skewer."
+    ],
+    "fontes": [
+      {
+        "nome": "Seonkyoung Longest",
+        "url": "https://seonkyounglongest.com/korean-chicken-on-a-stick/"
+      },
+      {
+        "nome": "Crazy Korean Cooking",
+        "url": "https://crazykoreancooking.com/recipe/spicy-chicken-skewers"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "gosari-namul": {
+    "porcoes": 4,
+    "preparoMin": 1635,
+    "cozimentoMin": 14,
+    "ingredientes": [
+      {
+        "quantidade": "40 g (or 2 cups already rehydrated and cooked)",
+        "item": "dried bracken fiddleheads (gosari)"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "soy sauce"
+      },
+      {
+        "quantidade": "½ teaspoon",
+        "item": "salt"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "beef bouillon powder (such as Dasida)"
+      },
+      {
+        "quantidade": "¼ teaspoon",
+        "item": "black pepper"
+      },
+      {
+        "quantidade": "½ teaspoon",
+        "item": "fish sauce"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "sesame oil"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "olive oil"
+      },
+      {
+        "quantidade": "1 stalk",
+        "item": "scallion, sliced on the diagonal"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "toasted sesame seeds"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "minced garlic"
+      }
+    ],
+    "passos": [
+      "Put the dried fiddleheads in a pot with enough water to cover and bring to a boil.",
+      "Lower the heat, cover with the lid slightly ajar and cook for about 1 hour.",
+      "Leave the fiddleheads in the hot water for about 2 hours.",
+      "Rinse, drain and soak in clean cold water for 24 hours. Drain and cut into 5 cm pieces.",
+      "Heat the olive oil over medium-high heat, add the fiddleheads and sauté until the water evaporates, about 10 minutes.",
+      "Add the soy sauce, salt, bouillon powder, garlic, pepper and fish sauce and sauté for 2 to 3 minutes.",
+      "Add the scallion, sesame oil and sesame seeds and stir for about 30 seconds.",
+      "Remove from the heat and serve as a side dish."
+    ],
+    "dicas": [
+      "Rehydration time varies: another source suggests 8 to 24 hours of soaking and 15 to 20 minutes of boiling. Start the recipe the day before.",
+      "Once cooked, the fiddleheads also go into bibimbap."
+    ],
+    "fontes": [
+      {
+        "nome": "Asian Recipes at Home",
+        "url": "https://asianrecipesathome.com/korean-stir-fried-fernbrake-side-dish-gosari-namul/"
+      },
+      {
+        "nome": "Taste Korean Food",
+        "url": "https://www.tastekoreanfood.com/recipes/gosari-namul-seasoned-fernbrake"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "bungeoppang": {
+    "porcoes": 4,
+    "rendimento": "4 to 6 bungeoppang",
+    "preparoMin": 10,
+    "cozimentoMin": 10,
+    "ingredientes": [
+      {
+        "quantidade": "1 cup (about 120 g)",
+        "item": "all-purpose flour"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "baking powder"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "sugar"
+      },
+      {
+        "quantidade": "¼ teaspoon",
+        "item": "salt"
+      },
+      {
+        "quantidade": "¾ cup (180 ml)",
+        "item": "milk"
+      },
+      {
+        "quantidade": "1",
+        "item": "egg"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "vanilla extract"
+      },
+      {
+        "quantidade": "¼ cup (about 60 g)",
+        "item": "sweet azuki bean paste (anko)"
+      },
+      {
+        "quantidade": "enough",
+        "item": "oil to grease the mold"
+      }
+    ],
+    "passos": [
+      "Mix the flour, baking powder, sugar and salt in a bowl.",
+      "Add the milk, egg and vanilla and stir until the batter is smooth.",
+      "Grease the fish-shaped mold and heat it over low heat.",
+      "Pour a thin layer of batter into one side of the mold.",
+      "Place the azuki bean paste in the center of the batter.",
+      "Cover with another layer of batter to seal in the filling.",
+      "Close the mold and cook for 2 to 3 minutes on one side.",
+      "Flip the mold and cook until golden. Serve hot, right away."
+    ],
+    "dicas": [
+      "You need a proper bungeoppang mold, one that can go straight onto the stovetop flame.",
+      "Another source fills about ⅓ of the mold with batter before the filling, so the fish does not overflow."
+    ],
+    "fontes": [
+      {
+        "nome": "Tasty Bytez",
+        "url": "https://tastybytez.com/korean-bungeoppang-recipe/"
+      },
+      {
+        "nome": "That Cute Dish",
+        "url": "https://www.thatcutedish.com/bungeoppang/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "galbi": {
+    "porcoes": 6,
+    "preparoMin": 260,
+    "cozimentoMin": 20,
+    "ingredientes": [
+      {
+        "quantidade": "about 1.4 kg (3 lb)",
+        "item": "beef short ribs, cut across the bone (LA-style, flanken)"
+      },
+      {
+        "quantidade": "½ large",
+        "item": "Korean (or Asian) pear, seeded and chopped"
+      },
+      {
+        "quantidade": "½ medium",
+        "item": "yellow onion, chopped"
+      },
+      {
+        "quantidade": "6 cloves",
+        "item": "garlic"
+      },
+      {
+        "quantidade": "2.5 cm (1 in)",
+        "item": "ginger, peeled and sliced"
+      },
+      {
+        "quantidade": "8 tablespoons",
+        "item": "soy sauce"
+      },
+      {
+        "quantidade": "7 tablespoons",
+        "item": "mirin"
+      },
+      {
+        "quantidade": "2 tablespoons",
+        "item": "rice syrup or honey"
+      },
+      {
+        "quantidade": "1 teaspoon",
+        "item": "coarsely ground black pepper"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "toasted sesame oil"
+      }
+    ],
+    "passos": [
+      "Rinse the ribs under running water and pick off any bone fragments with your fingers.",
+      "Soak in cold water for 20 minutes, changing the water halfway through.",
+      "Blend the pear, onion, garlic, ginger, soy sauce, mirin, rice syrup and pepper into a coarse purée.",
+      "Stir the sesame oil into the marinade with a spatula.",
+      "Put the ribs in a container and cover with the marinade.",
+      "Marinate in the refrigerator for 4 to 8 hours, turning the pieces halfway through.",
+      "Take the ribs out of the refrigerator 1 hour before cooking, so the meat comes to room temperature.",
+      "Grill for 9 to 10 minutes, turning occasionally, or sear in a stainless steel skillet for 8 to 10 minutes, until the center reaches 63 °C (145 °F).",
+      "Cut the meat with scissors before serving."
+    ],
+    "dicas": [
+      "This recipe calls for 4 to 8 hours of marinating; pear contains an enzyme that tenderizes meat, so do not go much beyond that.",
+      "Another recipe marinates for at least 1 day (best between the second and third) and soaks the ribs in sugar water for 30 minutes first."
+    ],
+    "fontes": [
+      {
+        "nome": "Hungry Huy",
+        "url": "https://www.hungryhuy.com/la-galbi-korean-bbq-short-ribs/"
+      },
+      {
+        "nome": "Ahnest Kitchen",
+        "url": "https://ahnestkitchen.com/food/la-galbi"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  },
+  "galbitang": {
+    "porcoes": 4,
+    "preparoMin": 75,
+    "cozimentoMin": 90,
+    "ingredientes": [
+      {
+        "quantidade": "680 g (1.5 lb)",
+        "item": "beef short ribs"
+      },
+      {
+        "quantidade": "10 cups (2.4 L)",
+        "item": "water"
+      },
+      {
+        "quantidade": "1",
+        "item": "yellow onion, unpeeled"
+      },
+      {
+        "quantidade": "2 stalks (or 1 daepa)",
+        "item": "scallions or Korean leek (daepa), for the broth"
+      },
+      {
+        "quantidade": "2",
+        "item": "thick slices of ginger"
+      },
+      {
+        "quantidade": "½ medium",
+        "item": "Korean radish (mu), thinly sliced"
+      },
+      {
+        "quantidade": "2 stalks (or 1 daepa)",
+        "item": "scallions or daepa, sliced, to finish"
+      },
+      {
+        "quantidade": "2 tablespoons",
+        "item": "minced garlic (or 5 to 6 whole cloves)"
+      },
+      {
+        "quantidade": "1 tablespoon",
+        "item": "soup soy sauce (guk-ganjang)"
+      },
+      {
+        "quantidade": "1½ teaspoons",
+        "item": "sea salt"
+      },
+      {
+        "quantidade": "to taste, to serve",
+        "item": "black pepper"
+      }
+    ],
+    "passos": [
+      "Soak the ribs in cold water for 1 hour (or briefly boil and rinse).",
+      "Set aside the onion, ginger, garlic and scallions.",
+      "Put the ribs, the aromatics and the 10 cups of water in a large pot and bring to a boil.",
+      "Reduce to medium heat and skim off the foam and fat that rise.",
+      "Cook uncovered over medium-low heat for 1 hour.",
+      "Add the thinly sliced radish and cook for 20 more minutes.",
+      "Remove and discard the aromatics, keeping the radish.",
+      "Season with the soup soy sauce, salt and garlic and cook for 10 more minutes.",
+      "Serve hot, with the sliced scallions and black pepper, alongside rice."
+    ],
+    "dicas": [
+      "A second source blanches the ribs for 5 minutes and discards that water before the main broth, which makes the broth cleaner."
+    ],
+    "fontes": [
+      {
+        "nome": "Yum with Mia",
+        "url": "https://yumwithmia.com/short-rib-soup-galbitang-recipe/"
+      },
+      {
+        "nome": "Seasoned by Jin",
+        "url": "https://seasonedbyjin.com/homemade-tasty-galbitang-short-ribbed-soup/"
+      }
+    ],
+    "conferidoEm": "2026-10-01"
+  }
+}
