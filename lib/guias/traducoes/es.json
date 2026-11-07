@@ -445,5 +445,1588 @@
         "answer": "Entre las más recientes, In Your Brilliant Season y The Judge Returns (2026). La lista de la página muestra el resto."
       }
     ]
+  },
+  "doramas-ena": {
+    "slug": "doramas-ena",
+    "title": "Doramas coreanos en ENA",
+    "shortTitle": "Doramas de ENA",
+    "description": "Doramas de ENA, un canal de cable surcoreano del grupo SK Broadband, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "ENA es un canal de cable surcoreano del grupo SK Broadband. El catálogo incluye Extraordinary Attorney Woo (2022) y Honour (2026), entre otros.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es ENA?",
+        "answer": "Un canal de cable surcoreano del grupo SK Broadband."
+      },
+      {
+        "question": "¿Qué series de ENA están en el catálogo?",
+        "answer": "Entre otras, Extraordinary Attorney Woo (2022) y Honour (2026). La lista de la página muestra el resto."
+      }
+    ]
+  },
+  "doramas-medicos-coreanos": {
+    "slug": "doramas-medicos-coreanos",
+    "title": "Doramas médicos coreanos",
+    "shortTitle": "Doramas médicos",
+    "description": "Los mejores doramas médicos coreanos, con hospitales, cirugías, romance, reparto y valoraciones.",
+    "intro": [
+      "Los doramas médicos coreanos combinan casos hospitalarios intensos, relaciones humanas y personajes que crecen bajo presión. Es uno de los subgéneros más fuertes para quien disfruta del drama emocional con ritmo de procedimental.",
+      "Esta guía reúne las producciones médicas coreanas catalogadas en HallyuHub para facilitar la búsqueda de sinopsis, reparto, valoraciones y títulos similares."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué temas aparecen en los doramas médicos coreanos?",
+        "answer": "Suelen mezclar la rutina hospitalaria, dilemas éticos, amistad, romance e historias de superación entre médicos, pacientes y familias."
+      },
+      {
+        "question": "¿Los doramas médicos son una buena forma de empezar con el K-drama?",
+        "answer": "Sí. Muchos tienen una estructura episódica fácil de seguir, pero también desarrollan arcos emocionales largos y personajes memorables."
+      }
+    ],
+    "whatYouWillFind": "Doramas ambientados en hospitales, clínicas y equipos médicos, con casos de pacientes, romance, amistad, ética profesional y trayectorias de superación.",
+    "relatedSearches": [
+      {
+        "label": "Doramas judiciales",
+        "to": "doramas-juridicos-coreanos"
+      },
+      {
+        "label": "Doramas familiares",
+        "to": "doramas-familia-coreanos"
+      },
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      }
+    ]
+  },
+  "doramas-escolares-coreanos": {
+    "slug": "doramas-escolares-coreanos",
+    "title": "Doramas escolares coreanos",
+    "shortTitle": "Doramas escolares",
+    "description": "Doramas coreanos escolares y universitarios con romance, amistad, acoso, juventud y paso a la adultez.",
+    "intro": [
+      "Los doramas escolares coreanos son una de las puertas de entrada más populares al K-drama: mezclan amistad, primer amor, rivalidad, presión por las notas y conflictos familiares.",
+      "Esta guía organiza las producciones etiquetadas con temática escolar en el catálogo de HallyuHub, para facilitar la búsqueda de historias de juventud y de crecimiento."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué define a un dorama escolar coreano?",
+        "answer": "Suelen ser historias centradas en estudiantes, colegios o universidades, con temas como la amistad, el acoso, la presión académica, el primer amor y el paso a la adultez."
+      },
+      {
+        "question": "¿Los doramas escolares son solo romance?",
+        "answer": "No. Muchos tienen romance, pero el subgénero también aparece en el suspense, la fantasía, el drama familiar, la comedia y las historias sobre salud mental o rivalidad académica."
+      }
+    ],
+    "whatYouWillFind": "Producciones ambientadas en colegios y universidades, con crecimiento personal, romance juvenil, grupos de amigos y conflictos típicos de la juventud coreana.",
+    "relatedSearches": [
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Doramas de comedia",
+        "to": "doramas-comedia-coreanos"
+      }
+    ]
+  },
+  "doramas-jtbc": {
+    "slug": "doramas-jtbc",
+    "title": "Doramas coreanos en JTBC",
+    "shortTitle": "Doramas de JTBC",
+    "description": "Doramas de JTBC, un canal de cable surcoreano lanzado en 2011, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "JTBC es un canal de cable surcoreano lanzado en 2011 por el grupo JoongAng. El catálogo incluye Beyond the Bar y Good Boy (2025), entre otros.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es JTBC?",
+        "answer": "Un canal de cable surcoreano lanzado en 2011 por el grupo JoongAng."
+      },
+      {
+        "question": "¿Qué series de JTBC están en el catálogo?",
+        "answer": "Entre las más recientes, Beyond the Bar y Good Boy (2025). La lista de la página muestra el resto."
+      }
+    ]
+  },
+  "doramas-kocowa": {
+    "slug": "doramas-kocowa",
+    "title": "Doramas coreanos en Kocowa",
+    "shortTitle": "Doramas de Kocowa",
+    "description": "Mira los doramas coreanos disponibles en Kocowa, con sinopsis, reparto, valoraciones y contexto.",
+    "intro": [
+      "Kocowa reúne contenido de las principales cadenas coreanas y es una referencia para quien sigue K-dramas, programas de variedades y estrenos cercanos a su emisión original.",
+      "Esta guía organiza las producciones coreanas asociadas a Kocowa dentro de HallyuHub, conectando las páginas de doramas, reparto y artistas relacionados."
+    ],
+    "faq": [
+      {
+        "question": "¿Kocowa tiene doramas coreanos?",
+        "answer": "Sí. Kocowa se centra en el entretenimiento coreano y reúne doramas, programas de variedades y otros contenidos de las principales cadenas de Corea."
+      }
+    ]
+  },
+  "doramas-ocn": {
+    "slug": "doramas-ocn",
+    "title": "Doramas coreanos en OCN",
+    "shortTitle": "Doramas de OCN",
+    "description": "Doramas de OCN, un canal de cable del grupo CJ ENM con series policiales, de suspense y sobrenaturales.",
+    "intro": [
+      "OCN es un canal de cable del grupo CJ ENM. En el catálogo, las series del canal son policiales, de suspense y sobrenaturales, como Tunnel y Save Me (2017), Life on Mars (2018) y The Uncanny Counter (2020).",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es OCN?",
+        "answer": "Un canal de cable surcoreano del grupo CJ ENM."
+      },
+      {
+        "question": "¿Qué series de OCN están en el catálogo?",
+        "answer": "Entre otras, Tunnel y Save Me (2017), Life on Mars (2018), Hell Is Other People (2019) y The Uncanny Counter (2020)."
+      }
+    ]
+  },
+  "doramas-disney-plus": {
+    "slug": "doramas-disney-plus",
+    "title": "Doramas coreanos en Disney+",
+    "shortTitle": "Doramas de Disney+",
+    "description": "Descubre los doramas coreanos disponibles en Disney+, con sinopsis, reparto, valoraciones y enlaces a artistas.",
+    "intro": [
+      "Disney+ entró con fuerza en el mercado del K-drama, con originales de gran presupuesto y licencias exclusivas que no aparecen en otras plataformas.",
+      "Esta guía reúne las producciones coreanas asociadas a Disney+ catalogadas en HallyuHub, con fichas para entender el reparto, la sinopsis y el contexto de cada título."
+    ],
+    "faq": [
+      {
+        "question": "¿Disney+ tiene doramas coreanos originales?",
+        "answer": "Sí. Disney+ ha invertido en K-dramas originales y exclusivos, con producciones de gran presupuesto que compiten directamente con los originales de Netflix."
+      },
+      {
+        "question": "¿HallyuHub muestra información sobre Disney+?",
+        "answer": "Cuando hay datos disponibles, las fichas de las producciones muestran plataformas, reparto, sinopsis y contexto editorial para facilitar el descubrimiento."
+      }
+    ]
+  },
+  "doramas-culinaria-coreanos": {
+    "slug": "doramas-de-cocina-coreanos",
+    "title": "Doramas coreanos de cocina y comida",
+    "shortTitle": "Doramas de cocina",
+    "description": "Doramas coreanos sobre cocina, restaurantes, chefs, comida coreana, romance e historias conmovedoras alrededor de la mesa.",
+    "intro": [
+      "La comida en un K-drama casi nunca es solo comida: marca encuentros, reconciliaciones, recuerdos familiares y el consuelo emocional que muchas historias coreanas construyen tan bien.",
+      "Esta guía reúne producciones sobre cocina, chefs, restaurantes y comida coreana del catálogo de HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Los doramas de cocina son ligeros?",
+        "answer": "Muchos tienen un tono ligero o romántico, pero el tema también puede aparecer en dramas familiares, historias de superación y relatos sobre el trabajo."
+      },
+      {
+        "question": "¿Esta guía me ayuda a descubrir la comida coreana?",
+        "answer": "Sí. Más allá de la trama, muchos doramas de cocina presentan platos, restaurantes y hábitos alimentarios coreanos que despiertan curiosidad por la cultura."
+      }
+    ],
+    "whatYouWillFind": "Producciones con restaurantes, chefs, recetas, comida coreana, romance culinario e historias conmovedoras ligadas a la cocina.",
+    "relatedSearches": [
+      {
+        "label": "Doramas familiares",
+        "to": "doramas-familia-coreanos"
+      },
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Doramas de comedia",
+        "to": "doramas-comedia-coreanos"
+      }
+    ]
+  },
+  "doramas-coreanos-2021": {
+    "slug": "doramas-coreanos-2021",
+    "title": "Doramas coreanos de 2021",
+    "shortTitle": "K-Dramas 2021",
+    "description": "Doramas y películas coreanas de 2021 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2021 que están en el catálogo, entre ellas Vincenzo y Mouse (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2021?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2021?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2018": {
+    "slug": "doramas-coreanos-2018",
+    "title": "Doramas coreanos de 2018",
+    "shortTitle": "K-Dramas 2018",
+    "description": "Doramas y películas coreanas de 2018 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2018 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2018?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2018?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2025": {
+    "slug": "doramas-coreanos-2025",
+    "title": "Doramas coreanos de 2025",
+    "shortTitle": "K-Dramas 2025",
+    "description": "Doramas y películas coreanas de 2025 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2025 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2025?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2025?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2026": {
+    "slug": "doramas-coreanos-2026",
+    "title": "Doramas coreanos de 2026",
+    "shortTitle": "K-Dramas 2026",
+    "description": "Doramas y películas coreanas de 2026 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2026 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2026?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2026?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-amazon-prime": {
+    "slug": "doramas-amazon-prime-video",
+    "title": "Doramas coreanos en Amazon Prime Video",
+    "shortTitle": "Doramas de Prime Video",
+    "description": "Una lista de los mejores doramas coreanos disponibles en Amazon Prime Video, con fichas, sinopsis y reparto.",
+    "intro": [
+      "Amazon Prime Video ha ampliado de forma significativa su catálogo de doramas coreanos, con títulos exclusivos y coproducciones.",
+      "Esta guía reúne las producciones coreanas catalogadas en HallyuHub que están disponibles en Prime Video para que encuentres fácilmente tu próximo dorama."
+    ],
+    "faq": [
+      {
+        "question": "¿Amazon Prime tiene doramas coreanos?",
+        "answer": "Sí. Amazon Prime Video ha invertido en doramas coreanos originales y licenciados para sus suscriptores."
+      },
+      {
+        "question": "¿Cuáles son los mejores doramas de Amazon Prime?",
+        "answer": "El catálogo incluye una variedad de títulos románticos, de suspense e históricos. Las producciones disponibles varían según la región; consulta la guía para ver los títulos catalogados."
+      }
+    ]
+  },
+  "doramas-sbs": {
+    "slug": "doramas-sbs",
+    "title": "Doramas coreanos en SBS",
+    "shortTitle": "Doramas de SBS",
+    "description": "Doramas de SBS, una de las tres grandes cadenas abiertas de Corea del Sur, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "SBS (Seoul Broadcasting System) es una de las tres grandes cadenas abiertas de Corea del Sur, junto con KBS y MBC. En el catálogo, Secret Garden (2010) es una de las series de la cadena.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es SBS?",
+        "answer": "Seoul Broadcasting System, una de las tres grandes cadenas abiertas de Corea del Sur, junto con KBS y MBC."
+      },
+      {
+        "question": "¿Qué series de SBS están en el catálogo?",
+        "answer": "Entre otras, Secret Garden (2010) y las producciones recientes que aparecen en la página, de la más nueva a la más antigua."
+      }
+    ]
+  },
+  "doramas-misterio-coreanos": {
+    "slug": "doramas-misterio-coreanos",
+    "title": "Doramas de misterio coreanos",
+    "shortTitle": "Doramas de misterio",
+    "description": "Doramas de misterio coreanos con enigmas, oscuros secretos, detectives privados y tramas que enganchan de principio a fin.",
+    "intro": [
+      "Los doramas de misterio coreanos son una de las categorías más adictivas del género: cada episodio trae nuevas pistas, revelaciones y giros que mantienen al público pegado a la pantalla.",
+      "De asesinos en serie a conspiraciones empresariales, de lo paranormal al thriller psicológico, el K-drama de misterio ofrece una enorme variedad de premisas y atmósferas.",
+      "Esta guía organiza las producciones coreanas con narrativas de misterio, enigmas e investigación catalogadas en HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué define a un dorama de misterio?",
+        "answer": "Un dorama de misterio tiene en su centro un secreto, un enigma o un crimen que debe resolverse a lo largo de la historia. Puede mezclar romance, terror o thriller en la trama principal."
+      },
+      {
+        "question": "¿Los doramas de misterio suelen tener un final revelador?",
+        "answer": "La mayoría sí, aunque algunos dejan cabos sueltos a propósito. El K-drama de misterio es conocido por los giros de trama y las revelaciones al final de los episodios."
+      },
+      {
+        "question": "¿Misterio y thriller son lo mismo en los doramas?",
+        "answer": "No exactamente. El thriller se centra en la tensión y el peligro inminente; el misterio, en descubrir la verdad detrás de algo oculto. Muchos K-dramas mezclan los dos."
+      }
+    ]
+  },
+  "doramas-juridicos-coreanos": {
+    "slug": "doramas-judiciales-coreanos",
+    "title": "Doramas judiciales coreanos",
+    "shortTitle": "Doramas judiciales",
+    "description": "Doramas judiciales coreanos con abogados, fiscales, tribunales, investigación y dilemas morales.",
+    "intro": [
+      "Los doramas judiciales coreanos suelen combinar casos de tribunal con drama humano, investigación y crítica social. El resultado son historias con gran potencial de maratón y fuertes debates morales.",
+      "Esta guía reúne producciones de temática judicial del catálogo de HallyuHub: desde dramas de tribunal hasta series con fiscales, abogados e investigadores."
+    ],
+    "faq": [
+      {
+        "question": "¿Los doramas judiciales coreanos se parecen a las series policiales?",
+        "answer": "A veces. La diferencia es que el foco judicial está en los tribunales, los abogados, los fiscales y las consecuencias legales, mientras que las series policiales suelen priorizar la investigación y el trabajo de campo."
+      },
+      {
+        "question": "¿Este tipo de dorama tiene un caso por episodio?",
+        "answer": "Algunos siguen casos episódicos; otros desarrollan un gran caso a lo largo de la temporada. Muchos mezclan ambos formatos."
+      }
+    ],
+    "whatYouWillFind": "Producciones con abogados, fiscales, juicios, crímenes, dilemas éticos y personajes ligados al sistema de justicia coreano.",
+    "relatedSearches": [
+      {
+        "label": "Doramas policiales",
+        "to": "doramas-policiais-coreanos"
+      },
+      {
+        "label": "Doramas de misterio",
+        "to": "doramas-misterio-coreanos"
+      },
+      {
+        "label": "Doramas de suspense",
+        "to": "doramas-thriller-coreanos"
+      }
+    ]
+  },
+  "doramas-apple-tv-plus": {
+    "slug": "doramas-apple-tv-plus",
+    "title": "Doramas coreanos en Apple TV+",
+    "shortTitle": "Doramas de Apple TV+",
+    "description": "Descubre los doramas coreanos disponibles en Apple TV+, con sinopsis, reparto, valoraciones y enlaces a artistas.",
+    "intro": [
+      "Apple TV+ es una de las plataformas que apuestan por coproducir y licenciar K-dramas de alta calidad, con foco en narrativas más maduras y producciones cinematográficas.",
+      "Esta guía reúne las producciones coreanas asociadas a Apple TV+ catalogadas en HallyuHub, con fichas para entender el reparto, la sinopsis y dónde verlas."
+    ],
+    "faq": [
+      {
+        "question": "¿Apple TV+ tiene doramas coreanos?",
+        "answer": "Sí. Apple TV+ se ha asociado en producciones coreanas de calidad cinematográfica, por lo general centradas en el thriller, el drama y narrativas de atractivo global."
+      }
+    ]
+  },
+  "doramas-viki": {
+    "slug": "doramas-viki",
+    "title": "Doramas coreanos en Viki",
+    "shortTitle": "Doramas de Viki",
+    "description": "Encuentra los doramas coreanos disponibles en Viki, con sinopsis, reparto, valoraciones y páginas relacionadas.",
+    "intro": [
+      "Viki es una de las plataformas más conocidas por los fans del K-drama, con un sólido catálogo de romances, doramas históricos, comedias románticas y series clásicas que no siempre aparecen en los servicios de streaming generalistas.",
+      "Esta guía reúne las producciones coreanas asociadas a Viki catalogadas en HallyuHub para facilitar el descubrimiento del reparto, la sinopsis, las valoraciones y el contenido relacionado."
+    ],
+    "faq": [
+      {
+        "question": "¿Viki tiene doramas coreanos subtitulados?",
+        "answer": "Sí. Viki es conocida por su catálogo de doramas asiáticos con subtítulos en muchos idiomas."
+      }
+    ]
+  },
+  "doramas-coreanos-2024": {
+    "slug": "doramas-coreanos-2024",
+    "title": "Doramas coreanos de 2024",
+    "shortTitle": "K-Dramas 2024",
+    "description": "Doramas y películas coreanas de 2024 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2024 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2024?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2024?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2023": {
+    "slug": "doramas-coreanos-2023",
+    "title": "Doramas coreanos de 2023",
+    "shortTitle": "K-Dramas 2023",
+    "description": "Doramas y películas coreanas de 2023 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2023 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2023?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2023?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2022": {
+    "slug": "doramas-coreanos-2022",
+    "title": "Doramas coreanos de 2022",
+    "shortTitle": "K-Dramas 2022",
+    "description": "Doramas y películas coreanas de 2022 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2022 que están en el catálogo, entre ellas Extraordinary Attorney Woo (ENA) y All of Us Are Dead (Netflix).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2022?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2022?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2020": {
+    "slug": "doramas-coreanos-2020",
+    "title": "Doramas coreanos de 2020",
+    "shortTitle": "K-Dramas 2020",
+    "description": "Doramas y películas coreanas de 2020 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2020 que están en el catálogo, entre ellas It's Okay to Not Be Okay (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2020?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2020?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2019": {
+    "slug": "doramas-coreanos-2019",
+    "title": "Doramas coreanos de 2019",
+    "shortTitle": "K-Dramas 2019",
+    "description": "Doramas y películas coreanas de 2019 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2019 que están en el catálogo, entre ellas Crash Landing on You (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2019?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2019?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2017": {
+    "slug": "doramas-coreanos-2017",
+    "title": "Doramas coreanos de 2017",
+    "shortTitle": "K-Dramas 2017",
+    "description": "Doramas y películas coreanas de 2017 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2017 que están en el catálogo, entre ellas Stranger (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2017?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2017?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "cantoras-kpop": {
+    "slug": "cantantes-femeninas-kpop",
+    "title": "Cantantes femeninas de K-Pop",
+    "shortTitle": "Cantantes de K-Pop",
+    "description": "Conoce a las cantantes femeninas de K-Pop, idols y solistas, con fichas, trayectorias, grupos, canciones y curiosidades.",
+    "intro": [
+      "Las cantantes femeninas de K-Pop impulsan buena parte de la cultura Hallyu: desde las vocalistas de girl groups hasta solistas con discografías propias, conectan música, performance, moda y fandom.",
+      "Esta guía reúne fichas de artistas que cantan, con atajos a los grupos relacionados y a trayectorias que merecen una lectura más atenta. Las artistas que reparten su tiempo entre la música y la actuación también aparecen aquí."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué convierte a alguien en cantante femenina de K-Pop?",
+        "answer": "En HallyuHub contamos a las mujeres coreanas, o vinculadas a la industria coreana, que trabajan como vocalistas, idols, raperas o solistas en carreras musicales."
+      },
+      {
+        "question": "¿Las actrices que también cantan entran en la lista?",
+        "answer": "Sí. Cuando una ficha registra actividad musical, la artista aparece aquí aunque también actúe en doramas y películas."
+      },
+      {
+        "question": "¿Esta lista incluye integrantes de grupos?",
+        "answer": "Sí. La guía puede incluir vocalistas e idols de girl groups, además de artistas con carrera en solitario o actividades musicales individuales."
+      }
+    ]
+  },
+  "cantores-kpop": {
+    "slug": "cantantes-masculinos-kpop",
+    "title": "Cantantes masculinos de K-Pop",
+    "shortTitle": "Cantantes masculinos de K-Pop",
+    "description": "Conoce a los cantantes masculinos de K-Pop, idols y solistas, con fichas, trayectorias, grupos, canciones y curiosidades.",
+    "intro": [
+      "Los cantantes masculinos de K-Pop, de vocalistas a raperos y de idols a solistas, representan una enorme variedad de estilos, trayectorias e historias.",
+      "Esta guía reúne fichas de artistas masculinos que cantan, con atajos a los grupos relacionados y a trayectorias que merecen tu atención. Los artistas que reparten su tiempo entre la música y la actuación también aparecen aquí."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye integrantes de grupos?",
+        "answer": "Sí. La guía puede incluir vocalistas, raperos e idols de boy groups, además de artistas con carrera en solitario o actividades musicales individuales."
+      }
+    ]
+  },
+  "atrizes-coreanas": {
+    "slug": "actrices-coreanas",
+    "title": "Actrices coreanas",
+    "shortTitle": "Actrices coreanas",
+    "description": "Conoce a las actrices coreanas, con fichas, filmografías, doramas, música y trayectorias en el entretenimiento coreano.",
+    "intro": [
+      "Las actrices coreanas están en el corazón del fenómeno K-drama: de protagonistas románticas a villanas complejas, definen buena parte de la cultura Hallyu.",
+      "Esta guía reúne fichas de actrices que aparecen en producciones coreanas, incluidas las idols que también actúan, para facilitar el descubrimiento y la navegación."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye idols que actúan?",
+        "answer": "Sí. Muchas idols de K-Pop tienen también carrera como actrices en doramas, películas o producciones especiales, y pueden aparecer en esta guía."
+      }
+    ]
+  },
+  "atores-coreanos": {
+    "slug": "actores-coreanos",
+    "title": "Actores coreanos",
+    "shortTitle": "Actores coreanos",
+    "description": "Conoce a los actores coreanos, con fichas, filmografías, doramas, trayectorias y curiosidades del entretenimiento coreano.",
+    "intro": [
+      "Los actores coreanos han conquistado al mundo no solo con los K-dramas, sino con un nivel de oficio que va del romance a la acción y al drama psicológico.",
+      "Esta guía reúne fichas de actores del entretenimiento coreano para facilitar el descubrimiento, la navegación por producciones y el seguimiento de sus trayectorias."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye idols que actúan?",
+        "answer": "Sí. Varios idols de K-Pop también actúan en doramas y películas. Cuando una ficha tiene producciones vinculadas, pueden aparecer en esta guía."
+      }
+    ]
+  },
+  "kpop-idols-famosos": {
+    "slug": "idols-de-kpop",
+    "title": "Idols de K-Pop",
+    "shortTitle": "Idols de K-Pop",
+    "description": "Conoce a los idols de K-Pop, con fichas, trayectorias, grupos, canciones y curiosidades.",
+    "intro": [
+      "El fenómeno de los idols coreanos va más allá de la música: implica un entrenamiento riguroso, conceptos visuales distintivos, fandoms globales y una industria que mueve miles de millones cada año.",
+      "Esta guía reúne a los idols más destacados de HallyuHub para facilitar la búsqueda de fichas, grupos relacionados y cobertura editorial."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es un idol coreano?",
+        "answer": "Un idol coreano es un artista formado por una agencia de entretenimiento, tras años de práctica de canto, baile e interpretación, antes de debutar en un grupo o como solista."
+      },
+      {
+        "question": "¿Qué idols están en esta guía?",
+        "answer": "Las fichas de idols del catálogo, en orden alfabético. Para un grupo concreto, usa la guía de integrantes del grupo o el buscador de arriba."
+      }
+    ]
+  },
+  "artistas-solo-kpop": {
+    "slug": "solistas-de-kpop",
+    "title": "Solistas de K-Pop",
+    "shortTitle": "Solistas de K-Pop",
+    "description": "Explora a los solistas de K-Pop, con fichas, trayectorias musicales, discografías, videos y vínculos con grupos coreanos.",
+    "intro": [
+      "Las carreras en solitario en el K-Pop permiten a los fans seguir un lado más personal de idols, vocalistas, raperos e intérpretes.",
+      "En esta selección, HallyuHub destaca a artistas con presencia musical individual, para facilitar la búsqueda de fichas, canciones y trayectorias fuera o más allá de sus grupos."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es un solista de K-Pop?",
+        "answer": "Un artista con lanzamientos o presencia musical propios, ya sea un solista a tiempo completo o un idol que también desarrolla trabajo fuera del grupo."
+      }
+    ]
+  },
+  "idols-que-atuam-em-doramas": {
+    "slug": "idols-que-actuan-en-doramas",
+    "title": "Idols que actúan en doramas",
+    "shortTitle": "Idols que actúan",
+    "description": "Una lista de idols de K-Pop que también aparecen en doramas, películas y series coreanas, con fichas y filmografías.",
+    "intro": [
+      "Muchos idols construyen carreras paralelas en doramas y películas, acercando a los fans del K-Pop al mundo de los K-dramas.",
+      "Esta guía organiza a los artistas que hacen música y también actúan, enlazando fichas, grupos y producciones para facilitar la navegación entre la música y el dorama coreano."
+    ],
+    "faq": [
+      {
+        "question": "¿Por qué los idols actúan en doramas?",
+        "answer": "Muchos idols amplían su carrera a la actuación mediante doramas, películas y series, acercando a los fandoms del K-Pop a la audiencia del K-drama."
+      }
+    ]
+  },
+  "modelos-coreanas": {
+    "slug": "modelos-coreanas",
+    "title": "Modelos coreanas",
+    "shortTitle": "Modelos coreanas",
+    "description": "Conoce a las modelos coreanas, con fichas, trayectorias, moda, campañas y vínculos con el entretenimiento coreano.",
+    "intro": [
+      "Las modelos coreanas están cada vez más presentes en la escena internacional, combinando belleza, estilo y una influencia cultural que llega más allá de la pasarela.",
+      "Esta guía reúne fichas de modelos del catálogo de HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye modelos que también son idols?",
+        "answer": "Sí. Muchas idols de K-Pop trabajan también como modelos y embajadoras de marcas de moda internacionales."
+      }
+    ]
+  },
+  "modelos-coreanos": {
+    "slug": "modelos-coreanos",
+    "title": "Modelos coreanos",
+    "shortTitle": "Modelos coreanos",
+    "description": "Conoce a los modelos coreanos, con fichas, trayectorias, moda, campañas y vínculos con el entretenimiento coreano.",
+    "intro": [
+      "Los modelos coreanos se han ganado un lugar en las marcas de lujo internacionales, a menudo combinando el modelaje con carreras como idols o actores.",
+      "Esta guía reúne fichas de modelos masculinos del catálogo de HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye idols que son modelos?",
+        "answer": "Sí. Varios idols son embajadores de marcas de moda de lujo y pueden aparecer en esta guía cuando tienen ficha en el catálogo."
+      }
+    ]
+  },
+  "artistas-jyp-entertainment": {
+    "slug": "artistas-jyp-entertainment",
+    "title": "Artistas de JYP Entertainment",
+    "shortTitle": "JYP",
+    "description": "Conoce a los artistas y grupos de JYP Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "JYP Entertainment es una de las tres grandes discográficas del K-Pop, fundada por Park Jin-young en 1997, con un elenco que ha incluido a 2PM, TWICE, ITZY, Stray Kids y muchos otros.",
+      "Esta guía reúne a los artistas y grupos vinculados a JYP en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de JYP?",
+        "answer": "Entre los grupos más conocidos de JYP Entertainment, pasados y presentes, están TWICE, Stray Kids, ITZY, 2PM, 2AM, miss A, Wonder Girls, GOT7 y DAY6."
+      },
+      {
+        "question": "¿Quién fundó JYP Entertainment?",
+        "answer": "JYP Entertainment fue fundada en 1997 por el cantante y productor Park Jin-young."
+      }
+    ]
+  },
+  "artistas-sm-entertainment": {
+    "slug": "artistas-sm-entertainment",
+    "title": "Artistas de SM Entertainment",
+    "shortTitle": "SM",
+    "description": "Conoce a los artistas y grupos de SM Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "SM Entertainment es pionera del K-Pop moderno, fundada por Lee Soo-man en 1995 y responsable de dar forma al sistema de idols que influye en toda la industria.",
+      "Esta guía reúne a los artistas y grupos vinculados a SM en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de SM?",
+        "answer": "Entre los mayores grupos de SM Entertainment están EXO, NCT (NCT 127, NCT Dream, WayV), aespa, Red Velvet, SHINee, Girls' Generation, Super Junior y TVXQ."
+      }
+    ]
+  },
+  "artistas-yg-entertainment": {
+    "slug": "artistas-yg-entertainment",
+    "title": "Artistas de YG Entertainment",
+    "shortTitle": "YG",
+    "description": "Conoce a los artistas y grupos de YG Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "YG Entertainment es conocida por su estilo hip-hop y streetwear en el K-Pop, con un elenco que incluye a BLACKPINK, BIGBANG, 2NE1, WINNER, iKON y TREASURE.",
+      "Esta guía reúne a los artistas y grupos vinculados a YG en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de YG?",
+        "answer": "Entre los mayores grupos de YG Entertainment están BLACKPINK, BIGBANG, 2NE1, WINNER, iKON y TREASURE, además de solistas como G-Dragon y CL."
+      }
+    ]
+  },
+  "artistas-hybe": {
+    "slug": "artistas-hybe",
+    "title": "Artistas de HYBE (Big Hit)",
+    "shortTitle": "HYBE",
+    "description": "Conoce a los artistas y grupos de HYBE (Big Hit), con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "HYBE (antes Big Hit Entertainment) es la empresa detrás de BTS y hoy reúne sellos como BELIFT LAB, SOURCE MUSIC, ADOR y Pledis.",
+      "Esta guía reúne a los artistas y grupos vinculados a HYBE en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué grupos forman parte de HYBE?",
+        "answer": "HYBE es la casa de BTS, TOMORROW X TOGETHER (TXT), ENHYPEN (BELIFT LAB), LE SSERAFIM (SOURCE MUSIC), &TEAM y SEVENTEEN (Pledis), entre otros."
+      }
+    ]
+  },
+  "artistas-pledis-entertainment": {
+    "slug": "artistas-pledis-entertainment",
+    "title": "Artistas de Pledis Entertainment",
+    "shortTitle": "Pledis",
+    "description": "Conoce a los artistas y grupos de Pledis Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Pledis Entertainment, hoy parte de HYBE, es el sello detrás de SEVENTEEN y NU'EST, además de grupos anteriores como After School y Orange Caramel.",
+      "Esta guía reúne a los artistas y grupos vinculados a Pledis en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de Pledis?",
+        "answer": "Los mayores grupos de Pledis Entertainment son SEVENTEEN y NU'EST."
+      }
+    ]
+  },
+  "artistas-cube-entertainment": {
+    "slug": "artistas-cube-entertainment",
+    "title": "Artistas de Cube Entertainment",
+    "shortTitle": "Cube",
+    "description": "Conoce a los artistas y grupos de Cube Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Cube Entertainment es conocida por grupos como (G)I-DLE y BTOB, y por artistas que ayudaron a definir el K-Pop de segunda y tercera generación, entre ellas HyunA.",
+      "Esta guía reúne a los artistas y grupos vinculados a Cube en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de Cube?",
+        "answer": "Entre los grupos de Cube Entertainment, pasados y presentes, están (G)I-DLE, BTOB, CLC, 4Minute y PENTAGON, además de solistas como HyunA."
+      }
+    ]
+  },
+  "artistas-starship-entertainment": {
+    "slug": "artistas-starship-entertainment",
+    "title": "Artistas de Starship Entertainment",
+    "shortTitle": "Starship",
+    "description": "Conoce a los artistas y grupos de Starship Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Starship Entertainment es el sello detrás de MONSTA X, IVE, SISTAR y otros grupos que marcaron distintas generaciones del K-Pop.",
+      "Esta guía reúne a los artistas y grupos vinculados a Starship en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los mayores grupos de Starship?",
+        "answer": "Entre los mayores grupos de Starship Entertainment están MONSTA X, SISTAR, WJSN, CRAVITY e IVE."
+      }
+    ]
+  },
+  "artistas-fnc-entertainment": {
+    "slug": "artistas-fnc-entertainment",
+    "title": "Artistas de FNC Entertainment",
+    "shortTitle": "FNC",
+    "description": "Conoce a los artistas y grupos de FNC Entertainment, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "FNC Entertainment es conocida por grupos como FTISLAND, CNBLUE, AOA y N.Flying, con una fuerte identidad de banda en vivo y de rock coreano.",
+      "Esta guía reúne a los artistas y grupos vinculados a FNC en el catálogo de HallyuHub, para facilitar la navegación por fichas y cobertura relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué distingue a FNC de otras discográficas?",
+        "answer": "FNC Entertainment es conocida por trabajar con bandas en vivo (FTISLAND, CNBLUE, N.Flying) junto con grupos de performance, lo que la distingue de la mayoría de los sellos centrados solo en grupos de idols."
+      }
+    ]
+  },
+  "iu": {
+    "slug": "iu",
+    "title": "IU (Lee Ji-eun)",
+    "shortTitle": "IU",
+    "description": "Perfil completo de IU (Lee Ji-eun): discografía, carrera en solitario, doramas, logros y curiosidades.",
+    "intro": [
+      "IU (아이유), cuyo nombre real es Lee Ji-eun, debutó en 2008 bajo LOEN Entertainment y desde entonces ha construido una carrera como cantante y actriz.",
+      "Además de cantar, IU actúa: protagonizó \"My Mister\" (2018) y \"Hotel Del Luna\" (2019)."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuál es el nombre real de IU?",
+        "answer": "El nombre real de IU es Lee Ji-eun (이지은). El nombre artístico \"IU\" alude a la idea de \"I\" y \"You\" (yo y tú) unidos por la música."
+      },
+      {
+        "question": "¿IU forma parte de un grupo?",
+        "answer": "No. IU tiene una carrera exclusivamente en solitario desde su debut en 2008."
+      },
+      {
+        "question": "¿Cuáles son algunos sencillos de IU?",
+        "answer": "Entre los sencillos de IU están \"Good Day\" (2010), \"You and I\" (2011), \"Palette\" (2017), \"BBIBBI\" (2018), \"Blueming\" (2019) y \"Celebrity\" (2021)."
+      }
+    ]
+  },
+  "taeyeon": {
+    "slug": "taeyeon",
+    "title": "Taeyeon (SNSD)",
+    "shortTitle": "Taeyeon",
+    "description": "Perfil completo de Taeyeon: carrera en solitario, álbumes, liderazgo de SNSD/Girls' Generation, logros y discografía.",
+    "intro": [
+      "Kim Taeyeon es la líder y vocalista principal de SNSD (Girls' Generation) y una de las solistas más aclamadas del K-Pop. Debutó con SNSD en 2007 y comenzó su carrera en solitario en 2015.",
+      "Considerada una de las mejores voces del K-Pop, Taeyeon ha lanzado álbumes aclamados y ha construido una sólida carrera en solitario junto a SNSD."
+    ],
+    "faq": [
+      {
+        "question": "¿Taeyeon forma parte de SNSD?",
+        "answer": "Sí. Taeyeon es la líder y vocalista principal de SNSD (Girls' Generation). También tiene una extensa carrera en solitario que comenzó en 2015."
+      },
+      {
+        "question": "¿Cuáles son algunos sencillos en solitario de Taeyeon?",
+        "answer": "Entre los sencillos de Taeyeon están \"I\" (2015), \"Four Seasons\" (2019) e \"INVU\" (2022)."
+      }
+    ]
+  },
+  "g-dragon": {
+    "slug": "g-dragon",
+    "title": "G-Dragon (BIGBANG)",
+    "shortTitle": "G-Dragon",
+    "description": "Perfil completo de G-Dragon: carrera en solitario, álbumes, liderazgo de BIGBANG, influencia en la moda y logros en el K-Pop.",
+    "intro": [
+      "Kwon Ji-yong, conocido como G-Dragon, es el líder y la principal fuerza creativa de BIGBANG. Se le considera uno de los mejores artistas del K-Pop de todos los tiempos, tanto por su música como por su influencia en la moda.",
+      "La carrera en solitario de G-Dragon incluye los álbumes \"Heartbreaker\" (2009) y \"One of a Kind\" (2012)."
+    ],
+    "faq": [
+      {
+        "question": "¿G-Dragon forma parte de BIGBANG?",
+        "answer": "Sí. G-Dragon es el líder y principal compositor de BIGBANG."
+      },
+      {
+        "question": "¿Cuál es el nombre real de G-Dragon?",
+        "answer": "El nombre real de G-Dragon es Kwon Ji-yong (권지용)."
+      }
+    ]
+  },
+  "hyuna": {
+    "slug": "hyuna",
+    "title": "HyunA",
+    "shortTitle": "HyunA",
+    "description": "Perfil completo de HyunA: carrera en solitario, exintegrante de 4Minute y Wonder Girls, éxitos icónicos, estilo y discografía.",
+    "intro": [
+      "Kim Hyun-ah, conocida como HyunA, es una de las mujeres más audaces e influyentes del K-Pop. Exintegrante de 4Minute y, brevemente, de Wonder Girls, construyó una de las carreras en solitario más consistentes entre los idols de su generación.",
+      "\"Bubble Pop!\" (2011) y \"Red\" (2013) se convirtieron en clásicos del pop coreano."
+    ],
+    "faq": [
+      {
+        "question": "¿HyunA formó parte de algún grupo?",
+        "answer": "Sí. HyunA fue integrante fundadora de 4Minute (2009–2016) y tuvo un breve paso por Wonder Girls."
+      }
+    ]
+  },
+  "jungkook": {
+    "slug": "jungkook",
+    "title": "Jungkook (BTS)",
+    "shortTitle": "Jungkook",
+    "description": "Perfil completo de Jungkook: carrera en solitario, el álbum \"GOLDEN\", los éxitos \"Seven\" y \"Standing Next to You\" y logros históricos del K-Pop.",
+    "intro": [
+      "Jeon Jungkook es el maknae (el menor) de BTS y lanzó su carrera en solitario en 2023. Su sencillo \"Seven\" (2023, feat. Latto) debutó en el n.º 1 del Billboard Hot 100."
+    ],
+    "faq": [
+      {
+        "question": "¿Jungkook sigue en BTS?",
+        "answer": "Sí. Jungkook es integrante de BTS desde el debut del grupo en 2013."
+      },
+      {
+        "question": "¿Cuáles son los sencillos en solitario de Jungkook?",
+        "answer": "Entre sus sencillos en solitario están \"Seven\" (2023, que debutó en el n.º 1 del Billboard Hot 100), \"Standing Next to You\" (2023) y \"3D\" (feat. Jack Harlow, 2023)."
+      }
+    ]
+  },
+  "rose-blackpink": {
+    "slug": "rose-blackpink",
+    "title": "Rosé (BLACKPINK)",
+    "shortTitle": "Rosé (BLACKPINK)",
+    "description": "Perfil completo de Rosé: vocalista de BLACKPINK, álbum en solitario \"rosie\", los éxitos \"On The Ground\" y \"APT.\" y carrera internacional.",
+    "intro": [
+      "Roseanne Park, conocida como Rosé, es la vocalista principal de BLACKPINK y una de las artistas de K-Pop con mayor alcance internacional.",
+      "En 2024, Rosé lanzó su álbum en solitario \"rosie\", que incluye \"APT.\", una colaboración con Bruno Mars."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son algunos sencillos de Rosé?",
+        "answer": "Entre los sencillos de Rosé están \"On The Ground\" (2021), \"Gone\" (2021) y \"APT.\" (feat. Bruno Mars, 2024)."
+      }
+    ]
+  },
+  "jennie": {
+    "slug": "jennie-blackpink",
+    "title": "Jennie (BLACKPINK)",
+    "shortTitle": "Jennie (BLACKPINK)",
+    "description": "Perfil completo de Jennie: rapera y vocalista de BLACKPINK, carrera en solitario, los éxitos \"SOLO\" y \"Mantra\" e ícono global de la moda.",
+    "intro": [
+      "Jennie Kim es rapera y vocalista de BLACKPINK y una de las artistas de K-Pop más influyentes en el mercado global, conocida por su magnética presencia escénica y su versatilidad estilística.",
+      "En 2024, Jennie lanzó el sencillo \"Mantra\" a través de su propio sello, OA (Odd Atelier), que marcó una nueva etapa de independencia artística."
+    ],
+    "faq": [
+      {
+        "question": "¿Jennie tiene su propio sello?",
+        "answer": "Sí. Jennie dirige su propio sello, OA (Odd Atelier), con el que lanzó \"Mantra\" en 2024."
+      }
+    ]
+  },
+  "lisa-blackpink": {
+    "slug": "lisa-blackpink",
+    "title": "Lisa (BLACKPINK)",
+    "shortTitle": "Lisa (BLACKPINK)",
+    "description": "Perfil completo de Lisa: bailarina principal de BLACKPINK, los éxitos \"LALISA\" y \"MONEY\", carrera en solitario e ícono global del baile.",
+    "intro": [
+      "Lalisa Manoban, conocida como Lisa, es la bailarina principal y rapera de BLACKPINK, y un fenómeno global con una de las mayores bases de fans individuales del K-Pop. Nació en Tailandia.",
+      "En 2024, Lisa firmó con RCA Records en Estados Unidos y lanzó el aclamado sencillo \"Rockstar\"."
+    ],
+    "faq": [
+      {
+        "question": "¿Lisa es tailandesa?",
+        "answer": "Sí. Lisa nació en Buriram, Tailandia, y es una de las artistas tailandesas más destacadas del K-Pop."
+      }
+    ]
+  },
+  "jisoo": {
+    "slug": "jisoo-blackpink",
+    "title": "Jisoo (BLACKPINK)",
+    "shortTitle": "Jisoo (BLACKPINK)",
+    "description": "Perfil completo de Jisoo: vocalista y visual de BLACKPINK, álbum en solitario \"ME\", actriz en \"Snowdrop\" e ícono de belleza.",
+    "intro": [
+      "Kim Ji-soo, conocida como Jisoo, es la vocalista y visual de BLACKPINK, y la integrante de mayor edad del grupo.",
+      "Además de la música, Jisoo es actriz: protagonizó el dorama \"Snowdrop\" (2021–2022) junto a Jung Hae-in."
+    ],
+    "faq": [
+      {
+        "question": "¿Jisoo actúa en doramas?",
+        "answer": "Sí. Jisoo protagonizó el dorama \"Snowdrop\" (2021–2022), emitido en Disney+, junto a Jung Hae-in."
+      }
+    ]
+  },
+  "karina-aespa": {
+    "slug": "karina-aespa",
+    "title": "Karina (aespa)",
+    "shortTitle": "Karina (aespa)",
+    "description": "Perfil completo de Karina, de aespa: líder y centro del grupo, e ícono de belleza del K-Pop de cuarta generación.",
+    "intro": [
+      "Yoo Ji-min, conocida como Karina, es la líder y uno de los rostros principales de aespa. Se la considera uno de los mayores íconos visuales y de moda del K-Pop de cuarta generación."
+    ],
+    "faq": [
+      {
+        "question": "¿Por qué Karina es tan famosa en el K-Pop?",
+        "answer": "Karina es conocida por su aspecto llamativo, su técnica de baile, su presencia escénica y una personalidad que conecta especialmente con los fans de cuarta generación."
+      }
+    ]
+  },
+  "wonyoung-ive": {
+    "slug": "wonyoung-ive",
+    "title": "Wonyoung (IVE)",
+    "shortTitle": "Wonyoung (IVE)",
+    "description": "Perfil completo de Wonyoung, de IVE: centro del grupo, ícono de moda, embajadora de marcas y carrera en el K-Pop.",
+    "intro": [
+      "Jang Wonyoung es el centro y la visual de IVE, y una de las trendsetters más jóvenes del K-Pop actual."
+    ],
+    "faq": [
+      {
+        "question": "¿Wonyoung estuvo en IZ*ONE?",
+        "answer": "Sí. Antes de IVE, Wonyoung formó parte de IZ*ONE (2018–2021)."
+      }
+    ]
+  },
+  "jimin-bts": {
+    "slug": "jimin-bts",
+    "title": "Jimin (BTS)",
+    "shortTitle": "Jimin (BTS)",
+    "description": "Perfil completo de Jimin, de BTS: álbum en solitario \"FACE\", éxito global \"Like Crazy\", carrera individual, bailes icónicos y curiosidades.",
+    "intro": [
+      "Park Jimin es vocalista y bailarín principal de BTS. En 2023, su debut en solitario \"FACE\" dio \"Like Crazy\", que llegó al n.º 1 del Billboard Hot 100 y lo convirtió en el primer solista coreano en encabezar la lista estadounidense."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuál es el álbum en solitario de Jimin?",
+        "answer": "\"FACE\" (2023) es el primer álbum en solitario de Jimin, con el éxito \"Like Crazy\", que llegó al n.º 1 del Billboard Hot 100."
+      }
+    ]
+  },
+  "grupos-femininos-kpop": {
+    "slug": "girl-groups-de-kpop",
+    "title": "Girl groups de K-Pop",
+    "shortTitle": "Girl groups",
+    "description": "Conoce a los girl groups de K-Pop, con integrantes, discografías, trayectorias, videos y fichas completas.",
+    "intro": [
+      "Los girl groups son uno de los motores del K-Pop global: combinan conceptos visuales, coreografías, voces y fandoms muy activos.",
+      "Aquí encontrarás girl groups con enlaces a integrantes, canciones, videos y páginas relacionadas en HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es un girl group de K-Pop?",
+        "answer": "Un grupo femenino de la industria coreana, normalmente formado por idols y centrado en la música, la performance, los conceptos visuales y el fandom."
+      },
+      {
+        "question": "¿La guía incluye grupos activos e inactivos?",
+        "answer": "Sí. La lista puede incluir grupos activos, inactivos o disueltos cuando tienen relevancia cultural y un perfil público en HallyuHub."
+      }
+    ]
+  },
+  "grupos-masculinos-kpop": {
+    "slug": "boy-groups-de-kpop",
+    "title": "Boy groups de K-Pop",
+    "shortTitle": "Boy groups",
+    "description": "Descubre los boy groups de K-Pop, con fichas de integrantes, discografías, fandoms, trayectorias y curiosidades.",
+    "intro": [
+      "Los boy groups son un pilar del K-Pop: de BTS a Stray Kids, de SHINee a SEVENTEEN, cada grupo aporta una identidad propia que conecta a fans de todo el mundo.",
+      "En esta guía encontrarás boy groups con enlaces a integrantes, canciones, videos y páginas relacionadas en HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es un boy group de K-Pop?",
+        "answer": "Un grupo masculino de la industria coreana, normalmente formado por idols y centrado en la música, el baile, la performance y un fandom activo."
+      },
+      {
+        "question": "¿La guía incluye grupos de todas las generaciones?",
+        "answer": "Sí. La lista puede incluir grupos activos o disueltos de distintas generaciones del K-Pop."
+      }
+    ]
+  },
+  "grupos-3a-geracao-kpop": {
+    "slug": "grupos-de-kpop-de-tercera-generacion",
+    "title": "Grupos de K-Pop de tercera generación",
+    "shortTitle": "K-Pop de 3.ª generación",
+    "description": "Los mayores grupos de K-Pop de tercera generación, con fichas, discografías, fandoms y curiosidades.",
+    "intro": [
+      "El K-Pop de tercera generación (2012–2017) consolidó el género a nivel global: BTS, EXO, BLACKPINK, TWICE y GOT7 son los nombres que convirtieron al K-Pop de un nicho en un fenómeno de cultura pop mundial.",
+      "Esta guía reúne los grupos más representativos de la era que allanó el camino para el éxito del K-Pop en Occidente."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuándo fue la tercera generación del K-Pop?",
+        "answer": "La tercera generación se sitúa por lo general entre 2012 y 2017, con grupos como EXO, BTS, GOT7, TWICE y BLACKPINK."
+      },
+      {
+        "question": "¿BTS es de tercera generación?",
+        "answer": "Sí. BTS debutó en 2013 y se considera el grupo más representativo de la tercera generación."
+      }
+    ]
+  },
+  "grupos-kpop-decada-2000": {
+    "slug": "grupos-de-kpop-de-los-2000",
+    "title": "Grupos de K-Pop de los años 2000",
+    "shortTitle": "K-Pop de los 2000",
+    "description": "Grupos de K-Pop que definieron los años 2000: TVXQ, Super Junior, Girls' Generation, Wonder Girls, SHINee y otros pioneros de la ola Hallyu.",
+    "intro": [
+      "Los años 2000 fueron la era fundacional del K-Pop moderno. TVXQ, Super Junior, Girls' Generation, Wonder Girls, SHINee y 2NE1 sentaron las bases de lo que el K-Pop sería a nivel global.",
+      "Esta guía reúne grupos que debutaron y estuvieron más activos en los años 2000 y que figuran en HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué grupos definieron el K-Pop en los años 2000?",
+        "answer": "TVXQ, Super Junior, Girls' Generation (SNSD), Wonder Girls, SHINee, 2NE1 y BIGBANG son los grupos más icónicos surgidos en los años 2000."
+      }
+    ]
+  },
+  "grupos-kpop-boy-groups-famosos": {
+    "slug": "boy-groups-famosos-de-kpop",
+    "title": "Boy groups famosos de K-Pop",
+    "shortTitle": "Boy groups famosos",
+    "description": "Boy groups de K-Pop con integrantes, discografías y trayectorias: BTS, EXO, BIGBANG, Stray Kids, ATEEZ, TXT y más.",
+    "intro": [
+      "El catálogo reúne boy groups de muchas generaciones, de BIGBANG (2006) y EXO (2012) a BTS (2013), Stray Kids y ATEEZ (2018) y TXT (2019).",
+      "Esta guía reúne los grupos masculinos más conocidos en HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué boy groups están en el catálogo?",
+        "answer": "Entre otros, Super Junior (2005), BIGBANG (2006), EXO (2012), BTS (2013), MONSTA X (2015), NCT (2016), Stray Kids y ATEEZ (2018) y TXT (2019). La lista de la página muestra el resto."
+      }
+    ]
+  },
+  "grupos-jyp-entertainment": {
+    "slug": "grupos-de-jyp-entertainment",
+    "title": "Grupos de JYP Entertainment: TWICE, Stray Kids, ITZY y más",
+    "shortTitle": "Grupos de JYP",
+    "description": "Grupos de JYP Entertainment, de Wonder Girls y 2PM a TWICE, Stray Kids, ITZY y NMIXX, con integrantes, trayectorias y discografías.",
+    "intro": [
+      "JYP Entertainment tiene girl groups, boy groups y bandas, entre ellos TWICE, Stray Kids e ITZY.",
+      "Esta guía reúne los grupos de JYP que figuran en HallyuHub para facilitar la navegación por integrantes, trayectorias, canciones y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué grupos son de JYP Entertainment?",
+        "answer": "JYP es conocida por grupos como TWICE, Stray Kids, ITZY, 2PM, Wonder Girls, miss A, GOT7 y DAY6, entre otros."
+      }
+    ]
+  },
+  "grupos-sm-entertainment": {
+    "slug": "grupos-de-sm-entertainment",
+    "title": "Grupos de SM Entertainment",
+    "shortTitle": "Grupos de SM",
+    "description": "Explora los grupos de SM Entertainment, con integrantes, trayectorias, discografías y fichas completas.",
+    "intro": [
+      "SM Entertainment es una de las empresas que dieron forma al K-Pop moderno, con grupos que marcaron distintas generaciones y llevaron el género más allá de Corea.",
+      "Esta guía organiza los grupos de SM en HallyuHub para conectar las páginas de integrantes, canciones, videos y contexto histórico."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuáles son los grupos más conocidos de SM?",
+        "answer": "EXO, NCT, aespa, Red Velvet, SHINee, Girls' Generation, Super Junior y TVXQ están entre los nombres más conocidos de SM."
+      }
+    ]
+  },
+  "grupos-yg-entertainment": {
+    "slug": "grupos-de-yg-entertainment",
+    "title": "Grupos de YG Entertainment",
+    "shortTitle": "Grupos de YG",
+    "description": "Mira los grupos de YG Entertainment, con integrantes, trayectorias, éxitos, videos y fichas.",
+    "intro": [
+      "YG Entertainment se asocia a un estilo más urbano y hip-hop dentro del K-Pop, con grupos que ayudaron a definir la presencia global del género.",
+      "Esta guía reúne los grupos de YG que figuran en HallyuHub, conectando las páginas de integrantes, discografías y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué grupos son de YG Entertainment?",
+        "answer": "BLACKPINK, BIGBANG, 2NE1, WINNER, iKON, TREASURE y BABYMONSTER están entre los principales grupos asociados a YG."
+      }
+    ]
+  },
+  "grupos-hybe": {
+    "slug": "grupos-de-hybe-y-big-hit-music",
+    "title": "Grupos de HYBE y Big Hit Music",
+    "shortTitle": "Grupos de HYBE",
+    "description": "Conoce los grupos de HYBE y Big Hit Music, con integrantes, trayectorias, discografías y fichas.",
+    "intro": [
+      "HYBE transformó el K-Pop a nivel global sobre el éxito de BTS y amplió su ecosistema con sellos y grupos dirigidos a públicos internacionales.",
+      "Esta guía reúne los grupos vinculados a Big Hit Music que figuran en HallyuHub, con navegación hacia integrantes, canciones y páginas relacionadas."
+    ],
+    "faq": [
+      {
+        "question": "¿HYBE y Big Hit Music son lo mismo?",
+        "answer": "Big Hit Entertainment pasó a ser HYBE como grupo corporativo; Big Hit Music sigue siendo el sello responsable de artistas como BTS y TXT."
+      }
+    ]
+  },
+  "grupos-starship-entertainment": {
+    "slug": "grupos-de-starship-entertainment",
+    "title": "Grupos de Starship Entertainment",
+    "shortTitle": "Grupos de Starship",
+    "description": "Descubre los grupos de Starship Entertainment, con integrantes, trayectorias, canciones y fichas.",
+    "intro": [
+      "Starship Entertainment construyó una fuerte identidad en el K-Pop con girl groups y boy groups conocidos por su performance, sus voces y sus éxitos de gran alcance.",
+      "Esta guía reúne los grupos de Starship que figuran en HallyuHub para facilitar el descubrimiento de integrantes, discografías y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué grupos son de Starship?",
+        "answer": "IVE, MONSTA X, SISTAR, WJSN y CRAVITY están entre los grupos más conocidos asociados a Starship Entertainment."
+      }
+    ]
+  },
+  "grupos-cube-entertainment": {
+    "slug": "grupos-de-cube-entertainment",
+    "title": "Grupos de Cube Entertainment",
+    "shortTitle": "Grupos de Cube",
+    "description": "Mira los grupos de Cube Entertainment, con integrantes, trayectorias, discografías, videos y fichas.",
+    "intro": [
+      "Cube Entertainment ha lanzado grupos con una fuerte identidad creativa, de idols productores a girl groups que marcaron tendencia en el K-Pop.",
+      "Esta guía organiza los grupos de Cube que figuran en HallyuHub, conectando las páginas de integrantes, canciones e historia de su trayectoria."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué grupos son de Cube Entertainment?",
+        "answer": "(G)I-DLE, BTOB, PENTAGON, CLC y 4Minute están entre los nombres más conocidos de Cube, pasados y presentes."
+      }
+    ]
+  },
+  "integrantes-do-bts": {
+    "slug": "integrantes-de-bts",
+    "title": "Integrantes de BTS",
+    "shortTitle": "BTS",
+    "description": "Conoce a los integrantes de BTS, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "BTS es un grupo de siete integrantes que debutó en 2013 bajo Big Hit, hoy parte de HYBE, y cuyos miembros también han lanzado proyectos en solitario.",
+      "Esta guía reúne las fichas de los integrantes con ficha en HallyuHub para que fans y recién llegados exploren con facilidad cada trayectoria individual."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son los integrantes de BTS?",
+        "answer": "BTS tiene siete integrantes: RM, Jin, Suga, J-Hope, Jimin, V y Jungkook. Todos tienen ficha en HallyuHub con discografías, videos y trayectorias individuales."
+      },
+      {
+        "question": "¿Los integrantes de BTS tienen carrera en solitario?",
+        "answer": "Sí. Todos han lanzado proyectos en solitario: RM con \"Indigo\", Jin con \"The Astronaut\", Suga bajo su identidad Agust D, J-Hope con \"Jack in the Box\", Jimin con \"FACE\", V con \"Layover\" y Jungkook con \"GOLDEN\"."
+      },
+      {
+        "question": "¿Los integrantes de BTS hicieron el servicio militar?",
+        "answer": "Sí. Los siete completaron el servicio militar obligatorio de Corea del Sur, con bajas entre 2024 y junio de 2025."
+      }
+    ],
+    "whatYouWillFind": "En esta guía encontrarás las fichas de los siete integrantes de BTS (RM, Jin, Suga, J-Hope, Jimin, V y Jungkook), con discografías en solitario, videos, colaboraciones, curiosidades y enlaces relacionados."
+  },
+  "integrantes-do-blackpink": {
+    "slug": "integrantes-de-blackpink",
+    "title": "Integrantes de BLACKPINK",
+    "shortTitle": "BLACKPINK",
+    "description": "Conoce a los integrantes de BLACKPINK, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "BLACKPINK es un girl group de YG Entertainment que debutó en 2016, y sus cuatro integrantes tienen también carrera en solitario.",
+      "Esta guía conecta las páginas individuales de las integrantes para quien quiera seguir su música, su moda, su actuación y su presencia internacional."
+    ],
+    "faq": [
+      {
+        "question": "¿Las integrantes de BLACKPINK tienen carrera en solitario?",
+        "answer": "Sí. Rosé lanzó el álbum \"rosie\" (2024), Jennie tiene una extensa carrera en solitario con \"Solo\" y \"You & Me\", Lisa se consolidó globalmente con \"LALISA\" y \"MONEY\", y Jisoo protagonizó el dorama \"Snowdrop\"."
+      },
+      {
+        "question": "¿Cuántas integrantes tiene BLACKPINK?",
+        "answer": "Cuatro: Jisoo, Jennie, Rosé y Lisa. El grupo debutó en 2016 bajo YG Entertainment."
+      }
+    ],
+    "whatYouWillFind": "Aquí encontrarás las fichas individuales de cada integrante de BLACKPINK, con enlaces a discografías, videos, doramas, campañas de moda y conexiones con otros artistas."
+  },
+  "integrantes-do-twice": {
+    "slug": "integrantes-de-twice",
+    "title": "Integrantes de TWICE",
+    "shortTitle": "TWICE",
+    "description": "Conoce a los integrantes de TWICE, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "TWICE es un girl group de JYP Entertainment que debutó en 2015 y también lanza música en Japón.",
+      "Esta guía reúne a los integrantes con ficha pública en HallyuHub para facilitar la navegación por fichas, trayectorias individuales y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son las integrantes de TWICE?",
+        "answer": "Esta guía reúne a las integrantes de TWICE con ficha pública en HallyuHub, con enlaces a sus páginas individuales."
+      }
+    ]
+  },
+  "integrantes-do-aespa": {
+    "slug": "integrantes-de-aespa",
+    "title": "Integrantes de aespa",
+    "shortTitle": "aespa",
+    "description": "Conoce a los integrantes de aespa, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "aespa es un girl group de SM Entertainment que debutó en 2020 con un concepto que une a las integrantes con avatares digitales.",
+      "En esta guía encontrarás enlaces directos a las integrantes y podrás explorar fichas relacionadas del catálogo de HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye a todas las integrantes de aespa?",
+        "answer": "La guía enumera a las integrantes de aespa que tienen ficha pública en HallyuHub."
+      }
+    ]
+  },
+  "integrantes-do-ive": {
+    "slug": "integrantes-de-ive",
+    "title": "Integrantes de IVE",
+    "shortTitle": "IVE",
+    "description": "Conoce a los integrantes de IVE, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "IVE es un girl group de Starship Entertainment que debutó en 2021.",
+      "Esta guía organiza las páginas de las integrantes para facilitar la navegación por fichas, trayectorias y conexiones en HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son las integrantes de IVE?",
+        "answer": "IVE es un girl group de K-Pop. Esta guía reúne a las integrantes con ficha en HallyuHub, con enlaces a sus páginas individuales."
+      }
+    ]
+  },
+  "integrantes-do-newjeans": {
+    "slug": "integrantes-de-newjeans",
+    "title": "Integrantes de NewJeans",
+    "shortTitle": "NewJeans",
+    "description": "Conoce a los integrantes de NewJeans, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "NewJeans es un girl group que debutó en 2022 bajo ADOR, un sello de HYBE.",
+      "Esta guía organiza a las integrantes con ficha en HallyuHub para facilitar el descubrimiento y la navegación."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía enumera a todas las integrantes de NewJeans?",
+        "answer": "Enumera a las integrantes con ficha pública en HallyuHub."
+      }
+    ]
+  },
+  "integrantes-do-le-sserafim": {
+    "slug": "integrantes-de-le-sserafim",
+    "title": "Integrantes de LE SSERAFIM",
+    "shortTitle": "LE SSERAFIM",
+    "description": "Conoce a los integrantes de LE SSERAFIM, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "LE SSERAFIM es un girl group que debutó en 2022 bajo Source Music, un sello de HYBE.",
+      "Esta guía reúne a los integrantes con ficha pública en HallyuHub para facilitar la navegación por fichas, trayectorias individuales y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿La guía incluye actividades individuales?",
+        "answer": "Cuando están disponibles, las actividades individuales aparecen en las fichas de las integrantes."
+      }
+    ]
+  },
+  "integrantes-do-stray-kids": {
+    "slug": "integrantes-de-stray-kids",
+    "title": "Integrantes de Stray Kids",
+    "shortTitle": "Stray Kids",
+    "description": "Conoce a los integrantes de Stray Kids, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Stray Kids es un boy group de JYP Entertainment que debutó en 2018, cuyos integrantes participan en la composición y producción de la música; el fandom se llama STAY.",
+      "Esta guía organiza a los integrantes con ficha en HallyuHub para facilitar la navegación por fichas, actividades individuales y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son los integrantes de Stray Kids?",
+        "answer": "Stray Kids está formado por Bang Chan, Lee Know, Changbin, Hyunjin, Han, Felix, Seungmin e I.N."
+      },
+      {
+        "question": "¿Stray Kids produce su propia música?",
+        "answer": "Sí. La subunidad 3RACHA (Bang Chan, Changbin y Han) es responsable de buena parte de la producción musical del grupo."
+      }
+    ]
+  },
+  "integrantes-do-exo": {
+    "slug": "integrantes-de-exo",
+    "title": "Integrantes de EXO",
+    "shortTitle": "EXO",
+    "description": "Conoce a los integrantes de EXO, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "EXO debutó en 2012 bajo SM Entertainment, y su fandom se llama EXO-L.",
+      "Esta guía reúne a los integrantes con ficha en HallyuHub para que explores fichas, subunidades y actividades individuales."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son los integrantes de EXO?",
+        "answer": "La formación actual incluye a Xiumin, Suho, Lay, Baekhyun, Chen, Chanyeol, D.O., Kai y Sehun."
+      }
+    ]
+  },
+  "integrantes-do-seventeen": {
+    "slug": "integrantes-de-seventeen",
+    "title": "Integrantes de SEVENTEEN",
+    "shortTitle": "SEVENTEEN",
+    "description": "Conoce a los integrantes de SEVENTEEN, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "SEVENTEEN es un boy group de Pledis Entertainment que debutó en 2015, con trece integrantes repartidos en tres unidades: vocal, hip-hop y performance.",
+      "Esta guía organiza a los integrantes con ficha en HallyuHub para facilitar la navegación por fichas, historia y actividades individuales."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuántos integrantes tiene SEVENTEEN?",
+        "answer": "SEVENTEEN tiene 13 integrantes: S.Coups, Jeonghan, Joshua, Jun, Hoshi, Wonwoo, Woozi, DK, Mingyu, The8, Seungkwan, Vernon y Dino."
+      }
+    ]
+  },
+  "integrantes-do-txt": {
+    "slug": "integrantes-de-txt",
+    "title": "Integrantes de TXT",
+    "shortTitle": "TXT",
+    "description": "Conoce a los integrantes de TXT, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "TXT, abreviatura de TOMORROW X TOGETHER, es un boy group que debutó en 2019 bajo Big Hit, hoy parte de HYBE.",
+      "Esta guía organiza a los integrantes con ficha en HallyuHub para facilitar el descubrimiento de fichas, discografías y actividades individuales."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son los integrantes de TXT?",
+        "answer": "TXT está formado por Yeonjun, Soobin, Beomgyu, Taehyun y HueningKai, todos bajo HYBE."
+      }
+    ]
+  },
+  "integrantes-do-ateez": {
+    "slug": "integrantes-de-ateez",
+    "title": "Integrantes de ATEEZ",
+    "shortTitle": "ATEEZ",
+    "description": "Conoce a los integrantes de ATEEZ, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "ATEEZ es un boy group de KQ Entertainment que debutó en 2018; el fandom se llama ATINY.",
+      "Esta guía organiza a los integrantes con ficha en HallyuHub para que explores fichas y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son los integrantes de ATEEZ?",
+        "answer": "ATEEZ está formado por Hongjoong, Seonghwa, Yunho, Yeosang, San, Mingi, Wooyoung y Jongho."
+      }
+    ]
+  },
+  "integrantes-do-girls-generation": {
+    "slug": "integrantes-de-girls-generation",
+    "title": "Integrantes de Girls' Generation",
+    "shortTitle": "Girls' Generation",
+    "description": "Conoce a los integrantes de Girls' Generation, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Girls' Generation, también conocido como SNSD, es un girl group de SM Entertainment que debutó en 2007.",
+      "Esta guía organiza a las integrantes con ficha pública en HallyuHub, para facilitar la navegación por fichas, trayectorias individuales y el contexto histórico del grupo."
+    ],
+    "faq": [
+      {
+        "question": "¿Girls' Generation sigue activo?",
+        "answer": "Girls' Generation celebró su 15.º aniversario en 2022 con el álbum \"Forever 1\". Las integrantes también mantienen carreras en solitario activas."
+      }
+    ]
+  },
+  "integrantes-do-bigbang": {
+    "slug": "integrantes-de-bigbang",
+    "title": "Integrantes de BIGBANG",
+    "shortTitle": "BIGBANG",
+    "description": "Conoce a los integrantes de BIGBANG, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "BIGBANG es un boy group de YG Entertainment que debutó en 2006.",
+      "Esta guía organiza a los integrantes con ficha en HallyuHub para quien quiera explorar las trayectorias individuales de G-Dragon, T.O.P, Taeyang, Daesung y Seungri."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son los integrantes de BIGBANG?",
+        "answer": "BIGBANG está formado por G-Dragon, T.O.P, Taeyang y Daesung (Seungri dejó el grupo en 2019)."
+      }
+    ]
+  },
+  "integrantes-do-nct": {
+    "slug": "integrantes-de-nct",
+    "title": "Integrantes de NCT",
+    "shortTitle": "NCT",
+    "description": "Conoce a los integrantes de NCT, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "NCT es un grupo sin número fijo de integrantes, dividido en varias subunidades como NCT 127, NCT Dream, WayV y NCT U.",
+      "Esta guía organiza a los integrantes con ficha en HallyuHub para facilitar la navegación por fichas y por las distintas unidades del grupo."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo funciona el sistema de subunidades de NCT?",
+        "answer": "NCT funciona con unidades rotativas: NCT 127 (con base en Seúl), NCT Dream (los integrantes más jóvenes), WayV (la unidad china) y NCT U (una formación especial variable)."
+      }
+    ]
+  },
+  "integrantes-do-got7": {
+    "slug": "integrantes-de-got7",
+    "title": "Integrantes de GOT7",
+    "shortTitle": "GOT7",
+    "description": "Conoce a los integrantes de GOT7, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "GOT7 es un boy group que debutó en 2014 bajo JYP Entertainment.",
+      "Esta guía organiza a los integrantes con ficha en HallyuHub para quien quiera explorar fichas, discografía y las conexiones del grupo."
+    ],
+    "faq": [
+      {
+        "question": "¿GOT7 ha vuelto a actuar junto?",
+        "answer": "Sí. Tras dejar JYP Entertainment, los siete integrantes se reagruparon en 2022."
+      }
+    ]
+  },
+  "integrantes-do-mamamoo": {
+    "slug": "integrantes-de-mamamoo",
+    "title": "Integrantes de MAMAMOO",
+    "shortTitle": "MAMAMOO",
+    "description": "Conoce a los integrantes de MAMAMOO, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "MAMAMOO es un girl group de RBW que debutó en 2014.",
+      "Esta guía reúne a los integrantes con ficha pública en HallyuHub para facilitar la navegación por fichas, trayectorias individuales y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son las integrantes de MAMAMOO?",
+        "answer": "MAMAMOO está formado por Solar, Moonbyul, Wheein y Hwasa, todas con proyectos en solitario destacados."
+      }
+    ]
+  },
+  "integrantes-do-itzy": {
+    "slug": "integrantes-de-itzy",
+    "title": "Integrantes de ITZY",
+    "shortTitle": "ITZY",
+    "description": "Conoce a los integrantes de ITZY, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "ITZY es un girl group de JYP Entertainment que debutó en 2019.",
+      "Esta guía reúne a las integrantes con ficha en HallyuHub para que explores fichas y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son las integrantes de ITZY?",
+        "answer": "ITZY está formado por Yeji, Lia, Ryujin, Chaeryeong y Yuna, todas bajo JYP Entertainment."
+      }
+    ]
+  },
+  "integrantes-do-g-i-dle": {
+    "slug": "integrantes-de-g-i-dle",
+    "title": "Integrantes de (G)I-DLE",
+    "shortTitle": "(G)I-DLE",
+    "description": "Conoce a los integrantes de (G)I-DLE, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "(G)I-DLE es un girl group de Cube Entertainment que debutó en 2018, cuyas integrantes participan en la composición de la música.",
+      "Esta guía organiza a las integrantes con ficha en HallyuHub para facilitar el descubrimiento de fichas y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son las integrantes de (G)I-DLE?",
+        "answer": "Tras la salida de Soojin, (G)I-DLE está formado por Miyeon, Minnie, Soyeon, Yuqi y Shuhua, bajo Cube Entertainment."
+      }
+    ]
+  },
+  "integrantes-do-enhypen": {
+    "slug": "integrantes-de-enhypen",
+    "title": "Integrantes de ENHYPEN",
+    "shortTitle": "ENHYPEN",
+    "description": "Conoce a los integrantes de ENHYPEN, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "ENHYPEN es un boy group de BELIFT LAB formado a través del reality \"I-LAND\" que debutó en 2020.",
+      "Esta guía reúne a los integrantes con ficha en HallyuHub para facilitar la navegación por fichas y cobertura relacionada."
+    ],
+    "faq": [
+      {
+        "question": "¿Cuántos integrantes tiene ENHYPEN?",
+        "answer": "ENHYPEN tiene siete integrantes: Jungwon, Heeseung, Jay, Jake, Sunghoon, Sunoo y Ni-ki."
+      }
+    ]
+  },
+  "integrantes-do-shinee": {
+    "slug": "integrantes-de-shinee",
+    "title": "Integrantes de SHINee",
+    "shortTitle": "SHINee",
+    "description": "Conoce a los integrantes de SHINee, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "SHINee es un boy group de SM Entertainment que debutó en 2008.",
+      "Esta guía reúne a los integrantes con ficha pública en HallyuHub para que fans y recién llegados exploren fichas, historia y las conexiones del grupo."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son los integrantes de SHINee?",
+        "answer": "SHINee está formado por Onew, Key, Minho y Taemin (cuatro integrantes activos). Jonghyun, uno de los fundadores del grupo, falleció en 2017."
+      }
+    ]
+  },
+  "integrantes-do-red-velvet": {
+    "slug": "integrantes-de-red-velvet",
+    "title": "Integrantes de Red Velvet",
+    "shortTitle": "Red Velvet",
+    "description": "Conoce a los integrantes de Red Velvet, con fichas, trayectorias, canciones y curiosidades.",
+    "intro": [
+      "Red Velvet es un girl group de SM Entertainment que debutó en 2014 y alterna dos conceptos: \"Red\", más enérgico, y \"Velvet\", más suave.",
+      "Esta guía reúne a las integrantes con ficha en HallyuHub para quien quiera descubrir fichas, trayectorias individuales y música vinculada al grupo."
+    ],
+    "faq": [
+      {
+        "question": "¿Quiénes son las integrantes de Red Velvet?",
+        "answer": "Red Velvet está formado por Irene, Seulgi, Wendy, Joy y Yeri, todas bajo SM Entertainment."
+      }
+    ]
   }
 }

@@ -9,6 +9,7 @@ import Link from '@/components/i18n/LocalizedLink'
 import { Play, Star } from 'lucide-react'
 import type { WPPost, WPProduction } from '@/lib/wordpress/types'
 import { getProductionBySlug } from '@/lib/wordpress/productions'
+import { localizeEntity } from '@/lib/i18n/entity-translation'
 import { getArtists } from '@/lib/wordpress/artists'
 import { getAvaliacao, confiancaDaNota } from '@/lib/tmdb/avaliacao'
 import { getWPImage, stripHtml, formatDatePt, readingTime } from '@/lib/utils'
@@ -85,10 +86,12 @@ async function HeroProduction({ production, locale }: { production: WPProduction
     const imagem = acf.backdrop_url ? { src: acf.backdrop_url, alt: title } : getWPImage(production._embedded, production.featured_image_url)
     const destino = rota('production', { slug: production.slug }, locale)
     // A listagem não traz o texto; a sinopse vem da ficha (cache de 30 min). Sem ela, o painel segue sem o parágrafo.
-    const [ficha, avaliacao] = await Promise.all([
+    const [fichaPt, avaliacao] = await Promise.all([
         getProductionBySlug(production.slug).catch(() => null),
         getAvaliacao(acf.tmdb_id, acf.type),
     ])
+    // Fora do português, a sinopse vem da tradução publicada (a ficha base está no idioma-fonte).
+    const ficha = fichaPt ? localizeEntity(fichaPt, locale, 'production') : null
     // Nota só com amostra: com poucos votos ela é a opinião de poucas pessoas (ver lib/tmdb/avaliacao.ts).
     const notaConfiavel = avaliacao && confiancaDaNota(avaliacao.votos) === 'confiavel' ? avaliacao : null
     const sinopse = stripHtml(ficha?.content?.rendered ?? '').slice(0, 220)
