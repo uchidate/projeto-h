@@ -62,7 +62,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     '/guias': { tipo: 'listagem', ...pronta },
     '/trending': { tipo: 'listagem', ...pronta },
     '/calendario': { tipo: 'listagem', ...pronta },
-    '/conquistas': { tipo: 'listagem', estado: 'somentePt', motivo: 'página de quem está logado (redireciona para o login); sem conteúdo público para traduzir' },
+    '/conquistas': { tipo: 'listagem', ...pronta },
     '/search': { tipo: 'listagem', ...pronta },
     '/quiz': { tipo: 'listagem', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página e conteúdo ainda não traduzidos' },
 
@@ -81,7 +81,7 @@ export const MANIFESTO_DE_ROTAS: Record<string, RotaDoManifesto> = {
     // Conta
     '/entrar': { tipo: 'conta', ...pronta },
     '/cadastro': { tipo: 'conta', ...pronta },
-    '/perfil': { tipo: 'conta', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página ainda não traduzidos' },
-    '/minhas-listas': { tipo: 'conta', estado: 'parcial', falta: 'corpo em português com aviso de falta de tradução e noindex; textos da página ainda não traduzidos' },
-    '/dashboard': { tipo: 'conta', estado: 'somentePt', motivo: 'painel interno da operação, sem público externo' },
+    '/perfil': { tipo: 'conta', ...pronta },
+    '/minhas-listas': { tipo: 'conta', ...pronta },
+    '/dashboard': { tipo: 'conta', ...pronta },
 }

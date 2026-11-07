@@ -6,12 +6,13 @@ import { getUserFavorites, getUserWatchlist, getUserProductionStatuses } from '@
 import { getProductionsByIds } from '@/lib/wordpress/productions'
 import { MinhasListasClient } from '@/components/features/MinhasListasClient'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { href } from '@/lib/i18n/routes'
-import type { Locale } from '@/lib/i18n/config'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 
-export const metadata: Metadata = {
-    title: 'Minhas Listas',
-    robots: { index: false, follow: true },
+export async function metadataDaPagina(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
+    const t = await getTranslations({ locale, namespace: 'client.minhasListas' })
+    return { title: t('title'), robots: { index: false, follow: true } }
 }
 
 export default async function MinhasListasPage({

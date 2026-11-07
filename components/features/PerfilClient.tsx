@@ -5,11 +5,15 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { useRouter } from 'next/navigation'
+import { useLocale, useTranslations } from 'next-intl'
 import { BookmarkCheck, BookOpen, Calendar, CheckCircle2, Compass, Heart, Mic2, Pencil, Save, ShieldCheck, Sparkles, Trophy, Users, X } from 'lucide-react'
 import { BrandDot } from '@/components/ui/BrandDot'
 import { getNotificationPreferences, updateNotificationPreferences, updateProfile, type NotificationPreferences } from '@/lib/wordpress/userApi'
 import { buildUserAchievements } from '@/lib/userJourney'
 import { tinta, contorno } from '@/lib/fandoms/cor'
+import type { Locale } from '@/lib/i18n/config'
+import { textosDaConquista } from '@/lib/conta/conquistas'
+import { IndicadorDaConta, CartaoDeAtalho } from '@/components/conta/AtalhosDaConta'
 
 export interface TorcidaDoPerfil { slug: string; nome: string; cor: string; grupo: string }
 
@@ -30,6 +34,9 @@ interface Props {
 
 export function PerfilClient({ user, stats, torcidas = [] }: Props) {
     const router = useRouter()
+    const t = useTranslations('client.conta.perfil')
+    const tc = useTranslations('client.conta')
+    const locale = useLocale()
     const [editing, setEditing] = useState(false)
     const [name, setName] = useState(user.name)
     const [bio, setBio] = useState(user.bio)
@@ -39,7 +46,7 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
     const [savingPrefs, setSavingPrefs] = useState(false)
 
     const memberSince = stats.joinDate
-        ? new Date(stats.joinDate).toLocaleDateString(intlLocale(), { month: 'long', year: 'numeric' })
+        ? new Date(stats.joinDate).toLocaleDateString(intlLocale(locale as Locale), { month: 'long', year: 'numeric' })
         : null
     const followedArtists = stats.contentCounts?.artist ?? 0
     const followedGroups = stats.contentCounts?.group ?? 0
@@ -47,13 +54,13 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
     const readArticles = stats.contentStateCounts?.read ?? 0
     const followingCount = followedArtists + followedGroups
     const fallbackProfileTasks = [
-        { label: 'Nome visível', done: name.trim().length > 0 },
-        { label: 'Bio preenchida', done: bio.trim().length >= 20 },
-        { label: 'Primeiro favorito', done: stats.favoritesCount > 0 },
-        { label: 'Lista Quero ver', done: stats.watchlistCount > 0 },
-        { label: 'Seguir artista ou grupo', done: followingCount > 0 },
-        { label: 'Salvar uma leitura', done: savedReadings > 0 || readArticles > 0 },
-        { label: 'Marcar uma torcida', done: torcidas.length > 0 },
+        { label: t('task.name'), done: name.trim().length > 0 },
+        { label: t('task.bio'), done: bio.trim().length >= 20 },
+        { label: t('task.favorite'), done: stats.favoritesCount > 0 },
+        { label: t('task.want'), done: stats.watchlistCount > 0 },
+        { label: t('task.follow'), done: followingCount > 0 },
+        { label: t('task.reading'), done: savedReadings > 0 || readArticles > 0 },
+        { label: t('task.fandom'), done: torcidas.length > 0 },
     ]
     const profileTasks = fallbackProfileTasks
     const completedTasks = profileTasks.filter(task => task.done).length
@@ -91,7 +98,7 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
             setEditing(false)
             router.refresh()
         } catch {
-            setError('Erro ao salvar. Tente novamente.')
+            setError(t('saveError'))
         } finally {
             setSaving(false)
         }
@@ -119,7 +126,7 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                             {editing ? (
                                 <div className="space-y-3">
                                     <div>
-                                        <label htmlFor="perfil-nome" className="block text-[10px] font-black uppercase tracking-wider text-muted mb-1">Nome</label>
+                                        <label htmlFor="perfil-nome" className="block text-[10px] font-black uppercase tracking-wider text-muted mb-1">{t('name')}</label>
                                         <input
                                             id="perfil-nome"
                                             value={name}
@@ -128,7 +135,7 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="perfil-bio" className="block text-[10px] font-black uppercase tracking-wider text-muted mb-1">Bio</label>
+                                        <label htmlFor="perfil-bio" className="block text-[10px] font-black uppercase tracking-wider text-muted mb-1">{t('bio')}</label>
                                         <textarea
                                             id="perfil-bio"
                                             value={bio}
@@ -136,7 +143,7 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                                             rows={3}
                                             maxLength={200}
                                             className="w-full border border-border bg-background px-3 py-2 text-[14px] text-foreground focus:border-accent focus:outline-hidden resize-none"
-                                            placeholder="Uma frase sobre você e seus gostos..."
+                                            placeholder={t('bioPlaceholder')}
                                         />
                                         <p className="text-[10px] text-muted text-right">{bio.length}/200</p>
                                     </div>
@@ -144,17 +151,17 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                                     <div className="flex gap-2">
                                         <button type="button" onClick={handleSave} disabled={saving}
                                             className="flex items-center gap-1.5 bg-accent-a11y px-4 py-2 text-[12px] font-black text-white hover:opacity-90 transition-opacity disabled:opacity-60">
-                                            <Save size={13} /> {saving ? 'Salvando…' : 'Salvar'}
+                                            <Save size={13} /> {saving ? t('saving') : t('save')}
                                         </button>
                                         <button type="button" onClick={() => { setEditing(false); setName(user.name); setBio(user.bio) }}
                                             className="flex items-center gap-1.5 border border-border px-4 py-2 text-[12px] font-black text-muted hover:border-foreground hover:text-foreground transition-colors">
-                                            <X size={13} /> Cancelar
+                                            <X size={13} /> {t('cancel')}
                                         </button>
                                     </div>
                                 </div>
                             ) : (
                                 <>
-                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent mb-1">Perfil</p>
+                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent mb-1">{tc('common.profile')}</p>
                                     <h1 className="text-[28px] font-black leading-tight tracking-tight mb-1">
                                         {name}<BrandDot />
                                     </h1>
@@ -162,16 +169,16 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                                     {bio ? (
                                         <p className="text-[14px] text-foreground/70 leading-relaxed max-w-lg mb-4">{bio}</p>
                                     ) : (
-                                        <p className="text-[13px] text-muted italic mb-4">Nenhuma bio ainda.</p>
+                                        <p className="text-[13px] text-muted italic mb-4">{t('noBio')}</p>
                                     )}
                                     <div className="flex flex-wrap items-center gap-3">
                                         <button type="button" onClick={() => setEditing(true)}
                                             className="flex items-center gap-1.5 border border-border px-3 py-1.5 text-[12px] font-black text-muted hover:border-accent hover:text-accent transition-colors">
-                                            <Pencil size={12} /> Editar perfil
+                                            <Pencil size={12} /> {t('edit')}
                                         </button>
                                         {memberSince && (
                                             <span className="flex items-center gap-1.5 text-[12px] text-muted">
-                                                <Calendar size={12} /> Membro desde {memberSince}
+                                                <Calendar size={12} /> {t('memberSince', { date: memberSince })}
                                             </span>
                                         )}
                                     </div>
@@ -186,68 +193,33 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                 {/* Stats + Links */}
                 <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-                        <Link href="/minhas-listas?tab=favoritos"
-                            className="flex items-center gap-3 border border-border bg-surface p-4 hover:border-accent/50 transition-colors">
-                            <Heart size={18} className="text-accent shrink-0" />
-                            <span>
-                                <span className="block text-[24px] font-black leading-none">{stats.favoritesCount}</span>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-muted">Favoritos</span>
-                            </span>
-                        </Link>
-                        <Link href="/minhas-listas?tab=lista"
-                            className="flex items-center gap-3 border border-border bg-surface p-4 hover:border-accent/50 transition-colors">
-                            <BookmarkCheck size={18} className="text-foreground shrink-0" />
-                            <span>
-                                <span className="block text-[24px] font-black leading-none">{stats.watchlistCount}</span>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-muted">Quero ver</span>
-                            </span>
-                        </Link>
-                        <Link href="/dashboard"
-                            className="flex items-center gap-3 border border-border bg-surface p-4 hover:border-accent/50 transition-colors">
-                            <span className="text-[22px] font-black leading-none text-foreground">↗</span>
-                            <span>
-                                <span className="block text-[14px] font-black">Minha Onda</span>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-muted">Visão geral</span>
-                            </span>
-                        </Link>
-                        <Link href="/artists"
-                            className="flex items-center gap-3 border border-border bg-surface p-4 hover:border-accent/50 transition-colors">
-                            <Mic2 size={18} className="text-accent shrink-0" />
-                            <span>
-                                <span className="block text-[24px] font-black leading-none">{followingCount}</span>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-muted">Acompanhando</span>
-                            </span>
-                        </Link>
-                        <Link href="/dashboard#leituras-salvas"
-                            className="flex items-center gap-3 border border-border bg-surface p-4 hover:border-accent/50 transition-colors">
-                            <BookOpen size={18} className="text-accent shrink-0" />
-                            <span>
-                                <span className="block text-[24px] font-black leading-none">{savedReadings + readArticles}</span>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-muted">Leituras</span>
-                            </span>
-                        </Link>
+                        <IndicadorDaConta href="/minhas-listas?tab=favoritos" icone={Heart} valor={stats.favoritesCount} rotulo={t('favorites')} />
+                        <IndicadorDaConta href="/minhas-listas?tab=lista" icone={BookmarkCheck} classeIcone="text-foreground" valor={stats.watchlistCount} rotulo={t('want')} />
+                        <IndicadorDaConta href="/dashboard" valor={tc('common.wave')} rotulo={t('overview')} />
+                        <IndicadorDaConta href="/artists" icone={Mic2} valor={followingCount} rotulo={t('following')} />
+                        <IndicadorDaConta href="/dashboard#leituras-salvas" icone={BookOpen} valor={savedReadings + readArticles} rotulo={t('readings')} />
                     </div>
 
                     <section className="bg-[#15102b] p-6 sm:p-7">
                         <div className="flex flex-wrap items-baseline justify-between gap-3">
-                            <h2 className="font-[family-name:var(--font-playfair)] text-[22px] font-extrabold text-white">Suas torcidas 💜</h2>
-                            <Link href="/fandoms" className="text-[12px] font-bold text-[#c9c2ee] underline underline-offset-2 hover:text-white">Gerenciar no Espaço do Fã →</Link>
+                            <h2 className="font-[family-name:var(--font-playfair)] text-[22px] font-extrabold text-white">{t('fandomsTitle')}</h2>
+                            <Link href="/fandoms" className="text-[12px] font-bold text-[#c9c2ee] underline underline-offset-2 hover:text-white">{t('fandomsManage')}</Link>
                         </div>
                         {torcidas.length > 0 ? (
                             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {torcidas.map(t => {
-                                    const ink = tinta(t.cor)
+                                {torcidas.map(f => {
+                                    const ink = tinta(f.cor)
                                     return (
-                                        <Link key={t.slug} href={`/fandoms/${t.slug}`} className={`block p-4 transition-transform hover:-translate-y-0.5 ${contorno(t.cor)}`} style={{ background: t.cor, color: ink }}>
-                                            <p className="text-[11px] font-black uppercase tracking-[0.08em]">{t.grupo}</p>
-                                            <p className="mt-1 font-[family-name:var(--font-playfair)] text-[26px] font-extrabold leading-none">{t.nome}</p>
+                                        <Link key={f.slug} href={`/fandoms/${f.slug}`} className={`block p-4 transition-transform hover:-translate-y-0.5 ${contorno(f.cor)}`} style={{ background: f.cor, color: ink }}>
+                                            <p className="text-[11px] font-black uppercase tracking-[0.08em]">{f.grupo}</p>
+                                            <p className="mt-1 font-[family-name:var(--font-playfair)] text-[26px] font-extrabold leading-none">{f.nome}</p>
                                         </Link>
                                     )
                                 })}
                             </div>
                         ) : (
                             <p className="mt-4 text-[13px] leading-relaxed text-[#c9c2ee]">
-                                Você ainda não marcou nenhuma torcida. <Link href="/fandoms" className="font-bold text-white underline">Escolha a sua</Link> pra ver novidades e datas específicas dela aqui.
+                                {t('fandomsEmptyA')} <Link href="/fandoms" className="font-bold text-white underline">{t('fandomsEmptyLink')}</Link> {t('fandomsEmptyB')}
                             </p>
                         )}
                     </section>
@@ -255,15 +227,15 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                     <section className="border border-border bg-surface p-5">
                         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">Experiência personalizada</p>
-                                <h2 className="mt-1 text-[20px] font-black tracking-tight">Complete seu perfil</h2>
+                                <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">{t('personalized')}</p>
+                                <h2 className="mt-1 text-[20px] font-black tracking-tight">{t('completeTitle')}</h2>
                                 <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">
-                                    Esses sinais ajudam a transformar sua conta em uma área útil para acompanhar dramas, K-pop, artistas e leituras.
+                                    {t('completeDesc')}
                                 </p>
                             </div>
                             <div className="shrink-0 text-left sm:text-right">
                                 <span className="block text-[28px] font-black leading-none text-foreground">{completion}%</span>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-muted">completo</span>
+                                <span className="text-[10px] font-black uppercase tracking-wider text-muted">{t('completePct')}</span>
                             </div>
                         </div>
                         <div className="mb-4 h-2 overflow-hidden bg-background">
@@ -284,42 +256,10 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                     </section>
 
                     <section className="grid gap-3 sm:grid-cols-2">
-                        <Link href="/productions" className="group flex items-center gap-3 border border-border bg-surface p-4 transition-colors hover:border-accent/50">
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-accent/10 text-accent">
-                                <Compass size={18} />
-                            </span>
-                            <span>
-                                <span className="block text-[14px] font-black group-hover:text-accent">Descobrir produções</span>
-                                <span className="text-[12px] text-muted">Encontre o próximo título para salvar.</span>
-                            </span>
-                        </Link>
-                        <Link href="/blog" className="group flex items-center gap-3 border border-border bg-surface p-4 transition-colors hover:border-accent/50">
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-accent/10 text-accent">
-                                <Sparkles size={18} />
-                            </span>
-                            <span>
-                                <span className="block text-[14px] font-black group-hover:text-accent">Ler guias e listas</span>
-                                <span className="text-[12px] text-muted">Use a curadoria para decidir melhor.</span>
-                            </span>
-                        </Link>
-                        <Link href="/groups" className="group flex items-center gap-3 border border-border bg-surface p-4 transition-colors hover:border-accent/50">
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-accent/10 text-accent">
-                                <Users size={18} />
-                            </span>
-                            <span>
-                                <span className="block text-[14px] font-black group-hover:text-accent">Acompanhar grupos</span>
-                                <span className="text-[12px] text-muted">Conecte fandoms, membros e artigos.</span>
-                            </span>
-                        </Link>
-                        <Link href="/artists" className="group flex items-center gap-3 border border-border bg-surface p-4 transition-colors hover:border-accent/50">
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-accent/10 text-accent">
-                                <Mic2 size={18} />
-                            </span>
-                            <span>
-                                <span className="block text-[14px] font-black group-hover:text-accent">Seguir artistas</span>
-                                <span className="text-[12px] text-muted">Acompanhe perfis, grupos e filmografia.</span>
-                            </span>
-                        </Link>
+                        <CartaoDeAtalho href="/productions" icone={Compass} titulo={t('cta.discover')} descricao={t('cta.discoverDesc')} />
+                        <CartaoDeAtalho href="/blog" icone={Sparkles} titulo={t('cta.guides')} descricao={t('cta.guidesDesc')} />
+                        <CartaoDeAtalho href="/groups" icone={Users} titulo={t('cta.groups')} descricao={t('cta.groupsDesc')} />
+                        <CartaoDeAtalho href="/artists" icone={Mic2} titulo={t('cta.artists')} descricao={t('cta.artistsDesc')} />
                     </section>
                 </div>
 
@@ -328,17 +268,19 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                     <div className="border border-border bg-surface p-4">
                         <div className="mb-3 flex items-end justify-between gap-3">
                             <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-muted">Conquistas</p>
-                                <p className="mt-1 text-[12px] text-muted">{unlockedAchievements}/{achievements.length} desbloqueadas</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-muted">{t('achievements')}</p>
+                                <p className="mt-1 text-[12px] text-muted">{t('unlocked', { done: unlockedAchievements, total: achievements.length })}</p>
                             </div>
                             <span className="text-[22px] font-black leading-none text-accent">{unlockedAchievements}</span>
                         </div>
                         <Link href="/conquistas" className="mb-3 flex items-center justify-center gap-2 border border-border bg-background px-3 py-2 text-[11px] font-black uppercase tracking-wider text-muted transition-colors hover:border-accent hover:text-accent">
-                            <Trophy size={13} /> Como obter
+                            <Trophy size={13} /> {t('howTo')}
                         </Link>
                         <div className="space-y-2">
-                            {achievements.slice(0, 6).map(a => (
-                                <Link key={a.label} href={a.href} className={`block border p-2.5 transition-colors hover:border-accent/50 ${a.done ? 'border-accent/35 bg-background' : 'border-border bg-background'}`}>
+                            {achievements.slice(0, 6).map(a0 => {
+                                const a = { ...a0, ...textosDaConquista(tc, a0.id) }
+                                return (
+                                <Link key={a.id} href={a.href} className={`block border p-2.5 transition-colors hover:border-accent/50 ${a.done ? 'border-accent/35 bg-background' : 'border-border bg-background'}`}>
                                     <div className="flex items-start gap-2.5">
                                         <span className={`mt-0.5 text-[14px] font-black ${a.done ? 'text-accent' : 'text-muted'}`}>
                                             {a.done ? '★' : '☆'}
@@ -355,29 +297,30 @@ export function PerfilClient({ user, stats, torcidas = [] }: Props) {
                                         <div className="h-full bg-accent" style={{ width: `${a.progress}%` }} />
                                     </div>
                                 </Link>
-                            ))}
+                                )
+                            })}
                         </div>
                     </div>
 
                     <div className="border border-border bg-surface p-4">
                         <div className="mb-2 flex items-center gap-2">
                             <ShieldCheck size={15} className="text-accent" />
-                            <p className="text-[10px] font-black uppercase tracking-widest text-muted">Conta sincronizada</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted">{t('synced')}</p>
                         </div>
                         <p className="text-[13px] leading-relaxed text-muted">
-                            Perfil, listas, acompanhamentos e leituras acompanham você em qualquer dispositivo.
+                            {t('syncedDesc')}
                         </p>
                     </div>
 
                     <div className="border border-border bg-surface p-4">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-muted mb-2">Notificações</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted mb-2">{t('notifications')}</p>
                         <p className="mb-3 text-[12px] leading-relaxed text-muted">
-                            Escolha apenas alertas úteis da sua Minha Onda.
+                            {t('notificationsDesc')}
                         </p>
                         <div className="space-y-2">
                             {([
-                                { key: 'savedReadings', label: 'Leituras salvas', desc: 'Lembrar artigos que você guardou para ler.' },
-                                { key: 'watching', label: 'Continuar assistindo', desc: 'Mostrar títulos marcados como Assistindo.' },
+                                { key: 'savedReadings', label: t('notifSaved'), desc: t('notifSavedDesc') },
+                                { key: 'watching', label: t('notifWatching'), desc: t('notifWatchingDesc') },
                             ] as const).map(item => (
                                 <label key={item.key} className="flex cursor-pointer items-start justify-between gap-3 border border-border bg-background p-3">
                                     <span>

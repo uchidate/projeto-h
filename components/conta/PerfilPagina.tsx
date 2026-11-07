@@ -7,12 +7,13 @@ import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { stripHtml } from '@/lib/utils'
 import { PerfilClient, type TorcidaDoPerfil } from '@/components/features/PerfilClient'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { href } from '@/lib/i18n/routes'
-import type { Locale } from '@/lib/i18n/config'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 
-export const metadata: Metadata = {
-    title: 'Meu Perfil',
-    robots: { index: false, follow: true },
+export async function metadataDaPagina(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
+    const t = await getTranslations({ locale, namespace: 'client.conta.common' })
+    return { title: t('profile'), robots: { index: false, follow: true } }
 }
 
 /** Torcidas cujo grupo principal (ou qualquer grupo dela) o usuário segue na conta. */

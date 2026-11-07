@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Link from '@/components/i18n/LocalizedLink'
 import { BookmarkCheck, CheckCircle2, Compass, Film, Heart, ListChecks, PlayCircle } from 'lucide-react'
 import { BrandDot } from '@/components/ui/BrandDot'
@@ -32,6 +33,7 @@ export function MinhasListasClient({
     watchingIds,
     watchedIds,
 }: Props) {
+    const t = useTranslations('client.minhasListas')
     const [tab, setTab] = useState<ListTab>(initialTab)
     const tabs: Record<ListTab, {
         title: string
@@ -44,41 +46,41 @@ export function MinhasListasClient({
         icon: typeof Heart
     }> = {
         favoritos: {
-            title: 'Favoritos',
-            label: 'Favoritos',
-            description: 'Sua prateleira afetiva: títulos que você quer lembrar, rever ou recomendar.',
-            emptyTitle: 'Nenhum favorito ainda',
-            emptyDescription: 'Favorite dramas e filmes para criar uma coleção com a sua cara.',
+            title: t('favoritos.label'),
+            label: t('favoritos.label'),
+            description: t('favoritos.description'),
+            emptyTitle: t('favoritos.emptyTitle'),
+            emptyDescription: t('favoritos.emptyDescription'),
             productions: favProductions,
             count: favoriteIds.length,
             icon: Heart,
         },
         lista: {
-            title: 'Quero ver',
-            label: 'Quero ver',
-            description: 'Sua fila de maratona: salve aqui tudo que merece entrar no radar.',
-            emptyTitle: 'Lista vazia',
-            emptyDescription: 'Adicione produções à sua lista de "Quero ver" para decidir a próxima maratona sem perder tempo.',
+            title: t('lista.label'),
+            label: t('lista.label'),
+            description: t('lista.description'),
+            emptyTitle: t('lista.emptyTitle'),
+            emptyDescription: t('lista.emptyDescription'),
             productions: watchProductions,
             count: watchlistIds.length,
             icon: BookmarkCheck,
         },
         assistindo: {
-            title: 'Assistindo',
-            label: 'Assistindo',
-            description: 'Títulos em andamento, para voltar ao que você já começou.',
-            emptyTitle: 'Nada em andamento',
-            emptyDescription: 'Marque uma produção como "Assistindo" para criar sua área de continuidade.',
+            title: t('assistindo.label'),
+            label: t('assistindo.label'),
+            description: t('assistindo.description'),
+            emptyTitle: t('assistindo.emptyTitle'),
+            emptyDescription: t('assistindo.emptyDescription'),
             productions: watchingProductions,
             count: watchingIds.length,
             icon: PlayCircle,
         },
         assistidos: {
-            title: 'Assistidos',
-            label: 'Assistidos',
-            description: 'Seu histórico de dramas, filmes e especiais concluídos.',
-            emptyTitle: 'Nenhum assistido ainda',
-            emptyDescription: 'Marque produções como "Assistido" para construir seu histórico cultural.',
+            title: t('assistidos.label'),
+            label: t('assistidos.label'),
+            description: t('assistidos.description'),
+            emptyTitle: t('assistidos.emptyTitle'),
+            emptyDescription: t('assistidos.emptyDescription'),
             productions: watchedProductions,
             count: watchedIds.length,
             icon: CheckCircle2,
@@ -93,30 +95,30 @@ export function MinhasListasClient({
         <div className="page-wrap py-8 lg:py-12">
             <div className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
                 <div>
-                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted mb-1">Conta</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted mb-1">{t('account')}</p>
                     <h1 className="text-[32px] font-black leading-tight tracking-[-0.03em]">
-                        Minhas listas<BrandDot />
+                        {t('title')}<BrandDot />
                     </h1>
                     <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted">
-                        Organize o que você ama e o que ainda quer assistir. Tudo fica sincronizado na sua conta.
+                        {t('intro')}
                     </p>
                 </div>
                 <div className="grid grid-cols-4 border border-border bg-surface">
                     <div className="border-r border-border p-4">
                         <span className="block text-[24px] font-black leading-none">{favoriteIds.length}</span>
-                        <span className="mt-1 block text-[10px] font-black uppercase tracking-wider text-muted">favoritos</span>
+                        <span className="mt-1 block text-[10px] font-black uppercase tracking-wider text-muted">{t('statFavorites')}</span>
                     </div>
                     <div className="border-r border-border p-4">
                         <span className="block text-[24px] font-black leading-none">{watchlistIds.length}</span>
-                        <span className="mt-1 block text-[10px] font-black uppercase tracking-wider text-muted">quero ver</span>
+                        <span className="mt-1 block text-[10px] font-black uppercase tracking-wider text-muted">{t('statWant')}</span>
                     </div>
                     <div className="border-r border-border p-4">
                         <span className="block text-[24px] font-black leading-none">{watchingIds.length}</span>
-                        <span className="mt-1 block text-[10px] font-black uppercase tracking-wider text-muted">assistindo</span>
+                        <span className="mt-1 block text-[10px] font-black uppercase tracking-wider text-muted">{t('statWatching')}</span>
                     </div>
                     <div className="p-4">
                         <span className="block text-[24px] font-black leading-none">{totalSaved}</span>
-                        <span className="mt-1 block text-[10px] font-black uppercase tracking-wider text-muted">jornada</span>
+                        <span className="mt-1 block text-[10px] font-black uppercase tracking-wider text-muted">{t('statJourney')}</span>
                     </div>
                 </div>
             </div>
@@ -148,12 +150,12 @@ export function MinhasListasClient({
 
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">Coleção</p>
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">{t('collection')}</p>
                     <h2 className="text-[22px] font-black tracking-tight">{activeCopy.title}</h2>
                     <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{activeCopy.description}</p>
                 </div>
                 <Link href="/productions" className="inline-flex items-center justify-center gap-2 border border-border px-4 py-2 text-[12px] font-black uppercase tracking-wider text-muted transition-colors hover:border-accent hover:text-accent">
-                    <Compass size={14} /> Explorar catálogo
+                    <Compass size={14} /> {t('explore')}
                 </Link>
             </div>
 
@@ -171,13 +173,13 @@ export function MinhasListasClient({
                     </p>
                     <Link href="/productions"
                         className="inline-flex items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[13px] font-black text-white hover:opacity-90 transition-opacity">
-                        <Film size={14} /> Explorar produções
+                        <Film size={14} /> {t('exploreProductions')}
                     </Link>
                 </div>
             ) : (
                 <>
                     <p className="mb-4 text-[12px] text-muted font-semibold">
-                        {count} {count !== 1 ? 'produções' : 'produção'}
+                        {t('count', { count })}
                     </p>
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                         {productions.map(p => (

@@ -3,12 +3,17 @@
 import Link from '@/components/i18n/LocalizedLink'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react'
+import { useLocale, useTranslations } from 'next-intl'
 import { BookmarkCheck, BookOpen, CalendarDays, CheckCircle2, ChevronRight, Compass, Film, Heart, LogOut, Mic2, PlayCircle, Search, Sparkles, Trophy, User, Users } from 'lucide-react'
 import { BrandDot } from '@/components/ui/BrandDot'
-import { ProductionCard } from '@/components/productions/ProductionCard'
+import { SecaoDoPainel, LinkDeSecao } from '@/components/conta/SecaoDoPainel'
+import { GradeDeProducoes } from '@/components/conta/GradeDeProducoes'
+import { GradeDePosts } from '@/components/conta/PostMiniCard'
 import type { WPArtist, WPGroup, WPProduction, WPPost } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { buildUserAchievements } from '@/lib/userJourney'
+import { href as rota } from '@/lib/i18n/routes'
+import type { Locale } from '@/lib/i18n/config'
 
 interface Props {
     user: { name: string; email: string; image: string | null }
@@ -72,6 +77,9 @@ function FollowedMiniCard({ href, title, subtitle, imageUrl }: { href: string; t
 }
 
 export function DashboardClient({ user, stats, favProductions, watchProductions, watchingProductions, savedPosts, readPosts, followedArtists, followedGroups, latestPosts }: Props) {
+    const t = useTranslations('client.conta.dashboard')
+    const tc = useTranslations('client.conta.common')
+    const locale = useLocale() as Locale
     const firstName = user.name.split(' ')[0]
     const savedReadings = stats.contentStateCounts?.saved ?? savedPosts.length
     const readArticles = stats.contentStateCounts?.read ?? readPosts.length
@@ -82,7 +90,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
     const watchedCount = stats.statusCounts?.watched ?? 0
     const followedArtistCount = stats.contentCounts?.artist ?? 0
     const followedGroupCount = stats.contentCounts?.group ?? 0
-    const profileLevel = collectionTotal >= 20 ? 'Curador dedicado' : collectionTotal >= 8 ? 'Explorador em ritmo forte' : collectionTotal >= 1 ? 'Coleção começando' : 'Novo por aqui'
+    const profileLevel = collectionTotal >= 20 ? t('levelTop') : collectionTotal >= 8 ? t('levelHigh') : collectionTotal >= 1 ? t('levelStart') : t('levelNew')
     const nextFavoriteGoal = stats.favoritesCount >= 20 ? null : stats.favoritesCount >= 5 ? 20 : stats.favoritesCount >= 1 ? 5 : 1
     const favoriteProgressGoal = nextFavoriteGoal ?? stats.favoritesCount
     const favoriteProgress = favoriteProgressGoal > 0
@@ -90,47 +98,46 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
         : 100
     const achievements = buildUserAchievements(stats)
     const unlockedAchievements = achievements.filter(item => item.done).length
+    const seguidos = followedArtistCount + followedGroupCount
     const nextActions: DashboardAction[] = [
         {
-            label: stats.favoritesCount > 0 ? 'Revisitar favoritos' : 'Favoritar a primeira produção',
-            description: stats.favoritesCount > 0 ? 'Abra sua coleção para continuar refinando seu gosto.' : 'Um favorito já deixa o painel com a sua cara.',
+            label: stats.favoritesCount > 0 ? t('act.favRevisit') : t('act.favFirst'),
+            description: stats.favoritesCount > 0 ? t('act.favRevisitDesc') : t('act.favFirstDesc'),
             href: stats.favoritesCount > 0 ? '/minhas-listas?tab=favoritos' : '/productions',
             icon: Heart,
             done: stats.favoritesCount > 0,
         },
         {
-            label: stats.watchlistCount > 0 ? 'Organizar Quero ver' : 'Criar sua lista Quero ver',
-            description: stats.watchlistCount > 0 ? 'Escolha o próximo drama ou filme da fila.' : 'Salve títulos para não perder a próxima maratona.',
+            label: stats.watchlistCount > 0 ? t('act.wantOrganize') : t('act.wantCreate'),
+            description: stats.watchlistCount > 0 ? t('act.wantOrganizeDesc') : t('act.wantCreateDesc'),
             href: stats.watchlistCount > 0 ? '/minhas-listas?tab=lista' : '/productions',
             icon: BookmarkCheck,
             done: stats.watchlistCount > 0,
         },
         {
-            label: watchingCount > 0 ? 'Continuar assistindo' : 'Marcar algo como Assistindo',
-            description: watchingCount > 0 ? `${watchingCount} título${watchingCount !== 1 ? 's' : ''} em andamento na sua jornada.` : 'Abra uma produção e marque onde você parou.',
+            label: watchingCount > 0 ? t('act.watchContinue') : t('act.watchMark'),
+            description: watchingCount > 0 ? t('act.watchContinueDesc', { count: watchingCount }) : t('act.watchMarkDesc'),
             href: watchingCount > 0 ? '/minhas-listas?tab=assistindo' : '/productions',
             icon: PlayCircle,
             done: watchingCount > 0,
         },
         {
-            label: followedArtistCount + followedGroupCount > 0 ? 'Acompanhar cultura pop' : 'Seguir artistas e grupos',
-            description: followedArtistCount + followedGroupCount > 0
-                ? `${followedArtistCount + followedGroupCount} perfil${followedArtistCount + followedGroupCount !== 1 ? 's' : ''} acompanhado${followedArtistCount + followedGroupCount !== 1 ? 's' : ''} na Minha Onda.`
-                : 'Siga artistas e grupos para conectar dramas, K-pop e artigos.',
+            label: seguidos > 0 ? t('act.followKeep') : t('act.followStart'),
+            description: seguidos > 0 ? t('act.followKeepDesc', { count: seguidos }) : t('act.followStartDesc'),
             href: followedGroupCount > followedArtistCount ? '/groups' : '/artists',
             icon: Users,
-            done: followedArtistCount + followedGroupCount > 0,
+            done: seguidos > 0,
         },
         {
-            label: savedReadings > 0 ? 'Retomar leituras salvas' : 'Salvar uma leitura',
-            description: savedReadings > 0 ? `${savedReadings} artigo${savedReadings !== 1 ? 's' : ''} esperando na sua biblioteca.` : 'Salve guias e matérias para voltar depois.',
+            label: savedReadings > 0 ? t('act.readResume') : t('act.readSave'),
+            description: savedReadings > 0 ? t('act.readResumeDesc', { count: savedReadings }) : t('act.readSaveDesc'),
             href: savedReadings > 0 ? '#leituras-salvas' : '/blog',
             icon: BookOpen,
             done: savedReadings > 0,
         },
         {
-            label: 'Explorar novidades',
-            description: watchedCount > 0 ? 'Use o que você já assistiu para encontrar próximos títulos.' : latestPosts.length > 0 ? 'Use as leituras recentes para descobrir contexto e recomendações.' : 'Veja guias, listas e produções em destaque.',
+            label: t('act.explore'),
+            description: watchedCount > 0 ? t('act.exploreWatched') : latestPosts.length > 0 ? t('act.exploreLatest') : t('act.exploreDefault'),
             href: latestPosts.length > 0 ? '/blog' : '/productions',
             icon: Search,
         },
@@ -149,20 +156,20 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                         </div>
                     )}
                     <div>
-                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">Minha Onda</p>
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">{tc('wave')}</p>
                         <h1 className="text-[28px] font-black leading-tight tracking-tight">
-                            Olá, {firstName}<BrandDot />
+                            {t('hello', { name: firstName })}<BrandDot />
                         </h1>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 pt-2">
                     <Link href="/perfil"
                         className="flex items-center gap-1.5 border border-border px-3 py-2 text-[11px] font-black uppercase tracking-wider text-muted hover:border-accent hover:text-accent transition-colors">
-                        <User size={12} /> Perfil
+                        <User size={12} /> {tc('profile')}
                     </Link>
-                    <button onClick={() => signOut({ callbackUrl: '/' })}
+                    <button onClick={() => signOut({ callbackUrl: rota('home', undefined, locale) })}
                         className="flex items-center gap-1.5 border border-border px-3 py-2 text-[11px] font-black uppercase tracking-wider text-muted hover:border-red-500 hover:text-red-500 transition-colors">
-                        <LogOut size={12} /> Sair
+                        <LogOut size={12} /> {t('signOut')}
                     </button>
                 </div>
             </div>
@@ -171,22 +178,20 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                 <section className="border border-border bg-surface p-5 sm:p-6">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">Seu momento</p>
+                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">{t('moment')}</p>
                             <h2 className="mt-1 text-[22px] font-black tracking-tight">{profileLevel}</h2>
                             <p className="mt-1 max-w-xl text-[14px] leading-relaxed text-muted">
-                                {isEmpty
-                                    ? 'Comece salvando produções, seguindo perfis ou guardando leituras. Sua Onda vai tomando forma aos poucos.'
-                                    : `Você já salvou ${collectionTotal} item${collectionTotal !== 1 ? 's' : ''}. Use sua Onda como ponto de partida para decidir o que assistir, ler e acompanhar.`}
+                                {isEmpty ? t('emptyIntro') : t('savedIntro', { count: collectionTotal })}
                             </p>
                         </div>
                         <Link href="/productions" className="inline-flex shrink-0 items-center justify-center gap-2 bg-accent-a11y px-4 py-2.5 text-[12px] font-black uppercase tracking-wider text-white transition-opacity hover:opacity-90">
-                            Descobrir títulos <Sparkles size={14} />
+                            {t('discover')} <Sparkles size={14} />
                         </Link>
                     </div>
                     <div className="mt-5 border border-border bg-background p-4">
                         <div className="mb-2 flex items-center justify-between gap-3">
                             <span className="text-[12px] font-black text-foreground">
-                                {nextFavoriteGoal ? `Meta: ${nextFavoriteGoal} favorito${nextFavoriteGoal !== 1 ? 's' : ''}` : 'Meta de favoritos concluída'}
+                                {nextFavoriteGoal ? t('goal', { count: nextFavoriteGoal }) : t('goalDone')}
                             </span>
                             <span className="text-[11px] font-bold text-muted">{stats.favoritesCount}/{favoriteProgressGoal}</span>
                         </div>
@@ -197,7 +202,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                 </section>
 
                 <section className="border border-border bg-surface p-5">
-                    <p className="mb-3 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-muted">Próximos passos</p>
+                    <p className="mb-3 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-muted">{t('nextSteps')}</p>
                     <div className="space-y-2">
                         {nextActions.map(({ label, description, href, icon: Icon, done }) => (
                             <Link key={label} href={href} className="group flex items-start gap-3 border border-border bg-background p-3 transition-colors hover:border-accent/50">
@@ -217,97 +222,59 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
 
             {/* Stats */}
             <div className="mb-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <StatCard icon={Heart} label="Favoritos" value={stats.favoritesCount} href="/minhas-listas?tab=favoritos" />
-                <StatCard icon={BookmarkCheck} label="Quero ver" value={stats.watchlistCount} href="/minhas-listas?tab=lista" />
-                <StatCard icon={PlayCircle} label="Assistindo" value={watchingCount} href="/minhas-listas?tab=assistindo" />
-                <StatCard icon={Mic2} label="Acompanhando" value={followedArtistCount + followedGroupCount} href="/perfil" />
-                <StatCard icon={BookOpen} label="Leituras" value={savedReadings + readArticles} href="#leituras-salvas" />
-                <StatCard icon={Trophy} label="Conquistas" value={unlockedAchievements} href="/conquistas" />
+                <StatCard icon={Heart} label={t('stat.favorites')} value={stats.favoritesCount} href="/minhas-listas?tab=favoritos" />
+                <StatCard icon={BookmarkCheck} label={t('stat.want')} value={stats.watchlistCount} href="/minhas-listas?tab=lista" />
+                <StatCard icon={PlayCircle} label={t('stat.watching')} value={watchingCount} href="/minhas-listas?tab=assistindo" />
+                <StatCard icon={Mic2} label={t('stat.following')} value={followedArtistCount + followedGroupCount} href="/perfil" />
+                <StatCard icon={BookOpen} label={t('stat.readings')} value={savedReadings + readArticles} href="#leituras-salvas" />
+                <StatCard icon={Trophy} label={t('stat.achievements')} value={unlockedAchievements} href="/conquistas" />
                 {stats.daysSinceJoin !== null && (
-                    <StatCard icon={CalendarDays} label="Dias no site" value={stats.daysSinceJoin} href="/perfil" />
+                    <StatCard icon={CalendarDays} label={t('stat.days')} value={stats.daysSinceJoin} href="/perfil" />
                 )}
             </div>
 
             {isEmpty ? (
                 <div className="border border-dashed border-border bg-surface p-10 text-center">
                     <Compass className="mx-auto mb-4 h-10 w-10 text-muted" />
-                    <h2 className="text-[20px] font-black mb-2">Monte sua coleção</h2>
+                    <h2 className="text-[20px] font-black mb-2">{t('emptyTitle')}</h2>
                     <p className="text-[14px] text-muted max-w-sm mx-auto mb-6">
-                        Favorite dramas, siga artistas ou salve leituras para construir sua Minha Onda.
+                        {t('emptyDesc')}
                     </p>
                     <Link href="/productions" className="inline-flex items-center gap-2 bg-accent-a11y px-5 py-2.5 text-[13px] font-black text-white hover:opacity-90 transition-opacity">
-                        <Film size={14} /> Explorar produções
+                        <Film size={14} /> {tc('exploreProductions')}
                     </Link>
                 </div>
             ) : (
                 <div className="space-y-10">
                     {favProductions.length > 0 && (
-                        <section>
-                            <div className="mb-5 flex items-baseline justify-between">
-                                <div>
-                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Coleção</p>
-                                    <h2 className="text-[20px] font-black tracking-tight">Favoritos recentes</h2>
-                                </div>
-                                <Link href="/minhas-listas?tab=favoritos" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
-                                    Ver todos →
-                                </Link>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-                                {favProductions.map(p => <ProductionCard key={p.id} production={p} />)}
-                            </div>
-                        </section>
+                        <SecaoDoPainel eyebrow={tc('collection')} title={t('favRecent')} acao={<LinkDeSecao href="/minhas-listas?tab=favoritos">{tc('seeAll')}</LinkDeSecao>}>
+                            <GradeDeProducoes producoes={favProductions} />
+                        </SecaoDoPainel>
                     )}
 
                     {watchingProductions.length > 0 && (
-                        <section>
-                            <div className="mb-5 flex items-baseline justify-between">
-                                <div>
-                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Continuidade</p>
-                                    <h2 className="text-[20px] font-black tracking-tight">Continuar assistindo</h2>
-                                </div>
-                                <Link href="/minhas-listas?tab=assistindo" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
-                                    Ver todos →
-                                </Link>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-                                {watchingProductions.map(p => <ProductionCard key={p.id} production={p} />)}
-                            </div>
-                        </section>
+                        <SecaoDoPainel eyebrow={t('continuity')} title={t('continueWatching')} acao={<LinkDeSecao href="/minhas-listas?tab=assistindo">{tc('seeAll')}</LinkDeSecao>}>
+                            <GradeDeProducoes producoes={watchingProductions} />
+                        </SecaoDoPainel>
                     )}
 
                     {watchProductions.length > 0 && (
-                        <section>
-                            <div className="mb-5 flex items-baseline justify-between">
-                                <div>
-                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Lista</p>
-                                    <h2 className="text-[20px] font-black tracking-tight">Quero ver</h2>
-                                </div>
-                                <Link href="/minhas-listas?tab=lista" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
-                                    Ver todos →
-                                </Link>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-                                {watchProductions.map(p => <ProductionCard key={p.id} production={p} />)}
-                            </div>
-                        </section>
+                        <SecaoDoPainel eyebrow={t('list')} title={t('wantTitle')} acao={<LinkDeSecao href="/minhas-listas?tab=lista">{tc('seeAll')}</LinkDeSecao>}>
+                            <GradeDeProducoes producoes={watchProductions} />
+                        </SecaoDoPainel>
                     )}
 
                     {(followedArtists.length > 0 || followedGroups.length > 0) && (
-                        <section>
-                            <div className="mb-5 flex items-baseline justify-between">
-                                <div>
-                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Minha Onda</p>
-                                    <h2 className="text-[20px] font-black tracking-tight">Acompanhando</h2>
-                                </div>
+                        <SecaoDoPainel
+                            eyebrow={tc('wave')}
+                            title={t('followingTitle')}
+                            acao={(
                                 <div className="flex gap-3">
-                                    <Link href="/artists" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
-                                        Artistas
-                                    </Link>
-                                    <Link href="/groups" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
-                                        Grupos
-                                    </Link>
+                                    <LinkDeSecao href="/artists">{tc('artists')}</LinkDeSecao>
+                                    <LinkDeSecao href="/groups">{tc('groups')}</LinkDeSecao>
                                 </div>
-                            </div>
+                            )}
+                        >
                             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                                 {followedArtists.map(artist => {
                                     const image = getWPImage(artist._embedded, artist.featured_image_url)
@@ -317,7 +284,7 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                                             key={`artist-${artist.id}`}
                                             href={`/artists/${artist.slug}`}
                                             title={stripHtml(artist.title.rendered)}
-                                            subtitle={roles || artist.acf?.name_hangul || 'Artista'}
+                                            subtitle={roles || artist.acf?.name_hangul || t('artist')}
                                             imageUrl={image?.src}
                                         />
                                     )
@@ -329,123 +296,31 @@ export function DashboardClient({ user, stats, favProductions, watchProductions,
                                             key={`group-${group.id}`}
                                             href={`/groups/${group.slug}`}
                                             title={stripHtml(group.title.rendered)}
-                                            subtitle={group.acf?.fandom_name ? `Fandom: ${group.acf.fandom_name}` : 'Grupo'}
+                                            subtitle={group.acf?.fandom_name ? t('fandom', { name: group.acf.fandom_name }) : t('group')}
                                             imageUrl={image?.src}
                                         />
                                     )
                                 })}
                             </div>
-                        </section>
+                        </SecaoDoPainel>
                     )}
 
                     {savedPosts.length > 0 && (
-                        <section id="leituras-salvas">
-                            <div className="mb-5 flex items-baseline justify-between">
-                                <div>
-                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Biblioteca</p>
-                                    <h2 className="text-[20px] font-black tracking-tight">Salvos para ler</h2>
-                                </div>
-                                <Link href="/blog" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
-                                    Ver blog →
-                                </Link>
-                            </div>
-                            <div className="grid gap-3 sm:grid-cols-2">
-                                {savedPosts.map(post => {
-                                    const img = getWPImage(post._embedded, post.featured_image_url)
-                                    return (
-                                        <Link key={post.id} href={`/blog/${post.slug}`}
-                                            className="group grid grid-cols-[80px_minmax(0,1fr)] border border-border bg-surface hover:border-accent/50 transition-colors overflow-hidden">
-                                            {img ? (
-                                                <div className="relative h-full min-h-[80px] bg-background">
-                                                    <Image src={img.src} alt={img.alt || ''} fill className="object-cover" sizes="80px" />
-                                                </div>
-                                            ) : (
-                                                <div className="h-full min-h-[80px] bg-surface" />
-                                            )}
-                                            <div className="p-3">
-                                                <p className="line-clamp-2 text-[13px] font-black leading-tight text-foreground group-hover:text-accent transition-colors">
-                                                    {stripHtml(post.title.rendered)}
-                                                </p>
-                                                <p className="mt-1 text-[11px] font-semibold text-muted">Salvo na Minha Onda</p>
-                                            </div>
-                                        </Link>
-                                    )
-                                })}
-                            </div>
-                        </section>
+                        <SecaoDoPainel id="leituras-salvas" eyebrow={t('library')} title={t('savedToRead')} acao={<LinkDeSecao href="/blog">{tc('seeBlog')}</LinkDeSecao>}>
+                            <GradeDePosts posts={savedPosts} nota={t('savedLabel')} />
+                        </SecaoDoPainel>
                     )}
 
                     {readPosts.length > 0 && (
-                        <section>
-                            <div className="mb-5 flex items-baseline justify-between">
-                                <div>
-                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Histórico</p>
-                                    <h2 className="text-[20px] font-black tracking-tight">Lidos recentemente</h2>
-                                </div>
-                                <Link href="/blog" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
-                                    Ver blog →
-                                </Link>
-                            </div>
-                            <div className="grid gap-3 sm:grid-cols-2">
-                                {readPosts.map(post => {
-                                    const img = getWPImage(post._embedded, post.featured_image_url)
-                                    return (
-                                        <Link key={post.id} href={`/blog/${post.slug}`}
-                                            className="group grid grid-cols-[80px_minmax(0,1fr)] border border-border bg-surface hover:border-accent/50 transition-colors overflow-hidden">
-                                            {img ? (
-                                                <div className="relative h-full min-h-[80px] bg-background">
-                                                    <Image src={img.src} alt={img.alt || ''} fill className="object-cover" sizes="80px" />
-                                                </div>
-                                            ) : (
-                                                <div className="h-full min-h-[80px] bg-surface" />
-                                            )}
-                                            <div className="p-3">
-                                                <p className="line-clamp-2 text-[13px] font-black leading-tight text-foreground group-hover:text-accent transition-colors">
-                                                    {stripHtml(post.title.rendered)}
-                                                </p>
-                                                <p className="mt-1 text-[11px] font-semibold text-muted">Marcado como lido</p>
-                                            </div>
-                                        </Link>
-                                    )
-                                })}
-                            </div>
-                        </section>
+                        <SecaoDoPainel eyebrow={t('history')} title={t('recentlyRead')} acao={<LinkDeSecao href="/blog">{tc('seeBlog')}</LinkDeSecao>}>
+                            <GradeDePosts posts={readPosts} nota={t('readLabel')} />
+                        </SecaoDoPainel>
                     )}
 
                     {latestPosts.length > 0 && (
-                        <section>
-                            <div className="mb-5 flex items-baseline justify-between">
-                                <div>
-                                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Blog</p>
-                                    <h2 className="text-[20px] font-black tracking-tight">Leituras recentes</h2>
-                                </div>
-                                <Link href="/blog" className="font-mono text-[11px] text-accent hover:underline uppercase tracking-[0.06em]">
-                                    Ver blog →
-                                </Link>
-                            </div>
-                            <div className="grid gap-3 sm:grid-cols-2">
-                                {latestPosts.map(post => {
-                                    const img = getWPImage(post._embedded, post.featured_image_url)
-                                    return (
-                                        <Link key={post.id} href={`/blog/${post.slug}`}
-                                            className="group grid grid-cols-[80px_minmax(0,1fr)] border border-border bg-surface hover:border-accent/50 transition-colors overflow-hidden">
-                                            {img ? (
-                                                <div className="relative h-full min-h-[80px] bg-background">
-                                                    <Image src={img.src} alt={img.alt || ''} fill className="object-cover" sizes="80px" />
-                                                </div>
-                                            ) : (
-                                                <div className="h-full min-h-[80px] bg-surface" />
-                                            )}
-                                            <div className="p-3">
-                                                <p className="line-clamp-2 text-[13px] font-black leading-tight text-foreground group-hover:text-accent transition-colors">
-                                                    {stripHtml(post.title.rendered)}
-                                                </p>
-                                            </div>
-                                        </Link>
-                                    )
-                                })}
-                            </div>
-                        </section>
+                        <SecaoDoPainel eyebrow={t('blog')} title={t('recentReadings')} acao={<LinkDeSecao href="/blog">{tc('seeBlog')}</LinkDeSecao>}>
+                            <GradeDePosts posts={latestPosts} />
+                        </SecaoDoPainel>
                     )}
                 </div>
             )}
