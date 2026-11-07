@@ -12,32 +12,39 @@ import { aniversariosDaSemana, hojeEmSaoPaulo, mesesDaJanela } from '@/lib/artis
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
+import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
+import { TEXTOS_ANIVERSARIO_PT, type TextosAniversario } from '@/lib/artists/aniversarios'
 import { linksDePaginacao, paginaDe, paginaInvalida, robotsDaListagem, urlDaListagem } from '@/lib/listagem'
 
 export type SearchParams = Promise<{ search?: string; page?: string; role?: string; affiliation?: string; letter?: string; sortBy?: string }>
 
-function buildArtistsUrl(sp: { role?: string; affiliation?: string; letter?: string; page?: string }) {
-    return urlDaListagem('/artists', ['role', 'affiliation', 'letter'], sp)
+function buildArtistsUrl(sp: { role?: string; affiliation?: string; letter?: string; page?: string }, locale: Locale = DEFAULT_LOCALE) {
+    return urlDaListagem(href('artists', undefined, locale), ['role', 'affiliation', 'letter'], sp)
 }
 
-export async function metadataArtistsListagem({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+export async function metadataArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }): Promise<Metadata> {
     const sp = await searchParams
     const page = paginaDe(sp.page)
-    const url = buildArtistsUrl(sp)
+    const emPt = locale === DEFAULT_LOCALE
+    const t = await getTranslations({ locale, namespace: 'client.artistsLista' })
+    const url = buildArtistsUrl(sp, locale)
     const affiliation = sp.affiliation === 'group' || sp.affiliation === 'solo' ? sp.affiliation : undefined
-    const { totalPages } = await getArtists({ page, perPage: 48, search: sp.search, role: sp.role, affiliation, letter: sp.letter?.toUpperCase().slice(0, 1) })
+    const { totalPages } = await getArtists({ page, perPage: 48, search: sp.search, role: sp.role, affiliation, letter: sp.letter?.toUpperCase().slice(0, 1), ...(emPt ? {} : { locale }) })
     const hasFacets = Boolean(sp.search || sp.role || sp.affiliation || sp.letter || sp.sortBy)
     const invalidPage = paginaInvalida(page, totalPages)
 
-    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('artists') : undefined
+    const languages = emPt && page === 1 && !hasFacets ? await defaultCatalogLanguages('artists') : undefined
 
     return {
-        title: 'Artistas K-Pop',
-        description: 'Perfis completos de artistas K-Pop — cantores, atores, idols e mais, tudo em português.',
+        title: t('metaTitle'),
+        description: t('metaDescription'),
         alternates: {
             canonical: url,
             ...(languages ? { languages } : {}),
-            ...linksDePaginacao({ page, totalPages, urlDaPagina: (p) => buildArtistsUrl({ ...sp, page: String(p) }) }),
+            ...linksDePaginacao({ page, totalPages, urlDaPagina: (p) => buildArtistsUrl({ ...sp, page: String(p) }, locale) }),
         },
         ...robotsDaListagem(hasFacets || invalidPage),
         openGraph: baseOG(url),
@@ -45,7 +52,9 @@ export async function metadataArtistsListagem({ searchParams }: { searchParams: 
     }
 }
 
-export async function ArtistsListagem({ searchParams }: { searchParams: SearchParams }) {
+export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {
+    const emPt = locale === DEFAULT_LOCALE
+    const idioma = emPt ? {} : { locale }
     const sp = await searchParams
     const page = paginaDe(sp.page)
     const letter = sp.letter?.toUpperCase().slice(0, 1)
@@ -58,8 +67,9 @@ export async function ArtistsListagem({ searchParams }: { searchParams: SearchPa
                 : 'popularity' as const
     const order = sortBy === 'name' ? 'asc' as const : 'desc' as const
 
-    const [{ items, total, totalPages }, letterCounts] = await Promise.all([
+    const [{ items: itensBrutos, total, totalPages }, letterCounts] = await Promise.all([
         getArtists({
+            ...idioma,
             page,
             perPage: 48,
             search: sp.search,
@@ -69,8 +79,10 @@ export async function ArtistsListagem({ searchParams }: { searchParams: SearchPa
             orderby,
             order,
         }),
-        wpFetch<Record<string, number>>('/oc/v1/artist-letter-counts', { revalidate: 3600 }).catch(() => ({} as Record<string, number>)),
+        // O endpoint conta só o acervo em português; no outro idioma as letras ficam todas navegáveis.
+        emPt ? wpFetch<Record<string, number>>('/oc/v1/artist-letter-counts', { revalidate: 3600 }).catch(() => ({} as Record<string, number>)) : Promise.resolve({} as Record<string, number>),
     ])
+    const items = emPt ? itensBrutos : itensBrutos.filter(a => hasLocale(a, locale)).map(a => localizeEntity(a, locale, 'artist'))
     // Acervo sem filtros nunca é vazio (3k+ artistas): lista vazia é falha
     // transitória do WP — lançar preserva o snapshot ISR anterior em vez de
     // cachear a listagem em branco (mesmo guard de /productions).
@@ -83,16 +95,21 @@ export async function ArtistsListagem({ searchParams }: { searchParams: SearchPa
     if (unfiltered && page === 1) {
         const hoje = hojeEmSaoPaulo()
         const porMes = await Promise.all(mesesDaJanela(hoje).map(birthMonth =>
-            getArtists({ birthMonth, perPage: 100, orderby: 'date', order: 'asc' }).then(r => r.items).catch(() => []),
+            getArtists({ ...idioma, birthMonth, perPage: 100, orderby: 'date', order: 'asc' }).then(r => r.items).catch(() => []),
         ))
-        aniversarios = aniversariosDaSemana(porMes.flat(), hoje)
+        const tl = await getTranslations({ locale, namespace: 'client.artistsLista' })
+        const textos: TextosAniversario = emPt ? TEXTOS_ANIVERSARIO_PT : {
+            hoje: tl('today'), idade: tl('yearsOld'),
+            meses: Array.from({ length: 12 }, (_, m) => new Intl.DateTimeFormat(LOCALE_META[locale].intl, { month: 'short', timeZone: 'UTC' }).format(new Date(Date.UTC(2026, m, 1)))),
+        }
+        aniversarios = aniversariosDaSemana(porMes.flat().filter(a => emPt || hasLocale(a, locale)).map(a => (emPt ? a : localizeEntity(a, locale, 'artist'))), hoje, 7, 5, textos)
     }
 
     // Nome do grupo de cada artista para o cartão ("Do grupo BLACKPINK"). Falha do WP só tira essa linha.
     const idsDeGrupo = [...new Set(items.flatMap(a => (a.acf?.groups as number[] | undefined) ?? []))]
     const grupos = Object.fromEntries((await getGroupsByIds(idsDeGrupo)).map(g => [g.id, stripHtml(g.title.rendered)]))
 
-    const shopProducts = unfiltered && page === 1
+    const shopProducts = emPt && unfiltered && page === 1
         ? ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'listagem:artistas')
         : []
 

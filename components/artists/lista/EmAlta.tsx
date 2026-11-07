@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import type { WPArtist } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { labelsFor } from '@/lib/i18n/labels'
@@ -11,12 +11,13 @@ const SERIF = 'font-[family-name:var(--font-playfair)]'
 /** Os seis primeiros da ordem "Em alta", com número de posição no rosto. */
 export function EmAlta({ artistas, verTodos, grupos = {} }: { artistas: WPArtist[]; verTodos: string; grupos?: Record<number, string> }) {
     const labels = labelsFor(useLocale())
+    const t = useTranslations('client.artistsLista')
     if (artistas.length === 0) return null
     return (
         <section aria-labelledby="em-alta-titulo" data-bloco="lista-em-alta" className="page-wrap pb-8 pt-6 sm:pb-10">
             <div className="flex items-baseline justify-between gap-4">
-                <h2 id="em-alta-titulo" className={`${SERIF} text-[28px] font-semibold leading-tight sm:text-[38px]`}>Em alta agora</h2>
-                <a href={verTodos} className="text-[13px] font-semibold text-accent sm:text-[14px]">Ver todos →</a>
+                <h2 id="em-alta-titulo" className={`${SERIF} text-[28px] font-semibold leading-tight sm:text-[38px]`}>{t('trendingNow')}</h2>
+                <a href={verTodos} className="text-[13px] font-semibold text-accent sm:text-[14px]">{t('seeAll')}</a>
             </div>
             <ul className="-mx-4 mt-5 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-7 sm:grid sm:grid-cols-6 sm:gap-5 sm:overflow-visible sm:px-0">
                 {artistas.map((a, i) => {

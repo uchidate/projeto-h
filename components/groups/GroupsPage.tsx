@@ -1,4 +1,6 @@
-import { htmlLang, intlLocale } from '@/lib/i18n/format'
+import { formatNumber } from '@/lib/i18n/format'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import Image from 'next/image'
 import { BarraAncorada } from '@/components/ui/BarraAncorada'
 import { ContinueDeOndeParou } from '@/components/artists/lista/ContinueDeOndeParou'
@@ -26,11 +28,7 @@ const TYPE_PT: Record<string, string> = {
     solo:       'Solo',
 }
 
-const TYPE_FILTERS = [
-    { value: 'girl_group', label: 'Girl Group' },
-    { value: 'boy_group',  label: 'Boy Group'  },
-    { value: 'co_ed',      label: 'Co-Ed'      },
-]
+const TYPE_FILTERS = ['girl_group', 'boy_group', 'co_ed'] as const
 
 const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
@@ -147,6 +145,7 @@ interface Props {
     /** Rostos das integrantes por id do grupo, para o hover dos cards. */
     integrantes?: Record<number, { nome: string; foto: string }[]>
     shopProducts?: StoreProduct[]
+    locale?: Locale
 }
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
@@ -165,11 +164,11 @@ export function fandomValido(valor: unknown): string | undefined {
 }
 
 /** Card de diretório: foto quadrada, nome e uma linha de meta (tipo · ano). */
-function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?: boolean; integrantes?: { nome: string; foto: string }[] }) {
+function GroupTile({ group, priority, integrantes, tipos, textos }: { group: WPGroup; priority?: boolean; integrantes?: { nome: string; foto: string }[]; tipos: Record<string, string>; textos: { fandom: string; ended: string } }) {
     const image = getWPImage(group._embedded, group.featured_image_url)
     const name = stripHtml(group.title.rendered)
     const acf = group.acf ?? {}
-    const meta = [acf.type ? (TYPE_PT[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
+    const meta = [acf.type ? (tipos[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
     const membros = acf.members?.length ?? 0
     const fandom = fandomValido(acf.fandom_name)
     return (
@@ -187,7 +186,7 @@ function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?
                 {fandom && (
                     <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 via-55% to-transparent px-3 pb-3 pt-9 text-white">
                         <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.9)]">
-                            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />Fandom
+                            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />{textos.fandom}
                         </span>
                         <span className={`mt-1 line-clamp-1 block ${SERIF} text-[18px] font-bold italic leading-[1.08] [text-shadow:0_0_8px_rgba(0,0,0,.6)]`}>{fandom}</span>
                     </span>
@@ -203,7 +202,7 @@ function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?
                         ))}
                     </span>
                 )}
-                {acf.active === false && <span className="absolute right-1.5 top-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white/80">encerrado</span>}
+                {acf.active === false && <span className="absolute right-1.5 top-1.5 bg-black/70 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white/80">{textos.ended}</span>}
             </span>
             <span className="mt-2 block truncate text-[14px] font-bold leading-tight group-hover:text-accent sm:text-[15px]">{name}</span>
             {meta && <span className="mt-0.5 block truncate text-[12px] text-muted">{meta}</span>}
@@ -211,10 +210,15 @@ function GroupTile({ group, priority, integrantes }: { group: WPGroup; priority?
     )
 }
 
-export function GroupsPage({ groups, total, totalPages, currentPage, search, type, active, letter, generation, order, letterCounts, emAlta = [], geracoes = [], debutaram = [], mesNome, integrantes = {}, shopProducts = [] }: Props) {
+export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, totalPages, currentPage, search, type, active, letter, generation, order, letterCounts, emAlta = [], geracoes = [], debutaram = [], mesNome, integrantes = {}, shopProducts = [] }: Props) {
+    const t = await getTranslations({ locale, namespace: 'client.groupsLista' })
+    const emPt = locale === DEFAULT_LOCALE
+    const tipos: Record<string, string> = { girl_group: t('types.girl_group'), boy_group: t('types.boy_group'), co_ed: t('types.co_ed'), solo: t('types.solo') }
+    const nomeGeracao = (g: { slug: string; label: string }) => (emPt ? g.label : t('genLong', { n: g.slug }))
+    const siglaGeracao = (g: { slug: string; shortLabel: string }) => (emPt ? g.shortLabel : t('genShort', { n: g.slug }))
     const hasLetterCounts = Object.keys(letterCounts).length > 0
     const inicio = currentPage === 1 && !search && !type && !active && !letter && !generation && !order
-    const numero = (n: number) => n.toLocaleString(intlLocale())
+    const numero = (n: number) => formatNumber(n, undefined, locale)
 
     function buildHref(overrides: Record<string, string | undefined> = {}) {
         const params = new URLSearchParams()
@@ -241,10 +245,10 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
             <JsonLd data={{
                 '@context': 'https://schema.org',
                 '@type': 'CollectionPage',
-                name: `Grupos K-Pop | ${SITE_NAME}`,
-                description: 'Grupos e bandas K-Pop — girl groups, boy groups e mais.',
-                url: `${SITE_URL}/groups`,
-                inLanguage: htmlLang(),
+                name: `${t('schemaName')} | ${SITE_NAME}`,
+                description: t('schemaDescription'),
+                url: `${SITE_URL}${locale === DEFAULT_LOCALE ? '' : `/${locale}`}/groups`,
+                inLanguage: LOCALE_META[locale].htmlLang,
                 publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
             }} />
 
@@ -252,40 +256,40 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
             <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
                 <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
                     <h1 className={`${SERIF} whitespace-nowrap text-[34px] font-bold leading-none sm:text-[44px]`}>
-                        Grupos<span className="sr-only"> K-Pop</span><span className="text-accent">.</span>
+                        {t('groups')}<span className="sr-only">{t('groupsSr')}</span><span className="text-accent">.</span>
                         <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{numero(total)}</span>
                     </h1>
-                    <SearchInput placeholder="Buscar por nome ou hangul" current={search} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[560px] lg:flex-1" />
-                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label="Tipo de grupo">
-                        <Link href={buildHref({ type: undefined, letter: undefined, page: '1' })} className={chip(!type)}>Todos</Link>
+                    <SearchInput placeholder={t('searchPlaceholder')} current={search} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[560px] lg:flex-1" />
+                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label={t('typeAria')}>
+                        <Link href={buildHref({ type: undefined, letter: undefined, page: '1' })} className={chip(!type)}>{t('all')}</Link>
                         {TYPE_FILTERS.map(f => (
-                            <Link key={f.value} href={buildHref({ type: f.value, letter: undefined, page: '1' })} className={chip(type === f.value)}>{f.label}</Link>
+                            <Link key={f} href={buildHref({ type: f, letter: undefined, page: '1' })} className={chip(type === f)}>{tipos[f]}</Link>
                         ))}
                     </div>
                 </div>
-                <div className="-mx-4 mt-3.5 flex items-center gap-2 overflow-x-auto px-4 lg:mx-0 lg:overflow-visible lg:px-0" role="group" aria-label="Geração e status">
-                    <span className={`${KICKER} mr-1.5 shrink-0 text-muted`}>Geração</span>
+                <div className="-mx-4 mt-3.5 flex items-center gap-2 overflow-x-auto px-4 lg:mx-0 lg:overflow-visible lg:px-0" role="group" aria-label={t('genStatusAria')}>
+                    <span className={`${KICKER} mr-1.5 shrink-0 text-muted`}>{t('generation')}</span>
                     {GENERATIONS.map(g => (
                         <Link key={g.slug} href={buildHref({ generation: generation === g.slug ? undefined : g.slug, page: '1' })}
-                            className={`flex h-8 shrink-0 items-center border px-3 text-[12px] font-bold ${generation === g.slug ? 'border-foreground bg-foreground text-background' : 'border-border-strong text-foreground hover:border-accent/60'}`}>{g.shortLabel}</Link>
+                            className={`flex h-8 shrink-0 items-center border px-3 text-[12px] font-bold ${generation === g.slug ? 'border-foreground bg-foreground text-background' : 'border-border-strong text-foreground hover:border-accent/60'}`}>{siglaGeracao(g)}</Link>
                     ))}
                     <Link href={buildHref({ active: active === 'true' ? undefined : 'true', page: '1' })}
-                        className={`ml-auto flex h-8 shrink-0 items-center border px-3 text-[12px] font-bold ${active === 'true' ? 'border-foreground bg-foreground text-background' : 'border-border-strong text-foreground hover:border-accent/60'}`}>Só ativos</Link>
+                        className={`ml-auto flex h-8 shrink-0 items-center border px-3 text-[12px] font-bold ${active === 'true' ? 'border-foreground bg-foreground text-background' : 'border-border-strong text-foreground hover:border-accent/60'}`}>{t('onlyActive')}</Link>
                 </div>
             </section>
 
-            {inicio && <ContinueDeOndeParou />}
+            {inicio && <ContinueDeOndeParou textos={{ titulo: t('continueTitle'), limpar: t('clear') }} />}
 
             {/* ── Em alta ── */}
             {inicio && emAlta.length > 0 && (
                 <section className="page-wrap pt-8" data-bloco="lista-em-alta">
-                    <h2 className={H2}>Em alta</h2>
+                    <h2 className={H2}>{t('trending')}</h2>
                     <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-6 lg:gap-4">
                         {emAlta.slice(0, 6).map((g, i) => {
                             const foto = getWPImage(g._embedded, g.featured_image_url)
                             const nome = stripHtml(g.title.rendered)
                             const acf = g.acf ?? {}
-                            const meta = [acf.type ? (TYPE_PT[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
+                            const meta = [acf.type ? (tipos[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
                             return (
                                 <li key={g.id} className="w-[150px] shrink-0 sm:w-auto">
                                     <Link href={`/groups/${g.slug}`} data-posicao={i + 1} className="group block">
@@ -309,12 +313,12 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
             {/* ── Explore por geração ── */}
             {inicio && geracoes.length > 0 && (
                 <section className="page-wrap pt-10" data-bloco="lista-geracoes">
-                    <h2 className={H2}>Explore por geração</h2>
+                    <h2 className={H2}>{t('exploreByGeneration')}</h2>
                     <ul className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
                         {geracoes.map(ger => (
                             <li key={ger.slug}>
                                 <Link href={buildHref({ generation: ger.slug, page: '1' })} className="block border border-border-strong bg-surface p-3 transition-colors hover:border-accent/60 sm:p-[18px]">
-                                    <span className={`${SERIF} block text-[19px] font-semibold sm:text-[24px]`}>{ger.label}</span>
+                                    <span className={`${SERIF} block text-[19px] font-semibold sm:text-[24px]`}>{nomeGeracao(ger)}</span>
                                     <span className="mt-3 grid grid-cols-2 gap-1 sm:grid-cols-4 sm:gap-1.5">
                                         {ger.fotos.slice(0, 4).map((g, i) => {
                                             const foto = getWPImage(g._embedded, g.featured_image_url)
@@ -325,7 +329,7 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                                             )
                                         })}
                                     </span>
-                                    <span className="mt-3 block text-[12px] font-semibold text-accent sm:text-[13px]">Ver a geração →</span>
+                                    <span className="mt-3 block text-[12px] font-semibold text-accent sm:text-[13px]">{t('seeGeneration')}</span>
                                 </Link>
                             </li>
                         ))}
@@ -336,14 +340,14 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
             {/* ── Debutaram no mês ── */}
             {inicio && debutaram.length > 0 && mesNome && (
                 <section className="page-wrap pt-10" data-bloco="lista-debut-mes">
-                    <h2 className={H2}>Debutaram em {mesNome}</h2>
+                    <h2 className={H2}>{t('debutedIn', { month: mesNome })}</h2>
                     <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
                         {debutaram.slice(0, 5).map((d, i) => (
                             <li key={d.slug} className="w-[170px] shrink-0 sm:w-auto">
                                 <Link href={`/groups/${d.slug}`} data-posicao={i + 1} className="block border border-border-strong bg-surface p-4 transition-colors hover:border-accent/60">
-                                    <span className={`${KICKER} block text-accent`}>{String(d.dia).padStart(2, '0')} de {mesNome.slice(0, 3)}</span>
+                                    <span className={`${KICKER} block text-accent`}>{t('debutDay', { day: String(d.dia).padStart(2, '0'), month: emPt ? mesNome.slice(0, 3) : mesNome.slice(0, 3) })}</span>
                                     <span className="mt-1.5 block truncate text-[18px] font-extrabold">{d.nome}</span>
-                                    <span className="mt-1 block text-[13px] text-muted">Estreou em {d.ano}</span>
+                                    <span className="mt-1 block text-[13px] text-muted">{t('debutedYear', { year: d.ano })}</span>
                                 </Link>
                             </li>
                         ))}
@@ -354,11 +358,11 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
             {/* ── Todos os grupos ── */}
             <section className="page-wrap pt-10" data-bloco="lista-todos">
                 <div className="flex flex-col gap-1 border-b border-border sm:flex-row sm:items-end sm:justify-between">
-                    <h2 className={`${H2} sm:order-2 sm:pb-3`}>Todos os grupos</h2>
-                    <div className="-mx-4 flex gap-6 overflow-x-auto px-4 sm:order-1 sm:mx-0 sm:px-0" role="group" aria-label="Ordenar">
-                        <Link href={buildHref({ order: undefined, letter: undefined, page: '1' })} className={aba(!order)}>Populares</Link>
+                    <h2 className={`${H2} sm:order-2 sm:pb-3`}>{t('allGroups')}</h2>
+                    <div className="-mx-4 flex gap-6 overflow-x-auto px-4 sm:order-1 sm:mx-0 sm:px-0" role="group" aria-label={t('sortAria')}>
+                        <Link href={buildHref({ order: undefined, letter: undefined, page: '1' })} className={aba(!order)}>{t('popular')}</Link>
                         <Link href={buildHref({ order: 'az', page: '1' })} className={aba(order === 'az')}>A–Z</Link>
-                        <Link href={buildHref({ order: 'novos', letter: undefined, page: '1' })} className={aba(order === 'novos')}>Novos</Link>
+                        <Link href={buildHref({ order: 'novos', letter: undefined, page: '1' })} className={aba(order === 'novos')}>{t('newest')}</Link>
                     </div>
                 </div>
 
@@ -385,10 +389,10 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                     {groups.length === 0 ? (
                         <EmptyState
                             icon={<Users size={48} />}
-                            title="Nenhum grupo encontrado"
-                            description={search ? `Nenhum resultado para "${search}"` : letter ? `Nenhum grupo com a letra ${letter}` : 'Sem grupos disponíveis'}
+                            title={t('emptyTitle')}
+                            description={search ? t('emptySearch', { query: search }) : letter ? t('emptyLetter', { letter }) : t('emptyNone')}
                             actionHref="/groups"
-                            actionLabel="Ver todos"
+                            actionLabel={t('emptyAction')}
                         />
                     ) : (
                         // Fatias de 12 (divide 2, 3, 4 e 6 colunas) com o anúncio entre elas, fora da grade, para não deixar órfãos.
@@ -404,7 +408,7 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                                     <Fragment key={b}>
                                         {b > 0 && <div className="my-6"><AdSlotInline slot={inline!} layout="feed" analyticsPlacement="groups_grid" /></div>}
                                         <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6 lg:gap-x-4">
-                                            {bloco.map((g, i) => <GroupTile key={g.id} group={g} integrantes={integrantes[g.id]} priority={!inicio && inicioBloco + i < 6} />)}
+                                            {bloco.map((g, i) => <GroupTile key={g.id} group={g} integrantes={integrantes[g.id]} priority={!inicio && inicioBloco + i < 6} tipos={tipos} textos={{ fandom: t('fandom'), ended: t('ended') }} />)}
                                         </div>
                                     </Fragment>
                                 )
@@ -415,7 +419,7 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                     {proximaPagina && (
                         <div className="mt-8 flex justify-center">
                             <Link href={proximaPagina} className="touch-target inline-flex h-12 items-center border border-accent px-7 text-[15px] font-bold text-accent hover:bg-accent/10">
-                                Ver mais {numero(restantes)} {restantes === 1 ? 'grupo' : 'grupos'}
+                                {t('seeMore', { count: restantes })}
                             </Link>
                         </div>
                     )}
@@ -423,11 +427,11 @@ export function GroupsPage({ groups, total, totalPages, currentPage, search, typ
                 </div>
             </section>
 
-            {inicio && shopProducts.length > 0 && (
-                <ShopRelatedSection title="Merch de grupo K-pop" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:grupos" />
+            {inicio && emPt && shopProducts.length > 0 && (
+                <ShopRelatedSection title={t('merch')} products={shopProducts} verTudoLabel={t('seeStore')} contexto="listagem:grupos" />
             )}
 
-            {inicio && <QuizWidget category="k-pop" title="Sabe o nome de todo mundo?" description="Teste seus conhecimentos sobre grupos K-Pop" />}
+            {inicio && emPt && <QuizWidget category="k-pop" title={t('quizTitle')} description={t('quizText')} />}
         </>
     )
 }

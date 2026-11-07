@@ -1,9 +1,10 @@
 'use client'
 
-import { htmlLang, intlLocale } from '@/lib/i18n/format'
+import { formatNumber } from '@/lib/i18n/format'
+import { LOCALE_META, DEFAULT_LOCALE } from '@/lib/i18n/config'
 import Link from '@/components/i18n/LocalizedLink'
 import { usePathname } from 'next/navigation'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Mic2, Search, X } from 'lucide-react'
 import { useCallback, useRef, useState, useEffect } from 'react'
 import type { WPArtist } from '@/lib/wordpress/types'
@@ -31,20 +32,8 @@ import type { StoreProduct } from '@/lib/wordpress/store'
 import { queryAtual } from '@/lib/listagem/query-atual'
 import { consumirFocoBusca, navegarListagem } from '@/lib/listagem/navegar'
 
-const SORT_OPTIONS = [
-    { value: 'trending', label: 'Em alta' },
-    { value: 'popular',  label: 'Populares' },
-    { value: 'name',     label: 'A–Z'     },
-    { value: 'newest',   label: 'Novos'   },
-]
-
-const ROLE_OPTIONS = [
-    { value: 'singer',  label: 'Cantores'    },
-    { value: 'actor',   label: 'Atores'      },
-    { value: 'rapper',  label: 'Rappers'     },
-    { value: 'dancer',  label: 'Dança'       },
-    { value: 'model',   label: 'Modelos'     },
-]
+const SORT_VALUES = ['trending', 'popular', 'name', 'newest'] as const
+const ROLE_VALUES = ['singer', 'actor', 'rapper', 'dancer', 'model'] as const
 
 const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
@@ -134,9 +123,14 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
     const hasActive = !!(searchVal || sortVal !== 'trending' || roleVal || affiliationVal)
     const hasLetterCounts = Object.keys(letterCounts).length > 0
 
-    const labels = labelsFor(useLocale())
+    const locale = useLocale() as keyof typeof LOCALE_META
+    const labels = labelsFor(locale)
+    const t = useTranslations('client.artistsLista')
+    const emPt = locale === DEFAULT_LOCALE
+    const SORT_OPTIONS = SORT_VALUES.map(value => ({ value, label: t(`sort.${value}`) }))
+    const ROLE_OPTIONS = ROLE_VALUES.map(value => ({ value, label: t(`roles.${value}`) }))
     const SERIF = 'font-[family-name:var(--font-playfair)]'
-    const numero = (n: number) => n.toLocaleString(intlLocale())
+    const numero = (n: number) => formatNumber(n, undefined, locale)
 
     // Página inicial sem filtro: é onde entram as faixas de descoberta. Com busca, filtro ou letra, o leitor já sabe o que quer.
     const semRecorte = !searchVal && !roleVal && !affiliationVal && !letter
@@ -144,7 +138,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
     const emAltaArtistas = inicio && sortBy === 'trending' ? artists.slice(0, 6) : []
     const grade = emAltaArtistas.length > 0 ? artists.slice(emAltaArtistas.length) : artists
 
-    const rotulo = [SORT_OPTIONS.find(o => o.value === sortBy)?.label ?? 'Em alta', ROLE_OPTIONS.find(o => o.value === role)?.label, affiliation === 'group' ? 'Em grupo' : affiliation === 'solo' ? 'Solo' : undefined, letter ? `Letra ${letter}` : undefined, search ? `“${search}”` : undefined].filter(Boolean).join(' · ')
+    const rotulo = [SORT_OPTIONS.find(o => o.value === sortBy)?.label ?? t('sort.trending'), ROLE_OPTIONS.find(o => o.value === role)?.label, affiliation === 'group' ? t('inGroup') : affiliation === 'solo' ? t('solo') : undefined, letter ? t('letterLabel', { letter }) : undefined, search ? `“${search}”` : undefined].filter(Boolean).join(' · ')
     const consultaAtual = new URLSearchParams()
     if (search) consultaAtual.set('search', search)
     if (role) consultaAtual.set('role', role)
@@ -181,10 +175,10 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             <JsonLd data={{
                 '@context': 'https://schema.org',
                 '@type': 'CollectionPage',
-                name: `Artistas K-Pop & K-Drama | ${SITE_NAME}`,
-                description: 'Perfis de artistas de K-Pop e K-Drama — cantores, atores, idols e mais.',
-                url: `${SITE_URL}/artists`,
-                inLanguage: htmlLang(),
+                name: `${t('schemaName')} | ${SITE_NAME}`,
+                description: t('schemaDescription'),
+                url: `${SITE_URL}${emPt ? '' : `/${locale}`}/artists`,
+                inLanguage: LOCALE_META[locale].htmlLang,
                 publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
             }} />
 
@@ -192,7 +186,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
                 <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
                     <h1 className={`${SERIF} whitespace-nowrap text-[34px] font-bold leading-none sm:text-[44px]`}>
-                        Artistas<span className="sr-only"> K-Pop e K-Drama</span><span className="text-accent">.</span>
+                        {t('heading')}<span className="sr-only">{t('headingSr')}</span><span className="text-accent">.</span>
                         <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{numero(total)}</span>
                     </h1>
                     <div className="flex h-12 w-full min-w-0 items-center gap-3 border border-border-strong bg-surface px-4 transition-colors focus-within:border-foreground lg:max-w-[560px] lg:flex-1">
@@ -202,18 +196,18 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                             type="text"
                             value={searchVal}
                             onChange={e => setSearchVal(e.target.value)}
-                            placeholder="Buscar por nome ou hangul"
-                            aria-label="Buscar artista por nome ou hangul"
+                            placeholder={t('searchPlaceholder')}
+                            aria-label={t('searchAria')}
                             className="min-w-0 flex-1 input-embutido border-0 bg-transparent p-0 text-[15px] text-foreground shadow-none placeholder:text-muted focus:outline-hidden"
                         />
                         {hasActive && (
-                            <button type="button" onClick={clear} className="flex h-7 shrink-0 items-center justify-center bg-background px-2 text-[11px] font-bold text-muted hover:text-foreground" aria-label="Limpar filtros">
-                                <X className="h-3 w-3" /><span className="ml-1 hidden sm:inline">Limpar</span>
+                            <button type="button" onClick={clear} className="flex h-7 shrink-0 items-center justify-center bg-background px-2 text-[11px] font-bold text-muted hover:text-foreground" aria-label={t('clearFilters')}>
+                                <X className="h-3 w-3" /><span className="ml-1 hidden sm:inline">{t('clear')}</span>
                             </button>
                         )}
                     </div>
-                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label="Atalhos por atuação">
-                        <button type="button" onClick={() => setRoleVal('')} aria-pressed={roleVal === ''} className={chip(roleVal === '')}>Todos</button>
+                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label={t('shortcutsAria')}>
+                        <button type="button" onClick={() => setRoleVal('')} aria-pressed={roleVal === ''} className={chip(roleVal === '')}>{t('all')}</button>
                         {ROLE_OPTIONS.map(o => (
                             <button key={o.value} type="button" onClick={() => setRoleVal(roleVal === o.value ? '' : o.value)} aria-pressed={roleVal === o.value} className={chip(roleVal === o.value)}>{o.label}</button>
                         ))}
@@ -221,7 +215,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                 </div>
             </section>
 
-            {inicio && <ContinueDeOndeParou />}
+            {inicio && <ContinueDeOndeParou textos={{ titulo: t('continueTitle'), limpar: t('clear') }} />}
             <EmAlta artistas={emAltaArtistas} verTodos="#diretorio" grupos={grupos} />
             {inicio && ADSENSE.slots.leaderboard && (
                 <div className="page-wrap pb-8">
@@ -233,31 +227,31 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             {/* ── Diretório completo ───────────────────────────────── */}
             <section id="diretorio" className="scroll-mt-24 border-t border-border/70 pb-10 pt-8 sm:pt-9">
                 <div className="page-wrap">
-                    <h2 className={`${SERIF} text-[28px] font-semibold leading-tight sm:text-[38px]`}>Todos os artistas</h2>
+                    <h2 className={`${SERIF} text-[28px] font-semibold leading-tight sm:text-[38px]`}>{t('allArtists')}</h2>
                 </div>
 
                 <div className="page-wrap">
                     <div className="mt-6 flex flex-col gap-3 border-y border-border/70 py-3 lg:h-14 lg:flex-row lg:items-center lg:justify-between lg:py-0">
-                        <div className="-mx-4 flex gap-1 overflow-x-auto px-4 lg:mx-0 lg:px-0" role="group" aria-label="Ordenar por">
+                        <div className="-mx-4 flex gap-1 overflow-x-auto px-4 lg:mx-0 lg:px-0" role="group" aria-label={t('sortAria')}>
                             {SORT_OPTIONS.map(o => (
                                 <button key={o.value} type="button" onClick={() => setSortVal(o.value)} aria-pressed={sortVal === o.value} className={aba(sortVal === o.value)}>{o.label}</button>
                             ))}
                         </div>
                         <div className="flex gap-2">
-                            <select value={roleVal} onChange={e => setRoleVal(e.target.value)} aria-label="Filtrar por atuação" className={seletor}>
-                                <option value="">Atuação: Todas</option>
+                            <select value={roleVal} onChange={e => setRoleVal(e.target.value)} aria-label={t('roleAria')} className={seletor}>
+                                <option value="">{t('roleAll')}</option>
                                 {ROLE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
-                            <select value={affiliationVal} onChange={e => setAffiliationVal(e.target.value)} aria-label="Filtrar por vínculo" className={seletor}>
-                                <option value="">Vínculo: Todos</option>
-                                <option value="group">Em grupo</option>
-                                <option value="solo">Solo</option>
+                            <select value={affiliationVal} onChange={e => setAffiliationVal(e.target.value)} aria-label={t('affAria')} className={seletor}>
+                                <option value="">{t('affAll')}</option>
+                                <option value="group">{t('inGroup')}</option>
+                                <option value="solo">{t('solo')}</option>
                             </select>
                         </div>
                     </div>
 
                     {/* Índice A–Z: só as letras, sem contagem */}
-                    <div className="-mx-4 mt-4 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:justify-between lg:gap-0 lg:px-0" aria-label="Índice de A a Z">
+                    <div className="-mx-4 mt-4 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:justify-between lg:gap-0 lg:px-0" aria-label={t('azAria')}>
                         {ALPHA.map(L => {
                             const count = letterCounts[L] ?? 0
                             const active = letter === L
@@ -277,7 +271,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                     {letter && (
                         <div className="flex items-baseline gap-5 pt-8">
                             <span className={`${SERIF} text-[72px] font-black leading-[0.85] tracking-[-0.06em] text-accent sm:text-[88px]`}>{letter}</span>
-                            <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted">{numero(letterCounts[letter] ?? total)} artistas · letra {letter}</p>
+                            <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted">{t('letterLine', { count: numero(letterCounts[letter] ?? total), letter })}</p>
                         </div>
                     )}
 
@@ -285,10 +279,10 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                         {artists.length === 0 ? (
                             <EmptyState
                                 icon={<Mic2 size={48} />}
-                                title="Nenhum artista encontrado"
-                                description={search ? `Nenhum resultado para "${search}"` : letter ? `Nenhum artista com a letra ${letter}` : 'Sem artistas disponíveis'}
+                                title={t('emptyTitle')}
+                                description={search ? t('emptySearch', { query: search }) : letter ? t('emptyLetter', { letter }) : t('emptyNone')}
                                 actionHref="/artists"
-                                actionLabel="Ver todos"
+                                actionLabel={t('emptyAction')}
                             />
                         ) : (
                             // Fatias de 12: fecham as fileiras de 2, 3, 4 e 6 colunas, então o anúncio entre elas
@@ -307,8 +301,8 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                                         if (comAnuncio) anuncios++
                                         return (
                                             <Fragment key={`fatia-${b}`}>
-                                                {b === 2 && shopProducts.length > 0 && (
-                                                    <LojaEmLinha bloco="listagem-artistas-loja" products={shopProducts} title="Pra levar do seu bias" contexto="listagem:artistas:grade" className="my-7 sm:my-9" />
+                                                {b === 2 && emPt && shopProducts.length > 0 && (
+                                                    <LojaEmLinha bloco="listagem-artistas-loja" products={shopProducts} title={t('shopTitle')} contexto="listagem:artistas:grade" className="my-7 sm:my-9" />
                                                 )}
                                                 {comAnuncio && (
                                                     <div className="my-7 sm:my-9">
@@ -332,7 +326,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                     {proximaPagina && (
                         <div className="mt-10 flex justify-center">
                             <Link href={proximaPagina} className="touch-target flex h-[52px] w-full items-center justify-center border border-accent px-8 text-[15px] font-bold text-accent hover:bg-accent/10 sm:w-auto">
-                                Ver mais {numero(perPage)} artistas
+                                {t('seeMore', { count: numero(perPage) })}
                             </Link>
                         </div>
                     )}
@@ -340,18 +334,18 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                 </div>
             </section>
 
-            {inicio && shopProducts.length > 0 && (
-                <ShopRelatedSection title="Pra levar do seu bias" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:artistas" />
+            {inicio && emPt && shopProducts.length > 0 && (
+                <ShopRelatedSection title={t('shopTitle')} products={shopProducts} verTudoLabel={t('seeStore')} contexto="listagem:artistas" />
             )}
 
-            {inicio && <QuizWidget category="k-pop" title="Sabe tudo sobre os artistas favoritos?" description="Teste seus conhecimentos sobre o acervo de artistas" />}
+            {inicio && emPt && <QuizWidget category="k-pop" title={t('quizTitle')} description={t('quizText')} />}
 
             {/* ── Continue explorando ─────────────────────────────── */}
             <section className="border-t border-border bg-surface/60 py-9 sm:py-11" data-bloco="lista-explorar">
                 <div className="page-wrap">
-                    <h2 className={`${SERIF} text-[26px] font-semibold leading-tight sm:text-[34px]`}>Continue explorando</h2>
+                    <h2 className={`${SERIF} text-[26px] font-semibold leading-tight sm:text-[34px]`}>{t('keepExploring')}</h2>
                     <ul className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-3 sm:gap-4">
-                        {[['Grupos K-Pop', '/groups'], ['Por agência', '/agencies'], ['Aniversariantes do mês', '/artists/birthdays']].map(([nome, href], i) => (
+                        {[[t('linkGroups'), '/groups'], [t('linkAgencies'), '/agencies'], [t('linkBirthdays'), '/artists/birthdays']].map(([nome, href], i) => (
                             <li key={href}>
                                 <Link href={href} data-posicao={i + 1} className={`block border border-border px-[18px] py-5 hover:border-accent/60 sm:px-6 sm:py-7 ${SERIF} text-[22px] sm:text-[26px]`}>{nome} →</Link>
                             </li>

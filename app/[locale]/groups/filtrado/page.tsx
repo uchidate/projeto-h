@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { GroupsListagem, metadataGroupsListagem, type SearchParams } from '@/components/groups/GroupsListagem'
-import { LocalizedCatalog, buildCatalogMetadata } from '@/components/features/LocalizedCatalog'
-import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 import { href } from '@/lib/i18n/routes'
 
@@ -15,9 +13,7 @@ type Params = Promise<{ locale: string }>
 export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: SearchParams }): Promise<Metadata> {
     const { locale } = await params
     if (!idiomaValido(locale, { servePt: true })) return {}
-    return locale === DEFAULT_LOCALE
-        ? metadataGroupsListagem({ searchParams })
-        : buildCatalogMetadata('groups', locale, (await searchParams).page)
+    return metadataGroupsListagem({ searchParams, locale })
 }
 
 export default async function Page({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
@@ -25,7 +21,5 @@ export default async function Page({ params, searchParams }: { params: Params; s
     entrarNaPagina(locale, { servePt: true })
     const sp = await searchParams
     if (Object.keys(sp).length === 0) redirect(href('groups', undefined, locale))
-    return locale === DEFAULT_LOCALE
-        ? <GroupsListagem searchParams={searchParams} />
-        : <LocalizedCatalog kind="groups" locale={locale} pageParam={sp.page} />
+    return <GroupsListagem searchParams={searchParams} locale={locale} />
 }

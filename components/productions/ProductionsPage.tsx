@@ -2,7 +2,9 @@ import Link from '@/components/i18n/LocalizedLink'
 import { Fragment } from 'react'
 import Image from 'next/image'
 import { Film } from 'lucide-react'
-import { intlLocale } from '@/lib/i18n/format'
+import { formatNumber } from '@/lib/i18n/format'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { getWPImage } from '@/lib/utils'
 import { ContinueDeOndeParou } from '@/components/artists/lista/ContinueDeOndeParou'
 import type { WPProduction, WPTerm } from '@/lib/wordpress/types'
@@ -36,29 +38,27 @@ interface Props {
     plataformasTop?: WPTerm[]
     generosTop?: GeneroResumo[]
     shopProducts?: StoreProduct[]
+    locale?: Locale
 }
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
 const H2 = `${SERIF} text-[26px] font-semibold leading-tight sm:text-[32px]`
-const TIPOS = [
-    { value: 'drama', label: 'Doramas' },
-    { value: 'movie', label: 'Filmes' },
-    { value: 'special', label: 'Especiais' },
-    { value: 'variety', label: 'Variety' },
-]
+const TIPOS = ['drama', 'movie', 'special', 'variety'] as const
 
 const chip = (ativo: boolean) =>
     `touch-target flex h-9 shrink-0 items-center border px-3.5 text-[13px] font-bold transition-colors ${ativo ? 'border-foreground bg-foreground text-background' : 'border-border-strong text-foreground hover:border-accent/60'}`
 const aba = (ativo: boolean) =>
     `flex h-11 shrink-0 items-center border-b-2 text-[14px] font-semibold transition-colors ${ativo ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`
 
-export function ProductionsPage({
+export async function ProductionsPage({ locale = DEFAULT_LOCALE,
     productions, total, totalPages, genres, platforms,
     currentPage, currentGenre, currentPlatform, currentType, currentOrder = 'trending', search,
     emAlta = [], plataformasTop = [], generosTop = [], shopProducts = [],
 }: Props) {
+    const t = await getTranslations({ locale, namespace: 'client.productionsLista' })
+    const emPt = locale === DEFAULT_LOCALE
     const genreMap = Object.fromEntries(genres.map(g => [g.id, g.name]))
-    const numero = (n: number) => n.toLocaleString(intlLocale())
+    const numero = (n: number) => formatNumber(n, undefined, locale)
     // Faixas de descoberta só na página inicial sem filtro: com busca ou filtro o leitor já sabe o que quer.
     const inicio = currentPage === 1 && !search && !currentType && !currentGenre && !currentPlatform && currentOrder === 'trending'
 
@@ -89,14 +89,14 @@ export function ProductionsPage({
             <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
                 <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
                     <h1 className={`${SERIF} whitespace-nowrap text-[34px] font-bold leading-none sm:text-[44px]`}>
-                        Produções<span className="sr-only"> coreanas: doramas, filmes e séries</span><span className="text-accent">.</span>
+                        {t('heading')}<span className="sr-only">{t('headingSr')}</span><span className="text-accent">.</span>
                         <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{numero(total)}</span>
                     </h1>
-                    <SearchInput placeholder="Buscar produção por título" current={search} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[560px] lg:flex-1" />
-                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label="Tipo de produção">
-                        <Link href={buildHref({ type: undefined, genre: undefined, platform: undefined, page: '1' })} className={chip(!currentType)}>Todos</Link>
-                        {TIPOS.map(t => (
-                            <Link key={t.value} href={buildHref({ type: t.value, page: '1' })} className={chip(currentType === t.value)}>{t.label}</Link>
+                    <SearchInput placeholder={t('searchPlaceholder')} current={search} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[560px] lg:flex-1" />
+                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label={t('typeAria')}>
+                        <Link href={buildHref({ type: undefined, genre: undefined, platform: undefined, page: '1' })} className={chip(!currentType)}>{t('all')}</Link>
+                        {TIPOS.map(tipo => (
+                            <Link key={tipo} href={buildHref({ type: tipo, page: '1' })} className={chip(currentType === tipo)}>{t(`types.${tipo}`)}</Link>
                         ))}
                     </div>
                 </div>
@@ -105,12 +105,12 @@ export function ProductionsPage({
                 </div>
             </section>
 
-            {inicio && <ContinueDeOndeParou apenas="producao" />}
+            {inicio && <ContinueDeOndeParou apenas="producao" textos={{ titulo: t('continueTitle'), limpar: t('clear') }} />}
 
             {/* ── Em alta ── */}
             {inicio && emAlta.length > 0 && (
                 <section className="page-wrap pt-8" data-bloco="lista-em-alta">
-                    <h2 className={H2}>Em alta</h2>
+                    <h2 className={H2}>{t('trending')}</h2>
                     <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-6 lg:gap-4">
                         {emAlta.slice(0, 6).map((p, i) => (
                             <li key={p.id} className="w-[140px] shrink-0 sm:w-auto" data-posicao={i + 1}>
@@ -125,13 +125,13 @@ export function ProductionsPage({
             {/* ── Onde assistir ── */}
             {inicio && plataformasTop.length > 0 && (
                 <section className="page-wrap pt-10" data-bloco="lista-plataformas">
-                    <h2 className={H2}>Onde assistir</h2>
+                    <h2 className={H2}>{t('whereToWatch')}</h2>
                     <ul className="-mx-4 mt-4 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-6 lg:gap-3">
                         {plataformasTop.slice(0, 6).map(pl => (
                             <li key={pl.id} className="shrink-0 sm:shrink">
                                 <Link href={buildHref({ platform: pl.slug, page: '1' })} className="touch-target flex h-12 items-center border border-border-strong bg-surface px-4 text-[15px] font-extrabold transition-colors hover:border-accent/60 sm:h-auto sm:flex-col sm:items-start sm:gap-1.5 sm:px-3.5 sm:py-4 sm:text-[17px]">
                                     {pl.name}
-                                    <span className="hidden text-[12px] font-semibold text-accent sm:inline">Ver títulos →</span>
+                                    <span className="hidden text-[12px] font-semibold text-accent sm:inline">{t('seeTitles')}</span>
                                 </Link>
                             </li>
                         ))}
@@ -142,7 +142,7 @@ export function ProductionsPage({
             {/* ── Explore por gênero ── */}
             {inicio && generosTop.length > 0 && (
                 <section className="page-wrap pt-10" data-bloco="lista-generos">
-                    <h2 className={H2}>Explore por gênero</h2>
+                    <h2 className={H2}>{t('exploreByGenre')}</h2>
                     <ul className="mt-4 grid grid-cols-2 gap-2.5 lg:grid-cols-3 lg:gap-4">
                         {generosTop.map(gn => (
                             <li key={gn.slug}>
@@ -159,7 +159,7 @@ export function ProductionsPage({
                                     </span>
                                     <span>
                                         <span className={`${SERIF} block text-[18px] font-semibold lg:text-[22px]`}>{gn.nome}</span>
-                                        <span className="mt-1 hidden text-[12px] font-semibold text-accent lg:block">Ver gênero →</span>
+                                        <span className="mt-1 hidden text-[12px] font-semibold text-accent lg:block">{t('seeGenre')}</span>
                                     </span>
                                 </Link>
                             </li>
@@ -171,10 +171,10 @@ export function ProductionsPage({
             {/* ── Todas as produções ── */}
             <section className="page-wrap pt-10" data-bloco="lista-todas">
                 <div className="flex flex-col gap-1 border-b border-border sm:flex-row sm:items-end sm:justify-between">
-                    <h2 className={`${H2} sm:order-2 sm:pb-3`}>Todas as produções</h2>
-                    <div className="-mx-4 flex gap-6 overflow-x-auto px-4 sm:order-1 sm:mx-0 sm:px-0" role="group" aria-label="Ordenar">
-                        <Link href={buildHref({ order: 'trending', page: '1' })} className={aba(currentOrder === 'trending')}>Em alta</Link>
-                        <Link href={buildHref({ order: 'recent', page: '1' })} className={aba(currentOrder === 'recent')}>Mais recentes</Link>
+                    <h2 className={`${H2} sm:order-2 sm:pb-3`}>{t('allProductions')}</h2>
+                    <div className="-mx-4 flex gap-6 overflow-x-auto px-4 sm:order-1 sm:mx-0 sm:px-0" role="group" aria-label={t('sortAria')}>
+                        <Link href={buildHref({ order: 'trending', page: '1' })} className={aba(currentOrder === 'trending')}>{t('trending')}</Link>
+                        <Link href={buildHref({ order: 'recent', page: '1' })} className={aba(currentOrder === 'recent')}>{t('recent')}</Link>
                         <Link href={buildHref({ order: 'az', page: '1' })} className={aba(currentOrder === 'az')}>A–Z</Link>
                     </div>
                 </div>
@@ -182,10 +182,10 @@ export function ProductionsPage({
                     {grade.length === 0 ? (
                         <EmptyState
                             icon={<Film size={48} />}
-                            title="Nenhuma produção encontrada"
-                            description={search ? `Nenhum resultado para "${search}"` : 'Sem produções disponíveis'}
+                            title={t('emptyTitle')}
+                            description={search ? t('emptySearch', { query: search }) : t('emptyNone')}
                             actionHref="/productions"
-                            actionLabel="Ver todas"
+                            actionLabel={t('emptyAction')}
                         />
                     ) : (
                         // Fatias de 12 (divide 2, 3, 4 e 6 colunas) com o anúncio entre elas, fora da grade, para não deixar órfãos.
@@ -213,7 +213,7 @@ export function ProductionsPage({
                     {proximaPagina && (
                         <div className="mt-8 flex justify-center">
                             <Link href={proximaPagina} className="touch-target inline-flex h-12 items-center border border-accent px-7 text-[15px] font-bold text-accent hover:bg-accent/10">
-                                Ver mais {numero(restantes)} {restantes === 1 ? 'produção' : 'produções'}
+                                {t('seeMore', { count: restantes })}
                             </Link>
                         </div>
                     )}
@@ -221,11 +221,11 @@ export function ProductionsPage({
                 </div>
             </section>
 
-            {inicio && shopProducts.length > 0 && (
-                <ShopRelatedSection title="K-drama merch pra maratonar" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:producoes" />
+            {inicio && emPt && shopProducts.length > 0 && (
+                <ShopRelatedSection title={t('merch')} products={shopProducts} verTudoLabel={t('seeStore')} contexto="listagem:producoes" />
             )}
 
-            {inicio && <QuizWidget category="k-drama" title="Sabe mais doramas do que acha?" description="Teste seus conhecimentos sobre K-Drama" />}
+            {inicio && emPt && <QuizWidget category="k-drama" title={t('quizTitle')} description={t('quizText')} />}
         </>
     )
 }

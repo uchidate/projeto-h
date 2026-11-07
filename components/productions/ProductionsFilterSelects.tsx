@@ -1,6 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import type { WPTerm } from '@/lib/wordpress/types'
 import { FilterSelect } from '@/components/ui/FilterSelect'
 import { queryAtual } from '@/lib/listagem/query-atual'
@@ -15,6 +16,7 @@ interface Props {
 
 export function ProductionsFilterSelects({ genres, platforms, currentGenre, currentPlatform }: Props) {
     const pathname = usePathname()
+    const t = useTranslations('client.productionsLista')
 
     const navigate = (key: string, value: string) => {
         const params = queryAtual()
@@ -27,23 +29,23 @@ export function ProductionsFilterSelects({ genres, platforms, currentGenre, curr
         <>
             {genres.length > 0 && (
                 <FilterSelect
-                        label="Gênero"
+                        label={t('genreLabel')}
                         value={currentGenre ?? ''}
                         onChange={e => navigate('genre', e.target.value)}
-                        aria-label="Filtrar por gênero"
+                        aria-label={t('genreAria')}
                     >
-                        <option value="">Todos</option>
+                        <option value="">{t('genreAll')}</option>
                         {genres.map(g => <option key={g.id} value={g.slug}>{g.name}</option>)}
                 </FilterSelect>
             )}
             {platforms.length > 0 && (
                 <FilterSelect
-                        label="Plataforma"
+                        label={t('platformLabel')}
                         value={currentPlatform ?? ''}
                         onChange={e => navigate('platform', e.target.value)}
-                        aria-label="Filtrar por plataforma"
+                        aria-label={t('platformAria')}
                     >
-                        <option value="">Todas</option>
+                        <option value="">{t('platformAll')}</option>
                         {platforms.map(p => <option key={p.id} value={p.slug}>{p.name}</option>)}
                 </FilterSelect>
             )}
