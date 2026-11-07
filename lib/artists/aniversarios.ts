@@ -13,6 +13,10 @@ export interface Hoje { ano: number; mes: number; dia: number }
 
 const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
+/** Textos da linha "quando" de cada aniversariante; `{n}` é a idade. */
+export type TextosAniversario = { hoje: string; meses: readonly string[]; idade: string }
+export const TEXTOS_ANIVERSARIO_PT: TextosAniversario = { hoje: 'Hoje', meses: MESES, idade: '{n} anos' }
+
 /** Data de hoje no fuso de São Paulo: o servidor roda em UTC e viraria o dia três horas antes. */
 export function hojeEmSaoPaulo(agora: Date = new Date()): Hoje {
     const [ano, mes, dia] = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(agora).split('-').map(Number)
@@ -27,7 +31,7 @@ export function mesesDaJanela(hoje: Hoje, dias = 7): number[] {
 }
 
 /** Quem faz aniversário nos próximos `dias` dias (hoje incluso), do mais próximo ao mais distante. */
-export function aniversariosDaSemana(artistas: WPArtist[], hoje: Hoje, dias = 7, max = 5): AniversarianteSemana[] {
+export function aniversariosDaSemana(artistas: WPArtist[], hoje: Hoje, dias = 7, max = 5, textos: TextosAniversario = TEXTOS_ANIVERSARIO_PT): AniversarianteSemana[] {
     const base = Date.UTC(hoje.ano, hoje.mes - 1, hoje.dia)
     const achados = artistas.flatMap(a => {
         // Artista falecido não entra na agenda de aniversários.
@@ -42,14 +46,14 @@ export function aniversariosDaSemana(artistas: WPArtist[], hoje: Hoje, dias = 7,
         if (falta >= dias) return []
         const anoNasc = nascimento.getUTCFullYear()
         const idade = anoNasc > 1900 ? new Date(proximo).getUTCFullYear() - anoNasc : null
-        const quandoData = falta === 0 ? 'Hoje' : `${dia} ${MESES[mes]}`
+        const quandoData = falta === 0 ? textos.hoje : `${dia} ${textos.meses[mes]}`
         return [{
             falta,
             item: {
                 slug: a.slug,
                 nome: stripHtml(a.title?.rendered ?? ''),
                 foto: getWPImage(a._embedded, a.featured_image_url)?.src ?? null,
-                quando: idade != null ? `${quandoData} · ${idade} anos` : quandoData,
+                quando: idade != null ? `${quandoData} · ${textos.idade.replace('{n}', String(idade))}` : quandoData,
                 idade,
             } satisfies AniversarianteSemana,
         }]

@@ -1,18 +1,20 @@
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
+import { useTranslations } from 'next-intl'
 import type { AniversarianteSemana } from '@/lib/artists/aniversarios'
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
 
 export function AniversariosSemana({ itens }: { itens: AniversarianteSemana[] }) {
+    const t = useTranslations('client.artistsLista')
     if (itens.length === 0) return null
     return (
         <section aria-labelledby="aniversarios-titulo" data-bloco="lista-aniversarios" className="page-wrap pb-8 pt-2 sm:pb-10">
             <div className="flex items-baseline justify-between gap-4">
                 <h2 id="aniversarios-titulo" className={`${SERIF} text-[26px] font-semibold leading-tight sm:text-[32px]`}>
-                    <span className="sm:hidden">Aniversários</span><span className="hidden sm:inline">Aniversários da semana</span>
+                    <span className="sm:hidden">{t('birthdaysShort')}</span><span className="hidden sm:inline">{t('birthdaysWeek')}</span>
                 </h2>
-                <Link href="/artists/birthdays" className="text-[13px] font-semibold text-accent sm:text-[14px]">Ver todos →</Link>
+                <Link href="/artists/birthdays" className="text-[13px] font-semibold text-accent sm:text-[14px]">{t('seeAll')}</Link>
             </div>
             <ul className="-mx-4 mt-4 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:mt-5 sm:grid sm:grid-cols-5 sm:gap-4 sm:overflow-visible sm:px-0">
                 {itens.map((a, i) => (
