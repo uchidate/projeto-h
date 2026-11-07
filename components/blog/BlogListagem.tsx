@@ -13,13 +13,34 @@ import { carregarLojaDoTema } from '@/lib/blog/lojaDoTema'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { idsGuiaDeCompra } from '@/lib/blog/guiasDeCompra'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { href } from '@/lib/i18n/routes'
+import { localizarGuia, slugPublicoDoGuia } from '@/lib/guias/i18n'
+import type { WPTerm } from '@/lib/wordpress/types'
 
-async function carregarBase(): Promise<WPPost[]> {
+/** Categorias oferecidas no filtro em inglês, na ordem em que aparecem (o rótulo vem de `home.categorias`). */
+const CATEGORIAS_EM_OUTRO_IDIOMA = ['k-pop', 'k-drama', 'k-film', 'cultura', 'k-beauty', 'reality-shows', 'webtoons'] as const
+
+/**
+ * Categorias de um idioma: as do WordPress (mesmos ids e slugs), com o nome do idioma e a contagem de artigos
+ * que têm tradução publicada. Categoria sem artigo no idioma sai do filtro.
+ */
+async function categoriasDoIdioma(locale: Locale, todas: WPTerm[]): Promise<WPTerm[]> {
+    const rotulos = (await getTranslations({ locale, namespace: 'home.categorias' })) as unknown as { (chave: string): string; has(chave: string): boolean }
+    const contagens = await Promise.all(CATEGORIAS_EM_OUTRO_IDIOMA.map(async slug => ({ slug, total: (await getPosts({ lang: locale, category: slug, perPage: 1, includeContent: false }).catch(() => ({ total: 0 }))).total })))
+    return contagens.flatMap(({ slug, total }) => {
+        const termo = todas.find(c => c.slug === slug)
+        return termo && total > 0 ? [{ ...termo, name: rotulos.has(slug) ? rotulos(slug) : termo.name, count: total }] : []
+    })
+}
+
+async function carregarBase(lang?: string): Promise<WPPost[]> {
     try {
-        const primeira = await getPosts({ page: 1, perPage: 100, includeContent: false })
+        const primeira = await getPosts({ page: 1, perPage: 100, includeContent: false, lang })
         const paginas = Math.min(primeira.totalPages, 8)
         const demais = await Promise.all(
-            Array.from({ length: Math.max(0, paginas - 1) }, (_, i) => getPosts({ page: i + 2, perPage: 100, includeContent: false }).then(r => r.items).catch(() => [] as WPPost[])),
+            Array.from({ length: Math.max(0, paginas - 1) }, (_, i) => getPosts({ page: i + 2, perPage: 100, includeContent: false, lang }).then(r => r.items).catch(() => [] as WPPost[])),
         )
         return [primeira.items, ...demais].flat()
     } catch { return [] }
@@ -40,32 +61,31 @@ function consultaDaLista(sp: { category?: string; tag?: string; search?: string;
     return { tipo: undefined, extra: sp.search ? { orderby: 'relevance' as const } : {} }
 }
 
-function buildBlogUrl(siteUrl: string, page: number, opts: { category?: string; tag?: string }) {
-    return urlDaListagem('/blog', ['category', 'tag'], { category: opts.category, tag: opts.tag, page: page > 1 ? String(page) : undefined }, siteUrl)
+function buildBlogUrl(siteUrl: string, page: number, opts: { category?: string; tag?: string }, locale: Locale = DEFAULT_LOCALE) {
+    return urlDaListagem(href('blog', undefined, locale), ['category', 'tag'], { category: opts.category, tag: opts.tag, page: page > 1 ? String(page) : undefined }, siteUrl)
 }
 
-export async function metadataBlogListagem({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+export async function metadataBlogListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }): Promise<Metadata> {
     const sp = await searchParams
     const page = paginaDe(sp.page)
-    const canonical = buildBlogUrl(SITE_URL, page, sp)
+    const lang = locale === DEFAULT_LOCALE ? undefined : locale
+    const t = await getTranslations({ locale, namespace: 'client.blogLista' })
+    const canonical = buildBlogUrl(SITE_URL, page, sp, locale)
     const idsGuias = idsGuiaDeCompra(await getCategories())
     const consulta = consultaDaLista(sp, idsGuias)
-    const title = sp.category
-        ? `Blog — ${sp.category}${page > 1 ? ` — página ${page}` : ''}`
-        : page > 1
-            ? `Blog — página ${page} — K-Drama, K-Pop e Cultura Coreana`
-            : 'Blog — K-Drama, K-Pop e Cultura Coreana'
+    const sufixo = page > 1 ? t('metaPage', { page }) : ''
+    const title = sp.category ? `${t('metaTitleCategory', { category: sp.category })}${sufixo}` : `${t('metaTitle')}${sufixo}`
 
     // Fetch só para saber totalPages (leve: 1 post, só cabeçalho X-WP-TotalPages)
-    const { totalPages } = await getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false, ...consulta.extra })
+    const { totalPages } = await getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false, lang, ...consulta.extra })
     const shouldNoIndex = Boolean(sp.search || sp.tag || sp.order || consulta.tipo) || paginaInvalida(page, totalPages)
 
     return {
         title,
-        description: 'Artigos, reviews e guias sobre K-Drama, K-Pop e cultura coreana em português.',
+        description: t('metaDescription'),
         alternates: {
             canonical,
-            ...linksDePaginacao({ page, totalPages, urlDaPagina: (p) => buildBlogUrl(SITE_URL, p, sp) }),
+            ...linksDePaginacao({ page, totalPages, urlDaPagina: (p) => buildBlogUrl(SITE_URL, p, sp, locale) }),
         },
         ...robotsDaListagem(shouldNoIndex),
         openGraph: baseOG(canonical),
@@ -73,28 +93,39 @@ export async function metadataBlogListagem({ searchParams }: { searchParams: Sea
     }
 }
 
-export async function BlogListagem({ searchParams }: { searchParams: SearchParams }) {
+export async function BlogListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {
     const sp = await searchParams
     const page = paginaDe(sp.page)
+    const emPt = locale === DEFAULT_LOCALE
+    const lang = emPt ? undefined : locale
 
     const semFiltro = !sp.category && !sp.tag && !sp.search
-    const order = sp.order === 'lidos' ? 'lidos' : undefined
-    const categories = await getCategories()
-    const idsGuias = idsGuiaDeCompra(categories)
+    // Ordem por leitura usa o campo `views`, que só o original em português acumula.
+    const order = emPt && sp.order === 'lidos' ? 'lidos' : undefined
+    const todasCategorias = await getCategories()
+    const idsGuias = idsGuiaDeCompra(todasCategorias)
+    const categories = emPt ? todasCategorias : await categoriasDoIdioma(locale, todasCategorias)
     const consulta = consultaDaLista(sp, idsGuias)
     const [postsResult, sidebarPosts, hubs, pool] = await Promise.all([
-        getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false, ...consulta.extra }),
-        getSidebarPosts(page, 13, semFiltro && !consulta.tipo ? idsGuias : []),
+        getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false, lang, ...consulta.extra }),
+        getSidebarPosts(page, 13, semFiltro && !consulta.tipo ? idsGuias : [], lang),
         getAllHubs(),
         // Base do destaque, dos conteúdos-chave e de "Mais lidos": todo o acervo (até 8 chamadas de 100, em cache); os guias
         // perenes costumam ser antigos e ficariam fora de uma janela só dos recentes. Falha aqui não derruba a lista.
-        semFiltro ? carregarBase() : Promise.resolve([] as WPPost[]),
+        semFiltro ? carregarBase(lang) : Promise.resolve([] as WPPost[]),
     ])
     /* Os guias saíram da navbar — eram índice de índices ocupando slot de
        destino. Reaparecem aqui, que é onde a intenção "quero descobrir o que
        ver" já está. Só a família de gênero: é a mais voltada ao leitor, contra
        as de agência/ano/canal, que servem sobretudo a busca. */
-    const guias = hubs.filter(h => h.kind === 'productions' && h.filter.genre).slice(0, 6)
+    const guias = hubs
+        .filter(h => h.kind === 'productions' && h.filter.genre)
+        .flatMap((h): typeof hubs => {
+            if (emPt) return [h]
+            const traduzido = localizarGuia(h, locale)
+            return traduzido ? [{ ...traduzido, slug: slugPublicoDoGuia(h.slug, locale) ?? h.slug }] : []
+        })
+        .slice(0, 6)
     // Blog sem filtros nunca é vazio (490+ posts): lista vazia é falha
     // transitória do WP — lançar preserva o snapshot ISR anterior em vez de
     // cachear a listagem em branco (mesmo guard de /productions).
@@ -116,18 +147,19 @@ export async function BlogListagem({ searchParams }: { searchParams: SearchParam
     const candidatos = inicio ? candidatosDestaque(comImagem, new Date(), 3) : []
     // O que já é candidato a destaque não repete em "Comece por aqui".
     const idsCandidatos = new Set(candidatos.map(p => p.id))
-    const shopProducts = inicio
+    const shopProducts = inicio && emPt
         ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:blog')
         : []
 
     // Categoria com loja (K-beauty): marcas com produto e vitrine própria, só na 1ª página sem busca, etiqueta nem ordem.
-    const cfgLoja = sp.category && !sp.tag && !sp.search && !order && page === 1 ? CATEGORIAS_COM_LOJA[sp.category] : undefined
+    const cfgLoja = emPt && sp.category && !sp.tag && !sp.search && !order && page === 1 ? CATEGORIAS_COM_LOJA[sp.category] : undefined
     const categoriaLoja = cfgLoja ? await carregarLojaDoTema(cfgLoja, `listagem:blog:${sp.category}`) : undefined
 
     return (
         <>
             <PageBreadcrumb items={[{ name: 'Blog', path: '/blog' }]} />
         <BlogPage
+            locale={locale}
             posts={itens}
             total={totalItens}
             totalPages={paginas}

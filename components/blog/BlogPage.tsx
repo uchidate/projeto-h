@@ -21,6 +21,8 @@ import type { StoreProduct } from '@/lib/wordpress/store'
 import { BlogMarcasFaixa } from '@/components/blog/BlogMarcasFaixa'
 import type { MarcaDaCategoria } from '@/lib/blog/categoriaLoja'
 import { formatNumber } from '@/lib/i18n/format'
+import { getTranslations } from 'next-intl/server'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 
 type Props = {
     posts: WPPost[]
@@ -44,10 +46,13 @@ type Props = {
     emAlta?: WPPost[]
     shopProducts?: StoreProduct[]
     /** Categoria com loja: marcas com produto e vitrine da própria categoria (ver lib/blog/categoriaLoja). */
+    locale?: Locale
     categoriaLoja?: { rotulo: string; categoriaLoja: string; industria?: string; marcas: MarcaDaCategoria[]; produtos: StoreProduct[] }
 }
 
-export function BlogPage({ posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, tipo, emAlta = [], shopProducts = [], categoriaLoja }: Props) {
+export async function BlogPage({ locale = DEFAULT_LOCALE, posts, total, totalPages, categories, currentPage, currentCategory, currentTag, currentSearch, sidebarPosts: sidebarPostsProp, guias = [], destaques = [], perenes = [], order, tipo, emAlta = [], shopProducts = [], categoriaLoja }: Props) {
+    const t = await getTranslations({ locale, namespace: 'client.blogLista' })
+    const emPt = locale === DEFAULT_LOCALE
     const categoryMap = Object.fromEntries(categories.map(c => [c.id, { name: c.name, slug: c.slug }]))
     function buildHref(overrides: Record<string, string | undefined> = {}) {
         const params = new URLSearchParams()
@@ -132,20 +137,20 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
             <section className="page-wrap pb-2 pt-6 sm:pt-7" data-bloco="lista-topo">
                 <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:gap-7">
                     <h1 className="whitespace-nowrap font-[family-name:var(--font-playfair)] text-[34px] font-bold leading-none sm:text-[44px]">
-                        {currentCategoryLabel ?? 'Artigos'}
-                        <span className="sr-only"> {tituloDoBlog({ categoria: currentCategoryLabel, tag: currentTag, busca: currentSearch })}</span>
+                        {currentCategoryLabel ?? t('articles')}
+                        <span className="sr-only"> {tituloDoBlog({ categoria: currentCategoryLabel, tag: currentTag, busca: currentSearch }, t)}</span>
                         <span className="text-accent">.</span>
-                        <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{formatNumber(total)}</span>
+                        <span className="ml-3.5 font-sans text-[13px] font-semibold text-muted sm:text-[14px]">{formatNumber(total, undefined, locale)}</span>
                     </h1>
-                    <SearchInput placeholder="Buscar nos artigos" param="search" current={currentSearch} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[520px] lg:flex-1" />
-                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label="Categorias">
-                        <Link href={tipo === 'guias' ? '/blog?tipo=guias' : '/blog'} className={chipCategoria(!currentCategory)}>Todas</Link>
+                    <SearchInput placeholder={t('searchPlaceholder')} param="search" current={currentSearch} className="!h-12 border-border-strong bg-surface lg:!w-full lg:max-w-[520px] lg:flex-1" />
+                    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:ml-auto lg:overflow-visible lg:px-0" role="group" aria-label={t('categoriesAria')}>
+                        <Link href={tipo === 'guias' ? '/blog?tipo=guias' : '/blog'} className={chipCategoria(!currentCategory)}>{t('all')}</Link>
                         {categoriasChip.map(c => (
                             <Link key={c.id} href={`/blog?category=${c.slug}`} className={chipCategoria(currentCategory === c.slug)}>{c.name}</Link>
                         ))}
                     </div>
                 </div>
-                {categoriaLoja && categoriaLoja.marcas.length >= 4 && (
+                {emPt && categoriaLoja && categoriaLoja.marcas.length >= 4 && (
                     <BlogMarcasFaixa marcas={categoriaLoja.marcas} rotulo={categoriaLoja.rotulo} todasHref={`/empresas?industry=${categoriaLoja.industria}`} />
                 )}
             </section>
@@ -158,10 +163,10 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                             ? <BlogDestaque candidatos={destaques.map((p, i) => ({
                                 slug: p.slug,
                                 categoria: categoryMap[p.categories?.[0]]?.slug ?? null,
-                                node: <BlogHeroCompacto post={p} categoryMap={categoryMap} priority={i === 0} />,
+                                node: <BlogHeroCompacto post={p} categoryMap={categoryMap} priority={i === 0} locale={locale} textos={{ cover: t('cover'), featured: t('featured') }} />,
                             }))} />
-                            : <BlogHeroCompacto post={hero} categoryMap={categoryMap} priority />}
-                        <BlogEmAlta posts={emAlta} ultimas={ultimas} />
+                            : <BlogHeroCompacto post={hero} categoryMap={categoryMap} priority locale={locale} textos={{ cover: t('cover'), featured: t('featured') }} />}
+                        <BlogEmAlta posts={emAlta} ultimas={ultimas} locale={locale} textos={{ latest: t('latest'), trending: t('trending'), both: t('latestAndTrending'), tempo: { now: t('now'), minutesAgo: t('minutesAgo'), hoursAgo: t('hoursAgo'), yesterday: t('yesterday') } }} />
                     </div>
                 )}
                 {showHero && ADSENSE.slots.leaderboard && (
@@ -172,14 +177,14 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                 {showHero && perenes.length >= 3 && (
                     <section data-bloco="blog-comece-por-aqui" className="mt-10 border-t border-border pt-6">
                         <div className="mb-4">
-                            <h2 className="font-serif text-[26px] font-semibold leading-tight sm:text-[32px]">Comece por aqui</h2>
-                            <p className="mt-1 text-[14px] text-muted">Os guias que continuam sendo lidos, meses depois de publicados</p>
+                            <h2 className="font-serif text-[26px] font-semibold leading-tight sm:text-[32px]">{t('startHereTitle')}</h2>
+                            <p className="mt-1 text-[14px] text-muted">{t('startHereText')}</p>
                         </div>
                         {/* No celular os 4 cards empilhados passavam de 1.900 px de rolagem; viram uma faixa deslizável. */}
                         <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 items-start gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
                             {perenes.slice(0, 4).map(p => (
                                 <div key={p.id} className="flex w-[78%] shrink-0 snap-start flex-col sm:w-auto">
-                                    <BlogGuiaCard post={p} categoryMap={categoryMap} />
+                                    <BlogGuiaCard post={p} categoryMap={categoryMap} locale={locale} />
                                 </div>
                             ))}
                         </div>
@@ -193,10 +198,10 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                     <section className="mb-10 mt-10 border-t border-border pt-5">
                         <div className="mb-3 flex items-baseline gap-3">
                             <h2 className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60">
-                                Guias
+                                {t('guides')}
                             </h2>
                             <Link href="/guias" className="-my-2.5 ml-auto py-2.5 font-mono text-[11px] text-muted transition-colors hover:text-accent">
-                                todos os guias →
+                                {t('allGuides')}
                             </Link>
                         </div>
                         <div data-bloco="blog-guias" className="grid grid-cols-2 gap-x-6 sm:grid-cols-3 lg:grid-cols-6">
@@ -212,7 +217,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                     </section>
                 )}
 
-                {showHero && shopProducts.length > 0 && (
+                {emPt && showHero && shopProducts.length > 0 && (
                     <div className="mt-10">
                         <ShopRelatedSection title="Achados da curadoria" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:blog" />
                     </div>
@@ -221,10 +226,10 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                 {posts.length === 0 ? (
                     <EmptyState
                         icon={<BookOpen size={40} />}
-                        title="Nenhum artigo encontrado"
-                        description="Tente outra categoria ou volte para o blog."
+                        title={t('emptyTitle')}
+                        description={t('emptyText')}
                         actionHref="/blog"
-                        actionLabel="Ver todos →"
+                        actionLabel={t('emptyAction')}
                         bordered
                         className="py-24"
                     />
@@ -232,11 +237,12 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                     <div className="mt-10 grid items-stretch gap-10 lg:grid-cols-[minmax(0,1fr)_300px] xl:gap-14">
                         <div className="min-w-0">
                             {!isFiltered && (
-                                <div className="mb-4 flex gap-6 overflow-x-auto border-b border-border" role="group" aria-label="Tipo de lista">
+                                <div className="mb-4 flex gap-6 overflow-x-auto border-b border-border" role="group" aria-label={t('listTypeAria')}>
                                     {[
-                                        { rotulo: 'Notícias', href: '/blog', ativa: !order && !tipo },
-                                        { rotulo: 'Guias de compra', href: '/blog?tipo=guias', ativa: tipo === 'guias' },
-                                        { rotulo: 'Mais lidos', href: '/blog?order=lidos', ativa: order === 'lidos' },
+                                        { rotulo: t('tabNews'), href: '/blog', ativa: !order && !tipo },
+                                        { rotulo: t('tabBuyingGuides'), href: '/blog?tipo=guias', ativa: tipo === 'guias' },
+                                        // Ordem por leitura usa o campo `views`, que só o original em português acumula.
+                                        ...(emPt ? [{ rotulo: t('tabMostRead'), href: '/blog?order=lidos', ativa: order === 'lidos' }] : []),
                                     ].map(a => (
                                         <Link key={a.href} href={a.href} aria-current={a.ativa ? 'page' : undefined} className={`flex h-11 shrink-0 items-center border-b-2 text-[14px] font-semibold transition-colors ${a.ativa ? 'border-accent text-accent' : 'border-transparent text-foreground-subtle hover:text-foreground'}`}>{a.rotulo}</Link>
                                     ))}
@@ -245,21 +251,21 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                             <div className="flex items-center gap-3 mb-5">
                                 <Sparkles size={12} className="text-accent shrink-0" />
                                 <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60 shrink-0">
-                                    {isFiltered ? 'Artigos encontrados' : order === 'lidos' ? 'Mais lidos' : tipo === 'guias' ? 'Guias de compra' : 'Últimas notícias'}
+                                    {isFiltered ? t('found') : order === 'lidos' ? t('tabMostRead') : tipo === 'guias' ? t('tabBuyingGuides') : t('latestNews')}
                                 </p>
                                 <div className="flex-1 h-px bg-border" />
                                 {isFiltered && (
-                                    <Link href="/blog" className="font-mono text-[10px] text-accent hover:underline shrink-0">Limpar filtro</Link>
+                                    <Link href="/blog" className="font-mono text-[10px] text-accent hover:underline shrink-0">{t('clearFilter')}</Link>
                                 )}
                             </div>
 
                             {primaryPosts.length > 0 && (
                                 <div data-bloco="listagem-blog" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {primaryPosts.slice(0, vitrineDepois).map((p, i) => <BlogPostCard key={p.id} post={p} priority={i < 3} categoryMap={categoryMap} />)}
+                                    {primaryPosts.slice(0, vitrineDepois).map((p, i) => <BlogPostCard key={p.id} post={p} priority={i < 3} categoryMap={categoryMap} locale={locale} />)}
                                 </div>
                             )}
 
-                            {categoriaLoja && categoriaLoja.produtos.length >= 4 && primaryPosts.length > 0 && (
+                            {emPt && categoriaLoja && categoriaLoja.produtos.length >= 4 && primaryPosts.length > 0 && (
                                 <div className="my-8">
                                     <ShopRelatedSection
                                         title={`Na loja: ${categoriaLoja.rotulo}`}
@@ -274,7 +280,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
 
                             {primaryPosts.length > vitrineDepois && (
                                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {primaryPosts.slice(vitrineDepois).map(p => <BlogPostCard key={p.id} post={p} priority={false} categoryMap={categoryMap} />)}
+                                    {primaryPosts.slice(vitrineDepois).map(p => <BlogPostCard key={p.id} post={p} priority={false} categoryMap={categoryMap} locale={locale} />)}
                                 </div>
                             )}
 
@@ -288,17 +294,17 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                                 <div className="mt-8">
                                     <div className="flex items-center gap-3 mb-4">
                                         <ArrowRight size={12} className="text-muted/50 shrink-0" />
-                                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/50 shrink-0">Mais publicações</p>
+                                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/50 shrink-0">{t('morePosts')}</p>
                                         <div className="flex-1 h-px bg-border" />
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                        {compactPosts.map((p, i) => <BlogCompactCard key={p.id} post={p} rank={primaryPosts.length + i + 1} categoryMap={categoryMap} />)}
+                                        {compactPosts.map((p, i) => <BlogCompactCard key={p.id} post={p} rank={primaryPosts.length + i + 1} categoryMap={categoryMap} locale={locale} />)}
                                     </div>
                                 </div>
                             )}
 
                             {totalPages > 1 && (
-                                <nav className="mt-10 flex flex-wrap items-center justify-center gap-1.5" aria-label="Paginação">
+                                <nav className="mt-10 flex flex-wrap items-center justify-center gap-1.5" aria-label={t('paginationAria')}>
                                     {currentPage > 1 && (
                                         <Link href={buildHref({ page: String(currentPage - 1) })} scroll
                                             className="inline-flex min-h-11 min-w-11 items-center justify-center border border-border px-3 text-[12px] font-semibold text-muted transition-all hover:border-foreground hover:text-foreground sm:min-h-9 sm:min-w-9">
@@ -320,13 +326,13 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                                         </Link>
                                     )}
                                     <span className="w-full text-center font-mono text-[10px] text-muted/50 mt-1">
-                                        {total} artigos · página {currentPage} de {totalPages}
+                                        {t('summary', { total: formatNumber(total, undefined, locale), page: currentPage, pages: totalPages })}
                                     </span>
                                 </nav>
                             )}
                         </div>
 
-                        <aside aria-label="Anúncio e categorias" className="hidden lg:flex lg:flex-col lg:self-stretch">
+                        <aside aria-label={t('asideAria')} className="hidden lg:flex lg:flex-col lg:self-stretch">
                             {/* Só o anúncio acompanha a rolagem; o resto desce com a página e fica no fim da coluna. */}
                             {ADSENSE.slots.article_sidebar && (
                                 <div className="hidden xl:block" style={{ position: 'sticky', top: 'calc(var(--site-sticky-top, 92px) + var(--section-bar-h, 44px) + 12px)' }}>
@@ -334,7 +340,7 @@ export function BlogPage({ posts, total, totalPages, categories, currentPage, cu
                                 </div>
                             )}
                             <div className="mt-8">
-                                <BlogSidebar recentPosts={sidebarPosts} categories={categoriasForaDosChips} currentCategory={currentCategory} />
+                                <BlogSidebar recentPosts={sidebarPosts} categories={categoriasForaDosChips} currentCategory={currentCategory} textos={{ continueArchive: t('continueArchive'), moreCategories: t('moreCategories') }} />
                             </div>
                         </aside>
                     </div>

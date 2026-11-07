@@ -3,9 +3,11 @@ import Link from '@/components/i18n/LocalizedLink'
 import { Clock, ChevronRight } from 'lucide-react'
 import type { WPPost, WPTerm } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml, formatDatePt } from '@/lib/utils'
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { slugPublicoDoPost } from '@/lib/blog/translations'
 import { catStyleTema as catStyle, postReadingTime } from '@/lib/blog/catStyle'
 
-export function BlogPostCard({ post, priority, categoryMap }: { post: WPPost; priority?: boolean; categoryMap?: Record<number, { name: string; slug: string }> }) {
+export function BlogPostCard({ post, priority, categoryMap, locale = DEFAULT_LOCALE }: { post: WPPost; priority?: boolean; categoryMap?: Record<number, { name: string; slug: string }>; locale?: Locale }) {
     const image = getWPImage(post._embedded, post.featured_image_url)
     const title = stripHtml(post.title.rendered)
     const excerpt = stripHtml(post.excerpt.rendered).slice(0, 110)
@@ -25,7 +27,7 @@ export function BlogPostCard({ post, priority, categoryMap }: { post: WPPost; pr
     const cs = catStyle(cat?.slug)
 
     return (
-        <Link href={`/blog/${post.slug}`}
+        <Link href={`/blog/${slugPublicoDoPost(post.translations, post.slug)}`}
             className="group flex h-full flex-col border-t border-border pt-3 transition-colors duration-300 hover:border-accent">
             <div className="relative aspect-4/3 overflow-hidden bg-surface shrink-0">
                 {image ? (
@@ -55,7 +57,7 @@ export function BlogPostCard({ post, priority, categoryMap }: { post: WPPost; pr
                 {excerpt && <p className="text-[12px] text-muted line-clamp-2 leading-relaxed">{excerpt}</p>}
                 <div className="mt-auto flex items-center justify-between gap-2 pt-2.5">
                     <div className="flex items-center gap-2 text-[10px] text-muted">
-                        <span>{formatDatePt(post.date)}</span>
+                        <span>{formatDatePt(post.date, LOCALE_META[locale].intl)}</span>
                         {mins !== null && <span className="flex items-center gap-1"><Clock size={9} /> {mins} min</span>}
                     </div>
                     <ChevronRight size={12} className="text-muted opacity-0 group-hover:opacity-60 group-hover:text-accent transition-all shrink-0" />
