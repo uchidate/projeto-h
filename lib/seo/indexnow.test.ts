@@ -191,9 +191,9 @@ describe('submitToIndexNow', () => {
 })
 
 describe('buildLocalizedIndexNowUrls', () => {
-    it('submete o idioma ativo com tradução publicada e ignora idioma desligado', () => {
+    it('submete o idioma ativo com tradução publicada e ignora idioma que não existe', () => {
         expect(buildLocalizedIndexNowUrls('artist', 'nayeon', ['en'])).toEqual(['https://www.example.com/en/artists/nayeon'])
-        expect(buildLocalizedIndexNowUrls('artist', 'nayeon', ['es'])).toEqual([])
+        expect(buildLocalizedIndexNowUrls('artist', 'nayeon', ['fr'])).toEqual([])
     })
 
     it('usa o caminho do idioma do registro de rotas (comida, empresa e agência)', () => {

@@ -4,8 +4,8 @@ const wp = vi.hoisted(() => ({ items: [] as Array<Record<string, unknown>> }))
 vi.mock('@/lib/wordpress/client', () => ({
     buildParams: (p: Record<string, unknown>) => '?' + new URLSearchParams(Object.entries(p).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)])).toString(),
     wpFetchWithTotal: async (path: string) => {
-        expect(path).toContain('lang=en')
-        return { items: wp.items, total: wp.items.length, totalPages: 1 }
+        const items = path.includes('lang=en') ? wp.items : []
+        return { items, total: items.length, totalPages: 1 }
     },
 }))
 vi.mock('@/lib/guias', () => ({ getAllHubs: async () => [] }))

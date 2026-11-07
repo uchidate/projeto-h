@@ -5,10 +5,10 @@ import { formatDate, formatNumber } from './format'
 
 describe('config', () => {
     it('has English active since the 2026-09-15 pilot, with Portuguese as default', () => {
-        expect(ACTIVE_LOCALES).toEqual(['pt', 'en'])
+        expect(ACTIVE_LOCALES).toEqual(['pt', 'en', 'es'])
         expect(isLocale('en')).toBe(true)
         expect(isActiveLocale('en')).toBe(true)
-        expect(isActiveLocale('es')).toBe(false)
+        expect(isActiveLocale('es')).toBe(true)
     })
 
     it('splits the locale prefix from the path', () => {
