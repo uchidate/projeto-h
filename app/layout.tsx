@@ -1,5 +1,5 @@
 import { ADSENSE_CLIENT } from '@/lib/constants/identidade.mjs'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, OG_IMAGE } from '@/lib/constants/site'
 
 // A verificação do Search Console não depende mais de meta no HTML: as três
@@ -9,6 +9,12 @@ import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, OG_IMAGE } from '@/lib/constants
 const GOOGLE_SITE_VERIFICATION = [process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION].filter(
     (token): token is string => Boolean(token),
 )
+
+// O site abre sempre no tema claro (#274): a barra do navegador acompanha o fundo
+// em vez de ficar na cor padrão, o que no Safari/Chrome mobile aparecia como faixa.
+export const viewport: Viewport = {
+    themeColor: '#f9f9fb',
+}
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
