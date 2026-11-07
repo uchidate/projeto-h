@@ -33,7 +33,7 @@ describe('sitemap dinâmico', () => {
     it('só expõe shards por idioma para idiomas ativos e tipos traduzíveis', () => {
         expect(resolveLocalizedShard('artists-en')).not.toBeNull()
         expect(resolveLocalizedShard('artists-pt')).toBeNull()
-        expect(resolveLocalizedShard('artists-es')).toBeNull()
+        expect(resolveLocalizedShard('artists-fr')).toBeNull()
         expect(resolveLocalizedShard('posts-en')).toEqual({ shard: 'posts', locale: 'en' })
         expect(resolveLocalizedShard('posts-pt')).toBeNull()
         expect(resolveLocalizedShard('agencies-en')).toEqual({ shard: 'agencies', locale: 'en' })

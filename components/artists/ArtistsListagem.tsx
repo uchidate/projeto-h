@@ -87,7 +87,7 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
     // transitória do WP — lançar preserva o snapshot ISR anterior em vez de
     // cachear a listagem em branco (mesmo guard de /productions).
     const unfiltered = !sp.search && !sp.role && !affiliation && !letter
-    if (unfiltered && page === 1) exigirListagemComConteudo(items, '/artists')
+    if (emPt && unfiltered && page === 1) exigirListagemComConteudo(items, '/artists')
     if (paginaInvalida(page, totalPages)) notFound()
 
     // Faixa "Aniversários da semana": só na página inicial sem filtro. Falha do WP não derruba a lista.

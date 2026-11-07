@@ -111,7 +111,9 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
             { revalidate: 300, tags: [collection.tag] },
         )
     const first = await fetchPage(1)
-    if (first.total === 0 || first.items.length === 0) throw new Error(`Sitemap ${shard} retornou vazio`)
+    // Vazio só é falha no idioma do conteúdo; num idioma novo ainda não há ficha traduzida daquele tipo.
+    if (!locale && (first.total === 0 || first.items.length === 0)) throw new Error(`Sitemap ${shard} retornou vazio`)
+    if (first.items.length === 0) return []
     if (first.total > 50_000) throw new Error(`Sitemap ${shard} excede 50 mil URLs`)
 
     const entries = [...first.items]

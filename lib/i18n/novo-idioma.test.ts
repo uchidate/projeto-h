@@ -14,13 +14,12 @@ import { idiomaValido } from './pagina'
  * Ao ativar o espanhol, estes testes continuam valendo; só o primeiro muda. Ver docs/I18N-NOVO-IDIOMA.md.
  */
 describe('idioma novo (es) construído e desligado', () => {
-    it('existe no código, mas não é público', () => {
+    it('existe no código e está ativo (ligado em 2026-11-08)', () => {
         expect(LOCALES).toContain('es')
         expect(isLocale('es')).toBe(true)
-        expect(ACTIVE_LOCALES).not.toContain('es')
-        expect(isActiveLocale('es')).toBe(false)
-        expect(idiomaValido('es')).toBe(false)
-        expect(idiomaValido('es', { servePt: true })).toBe(false)
+        expect(ACTIVE_LOCALES).toContain('es')
+        expect(isActiveLocale('es')).toBe(true)
+        expect(idiomaValido('es')).toBe(true)
     })
 
     it('todo idioma conhecido tem metadados de html/og/Intl', () => {

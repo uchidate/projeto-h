@@ -99,7 +99,7 @@ export async function ProductionsListagem({ searchParams, locale = DEFAULT_LOCAL
     // vazia aqui é falha transitória do WP que o client converte em [] —
     // lançar faz o ISR manter o snapshot anterior em vez de cachear o vazio.
     const unfiltered = !sp.genre && !sp.platform && !type && !sp.search
-    if (unfiltered && page === 1 && productionsResult.items.length === 0) {
+    if (emPt && unfiltered && page === 1 && productionsResult.items.length === 0) {
         throw new Error('Catálogo de produções retornou vazio — WP indisponível durante a regeneração')
     }
     if (paginaInvalida(page, productionsResult.totalPages)) notFound()

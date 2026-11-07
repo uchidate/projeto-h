@@ -130,7 +130,7 @@ export async function BlogListagem({ searchParams, locale = DEFAULT_LOCALE }: { 
     // transitória do WP — lançar preserva o snapshot ISR anterior em vez de
     // cachear a listagem em branco (mesmo guard de /productions).
     const unfiltered = !sp.category && !sp.tag && !sp.search
-    if (unfiltered && page === 1 && postsResult.items.length === 0) {
+    if (emPt && unfiltered && page === 1 && postsResult.items.length === 0) {
         throw new Error('Listagem do blog retornou vazia — WP indisponível durante a regeneração')
     }
     if (paginaInvalida(page, postsResult.totalPages)) notFound()
