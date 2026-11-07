@@ -106,7 +106,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
     return (
         <>
             <PageBreadcrumb items={[{ name: 'Loja', path: '/loja' }]} />
-        <main className="min-h-screen bg-background pb-20">
+        <main className="min-h-dvh bg-background pb-20">
             {/* Header — mesmo padrão de /artists */}
             <section className="page-wrap pb-2 pt-6 sm:pt-7">
                 <h1 className="font-[family-name:var(--font-playfair)] whitespace-nowrap text-[34px] font-bold leading-none sm:text-[44px]">
