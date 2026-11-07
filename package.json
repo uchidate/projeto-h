@@ -38,6 +38,8 @@
     "grafo:atualizar": "graphify update || echo \"sem graphify-out: rode a skill /graphify primeiro\"",
     "article:check": "node scripts/check-article-structure.mjs",
     "i18n:lock": "node lib/i18n/message-lock-cli.mjs",
+    "i18n:vazamento": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON lib/i18n/vazamento-cli.mjs",
+    "i18n:vazamento:gravar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON lib/i18n/vazamento-cli.mjs --write",
     "i18n:origem": "I18N_ORIGEM_WRITE=1 vitest run lib/i18n/origem-da-traducao.test.ts",
     "context:check": "node scripts/check-project-context.mjs",
     "context:find": "node scripts/find-project-context.mjs",

@@ -1,0 +1,31 @@
+# Português visível em /en: acusa REGRESSÃO contra lib/i18n/vazamento-baseline.json.
+# Só leitura contra produção (GET com ?nocache=). Para aceitar um novo patamar depois de
+# traduzir ou de conferir um falso positivo: npm run i18n:vazamento:gravar e commit.
+name: 🌐 Vazamento PT em /en
+
+on:
+  schedule:
+    - cron: '23 9 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: vazamento-pt-en
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  medir:
+    name: Medir português em /en
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Comparar com a linha de base
+        env:
+          HH_BASE: ${{ vars.SITE_URL }}
+        run: node lib/i18n/vazamento-cli.mjs
