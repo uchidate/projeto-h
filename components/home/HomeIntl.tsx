@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
-import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { HomeFrontPage } from '@/components/home/HomeFrontPage'
@@ -24,6 +24,10 @@ export async function generateMetadataHomeIntl(locale: Locale): Promise<Metadata
     const t = await getTranslations({ locale, namespace: 'entity.home' })
     const url = `${SITE_URL}${href('home', undefined, locale)}`
     const vazia = (await carregarSecoes(locale)).length === 0
+    // Todas as versões com conteúdo se apontam entre si (recíproco): o seletor do cabeçalho lê essas tags,
+    // e com só PT + o idioma atual o /es não oferecia o /en (nem o contrário).
+    const outras = ACTIVE_LOCALES.filter((l) => l !== DEFAULT_LOCALE && l !== locale)
+    const comConteudo = (await Promise.all(outras.map(async (l) => ((await carregarSecoes(l)).length > 0 ? l : null)))).filter((l): l is Locale => l !== null)
     return {
         title: { absolute: t('title') },
         description: t('description'),
@@ -33,6 +37,7 @@ export async function generateMetadataHomeIntl(locale: Locale): Promise<Metadata
                 languages: {
                     [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/`,
                     [LOCALE_META[locale].htmlLang]: url,
+                    ...Object.fromEntries(comConteudo.map((l) => [LOCALE_META[l].htmlLang, `${SITE_URL}${href('home', undefined, l)}`])),
                     'x-default': `${SITE_URL}/`,
                 },
             }),
