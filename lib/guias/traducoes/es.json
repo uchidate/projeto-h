@@ -445,5 +445,414 @@
         "answer": "Entre las más recientes, In Your Brilliant Season y The Judge Returns (2026). La lista de la página muestra el resto."
       }
     ]
+  },
+  "doramas-ena": {
+    "slug": "doramas-ena",
+    "title": "Doramas coreanos en ENA",
+    "shortTitle": "Doramas de ENA",
+    "description": "Doramas de ENA, un canal de cable surcoreano del grupo SK Broadband, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "ENA es un canal de cable surcoreano del grupo SK Broadband. El catálogo incluye Extraordinary Attorney Woo (2022) y Honour (2026), entre otros.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es ENA?",
+        "answer": "Un canal de cable surcoreano del grupo SK Broadband."
+      },
+      {
+        "question": "¿Qué series de ENA están en el catálogo?",
+        "answer": "Entre otras, Extraordinary Attorney Woo (2022) y Honour (2026). La lista de la página muestra el resto."
+      }
+    ]
+  },
+  "doramas-medicos-coreanos": {
+    "slug": "doramas-medicos-coreanos",
+    "title": "Doramas médicos coreanos",
+    "shortTitle": "Doramas médicos",
+    "description": "Los mejores doramas médicos coreanos, con hospitales, cirugías, romance, reparto y valoraciones.",
+    "intro": [
+      "Los doramas médicos coreanos combinan casos hospitalarios intensos, relaciones humanas y personajes que crecen bajo presión. Es uno de los subgéneros más fuertes para quien disfruta del drama emocional con ritmo de procedimental.",
+      "Esta guía reúne las producciones médicas coreanas catalogadas en HallyuHub para facilitar la búsqueda de sinopsis, reparto, valoraciones y títulos similares."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué temas aparecen en los doramas médicos coreanos?",
+        "answer": "Suelen mezclar la rutina hospitalaria, dilemas éticos, amistad, romance e historias de superación entre médicos, pacientes y familias."
+      },
+      {
+        "question": "¿Los doramas médicos son una buena forma de empezar con el K-drama?",
+        "answer": "Sí. Muchos tienen una estructura episódica fácil de seguir, pero también desarrollan arcos emocionales largos y personajes memorables."
+      }
+    ],
+    "whatYouWillFind": "Doramas ambientados en hospitales, clínicas y equipos médicos, con casos de pacientes, romance, amistad, ética profesional y trayectorias de superación.",
+    "relatedSearches": [
+      {
+        "label": "Doramas judiciales",
+        "to": "doramas-juridicos-coreanos"
+      },
+      {
+        "label": "Doramas familiares",
+        "to": "doramas-familia-coreanos"
+      },
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      }
+    ]
+  },
+  "doramas-escolares-coreanos": {
+    "slug": "doramas-escolares-coreanos",
+    "title": "Doramas escolares coreanos",
+    "shortTitle": "Doramas escolares",
+    "description": "Doramas coreanos escolares y universitarios con romance, amistad, acoso, juventud y paso a la adultez.",
+    "intro": [
+      "Los doramas escolares coreanos son una de las puertas de entrada más populares al K-drama: mezclan amistad, primer amor, rivalidad, presión por las notas y conflictos familiares.",
+      "Esta guía organiza las producciones etiquetadas con temática escolar en el catálogo de HallyuHub, para facilitar la búsqueda de historias de juventud y de crecimiento."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué define a un dorama escolar coreano?",
+        "answer": "Suelen ser historias centradas en estudiantes, colegios o universidades, con temas como la amistad, el acoso, la presión académica, el primer amor y el paso a la adultez."
+      },
+      {
+        "question": "¿Los doramas escolares son solo romance?",
+        "answer": "No. Muchos tienen romance, pero el subgénero también aparece en el suspense, la fantasía, el drama familiar, la comedia y las historias sobre salud mental o rivalidad académica."
+      }
+    ],
+    "whatYouWillFind": "Producciones ambientadas en colegios y universidades, con crecimiento personal, romance juvenil, grupos de amigos y conflictos típicos de la juventud coreana.",
+    "relatedSearches": [
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Doramas de comedia",
+        "to": "doramas-comedia-coreanos"
+      }
+    ]
+  },
+  "doramas-jtbc": {
+    "slug": "doramas-jtbc",
+    "title": "Doramas coreanos en JTBC",
+    "shortTitle": "Doramas de JTBC",
+    "description": "Doramas de JTBC, un canal de cable surcoreano lanzado en 2011, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "JTBC es un canal de cable surcoreano lanzado en 2011 por el grupo JoongAng. El catálogo incluye Beyond the Bar y Good Boy (2025), entre otros.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es JTBC?",
+        "answer": "Un canal de cable surcoreano lanzado en 2011 por el grupo JoongAng."
+      },
+      {
+        "question": "¿Qué series de JTBC están en el catálogo?",
+        "answer": "Entre las más recientes, Beyond the Bar y Good Boy (2025). La lista de la página muestra el resto."
+      }
+    ]
+  },
+  "doramas-kocowa": {
+    "slug": "doramas-kocowa",
+    "title": "Doramas coreanos en Kocowa",
+    "shortTitle": "Doramas de Kocowa",
+    "description": "Mira los doramas coreanos disponibles en Kocowa, con sinopsis, reparto, valoraciones y contexto.",
+    "intro": [
+      "Kocowa reúne contenido de las principales cadenas coreanas y es una referencia para quien sigue K-dramas, programas de variedades y estrenos cercanos a su emisión original.",
+      "Esta guía organiza las producciones coreanas asociadas a Kocowa dentro de HallyuHub, conectando las páginas de doramas, reparto y artistas relacionados."
+    ],
+    "faq": [
+      {
+        "question": "¿Kocowa tiene doramas coreanos?",
+        "answer": "Sí. Kocowa se centra en el entretenimiento coreano y reúne doramas, programas de variedades y otros contenidos de las principales cadenas de Corea."
+      }
+    ]
+  },
+  "doramas-ocn": {
+    "slug": "doramas-ocn",
+    "title": "Doramas coreanos en OCN",
+    "shortTitle": "Doramas de OCN",
+    "description": "Doramas de OCN, un canal de cable del grupo CJ ENM con series policiales, de suspense y sobrenaturales.",
+    "intro": [
+      "OCN es un canal de cable del grupo CJ ENM. En el catálogo, las series del canal son policiales, de suspense y sobrenaturales, como Tunnel y Save Me (2017), Life on Mars (2018) y The Uncanny Counter (2020).",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es OCN?",
+        "answer": "Un canal de cable surcoreano del grupo CJ ENM."
+      },
+      {
+        "question": "¿Qué series de OCN están en el catálogo?",
+        "answer": "Entre otras, Tunnel y Save Me (2017), Life on Mars (2018), Hell Is Other People (2019) y The Uncanny Counter (2020)."
+      }
+    ]
+  },
+  "doramas-disney-plus": {
+    "slug": "doramas-disney-plus",
+    "title": "Doramas coreanos en Disney+",
+    "shortTitle": "Doramas de Disney+",
+    "description": "Descubre los doramas coreanos disponibles en Disney+, con sinopsis, reparto, valoraciones y enlaces a artistas.",
+    "intro": [
+      "Disney+ entró con fuerza en el mercado del K-drama, con originales de gran presupuesto y licencias exclusivas que no aparecen en otras plataformas.",
+      "Esta guía reúne las producciones coreanas asociadas a Disney+ catalogadas en HallyuHub, con fichas para entender el reparto, la sinopsis y el contexto de cada título."
+    ],
+    "faq": [
+      {
+        "question": "¿Disney+ tiene doramas coreanos originales?",
+        "answer": "Sí. Disney+ ha invertido en K-dramas originales y exclusivos, con producciones de gran presupuesto que compiten directamente con los originales de Netflix."
+      },
+      {
+        "question": "¿HallyuHub muestra información sobre Disney+?",
+        "answer": "Cuando hay datos disponibles, las fichas de las producciones muestran plataformas, reparto, sinopsis y contexto editorial para facilitar el descubrimiento."
+      }
+    ]
+  },
+  "doramas-culinaria-coreanos": {
+    "slug": "doramas-de-cocina-coreanos",
+    "title": "Doramas coreanos de cocina y comida",
+    "shortTitle": "Doramas de cocina",
+    "description": "Doramas coreanos sobre cocina, restaurantes, chefs, comida coreana, romance e historias conmovedoras alrededor de la mesa.",
+    "intro": [
+      "La comida en un K-drama casi nunca es solo comida: marca encuentros, reconciliaciones, recuerdos familiares y el consuelo emocional que muchas historias coreanas construyen tan bien.",
+      "Esta guía reúne producciones sobre cocina, chefs, restaurantes y comida coreana del catálogo de HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Los doramas de cocina son ligeros?",
+        "answer": "Muchos tienen un tono ligero o romántico, pero el tema también puede aparecer en dramas familiares, historias de superación y relatos sobre el trabajo."
+      },
+      {
+        "question": "¿Esta guía me ayuda a descubrir la comida coreana?",
+        "answer": "Sí. Más allá de la trama, muchos doramas de cocina presentan platos, restaurantes y hábitos alimentarios coreanos que despiertan curiosidad por la cultura."
+      }
+    ],
+    "whatYouWillFind": "Producciones con restaurantes, chefs, recetas, comida coreana, romance culinario e historias conmovedoras ligadas a la cocina.",
+    "relatedSearches": [
+      {
+        "label": "Doramas familiares",
+        "to": "doramas-familia-coreanos"
+      },
+      {
+        "label": "Doramas románticos",
+        "to": "doramas-romanticos"
+      },
+      {
+        "label": "Doramas de comedia",
+        "to": "doramas-comedia-coreanos"
+      }
+    ]
+  },
+  "doramas-coreanos-2021": {
+    "slug": "doramas-coreanos-2021",
+    "title": "Doramas coreanos de 2021",
+    "shortTitle": "K-Dramas 2021",
+    "description": "Doramas y películas coreanas de 2021 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2021 que están en el catálogo, entre ellas Vincenzo y Mouse (tvN).",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2021?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2021?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2018": {
+    "slug": "doramas-coreanos-2018",
+    "title": "Doramas coreanos de 2018",
+    "shortTitle": "K-Dramas 2018",
+    "description": "Doramas y películas coreanas de 2018 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2018 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2018?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2018?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2025": {
+    "slug": "doramas-coreanos-2025",
+    "title": "Doramas coreanos de 2025",
+    "shortTitle": "K-Dramas 2025",
+    "description": "Doramas y películas coreanas de 2025 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2025 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2025?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2025?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-coreanos-2026": {
+    "slug": "doramas-coreanos-2026",
+    "title": "Doramas coreanos de 2026",
+    "shortTitle": "K-Dramas 2026",
+    "description": "Doramas y películas coreanas de 2026 con sinopsis, reparto y dónde verlos.",
+    "intro": [
+      "Producciones coreanas estrenadas en 2026 que están en el catálogo.",
+      "La lista mezcla series y películas y sigue el interés reciente; los filtros de tipo y plataforma, arriba, separan los formatos y muestran dónde verlos."
+    ],
+    "faq": [
+      {
+        "question": "¿Cómo veo solo las series de 2026?",
+        "answer": "El filtro Tipo, arriba, separa series, películas, especiales y programas de variedades."
+      },
+      {
+        "question": "¿Dónde puedo ver las producciones de 2026?",
+        "answer": "El filtro Plataforma, arriba, muestra lo que hay en cada servicio; la ficha de cada producción indica dónde verla."
+      }
+    ]
+  },
+  "doramas-amazon-prime": {
+    "slug": "doramas-amazon-prime-video",
+    "title": "Doramas coreanos en Amazon Prime Video",
+    "shortTitle": "Doramas de Prime Video",
+    "description": "Una lista de los mejores doramas coreanos disponibles en Amazon Prime Video, con fichas, sinopsis y reparto.",
+    "intro": [
+      "Amazon Prime Video ha ampliado de forma significativa su catálogo de doramas coreanos, con títulos exclusivos y coproducciones.",
+      "Esta guía reúne las producciones coreanas catalogadas en HallyuHub que están disponibles en Prime Video para que encuentres fácilmente tu próximo dorama."
+    ],
+    "faq": [
+      {
+        "question": "¿Amazon Prime tiene doramas coreanos?",
+        "answer": "Sí. Amazon Prime Video ha invertido en doramas coreanos originales y licenciados para sus suscriptores."
+      },
+      {
+        "question": "¿Cuáles son los mejores doramas de Amazon Prime?",
+        "answer": "El catálogo incluye una variedad de títulos románticos, de suspense e históricos. Las producciones disponibles varían según la región; consulta la guía para ver los títulos catalogados."
+      }
+    ]
+  },
+  "doramas-sbs": {
+    "slug": "doramas-sbs",
+    "title": "Doramas coreanos en SBS",
+    "shortTitle": "Doramas de SBS",
+    "description": "Doramas de SBS, una de las tres grandes cadenas abiertas de Corea del Sur, con reparto, sinopsis y dónde verlos.",
+    "intro": [
+      "SBS (Seoul Broadcasting System) es una de las tres grandes cadenas abiertas de Corea del Sur, junto con KBS y MBC. En el catálogo, Secret Garden (2010) es una de las series de la cadena.",
+      "La lista de abajo sigue el interés reciente."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué es SBS?",
+        "answer": "Seoul Broadcasting System, una de las tres grandes cadenas abiertas de Corea del Sur, junto con KBS y MBC."
+      },
+      {
+        "question": "¿Qué series de SBS están en el catálogo?",
+        "answer": "Entre otras, Secret Garden (2010) y las producciones recientes que aparecen en la página, de la más nueva a la más antigua."
+      }
+    ]
+  },
+  "doramas-misterio-coreanos": {
+    "slug": "doramas-misterio-coreanos",
+    "title": "Doramas de misterio coreanos",
+    "shortTitle": "Doramas de misterio",
+    "description": "Doramas de misterio coreanos con enigmas, oscuros secretos, detectives privados y tramas que enganchan de principio a fin.",
+    "intro": [
+      "Los doramas de misterio coreanos son una de las categorías más adictivas del género: cada episodio trae nuevas pistas, revelaciones y giros que mantienen al público pegado a la pantalla.",
+      "De asesinos en serie a conspiraciones empresariales, de lo paranormal al thriller psicológico, el K-drama de misterio ofrece una enorme variedad de premisas y atmósferas.",
+      "Esta guía organiza las producciones coreanas con narrativas de misterio, enigmas e investigación catalogadas en HallyuHub."
+    ],
+    "faq": [
+      {
+        "question": "¿Qué define a un dorama de misterio?",
+        "answer": "Un dorama de misterio tiene en su centro un secreto, un enigma o un crimen que debe resolverse a lo largo de la historia. Puede mezclar romance, terror o thriller en la trama principal."
+      },
+      {
+        "question": "¿Los doramas de misterio suelen tener un final revelador?",
+        "answer": "La mayoría sí, aunque algunos dejan cabos sueltos a propósito. El K-drama de misterio es conocido por los giros de trama y las revelaciones al final de los episodios."
+      },
+      {
+        "question": "¿Misterio y thriller son lo mismo en los doramas?",
+        "answer": "No exactamente. El thriller se centra en la tensión y el peligro inminente; el misterio, en descubrir la verdad detrás de algo oculto. Muchos K-dramas mezclan los dos."
+      }
+    ]
+  },
+  "doramas-juridicos-coreanos": {
+    "slug": "doramas-judiciales-coreanos",
+    "title": "Doramas judiciales coreanos",
+    "shortTitle": "Doramas judiciales",
+    "description": "Doramas judiciales coreanos con abogados, fiscales, tribunales, investigación y dilemas morales.",
+    "intro": [
+      "Los doramas judiciales coreanos suelen combinar casos de tribunal con drama humano, investigación y crítica social. El resultado son historias con gran potencial de maratón y fuertes debates morales.",
+      "Esta guía reúne producciones de temática judicial del catálogo de HallyuHub: desde dramas de tribunal hasta series con fiscales, abogados e investigadores."
+    ],
+    "faq": [
+      {
+        "question": "¿Los doramas judiciales coreanos se parecen a las series policiales?",
+        "answer": "A veces. La diferencia es que el foco judicial está en los tribunales, los abogados, los fiscales y las consecuencias legales, mientras que las series policiales suelen priorizar la investigación y el trabajo de campo."
+      },
+      {
+        "question": "¿Este tipo de dorama tiene un caso por episodio?",
+        "answer": "Algunos siguen casos episódicos; otros desarrollan un gran caso a lo largo de la temporada. Muchos mezclan ambos formatos."
+      }
+    ],
+    "whatYouWillFind": "Producciones con abogados, fiscales, juicios, crímenes, dilemas éticos y personajes ligados al sistema de justicia coreano.",
+    "relatedSearches": [
+      {
+        "label": "Doramas policiales",
+        "to": "doramas-policiais-coreanos"
+      },
+      {
+        "label": "Doramas de misterio",
+        "to": "doramas-misterio-coreanos"
+      },
+      {
+        "label": "Doramas de suspense",
+        "to": "doramas-thriller-coreanos"
+      }
+    ]
+  },
+  "doramas-apple-tv-plus": {
+    "slug": "doramas-apple-tv-plus",
+    "title": "Doramas coreanos en Apple TV+",
+    "shortTitle": "Doramas de Apple TV+",
+    "description": "Descubre los doramas coreanos disponibles en Apple TV+, con sinopsis, reparto, valoraciones y enlaces a artistas.",
+    "intro": [
+      "Apple TV+ es una de las plataformas que apuestan por coproducir y licenciar K-dramas de alta calidad, con foco en narrativas más maduras y producciones cinematográficas.",
+      "Esta guía reúne las producciones coreanas asociadas a Apple TV+ catalogadas en HallyuHub, con fichas para entender el reparto, la sinopsis y dónde verlas."
+    ],
+    "faq": [
+      {
+        "question": "¿Apple TV+ tiene doramas coreanos?",
+        "answer": "Sí. Apple TV+ se ha asociado en producciones coreanas de calidad cinematográfica, por lo general centradas en el thriller, el drama y narrativas de atractivo global."
+      }
+    ]
+  },
+  "doramas-viki": {
+    "slug": "doramas-viki",
+    "title": "Doramas coreanos en Viki",
+    "shortTitle": "Doramas de Viki",
+    "description": "Encuentra los doramas coreanos disponibles en Viki, con sinopsis, reparto, valoraciones y páginas relacionadas.",
+    "intro": [
+      "Viki es una de las plataformas más conocidas por los fans del K-drama, con un sólido catálogo de romances, doramas históricos, comedias románticas y series clásicas que no siempre aparecen en los servicios de streaming generalistas.",
+      "Esta guía reúne las producciones coreanas asociadas a Viki catalogadas en HallyuHub para facilitar el descubrimiento del reparto, la sinopsis, las valoraciones y el contenido relacionado."
+    ],
+    "faq": [
+      {
+        "question": "¿Viki tiene doramas coreanos subtitulados?",
+        "answer": "Sí. Viki es conocida por su catálogo de doramas asiáticos con subtítulos en muchos idiomas."
+      }
+    ]
   }
 }
