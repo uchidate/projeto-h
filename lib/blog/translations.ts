@@ -1,5 +1,5 @@
 import { SITE_URL } from '@/lib/constants/site'
-import { DEFAULT_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
+import { DEFAULT_LOCALE, SOURCE_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 
 /** Versões do post por idioma ativo, `{ pt: slug, en: slug }` do campo `translations` da REST. Ignora idioma desconhecido e slug vazio. */
@@ -17,7 +17,7 @@ export function versoesDoPost(translations: Record<string, string> | undefined |
  * (o WP exige slug único), mas esse slug não aparece na URL. Sem original, vale o próprio.
  */
 export function slugPublicoDoPost(translations: Record<string, string> | undefined | null, currentSlug: string): string {
-    return versoesDoPost(translations)[DEFAULT_LOCALE] ?? currentSlug
+    return versoesDoPost(translations)[SOURCE_LOCALE] ?? currentSlug
 }
 
 /**

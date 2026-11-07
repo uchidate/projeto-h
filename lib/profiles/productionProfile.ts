@@ -4,7 +4,7 @@ import { splitContentForAd } from '@/lib/utils/injectAd'
 import { STATUS_LABELS } from '@/lib/productions/labels'
 import { labelsFor } from '@/lib/i18n/labels'
 import { intlLocale } from '@/lib/i18n/format'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 
 /**
  * Sinopse de verdade para o resumo da página.
@@ -28,7 +28,7 @@ export function sinopseResumo(contentHtml: string): string {
     return real ? real.slice(0, 420) : ''
 }
 
-export function buildProductionProfileModel(production: WPProduction, locale: Locale = DEFAULT_LOCALE) {
+export function buildProductionProfileModel(production: WPProduction, locale: Locale = SOURCE_LOCALE) {
     const labels = labelsFor(locale)
     const acf = production.acf ?? {}
     const title = stripHtml(production.title.rendered)

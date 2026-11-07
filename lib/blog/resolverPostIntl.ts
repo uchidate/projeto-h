@@ -1,6 +1,6 @@
 import type { WPPost } from '@/lib/wordpress/types'
 import { getPostBySlug } from '@/lib/wordpress/posts'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 
 /**
  * Resolve o que `/<idioma>/blog/<slug>` serve. A URL pública usa o slug do original em
@@ -28,7 +28,7 @@ export async function resolverPostIntl(slug: string, locale: Locale): Promise<Po
     // Slug antigo da tradução: leva ao slug do original, que é o canônico.
     const porSlugAntigo = await getPostBySlug(slug, locale)
     if (porSlugAntigo) {
-        const slugOriginal = porSlugAntigo.translations?.[DEFAULT_LOCALE]
+        const slugOriginal = porSlugAntigo.translations?.[SOURCE_LOCALE]
         if (slugOriginal && slugOriginal !== slug) return { tipo: 'redirecionar', slug: slugOriginal }
         // Tradução sem original vinculado: serve ela mesma.
         return { tipo: 'traduzido', post: porSlugAntigo }

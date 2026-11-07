@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { getPostBySlug } from '@/lib/wordpress/posts'
 import { href } from '@/lib/i18n/routes'
 import type { BestOfList } from '@/lib/wordpress/site-settings'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { hasLocale } from '@/lib/i18n/entity-translation'
 import { localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
 
@@ -54,8 +54,8 @@ export function escolherCapas(porGuia: { slug: string; capas: string[] }[], n = 
  * Fora do português só entram os guias com texto traduzido; o total e as capas vêm das produções com página no idioma,
  * e o `slug` devolvido é o da URL do idioma.
  */
-export async function carregarGuiasPorTema(locale: Locale = DEFAULT_LOCALE): Promise<GuiaDaHome[]> {
-    const emPt = locale === DEFAULT_LOCALE
+export async function carregarGuiasPorTema(locale: Locale = SOURCE_LOCALE): Promise<GuiaDaHome[]> {
+    const emPt = locale === SOURCE_LOCALE
     const traduzidos = new Set(slugsPtTraduzidos(locale))
     const temas = GUIAS_POR_TEMA.filter(g => emPt || traduzidos.has(g.slug))
     const lidos = await Promise.all(temas.map(async ({ slug, cor }) => {
@@ -79,7 +79,7 @@ export async function carregarGuiasPorTema(locale: Locale = DEFAULT_LOCALE): Pro
  * versão publicada no idioma e rótulo em `home.passos` (chave = slug do post em português); o link vai para essa versão.
  */
 export async function carregarPassos(passosPt: BestOfList[], locale: Locale): Promise<BestOfList[]> {
-    if (locale === DEFAULT_LOCALE) return passosPt
+    if (locale === SOURCE_LOCALE) return passosPt
     const t = (await getTranslations({ locale, namespace: 'home.passos' })) as unknown as { has(chave: string): boolean; raw(chave: string): { label: string; apoio?: string } }
     const resolvidos = await Promise.all(passosPt.map(async (p): Promise<BestOfList | null> => {
         const slugPt = p.href.match(/^\/blog\/([^/?#]+)$/)?.[1]

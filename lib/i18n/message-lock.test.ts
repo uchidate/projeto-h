@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { LOCALES, SOURCE_LOCALE } from './idiomas.mjs'
 import { buildLock, compareMessages, flattenMessages, hashMessage, type MessageLock } from './message-lock'
 
 describe('flattenMessages', () => {
@@ -37,19 +38,23 @@ describe('messages/ no repositório', () => {
         }
         return plano
     }
-    const lock = JSON.parse(readFileSync(join(raiz, '.i18n-lock.json'), 'utf8')) as MessageLock
-    const r = compareMessages(carregar('pt'), carregar('en'), lock)
+    const fonte = carregar(SOURCE_LOCALE)
 
-    it('toda chave PT tem EN, e vice-versa', () => {
-        expect(r.missing).toEqual([])
-        expect(r.orphan).toEqual([])
-    })
+    for (const idioma of LOCALES.filter((l) => l !== SOURCE_LOCALE)) {
+        const lock = JSON.parse(readFileSync(join(raiz, `.i18n-lock.${idioma}.json`), 'utf8')) as MessageLock
+        const r = compareMessages(fonte, carregar(idioma), lock)
 
-    it('toda chave traduzida está no lock (npm run i18n:lock -- --write)', () => {
-        expect(r.unlocked).toEqual([])
-    })
+        it(`${idioma}: toda chave do original tem tradução, e vice-versa`, () => {
+            expect(r.missing).toEqual([])
+            expect(r.orphan).toEqual([])
+        })
 
-    it('avisa, sem falhar, quando o PT mudou depois do EN', () => {
-        if (r.stale.length) console.warn(`EN possivelmente desatualizado (${r.stale.length}): ${r.stale.join(', ')}`)
-    })
+        it(`${idioma}: toda chave traduzida está no lock (npm run i18n:lock -- --write --locale ${idioma})`, () => {
+            expect(r.unlocked).toEqual([])
+        })
+
+        it(`${idioma}: avisa, sem falhar, quando o original mudou depois da tradução`, () => {
+            if (r.stale.length) console.warn(`${idioma} possivelmente desatualizado (${r.stale.length}): ${r.stale.join(', ')}`)
+        })
+    }
 })

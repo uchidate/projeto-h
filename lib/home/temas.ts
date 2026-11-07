@@ -5,7 +5,7 @@ import { getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import type { WPPost } from '@/lib/wordpress/types'
 import { stripHtml } from '@/lib/utils'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { localizeEntity } from '@/lib/i18n/entity-translation'
 
 export interface FichaDoTema {
@@ -42,8 +42,8 @@ const vazio = <T,>(valor: T) => (r: PromiseSettledResult<T>) => (r.status === 'f
  * Fora do português só entram pratos e artigos com tradução publicada (a loja é em reais, então a prateleira fica vazia).
  * Marcas completam com as não traduzidas, depois das traduzidas. O nome da ficha vem da versão no idioma.
  */
-export async function carregarTemas(locale: Locale = DEFAULT_LOCALE): Promise<{ gastronomia: TemaHome; beleza: TemaHome }> {
-    const emPt = locale === DEFAULT_LOCALE
+export async function carregarTemas(locale: Locale = SOURCE_LOCALE): Promise<{ gastronomia: TemaHome; beleza: TemaHome }> {
+    const emPt = locale === SOURCE_LOCALE
     const lang = emPt ? {} : { lang: locale }
     const idioma = emPt ? {} : { locale }
     const lista = { items: [], total: 0, totalPages: 0 }

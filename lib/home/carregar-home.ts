@@ -15,7 +15,7 @@ import { carregarExplore } from '@/lib/home/explore'
 import { carregarTemas } from '@/lib/home/temas'
 import { carregarGuiasPorTema, carregarPassos } from '@/lib/home/guias'
 import { getTranslations } from 'next-intl/server'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { localizeEntity } from '@/lib/i18n/entity-translation'
 import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
 
@@ -24,9 +24,9 @@ import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
  * `comercio: false` pula o que só existe no Brasil (loja e streaming do TMDB-BR):
  * os blocos correspondentes também somem fora do português.
  */
-export async function carregarHome({ comercio, locale = DEFAULT_LOCALE }: { comercio: boolean; locale?: Locale }) {
+export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comercio: boolean; locale?: Locale }) {
     // Fora do português só entram artigos com tradução publicada: o resto está em português e não serve a quem lê neste idioma.
-    const emPt = locale === DEFAULT_LOCALE
+    const emPt = locale === SOURCE_LOCALE
     const siteSettings = await getSiteSettings()
     const hoje = hojeEmBrasilia()
     const curatedIds = [

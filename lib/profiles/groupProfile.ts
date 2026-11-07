@@ -2,7 +2,7 @@ import type { WPGroup } from '@/lib/wordpress/types'
 import { getSocialUrl, getYear, stripHtml } from '@/lib/utils'
 import { splitContentForAd } from '@/lib/utils/injectAd'
 import { labelsFor } from '@/lib/i18n/labels'
-import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 
 const SITE_ACCENT = '#e91e8c'
 
@@ -45,7 +45,7 @@ export function countActiveMembers(memberSlugs: string[], formerSlugs: string[],
     return memberSlugs.filter(slug => !ex.has(slug)).length
 }
 
-export function buildGroupProfileModel(group: WPGroup, currentYear = new Date().getFullYear(), locale: Locale = DEFAULT_LOCALE) {
+export function buildGroupProfileModel(group: WPGroup, currentYear = new Date().getFullYear(), locale: Locale = SOURCE_LOCALE) {
     const labels = labelsFor(locale)
     const name = stripHtml(group.title.rendered) || group.slug
     const acf = group.acf ?? {}
