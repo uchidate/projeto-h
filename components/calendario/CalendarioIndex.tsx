@@ -13,18 +13,17 @@ import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
-import { buildAlternates } from '@/lib/i18n/alternates'
+import { buildAlternatesAtivos } from '@/lib/i18n/alternates'
 
 
 /** O calendário existe em português e inglês. */
-const IDIOMAS_DO_CALENDARIO: readonly Locale[] = ['pt', 'en', 'es']
 
 export async function generateMetadata({ locale = DEFAULT_LOCALE }: { locale?: Locale } = {}): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'client.calendar' })
     return {
         title: t('metaTitulo'),
         description: t('metaDescricao'),
-        alternates: buildAlternates('calendar', undefined, locale, IDIOMAS_DO_CALENDARIO),
+        alternates: buildAlternatesAtivos('calendar', undefined, locale),
         ...compartilhamento({
             titulo: t('metaTitulo'),
             descricao: t('metaDescricaoCurta'),

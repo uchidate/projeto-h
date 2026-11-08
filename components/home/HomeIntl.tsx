@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { hreflangDe, idiomasComConteudo } from '@/lib/i18n/alternates'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
@@ -27,19 +28,14 @@ export async function generateMetadataHomeIntl(locale: Locale): Promise<Metadata
     // Todas as versões com conteúdo se apontam entre si (recíproco): o seletor do cabeçalho lê essas tags,
     // e com só PT + o idioma atual o /es não oferecia o /en (nem o contrário).
     const outras = ACTIVE_LOCALES.filter((l) => l !== DEFAULT_LOCALE && l !== locale)
-    const comConteudo = (await Promise.all(outras.map(async (l) => ((await carregarSecoes(l)).length > 0 ? l : null)))).filter((l): l is Locale => l !== null)
+    const comConteudo = await idiomasComConteudo(outras, async (l) => (await carregarSecoes(l)).length > 0)
     return {
         title: { absolute: t('title') },
         description: t('description'),
         alternates: {
             canonical: url,
             ...(vazia ? {} : {
-                languages: {
-                    [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/`,
-                    [LOCALE_META[locale].htmlLang]: url,
-                    ...Object.fromEntries(comConteudo.map((l) => [LOCALE_META[l].htmlLang, `${SITE_URL}${href('home', undefined, l)}`])),
-                    'x-default': `${SITE_URL}/`,
-                },
+                languages: hreflangDe([DEFAULT_LOCALE, locale, ...comConteudo], (l) => (l === DEFAULT_LOCALE ? `${SITE_URL}/` : `${SITE_URL}${href('home', undefined, l)}`)),
             }),
         },
         // Sem nenhuma ficha publicada no idioma, a pagina seria rasa.

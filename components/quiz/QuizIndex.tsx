@@ -6,17 +6,16 @@ import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { QuizPageContent } from '@/components/quiz/jogo/QuizPageContent'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
-import { buildAlternates } from '@/lib/i18n/alternates'
+import { buildAlternatesAtivos } from '@/lib/i18n/alternates'
 import { categoriasDoIdioma, paramsDoTema } from './disponibilidade'
 
 type SearchParams = Promise<{ sub?: string; category?: string }>
 
 /** Idiomas em que o /quiz existe, para hreflang. */
-const IDIOMAS_DO_QUIZ: readonly Locale[] = ['pt', 'en', 'es']
 
 export async function generateMetadata({ locale = DEFAULT_LOCALE }: { locale?: Locale } = {}): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'quiz.meta' })
-    const alternates = buildAlternates('quiz', undefined, locale, IDIOMAS_DO_QUIZ)
+    const alternates = buildAlternatesAtivos('quiz', undefined, locale)
     return {
         title: t('indexTitle'),
         description: t('indexDescription'),

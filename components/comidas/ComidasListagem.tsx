@@ -6,6 +6,7 @@ import { localizarCaminho } from '@/lib/i18n/localizar-caminho'
 import { href } from '@/lib/i18n/routes'
 import { temRecurso } from '@/lib/i18n/recursos'
 import type { Metadata } from 'next'
+import { metadataDeListagem } from '@/lib/listagem'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import { notFound } from 'next/navigation'
@@ -13,7 +14,7 @@ import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { getFoods, FOOD_CATEGORY_LABELS, FOOD_CATEGORY_EMOJI, KOREA_REGIONS } from '@/lib/wordpress/foods'
 import type { FoodCategory } from '@/lib/wordpress/types'
-import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
+import { SITE_URL } from '@/lib/constants/site'
 import { stripHtml } from '@/lib/utils'
 import { KoreaRegionMap } from '@/components/food/KoreaRegionMap'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
@@ -68,24 +69,14 @@ export async function metadataComidas({ searchParams, locale = DEFAULT_LOCALE }:
     const region = (KOREA_REGIONS as readonly string[]).includes(sp.region ?? '') ? sp.region : undefined
     const { totalPages } = await getFoods({ page, perPage: 48, search: sp.search, category, vegetarian, occasion: sp.occasion, season: sp.season, maxSpicy, region, orderby: 'date', order: 'desc', locale: emPt ? undefined : locale })
     const hasFacets = Boolean(sp.search || sp.category || sp.vegetarian || sp.occasion || sp.season || sp.maxSpicy || sp.region)
-    const invalidPage = page > Math.max(1, totalPages)
-    const languages = page === 1 && !hasFacets
-        ? await defaultCatalogLanguages('foods', locale)
-        : undefined
 
-    return {
-        title: t('metaTitle'),
-        description: t('metaDescription'),
-        alternates: {
-            canonical: url,
-            ...(languages ? { languages } : {}),
-            ...(page > 1 ? { prev: buildComidasUrl({ ...sp, page: String(page - 1) }, locale) } : {}),
-            ...(page < totalPages ? { next: buildComidasUrl({ ...sp, page: String(page + 1) }, locale) } : {}),
-        },
-        ...(hasFacets || invalidPage ? { robots: { index: false, follow: true } } : {}),
-        openGraph: baseOG(url),
-        twitter: baseTwitter(),
-    }
+    return metadataDeListagem({
+        titulo: t('metaTitle'),
+        descricao: t('metaDescription'),
+        url, page, totalPages, temFiltro: hasFacets,
+        urlDaPagina: (p) => buildComidasUrl({ ...sp, page: String(p) }, locale),
+        idiomas: () => defaultCatalogLanguages('foods', locale),
+    })
 }
 
 export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {

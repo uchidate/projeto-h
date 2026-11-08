@@ -1,23 +1,13 @@
-import type { Metadata } from 'next'
-import type { Locale } from '@/lib/i18n/config'
-import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 import Pagina, { metadataDaPagina } from '@/components/conta/PerfilPagina'
+import { paginaLocalizada } from '@/lib/i18n/pagina-localizada'
 
 // Conta: sempre dinâmica (sessão) e noindex. Fora do português é o mesmo corpo, com aviso de falta de tradução.
 export const dynamic = 'force-dynamic'
 
-type Props = {
-    params: Promise<{ locale: string }>
-}
+const pagina = paginaLocalizada({
+    metadata: ({ locale }) => metadataDaPagina(locale),
+    render: ({ locale }) => <Pagina locale={locale} />,
+})
 
-export async function generateMetadata({ params }: Pick<Props, 'params'>): Promise<Metadata> {
-    const { locale } = await params
-    if (!idiomaValido(locale, { servePt: true })) return {}
-    return metadataDaPagina(locale as Locale)
-}
-
-export default async function Page({ params }: Props) {
-    const { locale } = await params
-    entrarNaPagina(locale, { servePt: true })
-    return <Pagina locale={locale as Locale} />
-}
+export const generateMetadata = pagina.generateMetadata
+export default pagina.Page

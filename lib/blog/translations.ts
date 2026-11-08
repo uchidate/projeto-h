@@ -1,6 +1,7 @@
 import { SITE_URL } from '@/lib/constants/site'
 import { DEFAULT_LOCALE, SOURCE_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
+import type { WPPost } from '@/lib/wordpress/types'
 
 /** Versões do post por idioma ativo, `{ pt: slug, en: slug }` do campo `translations` da REST. Ignora idioma desconhecido e slug vazio. */
 export function versoesDoPost(translations: Record<string, string> | undefined | null): Partial<Record<Locale, string>> {
@@ -56,5 +57,22 @@ export function fatiaDaListagem(traduzidos: number, pagina: number, porPagina: n
     return {
         traduzidos: { inicio: doTraduzidoIni, fim: doTraduzidoFim },
         portugues: { offset: Math.max(0, inicio - traduzidos), quantidade: porPagina - (doTraduzidoFim - doTraduzidoIni) },
+    }
+}
+
+/**
+ * A capa da tradução é a do original em português: uma fonte só. O importador copia a capa na
+ * criação, e trocar a capa do português depois deixava a tradução com a antiga (visto no EN do
+ * guia de iniciantes). Sem capa no original, a tradução mantém a sua.
+ */
+export function comCapaDoOriginal(traduzido: WPPost, original: WPPost | null | undefined): WPPost {
+    const midia = original?._embedded?.['wp:featuredmedia']
+    const url = original?.featured_image_url
+    if (!original || (!url && !midia?.length)) return traduzido
+    return {
+        ...traduzido,
+        featured_media: original.featured_media || traduzido.featured_media,
+        featured_image_url: url ?? traduzido.featured_image_url,
+        _embedded: { ...traduzido._embedded, ...(midia?.length ? { 'wp:featuredmedia': midia } : {}) },
     }
 }

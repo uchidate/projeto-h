@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import { linksDePaginacao, paginaDe, paginaInvalida, robotsDaListagem, urlDaListagem } from '@/lib/listagem'
+import { metadataDeListagem, paginaDe, paginaInvalida, urlDaListagem } from '@/lib/listagem'
 import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { notFound } from 'next/navigation'
 import { getGroups, getAllGroups, getTrendingGroups } from '@/lib/wordpress/groups'
 import { wpFetch } from '@/lib/wordpress/client'
-import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
+import { SITE_URL } from '@/lib/constants/site'
 import { GroupsPage } from '@/components/groups/GroupsPage'
 import { GENERATIONS, getGenerationBySlug, getGeneration } from '@/lib/constants/generations'
 import { hojeEmSaoPaulo } from '@/lib/artists/aniversarios'
@@ -61,22 +61,15 @@ export async function metadataGroupsListagem({ searchParams, locale = DEFAULT_LO
             debutMax: generation ? `${generation.max}1231` : undefined,
         })
     const hasFacets = Boolean(sp.search || sp.type || sp.active || sp.letter || sp.generation || sp.order)
-    const invalidPage = paginaInvalida(page, totalPages)
 
-    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('groups', locale) : undefined
-
-    return {
-        title: t('metaTitle'),
-        description: t('metaDescription'),
-        alternates: {
-            canonical: url,
-            ...(languages ? { languages } : {}),
-            ...linksDePaginacao({ page, totalPages, ativa: !staticSlug, urlDaPagina: (p) => buildGroupsUrl({ ...sp, page: String(p) }, locale) }),
-        },
-        ...robotsDaListagem(hasFacets || invalidPage),
-        openGraph: baseOG(url),
-        twitter: baseTwitter(),
-    }
+    return metadataDeListagem({
+        titulo: t('metaTitle'),
+        descricao: t('metaDescription'),
+        url, page, totalPages, temFiltro: hasFacets,
+        paginacaoAtiva: !staticSlug,
+        urlDaPagina: (p) => buildGroupsUrl({ ...sp, page: String(p) }, locale),
+        idiomas: () => defaultCatalogLanguages('groups', locale),
+    })
 }
 
 export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {

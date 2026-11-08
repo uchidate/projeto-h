@@ -11,7 +11,7 @@ import { HomeGuias } from '@/components/home/HomeGuias'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
 import { VISITAS_POR_GUIA, porDemanda, resumoDoGuia } from '@/lib/guias/demanda'
 import { alternativasDoIndice, localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
-import GUIAS_DE_CULTURA from '@/lib/cultura/guias-traduzidos.json'
+import { postsTraduzidosPorSlugPt } from '@/lib/cultura/guias-traduzidos'
 import { carregarGuiasPorTema, carregarPassos } from '@/lib/home/guias'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
@@ -115,7 +115,7 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
         : await Promise.all([lista(getSiteSettings, null), lista(() => carregarGuiasPorTema(locale), [])])
     const passosPt = settings?.cultureGuides ?? []
     const guiasDeCultura = emPt ? passosPt : await carregarPassos(passosPt, locale).catch(() => [])
-    const totalCultura = emPt ? passosPt.length : Object.keys((GUIAS_DE_CULTURA as Record<string, Record<string, string>>)[locale] ?? {}).length
+    const totalCultura = emPt ? passosPt.length : (await postsTraduzidosPorSlugPt(locale, passosPt.map(g => g.href.replace('/blog/', '')))).size
 
     const itensBusca: ItemBusca[] = [
         ...hubsDoIdioma.map(h => {

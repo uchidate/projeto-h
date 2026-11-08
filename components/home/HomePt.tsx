@@ -1,4 +1,5 @@
-import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { ACTIVE_LOCALES, DEFAULT_LOCALE } from '@/lib/i18n/config'
+import { hreflangDe, idiomasComConteudo } from '@/lib/i18n/alternates'
 import { href } from '@/lib/i18n/routes'
 import { fetchCatalog } from '@/components/features/LocalizedCatalog'
 import type { Metadata } from 'next'
@@ -21,10 +22,10 @@ export async function generateMetadata(): Promise<Metadata> {
     // versao vazia e noindex e nao deve ser apontada. Tambem e o que faz o
     // seletor PT/EN do cabecalho aparecer aqui.
     const outros = ACTIVE_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
-    const comConteudo = (await Promise.all(outros.map(async (locale) => {
+    const comConteudo = await idiomasComConteudo(outros, async (locale) => {
         const totais = await Promise.all((['groups', 'artists', 'productions'] as const).map((kind) => fetchCatalog(kind, locale, 1)))
-        return totais.some((r) => r.total > 0) ? locale : null
-    }))).filter((locale): locale is Locale => locale !== null)
+        return totais.some((r) => r.total > 0)
+    })
 
     return {
         title: { absolute: `${SITE_NAME} — K-Pop, K-Drama e Cultura Coreana` },
@@ -32,11 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
         alternates: {
             canonical: SITE_URL,
             ...(comConteudo.length > 0 ? {
-                languages: {
-                    [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/`,
-                    ...Object.fromEntries(comConteudo.map((locale) => [LOCALE_META[locale].htmlLang, `${SITE_URL}${href('home', undefined, locale)}`])),
-                    'x-default': `${SITE_URL}/`,
-                },
+                languages: hreflangDe([DEFAULT_LOCALE, ...comConteudo], (locale) => (locale === DEFAULT_LOCALE ? `${SITE_URL}/` : `${SITE_URL}${href('home', undefined, locale)}`)),
             } : {}),
         },
         openGraph: baseOG(SITE_URL),

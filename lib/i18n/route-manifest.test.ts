@@ -80,7 +80,9 @@ describe('manifesto de rotas (i18n)', () => {
                 else if (entrada.name === 'page.tsx' && !ehInterna(prefixo)) {
                     const pt = dePara[prefixo || '/'] ?? (prefixo || '/')
                     if (MANIFESTO_DE_ROTAS[pt]?.estado !== 'somentePt') continue
-                    if (!readFileSync(caminho, 'utf8').includes('locale !== DEFAULT_LOCALE')) semGuarda.push(pt)
+                    // A guarda é a escrita à mão (`locale !== DEFAULT_LOCALE`) ou `soPortugues: true` do `paginaLocalizada`.
+                    const fonte = readFileSync(caminho, 'utf8')
+                    if (!fonte.includes('locale !== DEFAULT_LOCALE') && !fonte.includes('soPortugues: true')) semGuarda.push(pt)
                 }
             }
         }

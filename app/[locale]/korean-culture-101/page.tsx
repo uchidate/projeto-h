@@ -1,19 +1,12 @@
-import type { Metadata } from 'next'
 import CulturaCoreana101Page, { buildCulturaMetadata } from '@/components/cultura/Cultura101Pagina'
-import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
+import { paginaLocalizada } from '@/lib/i18n/pagina-localizada'
 
 export const revalidate = 3600
 
-type Params = Promise<{ locale: string }>
+const pagina = paginaLocalizada({
+    metadata: ({ locale }) => buildCulturaMetadata(locale),
+    render: ({ locale }) => <CulturaCoreana101Page locale={locale} />,
+})
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-    const { locale } = await params
-    if (!idiomaValido(locale, { servePt: true })) return {}
-    return buildCulturaMetadata(locale)
-}
-
-export default async function IntlCultura101Page({ params }: { params: Params }) {
-    const { locale } = await params
-    entrarNaPagina(locale, { servePt: true })
-    return <CulturaCoreana101Page locale={locale} />
-}
+export const generateMetadata = pagina.generateMetadata
+export default pagina.Page

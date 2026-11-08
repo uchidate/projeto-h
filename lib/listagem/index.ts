@@ -1,4 +1,5 @@
-import { SITE_URL } from '@/lib/constants/site'
+import type { Metadata } from 'next'
+import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 
 /**
  * Peças comuns das listagens (artists, groups, productions, blog): número da
@@ -54,4 +55,38 @@ export function linksDePaginacao(opts: {
 /** `robots` de listagem filtrada ou fora do intervalo: segue os links, não indexa. */
 export function robotsDaListagem(naoIndexar: boolean): { robots?: { index: false; follow: true } } {
     return naoIndexar ? { robots: { index: false, follow: true } } : {}
+}
+
+/**
+ * Metadados de uma listagem paginada com filtros, no lugar da cópia que artistas, grupos, produções e
+ * comidas tinham: canonical, `prev/next`, hreflang só na página 1 sem filtro, noindex em filtro ou página
+ * além do fim, Open Graph e Twitter. Quem chama resolve título, descrição e a URL de cada página.
+ */
+export async function metadataDeListagem(opts: {
+    titulo: string
+    descricao: string
+    url: string
+    page: number
+    totalPages: number
+    /** Havia filtro, busca ou ordenação na URL: não indexa. */
+    temFiltro: boolean
+    urlDaPagina: (pagina: number) => string
+    /** `false` quando o canonical aponta para outra página (ex.: hub estático). */
+    paginacaoAtiva?: boolean
+    /** hreflang da listagem; só é chamada na página 1 sem filtro. */
+    idiomas?: () => Promise<Record<string, string> | undefined>
+}): Promise<Metadata> {
+    const languages = opts.page === 1 && !opts.temFiltro ? await opts.idiomas?.() : undefined
+    return {
+        title: opts.titulo,
+        description: opts.descricao,
+        alternates: {
+            canonical: opts.url,
+            ...(languages ? { languages } : {}),
+            ...linksDePaginacao({ page: opts.page, totalPages: opts.totalPages, ativa: opts.paginacaoAtiva, urlDaPagina: opts.urlDaPagina }),
+        },
+        ...robotsDaListagem(opts.temFiltro || paginaInvalida(opts.page, opts.totalPages)),
+        openGraph: baseOG(opts.url),
+        twitter: baseTwitter(),
+    }
 }

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import { linksDePaginacao, paginaDe, paginaInvalida, robotsDaListagem, urlDaListagem } from '@/lib/listagem'
+import { metadataDeListagem, paginaDe, paginaInvalida, urlDaListagem } from '@/lib/listagem'
 import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { notFound } from 'next/navigation'
 import { getProductions, getProductionGenres, getProductionPlatforms } from '@/lib/wordpress/productions'
-import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
+import { SITE_URL } from '@/lib/constants/site'
 import { getSingleGenreHubSlug } from '@/lib/guias/hub-lookup'
 import { ProductionsPage } from '@/components/productions/ProductionsPage'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
@@ -51,22 +51,15 @@ export async function metadataProductionsListagem({ searchParams, locale = DEFAU
         ? { totalPages: 1 }
         : await getProductions({ page, perPage: 24, genre: sp.genre, platform: sp.platform, type: parseProductionType(sp.type), search: sp.search, excludeAdult: true, ...(emPt ? {} : { locale }) })
     const hasFacets = Boolean(sp.search || sp.genre || sp.platform || sp.type || sp.order)
-    const invalidPage = paginaInvalida(page, totalPages)
 
-    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('productions', locale) : undefined
-
-    return {
-        title: t('metaTitle'),
-        description: t('metaDescription'),
-        alternates: {
-            canonical: url,
-            ...(languages ? { languages } : {}),
-            ...linksDePaginacao({ page, totalPages, ativa: !hubSlug, urlDaPagina: (p) => buildProductionsUrl({ ...sp, page: String(p) }, locale) }),
-        },
-        ...robotsDaListagem(hasFacets || invalidPage),
-        openGraph: baseOG(url),
-        twitter: baseTwitter(),
-    }
+    return metadataDeListagem({
+        titulo: t('metaTitle'),
+        descricao: t('metaDescription'),
+        url, page, totalPages, temFiltro: hasFacets,
+        paginacaoAtiva: !hubSlug,
+        urlDaPagina: (p) => buildProductionsUrl({ ...sp, page: String(p) }, locale),
+        idiomas: () => defaultCatalogLanguages('productions', locale),
+    })
 }
 
 export async function ProductionsListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {

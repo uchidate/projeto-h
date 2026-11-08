@@ -1,8 +1,5 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { DEFAULT_LOCALE } from '@/lib/i18n/config'
-import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
 import { LojaListagem, metadataLoja } from '@/components/loja/LojaListagem'
+import { paginaLocalizada } from '@/lib/i18n/pagina-localizada'
 
 // Só em português por decisão do manifesto (lib/i18n/route-manifest.ts): em outro idioma, 404.
 // Estática de propósito: ler `searchParams` aqui tornaria a rota dinâmica (`cache-control: no-store`).
@@ -11,14 +8,11 @@ export const revalidate = 300
 
 const SEM_FILTRO = Promise.resolve({})
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-    const { locale } = await params
-    return idiomaValido(locale, { servePt: true }) && locale === DEFAULT_LOCALE ? metadataLoja : {}
-}
+const pagina = paginaLocalizada({
+    soPortugues: true,
+    metadata: () => metadataLoja,
+    render: () => <LojaListagem searchParams={SEM_FILTRO} />,
+})
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
-    const { locale } = await params
-    entrarNaPagina(locale, { servePt: true })
-    if (locale !== DEFAULT_LOCALE) notFound()
-    return <LojaListagem searchParams={SEM_FILTRO} />
-}
+export const generateMetadata = pagina.generateMetadata
+export default pagina.Page

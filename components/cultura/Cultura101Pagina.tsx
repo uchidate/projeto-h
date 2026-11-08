@@ -15,8 +15,10 @@ import { getWPImage, stripHtml } from '@/lib/utils'
 import type { WPPost } from '@/lib/wordpress/types'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { formatDate, htmlLang } from '@/lib/i18n/format'
-import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { buildAlternatesAtivos } from '@/lib/i18n/alternates'
 import { href } from '@/lib/i18n/routes'
+import trilhasData from '@/lib/cultura/trilhas.json'
 import { postsTraduzidosPorSlugPt } from '@/lib/cultura/guias-traduzidos'
 import { slugPublicoDoPost } from '@/lib/blog/translations'
 
@@ -24,14 +26,10 @@ import { slugPublicoDoPost } from '@/lib/blog/translations'
 export async function buildCulturaMetadata(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'entity.cultura101' })
     const url = `${SITE_URL}${href('cultura101', undefined, locale)}`
-    const languages = Object.fromEntries([
-        ...Object.entries(LOCALE_META).filter(([l]) => l === DEFAULT_LOCALE || l === 'en').map(([l, m]) => [m.htmlLang, `${SITE_URL}${href('cultura101', undefined, l as Locale)}`]),
-        ['x-default', `${SITE_URL}${href('cultura101', undefined, DEFAULT_LOCALE)}`],
-    ])
     return {
         title: t('title'),
         description: t('description'),
-        alternates: { canonical: url, languages },
+        alternates: buildAlternatesAtivos('cultura101', undefined, locale),
         openGraph: { ...baseOG(url), title: t('title'), description: t('description') },
         twitter: { ...baseTwitter(), title: t('title'), description: t('description') },
     }
@@ -45,15 +43,10 @@ const COR_FESTA = '#0e7490'
 
 type Guia = { label: string; href: string; emoji: string }
 
-const INICIO = ['o-que-e-hallyu-onda-coreana-explicada', 'como-comecar-no-kpop-guia-para-iniciantes']
+const INICIO: string[] = trilhasData.inicio
 
-/** Trilhas de leitura: a lista vem do WordPress sem agrupamento, então o agrupamento é daqui. Guia fora do mapa cai em "Mais guias". */
-const TRILHAS: { id: 'language' | 'traditions' | 'kpop' | 'drama'; cor: string; slugs: string[] }[] = [
-    { id: 'language', cor: '#0e7490', slugs: ['hangeul-guia-basico-fas-brasileiros', 'nomes-coreanos-estrutura-nome-artistico-guia', 'oppa-unnie-hyung-noona-termos-coreanos-guia', 'sistema-idade-coreana-man-nai-guia', 'nunchi-arte-coreana-ler-ambiente-k-drama', 'han-conceito-coreano-tristeza-k-drama', 'etiqueta-mesa-bebida-coreana-hoesik-guia'] },
-    { id: 'traditions', cor: '#b4531a', slugs: ['chuseok-seollal-festas-tradicionais-coreanas-explicadas', 'casamento-coreano-tradicional-pyebaek-guia', 'namoro-coreano-100-dias-couple-items-guia', 'comida-coreana-101-banchan-bap-guk-guia', 'loja-conveniencia-coreana-pyeonuijeom-guia', 'noraebang-karaoke-coreano-guia', 'pc-bang-lan-house-coreana-guia', 'uniforme-colegio-coreano-tipos-escola-guia', 'supersticoes-coreanas-guia-numero-4-fan-death-saju', 'tipo-sanguineo-personalidade-coreia-guia', 'cirurgia-plastica-coreia-contexto-cultural-guia'] },
-    { id: 'kpop', cor: '#c61153', slugs: ['idol-vs-artist-diferenca-carreira-kpop', 'posicoes-grupo-kpop-lider-vocal-visual-maknae-guia', 'line-kpop-vocal-dance-maknae-line-guia', 'band-idol-vs-idol-group-diferenca-kpop-guia', 'sm-hybe-yg-jyp-como-as-grandes-agencias-kpop-funcionam', 'daesang-all-kill-comeback-glossario-kpop', 'charts-kpop-melon-circle-chart-hanteo-music-show-guia', 'fandoms-kpop-light-sticks-fan-chants-fansigns', 'servico-militar-obrigatorio-coreia-idols-guia'] },
-    { id: 'drama', cor: '#6d3fc0', slugs: ['glossario-tropes-kdrama-chaebol-makjang-second-lead', 'sunbae-hoobae-hierarquia-k-drama-escritorio', 'osts-de-k-drama-as-trilhas-sonoras-que-definiram-geracoes-de-fas', 'bl-gl-genero-boys-love-girls-love-coreano-guia'] },
-]
+/** Trilhas de leitura: a lista vem do WordPress sem agrupamento, então o agrupamento é de `lib/cultura/trilhas.json` (dado, não código). Guia fora do mapa cai em "Mais guias". */
+const TRILHAS = trilhasData.trilhas as { id: 'language' | 'traditions' | 'kpop' | 'drama'; cor: string; slugs: string[] }[]
 
 function agruparGuias(guias: Guia[]) {
     const slug = (g: Guia) => g.href.replace('/blog/', '')
