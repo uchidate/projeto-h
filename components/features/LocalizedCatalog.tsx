@@ -13,6 +13,7 @@ import type { WPAgency, WPArtist, WPCompany, WPFood, WPGroup, WPProduction } fro
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { hreflangDe, idiomasComConteudo } from '@/lib/i18n/alternates'
 import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import { paginaDe, paginaInvalida } from '@/lib/listagem'
 import { href } from '@/lib/i18n/routes'
@@ -123,17 +124,11 @@ function pageUrl(kind: CatalogKind, locale: Locale, page: number) {
 export async function defaultCatalogLanguages(kind: CatalogKind, atual: Locale = DEFAULT_LOCALE): Promise<Record<string, string> | undefined> {
     const others = ACTIVE_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
     if (others.length === 0) return undefined
-    const withItems = (await Promise.all(others.map(async (locale) => ((await fetchCatalog(kind, locale, 1)).total > 0 ? locale : null))))
-        .filter((locale): locale is Locale => locale !== null)
+    const withItems = await idiomasComConteudo(others, async (locale) => (await fetchCatalog(kind, locale, 1)).total > 0)
     if (withItems.length === 0) return undefined
     // Numa versão que não é a do idioma-fonte, a própria página só se declara se tiver itens (senão é noindex).
     if (atual !== DEFAULT_LOCALE && !withItems.includes(atual)) return undefined
-    const pt = `${SITE_URL}${href(kind)}`
-    return Object.fromEntries([
-        [LOCALE_META[DEFAULT_LOCALE].htmlLang, pt],
-        ...withItems.map((locale) => [LOCALE_META[locale].htmlLang, pageUrl(kind, locale, 1)]),
-        ['x-default', pt],
-    ])
+    return hreflangDe([DEFAULT_LOCALE, ...withItems], (locale) => (locale === DEFAULT_LOCALE ? `${SITE_URL}${href(kind)}` : pageUrl(kind, locale, 1)))
 }
 
 export async function buildCatalogMetadata(kind: CatalogKind, locale: Locale, pageParam?: string): Promise<Metadata> {

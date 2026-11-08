@@ -1,6 +1,7 @@
-import { ACTIVE_LOCALES, LOCALE_META, SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
+import { ACTIVE_LOCALES, SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { SITE_URL } from '@/lib/constants/site'
 import { href } from '@/lib/i18n/routes'
+import { hreflangDe } from '@/lib/i18n/alternates'
 import en from './traducoes/en.json'
 import es from './traducoes/es.json'
 import type { ArchiveHub } from './types'
@@ -59,14 +60,14 @@ const outrosIdiomas = (): Locale[] => ACTIVE_LOCALES.filter(l => l !== SOURCE_LO
  * (o seletor de idioma do cabeçalho lê estas tags). Sem tradução em nenhum idioma, `undefined`.
  */
 export function alternativasDoGuia(slugPt: string): Record<string, string> | undefined {
-    const pt = `${SITE_URL}/guias/${slugPt}`
-    const versoes = outrosIdiomas().flatMap(l => { const s = slugPublicoDoGuia(slugPt, l); return s ? [[LOCALE_META[l].htmlLang, `${SITE_URL}${href('guide', { slug: s }, l)}`]] : [] })
-    return versoes.length ? Object.fromEntries([[LOCALE_META[SOURCE_LOCALE].htmlLang, pt], ...versoes, ['x-default', pt]]) : undefined
+    const traduzidos = outrosIdiomas().filter(l => slugPublicoDoGuia(slugPt, l))
+    if (!traduzidos.length) return undefined
+    return hreflangDe([SOURCE_LOCALE, ...traduzidos], l => l === SOURCE_LOCALE ? `${SITE_URL}/guias/${slugPt}` : `${SITE_URL}${href('guide', { slug: slugPublicoDoGuia(slugPt, l)! }, l)}`)
 }
 
 /** hreflang do índice de guias: idiomas ativos com ao menos um guia traduzido. */
 export function alternativasDoIndice(): Record<string, string> | undefined {
-    const pt = `${SITE_URL}/guias`
-    const versoes = outrosIdiomas().filter(l => slugsPtTraduzidos(l).length > 0).map(l => [LOCALE_META[l].htmlLang, `${SITE_URL}${href('guides', undefined, l)}`])
-    return versoes.length ? Object.fromEntries([[LOCALE_META[SOURCE_LOCALE].htmlLang, pt], ...versoes, ['x-default', pt]]) : undefined
+    const traduzidos = outrosIdiomas().filter(l => slugsPtTraduzidos(l).length > 0)
+    if (!traduzidos.length) return undefined
+    return hreflangDe([SOURCE_LOCALE, ...traduzidos], l => l === SOURCE_LOCALE ? `${SITE_URL}/guias` : `${SITE_URL}${href('guides', undefined, l)}`)
 }
