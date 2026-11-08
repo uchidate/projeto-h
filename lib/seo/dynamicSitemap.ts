@@ -96,6 +96,21 @@ function normalizedLastmod(entry: { date?: string; modified?: string }) {
     return value ? value.slice(0, 10) : undefined
 }
 
+/**
+ * Conjunto completo de hreflang da ficha: português + todo idioma com tradução publicada e em dia,
+ * igual ao da página (lib/i18n/alternates.ts). Cada URL do grupo repete o mesmo conjunto, como o Google exige.
+ * Sem nenhuma tradução, devolve undefined (a URL sai sem alternates).
+ */
+export function alternatesDaFicha(tipo: NonNullable<ReturnType<typeof tipoDoShard>>, entry: WPEntry): Record<string, string> | undefined {
+    const idiomas = localizedSitemapLocales().filter((l) => entry.translations?.[l] && !entry.translations[l]?.stale)
+    if (idiomas.length === 0) return undefined
+    const pt = `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, DEFAULT_LOCALE)}`
+    const out: Record<string, string> = { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: pt }
+    for (const l of idiomas) out[LOCALE_META[l].htmlLang] = `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, l)}`
+    out['x-default'] = pt
+    return out
+}
+
 async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<SitemapEntry[]> {
     const collection = COLLECTIONS[shard]
     if (!collection) return []
@@ -104,7 +119,7 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
                 page,
                 per_page: 100,
                 status: 'publish',
-                _fields: locale ? 'slug,date,modified,translations' : 'slug,date,modified',
+                _fields: locale || tipoDoShard(shard) ? 'slug,date,modified,translations' : 'slug,date,modified',
                 orderby: 'modified',
                 order: 'desc',
             })}`,
@@ -131,10 +146,12 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
     }
 
     if (!locale) {
-        return entries.map((entry) => ({
-            loc: `${SITE_URL}/${collection.publicBase}/${entry.slug}`,
-            lastmod: normalizedLastmod(entry),
-        }))
+        return entries.map((entry) => {
+            const loc = `${SITE_URL}/${collection.publicBase}/${entry.slug}`
+            const tipo = tipoDoShard(shard)
+            const alternates = tipo ? alternatesDaFicha(tipo, entry) : undefined
+            return { loc, lastmod: normalizedLastmod(entry), ...(alternates ? { alternates } : {}) }
+        })
     }
 
     // Sem tradução publicada a ficha não existe no idioma — fica fora do sitemap.
@@ -143,17 +160,8 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
     return entries
         .filter((entry) => entry.translations?.[locale] && !entry.translations[locale]?.stale)
         .map((entry) => {
-            const pt = `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, DEFAULT_LOCALE)}`
             const localized = `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, locale)}`
-            return {
-                loc: localized,
-                lastmod: normalizedLastmod(entry),
-                alternates: {
-                    [LOCALE_META[DEFAULT_LOCALE].htmlLang]: pt,
-                    [LOCALE_META[locale].htmlLang]: localized,
-                    'x-default': pt,
-                },
-            }
+            return { loc: localized, lastmod: normalizedLastmod(entry), alternates: alternatesDaFicha(tipo, entry) }
         })
 }
 

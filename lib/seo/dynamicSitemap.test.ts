@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildSitemapIndex, buildUrlSet, isSitemapShard, resolveLocalizedShard, resolveSitemapShard, sitemapResponse } from './dynamicSitemap'
+import { alternatesDaFicha, buildSitemapIndex, buildUrlSet, isSitemapShard, resolveLocalizedShard, resolveSitemapShard, sitemapResponse } from './dynamicSitemap'
 
 describe('sitemap dinâmico', () => {
     it('publica todos os shards canônicos no índice', () => {
@@ -62,5 +62,11 @@ describe('sitemapResponse', () => {
         const r = sitemapResponse('<urlset/>')
         expect(r.headers.get('Cache-Control')).toBe('public, s-maxage=3600, stale-while-revalidate=86400')
         expect(r.headers.get('Content-Type')).toContain('application/xml')
+    })
+
+    it('alternates da ficha repetem o conjunto completo e ignoram tradução velha', () => {
+        const alt = alternatesDaFicha('company', { slug: 'x', translations: { en: { stale: false }, es: { stale: true } } })
+        expect(Object.keys(alt ?? {})).toEqual(['pt-BR', 'en', 'x-default'])
+        expect(alternatesDaFicha('company', { slug: 'x', translations: null })).toBeUndefined()
     })
 })
