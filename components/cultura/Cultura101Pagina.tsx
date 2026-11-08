@@ -15,7 +15,8 @@ import { getWPImage, stripHtml } from '@/lib/utils'
 import type { WPPost } from '@/lib/wordpress/types'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { formatDate, htmlLang } from '@/lib/i18n/format'
-import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { buildAlternatesAtivos } from '@/lib/i18n/alternates'
 import { href } from '@/lib/i18n/routes'
 import { postsTraduzidosPorSlugPt } from '@/lib/cultura/guias-traduzidos'
 import { slugPublicoDoPost } from '@/lib/blog/translations'
@@ -24,14 +25,10 @@ import { slugPublicoDoPost } from '@/lib/blog/translations'
 export async function buildCulturaMetadata(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'entity.cultura101' })
     const url = `${SITE_URL}${href('cultura101', undefined, locale)}`
-    const languages = Object.fromEntries([
-        ...Object.entries(LOCALE_META).filter(([l]) => ACTIVE_LOCALES.includes(l as Locale)).map(([l, m]) => [m.htmlLang, `${SITE_URL}${href('cultura101', undefined, l as Locale)}`]),
-        ['x-default', `${SITE_URL}${href('cultura101', undefined, DEFAULT_LOCALE)}`],
-    ])
     return {
         title: t('title'),
         description: t('description'),
-        alternates: { canonical: url, languages },
+        alternates: buildAlternatesAtivos('cultura101', undefined, locale),
         openGraph: { ...baseOG(url), title: t('title'), description: t('description') },
         twitter: { ...baseTwitter(), title: t('title'), description: t('description') },
     }

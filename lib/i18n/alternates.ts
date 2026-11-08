@@ -1,5 +1,5 @@
 import { SITE_URL } from '@/lib/constants/site'
-import { DEFAULT_LOCALE, LOCALE_META, type Locale } from './config'
+import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from './config'
 import { href, type RouteName } from './routes'
 
 type HrefArgs<R extends RouteName> = Parameters<typeof href<R>>[1]
@@ -26,4 +26,17 @@ export function buildAlternates<R extends RouteName>(
     for (const target of locales) languages[LOCALE_META[target].htmlLang] = url(target)
     if (locales.includes(DEFAULT_LOCALE)) languages['x-default'] = url(DEFAULT_LOCALE)
     return { canonical, languages }
+}
+
+/**
+ * Para página institucional traduzida por inteiro: declara todos os idiomas
+ * ativos. Idioma novo entra sozinho aqui, sem lista própria em cada página —
+ * lista fixa foi o que deixou o ES de fora do seletor do hub de cultura.
+ */
+export function buildAlternatesAtivos<R extends RouteName>(
+    route: R,
+    params: HrefArgs<R>,
+    locale: Locale,
+) {
+    return buildAlternates(route, params, locale, ACTIVE_LOCALES)
 }

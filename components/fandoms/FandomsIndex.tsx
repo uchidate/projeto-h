@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { buildAlternatesAtivos } from '@/lib/i18n/alternates'
 import { href } from '@/lib/i18n/routes'
 import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { stripHtml } from '@/lib/utils'
@@ -15,14 +16,10 @@ type SearchParams = Promise<{ search?: string }>
 export async function generateMetadata({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }): Promise<Metadata> {
     const [sp, t] = await Promise.all([searchParams, getTranslations({ locale, namespace: 'client.fandoms' })])
     const url = `${SITE_URL}${href('fandoms', undefined, locale)}${sp.search ? `?search=${encodeURIComponent(sp.search)}` : ''}`
-    const idiomas = Object.fromEntries([
-        ...(['pt', 'en', 'es'] as const).map(l => [LOCALE_META[l].htmlLang, `${SITE_URL}${href('fandoms', undefined, l)}`]),
-        ['x-default', `${SITE_URL}${href('fandoms', undefined, DEFAULT_LOCALE)}`],
-    ])
     return {
         title: t('metaTitle'),
         description: t('metaDescription'),
-        alternates: { canonical: url, ...(sp.search ? {} : { languages: idiomas }) },
+        alternates: { canonical: url, ...(sp.search ? {} : { languages: buildAlternatesAtivos('fandoms', undefined, locale).languages }) },
         ...(sp.search ? { robots: { index: false, follow: true } } : {}),
         openGraph: baseOG(url),
         twitter: baseTwitter(),
