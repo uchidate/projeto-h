@@ -25,7 +25,7 @@ export async function buildCulturaMetadata(locale: Locale = DEFAULT_LOCALE): Pro
     const t = await getTranslations({ locale, namespace: 'entity.cultura101' })
     const url = `${SITE_URL}${href('cultura101', undefined, locale)}`
     const languages = Object.fromEntries([
-        ...Object.entries(LOCALE_META).filter(([l]) => l === DEFAULT_LOCALE || l === 'en').map(([l, m]) => [m.htmlLang, `${SITE_URL}${href('cultura101', undefined, l as Locale)}`]),
+        ...Object.entries(LOCALE_META).filter(([l]) => ACTIVE_LOCALES.includes(l as Locale)).map(([l, m]) => [m.htmlLang, `${SITE_URL}${href('cultura101', undefined, l as Locale)}`]),
         ['x-default', `${SITE_URL}${href('cultura101', undefined, DEFAULT_LOCALE)}`],
     ])
     return {
