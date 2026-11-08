@@ -6,7 +6,6 @@ import { notFound } from 'next/navigation'
 import { getArtists } from '@/lib/wordpress/artists'
 import { getGroupsByIds } from '@/lib/wordpress/groups'
 import { wpFetch } from '@/lib/wordpress/client'
-import { baseOG, baseTwitter } from '@/lib/constants/site'
 import { ArtistsPage } from '@/components/artists/ArtistsPage'
 import { aniversariosDaSemana, hojeEmSaoPaulo, mesesDaJanela } from '@/lib/artists/aniversarios'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
@@ -17,7 +16,7 @@ import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import { TEXTOS_ANIVERSARIO_PT, type TextosAniversario } from '@/lib/artists/aniversarios'
-import { linksDePaginacao, paginaDe, paginaInvalida, robotsDaListagem, urlDaListagem } from '@/lib/listagem'
+import { metadataDeListagem, paginaDe, paginaInvalida, urlDaListagem } from '@/lib/listagem'
 
 export type SearchParams = Promise<{ search?: string; page?: string; role?: string; affiliation?: string; letter?: string; sortBy?: string }>
 
@@ -34,22 +33,14 @@ export async function metadataArtistsListagem({ searchParams, locale = DEFAULT_L
     const affiliation = sp.affiliation === 'group' || sp.affiliation === 'solo' ? sp.affiliation : undefined
     const { totalPages } = await getArtists({ page, perPage: 48, search: sp.search, role: sp.role, affiliation, letter: sp.letter?.toUpperCase().slice(0, 1), ...(emPt ? {} : { locale }) })
     const hasFacets = Boolean(sp.search || sp.role || sp.affiliation || sp.letter || sp.sortBy)
-    const invalidPage = paginaInvalida(page, totalPages)
 
-    const languages = page === 1 && !hasFacets ? await defaultCatalogLanguages('artists', locale) : undefined
-
-    return {
-        title: t('metaTitle'),
-        description: t('metaDescription'),
-        alternates: {
-            canonical: url,
-            ...(languages ? { languages } : {}),
-            ...linksDePaginacao({ page, totalPages, urlDaPagina: (p) => buildArtistsUrl({ ...sp, page: String(p) }, locale) }),
-        },
-        ...robotsDaListagem(hasFacets || invalidPage),
-        openGraph: baseOG(url),
-        twitter: baseTwitter(),
-    }
+    return metadataDeListagem({
+        titulo: t('metaTitle'),
+        descricao: t('metaDescription'),
+        url, page, totalPages, temFiltro: hasFacets,
+        urlDaPagina: (p) => buildArtistsUrl({ ...sp, page: String(p) }, locale),
+        idiomas: () => defaultCatalogLanguages('artists', locale),
+    })
 }
 
 export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }) {

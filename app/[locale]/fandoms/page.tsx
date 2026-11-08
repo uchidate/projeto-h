@@ -1,20 +1,15 @@
-import type { Metadata } from 'next'
 import Fandoms, { generateMetadata as metadataDaPagina } from '@/components/fandoms/FandomsIndex'
-import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
+import { paginaLocalizada } from '@/lib/i18n/pagina-localizada'
 
 export const revalidate = 600
 
-type Params = Promise<{ locale: string }>
 type SearchParams = Parameters<typeof Fandoms>[0]['searchParams']
 
-export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: SearchParams }): Promise<Metadata> {
-    const { locale } = await params
-    if (!idiomaValido(locale, { servePt: true })) return {}
-    return metadataDaPagina({ searchParams, locale })
-}
+const pagina = paginaLocalizada<object, SearchParams>({
+    comSearchParams: true,
+    metadata: ({ locale, searchParams }) => metadataDaPagina({ searchParams, locale }),
+    render: ({ locale, searchParams }) => <Fandoms searchParams={searchParams} locale={locale} />,
+})
 
-export default async function Page({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
-    const { locale } = await params
-    entrarNaPagina(locale, { servePt: true })
-    return <Fandoms searchParams={searchParams} locale={locale} />
-}
+export const generateMetadata = pagina.generateMetadata
+export default pagina.Page

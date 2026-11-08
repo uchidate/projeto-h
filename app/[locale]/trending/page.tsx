@@ -1,20 +1,12 @@
-import type { Metadata } from 'next'
 import TrendingPage, { metadataDaPagina } from '@/components/trending/TrendingPage'
-import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
-import type { Locale } from '@/lib/i18n/config'
+import { paginaLocalizada } from '@/lib/i18n/pagina-localizada'
 
 export const revalidate = 300
 
-type Params = Promise<{ locale: string }>
+const pagina = paginaLocalizada({
+    metadata: ({ locale }) => metadataDaPagina(locale),
+    render: ({ locale }) => <TrendingPage locale={locale} />,
+})
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-    const { locale } = await params
-    if (!idiomaValido(locale, { servePt: true })) return {}
-    return metadataDaPagina(locale as Locale)
-}
-
-export default async function Page({ params }: { params: Params }) {
-    const { locale } = await params
-    entrarNaPagina(locale, { servePt: true })
-    return <TrendingPage locale={locale as Locale} />
-}
+export const generateMetadata = pagina.generateMetadata
+export default pagina.Page

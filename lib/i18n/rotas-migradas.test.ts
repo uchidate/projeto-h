@@ -14,6 +14,9 @@ const comoPasta = (caminho: string) => caminho.replace(/:(\w+)/g, '[$1]')
 const comoRewrite = (caminho: string) => caminho.replace(/\[(\w+)\]/g, ':$1')
 const pagina = (grupo: string, caminho: string) => join(RAIZ, 'app', grupo, comoPasta(caminho), 'page.tsx')
 
+/** A página serve o português: escrita à mão com `servePt: true` ou pelo `paginaLocalizada`, que serve por construção. */
+const servePt = (texto: string) => /servePt: true|paginaLocalizada[(<]/.test(texto)
+
 describe('rotas migradas para a árvore única', () => {
     it('toda página de app/[locale] que serve o português está registrada (senão /<rota> dá 404, sem rewrite para /pt/...)', () => {
         const base = join(RAIZ, 'app', '[locale]')
@@ -23,7 +26,7 @@ describe('rotas migradas para a árvore única', () => {
                 if (!d.isDirectory() || d.name === '[locale]' || d.name === 'filtrado') continue
                 const arquivo = join(dir, d.name, 'page.tsx')
                 const caminho = `${prefixo}${comoRewrite(d.name)}`
-                if (existsSync(arquivo) && readFileSync(arquivo, 'utf8').includes('servePt: true')) servemPt.push(caminho)
+                if (existsSync(arquivo) && servePt(readFileSync(arquivo, 'utf8'))) servemPt.push(caminho)
                 varrer(join(dir, d.name), `${caminho}/`)
             }
         }
@@ -41,7 +44,7 @@ describe('rotas migradas para a árvore única', () => {
                 const arquivo = join(dir, d.name, 'page.tsx')
                 if (d.name.startsWith('[') && d.name !== '[locale]' && existsSync(arquivo)) {
                     const texto = readFileSync(arquivo, 'utf8')
-                    if (texto.includes('servePt: true') && /generateStaticParams/.test(texto) && !texto.includes('locale: DEFAULT_LOCALE')) ruins.push(arquivo.replace(RAIZ, ''))
+                    if (servePt(texto) && /generateStaticParams/.test(texto) && !texto.includes('locale: DEFAULT_LOCALE')) ruins.push(arquivo.replace(RAIZ, ''))
                 }
                 varrer(join(dir, d.name))
             }
@@ -57,7 +60,9 @@ describe('rotas migradas para a árvore única', () => {
     it.each(ROTAS_MIGRADAS)('$pt: página única em app/[locale] que serve o português', ({ interno }) => {
         const emIntl = pagina('[locale]', interno)
         expect(existsSync(emIntl), `falta ${emIntl}`).toBe(true)
-        expect(readFileSync(emIntl, 'utf8'), `${interno} precisa de servePt: true`).toContain('servePt: true')
+        // `paginaLocalizada` serve o português por construção; página escrita à mão tem de declarar `servePt: true`.
+        const fonte = readFileSync(emIntl, 'utf8')
+        expect(servePt(fonte), `${interno} precisa de servePt: true (ou paginaLocalizada)`).toBe(true)
     })
 
     // Só-PT (manifesto) não tem caminho em outro idioma, então não consta em ROUTES.
@@ -78,7 +83,7 @@ describe('rotas migradas para a árvore única', () => {
     it.each(ROTAS_MIGRADAS.filter((r) => r.filtrado))('$pt: a variante filtrado existe e serve o português', ({ interno }) => {
         const emIntl = pagina('[locale]', `${interno}/filtrado`)
         expect(existsSync(emIntl), `falta ${emIntl}`).toBe(true)
-        expect(readFileSync(emIntl, 'utf8')).toContain('servePt: true')
+        expect(servePt(readFileSync(emIntl, 'utf8'))).toBe(true)
     })
 
     it('gera um rewrite simples por rota, para /pt/<pasta>', () => {
