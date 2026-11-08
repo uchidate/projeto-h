@@ -119,7 +119,7 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
                 page,
                 per_page: 100,
                 status: 'publish',
-                _fields: locale || tipoDoShard(shard) ? 'slug,date,modified,translations' : 'slug,date,modified',
+                _fields: locale || tipoDoShard(shard) || shard === POSTS_SHARD ? 'slug,date,modified,translations' : 'slug,date,modified',
                 orderby: 'modified',
                 order: 'desc',
             })}`,
@@ -148,6 +148,11 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
     if (!locale) {
         return entries.map((entry) => {
             const loc = `${SITE_URL}/${collection.publicBase}/${entry.slug}`
+            if (shard === POSTS_SHARD) {
+                // Em posts o `translations` da REST é { idioma: slug }, não { idioma: { stale } }.
+                const { languages } = buildPostAlternates(entry.translations as unknown as Record<string, string> | null, DEFAULT_LOCALE, entry.slug)
+                return { loc, lastmod: normalizedLastmod(entry), ...(languages ? { alternates: languages } : {}) }
+            }
             const tipo = tipoDoShard(shard)
             const alternates = tipo ? alternatesDaFicha(tipo, entry) : undefined
             return { loc, lastmod: normalizedLastmod(entry), ...(alternates ? { alternates } : {}) }
