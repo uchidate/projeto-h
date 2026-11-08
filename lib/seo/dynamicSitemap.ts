@@ -4,6 +4,8 @@ import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
 import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { href } from '@/lib/i18n/routes'
+import { hreflangDe } from '@/lib/i18n/alternates'
+import { availableLocales } from '@/lib/i18n/entity-translation'
 import { buildPostAlternates } from '@/lib/blog/translations'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
 import { SHARDS_TRADUZIVEIS, caminhoDaFicha, caminhoDaListagem, tipoDoShard } from '@/lib/i18n/entidades-traduziveis'
@@ -102,13 +104,10 @@ function normalizedLastmod(entry: { date?: string; modified?: string }) {
  * Sem nenhuma tradução, devolve undefined (a URL sai sem alternates).
  */
 export function alternatesDaFicha(tipo: NonNullable<ReturnType<typeof tipoDoShard>>, entry: WPEntry): Record<string, string> | undefined {
-    const idiomas = localizedSitemapLocales().filter((l) => entry.translations?.[l] && !entry.translations[l]?.stale)
-    if (idiomas.length === 0) return undefined
-    const pt = `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, DEFAULT_LOCALE)}`
-    const out: Record<string, string> = { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: pt }
-    for (const l of idiomas) out[LOCALE_META[l].htmlLang] = `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, l)}`
-    out['x-default'] = pt
-    return out
+    // Mesma regra da página e do IndexNow: availableLocales (publicada, em dia, idioma ativo).
+    const idiomas = availableLocales(entry)
+    if (idiomas.length < 2) return undefined
+    return hreflangDe(idiomas, (locale) => `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, locale)}`)
 }
 
 async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<SitemapEntry[]> {

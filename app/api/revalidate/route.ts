@@ -14,6 +14,7 @@ import { buildIndexNowUrl, buildLocalizedIndexNowUrls, buildPurgeUrls, INDEXNOW_
 import { purgarCloudflare } from '@/lib/cloudflare-purge'
 import { wpBuscarOpcional, buildParams } from '@/lib/wordpress/client'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE } from '@/lib/i18n/config'
+import { availableLocales } from '@/lib/i18n/entity-translation'
 import { paraLog } from '@/lib/utils/log'
 
 /**
@@ -75,8 +76,8 @@ async function idiomasPublicados(type: WPPostType, slug: string): Promise<string
         `/wp/v2/${type}${buildParams({ slug, status: 'publish', _fields: 'translations' })}`,
         { revalidate: 0 },
     )
-    // Tradução desatualizada não é indexável: só o que está em dia vai ao IndexNow.
-    return Object.entries(itens[0]?.translations ?? {}).filter(([, tr]) => tr && !tr.stale).map(([locale]) => locale)
+    // Mesma regra do sitemap e da página (availableLocales): tradução desatualizada não é indexável.
+    return availableLocales({ translations: itens[0]?.translations }).filter((locale) => locale !== DEFAULT_LOCALE)
 }
 
 function avisarIndexNow(type: WPPostType, slug: unknown): void {

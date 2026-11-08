@@ -43,9 +43,9 @@ export interface TranslatableEntity {
 }
 
 /** Idiomas em que a ficha existe: português sempre, os demais se publicados e ativos. */
-export function availableLocales(entity: Pick<TranslatableEntity, 'translations'>): Locale[] {
+export function availableLocales(entity: { translations?: Partial<Record<string, object | null>> | null }): Locale[] {
     const published = Object.entries(entity.translations ?? {})
-        .filter(([, tr]) => tr && !tr.stale)
+        .filter(([, tr]) => tr && !(tr as { stale?: boolean }).stale)
         .map(([locale]) => locale)
         .filter(isActiveLocale)
     return ACTIVE_LOCALES.filter((locale) => locale === DEFAULT_LOCALE || published.includes(locale))
