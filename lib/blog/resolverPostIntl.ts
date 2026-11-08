@@ -1,6 +1,7 @@
 import type { WPPost } from '@/lib/wordpress/types'
 import { getPostBySlug } from '@/lib/wordpress/posts'
 import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
+import { comCapaDoOriginal } from '@/lib/blog/translations'
 
 /**
  * Resolve o que `/<idioma>/blog/<slug>` serve. A URL pública usa o slug do original em
@@ -22,7 +23,7 @@ export async function resolverPostIntl(slug: string, locale: Locale): Promise<Po
     const slugTraduzido = original?.translations?.[locale]
     if (original && slugTraduzido) {
         const traduzido = await getPostBySlug(slugTraduzido, locale)
-        if (traduzido) return { tipo: 'traduzido', post: traduzido }
+        if (traduzido) return { tipo: 'traduzido', post: comCapaDoOriginal(traduzido, original) }
     }
 
     // Slug antigo da tradução: leva ao slug do original, que é o canônico.
