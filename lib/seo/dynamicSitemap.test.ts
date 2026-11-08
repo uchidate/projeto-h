@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { availableLocales } from '@/lib/i18n/entity-translation'
+import { LOCALE_META } from '@/lib/i18n/config'
 import { alternatesDaFicha, buildSitemapIndex, buildUrlSet, isSitemapShard, resolveLocalizedShard, resolveSitemapShard, sitemapResponse } from './dynamicSitemap'
 
 describe('sitemap dinâmico', () => {
@@ -68,5 +70,12 @@ describe('sitemapResponse', () => {
         const alt = alternatesDaFicha('company', { slug: 'x', translations: { en: { stale: false }, es: { stale: true } } })
         expect(Object.keys(alt ?? {})).toEqual(['pt-BR', 'en', 'x-default'])
         expect(alternatesDaFicha('company', { slug: 'x', translations: null })).toBeUndefined()
+    })
+
+    it('sitemap e página decidem os idiomas pela mesma função (availableLocales)', () => {
+        const translations = { en: { stale: false }, es: null, fr: { stale: false } }
+        const alt = alternatesDaFicha('artist', { slug: 'iu', translations })
+        const htmlLangs = availableLocales({ translations }).map((l) => LOCALE_META[l].htmlLang)
+        expect(Object.keys(alt ?? {}).filter((k) => k !== 'x-default')).toEqual(htmlLangs)
     })
 })
