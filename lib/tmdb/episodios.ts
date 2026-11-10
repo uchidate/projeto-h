@@ -63,7 +63,7 @@ export function painelViavel(eps: Episodio[]): boolean {
  * Cache de 24h (a página é ISR).
  */
 /** Idioma pedido ao TMDB para os títulos dos episódios; sem isso a ficha em outro idioma mostrava "Episódio 16". */
-const IDIOMA_TMDB: Record<string, string> = { pt: 'pt-BR', en: 'en-US', es: 'es-419' }
+const IDIOMA_TMDB: Record<string, string> = { pt: 'pt-BR', en: 'en-US', es: 'es-419', ja: 'ja-JP' }
 
 export async function getEpisodios(tmdbId: number | string | undefined, tipo: string | undefined, locale: string = 'pt'): Promise<Episodio[]> {
     const chave = process.env.TMDB_API_KEY

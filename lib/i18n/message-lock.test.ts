@@ -29,6 +29,12 @@ describe('compareMessages', () => {
     })
 })
 
+/**
+ * Idiomas ainda em tradução: o catálogo existe só em parte (o resto cai no inglês, ver `IMPORTADORES` em
+ * messages.ts). Aqui só se exige que não haja chave órfã nem sem registro no lock. Tirar da lista ao completar.
+ */
+const EM_TRADUCAO: readonly string[] = []
+
 describe('messages/ no repositório', () => {
     const raiz = join(process.cwd(), 'messages')
     const carregar = (idioma: string) => {
@@ -45,7 +51,7 @@ describe('messages/ no repositório', () => {
         const r = compareMessages(fonte, carregar(idioma), lock)
 
         it(`${idioma}: toda chave do original tem tradução, e vice-versa`, () => {
-            expect(r.missing).toEqual([])
+            if (!EM_TRADUCAO.includes(idioma)) expect(r.missing).toEqual([])
             expect(r.orphan).toEqual([])
         })
 

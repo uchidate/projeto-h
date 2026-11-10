@@ -6,6 +6,7 @@ const PALAVRAS: Record<Locale, { hoje: string; ontem: string }> = {
     pt: { hoje: 'hoje', ontem: 'ontem' },
     en: { hoje: 'today', ontem: 'yesterday' },
     es: { hoje: 'hoy', ontem: 'ayer' },
+    ja: { hoje: '今日', ontem: '昨日' },
 }
 
 /** Dia civil (AAAA-MM-DD) de um instante, no fuso de Brasília. */

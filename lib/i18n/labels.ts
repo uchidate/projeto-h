@@ -3,6 +3,7 @@ import { DEFAULT_LOCALE, type Locale } from './config'
 import pt from '@/messages/pt/labels.json'
 import en from '@/messages/en/labels.json'
 import es from '@/messages/es/labels.json'
+import ja from '@/messages/ja/labels.json'
 
 /**
  * Rótulos de dados (papéis, tipo de grupo, geração, tipo e status de produção)
@@ -10,7 +11,7 @@ import es from '@/messages/es/labels.json'
  * puras e não têm hook. Catálogo pequeno e síncrono; não entra no `Messages`
  * do next-intl porque não depende da requisição.
  */
-const CATALOG: Record<Locale, typeof pt> = { pt, en, es }
+const CATALOG: Record<Locale, typeof pt> = { pt, en, es, ja }
 
 export function labelsFor(locale: Locale = DEFAULT_LOCALE) {
     const t = createTranslator({ locale, messages: { labels: CATALOG[locale] }, namespace: 'labels' })

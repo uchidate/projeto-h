@@ -63,6 +63,12 @@ const IMPORTADORES: Record<Exclude<Locale, 'pt'>, Record<Namespace, () => Promis
         client: () => import('@/messages/es/client.json'), institucional: () => import('@/messages/es/institucional.json'),
         home: () => import('@/messages/es/home.json'), quiz: () => import('@/messages/es/quiz.json'),
     },
+    ja: {
+        entity: () => import('@/messages/ja/entity.json'),
+        profile: () => import('@/messages/ja/profile.json'),
+        client: () => import('@/messages/ja/client.json'), institucional: () => import('@/messages/ja/institucional.json'),
+        home: () => import('@/messages/ja/home.json'), quiz: () => import('@/messages/ja/quiz.json'),
+    },
 }
 
 async function carregarIdioma(locale: Exclude<Locale, 'pt'>): Promise<Messages> {
