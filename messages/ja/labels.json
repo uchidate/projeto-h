@@ -1,0 +1,66 @@
+{
+  "role": {
+    "singer": "歌手",
+    "actor": "俳優",
+    "dancer": "ダンサー",
+    "rapper": "ラッパー",
+    "model": "モデル",
+    "host": "司会者",
+    "composer": "作曲家",
+    "idol": "アイドル",
+    "producer": "プロデューサー",
+    "mc": "MC",
+    "director": "監督"
+  },
+  "roleM": {
+    "singer": "歌手",
+    "actor": "俳優",
+    "dancer": "ダンサー",
+    "host": "司会者",
+    "composer": "作曲家",
+    "producer": "プロデューサー",
+    "director": "監督"
+  },
+  "roleF": {
+    "singer": "歌手",
+    "actor": "女優",
+    "dancer": "ダンサー",
+    "host": "司会者",
+    "composer": "作曲家",
+    "producer": "プロデューサー",
+    "director": "監督"
+  },
+  "groupType": {
+    "girl_group": "ガールズグループ",
+    "boy_group": "ボーイズグループ",
+    "co_ed": "男女混成グループ",
+    "solo": "ソロアーティスト"
+  },
+  "generation": "第{n}世代",
+  "productionType": {
+    "drama": "ドラマ",
+    "movie": "映画",
+    "special": "スペシャル",
+    "variety": "バラエティ番組",
+    "dramaDisplay": "シリーズ"
+  },
+  "productionStatus": {
+    "airing": "放送中",
+    "completed": "放送終了",
+    "upcoming": "近日公開"
+  },
+  "age": "{age}歳",
+  "officialSite": "公式サイト",
+  "fact": {
+    "debut": "デビュー",
+    "birth": "生年月日",
+    "death": "没年月日",
+    "height": "身長",
+    "zodiac": "星座"
+  },
+  "groupStatus": {
+    "disbandedIn": "解散 · {year}年",
+    "active": "活動中",
+    "disbanded": "解散"
+  }
+}

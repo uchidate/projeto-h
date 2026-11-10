@@ -30,6 +30,7 @@ export const LOCALE_META: Record<Locale, LocaleMeta> = {
     pt: { htmlLang: 'pt-BR', ogLocale: 'pt_BR', intl: 'pt-BR' },
     en: { htmlLang: 'en', ogLocale: 'en_US', intl: 'en' },
     es: { htmlLang: 'es', ogLocale: 'es_ES', intl: 'es' },
+    ja: { htmlLang: 'ja', ogLocale: 'ja_JP', intl: 'ja' },
 }
 
 export function isLocale(value: string): value is Locale {

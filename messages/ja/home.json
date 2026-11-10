@@ -1,0 +1,291 @@
+{
+  "pagina": {
+    "rotulo": "__SITE__ ホームページ"
+  },
+  "comum": {
+    "verTodos": "すべて見る →",
+    "minutos": "{mins}分",
+    "minutosDeLeitura": "読了目安{mins}分",
+    "capa": "カバー",
+    "artigo": "記事",
+    "emDestaque": "注目"
+  },
+  "hero": {
+    "asFaixas": "全{n}曲",
+    "clipe": "MV",
+    "maisFaixas": "ほか{n}曲",
+    "lerAgora": "今すぐ読む",
+    "continuarLeitura": "続きを読む",
+    "filmeEmDestaque": "注目の映画",
+    "doramaEmDestaque": "注目のドラマ",
+    "verProducao": "作品を見る",
+    "emExibicao": "放送中",
+    "concluida": "放送終了",
+    "emBreve": "近日公開",
+    "classificacaoLivre": "全年齢",
+    "classificacaoIndicativa": "年齢区分",
+    "notaVotos": "{count, plural, other {#件の投票}} · TMDB",
+    "elenco": "キャスト",
+    "tipoSerie": "シリーズ",
+    "tipoFilme": "映画",
+    "disponivelEm": "配信先",
+    "trailer": "予告編",
+    "verTrailer": "{title}の予告編を見る",
+    "fallbackEyebrow": "更新中",
+    "fallbackTitulo": "韓国カルチャーを、日本語で。",
+    "fallbackSubtitulo": "韓国ドラマ、映画、アーティストを毎日お届けします。",
+    "verArtigos": "記事を見る",
+    "artistas": "アーティスト"
+  },
+  "hubs": {
+    "titulo": "カテゴリから探す",
+    "verTodas": "すべて見る →"
+  },
+  "spotlight": {
+    "titulo": "いま韓国で人気",
+    "tag": "ランキング",
+    "artistas": "アーティスト →",
+    "grupos": "グループ →"
+  },
+  "destaques": {
+    "titulo": "注目"
+  },
+  "calendario": {
+    "rotulo": "カレンダー",
+    "titulo": "今日のカレンダー",
+    "estaSemana": "今週",
+    "tag": "誕生日",
+    "hoje": "今日",
+    "aSeguir": "このあと",
+    "abrir": "7日間 →",
+    "anos": "歳"
+  },
+  "guias": {
+    "titulo": "ガイド",
+    "tag": "定番",
+    "comece": "ここから始める",
+    "porTema": "テーマ別ガイド",
+    "verTodos": "すべてのガイド",
+    "titulos": "{total, plural, other {#作品}}"
+  },
+  "passos": {
+    "o-que-e-hallyu-onda-coreana-explicada": {
+      "label": "ハンリュ（韓流）とは？",
+      "apoio": "韓流を数分で理解"
+    },
+    "como-comecar-no-kpop-guia-para-iniciantes": {
+      "label": "K-POPの始め方",
+      "apoio": "まず何を聴くか"
+    },
+    "idol-vs-artist-diferenca-carreira-kpop": {
+      "label": "アイドルとアーティストの違い",
+      "apoio": "誰が誰なのか"
+    },
+    "posicoes-grupo-kpop-lider-vocal-visual-maknae-guia": {
+      "label": "K-POPグループのポジション",
+      "apoio": "リーダー、ボーカル、ラッパー"
+    },
+    "line-kpop-vocal-dance-maknae-line-guia": {
+      "label": "K-POPのライン（ボーカル／ダンス／マンネ）",
+      "apoio": "ボーカル、ダンス、マンネ"
+    },
+    "hangeul-guia-basico-fas-brasileiros": {
+      "label": "30分でハングル",
+      "apoio": "韓国語の文字を読む"
+    }
+  },
+  "assuntos": {
+    "rotulo": "トピック"
+  },
+  "temas": {
+    "gastronomia": {
+      "titulo": "韓国グルメ",
+      "caixa": "今週のテーマ",
+      "contaPratos": "{n}料理",
+      "contaMarcas": "{n}社",
+      "contaArtigos": "{n}本の記事",
+      "abrir": "テーマを開く",
+      "paraLer": "読む",
+      "pratos": "料理",
+      "marcas": "ブランド",
+      "naLoja": "ショップに{n}点",
+      "prateleira": "ショップ · 韓国グルメ · アフィリエイト",
+      "verPrateleira": "棚を見る →"
+    },
+    "beleza": {
+      "titulo": "韓国コスメ",
+      "caixa": "注目",
+      "contaPratos": "{n}料理",
+      "contaMarcas": "{n}ブランド",
+      "contaArtigos": "スキンケア・メイク・日焼け止めの記事{n}本",
+      "abrir": "テーマを開く",
+      "paraLer": "読む",
+      "pratos": "料理",
+      "marcas": "ブランド",
+      "naLoja": "ショップに{n}点",
+      "prateleira": "ショップ · 韓国コスメ · アフィリエイト",
+      "verPrateleira": "棚を見る →"
+    }
+  },
+  "explore": {
+    "titulo": "トピックで探す",
+    "caixa": "{n}トピック",
+    "verTodos": "すべてのトピック",
+    "artigos": "記事",
+    "fichas": "プロフィール",
+    "ultimo": "最新",
+    "novo": "新着",
+    "temas": {
+      "kpop": "K-POP",
+      "cultura": "カルチャー",
+      "gastronomia": "グルメ",
+      "kbeauty": "韓国コスメ",
+      "guias": "入門ガイド",
+      "kdrama": "韓国ドラマ",
+      "kfilm": "韓国映画",
+      "reality": "リアリティ番組",
+      "webtoons": "ウェブトゥーン",
+      "agencias": "芸能事務所"
+    },
+    "apoio": {
+      "agencias": "SM、JYP、HYBE、YGほかの事務所"
+    }
+  },
+  "loja": {
+    "titulo": "気に入ったら、お持ち帰り。",
+    "caixa": "ベストセラー",
+    "verLoja": "ショップをすべて見る →",
+    "aviso": "これらのリンクから購入されると、追加費用なしで__SITE__に手数料が入ります。",
+    "vendidos": "{n}個販売",
+    "comprar": "ショップで購入 →",
+    "precoCaiu": "値下げ"
+  },
+  "editorias": {
+    "rotulo": "セクション",
+    "kpop": "K-POP",
+    "doramas": "ドラマ・映画",
+    "cultura": "カルチャー・韓国コスメ",
+    "verMais": "もっと見る →",
+    "loja": {
+      "kpop": "K-POP",
+      "doramas": "韓国グルメ",
+      "cultura": "韓国コスメ",
+      "naLoja": "ショップ · {assunto} · アフィリエイト"
+    }
+  },
+  "ultimas": {
+    "titulo": "最新記事",
+    "verFeed": "フィードを見る →"
+  },
+  "longreads": {
+    "titulo": "じっくり読む",
+    "tag": "ロングリード",
+    "arquivo": "アーカイブ →"
+  },
+  "artistasEmAlta": {
+    "eyebrow": "● サイトランキング",
+    "titulo": "__SITE__で最も検索されたアーティスト",
+    "descricao": "サイト内の訪問数と検索数が多いアーティスト",
+    "perfilEmFoco": "注目のプロフィール",
+    "escolhaEditorial": "編集部のおすすめ",
+    "destaqueDaSemana": "今週の注目",
+    "verTodos": "すべてのアーティストを見る"
+  },
+  "gruposEmAlta": {
+    "titulo": "人気急上昇のグループ",
+    "aoVivo": "● ライブ",
+    "fandom": "ファンダム：{nome}",
+    "perfilEmFoco": "注目のプロフィール",
+    "grupoDaSemana": "今週のグループ",
+    "verTodos": "すべてのグループを見る"
+  },
+  "populares": {
+    "titulo": "いま韓国で人気",
+    "tag": "ランキング",
+    "artistas": "注目のアーティスト",
+    "grupos": "注目のグループ",
+    "producoes": "注目の作品",
+    "verTodos": "すべて見る →",
+    "membros": "{n}人"
+  },
+  "tipoDeGrupo": {
+    "girl_group": "ガールズグループ",
+    "boy_group": "ボーイズグループ",
+    "co_ed": "男女混成",
+    "solo": "ソロ"
+  },
+  "producoes": {
+    "titulo": "ドラマ・映画",
+    "eyebrow": "韓国ドラマ＆シネマ",
+    "verTodos": "すべて見る →"
+  },
+  "quiz": {
+    "eyebrow": "クイズ",
+    "titulo": "K-POPと韓国ドラマ、どれくらい知っていますか？",
+    "descricao": "韓国カルチャーに関する15問。毎回新しい問題が出ます！",
+    "pergunta1": "BTSのファンダム名は？",
+    "pergunta2": "『愛の不時着』に出演したのは誰？",
+    "pergunta3": "「ハンリュ（韓流）」とはどういう意味？",
+    "acao": "クイズに挑戦"
+  },
+  "abaixoDaDobra": {
+    "gruposTitulo": "K-POPグループ",
+    "gruposEyebrow": "編集部セレクション",
+    "aniversariantesTitulo": "誕生日 — {mes}",
+    "aniversariantesEyebrow": "今月生まれ",
+    "membros": "{n}人",
+    "encerrado": "解散",
+    "encerradoCapitalizado": "解散",
+    "emAtividade": "活動中",
+    "dia": "{dia}日"
+  },
+  "capitulos": {
+    "agora": {
+      "titulo": "いま",
+      "sub": "今起きていること"
+    },
+    "aprenda": {
+      "titulo": "学ぶ",
+      "sub": "ここから始める"
+    },
+    "editoria": {
+      "titulo": "セクション別",
+      "sub": "各トピックの最新情報"
+    },
+    "reportagem": {
+      "titulo": "特集",
+      "sub": "ロングリード"
+    },
+    "dados": {
+      "titulo": "データ",
+      "sub": "いま韓国で人気"
+    },
+    "jogue": {
+      "titulo": "遊ぶ",
+      "sub": "1日1分"
+    },
+    "temas": {
+      "titulo": "トピック",
+      "sub": "追いかけたいテーマ"
+    },
+    "loja": {
+      "titulo": "ショップ",
+      "sub": "ベストセラー"
+    }
+  },
+  "categorias": {
+    "k-pop": "K-POP",
+    "k-drama": "韓国ドラマ",
+    "k-film": "韓国映画",
+    "cultura": "カルチャー",
+    "grupos": "グループ",
+    "k-beauty": "韓国コスメ",
+    "artistas": "アーティスト",
+    "noticias-k-pop": "K-POPニュース",
+    "reality-shows": "リアリティ番組",
+    "webtoons": "ウェブトゥーン",
+    "comida": "グルメ",
+    "merch": "グッズ",
+    "uncategorized": "ニュース"
+  }
+}
