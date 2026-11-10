@@ -36,6 +36,7 @@ const origemDasReceitas = () => Object.fromEntries(Object.entries(todasReceitas(
 const FONTES: Array<{ nome: string; arquivo: string; atual: () => Record<string, string>; comoRever: string }> = [
     { nome: 'guias em inglês', arquivo: 'lib/guias/traducoes/en.origem.json', atual: origemDosGuias, comoRever: 'revise o guia em lib/guias/traducoes/en.json' },
     { nome: 'guias em espanhol', arquivo: 'lib/guias/traducoes/es.origem.json', atual: origemDosGuiasEm('lib/guias/traducoes/es.json'), comoRever: 'revise o guia em lib/guias/traducoes/es.json' },
+    { nome: 'guias em japonês', arquivo: 'lib/guias/traducoes/ja.origem.json', atual: origemDosGuiasEm('lib/guias/traducoes/ja.json'), comoRever: 'revise o guia em lib/guias/traducoes/ja.json' },
     { nome: 'receitas em inglês', arquivo: 'data/receitas.en.origem.json', atual: origemDasReceitas, comoRever: 'revise a receita em data/receitas.en.json' },
 ]
 
