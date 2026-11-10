@@ -9,6 +9,13 @@ import { LOCALE_META, type Locale } from '@/lib/i18n/config'
 type Versao = { locale: string; sigla: string; href: string }
 
 /**
+ * Nome de cada idioma na própria língua. A sigla ISO serve a quem a conhece (PT, EN, ES), mas "JA" não diz nada
+ * a quem lê japonês: onde a sigla não é o que o leitor reconhece, o seletor mostra o nome nativo.
+ */
+const NOME_NATIVO: Record<string, string> = { pt: 'Português', en: 'English', es: 'Español', ja: '日本語' }
+const SIGLA_VISIVEL: Record<string, string> = { ja: '日本語' }
+
+/**
  * Seletor PT/EN no cabecalho, so quando a pagina existe no outro idioma.
  *
  * O cabecalho e compartilhado e nao sabe que versoes cada pagina tem. Cada
@@ -34,7 +41,7 @@ export function SeletorIdioma({ className = '', tom = 'claro' }: { className?: s
             const lista: Versao[] = []
             for (const [codigo, meta] of Object.entries(LOCALE_META)) {
                 const caminho = porLang.get(meta.htmlLang)
-                if (caminho) lista.push({ locale: codigo, sigla: codigo.toUpperCase(), href: caminho })
+                if (caminho) lista.push({ locale: codigo, sigla: SIGLA_VISIVEL[codigo] ?? codigo.toUpperCase(), href: caminho })
             }
             setVersoes(lista.length > 1 ? lista : [])
         }
@@ -60,6 +67,7 @@ export function SeletorIdioma({ className = '', tom = 'claro' }: { className?: s
                     <span
                         key={versao.locale}
                         aria-current="page"
+                        title={NOME_NATIVO[versao.locale]}
                         className={`flex items-center px-2.5 ${escuro ? 'bg-white text-black' : 'bg-foreground text-background'}`}
                     >
                         {versao.sigla}
@@ -70,6 +78,7 @@ export function SeletorIdioma({ className = '', tom = 'claro' }: { className?: s
                         href={versao.href}
                         hrefLang={LOCALE_META[versao.locale as Locale].htmlLang}
                         lang={LOCALE_META[versao.locale as Locale].htmlLang}
+                        title={NOME_NATIVO[versao.locale]}
                         className={`flex items-center px-2.5 transition-colors ${escuro ? 'text-white/80 hover:bg-white/10 hover:text-white' : 'text-foreground hover:bg-surface'}`}
                     >
                         {versao.sigla}
