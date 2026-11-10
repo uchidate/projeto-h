@@ -33,7 +33,7 @@ describe('compareMessages', () => {
  * Idiomas ainda em tradução: o catálogo existe só em parte (o resto cai no inglês, ver `IMPORTADORES` em
  * messages.ts). Aqui só se exige que não haja chave órfã nem sem registro no lock. Tirar da lista ao completar.
  */
-const EM_TRADUCAO: readonly string[] = ['ja']
+const EM_TRADUCAO: readonly string[] = []
 
 describe('messages/ no repositório', () => {
     const raiz = join(process.cwd(), 'messages')

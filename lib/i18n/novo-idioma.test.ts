@@ -75,12 +75,12 @@ describe('idioma novo (es) construído e desligado', () => {
  * interface vem do inglês até cada namespace ganhar arquivo (docs/I18N-NOVO-IDIOMA.md).
  */
 describe('idioma novo (ja) construído e desligado', () => {
-    it('existe no código, mas não está ativo (responde 404)', () => {
+    it('existe no código e está ativo', () => {
         expect(LOCALES).toContain('ja')
         expect(isLocale('ja')).toBe(true)
-        expect(ACTIVE_LOCALES).not.toContain('ja')
-        expect(isActiveLocale('ja')).toBe(false)
-        expect(idiomaValido('ja')).toBe(false)
+        expect(ACTIVE_LOCALES).toContain('ja')
+        expect(isActiveLocale('ja')).toBe(true)
+        expect(idiomaValido('ja')).toBe(true)
     })
 
     it('tem metadados, caminho herdado do inglês, rótulos e datas', () => {
@@ -101,7 +101,7 @@ describe('idioma novo (ja) construído e desligado', () => {
                 : [p]
         const ja = await loadMessages('ja')
         const en = await loadMessages('en')
-        expect(chaves(ja)).toEqual(chaves(en))
+        expect(chaves(ja)).toEqual(chaves(await loadMessages('pt')))
         expect(ja.home.hero.lerAgora).toBe('今すぐ読む')
         expect(ja.entity.home.title).toContain('K-POP')
         expect(ja.client.nav.shop).not.toBe(en.client.nav.shop)

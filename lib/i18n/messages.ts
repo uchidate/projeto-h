@@ -63,16 +63,11 @@ const IMPORTADORES: Record<Exclude<Locale, 'pt'>, Record<Namespace, () => Promis
         client: () => import('@/messages/es/client.json'), institucional: () => import('@/messages/es/institucional.json'),
         home: () => import('@/messages/es/home.json'), quiz: () => import('@/messages/es/quiz.json'),
     },
-    // Japonês em construção (docs/I18N-NOVO-IDIOMA.md): só `home` e `entity.home` estão traduzidos; o resto
-    // vem do inglês, namespace por namespace, até ganhar arquivo próprio. Substituir cada linha ao traduzir.
     ja: {
-        entity: async () => {
-            const [base, home] = await Promise.all([import('@/messages/en/entity.json'), import('@/messages/ja/entity.json')])
-            return { default: { ...base.default, home: home.default.home } }
-        },
-        profile: () => import('@/messages/en/profile.json'),
-        client: () => import('@/messages/ja/client.json'), institucional: () => import('@/messages/en/institucional.json'),
-        home: () => import('@/messages/ja/home.json'), quiz: () => import('@/messages/en/quiz.json'),
+        entity: () => import('@/messages/ja/entity.json'),
+        profile: () => import('@/messages/ja/profile.json'),
+        client: () => import('@/messages/ja/client.json'), institucional: () => import('@/messages/ja/institucional.json'),
+        home: () => import('@/messages/ja/home.json'), quiz: () => import('@/messages/ja/quiz.json'),
     },
 }
 

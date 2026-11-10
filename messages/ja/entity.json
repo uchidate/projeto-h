@@ -1,4 +1,450 @@
 {
+  "breadcrumb": {
+    "home": "ホーム",
+    "artists": "アーティスト",
+    "groups": "グループ",
+    "productions": "作品",
+    "blog": "記事",
+    "guides": "ガイド",
+    "foods": "グルメ",
+    "quiz": "クイズ",
+    "calendar": "カレンダー",
+    "culture": "カルチャー",
+    "fandoms": "ファンダム"
+  },
+  "artist": {
+    "metaTitle": "{name} — プロフィール、キャリア、トリビア",
+    "metaDescription": "{name}の詳しいプロフィール — 経歴、キャリア、トリビア。"
+  },
+  "group": {
+    "metaTitle": "{name} — K-POPグループ",
+    "metaDescription": "{name}のすべて — メンバー、デビュー、ファンダムなど。",
+    "metaDescriptionHangul": "{name}（{hangul}）のすべて — メンバー、デビュー、ファンダムなど。"
+  },
+  "agency": {
+    "metaTitle": "{name}：所属アーティスト、グループ、歴史",
+    "metaDescription": "{name}を知ろう：その歴史、グループ、アーティスト、そして韓国エンターテインメント業界での役割。",
+    "ui": {
+      "back": "事務所",
+      "breadcrumb": "事務所",
+      "tierBig4": "BIG4",
+      "types": {
+        "major": "大手事務所",
+        "mid": "中堅事務所",
+        "indie": "独立系",
+        "subsidiary": "子会社"
+      },
+      "kinds": {
+        "conglomerate": "企業グループ",
+        "label": "レーベル",
+        "agency": "事務所",
+        "joint_venture": "合弁会社",
+        "division": "部門"
+      },
+      "entityIndie": "独立系事務所",
+      "entityDefault": "エンターテインメント企業",
+      "countryKR": "韓国",
+      "lens": {
+        "network": {
+          "eyebrow": "ネットワークの仕組み",
+          "title": "{name}は単独の事務所ではなく、ネットワークです。",
+          "body": "企業グループには、役割の異なるレーベル、子会社、事業が集まっています。そのため{site}では、各アーティストの直接の所属を保ちつつ、親組織も併せて示しています。"
+        },
+        "piece": {
+          "eyebrow": "位置づけ",
+          "title": "{name}はシステムの一部であり、全体ではありません。",
+          "body": "レーベルは、企業グループ全体を単独で代表することなく、レパートリーやキャリアを運営できます。ここに示す所属は、直属のロスターと親会社との関係を区別しています。"
+        },
+        "data": {
+          "eyebrow": "データについて",
+          "title": "数字はアーカイブを、歴史は企業を語ります。",
+          "body": "以下の件数は{site}で閲覧できるプロフィールを表すもので、公式の完全なロスターではありません。歴史的な関係や終了した関係は、構造化データがある場合に別途表示します。"
+        }
+      },
+      "pillars": {
+        "conglomerate": {
+          "label": "企業の仕組み",
+          "title": "{name}のビジネスモデル"
+        },
+        "joint_venture": {
+          "label": "提携の仕組み",
+          "title": "{name}が目指すもの"
+        },
+        "label": {
+          "label": "レーベルのアイデンティティ",
+          "title": "{name}を特徴づけるもの"
+        },
+        "other": {
+          "label": "組織の仕組み",
+          "title": "{name}の事業"
+        }
+      },
+      "about1": "{name}は{country}のエンターテインメント企業です。",
+      "about2": "その歴史は{year}年にさかのぼります。",
+      "about3": "{site}では、関連グループ{groups, plural, other {#組}}とアーティストのプロフィール{artists, plural, other {#件}}を扱っています。",
+      "chapterCount": "{count, plural, =0 {} other {#つの転機}}",
+      "videoTitle": "{group} — 公式映像",
+      "nav": {
+        "about": "概要",
+        "numbers": "数字",
+        "history": "歴史",
+        "impact": "影響力",
+        "model": "モデル",
+        "now": "現在",
+        "videos": "映像",
+        "ecosystem": "エコシステム",
+        "groups": "グループ",
+        "artists": "アーティスト",
+        "articles": "記事",
+        "faq": "よくある質問"
+      },
+      "facts": {
+        "country": "国",
+        "ceo": "CEO",
+        "verifiedOn": "{date}に確認",
+        "trajectory": "歴史",
+        "trajectoryBoth": "{origin} · {since}から現在の体制",
+        "trajectorySince": "{year}年から",
+        "coverage": "{site}の掲載範囲",
+        "coverageValue": "{groups}グループ · {artists}プロフィール"
+      },
+      "faq": {
+        "q1": "{name}とは？",
+        "a1": "{name}は{country}のエンターテインメント企業です。このページでは、その背景、マイルストーン、{site}で閲覧できる関連プロフィールを紹介します。",
+        "a1Since": "{name}は{country}のエンターテインメント企業で、{year}年からの歴史が記録されています。このページでは、その背景、マイルストーン、{site}で閲覧できる関連プロフィールを紹介します。",
+        "q2": "{name}に関連するグループは？",
+        "a2": "{site}の現在の掲載範囲では、{name}に{count, plural, other {#組}}のグループが関連づけられています。企業グループ、事務所、レーベルが必ずしも同じ組織とは限らないため、具体的な所属は各グループのプロフィールでご確認ください。",
+        "q3": "{name}に関連するアーティストは？",
+        "a3": "{site}には、{name}に関連する{count, plural, other {アーティストのプロフィールが#件}}あり、グループのメンバーやソロ活動も含まれます。",
+        "q4": "{name}はK-POPのBIG4の一つですか？",
+        "a4": "はい。業界の編集報道では、{name}はSMエンターテインメント、JYPエンターテインメント、YGエンターテインメントと並ぶ「BIG4」の一角とされています。"
+      },
+      "mvEyebrow": "観る・聴く",
+      "mvTitle": "{name}にまつわる作品を観る",
+      "mvDescription": "関連グループの公式映像を選りすぐることで、同じ企業体制のもとで共存するさまざまなアイデンティティを、映像と音で感じられます。",
+      "shopTitle": "{name}関連商品",
+      "faqTitle": "{name}についてのよくある質問",
+      "aboutLabel": "企業プロフィール",
+      "aboutTitle": "背景と歴史",
+      "continueReading": "続きを読む",
+      "impactLabel": "影響力",
+      "impactTitle": "マイルストーンと影響力",
+      "mainMilestone": "主なマイルストーン",
+      "moreMilestones": "さらに{count}件のマイルストーンを見る",
+      "artistsLabel": "関連プロフィール",
+      "artistsTitle": "アーティスト",
+      "featuredProfile": "● 注目のプロフィール",
+      "fullProfile": "プロフィール全文を見る",
+      "moreArtists": "さらに{count}人のアーティストを見る",
+      "pillarSource": "{title}の柱の情報源",
+      "pillarsIntro": "組織自身が示す事業領域を文脈に置き、音楽制作、プラットフォーム、その他の事業を区別して紹介します。",
+      "catalog": {
+        "cast": "ロスター",
+        "title": "カタログのビジュアルマップ",
+        "total": "全{count}",
+        "active": "活動中{count}",
+        "intro": "注目の項目から始めて、世代ごとにたどってみましょう。関係は直接の場合も、レーベルや子会社を介する場合もあり、具体的な所属は各プロフィールで詳しく説明しています。",
+        "startHere": "ここから始める",
+        "activeBadge": "活動中",
+        "inactiveBadge": "活動休止",
+        "since": "{year}年から",
+        "today": "現在",
+        "others": "その他",
+        "noGeneration": "世代の記載なし",
+        "legacy": "レガシー",
+        "inactiveGroups": "活動休止・解散したグループ"
+      },
+      "generations": {
+        "g1": {
+          "label": "第1世代",
+          "short": "第1世代"
+        },
+        "g2": {
+          "label": "第2世代",
+          "short": "第2世代"
+        },
+        "g3": {
+          "label": "第3世代",
+          "short": "第3世代"
+        },
+        "g4": {
+          "label": "第4世代",
+          "short": "第4世代"
+        },
+        "g5": {
+          "label": "第5世代",
+          "short": "第5世代"
+        }
+      },
+      "dev": {
+        "updates": "最新情報",
+        "recentTitle": "{name}の最近の動き",
+        "altGroup": "{group}、{name}に関連するグループ",
+        "scale": "アーカイブの規模",
+        "groupsUnit": "グループ",
+        "profilesUnit": "プロフィール",
+        "frontsUnit": "事業領域",
+        "captionWithGroup": "{group}は、このページのビジュアル選定に含まれています。数字は{site}の掲載範囲を表します。",
+        "caption": "数字は{site}の掲載範囲を表します。",
+        "checkSource": "情報源を確認する"
+      },
+      "hero": {
+        "logoAlt": "{name} — ロゴ",
+        "origin": "{year}年創業",
+        "pathSince": "歩み",
+        "groupsCovered": "掲載グループ",
+        "profilesInArchive": "アーカイブのプロフィール",
+        "officialSite": "公式サイト"
+      },
+      "history": {
+        "chapters": "章で読む物語",
+        "turns": "{name}を形づくった転機。",
+        "intro": "企業の成り立ち、カタログの変遷、そしていま始まるサイクルの読み解き。",
+        "years": "年分の記録された歴史",
+        "chaptersDocumented": "の記録された章",
+        "chapterSource": "章の情報源",
+        "relatedProfile": "関連プロフィールを見る"
+      },
+      "journey": {
+        "navLabel": "物語の道のり",
+        "route": "道のり",
+        "subtitle": "{name}の歩みを知るための{count}"
+      },
+      "metrics": {
+        "inNumbers": "数字で見る",
+        "scaleOf": "出典付きデータで見る{name}の規模",
+        "eachNumber": "すべての数字は一次情報にリンクしています",
+        "refAsOf": "{date}時点",
+        "source": "情報源"
+      },
+      "lensPanel": {
+        "scope": "このページの範囲",
+        "many": "関連組織{orgs}件 · {groups}グループ · {artists}プロフィール。",
+        "one": "編集アーカイブに{groups}グループと関連プロフィール{artists}件。"
+      },
+      "milestones": {
+        "chronology": "年代順",
+        "timeline": "年表",
+        "exploreAll": "すべてのアーティストとグループを探す"
+      },
+      "sources": {
+        "howWeVerify": "確認の方法",
+        "count": "引用{citations}件 · 媒体{outlets}社",
+        "body": "このプロフィールの数字、章、引用は、掲載元の一次情報にリンクしています。企業の公式資料と検証可能な報道を優先し、意見は出典を明記したうえでのみ掲載します。"
+      },
+      "summary": {
+        "inShort": "要点",
+        "whatToKnow": "{name}について知っておきたいこと",
+        "curated": "{site}の編集部が選定",
+        "updatedOn": "更新日",
+        "institutionalSource": "公式の情報源"
+      },
+      "essay": {
+        "label": "ビジュアルで読む",
+        "identity": "{name}のアイデンティティに迫る。",
+        "body": "画像、場所、アーティストを通して、企業がクリエイティブの方向性を、誰もが認識できる存在感へと変えていく姿を見られます。",
+        "visualChapters": "ビジュアルの章{count}つ",
+        "swipe": "スワイプして探索",
+        "chapterN": "第0{n}章",
+        "readQuote": "引用を原文で読む",
+        "context": "文脈",
+        "imageSource": "画像の出典",
+        "viewGroup": "{group}を見る"
+      },
+      "map": {
+        "eyebrow": "誰がどこに属するか",
+        "title": "{name}の組織構成",
+        "relations": "{count}件の関係",
+        "parentLinked": "親会社とのつながりを明示し、この組織のカタログを姉妹レーベルのカタログと混ぜずに示します。",
+        "mainLevel": "中心となる組織は第1階層に置かれます。レーベル、部門、子会社、合弁会社はその下に表示され、互いに同等とは扱いません。",
+        "parentKicker": "親企業グループ · プロフィールを開く",
+        "parentFallback": "親組織",
+        "parentNote": "親会社は企業としての階層を定めるもので、このページのカタログは閲覧中の組織に限定されます。",
+        "focus": "注目の組織",
+        "level1": "第1階層",
+        "mainFallback": "中心組織",
+        "focusWithParent": "親組織の体制の中での、独自のクリエイティブ・アイデンティティ、ロスター、事業。",
+        "focusMain": "このページで紹介するネットワークの戦略、統括、調整。",
+        "level2": "第2階層 · 関連組織",
+        "relatedFallback": "関連組織",
+        "counts": "{groups}グループ · {artists}プロフィール",
+        "level3": "第3階層 · 関連カタログ",
+        "direct": "直接のカタログ",
+        "level3Body": "グループとアーティストは、担当組織との直接のつながりを保っています。続くカタログはネットワーク全体をまとめることもありますが、その出自は消しません。",
+        "directBody": "以下のグループとアーティストはこの組織に直接つながっており、企業グループ内の他社のロスターは含みません。",
+        "logoAlt": "{name} — ロゴ"
+      }
+    }
+  },
+  "company": {
+    "metaTitle": "{name} — {industry}",
+    "metaTitleKorean": "{name}（{korean}）— {industry}",
+    "defaultIndustry": "韓国企業",
+    "metaDescription": "{name}：韓国の{industry}企業。歴史、製品、トリビア。",
+    "metaDescriptionFounded": "{name}：{year}年創業の韓国の{industry}企業。歴史、製品、トリビア。",
+    "industries": {
+      "tech": "テクノロジー",
+      "semiconductor": "半導体",
+      "automotive": "自動車",
+      "entertainment": "エンターテインメント",
+      "beauty": "美容（K-ビューティー）",
+      "finance": "金融",
+      "retail": "小売",
+      "food_beverage": "飲食品",
+      "gaming": "ゲーム",
+      "telecom": "通信",
+      "media": "メディア",
+      "pharma": "製薬",
+      "construction": "建設",
+      "shipbuilding": "造船",
+      "chemical": "化学",
+      "fashion": "ファッション",
+      "ecommerce": "Eコマース"
+    },
+    "ui": {
+      "breadcrumb": "企業",
+      "defaultIndustry": "韓国企業",
+      "chaebol": "財閥",
+      "officialSite": "公式サイト",
+      "knownProducts": "代表的な製品・サービス",
+      "fact": "概要",
+      "founder": "創業者",
+      "ceo": "CEO",
+      "group": "グループ",
+      "status": "ステータス",
+      "trivia": "トリビア",
+      "updatedOn": "{date}更新",
+      "shopTitle": "ブランドの商品",
+      "shopSeeAll": "すべて見る",
+      "related": "ほかの韓国企業",
+      "inStore": "ショップで",
+      "seeAll": "← すべての企業を見る",
+      "founded": "創業",
+      "employees": "従業員数",
+      "revenue": "売上高",
+      "galleryEyebrow": "画像",
+      "gallery": "ギャラリー",
+      "photoAlt": "{name} — 写真{n}",
+      "timelineEyebrow": "年表",
+      "timeline": "マイルストーン",
+      "connections": "🔗 グループとのつながり"
+    }
+  },
+  "food": {
+    "metaTitle": "{name} — 韓国料理",
+    "metaTitleKorean": "{name}（{korean}）— 韓国料理",
+    "metaDescription": "{name}のすべて：材料、食べられる場所、トリビアなど。",
+    "categories": {
+      "rice": "ごはん",
+      "noodles": "麺",
+      "soup_stew": "スープ・鍋",
+      "bbq": "焼肉",
+      "pancake": "チヂミ（ジョン／パジョン）",
+      "street_food": "屋台グルメ",
+      "banchan": "パンチャン",
+      "dessert": "デザート",
+      "drink": "ドリンク",
+      "snack": "おやつ"
+    },
+    "ui": {
+      "breadcrumb": "グルメ",
+      "spicy0": "辛くない",
+      "spicy1": "ほんのり辛い",
+      "spicy2": "辛い",
+      "spicy3": "とても辛い",
+      "spicy4": "激辛",
+      "spicy5": "超激辛",
+      "vegan": "ヴィーガン",
+      "vegetarian": "ベジタリアン",
+      "inDramas": "韓国ドラマに登場",
+      "ingredients": "主な材料",
+      "whereToEat": "食べられる場所",
+      "viewOnMap": "地図で見る",
+      "defaultPlace": "韓国",
+      "occasion": "シーン",
+      "season": "おすすめの季節",
+      "trivia": "トリビア",
+      "allergens": "アレルゲン",
+      "related": "ほかの韓国料理",
+      "inStore": "ショップで",
+      "seeAll": "← すべての料理を見る",
+      "shopTitle": "おうちで試してみよう",
+      "shopSeeAll": "すべて見る"
+    }
+  },
+  "production": {
+    "metaTitle": "{title} — {type}",
+    "type": {
+      "movie": "韓国映画",
+      "variety": "韓国バラエティ番組",
+      "drama": "韓国ドラマ"
+    }
+  },
+  "switcher": {
+    "availableIn": "ほかの言語でも",
+    "prompt": "このページは日本語でもご覧いただけます。",
+    "open": "日本語で読む",
+    "dismiss": "閉じる",
+    "name": "日本語"
+  },
+  "catalog": {
+    "artists": {
+      "title": "K-POPアーティスト",
+      "description": "日本語で読むK-POPアーティストのプロフィール：キャリア、グループ、ドラマなど。"
+    },
+    "groups": {
+      "title": "K-POPグループ",
+      "description": "日本語で読むK-POPグループのプロフィール：メンバー、デビュー、ファンダムなど。"
+    },
+    "productions": {
+      "title": "韓国ドラマ・映画",
+      "description": "日本語で読む韓国ドラマ・映画ガイド：あらすじ、キャスト、視聴できる場所。"
+    },
+    "count": "{count, plural, other {#件のプロフィール}}",
+    "empty": "この言語で公開されているプロフィールはまだありません。",
+    "emptyLink": "ポルトガル語の全カタログを見る",
+    "previous": "← 前へ",
+    "next": "次へ →",
+    "pageOf": "{total}ページ中{page}ページ目",
+    "translatedHeading": "日本語で読める",
+    "originalHeading": "サイトのその他のコンテンツ",
+    "originalNote": "これらのプロフィールはまだ翻訳されていないため、原文のポルトガル語で開きます。",
+    "badge": "PT-BR",
+    "agencies": {
+      "title": "K-POP事務所",
+      "description": "日本語で読むK-POP事務所のプロフィール：アーティスト、グループ、歴史。"
+    },
+    "companies": {
+      "title": "韓国企業",
+      "description": "日本語で読む韓国企業とブランドのプロフィール：歴史、ブランド、主なファクト。"
+    },
+    "foods": {
+      "title": "韓国料理",
+      "description": "日本語で読む韓国料理ガイド：材料、歴史、食べられる場所。"
+    }
+  },
+  "footer": {
+    "catalog": "カタログ",
+    "guides": "ガイド",
+    "explore": "探索",
+    "about": "私たちについて",
+    "agencies": "事務所",
+    "aboutUs": "HallyuHubについて",
+    "contact": "お問い合わせ"
+  },
+  "layout": {
+    "tagline": "日本語で読む、韓国ドラマ・K-POP・韓国カルチャー。",
+    "logoSubtitles": [
+      "k-pop · k-drama · 韓国カルチャーを日本語で",
+      "アーティスト · グループ · 作品",
+      "トレンド · ニュース · ガイド"
+    ],
+    "rights": "無断転載を禁じます。",
+    "privacy": "プライバシー",
+    "terms": "利用規約",
+    "home": "{site} — ホーム",
+    "footerNav": "フッターのリンク"
+  },
   "home": {
     "title": "__SITE__ — K-POP・韓国ドラマ・韓国カルチャー",
     "description": "韓国ドラマ、映画、アーティスト、グループを日本語のインターフェースとプロフィールでご紹介。記事はポルトガル語のままです。",
@@ -11,5 +457,184 @@
       "groups": "グループ",
       "productions": "ドラマ・映画"
     }
+  },
+  "fallback": {
+    "notice": "このページはまだ日本語に対応していません。以下の内容はポルトガル語の原文です。",
+    "readOriginal": "ポルトガル語のページで読む"
+  },
+  "guides": {
+    "title": "ガイド",
+    "description": "ジャンル、プラットフォームなど別に探せる韓国ドラマ・映画のガイド。日本語のプロフィール付き。",
+    "count": "{count, plural, other {#件のガイド}}",
+    "productions": "{count, plural, other {#作品}}",
+    "seeAll": "すべての作品を見る",
+    "faq": "よくある質問",
+    "related": "関連ガイド",
+    "empty": "このガイドには、日本語ページのある作品がまだありません。",
+    "back": "すべてのガイド",
+    "index": {
+      "title": "ガイド",
+      "titleSr": "K-ドラマ、K-POP、韓国カルチャー",
+      "searchPlaceholder": "ガイド、ジャンル、プラットフォーム、事務所を検索",
+      "categoriesAria": "ガイドのカテゴリ",
+      "sectionsAria": "ガイドのセクション",
+      "filterAll": "すべて",
+      "culture": "カルチャー",
+      "cultureTag": "カルチャー",
+      "count": "{count, plural, other {#件のガイド}} · 何を観るか、誰をフォローするか、どこから始めるかを見つけよう",
+      "countWithCulture": "{count, plural, other {#件のガイド}} · うちカルチャー{culture}件 · 何を観るか、誰をフォローするか、どこから始めるかを見つけよう",
+      "kinds": {
+        "productions": "作品",
+        "artists": "アーティスト",
+        "groups": "グループ"
+      },
+      "kindSub": {
+        "productions": "ジャンル、プラットフォーム、放送局、年別のドラマ、映画、シリーズ",
+        "artists": "プロフィール、事務所、グループ別の俳優と歌手",
+        "groups": "ガールズグループ、ボーイズグループと、その所属事務所"
+      },
+      "chapterSub": "{count, plural, other {#件のガイド}} · {sub}",
+      "groups": {
+        "genre": "ジャンル・テーマ別",
+        "platform": "プラットフォーム別",
+        "network": "放送局別",
+        "year": "年別",
+        "profile": "プロフィール別",
+        "artistAgency": "事務所別",
+        "solo": "ソロアーティスト",
+        "members": "グループのメンバー",
+        "type": "種類別",
+        "groupAgency": "事務所別"
+      },
+      "mostRead": "よく読まれている",
+      "more": "＋{count, plural, other {#件のガイド}}",
+      "less": "閉じる",
+      "alsoIn": "ガイドにはこちらも",
+      "cultureTitle": "韓国カルチャー",
+      "cultureText": "ハングル、敬語、祝日、日常生活：韓国を理解するための{count}本のガイド。",
+      "cultureMany": "数十",
+      "open": "開く"
+    },
+    "artists": "{count, plural, other {#人のアーティスト}}",
+    "groups": "{count, plural, other {#組のグループ}}",
+    "seeAllArtists": "すべてのアーティストを見る",
+    "seeAllGroups": "すべてのグループを見る",
+    "emptyArtists": "このガイドには、日本語ページのあるアーティストがまだいません。",
+    "emptyGroups": "このガイドには、日本語ページのあるグループがまだありません。"
+  },
+  "blog": {
+    "categories": "カテゴリ",
+    "title": "ブログ",
+    "description": "K-ドラマ、K-POP、韓国カルチャーに関する記事、レビュー、ガイド。",
+    "note": "翻訳のない記事はポルトガル語で公開されており、原文で開きます。",
+    "count": "{count, plural, other {#件の記事}}",
+    "empty": "まだ記事はありません。",
+    "back": "すべての記事",
+    "publishedOn": "{date}公開",
+    "translatedNote": "ポルトガル語の原文記事を翻訳したものです。",
+    "readOriginal": "ポルトガル語の原文を読む"
+  },
+  "cultura101": {
+    "title": "韓国カルチャー：ガイド、祝日、伝統",
+    "description": "ハングル、敬語、伝統的な祝日、マナー、日常生活：韓国カルチャーの基本をひとつにまとめ、初めての方向けのガイドもご用意しました。",
+    "breadcrumb": "カルチャー",
+    "h1": "カルチャー",
+    "searchPlaceholder": "ガイドや祝日を検索",
+    "searchTag": "ガイド",
+    "sectionsAria": "このページのセクション",
+    "shortcutGuides": "カルチャーガイド",
+    "shortcutFestivals": "祝日",
+    "count": "{count, plural, other {#件のガイド}} · 文字から祝日まで、日本語で解説",
+    "guidesAria": "カルチャーガイド",
+    "chapterTitle": "カルチャー",
+    "chapterSub": "韓国を理解するための{count, plural, other {#件のガイド}}",
+    "startHere": "ここから始める",
+    "trails": {
+      "language": "言語とマナー",
+      "traditions": "伝統と日常生活",
+      "kpop": "K-POPの内側",
+      "drama": "K-ドラマとメディア",
+      "more": "その他のガイド"
+    },
+    "more": "＋{count, plural, other {#件のガイド}}",
+    "less": "閉じる",
+    "reports": "レポートと分析",
+    "seeAllGuides": "すべてのガイドを見る →",
+    "moreReports": "カルチャーのレポートをもっと見る →",
+    "festivalsAria": "これからの祝日",
+    "festivalsTitle": "カレンダー",
+    "festivalsSub": "韓国のこれからの日程",
+    "today": "今日",
+    "tomorrow": "明日",
+    "inDays": "{days}日後",
+    "festivals": {
+      "lunarNewYear": "ソルラル（旧正月）",
+      "firstFullMoon": "その年最初の満月（テボルム）",
+      "march1": "三・一運動記念日",
+      "dano": "旧暦5月5日（端午）",
+      "liberation": "光復節",
+      "harvest": "収穫祭（チュソク）",
+      "hangeulDay": "ハングルの日"
+    },
+    "othersAria": "そのほかのトピック",
+    "foodKicker": "グルメ",
+    "foodTitle": "料理、レシピ、ブランド、そして韓国フードのショップ",
+    "foodCta": "グルメを見る →",
+    "merchKicker": "グッズ",
+    "merchTitle": "ペンライト、フォトカード、CD、そして買うべきもの",
+    "merchCta": "グッズを見る →"
+  },
+  "foodsList": {
+    "metaTitle": "韓国料理 — 完全ガイド",
+    "metaDescription": "韓国料理を知ろう：ビビンバ、トッポッキ、サムギョプサルなど。日本語の完全ガイド。",
+    "breadcrumb": "グルメ",
+    "kicker": "韓国ガストロノミー",
+    "h1": "韓国料理",
+    "intro": "伝統料理からソウルの屋台グルメまで。韓国料理を象徴する料理を、食べられる場所、材料、トリビアとともに知りましょう。",
+    "all": "すべて",
+    "curated": {
+      "winter": "冬の料理",
+      "festival": "お祭りグルメ",
+      "comfort": "ほっとする料理",
+      "hangover": "二日酔いの味方",
+      "vegetarian": "100%ベジタリアン",
+      "noSpice": "辛くない料理"
+    },
+    "articlesTitle": "グルメガイドと記事",
+    "articlesAll": "すべての記事 →",
+    "emptyTitle": "料理が見つかりません",
+    "emptyText": "カタログにもうすぐ料理が増えます。",
+    "emptyBack": "← すべての料理を見る",
+    "count": "{count, plural, other {#品}}",
+    "countIn": "（{category}）",
+    "prev": "← 前へ",
+    "pageOf": "{total}ページ中{page}ページ目",
+    "next": "次へ →",
+    "inStore": "🛍️ ショップで",
+    "regionTitle": "🗺️ 地域から探す",
+    "regionHint": "クリックすると韓国の地図が開き、地域別の料理が見られます。",
+    "regionTip": "{region} — {count, plural, other {#品}}",
+    "regionAria": "{region}の料理（{count}）",
+    "regionClear": "✕ クリア",
+    "regions": {
+      "Seoul": "ソウル",
+      "Busan": "釜山",
+      "Daegu": "大邱",
+      "Incheon": "仁川",
+      "Gwangju": "光州",
+      "Daejeon": "大田",
+      "Ulsan": "蔚山",
+      "Sejong": "世宗",
+      "Gyeonggi": "京畿道",
+      "Gangwon": "江原道",
+      "Chungbuk": "忠清北道",
+      "Chungnam": "忠清南道",
+      "Jeonbuk": "全羅北道",
+      "Jeonnam": "全羅南道",
+      "Gyeongbuk": "慶尚北道",
+      "Gyeongnam": "慶尚南道",
+      "Jeju": "済州島"
+    },
+    "recipesKicker": "おうちで作ろう · 手順付き"
   }
 }
