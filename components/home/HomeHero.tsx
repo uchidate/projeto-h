@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { generosEmTexto } from '@/lib/productions/generos'
 import { postLink } from '@/components/home/postLink'
 import { href as rota } from '@/lib/i18n/routes'
 import { SITE_NAME } from '@/lib/constants/site'
@@ -109,7 +110,7 @@ async function HeroProduction({ production, locale }: { production: WPProduction
     const trailer = !!acf.trailer_url
     const situacao = acf.status_production === 'airing' ? t('emExibicao') : acf.status_production === 'completed' ? t('concluida') : acf.status_production === 'upcoming' ? t('emBreve') : null
     const classificacao = acf.age_rating ? (acf.age_rating === 'L' ? t('classificacaoLivre') : `${acf.age_rating}+`) : null
-    const meta = [acf.year, acf.genre, acf.episodes ? `${acf.episodes} ep.` : null, acf.network, situacao].filter(Boolean).join(' · ')
+    const meta = [acf.year, generosEmTexto(acf.genre, locale), acf.episodes ? `${acf.episodes} ep.` : null, acf.network, situacao].filter(Boolean).join(' · ')
 
     // Mesma estrutura da capa de matéria (imagem à esquerda, texto ao lado): a produção
     // ocupava a largura toda, com o texto sobre a imagem, e destoava do resto da home.
