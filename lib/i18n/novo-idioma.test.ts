@@ -94,7 +94,7 @@ describe('idioma novo (ja) construído e desligado', () => {
         expect(dataRelativa(new Date().toISOString(), 'ja')).toBe('今日')
     })
 
-    it('o catálogo japonês tem as mesmas chaves do inglês; só a home é japonesa, o resto cai no inglês', async () => {
+    it('o catálogo japonês tem as mesmas chaves do inglês; home e client são japoneses, o resto cai no inglês', async () => {
         const chaves = (o: unknown, p = ''): string[] =>
             o && typeof o === 'object' && !Array.isArray(o)
                 ? Object.entries(o).flatMap(([k, v]) => chaves(v, `${p}${k}.`))
@@ -104,6 +104,6 @@ describe('idioma novo (ja) construído e desligado', () => {
         expect(chaves(ja)).toEqual(chaves(en))
         expect(ja.home.hero.lerAgora).toBe('今すぐ読む')
         expect(ja.entity.home.title).toContain('K-POP')
-        expect(ja.client.nav.shop).toBe(en.client.nav.shop)
+        expect(ja.client.nav.shop).not.toBe(en.client.nav.shop)
     })
 })

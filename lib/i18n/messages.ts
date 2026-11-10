@@ -71,7 +71,7 @@ const IMPORTADORES: Record<Exclude<Locale, 'pt'>, Record<Namespace, () => Promis
             return { default: { ...base.default, home: home.default.home } }
         },
         profile: () => import('@/messages/en/profile.json'),
-        client: () => import('@/messages/en/client.json'), institucional: () => import('@/messages/en/institucional.json'),
+        client: () => import('@/messages/ja/client.json'), institucional: () => import('@/messages/en/institucional.json'),
         home: () => import('@/messages/ja/home.json'), quiz: () => import('@/messages/en/quiz.json'),
     },
 }
