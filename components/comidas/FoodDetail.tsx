@@ -1,4 +1,5 @@
 import { SITE_NAME } from '@/lib/constants/site'
+import { comTituloNoIdioma } from '@/lib/i18n/titulo-no-idioma'
 import { getTranslations } from 'next-intl/server'
 import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { buildAlternates } from '@/lib/i18n/alternates'
@@ -101,9 +102,9 @@ export default async function FoodPage({ params }: { params: Params }) {
     ])
 
     const [relatedFoods, dramasInFood, naLojaMatcher] = await Promise.all([
-        getRelatedFoods(food.id, acf.category, 6),
+        getRelatedFoods(food.id, acf.category, 6).then(r => comTituloNoIdioma(r, 'food', locale)),
         acf.featured_in_dramas?.length
-            ? getProductionsByIds(acf.featured_in_dramas)
+            ? getProductionsByIds(acf.featured_in_dramas).then(r => comTituloNoIdioma(r, 'production', locale))
             : Promise.resolve([]),
         buildVitrineMatcher(),
     ])
