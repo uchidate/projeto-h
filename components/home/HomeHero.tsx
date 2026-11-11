@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { generosEmTexto } from '@/lib/productions/generos'
 import { postLink } from '@/components/home/postLink'
 import { href as rota } from '@/lib/i18n/routes'
 import { SITE_NAME } from '@/lib/constants/site'
@@ -82,8 +83,6 @@ async function HeroPost({ post, locale, primeiro = true, album }: { post: WPPost
 async function HeroProduction({ production, locale }: { production: WPProduction; locale: Locale }) {
     const t = await getTranslations({ locale, namespace: 'home.hero' })
     const acf = production.acf ?? {}
-    const title = stripHtml(production.title.rendered)
-    const imagem = acf.backdrop_url ? { src: acf.backdrop_url, alt: title } : getWPImage(production._embedded, production.featured_image_url)
     const destino = rota('production', { slug: production.slug }, locale)
     // A listagem não traz o texto; a sinopse vem da ficha (cache de 30 min). Sem ela, o painel segue sem o parágrafo.
     const [fichaPt, avaliacao] = await Promise.all([
@@ -92,6 +91,10 @@ async function HeroProduction({ production, locale }: { production: WPProduction
     ])
     // Fora do português, a sinopse vem da tradução publicada (a ficha base está no idioma-fonte).
     const ficha = fichaPt ? localizeEntity(fichaPt, locale, 'production') : null
+    // O título também vem da ficha traduzida: a listagem traz o do português, e a home mostrava "Escândalo e Intriga" ao lado
+    // de uma sinopse em japonês que chama a obra de "The Scandal".
+    const title = stripHtml((ficha ?? production).title.rendered)
+    const imagem = acf.backdrop_url ? { src: acf.backdrop_url, alt: title } : getWPImage(production._embedded, production.featured_image_url)
     // Nota só com amostra: com poucos votos ela é a opinião de poucas pessoas (ver lib/tmdb/avaliacao.ts).
     const notaConfiavel = avaliacao && confiancaDaNota(avaliacao.votos) === 'confiavel' ? avaliacao : null
     const sinopse = stripHtml(ficha?.content?.rendered ?? '').slice(0, 220)
@@ -107,7 +110,7 @@ async function HeroProduction({ production, locale }: { production: WPProduction
     const trailer = !!acf.trailer_url
     const situacao = acf.status_production === 'airing' ? t('emExibicao') : acf.status_production === 'completed' ? t('concluida') : acf.status_production === 'upcoming' ? t('emBreve') : null
     const classificacao = acf.age_rating ? (acf.age_rating === 'L' ? t('classificacaoLivre') : `${acf.age_rating}+`) : null
-    const meta = [acf.year, acf.genre, acf.episodes ? `${acf.episodes} ep.` : null, acf.network, situacao].filter(Boolean).join(' · ')
+    const meta = [acf.year, generosEmTexto(acf.genre, locale), acf.episodes ? `${acf.episodes} ep.` : null, acf.network, situacao].filter(Boolean).join(' · ')
 
     // Mesma estrutura da capa de matéria (imagem à esquerda, texto ao lado): a produção
     // ocupava a largura toda, com o texto sobre a imagem, e destoava do resto da home.

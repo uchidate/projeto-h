@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { WPTerm } from '@/lib/wordpress/types'
-import { generosNoIdioma, nomeDoGenero } from './generos'
+import { generosEmTexto, generosNoIdioma, nomeDoGenero } from './generos'
 
 const termo = (slug: string, name: string) => ({ id: 1, slug, name, count: 3 }) as WPTerm
 
@@ -21,5 +21,17 @@ describe('nomeDoGenero', () => {
         expect(nomeDoGenero('acao', 'Ação', 'en')).toBe('Action')
         expect(nomeDoGenero('acao', 'Ação', 'pt')).toBe('Ação')
         expect(nomeDoGenero('novo', 'Novo', 'en')).toBe('Novo')
+    })
+})
+
+describe('generosEmTexto', () => {
+    it('traduz cada gênero do texto livre e mantém o separador', () => {
+        expect(generosEmTexto('Crime · Drama · Mistério', 'ja')).toBe('クライム · ドラマ · ミステリー')
+        expect(generosEmTexto('Ação, Comédia', 'es')).toBe('Acción, Comedia')
+    })
+    it('mantém o português e os nomes desconhecidos', () => {
+        expect(generosEmTexto('Crime · Drama', 'pt')).toBe('Crime · Drama')
+        expect(generosEmTexto('Western · Drama', 'en')).toBe('Western · Drama')
+        expect(generosEmTexto(undefined, 'ja')).toBeUndefined()
     })
 })
