@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { comTituloNoIdioma } from '@/lib/i18n/titulo-no-idioma'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getArtistBySlug, getArtistsByIds, getRelatedArtists } from '@/lib/wordpress/artists'
@@ -166,7 +167,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
         <RastreioDeRolagem caminho={href('artist', { slug }, locale)} />
         <ArtistDetailPage
             artist={artist}
-            productions={productions}
+            productions={comTituloNoIdioma(productions, 'production', locale)}
             groups={groups}
             relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []}
             categoryMap={categoryMap}

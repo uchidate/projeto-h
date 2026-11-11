@@ -1,4 +1,5 @@
 import { SITE_NAME } from '@/lib/constants/site'
+import { comTituloNoIdioma } from '@/lib/i18n/titulo-no-idioma'
 import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -161,7 +162,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={related} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} foodsInProduction={foodsInProduction} />
+            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={comTituloNoIdioma(related, 'production', locale)} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} foodsInProduction={foodsInProduction} />
         </>
     )
 }
