@@ -38,6 +38,7 @@ const FONTES: Array<{ nome: string; arquivo: string; atual: () => Record<string,
     { nome: 'guias em espanhol', arquivo: 'lib/guias/traducoes/es.origem.json', atual: origemDosGuiasEm('lib/guias/traducoes/es.json'), comoRever: 'revise o guia em lib/guias/traducoes/es.json' },
     { nome: 'guias em japonês', arquivo: 'lib/guias/traducoes/ja.origem.json', atual: origemDosGuiasEm('lib/guias/traducoes/ja.json'), comoRever: 'revise o guia em lib/guias/traducoes/ja.json' },
     { nome: 'receitas em inglês', arquivo: 'data/receitas.en.origem.json', atual: origemDasReceitas, comoRever: 'revise a receita em data/receitas.en.json' },
+    { nome: 'receitas em japonês', arquivo: 'data/receitas.ja.origem.json', atual: origemDasReceitas, comoRever: 'revise a receita em data/receitas.ja.json' },
 ]
 
 describe.each(FONTES)('traduções desatualizadas: $nome', ({ arquivo, atual, comoRever }) => {
