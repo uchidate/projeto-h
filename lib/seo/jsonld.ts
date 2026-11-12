@@ -169,7 +169,7 @@ export function buildRecipeSchema({
             prepTime: duracaoIso(preparo.preparoMin),
             cookTime: duracaoIso(preparo.cozimentoMin),
             totalTime: duracaoIso(preparo.preparoMin + preparo.cozimentoMin),
-            recipeYield: preparo.rendimento ?? `${preparo.porcoes} ${locale === 'en' ? 'servings' : 'porções'}`,
+            recipeYield: preparo.rendimento ?? locale === 'ja' ? `${preparo.porcoes}人分` : `${preparo.porcoes} ${locale === 'en' ? 'servings' : 'porções'}`,
         }),
         ...(suitableForDiet && { suitableForDiet }),
         author: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
