@@ -16,6 +16,18 @@ describe('guias traduzidos', () => {
         expect(STATIC_HUBS_PARA_TESTE.filter((h) => !traduzidos.includes(h.slug)).map((h) => h.slug)).toEqual([])
     })
 
+    it('todo guia do catálogo tem tradução em japonês, sem português sobrando', () => {
+        const ja = traducoesDoIdioma('ja')
+        expect(STATIC_HUBS_PARA_TESTE.filter((h) => !ja[h.slug]).map((h) => h.slug)).toEqual([])
+        for (const [slug, t] of Object.entries(ja)) {
+            const texto = [t.title, t.shortTitle, t.description, ...t.intro, t.whatYouWillFind ?? '', ...t.faq.flatMap((f) => [f.question, f.answer]), ...(t.relatedSearches ?? []).map((r) => r.label)].join(' ')
+            expect(texto, slug).not.toMatch(/[ãõçáéíóúê]|\b(de|do|da|dos|das|com|para|que|uma)\b/i)
+            expect(t.faq.length, slug).toBeGreaterThan(0)
+        }
+        const slugs = Object.values(ja).map((t) => t.slug)
+        expect(new Set(slugs).size).toBe(slugs.length)
+    })
+
     it('slug público é único e vai e volta', () => {
         const publicos = traduzidos.map((s) => slugPublicoDoGuia(s, 'en'))
         expect(new Set(publicos).size).toBe(traduzidos.length)
