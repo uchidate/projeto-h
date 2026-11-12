@@ -107,7 +107,7 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
     // Contagem por letra: o endpoint só conta o acervo em português; no outro idioma sai do catálogo traduzido.
     let letterCounts = letterCountsPt
     if (!emPt) {
-        const traduzidos = await getAllGroups({ ...idioma, orderby: 'title', order: 'asc' }).catch(() => [] as WPGroup[])
+        const traduzidos = await getAllGroups({ ...idioma, orderby: 'title', order: 'asc', leve: true }).catch(() => [] as WPGroup[])
         letterCounts = {}
         for (const g of traduzidos) {
             const letra = stripHtml(g.title.rendered).trim().charAt(0).toUpperCase()
@@ -123,7 +123,7 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
     if (inicio) {
         const [trending, todos] = await Promise.all([
             emPt ? getTrendingGroups(6).catch(() => []) : Promise.resolve([] as WPGroup[]),
-            getAllGroups({ ...idioma, orderby: 'popularity', order: 'desc' }).catch(() => []),
+            getAllGroups({ ...idioma, orderby: 'popularity', order: 'desc', leve: true }).catch(() => []),
         ])
         emAlta = trending.length >= 6 ? trending : items.slice(0, 6)
         // `todos` já vem por popularidade: as quatro primeiras de cada geração são as mais conhecidas.

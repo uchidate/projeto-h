@@ -20,17 +20,32 @@ export type GroupsQuery = {
     /** filtro por geração — 'YYYYMMDD' (ou prefixo 'YYYY'), comparado contra debut_date */
     debutMin?: string
     debutMax?: string
+    /**
+     * Só o necessário para contar e montar faixas (id, slug, título, foto, estreia e, com `locale`, título e
+     * `stale` da tradução). Sem isso, a lista de 100 grupos passava de 2 MB por causa de `acf` e `translations`
+     * inteiros, e o Next recusava guardar no cache de dados ("items over 2MB can not be cached").
+     */
+    leve?: boolean
+}
+
+/** Campos pedidos ao REST. `translations.<idioma>.x` limita a tradução ao idioma da página. */
+export function camposDoGrupo(locale?: string, leve?: boolean): string {
+    if (leve) {
+        const base = 'id,slug,title,date,featured_image_url,acf.debut_date'
+        return locale ? `${base},translations.${locale}.title,translations.${locale}.stale` : base
+    }
+    return locale ? 'id,slug,title,date,featured_image_url,acf,former_member_slugs,translations' : 'id,slug,title,date,featured_image_url,acf,former_member_slugs'
 }
 
 export async function getGroups(query: GroupsQuery = {}) {
-    const { page = 1, perPage = 24, search, type, active, orderby = 'date', order = 'desc', slug, letter, agency, agencies, debutMin, debutMax, locale } = query
+    const { page = 1, perPage = 24, search, type, active, orderby = 'date', order = 'desc', slug, letter, agency, agencies, debutMin, debutMax, locale, leve } = query
     const isMetaOrder = orderby === 'popularity'
     const params: Record<string, string | number | boolean | undefined> = {
         // oc_orderby é aplicado no PHP (oc_meta_orderby); orderby=date fica como
         // fallback caso o filtro ainda não esteja deployado no WP.
         page, per_page: perPage, orderby: isMetaOrder ? 'date' : orderby, order, status: 'publish',
         oc_orderby: isMetaOrder ? 'popularity' : undefined,
-        _fields: locale ? 'id,slug,title,date,featured_image_url,acf,former_member_slugs,translations' : 'id,slug,title,date,featured_image_url,acf,former_member_slugs',
+        _fields: camposDoGrupo(locale, leve),
         oc_locale: locale,
         slug: slug ?? undefined, search: search ?? undefined,
         oc_type: type, oc_active: active !== undefined ? String(active) : undefined,
