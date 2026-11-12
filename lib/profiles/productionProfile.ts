@@ -4,6 +4,7 @@ import { splitContentForAd } from '@/lib/utils/injectAd'
 import { STATUS_LABELS } from '@/lib/productions/labels'
 import { labelsFor } from '@/lib/i18n/labels'
 import { intlLocale } from '@/lib/i18n/format'
+import { papelNoIdioma } from '@/lib/productions/papelElenco'
 import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 
 /**
@@ -52,7 +53,7 @@ export function buildProductionProfileModel(production: WPProduction, locale: Lo
         galleryUrls,
         backdropUrl: acf.backdrop_url || galleryUrls[0],
         facts,
-        castRoles: new Map((production.production_cast ?? []).map(item => [item.slug, item.role])),
+        castRoles: new Map((production.production_cast ?? []).map(item => [item.slug, papelNoIdioma(item.role, locale)])),
         statusInfo: acf.status_production && STATUS_LABELS[acf.status_production]
             ? { ...STATUS_LABELS[acf.status_production], label: labels.productionStatus(acf.status_production) ?? STATUS_LABELS[acf.status_production].label }
             : null,
