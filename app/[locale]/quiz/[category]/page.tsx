@@ -11,7 +11,7 @@ export const revalidate = 3600
 type Params = Promise<{ locale: string; category: string }>
 type SearchParams = Parameters<typeof QuizCategoryPage>[0]['searchParams']
 
-const COM_QUIZ: readonly string[] = ['pt', 'en']
+const COM_QUIZ: readonly string[] = ['pt', 'en', 'ja']
 
 // Pré-geração só do português. O filho devolve SEMPRE `{ locale, ... }` completos: se devolvesse
 // vazio para `en`, o Next repassaria `{ locale: 'en' }` sem o parâmetro e, por haver um conjunto
