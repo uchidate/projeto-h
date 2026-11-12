@@ -11,8 +11,8 @@ export const revalidate = 3600
 type Params = Promise<{ locale: string }>
 type SearchParams = Parameters<typeof QuizPage>[0]['searchParams']
 
-/** O quiz existe em português e inglês; outros idiomas veem a página em português com o aviso de que ainda não há tradução. */
-const COM_QUIZ: readonly string[] = ['pt', 'en']
+/** O quiz existe em português, inglês e japonês; outros idiomas veem a página em português com o aviso de que ainda não há tradução. */
+const COM_QUIZ: readonly string[] = ['pt', 'en', 'ja']
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { locale } = await params
