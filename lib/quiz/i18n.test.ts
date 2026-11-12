@@ -20,6 +20,18 @@ describe('perguntas do quiz traduzidas', () => {
         }
     })
 
+    it('japonês: toda pergunta tem quatro alternativas distintas, sem português sobrando', () => {
+        const ja = traducoesDasPerguntas('ja')
+        expect(Object.keys(ja).length).toBeGreaterThanOrEqual(190)
+        for (const [id, t] of Object.entries(ja)) {
+            expect(t.q.trim(), id).not.toBe('')
+            expect(t.e.trim(), id).not.toBe('')
+            expect(t.o, id).toHaveLength(4)
+            expect(new Set(t.o).size, `${id}: alternativas repetidas`).toBe(4)
+            expect(`${t.q} ${t.o.join(' ')} ${t.e}`, id).not.toMatch(/[ãõç]|\b(qual|foi|uma|dos|das)\b/i)
+        }
+    })
+
     it('mantém só as perguntas traduzidas, troca o texto e preserva a resposta certa', () => {
         const id = Number(Object.keys(traducoes)[0])
         const lista = perguntasNoIdioma([base(id), base(1)], 'en')
