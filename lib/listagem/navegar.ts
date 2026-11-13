@@ -7,9 +7,21 @@
 // o endereço muda e a lista continua a mesma. Carregar o endereço direto sempre
 // funcionou; só a troca sem recarregar não. A navegação completa pega o HTML
 // filtrado, que o ISR serve do cache.
+//
+// Vale para todos os idiomas: /ja/artists?page=2 e /en/groups?page=2 têm o mesmo
+// problema. A lista antes só tinha os caminhos em português, e fora dele o clique
+// em "2" mudava o endereço e deixava a lista da página 1 (relatado em 2026-11-13).
+
+import { LOCALES } from '@/lib/i18n/idiomas.mjs'
+import { localizarCaminho } from '@/lib/i18n/localizar-caminho'
 
 /** Listagens que desviam para <lista>/filtrado quando há query (next.config.mjs). */
 export const LISTAGENS_COM_FILTRO = ['/artists', '/groups', '/productions', '/blog', '/loja', '/comidas', '/guias']
+
+/** Os mesmos caminhos em cada idioma (`/artists`, `/en/artists`, `/ja/artists`…), pelo registro de rotas. */
+const CAMINHOS_COM_FILTRO = new Set(
+    LISTAGENS_COM_FILTRO.flatMap((caminho) => LOCALES.map((locale) => localizarCaminho(caminho, locale))),
+)
 
 const FOCO_BUSCA = 'hh_foco_busca'
 
@@ -20,7 +32,7 @@ export function exigeNavegacaoCompleta(href: string, origem: string): boolean {
     if (url.origin !== origem) return false
     if (!url.search) return false
     const caminho = url.pathname.replace(/\/$/, '')
-    return LISTAGENS_COM_FILTRO.includes(caminho)
+    return CAMINHOS_COM_FILTRO.has(caminho)
 }
 
 export function navegarListagem(url: string, opcoes: { manterFocoBusca?: boolean } = {}) {
