@@ -85,6 +85,8 @@ describe('sitemapResponse', () => {
         const translations = { en: { stale: false, content: fina }, es: { stale: false, content: longa } }
         expect(indexableLocales({ translations }, 'artist')).toEqual(['pt', 'es'])
         expect(Object.keys(alternatesDaFicha('artist', { slug: 'x', translations }) ?? {})).toEqual(['pt-BR', 'es', 'x-default'])
+        // produção segue a mesma regra do artista
+        expect(indexableLocales({ translations }, 'production')).toEqual(['pt', 'es'])
         // outros tipos seguem a regra de availableLocales
         expect(indexableLocales({ translations }, 'company')).toEqual(['pt', 'en', 'es'])
         // texto traduzido vazio cai no português na página: não é ficha fina

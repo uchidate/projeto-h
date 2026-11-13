@@ -58,9 +58,12 @@ export function availableLocales(entity: { translations?: Partial<Record<string,
  * regra para não apontar para uma página que pede ao Google que a ignore.
  * Texto traduzido vazio cai no português na página, então não conta como fina.
  */
+/** Tipos cuja página vai para noindex quando a tradução é fina (`fichaFina`); o sitemap e o hreflang seguem a mesma regra. */
+const TIPOS_COM_FICHA_FINA = ['artist', 'production']
+
 export function indexableLocales(entity: { translations?: Partial<Record<string, object | null>> | null }, tipo?: string): Locale[] {
     return availableLocales(entity).filter((locale) => {
-        if (locale === DEFAULT_LOCALE || tipo !== 'artist') return true
+        if (locale === DEFAULT_LOCALE || !TIPOS_COM_FICHA_FINA.includes(tipo ?? '')) return true
         const content = (entity.translations?.[locale] as { content?: unknown } | null | undefined)?.content
         return !(typeof content === 'string' && content.trim() !== '' && fichaFina(content))
     })
