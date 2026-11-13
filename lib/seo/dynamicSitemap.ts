@@ -5,7 +5,7 @@ import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
 import { getAllFandoms } from '@/lib/wordpress/fandoms'
 import { href } from '@/lib/i18n/routes'
 import { hreflangDe } from '@/lib/i18n/alternates'
-import { availableLocales } from '@/lib/i18n/entity-translation'
+import { indexableLocales } from '@/lib/i18n/entity-translation'
 import { buildPostAlternates } from '@/lib/blog/translations'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, LOCALE_META, isActiveLocale, type Locale } from '@/lib/i18n/config'
 import { SHARDS_TRADUZIVEIS, caminhoDaFicha, caminhoDaListagem, tipoDoShard } from '@/lib/i18n/entidades-traduziveis'
@@ -104,8 +104,8 @@ function normalizedLastmod(entry: { date?: string; modified?: string }) {
  * Sem nenhuma tradução, devolve undefined (a URL sai sem alternates).
  */
 export function alternatesDaFicha(tipo: NonNullable<ReturnType<typeof tipoDoShard>>, entry: WPEntry): Record<string, string> | undefined {
-    // Mesma regra da página e do IndexNow: availableLocales (publicada, em dia, idioma ativo).
-    const idiomas = availableLocales(entry)
+    // Mesma regra da página: publicada, em dia, idioma ativo e, em artista, não `noindex` por ficha fina.
+    const idiomas = indexableLocales(entry, tipo)
     if (idiomas.length < 2) return undefined
     return hreflangDe(idiomas, (locale) => `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, locale)}`)
 }
@@ -158,11 +158,11 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
         })
     }
 
-    // Sem tradução publicada a ficha não existe no idioma — fica fora do sitemap.
+    // Sem tradução publicada (ou com ficha fina, que a página marca `noindex`) a ficha fica fora do sitemap.
     // O caminho em outro idioma vem do registro de rotas: `/comidas/x` no português é `/en/foods/x` no inglês.
     const tipo = tipoDoShard(shard)!
     return entries
-        .filter((entry) => entry.translations?.[locale] && !entry.translations[locale]?.stale)
+        .filter((entry) => indexableLocales(entry, tipo).includes(locale))
         .map((entry) => {
             const localized = `${SITE_URL}${caminhoDaFicha(tipo, entry.slug, locale)}`
             return { loc: localized, lastmod: normalizedLastmod(entry), alternates: alternatesDaFicha(tipo, entry) }

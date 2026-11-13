@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { availableLocales } from '@/lib/i18n/entity-translation'
+import { availableLocales, indexableLocales } from '@/lib/i18n/entity-translation'
 import { LOCALE_META } from '@/lib/i18n/config'
 import { alternatesDaFicha, buildSitemapIndex, buildUrlSet, isSitemapShard, resolveLocalizedShard, resolveSitemapShard, sitemapResponse } from './dynamicSitemap'
 
@@ -77,5 +77,17 @@ describe('sitemapResponse', () => {
         const alt = alternatesDaFicha('artist', { slug: 'iu', translations })
         const htmlLangs = availableLocales({ translations }).map((l) => LOCALE_META[l].htmlLang)
         expect(Object.keys(alt ?? {}).filter((k) => k !== 'x-default')).toEqual(htmlLangs)
+    })
+
+    it('ficha de artista fina (noindex na página) sai do hreflang e do sitemap do idioma', () => {
+        const fina = 'Texto curto.<div class="hh-secao"><h2>x</h2><p>' + 'a'.repeat(500) + '</p></div>'
+        const longa = 'b'.repeat(400)
+        const translations = { en: { stale: false, content: fina }, es: { stale: false, content: longa } }
+        expect(indexableLocales({ translations }, 'artist')).toEqual(['pt', 'es'])
+        expect(Object.keys(alternatesDaFicha('artist', { slug: 'x', translations }) ?? {})).toEqual(['pt-BR', 'es', 'x-default'])
+        // outros tipos seguem a regra de availableLocales
+        expect(indexableLocales({ translations }, 'company')).toEqual(['pt', 'en', 'es'])
+        // texto traduzido vazio cai no português na página: não é ficha fina
+        expect(indexableLocales({ translations: { en: { stale: false, content: '' } } }, 'artist')).toEqual(['pt', 'en'])
     })
 })
