@@ -1,9 +1,10 @@
 import { getAllHubs } from '@/lib/guias'
+import { alternativasDoGuia, alternativasDoIndice, slugPublicoDoGuia } from '@/lib/guias/i18n'
 import { SITE_URL } from '@/lib/constants/site'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
 import { getAllFandoms } from '@/lib/wordpress/fandoms'
-import { href } from '@/lib/i18n/routes'
+import { href, type RouteName } from '@/lib/i18n/routes'
 import { hreflangDe } from '@/lib/i18n/alternates'
 import { availableLocales } from '@/lib/i18n/entity-translation'
 import { buildPostAlternates } from '@/lib/blog/translations'
@@ -169,11 +170,51 @@ async function fetchCollection(shard: SitemapShard, locale?: Locale): Promise<Si
         })
 }
 
+/**
+ * Páginas fixas e as versões que a própria página declara no HTML (hreflang). O sitemap repete o mesmo conjunto:
+ * todos os idiomas ativos nas páginas com rota registrada; o quiz por categoria só existe em pt/en/ja; as demais
+ * (loja, trending, positions, privacidade, termos, subpáginas de grupos) não declaram versões e ficam sem alternates.
+ */
+const PAGINAS_COM_VERSOES: Record<string, RouteName> = {
+    '': 'home', productions: 'productions', artists: 'artists', groups: 'groups', agencies: 'agencies',
+    fandoms: 'fandoms', blog: 'blog', quiz: 'quiz', about: 'about', contato: 'contact',
+    comidas: 'foods', empresas: 'companies', calendario: 'calendar', 'cultura-coreana-101': 'cultura101',
+    'editorial-standards': 'editorialStandards', ethics: 'ethics', corrections: 'corrections',
+}
+const CATEGORIAS_DO_QUIZ = ['k-pop', 'k-drama', 'cultura', 'historia']
+const IDIOMAS_DO_QUIZ_POR_CATEGORIA: readonly Locale[] = ['pt', 'en', 'ja']
+
+export function alternatesDaPaginaFixa(path: string): Record<string, string> | undefined {
+    const urlDe = (route: RouteName, params?: Record<string, string>) => (locale: Locale) =>
+        `${SITE_URL}${(href as (r: RouteName, p?: Record<string, string>, l?: Locale) => string)(route, params, locale)}`.replace(/\/$/, '')
+    const rota = PAGINAS_COM_VERSOES[path]
+    if (rota) return hreflangDe(ACTIVE_LOCALES, urlDe(rota))
+    const categoria = path.match(/^quiz\/([^/]+)$/)?.[1]
+    if (categoria && CATEGORIAS_DO_QUIZ.includes(categoria)) {
+        return hreflangDe(ACTIVE_LOCALES.filter((l) => IDIOMAS_DO_QUIZ_POR_CATEGORIA.includes(l)), urlDe('quizCategory', { categoria, category: categoria }))
+    }
+    return undefined
+}
+
 async function fetchPages(): Promise<SitemapEntry[]> {
     const hubs = await getAllHubs()
+    const guiasTraduzidos = hubs.flatMap((hub) =>
+        localizedSitemapLocales().flatMap((locale) => {
+            const slug = slugPublicoDoGuia(hub.slug, locale)
+            return slug ? [{ loc: `${SITE_URL}${href('guide', { slug }, locale)}`, alternates: alternativasDoGuia(hub.slug) }] : []
+        }),
+    )
     return [
-        ...STATIC_PAGES.map((path) => ({ loc: path ? `${SITE_URL}/${path}` : SITE_URL })),
-        ...hubs.map((hub) => ({ loc: `${SITE_URL}/guias/${hub.slug}` })),
+        ...STATIC_PAGES.map((path) => {
+            const alternates = path === 'guias' ? alternativasDoIndice() : alternatesDaPaginaFixa(path)
+            return { loc: path ? `${SITE_URL}/${path}` : SITE_URL, ...(alternates ? { alternates } : {}) }
+        }),
+        ...hubs.map((hub) => {
+            const alternates = alternativasDoGuia(hub.slug)
+            return { loc: `${SITE_URL}/guias/${hub.slug}`, ...(alternates ? { alternates } : {}) }
+        }),
+        // Guias traduzidos não têm shard próprio: entram aqui, com as versões recíprocas do guia.
+        ...guiasTraduzidos,
     ]
 }
 

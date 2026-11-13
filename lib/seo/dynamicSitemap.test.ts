@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { availableLocales } from '@/lib/i18n/entity-translation'
 import { LOCALE_META } from '@/lib/i18n/config'
-import { alternatesDaFicha, buildSitemapIndex, buildUrlSet, isSitemapShard, resolveLocalizedShard, resolveSitemapShard, sitemapResponse } from './dynamicSitemap'
+import { alternatesDaFicha, alternatesDaPaginaFixa, buildSitemapIndex, buildUrlSet, isSitemapShard, resolveLocalizedShard, resolveSitemapShard, sitemapResponse } from './dynamicSitemap'
 
 describe('sitemap dinâmico', () => {
     it('publica todos os shards canônicos no índice', () => {
@@ -78,4 +78,12 @@ describe('sitemapResponse', () => {
         const htmlLangs = availableLocales({ translations }).map((l) => LOCALE_META[l].htmlLang)
         expect(Object.keys(alt ?? {}).filter((k) => k !== 'x-default')).toEqual(htmlLangs)
     })
+})
+
+it('páginas fixas repetem o hreflang que a própria página declara', () => {
+    expect(alternatesDaPaginaFixa('about')).toMatchObject({ 'pt-BR': expect.stringMatching(/\/about$/), en: expect.stringMatching(/\/en\/about$/), ja: expect.stringMatching(/\/ja\/about$/) })
+    expect(alternatesDaPaginaFixa('')?.['x-default']).toMatch(/[^/]$/)
+    expect(Object.keys(alternatesDaPaginaFixa('quiz/k-pop')!).sort()).toEqual(['en', 'ja', 'pt-BR', 'x-default'])
+    expect(alternatesDaPaginaFixa('loja')).toBeUndefined()
+    expect(alternatesDaPaginaFixa('groups/boy-groups')).toBeUndefined()
 })
