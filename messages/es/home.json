@@ -56,7 +56,9 @@
     "hoje": "Hoy",
     "aSeguir": "A continuación",
     "abrir": "7 días →",
-    "anos": "años"
+    "anos": "años",
+    "semAniversario": "Ningún cumpleaños de artista este día.",
+    "escolherDia": "Elige un día de la semana"
   },
   "guias": {
       "titulo": "Guías",

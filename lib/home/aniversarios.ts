@@ -21,6 +21,11 @@ export interface AniversariosHome {
     seguintes: DiaDeAniversarios[]
     /** Hoje + os próximos dias, AAAA-MM-DD, para a faixa da semana. */
     semana: string[]
+    /**
+     * Um item por dia da `semana` (mesma ordem, também os dias sem aniversariante), para quem clica no dia
+     * e vê os artistas dele. `hoje` e `seguintes` continuam para os blocos que só listam nomes.
+     */
+    dias: DiaDeAniversarios[]
 }
 
 const DIA_MS = 86_400_000
@@ -41,7 +46,7 @@ function chave(mes: number, dia: number) {
 export function montarAniversarios(
     artistas: WPArtist[],
     hoje: string,
-    { dias = 6, nomesPorDia = 3, nomesHoje = 5 } = {},
+    { dias = 6, nomesPorDia = 3, nomesHoje = 5, nomesPorDiaSelecionado = 5 } = {},
 ): AniversariosHome {
     const [ano, mes, dia] = hoje.split('-').map(Number)
     const base = Date.UTC(ano, mes - 1, dia)
@@ -82,7 +87,11 @@ export function montarAniversarios(
         const { data, nomes } = doDia(i)
         if (nomes.length) seguintes.push({ data, nomes: nomes.slice(0, nomesPorDia) })
     }
-    return { hoje: doDia(0).nomes.slice(0, nomesHoje), seguintes, semana }
+    const porDia = semana.map((_, i) => {
+        const { data, nomes } = doDia(i)
+        return { data, nomes: nomes.slice(0, nomesPorDiaSelecionado) }
+    })
+    return { hoje: doDia(0).nomes.slice(0, nomesHoje), seguintes, semana, dias: porDia }
 }
 
 /** Meses a buscar para cobrir hoje + `dias` à frente (vira o mês perto do fim). */

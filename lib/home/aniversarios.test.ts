@@ -34,6 +34,14 @@ describe('montarAniversarios', () => {
         expect(r.hoje[0].idade).toBe(31)
     })
 
+    it('entrega um item por dia da semana, também os vazios, para o clique no dia', () => {
+        const r = montarAniversarios(lista, '2026-10-24')
+        expect(r.dias.map(d => d.data)).toEqual(r.semana)
+        expect(r.dias[0].nomes.map(a => a.nome)).toEqual(['Hoje1', 'Hoje2'])
+        expect(r.dias[2].nomes).toEqual([]) // 26/10: ninguém
+        expect(r.dias[3].nomes.map(a => a.nome)).toEqual(['Dia3'])
+    })
+
     it('limita nomes por dia', () => {
         const muitos = [1, 2, 3, 4, 5].map(i => artista(i, `N${i}`, '1990-10-25'))
         expect(montarAniversarios(muitos, '2026-10-24').seguintes[0].nomes).toHaveLength(3)
