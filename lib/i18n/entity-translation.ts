@@ -1,6 +1,7 @@
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, isActiveLocale, type Locale } from './config'
 import { localizarLinksEm } from './localizar-caminho'
 import { TRANSLATABLE_ACF, pickTranslatable, type TranslatableType } from './translatable-fields'
+import { fichaFina } from './ficha-fina'
 
 /**
  * Tradução de fichas (artist, group, production) — D5-b em
@@ -49,6 +50,20 @@ export function availableLocales(entity: { translations?: Partial<Record<string,
         .map(([locale]) => locale)
         .filter(isActiveLocale)
     return ACTIVE_LOCALES.filter((locale) => locale === DEFAULT_LOCALE || published.includes(locale))
+}
+
+/**
+ * Idiomas em que a ficha é indexável: `availableLocales` menos a tradução de artista que a
+ * página marca `noindex` por ser só uma frase (`fichaFina`). Sitemap e hreflang usam esta
+ * regra para não apontar para uma página que pede ao Google que a ignore.
+ * Texto traduzido vazio cai no português na página, então não conta como fina.
+ */
+export function indexableLocales(entity: { translations?: Partial<Record<string, object | null>> | null }, tipo?: string): Locale[] {
+    return availableLocales(entity).filter((locale) => {
+        if (locale === DEFAULT_LOCALE || tipo !== 'artist') return true
+        const content = (entity.translations?.[locale] as { content?: unknown } | null | undefined)?.content
+        return !(typeof content === 'string' && content.trim() !== '' && fichaFina(content))
+    })
 }
 
 export function hasLocale(entity: Pick<TranslatableEntity, 'translations'>, locale: Locale): boolean {

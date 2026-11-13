@@ -24,7 +24,7 @@ import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
 import type { Locale } from '@/lib/i18n/config'
-import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
+import { availableLocales, indexableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
 import { buildAlternates } from '@/lib/i18n/alternates'
 import { buildLanguageLinks } from '@/lib/i18n/language-links'
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
@@ -77,7 +77,7 @@ export async function buildArtistMetadata(slug: string, locale: Locale): Promise
         url,
         image,
         ogImageOverride: ogImage,
-        languages: buildAlternates('artist', { slug }, locale, availableLocales(found)).languages,
+        languages: buildAlternates('artist', { slug }, locale, indexableLocales(found, 'artist')).languages,
         ogLocale: LOCALE_META[locale].ogLocale,
     })
     // Tradução de uma frase só é conteúdo raso: acessível, mas fora do índice.
