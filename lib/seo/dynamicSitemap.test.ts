@@ -92,6 +92,14 @@ describe('sitemapResponse', () => {
         // texto traduzido vazio cai no português na página: não é ficha fina
         expect(indexableLocales({ translations: { en: { stale: false, content: '' } } }, 'artist')).toEqual(['pt', 'en'])
     })
+
+    it('índice leva o lastmod de cada arquivo quando conhecido e omite quando não', () => {
+        const xml = buildSitemapIndex(['ja'], { ja: ['artists'] }, { artists: '2026-11-12', 'artists-ja': '2026-11-13' })
+        expect(xml).toContain('/sitemaps/artists.xml</loc><lastmod>2026-11-12</lastmod>')
+        expect(xml).toContain('/sitemaps/artists-ja.xml</loc><lastmod>2026-11-13</lastmod>')
+        expect(xml).toContain('/sitemaps/groups.xml</loc></sitemap>')
+        expect(xml).toContain('/sitemaps/posts-ja.xml</loc></sitemap>')
+    })
 })
 
 it('páginas fixas repetem o hreflang que a própria página declara', () => {

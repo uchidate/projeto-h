@@ -306,11 +306,46 @@ export async function shardsComTraducao(): Promise<Partial<Record<Locale, readon
     return Object.fromEntries(pares)
 }
 
-export function buildSitemapIndex(localesComPosts: readonly Locale[] = [], shardsPorIdioma?: Partial<Record<Locale, readonly string[]>>) {
+/**
+ * Data da última alteração de cada arquivo do índice (YYYY-MM-DD), pela ficha mais recente do conjunto.
+ * O Google usa o `lastmod` do índice para decidir qual arquivo reler primeiro; sem ele, relê tudo ou nada.
+ * Uma consulta de 1 item por arquivo (mesma ordenação do próprio sitemap). Falha em um arquivo só o deixa sem data.
+ * Pode superestimar o idioma (conta também fichas finas que ficam fora do arquivo), nunca subestima.
+ */
+export async function lastmodDosShards(localesComPosts: readonly Locale[] = [], shardsPorIdioma?: Partial<Record<Locale, readonly string[]>>): Promise<Record<string, string>> {
+    const ultima = async (restBase: string, tag: string, extra: Record<string, string> = {}): Promise<string | undefined> => {
+        try {
+            const { items } = await wpFetchWithTotal<{ modified?: string; date?: string }>(
+                `/wp/v2/${restBase}${buildParams({ per_page: 1, status: 'publish', _fields: 'modified,date', orderby: 'modified', order: 'desc', ...extra })}`,
+                { revalidate: 300, tags: [tag] },
+            )
+            return items[0] ? normalizedLastmod(items[0]) : undefined
+        } catch {
+            return undefined
+        }
+    }
+    const tarefas: Array<Promise<[string, string | undefined]>> = []
+    for (const [shard, collection] of Object.entries(COLLECTIONS)) {
+        tarefas.push(ultima(collection.restBase, collection.tag).then((d) => [shard, d]))
+    }
+    for (const locale of localizedSitemapLocales()) {
+        for (const shard of shardsPorIdioma?.[locale] ?? LOCALIZED_SHARDS) {
+            const collection = COLLECTIONS[shard as SitemapShard]
+            if (collection) tarefas.push(ultima(collection.restBase, collection.tag, { oc_locale: locale }).then((d) => [`${shard}-${locale}`, d]))
+        }
+    }
+    for (const locale of localesComPosts) {
+        tarefas.push(ultima('posts', WP_CACHE_TAGS.posts, { lang: locale }).then((d) => [`${POSTS_SHARD}-${locale}`, d]))
+    }
+    const pares = await Promise.all(tarefas)
+    return Object.fromEntries(pares.filter((par): par is [string, string] => typeof par[1] === 'string'))
+}
+
+export function buildSitemapIndex(localesComPosts: readonly Locale[] = [], shardsPorIdioma?: Partial<Record<Locale, readonly string[]>>, lastmods: Record<string, string> = {}) {
     const localized = localizedSitemapLocales().flatMap((locale) => (shardsPorIdioma?.[locale] ?? LOCALIZED_SHARDS).map((shard) => `${shard}-${locale}`))
     const posts = localesComPosts.map((locale) => `${POSTS_SHARD}-${locale}`)
     const entries = [...SITEMAP_SHARDS, ...localized, ...posts]
-        .map((shard) => `  <sitemap><loc>${SITE_URL}/sitemaps/${shard}.xml</loc></sitemap>`)
+        .map((shard) => `  <sitemap><loc>${SITE_URL}/sitemaps/${shard}.xml</loc>${lastmods[shard] ? `<lastmod>${lastmods[shard]}</lastmod>` : ''}</sitemap>`)
         .join('\n')
     return `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</sitemapindex>\n`
 }
