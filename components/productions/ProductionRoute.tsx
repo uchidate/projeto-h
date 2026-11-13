@@ -25,7 +25,8 @@ import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 import { href } from '@/lib/i18n/routes'
 import type { Locale } from '@/lib/i18n/config'
 import { nomeDoGenero } from '@/lib/productions/generos'
-import { availableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
+import { fichaFina } from '@/lib/i18n/ficha-fina'
+import { availableLocales, indexableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
 import { buildAlternates } from '@/lib/i18n/alternates'
 import { buildLanguageLinks } from '@/lib/i18n/language-links'
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
@@ -67,15 +68,19 @@ export async function buildProductionMetadata(slug: string, locale: Locale): Pro
         type: 'production',
     })
 
-    return buildWordPressMetadata({
+    const metadata = buildWordPressMetadata({
         title,
         description,
         url,
         image,
         ogImageOverride: ogImage,
-        languages: buildAlternates('production', { slug }, locale, availableLocales(found)).languages,
+        languages: buildAlternates('production', { slug }, locale, indexableLocales(found, 'production')).languages,
         ogLocale: LOCALE_META[locale].ogLocale,
     })
+    // Tradução de uma frase só é conteúdo raso: acessível, mas fora do índice (mesma regra da ficha de artista).
+    return locale !== DEFAULT_LOCALE && fichaFina(production.content.rendered)
+        ? { ...metadata, robots: { index: false, follow: true } }
+        : metadata
 }
 
 export async function ProductionRoute({ slug, locale }: { slug: string; locale: Locale }) {
