@@ -58,7 +58,9 @@
     "hoje": "今日",
     "aSeguir": "このあと",
     "abrir": "7日間 →",
-    "anos": "歳"
+    "anos": "歳",
+    "semAniversario": "この日に誕生日のアーティストはいません。",
+    "escolherDia": "曜日を選ぶ"
   },
   "guias": {
     "titulo": "ガイド",
