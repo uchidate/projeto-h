@@ -23,6 +23,23 @@ const CAMINHOS_COM_FILTRO = new Set(
     LISTAGENS_COM_FILTRO.flatMap((caminho) => LOCALES.map((locale) => localizarCaminho(caminho, locale))),
 )
 
+/**
+ * Páginas de detalhe que também paginam/filtram por query e desviam para `<página>/filtrado`
+ * (`/guias/:slug`, em rotas-migradas.mjs). O mesmo defeito: o clique em "2" dentro de um guia
+ * mudava o endereço e deixava a lista da página 1.
+ */
+export const DETALHES_COM_FILTRO = ['/guias']
+
+const PREFIXOS_DE_DETALHE_COM_FILTRO = new Set(
+    DETALHES_COM_FILTRO.flatMap((caminho) => LOCALES.map((locale) => localizarCaminho(caminho, locale))),
+)
+
+function ehDetalheComFiltro(caminho: string): boolean {
+    const corte = caminho.lastIndexOf('/')
+    if (corte <= 0) return false
+    return PREFIXOS_DE_DETALHE_COM_FILTRO.has(caminho.slice(0, corte))
+}
+
 const FOCO_BUSCA = 'hh_foco_busca'
 
 /** true se o endereço é uma dessas listagens com query: o que exige navegação completa. */
@@ -32,7 +49,7 @@ export function exigeNavegacaoCompleta(href: string, origem: string): boolean {
     if (url.origin !== origem) return false
     if (!url.search) return false
     const caminho = url.pathname.replace(/\/$/, '')
-    return CAMINHOS_COM_FILTRO.has(caminho)
+    return CAMINHOS_COM_FILTRO.has(caminho) || ehDetalheComFiltro(caminho)
 }
 
 export function navegarListagem(url: string, opcoes: { manterFocoBusca?: boolean } = {}) {
