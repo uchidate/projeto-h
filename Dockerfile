@@ -67,12 +67,6 @@ ENV WP_BUILD_FETCH_TTL_S=$WP_BUILD_FETCH_TTL_S
 ARG WP_BUILD_FETCH_CONCURRENCY=""
 ENV WP_BUILD_FETCH_CONCURRENCY=$WP_BUILD_FETCH_CONCURRENCY
 
-# Pula a pré-geração da cauda longa de fichas. As rotas continuam com ISR:
-# a primeira visita gera a página e o webhook/cache mantém o conteúdo atualizado.
-# `0` restaura o build completo para um ensaio comparativo.
-ARG SKIP_BUILD_STATIC_GENERATION="1"
-ENV SKIP_BUILD_STATIC_GENERATION=$SKIP_BUILD_STATIC_GENERATION
-
 # Identidade do site (ver lib/constants/identidade.mjs). Nenhum valor real
 # no repositorio: vem por --build-arg, lido de um arquivo no servidor pelo
 # script de build. Sem elas o next.config.mjs aborta o build de producao.
