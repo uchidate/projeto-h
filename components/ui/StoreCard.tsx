@@ -123,16 +123,16 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
     }
 
     return (
-        <div className="flex h-full flex-col">
-        <a href={acf.affiliate_url} target="_blank" rel="noopener noreferrer sponsored"
-            title={`Ver no ${cfg.label} (link externo)`}
-            onClick={registrarClique}
-            className={`group relative flex flex-1 flex-col p-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] ${
+        <div className={`relative flex h-full flex-col p-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] ${
                 acf.featured
                     ? 'border-2 border-accent/70 bg-accent-a11y/4 hover:border-accent'
                     : 'border border-border/60 bg-background hover:border-accent/50'
             }`}>
-            <span className={`absolute inset-y-0 left-0 w-1 ${cfg.stripe}`} aria-hidden="true" />
+        <span className={`absolute inset-y-0 left-0 w-1 ${cfg.stripe}`} aria-hidden="true" />
+        <a href={acf.affiliate_url} target="_blank" rel="noopener noreferrer sponsored"
+            title={`Ver no ${cfg.label} (link externo)`}
+            onClick={registrarClique}
+            className="group relative flex flex-1 flex-col">
             <div className="relative aspect-square overflow-hidden bg-surface">
                 {acf.image_url ? (
                     <Image src={acf.image_url} alt={name} fill
@@ -202,7 +202,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
         </a>
         {link && (
             <Link href={link.type === 'company' ? `/empresas/${link.slug}` : `/comidas/${link.slug}`}
-                className="-mt-1 block truncate px-1 py-2.5 text-[11px] font-semibold text-accent hover:underline">
+                className="mt-1 block truncate px-1 pt-1.5 text-[11px] font-semibold text-accent hover:underline">
                 {link.type === 'company' ? '🏢' : '🍽️'} Sobre {link.title}
             </Link>
         )}
