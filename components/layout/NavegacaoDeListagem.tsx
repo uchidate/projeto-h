@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { exigeNavegacaoCompleta } from '@/lib/listagem/navegar'
+import { exigeNavegacaoCompleta, guardarRolagem, consumirRolagem } from '@/lib/listagem/navegar'
 
 /**
  * Clique em link de listagem com filtro/paginação (/productions?genre=…,
@@ -11,6 +11,8 @@ import { exigeNavegacaoCompleta } from '@/lib/listagem/navegar'
  */
 export function NavegacaoDeListagem() {
     useEffect(() => {
+        const y = consumirRolagem(window.location.pathname)
+        if (y !== null) window.scrollTo(0, y)
         const aoClicar = (e: MouseEvent) => {
             if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
             const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null
@@ -18,6 +20,7 @@ export function NavegacaoDeListagem() {
             if (!exigeNavegacaoCompleta(a.href, window.location.origin)) return
             e.preventDefault()
             e.stopPropagation()
+            guardarRolagem(new URL(a.href))
             window.location.assign(a.href)
         }
         document.addEventListener('click', aoClicar, true)
