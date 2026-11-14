@@ -113,8 +113,8 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     {aniversarios && <div data-bloco="home-calendario" className="hidden min-w-0 self-start bg-[var(--color-home-card)] border border-border border-t-[3px] border-t-[#8a5a00] lg:block"><HomeCalendario aniversarios={aniversarios} locale={locale} /></div>}
                 </div>
                 {ADSENSE.slots.leaderboard && (
-                    <div className="border border-border bg-[var(--color-home-card)] px-4 py-6 empty:hidden sm:px-6 lg:px-4">
-                        <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="home_hero_leaderboard" />
+                    <div className="border border-border bg-[var(--color-home-card)] px-4 py-3 empty:hidden sm:px-6 lg:px-4">
+                        <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="home_hero_leaderboard" />
                     </div>
                 )}
                 <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>

@@ -120,7 +120,7 @@ export async function ProductionsPage({ locale = DEFAULT_LOCALE,
                     </ul>
                 </section>
             )}
-            {inicio && ADSENSE.slots.leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="productions_leaderboard" /></div>}
+            {inicio && ADSENSE.slots.leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="productions_leaderboard" /></div>}
 
             {/* ── Onde assistir ── */}
             {inicio && plataformasTop.length > 0 && (

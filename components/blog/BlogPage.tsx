@@ -170,7 +170,7 @@ export async function BlogPage({ locale = DEFAULT_LOCALE, posts, total, totalPag
                     </div>
                 )}
                 {showHero && ADSENSE.slots.leaderboard && (
-                    <div className="mt-6"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="blog_leaderboard" /></div>
+                    <div className="mt-6"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="blog_leaderboard" /></div>
                 )}
 
                 {/* Conteúdo-chave: guias que continuam sendo lidos meses depois; quem chega sem saber por onde começar entra por aqui. */}

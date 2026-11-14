@@ -315,7 +315,7 @@ export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, total
                     </ul>
                 </section>
             )}
-            {inicio && leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={leaderboard} layout="leaderboard" analyticsPlacement="groups_leaderboard" /></div>}
+            {inicio && leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={leaderboard} layout="topo" analyticsPlacement="groups_leaderboard" /></div>}
 
             {/* ── Explore por geração ── */}
             {inicio && geracoes.length > 0 && (

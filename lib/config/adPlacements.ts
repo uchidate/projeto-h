@@ -1,6 +1,6 @@
 import type { AdRuntimeFormat } from './adRuntime'
 
-export type AdLayout = 'content' | 'feed' | 'leaderboard' | 'sidebar'
+export type AdLayout = 'content' | 'feed' | 'leaderboard' | 'topo' | 'sidebar'
 
 export type AdLayoutPolicy = {
     format: AdRuntimeFormat
@@ -67,6 +67,18 @@ export const AD_LAYOUT_POLICIES: Record<AdLayout, AdLayoutPolicy> = {
         containerClassName: 'w-full min-w-0 min-h-[250px]',
         maxWidthPx: 970,
         wrapperClassName: 'my-8',
+        fullWidthResponsive: false,
+    },
+    // Faixa logo abaixo da navbar (home e listagens). Formato padrão de portal:
+    // 728x90 / 970x90, com a reserva de 100px do `horizontal`. O `leaderboard`
+    // em `auto` reservava 250px e o Google podia servir 970x250, o que empurrava
+    // o conteúdo da página para baixo logo na primeira dobra.
+    topo: {
+        format: 'horizontal',
+        eager: false,
+        containerClassName: 'w-full min-w-0 min-h-[100px]',
+        maxWidthPx: 970,
+        wrapperClassName: 'my-4',
         fullWidthResponsive: false,
     },
     sidebar: {
