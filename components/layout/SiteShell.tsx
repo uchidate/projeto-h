@@ -33,6 +33,9 @@ import { GoogleTagScript } from '@/components/analytics/GoogleTagScript'
 import { ClarityScript } from '@/components/analytics/ClarityScript'
 import { RastreioDeExperiencia } from '@/components/analytics/RastreioDeExperiencia'
 
+/** O rodapé traduzido listava todos os guias (100+ links, contra ~16 no português); fica só uma amostra e o resto está em Explorar > Guias. */
+const GUIAS_NO_RODAPE = 6
+
 // Acima da dobra só aparecem Inter (corpo) e Playfair (título do hero). Outfit e
 // Sora são usadas mais abaixo, então saem do preload: em rede móvel simulada as
 // quatro famílias somavam 140 KB disputando banda com a imagem do LCP no mesmo
@@ -111,7 +114,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
     const footerColumns = locale === DEFAULT_LOCALE
         ? comLoja
         : localizedFooterColumns(locale, messages.entity.footer, navLabels,
-            Object.values(traducoesDoIdioma(locale)).map(g => ({ label: g.shortTitle, href: href('guide', { slug: g.slug }, locale) })))
+            Object.values(traducoesDoIdioma(locale)).slice(0, GUIAS_NO_RODAPE).map(g => ({ label: g.shortTitle, href: href('guide', { slug: g.slug }, locale) })))
 
     return (
         <html lang={htmlLang(locale)} suppressHydrationWarning>
