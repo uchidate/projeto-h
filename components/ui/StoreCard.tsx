@@ -123,11 +123,11 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex h-full flex-col">
         <a href={acf.affiliate_url} target="_blank" rel="noopener noreferrer sponsored"
             title={`Ver no ${cfg.label} (link externo)`}
             onClick={registrarClique}
-            className={`group relative flex flex-col p-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] ${
+            className={`group relative flex flex-1 flex-col p-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] ${
                 acf.featured
                     ? 'border-2 border-accent/70 bg-accent-a11y/4 hover:border-accent'
                     : 'border border-border/60 bg-background hover:border-accent/50'
@@ -159,7 +159,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                     Ver oferta <ExternalLink className="h-3 w-3" />
                 </span>
             </div>
-            <div className="mt-2 flex items-center justify-between gap-2">
+            <div className="mt-2 flex h-5 items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5">
                     <span className={`px-1 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wide ${cfg.color}`}>{cfg.label}</span>
                     {novo && (
@@ -175,7 +175,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                     </span>
                 )}
             </div>
-            <span className="mt-1 line-clamp-2 text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[15px]">
+            <span className="mt-1 line-clamp-2 min-h-[2.5em] text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[15px]">
                 {name}
             </span>
             {(acf.price || acf.original_price) && (
@@ -184,6 +184,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                     {acf.original_price && <span className="text-[11px] text-muted line-through">{acf.original_price}</span>}
                 </div>
             )}
+            <div className="mt-auto flex min-h-[3.6rem] flex-col justify-end pt-1">
             {queda && (
                 <span className="mt-0.5 text-[11px] font-bold text-accent">
                     Caiu {queda.percentual}% (era {queda.de.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})
@@ -197,6 +198,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
             <span className="mt-1 truncate text-[11px] font-medium text-muted">
                 {acf.sold_count ? `${acf.sold_count} vendidos` : `Curadoria ${SITE_NAME}`}
             </span>
+            </div>
         </a>
         {link && (
             <Link href={link.type === 'company' ? `/empresas/${link.slug}` : `/comidas/${link.slug}`}
