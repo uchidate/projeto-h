@@ -21,6 +21,32 @@ describe('exigeNavegacaoCompleta', () => {
         expect(exigeNavegacaoCompleta('/ja/artists/iu?x=1', ORIGEM)).toBe(false)
     })
 
+    it('página de guia com paginação ou filtro exige, em todos os idiomas', () => {
+        expect(exigeNavegacaoCompleta('/guias/atores-coreanos?page=2', ORIGEM)).toBe(true)
+        expect(exigeNavegacaoCompleta('/en/guides/atores-coreanos?page=2', ORIGEM)).toBe(true)
+        expect(exigeNavegacaoCompleta('/ja/guides/atores-coreanos?genre=drama', ORIGEM)).toBe(true)
+        expect(exigeNavegacaoCompleta('/es/guides/atores-coreanos?page=2', ORIGEM)).toBe(true)
+        expect(exigeNavegacaoCompleta('/guias/atores-coreanos', ORIGEM)).toBe(false)
+    })
+
+    it('toda rota migrada com desvio para /filtrado exige navegação completa, em todos os idiomas', async () => {
+        const { ROTAS_MIGRADAS } = await import('@/lib/i18n/rotas-migradas.mjs')
+        const { LOCALES } = await import('@/lib/i18n/idiomas.mjs')
+        const { localizarCaminho } = await import('@/lib/i18n/localizar-caminho')
+        const faltando: string[] = []
+        for (const rota of ROTAS_MIGRADAS) {
+            if (!rota.filtrado) continue
+            for (const locale of LOCALES) {
+                const chaves = locale === 'pt' ? rota.filtrado.pt : ((rota.filtrado as Record<string, string[] | undefined>)[locale] ?? rota.filtrado.en ?? [])
+                if (!chaves?.length) continue
+                const base = rota.pt.replace(/:[a-z]+/g, 'exemplo')
+                const url = `${localizarCaminho(base, locale)}?${chaves[0]}=x`
+                if (!exigeNavegacaoCompleta(url, ORIGEM)) faltando.push(url)
+            }
+        }
+        expect(faltando).toEqual([])
+    })
+
     it('listagem sem query, páginas de detalhe e outras rotas não exigem', () => {
         expect(exigeNavegacaoCompleta('/productions', ORIGEM)).toBe(false)
         expect(exigeNavegacaoCompleta('/productions/escandalo-e-intriga?x=1', ORIGEM)).toBe(false)
