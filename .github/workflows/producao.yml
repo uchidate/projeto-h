@@ -406,6 +406,16 @@ jobs:
           SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
         run: node scripts/fumaca.mjs ${{ vars.SITE_URL }}
 
+      - name: Avisar falha na fumaça
+        if: failure()
+        continue-on-error: true
+        env:
+          SHA: ${{ github.sha }}
+          URL_EXECUCAO: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          printf 'Commit %s\nO deploy terminou, mas a fumaça encontrou uma regressão.\nAbra a execução para ver o passo que falhou.\n' "${SHA:0:9}" \
+            | ssh oc "/usr/local/bin/ntfy-envia.sh infra 'Fumaça de produção FALHOU' urgent 'rotating_light,x' 'view, Abrir execução, ${URL_EXECUCAO}'"
+
   # Versão e release (semantic-release): cria a tag vX.Y.Z, a release no GitHub e comenta
   # nos PRs incluídos qual versão os levou. A numeração continua da v1.98.0 (tag-base,
   # herdada do repositório anterior, ondacoreana).
