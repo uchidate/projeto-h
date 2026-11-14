@@ -1,0 +1,171 @@
+name: 📋 Relatório diário de saúde
+
+# Consolida sinais que já existem em outros workflows em uma única Issue.
+# Não executa IA: a rotina usa somente a API do GitHub e, portanto, não
+# consome créditos do Copilot.
+on:
+  schedule:
+    - cron: '45 12 * * *' # 09:45 em Brasília
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: relatorio-saude
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    name: Publicar relatório diário
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Consolidar sinais do repositório
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const titulo = '📋 Relatório diário de saúde'
+            const labelNome = 'relatorio-saude'
+            const agora = new Date()
+            const desde = new Date(agora.getTime() - 24 * 60 * 60 * 1000)
+            const desdeIso = desde.toISOString()
+            const repo = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            }
+
+            const [runs, pulls, issues, labels] = await Promise.all([
+              github.paginate(github.rest.actions.listWorkflowRunsForRepo, {
+                ...repo,
+                created: `>=${desdeIso}`,
+                per_page: 100,
+              }),
+              github.paginate(github.rest.pulls.list, {
+                ...repo,
+                state: 'open',
+                per_page: 100,
+              }),
+              github.paginate(github.rest.issues.listForRepo, {
+                ...repo,
+                state: 'open',
+                per_page: 100,
+              }),
+              github.paginate(github.rest.issues.listLabelsForRepo, {
+                ...repo,
+                per_page: 100,
+              }),
+            ])
+
+            const falhas = runs
+              .filter((run) => (
+                run.head_branch === context.payload.repository.default_branch
+                && run.event !== 'pull_request'
+                && ['failure', 'timed_out', 'cancelled', 'action_required', 'stale'].includes(run.conclusion)
+                && run.name !== '📋 Relatório diário de saúde'
+              ))
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+
+            const dependabot = pulls
+              .filter((pull) => pull.user?.login === 'dependabot[bot]')
+              .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+
+            const labelsDeAlerta = new Set([
+              'watchdog',
+              'vigia-externo',
+              'links',
+              'analitica',
+              'performance',
+              'deploy',
+            ])
+            const alertas = issues.filter((issue) => (
+              !issue.pull_request
+              && issue.labels.some((label) => labelsDeAlerta.has(
+                typeof label === 'string' ? label : label.name,
+              ))
+            ))
+
+            if (!labels.some((label) => label.name === labelNome)) {
+              await github.rest.issues.createLabel({
+                ...repo,
+                name: labelNome,
+                color: '1D76DB',
+                description: 'Relatório automático diário de saúde do repositório',
+              })
+            }
+
+            const link = (texto, url) => `[${texto}](${url})`
+            const linhasFalhas = falhas.length === 0
+              ? ['- Nenhuma falha nova em workflows da branch principal.']
+              : falhas.map((run) => (
+                `- ${link(run.name, run.html_url)} — \`${run.conclusion}\` em ${run.created_at}`
+              ))
+            const linhasDependabot = dependabot.length === 0
+              ? ['- Nenhum PR aberto pelo Dependabot.']
+              : dependabot.map((pull) => (
+                `- ${link(`#${pull.number} ${pull.title}`, pull.html_url)}`
+              ))
+            const linhasAlertas = alertas.length === 0
+              ? ['- Nenhum alerta operacional aberto.']
+              : alertas.map((issue) => (
+                `- ${link(`#${issue.number} ${issue.title}`, issue.html_url)}`
+              ))
+
+            const problemas = falhas.length + alertas.length
+            const status = problemas === 0 ? '✅ Saudável' : `⚠️ ${problemas} sinal(is) de atenção`
+            const corpo = [
+              `# ${status}`,
+              '',
+              `Atualizado em **${agora.toISOString()}**.`,
+              `Janela de workflows: desde **${desdeIso}**.`,
+              '',
+              '## Workflows com falha',
+              ...linhasFalhas,
+              '',
+              '## Dependabot',
+              ...linhasDependabot,
+              '',
+              '## Alertas operacionais abertos',
+              ...linhasAlertas,
+              '',
+              '_Este relatório é gerado por GitHub Actions, sem uso de modelo de IA._',
+            ].join('\n')
+
+            const existentes = await github.paginate(github.rest.issues.listForRepo, {
+              ...repo,
+              state: 'open',
+              labels: labelNome,
+              per_page: 100,
+            })
+            const existente = existentes.find((issue) => issue.title === titulo)
+
+            let issue
+            if (existente) {
+              issue = await github.rest.issues.update({
+                ...repo,
+                issue_number: existente.number,
+                body: corpo,
+                labels: [labelNome],
+              })
+            } else {
+              issue = await github.rest.issues.create({
+                ...repo,
+                title: titulo,
+                body: corpo,
+                labels: [labelNome],
+              })
+            }
+
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number: issue.data.number,
+              body: [
+                `**${agora.toISOString()}** — ${status}.`,
+                `Falhas de workflow: ${falhas.length}; Dependabot aberto: ${dependabot.length}; alertas operacionais: ${alertas.length}.`,
+              ].join(' '),
+            })
+
+            core.info(`Relatório publicado na Issue #${issue.data.number}.`)
