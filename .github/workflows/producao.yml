@@ -134,32 +134,10 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: npm
-      # npm na versao do `packageManager` do package.json: o setup-node traz o npm
-      # que acompanha o Node (11), e lock gerado por npm diferente diverge.
-      - name: npm do packageManager
-        run: npm install -g "$(node -p "require('./package.json').packageManager")"
-
-      # Cache do node_modules inteiro, nao so do cache do npm.
-      #
-      # O `cache: npm` do setup-node guarda ~/.npm, o que evita o download mas
-      # nao a instalacao: o `npm ci` continuava levando 28s porque apaga e
-      # reconstroi node_modules do zero. Guardando a arvore ja montada, o passo
-      # cai para poucos segundos quando o lockfile nao mudou.
-      #
-      # A chave inclui a versao do Node porque modulos nativos sao compilados
-      # para ela — restaurar uma arvore de outra versao quebra em runtime, e o
-      # erro apareceria longe daqui.
-      - name: Cache do node_modules
-        id: cache-modulos
-        uses: actions/cache@v6
-        with:
-          path: node_modules
-          key: modulos-node24-${{ hashFiles('package-lock.json') }}
-
-      - name: Instalar dependencias
-        if: steps.cache-modulos.outputs.cache-hit != 'true'
-        run: npm ci
+      # O deploy roda o build dentro do Docker no servidor e, com --skip-gates,
+      # nao importa nenhum pacote do projeto. Node serve apenas para o fallback
+      # de versao em scripts/deploy-manual.sh; instalar node_modules aqui era
+      # trabalho duplicado antes de conectar ao servidor.
 
       - name: Conectar ao servidor
         uses: ./.github/actions/conectar-servidor
