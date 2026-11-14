@@ -2,6 +2,7 @@ import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import type { QuizQuestion } from '@/lib/wordpress/quiz'
 import en from './traducoes/en.json'
 import ja from './traducoes/ja.json'
+import es from './traducoes/es.json'
 
 /**
  * Perguntas do quiz traduzidas. O texto vive em `traducoes/<idioma>.json`, indexado pelo id da pergunta no WordPress;
@@ -12,6 +13,7 @@ export type TraducaoDaPergunta = { q: string; o: string[]; e: string }
 const TRADUCOES: Partial<Record<Locale, Record<string, TraducaoDaPergunta>>> = {
     en: en as Record<string, TraducaoDaPergunta>,
     ja: ja as Record<string, TraducaoDaPergunta>,
+    es: es as Record<string, TraducaoDaPergunta>,
 }
 
 export function traducoesDasPerguntas(locale: Locale): Record<string, TraducaoDaPergunta> {
