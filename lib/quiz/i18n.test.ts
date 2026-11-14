@@ -32,6 +32,19 @@ describe('perguntas do quiz traduzidas', () => {
         }
     })
 
+    it('espanhol: mesmas perguntas do inglês, quatro alternativas distintas, sem português sobrando', () => {
+        const es = traducoesDasPerguntas('es')
+        expect(Object.keys(es).sort()).toEqual(Object.keys(traducoes).sort())
+        for (const [id, t] of Object.entries(es)) {
+            expect(t.q.trim(), id).not.toBe('')
+            expect(t.e.trim(), id).not.toBe('')
+            expect(t.o, id).toHaveLength(4)
+            expect(new Set(t.o).size, `${id}: alternativas repetidas`).toBe(4)
+            // "dos" e "una" existem em espanhol; o que denuncia português é til, "ç" ou "ão".
+            expect(`${t.q} ${t.o.join(' ')} ${t.e}`, id).not.toMatch(/[ãõç]|\b(qual|foi|uma|das|não)\b/i)
+        }
+    })
+
     it('mantém só as perguntas traduzidas, troca o texto e preserva a resposta certa', () => {
         const id = Number(Object.keys(traducoes)[0])
         const lista = perguntasNoIdioma([base(id), base(1)], 'en')
