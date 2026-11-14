@@ -27,7 +27,6 @@ import type { Locale } from '@/lib/i18n/config'
 import { availableLocales, indexableLocales, localizeEntity, semTraducao } from '@/lib/i18n/entity-translation'
 import { buildAlternates } from '@/lib/i18n/alternates'
 import { buildLanguageLinks } from '@/lib/i18n/language-links'
-import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
 import { fichaFina } from '@/lib/i18n/ficha-fina'
@@ -163,7 +162,6 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
         <>
         <WpEditSetter postId={artist.id} postType="artist" />
             {emFallback && <AvisoSemTraducao locale={locale} hrefOriginal={href('artist', { slug }, DEFAULT_LOCALE)} />}
-            {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
         <RastreioDeRolagem caminho={href('artist', { slug }, locale)} />
         <ArtistDetailPage
             artist={artist}
@@ -180,6 +178,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
             groupShopProducts={groupShopProducts}
             shopFallback={semProdutoProprio}
             companyMentions={companyMentions}
+            idiomas={{ availableIn: tSwitcher('availableIn'), dismissLabel: tSwitcher('dismiss'), links: languageLinks }}
         />
         </>
     )

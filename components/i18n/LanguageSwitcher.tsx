@@ -24,10 +24,12 @@ function Globo() {
  * esconderia versões. Quando o navegador prefere um dos idiomas disponíveis, o
  * link vira um convite no idioma de destino, dispensável e lembrado no aparelho.
  */
-export function LanguageSwitcher({ availableIn, dismissLabel, links }: {
+export function LanguageSwitcher({ availableIn, dismissLabel, links, embutido = false }: {
     availableIn: string
     dismissLabel: string
     links: LanguageLink[]
+    /** Dentro de outra faixa (a barra da lista): sem `page-wrap` nem margem, para dividir a linha com ela. */
+    embutido?: boolean
 }) {
     const [preferred, setPreferred] = useState<LanguageLink | null>(null)
 
@@ -54,7 +56,7 @@ export function LanguageSwitcher({ availableIn, dismissLabel, links }: {
 
     if (preferred) {
         return (
-            <div lang={preferred.htmlLang} role="note" className="page-wrap">
+            <div lang={preferred.htmlLang} role="note" className={embutido ? 'w-full' : 'page-wrap'}>
                 {/* Uma linha só, também no celular: o convite entra depois da hidratação e
                     empurra o hero, então precisa custar o mínimo de altura. */}
                 <div className="mt-2 flex items-center gap-3 border border-accent/40 bg-accent/5 px-3 py-1.5 text-[12px] sm:text-[13px]">
@@ -71,8 +73,8 @@ export function LanguageSwitcher({ availableIn, dismissLabel, links }: {
     }
 
     return (
-        <div className="page-wrap">
-            <nav aria-label={availableIn} className="mt-3 flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5 text-[12px]">
+        <div className={embutido ? undefined : 'page-wrap'}>
+            <nav aria-label={availableIn} className={`flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5 text-[12px] ${embutido ? '' : 'mt-3'}`}>
                 <span className="text-muted">{availableIn}</span>
                 {links.map((link) => (
                     <a key={link.locale} href={link.href} hrefLang={link.htmlLang} lang={link.htmlLang}
