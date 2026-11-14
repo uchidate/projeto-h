@@ -20,7 +20,7 @@ import { QuizWidget } from '@/components/ui/QuizWidget'
 import { QuizFacts } from '@/components/ui/QuizFacts'
 import { buildArtistProfileModel } from '@/lib/profiles/artistProfile'
 import { ArtistFichaC } from '@/components/artists/ArtistFichaC'
-import { ListaBarra, ListaProxima } from '@/components/artists/lista/ListaNavegacao'
+import { ListaBarra, ListaProxima, type IdiomasDaPagina } from '@/components/artists/lista/ListaNavegacao'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ArtistColophon } from '@/components/artists/ArtistColophon'
 import { ArtistNextRead } from '@/components/artists/ArtistNextRead'
@@ -54,6 +54,8 @@ interface Props {
     shopFallback?: boolean
     /** Empresas que o acervo já associa a este artista (ex.: garoto-propaganda de uma marca). */
     companyMentions?: MencaoAcervo[]
+    /** Versões em outros idiomas: entram na barra da lista, na mesma linha, no desktop. */
+    idiomas?: IdiomasDaPagina
 }
 
 
@@ -72,6 +74,7 @@ export function ArtistDetailPage({
     groupShopProducts = [],
     shopFallback = false,
     companyMentions = [],
+    idiomas,
 }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
@@ -268,7 +271,7 @@ export function ArtistDetailPage({
             <ReadingBar backHref={href('artists', undefined, locale)} backLabel={tEntity('breadcrumb.artists')} tagLabel={roleLabels[0]} title={name} pageUrl={artistUrl} pageAnchors={pageAnchors} />
 
             <RegistrarVisita item={{ slug: artist.slug, nome: name, foto: image?.src ?? null, papel: roleLabels[0] ?? null }} />
-            <ListaBarra slug={artist.slug} />
+            <ListaBarra slug={artist.slug} idiomas={idiomas} />
             <div hidden data-variante="artista-c" />
             <ArtistFichaC
                 artist={artist} name={name} image={image} roleLabels={roleLabels}

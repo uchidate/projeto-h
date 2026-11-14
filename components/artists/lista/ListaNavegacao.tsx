@@ -5,6 +5,9 @@ import Link from '@/components/i18n/LocalizedLink'
 import { useMemo, useSyncExternalStore } from 'react'
 import { interpretarContexto, lerContextoCru, vizinhos, type ItemLista, type Vizinhanca } from '@/lib/artists/listaContexto'
 import { formatNumber } from '@/lib/i18n/format'
+import { LanguageSwitcher, type LanguageLink } from '@/components/i18n/LanguageSwitcher'
+
+export type IdiomasDaPagina = { availableIn: string; dismissLabel: string; links: LanguageLink[] }
 
 const SERIF = 'font-[family-name:var(--font-playfair)]'
 const KICKER = 'font-mono text-[10px] font-black uppercase tracking-[0.14em] sm:text-[11px]'
@@ -25,12 +28,15 @@ function Foto({ item, tamanho }: { item: ItemLista; tamanho: number }) {
 }
 
 /** Faixa logo abaixo do cabeçalho: volta à lista e vai ao artista anterior ou seguinte. */
-export function ListaBarra({ slug }: { slug: string }) {
+export function ListaBarra({ slug, idiomas }: { slug: string; idiomas?: IdiomasDaPagina }) {
     const v = useVizinhanca(slug)
-    if (!v) return null
+    const temIdiomas = !!idiomas && idiomas.links.length > 0
+    // Quem chegou direto na ficha não tem lista: as versões em outros idiomas seguem na faixa própria, como antes.
+    if (!v) return temIdiomas ? <LanguageSwitcher {...idiomas} /> : null
     return (
         <nav aria-label="Navegação na lista de artistas" data-bloco="ficha-lista-barra" className="border-b border-border bg-surface/60">
-            <div className="page-wrap flex h-[52px] items-center justify-between gap-3 lg:h-[60px]">
+            {/* No desktop, idiomas, volta à lista e vizinhos dividem uma linha só; no celular os idiomas ficam numa linha acima. */}
+            <div className="page-wrap flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-1.5 lg:h-[60px] lg:flex-nowrap lg:gap-x-6 lg:py-0">
                 <Link href={v.href} className="touch-target flex min-w-0 items-center gap-2 text-[14px] font-semibold text-foreground">
                     <span aria-hidden className="text-muted">‹</span>
                     <span className="lg:hidden">Lista</span><span className="hidden lg:inline">Voltar à lista</span>
@@ -38,6 +44,11 @@ export function ListaBarra({ slug }: { slug: string }) {
                         <span className="hidden lg:inline">· {v.rotulo} </span>· {numero(v.posicao)} de {numero(v.total)}
                     </span>
                 </Link>
+                {temIdiomas && (
+                    <div className="order-first w-full lg:order-none lg:ml-auto lg:w-auto lg:min-w-0 lg:flex-1">
+                        <LanguageSwitcher {...idiomas} embutido />
+                    </div>
+                )}
                 <div className="flex shrink-0 gap-1.5 lg:gap-2.5">
                     {v.anterior ? (
                         <Link href={`/artists/${v.anterior.slug}`} aria-label={`Artista anterior: ${v.anterior.nome}`} data-posicao="anterior"
