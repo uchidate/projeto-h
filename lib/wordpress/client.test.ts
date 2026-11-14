@@ -204,6 +204,27 @@ describe('lib/wordpress/client', () => {
             })
         })
 
+        describe('limite de concorrência durante o build', () => {
+            it('não deixa mais de duas requisições ao WP simultâneas por worker', async () => {
+                process.env.NEXT_PHASE = 'phase-production-build'
+                process.env.WP_BUILD_FETCH_CONCURRENCY = '2'
+                let ativas = 0
+                let pico = 0
+                fetchMock.mockImplementation(async () => {
+                    ativas += 1
+                    pico = Math.max(pico, ativas)
+                    await new Promise((resolve) => setTimeout(resolve, 5))
+                    ativas -= 1
+                    return { ok: true, json: async () => [] }
+                })
+                const { wpFetch } = await import('./client')
+
+                await Promise.all(Array.from({ length: 6 }, () => wpFetch('/wp/v2/production')))
+
+                expect(pico).toBe(2)
+            })
+        })
+
         // ── Piso de fetch-cache durante o build ──────────────────────────
         //
         // Quatro casos, e dois deles existem para provar que NADA muda: o piso

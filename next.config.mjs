@@ -47,9 +47,9 @@ const nextConfig = {
             static: 3600,
         },
         webpackBuildWorker: true,
-        // Geração estática: ~886 páginas e ~2.300 chamadas ao WP no mesmo servidor do WP
-        // (load até 16 em 4 núcleos). Metade das páginas simultâneas por worker alivia
-        // a carga, e uma falha transitória refaz a página em vez de derrubar o build.
+        // Geração estática: ~1.091 páginas e ~2.300 chamadas ao WP no mesmo servidor do WP
+        // (load até 16 em 4 núcleos). O limite de páginas por worker reduz rajadas, e
+        // lib/wordpress/client.ts limita também os fetches concorrentes ao WP.
         staticGenerationMaxConcurrency: 4,
         staticGenerationRetryCount: 2,
         // `inlineCss` desligado em 2026-09-14 (ligado no #50 um dia antes).

@@ -1,4 +1,11 @@
-import { WP_API_URL, WP_FETCH_TIMEOUT_MS, IS_BUILD, EM_BUILD_DE_PRODUCAO, WP_BUILD_FETCH_TTL_S } from './config'
+import {
+    WP_API_URL,
+    WP_FETCH_TIMEOUT_MS,
+    IS_BUILD,
+    EM_BUILD_DE_PRODUCAO,
+    WP_BUILD_FETCH_TTL_S,
+    WP_BUILD_FETCH_CONCURRENCY,
+} from './config'
 
 type FetchOptions = {
     revalidate?: number | false
@@ -53,8 +60,8 @@ function revalidateEfetivo(opts: FetchOptions): number | false {
  *
  * ── O problema ──────────────────────────────────────────────────────────────
  *
- * Um build gera ~886 páginas e faz ~2.300 fetches, com 9 workers em paralelo.
- * Uma única falha transitória em qualquer um deles faz `wpFetchPorSlug` lançar
+ * Um build gera ~1.091 páginas e faz ~2.300 fetches, com vários workers em
+ * paralelo. Uma única falha transitória em qualquer um deles faz `wpFetchPorSlug` lançar
  * `WordPressIndisponivelError`, e isso derruba o build INTEIRO:
  *
  *   Export encountered an error on /(site)/artists/[slug]/page:
@@ -98,6 +105,29 @@ function ehTransitorio(status: number | null): boolean {
 
 const dormir = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+class BuildFetchLimiter {
+    private active = 0
+    private readonly waiting: Array<() => void> = []
+
+    constructor(private readonly limit: number) {}
+
+    async run<T>(operation: () => Promise<T>): Promise<T> {
+        if (this.active >= this.limit) {
+            await new Promise<void>((resolve) => this.waiting.push(resolve))
+        }
+
+        this.active += 1
+        try {
+            return await operation()
+        } finally {
+            this.active -= 1
+            this.waiting.shift()?.()
+        }
+    }
+}
+
+const buildFetchLimiter = new BuildFetchLimiter(WP_BUILD_FETCH_CONCURRENCY)
+
 async function fetchWordPress(path: string, opts: FetchOptions): Promise<Response | null> {
     const url = `${WP_API_URL}${path}`
     const tentativas = EM_BUILD_DE_PRODUCAO ? TENTATIVAS_NO_BUILD : 1
@@ -106,7 +136,7 @@ async function fetchWordPress(path: string, opts: FetchOptions): Promise<Respons
         let status: number | null = null
         let descricao = ''
         try {
-            const response = await fetch(url, {
+            const buscar = () => fetch(url, {
                 next: {
                     revalidate: revalidateEfetivo(opts),
                     tags: opts.tags,
@@ -114,6 +144,9 @@ async function fetchWordPress(path: string, opts: FetchOptions): Promise<Respons
                 headers: { Accept: 'application/json' },
                 signal: AbortSignal.timeout(WP_FETCH_TIMEOUT_MS),
             })
+            const response = EM_BUILD_DE_PRODUCAO
+                ? await buildFetchLimiter.run(buscar)
+                : await buscar()
 
             if (response.ok) return response
             status = response.status
