@@ -333,6 +333,7 @@ jobs:
             echo "- fila: \`${{ steps.metricas.outputs.fila_segundos || '0' }}s\`"
             echo "- tempo total: \`${{ steps.metricas.outputs.total_segundos || '0' }}s\`"
             echo "- tempo build (aprox.): \`${tempo_build}s\`"
+            echo "- origem do artefato: \`${{ steps.deploy.outputs.origem_artefato || 'desconhecida' }}\`"
             if [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
               echo "- taxa de reaproveitamento: \`100%\`"
               echo "- artefato: promovido do staging (build pulado)"
