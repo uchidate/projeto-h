@@ -33,6 +33,7 @@ jobs:
             const agora = new Date()
             const desde = new Date(agora.getTime() - 24 * 60 * 60 * 1000)
             const desdeIso = desde.toISOString()
+            const desdeData = desdeIso.slice(0, 10)
             const repo = {
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -41,7 +42,7 @@ jobs:
             const [runs, pulls, issues, labels] = await Promise.all([
               github.paginate(github.rest.actions.listWorkflowRunsForRepo, {
                 ...repo,
-                created: `>=${desdeIso}`,
+                created: `>=${desdeData}`,
                 per_page: 100,
               }),
               github.paginate(github.rest.pulls.list, {
@@ -62,7 +63,8 @@ jobs:
 
             const falhas = runs
               .filter((run) => (
-                run.head_branch === context.payload.repository.default_branch
+                new Date(run.created_at) >= desde
+                && run.head_branch === context.payload.repository.default_branch
                 && run.event !== 'pull_request'
                 && ['failure', 'timed_out', 'cancelled', 'action_required', 'stale'].includes(run.conclusion)
                 && run.name !== '📋 Relatório diário de saúde'
