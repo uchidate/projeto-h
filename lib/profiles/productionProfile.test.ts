@@ -12,6 +12,17 @@ function production(overrides: Partial<WPProduction> = {}): WPProduction {
 }
 
 describe('buildProductionProfileModel', () => {
+    it('traduz o nome dos gêneros no idioma da página e mantém o slug', () => {
+        const prod = production({
+            _embedded: { 'wp:term': [[
+                { id: 2, name: 'Ação', slug: 'acao', taxonomy: 'production_genre', count: 1 },
+                { id: 3, name: 'Comédia', slug: 'comedia', taxonomy: 'production_genre', count: 1 },
+            ]] },
+        })
+        expect(buildProductionProfileModel(prod, 'en').genres.map(g => [g.name, g.slug])).toEqual([['Action', 'acao'], ['Comedy', 'comedia']])
+        expect(buildProductionProfileModel(prod, 'pt').genres.map(g => g.name)).toEqual(['Ação', 'Comédia'])
+    })
+
     it('normaliza apresentação, termos e campos derivados', () => {
         const model = buildProductionProfileModel(production({
             acf: {

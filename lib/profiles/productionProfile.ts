@@ -6,6 +6,7 @@ import { labelsFor } from '@/lib/i18n/labels'
 import { intlLocale } from '@/lib/i18n/format'
 import { papelNoIdioma } from '@/lib/productions/papelElenco'
 import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
+import { generosNoIdioma } from '@/lib/productions/generos'
 
 /**
  * Sinopse de verdade para o resumo da página.
@@ -33,7 +34,7 @@ export function buildProductionProfileModel(production: WPProduction, locale: Lo
     const labels = labelsFor(locale)
     const acf = production.acf ?? {}
     const title = stripHtml(production.title.rendered)
-    const genres = getWPTerms(production._embedded, 'production_genre') as WPTerm[]
+    const genres = generosNoIdioma(getWPTerms(production._embedded, 'production_genre') as WPTerm[], locale)
     const platforms = getWPTerms(production._embedded, 'production_platform') as WPTerm[]
     const [contentBefore, contentAfter] = splitContentForAd(production.content.rendered, 2)
     const galleryUrls = acf.gallery_urls ?? []
