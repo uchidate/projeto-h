@@ -8,7 +8,7 @@ const assign = vi.fn()
 describe('NavegacaoDeListagem', () => {
     beforeEach(() => {
         assign.mockReset()
-        Object.defineProperty(window, 'location', { configurable: true, value: { origin: 'http://localhost:3000', assign, search: '' } })
+        Object.defineProperty(window, 'location', { configurable: true, value: { origin: 'http://localhost:3000', assign, search: '', pathname: '/productions' } })
     })
 
     function link(href: string, extra: Partial<HTMLAnchorElement> = {}) {
@@ -35,5 +35,25 @@ describe('NavegacaoDeListagem', () => {
         fireEvent.click(link('/productions?genre=drama'), { ctrlKey: true })
         fireEvent.click(link('/productions?genre=drama', { target: '_blank' }))
         expect(assign).not.toHaveBeenCalled()
+    })
+
+    it('paginação na mesma listagem guarda a rolagem e a devolve ao carregar', () => {
+        Object.defineProperty(window, 'scrollY', { configurable: true, value: 640 })
+        const scrollTo = vi.fn()
+        window.scrollTo = scrollTo as unknown as typeof window.scrollTo
+        const { unmount } = render(<NavegacaoDeListagem />)
+        fireEvent.click(link('/productions?page=2'))
+        unmount()
+        render(<NavegacaoDeListagem />)
+        expect(scrollTo).toHaveBeenCalledWith(0, 640)
+    })
+
+    it('filtro que leva a outra listagem não guarda rolagem', () => {
+        const scrollTo = vi.fn()
+        window.scrollTo = scrollTo as unknown as typeof window.scrollTo
+        sessionStorage.clear()
+        render(<NavegacaoDeListagem />)
+        fireEvent.click(link('/blog?page=2'))
+        expect(sessionStorage.getItem('hh_rolagem_listagem')).toBeNull()
     })
 })

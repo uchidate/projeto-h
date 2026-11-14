@@ -67,3 +67,24 @@ export function consumirFocoBusca(): boolean {
         return true
     } catch { return false }
 }
+
+const ROLAGEM = 'hh_rolagem_listagem'
+
+/** Guarda a rolagem atual quando o destino é a mesma listagem (paginação, filtro): a navegação completa recarrega a página. */
+export function guardarRolagem(destino: URL) {
+    try {
+        if (destino.pathname !== window.location.pathname) return
+        sessionStorage.setItem(ROLAGEM, JSON.stringify({ caminho: destino.pathname, y: window.scrollY }))
+    } catch { /* sem storage: a página abre no topo */ }
+}
+
+/** Posição guardada por guardarRolagem para este caminho, lida e apagada uma vez. */
+export function consumirRolagem(caminho: string): number | null {
+    try {
+        const bruto = sessionStorage.getItem(ROLAGEM)
+        if (!bruto) return null
+        sessionStorage.removeItem(ROLAGEM)
+        const { caminho: guardado, y } = JSON.parse(bruto) as { caminho: string; y: number }
+        return guardado === caminho && Number.isFinite(y) ? y : null
+    } catch { return null }
+}
