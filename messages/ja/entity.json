@@ -635,6 +635,10 @@
       "Gyeongnam": "慶尚南道",
       "Jeju": "済州島"
     },
-    "recipesKicker": "おうちで作ろう · 手順付き"
+    "recipesKicker": "おうちで作ろう · 手順付き",
+    "featuredKicker": "いちばん有名",
+    "featuredTitle": "まず知っておきたい料理",
+    "featuredDidYouKnow": "知っていましたか？",
+    "featuredSee": "料理を見る"
   }
 }

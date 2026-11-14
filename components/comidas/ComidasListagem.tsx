@@ -26,6 +26,8 @@ import { CATEGORIAS_COM_LOJA } from '@/lib/blog/categoriaLoja'
 import { carregarLojaDoTema } from '@/lib/blog/lojaDoTema'
 import { BlogMarcasFaixa } from '@/components/blog/BlogMarcasFaixa'
 import { receitasEmDestaque } from '@/lib/comidas/receitasEmDestaque'
+import { produtosIcones } from '@/lib/comidas/iconesDaLoja'
+import { ComidasDestaques } from '@/components/comidas/ComidasDestaques'
 
 export type SearchParams = Promise<{ search?: string; page?: string; category?: string; vegetarian?: string; occasion?: string; season?: string; maxSpicy?: string; region?: string }>
 
@@ -130,6 +132,7 @@ export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }:
         ? (emPt ? todosPratos.items : todosPratos.items.filter(f => hasLocale(f, locale)).map(f => localizeEntity(f, locale, 'food')))
         : []
     const receitas = receitasEmDestaque(pratosDasReceitas, 4, locale)
+    const iconesDaLoja = semFiltro && lojaDoTema ? produtosIcones(lojaDoTema.todos, 8, 'comidas:destaques') : []
     if (page > Math.max(1, totalPages)) notFound()
 
     return (
@@ -204,6 +207,26 @@ export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }:
                     })}
                 </div>
             </div>
+
+            {/* Pratos mais famosos: gancho de curiosidade logo no topo, só na primeira página sem filtro. */}
+            {semFiltro && (
+                <ComidasDestaques
+                    pratos={pratosDasReceitas}
+                    rotulos={{ kicker: t('featuredKicker'), titulo: t('featuredTitle'), didYouKnow: t('featuredDidYouKnow'), seeDish: t('featuredSee') }}
+                    rotuloCategoria={rotuloCategoria}
+                />
+            )}
+
+            {semFiltro && iconesDaLoja.length >= 3 && (
+                <ShopRelatedSection
+                    title="Ícones da prateleira coreana"
+                    products={iconesDaLoja}
+                    href={`/loja?categoria=${lojaDoTema?.categoriaLoja}`}
+                    verTudoLabel="Ver todos de Comida"
+                    contexto="comidas:destaques"
+                    bloco="comidas-destaques-produtos"
+                />
+            )}
 
             {/* Guias e artigos do tema: quem chega pelo catálogo encontra também a leitura e a loja. */}
             {artigos && artigos.posts.length >= 3 && (

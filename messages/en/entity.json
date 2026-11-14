@@ -635,6 +635,10 @@
       "Gyeongnam": "Gyeongnam",
       "Jeju": "Jeju"
     },
-    "recipesKicker": "Make it at home · with step-by-step method"
+    "recipesKicker": "Make it at home · with step-by-step method",
+    "featuredKicker": "The most famous",
+    "featuredTitle": "Dishes you need to know",
+    "featuredDidYouKnow": "Did you know?",
+    "featuredSee": "See the dish"
   }
 }
