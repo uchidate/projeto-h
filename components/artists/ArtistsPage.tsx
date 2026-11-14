@@ -219,7 +219,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             <EmAlta artistas={emAltaArtistas} verTodos="#diretorio" grupos={grupos} />
             {inicio && ADSENSE.slots.leaderboard && (
                 <div className="page-wrap pb-8">
-                    <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="artists_apos_destaque" />
+                    <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="artists_apos_destaque" />
                 </div>
             )}
             {inicio && <AniversariosSemana itens={aniversarios} />}

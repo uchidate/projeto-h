@@ -78,6 +78,7 @@ describe('AdSlotInline', () => {
         ['content', '728px', '728'],
         ['feed', '970px', '970'],
         ['leaderboard', '970px', '970'],
+        ['topo', '970px', '970'],
         ['sidebar', '300px', '300'],
     ] as const)('aplica o contrato físico de %s antes do pedido ao AdSense', (layout, cssWidth, contractWidth) => {
         const { container } = render(
@@ -97,6 +98,15 @@ describe('AdSlotInline', () => {
     // O formato voltou a ser `auto` porque `horizontal` preenchia 6,4% contra
     // 50% do `article_body` na mesma página. O teste passa a travar a proteção
     // onde ela de fato mora, em vez de travar junto um efeito colateral caro.
+    it('faixa do topo usa formato horizontal (728x90/970x90) e wrapper compacto', () => {
+        const { container } = render(
+            <AdsProvider settings={settings()}><AdSlotInline slot="inline" layout="topo" analyticsPlacement="test_topo" /></AdsProvider>,
+        )
+        const aside = screen.getByRole('complementary')
+        expect(aside).toHaveClass('my-4')
+        expect(container.querySelector('[data-ad-container]') ?? container.querySelector('.ad-reserve')).toHaveClass('ad-reserve-horizontal')
+    })
+
     it('mantém full-width-responsive desligado no leaderboard, sem prender o formato', () => {
         const { container } = render(
             <AdsProvider settings={settings()}><AdSlotInline slot="inline" layout="leaderboard" analyticsPlacement="test_leaderboard" /></AdsProvider>,
