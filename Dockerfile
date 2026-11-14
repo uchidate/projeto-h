@@ -61,6 +61,12 @@ ENV SENTRY_ORG=$SENTRY_ORG
 ARG WP_BUILD_FETCH_TTL_S=""
 ENV WP_BUILD_FETCH_TTL_S=$WP_BUILD_FETCH_TTL_S
 
+# Limite de fetches simultâneos ao WordPress por worker do build. O padrão
+# conservador protege o PHP enquanto mantém paralelismo; o staging pode testar
+# outro valor sem alterar a navegação pública.
+ARG WP_BUILD_FETCH_CONCURRENCY=""
+ENV WP_BUILD_FETCH_CONCURRENCY=$WP_BUILD_FETCH_CONCURRENCY
+
 # Identidade do site (ver lib/constants/identidade.mjs). Nenhum valor real
 # no repositorio: vem por --build-arg, lido de um arquivo no servidor pelo
 # script de build. Sem elas o next.config.mjs aborta o build de producao.

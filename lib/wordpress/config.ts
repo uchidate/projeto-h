@@ -57,9 +57,9 @@ export const EM_BUILD_DE_PRODUCAO = process.env.NEXT_PHASE === 'phase-production
  *
  * ── Por que 10s é pouco NO BUILD ────────────────────────────────────────────
  *
- * O build roda 9 workers em paralelo contra o mesmo WordPress, pedindo respostas
- * grandes (`_embed=true` traz o post e tudo que ele referencia). A carga é do
- * próprio build. Sob ela, 10s estoura — e um único estouro em ~2.300 fetches
+ * O build roda vários workers em paralelo contra o mesmo WordPress, pedindo
+ * respostas grandes (`_embed=true` traz o post e tudo que ele referencia). A
+ * carga é do próprio build. Sob ela, 10s estoura — e um único estouro em ~2.300 fetches
  * lança `WordPressIndisponivelError`, que aborta o build INTEIRO:
  *
  *   Export encountered an error on /(site)/productions/[slug]/page:
@@ -95,6 +95,24 @@ const WP_FETCH_TIMEOUT_BUILD_MS = positiveTimeout(process.env.WP_BUILD_FETCH_TIM
 export const WP_FETCH_TIMEOUT_MS = EM_BUILD_DE_PRODUCAO
     ? Math.max(WP_FETCH_TIMEOUT_PUBLICO_MS, WP_FETCH_TIMEOUT_BUILD_MS)
     : WP_FETCH_TIMEOUT_PUBLICO_MS
+
+function positiveConcurrency(value: string | undefined, fallback: number): number {
+    const parsed = Number(value)
+    return Number.isInteger(parsed) && parsed >= 1 && parsed <= 16 ? parsed : fallback
+}
+
+/**
+ * Limite de requisições simultâneas ao WordPress em cada worker do build.
+ *
+ * O Next gera páginas em vários workers, e cada página pode fazer mais de um
+ * fetch. Sem este segundo limite, a concorrência de páginas vira uma rajada de
+ * requisições PHP no mesmo servidor que também executa o build. O limite é
+ * aplicado apenas durante o build; a navegação pública não é serializada.
+ */
+export const WP_BUILD_FETCH_CONCURRENCY = positiveConcurrency(
+    process.env.WP_BUILD_FETCH_CONCURRENCY,
+    2,
+)
 
 const TTL_PADRAO_S = 21_600
 
