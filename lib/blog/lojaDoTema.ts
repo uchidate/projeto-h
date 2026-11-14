@@ -21,6 +21,8 @@ export async function carregarLojaDoTema(cfg: CategoriaComLoja, contexto: string
             industria: cfg.industria,
             marcas: marcasComProdutos(empresas.items, produtos),
             produtos: ordenarPrateleira(produtos, contexto).slice(0, 10),
+            /** Todos os produtos à venda da categoria, para curadorias que escolhem por título (ex.: ícones da prateleira). */
+            todos: produtos,
         }
     } catch {
         return undefined

@@ -635,6 +635,10 @@
       "Gyeongnam": "Gyeongnam",
       "Jeju": "Jeju"
     },
-    "recipesKicker": "Para fazer em casa · com modo de preparo"
+    "recipesKicker": "Para fazer em casa · com modo de preparo",
+    "featuredKicker": "Os mais famosos",
+    "featuredTitle": "Pratos que você precisa conhecer",
+    "featuredDidYouKnow": "Você sabia?",
+    "featuredSee": "Ver o prato"
   }
 }
