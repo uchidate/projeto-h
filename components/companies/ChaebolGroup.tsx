@@ -14,6 +14,7 @@ import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 type Params = Promise<{ slug: string }>
 
 export async function slugsPreGerados() {
+    if (process.env.SKIP_BUILD_STATIC_GENERATION === '1') return []
     try {
         const all = await getAllCompaniesRaw()
         const groups = new Set(all.map(c => c.acf?.chaebol_group).filter((g): g is string => !!g))

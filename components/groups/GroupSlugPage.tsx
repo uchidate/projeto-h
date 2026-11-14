@@ -67,6 +67,7 @@ const TIPO_CONFIGS: Record<string, TipoConfig> = {
 
 export async function slugsPreGerados() {
     const tipoSlugs = Object.keys(TIPO_CONFIGS).map(t => ({ slug: t }))
+    if (process.env.SKIP_BUILD_STATIC_GENERATION === '1') return tipoSlugs
     try {
         const { items, totalPages } = await getGroups({ perPage: 100, orderby: 'date' })
         const groupSlugs = items.map(g => ({ slug: g.slug }))

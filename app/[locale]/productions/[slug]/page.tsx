@@ -18,7 +18,7 @@ type Params = Promise<{ locale: string; slug: string }>
 // incompleto, desistiria de pré-gerar TODOS os slugs (o build caía de 1005 para 639 páginas).
 // Os outros idiomas renderizam sob demanda com ISR; só itens com tradução publicada têm página (D5-b).
 export async function generateStaticParams() {
-    if (process.env.SKIP_BUILD_STATIC_GENERATION) return []
+    if (process.env.SKIP_BUILD_STATIC_GENERATION === '1') return []
     try {
         const { items } = await getProductions({ perPage: 100 })
         return items.map(item => ({ locale: DEFAULT_LOCALE, slug: item.slug }))

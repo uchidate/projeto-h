@@ -36,6 +36,7 @@ import { MencionadoAcervo } from '@/components/companies/MencionadoAcervo'
 type Params = Promise<{ slug: string; locale?: Locale }>
 
 export async function slugsPreGerados() {
+    if (process.env.SKIP_BUILD_STATIC_GENERATION === '1') return []
     try {
         const { items, totalPages } = await getFoods({ perPage: 100, orderby: 'date' })
         const slugs = items.map(f => ({ slug: f.slug }))
