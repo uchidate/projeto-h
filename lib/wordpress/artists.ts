@@ -8,7 +8,11 @@ export type ArtistsQuery = {
     page?: number
     perPage?: number
     search?: string
-    orderby?: 'date' | 'title' | 'modified' | 'menu_order' | 'trending_score' | 'popularity'
+    /**
+     * 'relevance' = acesso real ao site + fama externa + piso de qualidade (meta relevance_score, gravado por
+     * update-artist-relevance no ops). 'popularity' = só Wikipédia. 'trending_score' é legado, sem recálculo.
+     */
+    orderby?: 'date' | 'title' | 'modified' | 'menu_order' | 'trending_score' | 'popularity' | 'relevance'
     order?: 'desc' | 'asc'
     slug?: string
     role?: string       // singer | actor | rapper | dancer | model | host | composer
@@ -24,7 +28,7 @@ export type ArtistsQuery = {
 
 export async function getArtists(query: ArtistsQuery = {}) {
     const { page = 1, perPage = 24, search, orderby = 'date', order = 'desc', slug, role, gender, letter, birthMonth, agency, agencies, affiliation, locale, comTraducoes } = query
-    const isMetaOrder = orderby === 'trending_score' || orderby === 'popularity'
+    const isMetaOrder = orderby === 'trending_score' || orderby === 'popularity' || orderby === 'relevance'
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage, orderby: isMetaOrder ? 'date' : orderby, order, status: 'publish',
         _fields: locale || comTraducoes ? 'id,slug,title,date,featured_image_url,acf,translations' : 'id,slug,title,date,featured_image_url,acf',
@@ -37,9 +41,15 @@ export async function getArtists(query: ArtistsQuery = {}) {
         oc_affiliation: affiliation ?? undefined,
         oc_orderby: isMetaOrder ? orderby : undefined,
     }
-    return wpFetchWithTotal<WPArtist>(`/wp/v2/artist${buildParams(params)}`, {
+    const resultado = await wpFetchWithTotal<WPArtist>(`/wp/v2/artist${buildParams(params)}`, {
         revalidate: 1800, tags: [WP_CACHE_TAGS.artists],
     })
+    // A ordem por relevância só devolve fichas com a nota gravada. Se a primeira página vier vazia
+    // (nota ainda não calculada no ambiente), recua para a ordem antiga em vez de mostrar nada.
+    if (orderby === 'relevance' && page === 1 && resultado.items.length === 0) {
+        return getArtists({ ...query, orderby: 'trending_score' })
+    }
+    return resultado
 }
 
 export async function getArtistsByIds(ids: number[]): Promise<WPArtist[]> {
@@ -64,16 +74,18 @@ export async function getArtistBySlug(slug: string): Promise<WPArtist | null> {
 
 export async function getRelatedArtists(excludeId: number, agencyId?: number, role?: string, perPage = 6): Promise<WPArtist[]> {
     try {
+        // Vínculo primeiro (mesma agência, depois mesmo papel); dentro dele, os mais relevantes.
+        // Antes a ordem era a data de modificação da ficha, que não diz nada ao leitor.
         // With agency: fetch same-agency artists (most relevant)
         if (agencyId) {
             const artists = await wpBuscarOpcional<WPArtist[]>(
-                `/wp/v2/artist${buildParams({ per_page: perPage, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', orderby: 'modified', order: 'desc', exclude: excludeId, oc_agency: agencyId })}`,
+                `/wp/v2/artist${buildParams({ per_page: perPage, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', oc_orderby: 'relevance', order: 'desc', exclude: excludeId, oc_agency: agencyId })}`,
                 { revalidate: 1800, tags: [WP_CACHE_TAGS.artists] },
             )
             if (artists.length >= 3) return artists.slice(0, perPage)
         }
         // Fallback: fetch by role to show musically similar artists
-        const params: Record<string, string | number | boolean | undefined> = { per_page: 24, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', orderby: 'modified', order: 'desc', exclude: excludeId }
+        const params: Record<string, string | number | boolean | undefined> = { per_page: 24, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', oc_orderby: 'relevance', order: 'desc', exclude: excludeId }
         if (role) params.oc_role = role
         const pool = await wpBuscarOpcional<WPArtist[]>(
             `/wp/v2/artist${buildParams(params)}`,
@@ -105,18 +117,17 @@ export async function getStreamingArtists(limit = 12) {
 
 export async function getTrendingArtists(limit = 10) {
     const artists = await wpBuscarOpcional<WPArtist[]>(
-        `/wp/v2/artist${buildParams({ per_page: limit, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', oc_orderby: 'trending_score', order: 'desc' })}`,
+        `/wp/v2/artist${buildParams({ per_page: limit, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', oc_orderby: 'relevance', order: 'desc' })}`,
         { revalidate: 300, tags: [WP_CACHE_TAGS.artists, WP_CACHE_TAGS.trendingArtists] },
     )
-    return artists
-        .sort((a, b) => (b.acf?.trending_score ?? 0) - (a.acf?.trending_score ?? 0))
-        .slice(0, limit)
+    // A ordem já vem do WordPress (relevance_score); a nota não é exposta na REST.
+    return artists.slice(0, limit)
 }
 
 /** Interesse acumulado verificável, distinto de tendência recente. */
 /**
  * Os artistas que o público do site mais abriu, por access_score —
- * sessões distintas medidas no Umami (scripts/update-artist-access.mjs).
+ * sessões distintas medidas no Umami (scripts/update-artist-relevance.mjs).
  *
  * Distinto de getPopularArtists, que ordena por popularity_score: aquele vem
  * de pageviews da Wikipédia EN e mede interesse global, o que é o critério

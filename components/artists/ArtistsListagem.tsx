@@ -54,7 +54,8 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
 
     const orderby = sortBy === 'name' ? 'title' as const
         : sortBy === 'newest' ? 'date' as const
-            : sortBy === 'trending' ? 'trending_score' as const
+            // "Em alta" (padrão) é a relevância: acesso real ao site + fama externa.
+            : sortBy === 'trending' ? 'relevance' as const
                 : 'popularity' as const
     const order = sortBy === 'name' ? 'asc' as const : 'desc' as const
 

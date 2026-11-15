@@ -97,7 +97,7 @@ describe('getPopularArtists', () => {
         expect(fetchMock.mock.calls[0][0] as string).toContain('oc_orderby=popularity')
     })
 
-    it('cai para tendência enquanto o backfill de popularidade não foi executado', async () => {
+    it('cai para a relevância enquanto o backfill de popularidade não foi executado', async () => {
         const fetchMock = vi.fn()
             .mockResolvedValueOnce({ ok: true, json: async () => [{ ...artist(1, 'sem-score'), acf: {} }] })
             .mockResolvedValueOnce({ ok: true, json: async () => [{ ...artist(2, 'em-alta'), acf: { trending_score: 90 } }] })
@@ -105,7 +105,7 @@ describe('getPopularArtists', () => {
         const result = await getPopularArtists(8)
         expect(result[0].slug).toBe('em-alta')
         expect(fetchMock).toHaveBeenCalledTimes(2)
-        expect(fetchMock.mock.calls[1][0] as string).toContain('oc_orderby=trending_score')
+        expect(fetchMock.mock.calls[1][0] as string).toContain('oc_orderby=relevance')
     })
 })
 
@@ -148,7 +148,7 @@ describe('getMostAccessedArtists', () => {
     })
 
     it('cai para popularidade enquanto o script de acesso não rodou', async () => {
-        // access_score só existe depois de update-artist-access.mjs; sem o
+        // access_score só existe depois de update-artist-relevance.mjs; sem o
         // recuo a home ficaria sem o bloco até a primeira execução.
         const fetchMock = vi.fn()
             .mockResolvedValueOnce({ ok: true, json: async () => [{ ...artist(1, 'jisoo'), acf: {} }] })
