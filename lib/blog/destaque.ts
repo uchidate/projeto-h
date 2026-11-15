@@ -52,6 +52,19 @@ export function candidatosDestaque(pool: WPPost[], agora: Date = new Date(), qua
     return [...rodizio, ...ranking.filter(p => !rodizio.includes(p))].slice(0, quantidade)
 }
 
+/**
+ * Destaque da lista de notícias: o artigo recente (até 3 dias) mais lido; sem leitura medida ainda,
+ * o mais novo. Decisão do dono (2026-11-15): o destaque é do que acabou de sair; o que continua sendo
+ * lido meses depois tem lugar próprio em "Em alta" e "Comece por aqui".
+ * `recentes` vem do mais novo para o mais antigo; só entra quem tem imagem de capa.
+ */
+export function destaqueRecente(recentes: WPPost[], agora: Date = new Date()): WPPost | null {
+    const comCapa = recentes.filter(p => p.featured_image_url)
+    const novos = comCapa.filter(p => idadeEmDias(p, agora) <= NOVIDADE_DIAS)
+    const maisLido = [...novos].sort((a, b) => views(b) - views(a))[0]
+    return maisLido ?? comCapa[0] ?? null
+}
+
 /** Destaque padrão (o primeiro candidato). */
 export function escolherDestaque(pool: WPPost[], agora: Date = new Date()): WPPost | null {
     return candidatosDestaque(pool, agora, 1)[0] ?? null

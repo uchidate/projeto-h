@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { WPPost } from '@/lib/wordpress/types'
-import { candidatosDestaque, pontuar, escolherDestaque, escolherParaLeitor, maisLidos, perenes, diaCorrido } from './destaque'
+import { candidatosDestaque, destaqueRecente, pontuar, escolherDestaque, escolherParaLeitor, maisLidos, perenes, diaCorrido } from './destaque'
 
 const AGORA = new Date('2026-09-26T15:00:00Z')
 const dias = (n: number) => new Date(AGORA.getTime() - n * 86_400_000).toISOString()
@@ -70,5 +70,23 @@ describe('destaque do blog', () => {
         const noticia = { ...post(5, 90, 80), categories: [7] } as unknown as WPPost
         const r = perenes([noticia, post(6, 100, 20)], 6, AGORA, [7])
         expect(r.map(p => p.id)).toEqual([6])
+    })
+})
+
+describe('destaque da lista de notícias', () => {
+    const comCapa = (p: WPPost): WPPost => ({ ...p, featured_image_url: 'https://exemplo.test/capa.jpg' })
+
+    it('fica com o artigo recente mais lido, não com o guia antigo de leitura alta', () => {
+        const recentes = [comCapa(post(1, 0, 2)), comCapa(post(2, 1, 9)), comCapa(post(3, 2, 4)), comCapa(post(4, 120, 400))]
+        expect(destaqueRecente(recentes, AGORA)?.id).toBe(2)
+    })
+
+    it('sem leitura medida, vale o mais novo com capa', () => {
+        expect(destaqueRecente([post(1, 0, 0), comCapa(post(2, 0, 0)), comCapa(post(3, 1, 0))], AGORA)?.id).toBe(2)
+    })
+
+    it('sem nada nos últimos 3 dias, ainda destaca o mais novo da lista', () => {
+        expect(destaqueRecente([comCapa(post(1, 10, 0)), comCapa(post(2, 20, 50))], AGORA)?.id).toBe(1)
+        expect(destaqueRecente([], AGORA)).toBeNull()
     })
 })

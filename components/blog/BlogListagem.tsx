@@ -7,7 +7,7 @@ import { getPosts, getCategories, getSidebarPosts } from '@/lib/wordpress/posts'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { BlogPage } from '@/components/blog/BlogPage'
 import { getAllHubs } from '@/lib/guias'
-import { candidatosDestaque, maisLidos, perenes as escolherPerenes } from '@/lib/blog/destaque'
+import { candidatosDestaque, destaqueRecente, maisLidos, perenes as escolherPerenes } from '@/lib/blog/destaque'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { CATEGORIAS_COM_LOJA } from '@/lib/blog/categoriaLoja'
 import { carregarLojaDoTema } from '@/lib/blog/lojaDoTema'
@@ -156,9 +156,12 @@ export async function BlogListagem({ searchParams, locale = DEFAULT_LOCALE }: { 
     const paginas = lidos ? Math.max(1, Math.ceil(lidos.length / porPagina)) : postsResult.totalPages
     if (lidos && page > paginas) notFound()
     const inicio = semFiltro && page === 1 && !order && !consulta.tipo
-    const comImagem = pool.filter(p => p.featured_image_url)
-    const candidatos = inicio ? candidatosDestaque(comImagem, new Date(), 3) : []
-    // O que já é candidato a destaque não repete em "Comece por aqui".
+    // Destaque = notícia recente (a mais lida dos últimos 3 dias, ou a mais nova). As visualizações vêm da base,
+    // porque a lista da página não traz `acf`.
+    const leitura = new Map(pool.map(p => [p.id, p.acf?.views]))
+    const recente = inicio ? destaqueRecente(postsResult.items.map(p => ({ ...p, acf: { ...p.acf, views: leitura.get(p.id) ?? p.acf?.views } })), new Date()) : null
+    const candidatos = recente ? [postsResult.items.find(p => p.id === recente.id)!] : []
+    // O destaque não repete em "Em alta" nem em "Comece por aqui".
     const idsCandidatos = new Set(candidatos.map(p => p.id))
     const shopProducts = inicio && emPt
         ? ordenarPrateleira(await getFeaturedStoreProducts(8), 'listagem:blog')

@@ -3,7 +3,7 @@ import { metadataDeListagem, paginaDe, paginaInvalida, urlDaListagem } from '@/l
 import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { notFound } from 'next/navigation'
-import { getGroups, getAllGroups, getTrendingGroups } from '@/lib/wordpress/groups'
+import { getGroups, getAllGroups } from '@/lib/wordpress/groups'
 import { wpFetch } from '@/lib/wordpress/client'
 import { SITE_URL } from '@/lib/constants/site'
 import { GroupsPage } from '@/components/groups/GroupsPage'
@@ -121,11 +121,9 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
     let debutaram: { slug: string; nome: string; dia: number; ano: number }[] = []
     const hoje = hojeEmSaoPaulo()
     if (inicio) {
-        const [trending, todos] = await Promise.all([
-            emPt ? getTrendingGroups(6).catch(() => []) : Promise.resolve([] as WPGroup[]),
-            getAllGroups({ ...idioma, orderby: 'relevance', order: 'desc', leve: true }).catch(() => []),
-        ])
-        emAlta = trending.length >= 6 ? trending : items.slice(0, 6)
+        const todos = await getAllGroups({ ...idioma, orderby: 'relevance', order: 'desc', leve: true }).catch(() => [] as WPGroup[])
+        // Os seis primeiros da própria lista (mesma ordem de relevância): a grade segue dali, sem repetir.
+        emAlta = items.slice(0, 6)
         // `todos` já vem por relevância: as quatro primeiras de cada geração são as mais procuradas.
         const todosNoIdioma = emPt ? todos : todos.filter(g => hasLocale(g, locale)).map(g => localizeEntity(g, locale, 'group'))
         geracoes = GENERATIONS.filter(g => g.slug !== '1').map(g => ({

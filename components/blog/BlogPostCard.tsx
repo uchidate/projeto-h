@@ -7,7 +7,11 @@ import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { slugPublicoDoPost } from '@/lib/blog/translations'
 import { catStyleTema as catStyle, postReadingTime } from '@/lib/blog/catStyle'
 
-export function BlogPostCard({ post, priority, categoryMap, locale = DEFAULT_LOCALE }: { post: WPPost; priority?: boolean; categoryMap?: Record<number, { name: string; slug: string }>; locale?: Locale }) {
+/**
+ * `compactoNoCelular`: abaixo de `sm` o card deita (texto à esquerda, miniatura à direita) e perde o resumo.
+ * Com a foto em 4:3 na largura toda, cada notícia ocupava quase meia tela e a lista mostrava duas por vez.
+ */
+export function BlogPostCard({ post, priority, categoryMap, locale = DEFAULT_LOCALE, compactoNoCelular = false }: { post: WPPost; priority?: boolean; categoryMap?: Record<number, { name: string; slug: string }>; locale?: Locale; compactoNoCelular?: boolean }) {
     const image = getWPImage(post._embedded, post.featured_image_url)
     const title = stripHtml(post.title.rendered)
     const excerpt = stripHtml(post.excerpt.rendered).slice(0, 110)
@@ -28,11 +32,11 @@ export function BlogPostCard({ post, priority, categoryMap, locale = DEFAULT_LOC
 
     return (
         <Link href={`/blog/${slugPublicoDoPost(post.translations, post.slug)}`}
-            className="group flex h-full flex-col border-t border-border pt-3 transition-colors duration-300 hover:border-accent">
-            <div className="relative aspect-4/3 overflow-hidden bg-surface shrink-0">
+            className={`group flex h-full border-t border-border pt-3 transition-colors duration-300 hover:border-accent ${compactoNoCelular ? 'flex-row-reverse gap-3 sm:flex-col sm:gap-0' : 'flex-col'}`}>
+            <div className={`relative overflow-hidden bg-surface shrink-0 ${compactoNoCelular ? 'aspect-square w-[104px] self-start sm:aspect-4/3 sm:w-auto sm:self-auto' : 'aspect-4/3'}`}>
                 {image ? (
                     <Image src={image.src} alt={image.alt || title} fill priority={priority}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        sizes={compactoNoCelular ? '(max-width: 640px) 104px, (max-width: 1024px) 50vw, 33vw' : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
                         className="object-cover group-hover:scale-[1.04] transition-transform duration-500" />
                 ) : (
                     <div className="h-full" style={{ background: `linear-gradient(135deg, ${cs.bg}, ${cs.color}33)` }} />
@@ -44,17 +48,17 @@ export function BlogPostCard({ post, priority, categoryMap, locale = DEFAULT_LOC
                     ninguém, só cobre a foto. `isRecent` continua exportada para
                     quem precisar da regra fora de um contexto cronológico. */}
             </div>
-            <div className="flex flex-1 flex-col gap-2 pt-3">
+            <div className={`flex min-w-0 flex-1 flex-col gap-2 ${compactoNoCelular ? 'sm:pt-3' : 'pt-3'}`}>
                 {cat && (
                     <span className="self-start px-2 py-0.5 font-mono font-bold uppercase tracking-[0.12em] text-[10px] whitespace-nowrap"
                         style={{ backgroundColor: cs.bg, color: cs.color }}>
                         {cat.name}
                     </span>
                 )}
-                <h2 className="font-serif text-[15px] sm:text-[17px] font-medium leading-[1.08] tracking-tight text-foreground line-clamp-2 group-hover:text-accent transition-colors flex-1">
+                <h2 className={`font-serif text-[15px] sm:text-[17px] font-medium leading-[1.08] tracking-tight text-foreground ${compactoNoCelular ? 'line-clamp-3 sm:line-clamp-2' : 'line-clamp-2'} group-hover:text-accent transition-colors flex-1`}>
                     {title}
                 </h2>
-                {excerpt && <p className="text-[12px] text-muted line-clamp-2 leading-relaxed">{excerpt}</p>}
+                {excerpt && <p className={`text-[12px] text-muted line-clamp-2 leading-relaxed ${compactoNoCelular ? 'hidden sm:block' : ''}`}>{excerpt}</p>}
                 <div className="mt-auto flex items-center justify-between gap-2 pt-2.5">
                     <div className="flex items-center gap-2 text-[10px] text-muted">
                         <span>{formatDatePt(post.date, LOCALE_META[locale].intl)}</span>

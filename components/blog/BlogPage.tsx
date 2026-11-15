@@ -105,7 +105,7 @@ export async function BlogPage({ locale = DEFAULT_LOCALE, posts, total, totalPag
     const primaryPosts = gridPosts.slice(0, cheios || gridPosts.length)
     const compactPosts = gridPosts.slice(primaryPosts.length)
     // Com vitrine da categoria, ela entra depois do primeiro bloco de 6 artigos (duas linhas na grade de 3 colunas).
-    const vitrineDepois = categoriaLoja && categoriaLoja.produtos.length >= 4 ? 6 : primaryPosts.length
+    const vitrineDepois = (categoriaLoja && categoriaLoja.produtos.length >= 4) || showHero ? 6 : primaryPosts.length
     /* O bloco lateral repetia a grade ao lado: os 5 mais recentes, numa
        listagem também ordenada por data — na primeira página o item nº 1 era o
        próprio post do hero. `getSidebarPosts` agora busca a partir do offset da
@@ -127,6 +127,63 @@ export async function BlogPage({ locale = DEFAULT_LOCALE, posts, total, totalPag
         pages.push(totalPages)
         return pages
     }
+
+    /* Descoberta (guias que seguem lidos, guias por gênero, loja): entra depois do primeiro bloco de notícias.
+       Antes vinha acima da lista e, no celular, a primeira notícia da grade só aparecia depois de umas quatro telas. */
+    const descoberta = (
+        <div className="mb-10">
+                {/* Conteúdo-chave: guias que continuam sendo lidos meses depois; quem chega sem saber por onde começar entra por aqui. */}
+                {showHero && perenes.length >= 3 && (
+                    <section data-bloco="blog-comece-por-aqui" className="mt-10 border-t border-border pt-6">
+                        <div className="mb-4">
+                            <h2 className="font-serif text-[26px] font-semibold leading-tight sm:text-[32px]">{t('startHereTitle')}</h2>
+                            <p className="mt-1 text-[14px] text-muted">{t('startHereText')}</p>
+                        </div>
+                        {/* No celular os 4 cards empilhados passavam de 1.900 px de rolagem; viram uma faixa deslizável. */}
+                        <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 items-start gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+                            {perenes.slice(0, 4).map(p => (
+                                <div key={p.id} className="flex w-[78%] shrink-0 snap-start flex-col sm:w-auto">
+                                    <BlogGuiaCard post={p} categoryMap={categoryMap} locale={locale} />
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Guias saíram da navbar e reaparecem aqui, ao lado da intenção
+                    que já os procurava. Só na primeira página sem filtro: numa
+                    busca por artigo específico esta faixa seria ruído. */}
+                {!isFiltered && !order && !tipo && currentPage === 1 && guias.length > 0 && (
+                    <section className="mt-10 border-t border-border pt-5">
+                        <div className="mb-3 flex items-baseline gap-3">
+                            <h2 className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60">
+                                {t('guides')}
+                            </h2>
+                            <Link href="/guias" className="-my-2.5 ml-auto py-2.5 font-mono text-[11px] text-muted transition-colors hover:text-accent">
+                                {t('allGuides')}
+                            </Link>
+                        </div>
+                        <div data-bloco="blog-guias" className="grid grid-cols-2 gap-x-6 sm:grid-cols-3">
+                            {guias.map(hub => (
+                                <Link key={hub.slug} href={`/guias/${hub.slug}`}
+                                    className="group border-t border-border py-3 transition-colors hover:border-accent">
+                                    <span className="text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent">
+                                        {hub.shortTitle}
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {emPt && showHero && shopProducts.length > 0 && (
+                    <div className="mt-10">
+                        <ShopRelatedSection title="Achados da curadoria" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:blog" />
+                    </div>
+                )}
+        </div>
+    )
+    const temDescoberta = showHero && (perenes.length >= 3 || guias.length > 0 || (emPt && shopProducts.length > 0))
 
     return (
         <div className="bg-background">
@@ -173,56 +230,6 @@ export async function BlogPage({ locale = DEFAULT_LOCALE, posts, total, totalPag
                     <div className="mt-6"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="blog_leaderboard" /></div>
                 )}
 
-                {/* Conteúdo-chave: guias que continuam sendo lidos meses depois; quem chega sem saber por onde começar entra por aqui. */}
-                {showHero && perenes.length >= 3 && (
-                    <section data-bloco="blog-comece-por-aqui" className="mt-10 border-t border-border pt-6">
-                        <div className="mb-4">
-                            <h2 className="font-serif text-[26px] font-semibold leading-tight sm:text-[32px]">{t('startHereTitle')}</h2>
-                            <p className="mt-1 text-[14px] text-muted">{t('startHereText')}</p>
-                        </div>
-                        {/* No celular os 4 cards empilhados passavam de 1.900 px de rolagem; viram uma faixa deslizável. */}
-                        <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 items-start gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
-                            {perenes.slice(0, 4).map(p => (
-                                <div key={p.id} className="flex w-[78%] shrink-0 snap-start flex-col sm:w-auto">
-                                    <BlogGuiaCard post={p} categoryMap={categoryMap} locale={locale} />
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                {/* Guias saíram da navbar e reaparecem aqui, ao lado da intenção
-                    que já os procurava. Só na primeira página sem filtro: numa
-                    busca por artigo específico esta faixa seria ruído. */}
-                {!isFiltered && !order && !tipo && currentPage === 1 && guias.length > 0 && (
-                    <section className="mb-10 mt-10 border-t border-border pt-5">
-                        <div className="mb-3 flex items-baseline gap-3">
-                            <h2 className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-foreground/60">
-                                {t('guides')}
-                            </h2>
-                            <Link href="/guias" className="-my-2.5 ml-auto py-2.5 font-mono text-[11px] text-muted transition-colors hover:text-accent">
-                                {t('allGuides')}
-                            </Link>
-                        </div>
-                        <div data-bloco="blog-guias" className="grid grid-cols-2 gap-x-6 sm:grid-cols-3 lg:grid-cols-6">
-                            {guias.map(hub => (
-                                <Link key={hub.slug} href={`/guias/${hub.slug}`}
-                                    className="group border-t border-border py-3 transition-colors hover:border-accent">
-                                    <span className="text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent">
-                                        {hub.shortTitle}
-                                    </span>
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                {emPt && showHero && shopProducts.length > 0 && (
-                    <div className="mt-10">
-                        <ShopRelatedSection title="Achados da curadoria" products={shopProducts} verTudoLabel="Ver toda a loja" contexto="listagem:blog" />
-                    </div>
-                )}
-
                 {posts.length === 0 ? (
                     <EmptyState
                         icon={<BookOpen size={40} />}
@@ -261,9 +268,11 @@ export async function BlogPage({ locale = DEFAULT_LOCALE, posts, total, totalPag
 
                             {primaryPosts.length > 0 && (
                                 <div data-bloco="listagem-blog" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {primaryPosts.slice(0, vitrineDepois).map((p, i) => <BlogPostCard key={p.id} post={p} priority={i < 3} categoryMap={categoryMap} locale={locale} />)}
+                                    {primaryPosts.slice(0, vitrineDepois).map((p, i) => <BlogPostCard key={p.id} post={p} priority={i < 3} categoryMap={categoryMap} locale={locale} compactoNoCelular={i > 0} />)}
                                 </div>
                             )}
+
+                            {temDescoberta && descoberta}
 
                             {emPt && categoriaLoja && categoriaLoja.produtos.length >= 4 && primaryPosts.length > 0 && (
                                 <div className="my-8">
@@ -280,7 +289,7 @@ export async function BlogPage({ locale = DEFAULT_LOCALE, posts, total, totalPag
 
                             {primaryPosts.length > vitrineDepois && (
                                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {primaryPosts.slice(vitrineDepois).map(p => <BlogPostCard key={p.id} post={p} priority={false} categoryMap={categoryMap} locale={locale} />)}
+                                    {primaryPosts.slice(vitrineDepois).map(p => <BlogPostCard key={p.id} post={p} priority={false} categoryMap={categoryMap} locale={locale} compactoNoCelular />)}
                                 </div>
                             )}
 
