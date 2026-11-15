@@ -6,6 +6,7 @@ import { href as rota } from '@/lib/i18n/routes'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { intlLocale } from '@/lib/i18n/format'
 import { getWPImage, stripHtml, formatDatePt } from '@/lib/utils'
+import { AbasCelular } from '@/components/home/AbasCelular'
 import { HomeProdutoMini } from '@/components/home/HomeProdutoMini'
 import type { EditoriaMontada } from '@/lib/home/editorias'
 import type { PrateleirasEditorias } from '@/lib/home/editorias-loja'
@@ -29,7 +30,8 @@ export async function HomeEditorias({ editorias: colunas, prateleiras = {}, loca
 
     return (
         <section aria-label={t('rotulo')} className="px-0 py-0">
-            <div className={`grid gap-3.5 lg:gap-6 ${colunas.length === 3 ? 'lg:grid-cols-3' : colunas.length === 2 ? 'lg:grid-cols-2' : ''}`}>
+            <AbasCelular rotulo={t('rotulo')} abas={colunas.map(({ coluna }) => ({ chave: coluna.chave, rotulo: t(coluna.chave), cor: coluna.cor }))}
+                className={`grid gap-3.5 lg:gap-6 ${colunas.length === 3 ? 'lg:grid-cols-3' : colunas.length === 2 ? 'lg:grid-cols-2' : ''}`}>
                 {colunas.map(({ coluna, posts: itens }) => {
                     const [abertura, ...resto] = itens
                     const imagem = getWPImage(abertura._embedded, abertura.featured_image_url)
@@ -75,7 +77,7 @@ export async function HomeEditorias({ editorias: colunas, prateleiras = {}, loca
                         </div>
                     )
                 })}
-            </div>
+            </AbasCelular>
         </section>
     )
 }

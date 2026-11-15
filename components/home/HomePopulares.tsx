@@ -6,6 +6,7 @@ import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { formatNumber } from '@/lib/i18n/format'
 import { labelsFor } from '@/lib/i18n/labels'
 import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
+import { AbasCelular } from '@/components/home/AbasCelular'
 import type { WPArtist, WPGroup, WPProduction } from '@/lib/wordpress/types'
 
 const ROTULO = 'font-mono text-[11px] font-black uppercase tracking-[0.12em]'
@@ -102,17 +103,21 @@ export async function HomePopulares({ artistas, grupos, producoes, hoje, locale 
         }
     })
     if (linhasArtistas.length + linhasGrupos.length + linhasProducoes.length === 0) return null
+    // Coluna vazia não vira aba.
+    const colunas = [
+        { chave: 'artistas', titulo: t('artistas'), href: rota('artists', undefined, locale), linhas: linhasArtistas, escala: 150 },
+        { chave: 'grupos', titulo: t('grupos'), href: rota('groups', undefined, locale), linhas: linhasGrupos, escala: 150 },
+        { chave: 'producoes', titulo: t('producoes'), href: rota('productions', undefined, locale), linhas: linhasProducoes, escala: 10 },
+    ].filter(c => c.linhas.length > 0)
     return (
         <section aria-label={t('titulo')}>
             <div className="mb-4 flex flex-wrap items-center gap-3">
                 <h2 className="font-serif text-[26px] font-medium leading-[1.1] tracking-[-0.01em] text-foreground lg:text-[30px]">{t('titulo')}</h2>
                 <span className="border border-accent px-2 py-1 font-mono text-[11px] font-black uppercase leading-none tracking-[0.12em] text-accent">{t('tag')}</span>
             </div>
-            <div className="grid gap-3.5 lg:grid-cols-3 lg:gap-5">
-                <Coluna titulo={t('artistas')} verTodos={t('verTodos')} href={rota('artists', undefined, locale)} linhas={linhasArtistas} escala={150} />
-                <Coluna titulo={t('grupos')} verTodos={t('verTodos')} href={rota('groups', undefined, locale)} linhas={linhasGrupos} escala={150} />
-                <Coluna titulo={t('producoes')} verTodos={t('verTodos')} href={rota('productions', undefined, locale)} linhas={linhasProducoes} escala={10} />
-            </div>
+            <AbasCelular rotulo={t('titulo')} abas={colunas.map(c => ({ chave: c.chave, rotulo: c.titulo }))} className="grid gap-3.5 lg:grid-cols-3 lg:gap-5">
+                {colunas.map(c => <Coluna key={c.chave} titulo={c.titulo} verTodos={t('verTodos')} href={c.href} linhas={c.linhas} escala={c.escala} />)}
+            </AbasCelular>
         </section>
     )
 }
