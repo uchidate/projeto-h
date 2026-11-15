@@ -1,6 +1,7 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
 import type { WPArtist } from './types'
+import { aliasDeRelevancia } from './relevancia'
 
 export type ArtistsQuery = {
     /** Só itens com tradução publicada neste idioma (REST `oc_locale`); traz `translations`. */
@@ -13,6 +14,8 @@ export type ArtistsQuery = {
      * update-artist-relevance no ops). 'popularity' = só Wikipédia. 'trending_score' é legado, sem recálculo.
      */
     orderby?: 'date' | 'title' | 'modified' | 'menu_order' | 'trending_score' | 'popularity' | 'relevance'
+    /** Com `locale`, 'relevance' usa a nota do idioma quando existe; isto força a nota geral. */
+    relevanciaGeral?: boolean
     order?: 'desc' | 'asc'
     slug?: string
     role?: string       // singer | actor | rapper | dancer | model | host | composer
@@ -29,6 +32,7 @@ export type ArtistsQuery = {
 export async function getArtists(query: ArtistsQuery = {}) {
     const { page = 1, perPage = 24, search, orderby = 'date', order = 'desc', slug, role, gender, letter, birthMonth, agency, agencies, affiliation, locale, comTraducoes } = query
     const isMetaOrder = orderby === 'trending_score' || orderby === 'popularity' || orderby === 'relevance'
+    const alias = orderby === 'relevance' ? aliasDeRelevancia(query.relevanciaGeral ? undefined : locale) : orderby
     const params: Record<string, string | number | boolean | undefined> = {
         page, per_page: perPage, orderby: isMetaOrder ? 'date' : orderby, order, status: 'publish',
         _fields: locale || comTraducoes ? 'id,slug,title,date,featured_image_url,acf,translations' : 'id,slug,title,date,featured_image_url,acf',
@@ -39,14 +43,16 @@ export async function getArtists(query: ArtistsQuery = {}) {
         oc_birth_month: birthMonth ?? undefined, oc_agency: agency ?? undefined,
         oc_agencies: agencies?.length ? agencies.join(',') : undefined,
         oc_affiliation: affiliation ?? undefined,
-        oc_orderby: isMetaOrder ? orderby : undefined,
+        oc_orderby: isMetaOrder ? alias : undefined,
     }
     const resultado = await wpFetchWithTotal<WPArtist>(`/wp/v2/artist${buildParams(params)}`, {
         revalidate: 1800, tags: [WP_CACHE_TAGS.artists],
     })
     // A ordem por relevância só devolve fichas com a nota gravada. Se a primeira página vier vazia
     // (nota ainda não calculada no ambiente), recua para a ordem antiga em vez de mostrar nada.
+    // A nota do idioma recua primeiro para a geral.
     if (orderby === 'relevance' && page === 1 && resultado.items.length === 0) {
+        if (alias !== 'relevance') return getArtists({ ...query, relevanciaGeral: true })
         return getArtists({ ...query, orderby: 'trending_score' })
     }
     return resultado
