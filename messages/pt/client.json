@@ -691,6 +691,8 @@
     "schemaName": "Grupos K-Pop"
   },
   "artistsLista": {
+    "groupMembers": "Integrantes de {group}",
+    "groupPage": "Página do grupo →",
     "byGroup": "Por grupo",
     "byGroupAria": "Grupos mais procurados",
     "filter": "Filtrar",

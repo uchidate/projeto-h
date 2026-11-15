@@ -28,7 +28,8 @@ export function AniversariosSemana({ itens }: { itens: AniversarianteSemana[] })
                                     : <span aria-hidden className="flex h-full w-full items-center justify-center bg-accent text-[26px] font-bold text-[#0d0b0f]">{a.nome.charAt(0)}</span>}
                             </span>
                             <span className="min-w-0 max-w-full">
-                                <span className="line-clamp-2 block text-[12.5px] font-bold leading-tight sm:truncate sm:text-[15px]">{a.nome}</span>
+                                {/* No celular o nome reserva duas linhas, para a data ficar na mesma altura em todos. */}
+                                <span className="line-clamp-2 block h-[2.4em] text-[12.5px] font-bold leading-[1.2] sm:h-auto sm:truncate sm:text-[15px] sm:leading-tight">{a.nome}</span>
                                 <span className="mt-0.5 block text-[11px] font-semibold text-accent sm:text-[13px]">{a.quando}</span>
                             </span>
                         </Link>

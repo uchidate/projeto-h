@@ -3,8 +3,8 @@ import { defaultCatalogLanguages } from '@/components/features/LocalizedCatalog'
 import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { stripHtml } from '@/lib/utils'
 import { notFound } from 'next/navigation'
-import { getArtists } from '@/lib/wordpress/artists'
-import { getGroups, getGroupsByIds } from '@/lib/wordpress/groups'
+import { getArtists, getArtistsByIds } from '@/lib/wordpress/artists'
+import { getGroups, getGroupsByIds, getGroupBySlug } from '@/lib/wordpress/groups'
 import { wpFetch } from '@/lib/wordpress/client'
 import { ArtistsPage } from '@/components/artists/ArtistsPage'
 import { aniversariosDaSemana, hojeEmSaoPaulo, mesesDaJanela } from '@/lib/artists/aniversarios'
@@ -18,7 +18,7 @@ import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import { TEXTOS_ANIVERSARIO_PT, type TextosAniversario } from '@/lib/artists/aniversarios'
 import { metadataDeListagem, paginaDe, paginaInvalida, urlDaListagem } from '@/lib/listagem'
 
-export type SearchParams = Promise<{ search?: string; page?: string; role?: string; affiliation?: string; letter?: string; sortBy?: string }>
+export type SearchParams = Promise<{ search?: string; page?: string; role?: string; affiliation?: string; letter?: string; sortBy?: string; group?: string }>
 
 function buildArtistsUrl(sp: { role?: string; affiliation?: string; letter?: string; page?: string }, locale: Locale = DEFAULT_LOCALE) {
     return urlDaListagem(href('artists', undefined, locale), ['role', 'affiliation', 'letter'], sp)
@@ -32,7 +32,7 @@ export async function metadataArtistsListagem({ searchParams, locale = DEFAULT_L
     const url = buildArtistsUrl(sp, locale)
     const affiliation = sp.affiliation === 'group' || sp.affiliation === 'solo' ? sp.affiliation : undefined
     const { totalPages } = await getArtists({ page, perPage: 48, search: sp.search, role: sp.role, affiliation, letter: sp.letter?.toUpperCase().slice(0, 1), ...(emPt ? {} : { locale }) })
-    const hasFacets = Boolean(sp.search || sp.role || sp.affiliation || sp.letter || sp.sortBy)
+    const hasFacets = Boolean(sp.search || sp.role || sp.affiliation || sp.letter || sp.sortBy || sp.group)
 
     return metadataDeListagem({
         titulo: t('metaTitle'),
@@ -59,8 +59,13 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
                 : 'popularity' as const
     const order = sortBy === 'name' ? 'asc' as const : 'desc' as const
 
+    // ?group=<slug>: a lista vira os integrantes do grupo (atalhos "Por grupo"). Slug desconhecido cai na lista normal.
+    const slugDoGrupo = /^[a-z0-9-]{1,80}$/.test(sp.group ?? '') ? sp.group! : undefined
+    const grupoBruto = slugDoGrupo ? await getGroupBySlug(slugDoGrupo).catch(() => null) : null
+    const grupoFiltro = grupoBruto && (grupoBruto.acf?.members?.length ?? 0) > 0 ? (emPt ? grupoBruto : localizeEntity(grupoBruto, locale, 'group')) : null
+
     const [{ items: itensBrutos, total, totalPages }, letterCounts] = await Promise.all([
-        getArtists({
+        grupoFiltro ? getArtistsByIds(grupoFiltro.acf!.members!).then(items => ({ items, total: items.length, totalPages: 1 })) : getArtists({
             ...idioma,
             page,
             perPage: 48,
@@ -78,7 +83,8 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
     // Acervo sem filtros nunca é vazio (3k+ artistas): lista vazia é falha
     // transitória do WP — lançar preserva o snapshot ISR anterior em vez de
     // cachear a listagem em branco (mesmo guard de /productions).
-    const unfiltered = !sp.search && !sp.role && !affiliation && !letter
+    const unfiltered = !sp.search && !sp.role && !affiliation && !letter && !grupoFiltro
+    if (grupoFiltro && page > 1) notFound()
     if (emPt && unfiltered && page === 1) exigirListagemComConteudo(items, '/artists')
     if (paginaInvalida(page, totalPages)) notFound()
 
@@ -102,7 +108,7 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
     const grupos = Object.fromEntries((await getGroupsByIds(idsDeGrupo)).map(g => [g.id, stripHtml(g.title.rendered)]))
 
     // Atalhos "Por grupo": os grupos mais procurados levam à página do grupo, onde estão os integrantes.
-    const gruposEmAlta = unfiltered && page === 1
+    const gruposEmAlta = (unfiltered && page === 1) || grupoFiltro
         ? (await getGroups({ ...idioma, orderby: 'relevance', perPage: 8, leve: true }).then(r => r.items).catch(() => []))
             .filter(g => emPt || hasLocale(g, locale)).map(g => (emPt ? g : localizeEntity(g, locale, 'group')))
             .map(g => ({ slug: g.slug, nome: stripHtml(g.title.rendered) }))
@@ -131,6 +137,7 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
             shopProducts={shopProducts}
             grupos={grupos}
             gruposEmAlta={gruposEmAlta}
+            grupoAtivo={grupoFiltro ? { slug: grupoFiltro.slug, nome: stripHtml(grupoFiltro.title.rendered) } : undefined}
         />
         </>
     )

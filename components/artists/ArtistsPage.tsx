@@ -54,9 +54,11 @@ interface Props {
     grupos?: Record<number, string>
     /** Grupos mais procurados (atalhos "Por grupo" do topo). */
     gruposEmAlta?: { slug: string; nome: string }[]
+    /** Grupo escolhido em "Por grupo" (?group=slug): a lista mostra só os integrantes. */
+    grupoAtivo?: { slug: string; nome: string }
 }
 
-export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [], grupos = {}, gruposEmAlta = [] }: Props) {
+export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [], grupos = {}, gruposEmAlta = [], grupoAtivo }: Props) {
     const pathname = usePathname()
 
     const [searchVal, setSearchVal] = useState(search ?? '')
@@ -72,6 +74,8 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
         if (sort && sort !== 'trending') params.set('sortBy', sort); else params.delete('sortBy')
         if (r) params.set('role', r); else params.delete('role')
         if (a) params.set('affiliation', a); else params.delete('affiliation')
+        // Busca, atuação, ordem e vínculo valem para o acervo todo: escolher um deles sai do recorte por grupo.
+        params.delete('group')
         params.delete('page')
         return params.toString() ? `${pathname}?${params}` : pathname
     }, [pathname])
@@ -136,7 +140,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
     const numero = (n: number) => formatNumber(n, undefined, locale)
 
     // Página inicial sem filtro: é onde entram as faixas de descoberta. Com busca, filtro ou letra, o leitor já sabe o que quer.
-    const semRecorte = !searchVal && !roleVal && !affiliationVal && !letter
+    const semRecorte = !searchVal && !roleVal && !affiliationVal && !letter && !grupoAtivo
     const inicio = currentPage === 1 && semRecorte
     const emAltaArtistas = inicio && sortBy === 'trending' ? artists.slice(0, 6) : []
     const grade = emAltaArtistas.length > 0 ? artists.slice(emAltaArtistas.length) : artists
@@ -173,7 +177,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
     return (
         <>
             {/* Chaves iguais ao SearchParams de `ArtistsPage`. */}
-            <RastreioDeFiltros listagem="artistas" filtros={['search', 'page', 'role', 'affiliation', 'letter', 'sortBy']} />
+            <RastreioDeFiltros listagem="artistas" filtros={['search', 'page', 'role', 'affiliation', 'letter', 'sortBy', 'group']} />
             <SalvarContextoLista contexto={contexto} />
             <JsonLd data={{
                 '@context': 'https://schema.org',
@@ -218,13 +222,18 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                 </div>
             </section>
 
-            {inicio && gruposEmAlta.length >= 4 && (
+            {(inicio || grupoAtivo) && gruposEmAlta.length >= 4 && (
                 <nav className="page-wrap pb-1 pt-1.5" aria-label={t('byGroupAria')} data-bloco="lista-por-grupo">
                     <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 lg:mx-0 lg:px-0">
                         <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted">{t('byGroup')}</span>
-                        {gruposEmAlta.map(g => (
-                            <Link key={g.slug} href={`/groups/${g.slug}`} className="touch-target flex h-9 shrink-0 items-center border border-border px-3 text-[13px] font-semibold text-foreground transition-colors hover:border-accent/60">{g.nome}</Link>
-                        ))}
+                        {/* Filtra a própria lista (?group=slug); tocar de novo no grupo ativo volta à lista inteira. */}
+                        {[...(grupoAtivo && !gruposEmAlta.some(g => g.slug === grupoAtivo.slug) ? [grupoAtivo] : []), ...gruposEmAlta].map(g => {
+                            const ativo = grupoAtivo?.slug === g.slug
+                            return (
+                                <Link key={g.slug} href={ativo ? pathname : `${pathname}?group=${g.slug}`} aria-current={ativo ? 'true' : undefined} scroll={false}
+                                    className={`touch-target flex h-9 shrink-0 items-center border px-3 text-[13px] font-semibold transition-colors ${ativo ? 'border-accent bg-accent text-[#0d0b0f]' : 'border-border text-foreground hover:border-accent/60'}`}>{g.nome}</Link>
+                            )
+                        })}
                     </div>
                 </nav>
             )}
@@ -241,10 +250,12 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             {/* ── Diretório completo ───────────────────────────────── */}
             <section id="diretorio" className="scroll-mt-24 border-t border-border/70 pb-10 pt-8 sm:pt-9">
                 <div className="page-wrap">
-                    <h2 className={`${SERIF} text-[28px] font-semibold leading-tight sm:text-[38px]`}>{t('allArtists')}</h2>
+                    <h2 className={`${SERIF} text-[28px] font-semibold leading-tight sm:text-[38px]`}>{grupoAtivo ? t('groupMembers', { group: grupoAtivo.nome }) : t('allArtists')}</h2>
+                    {grupoAtivo && <Link href={`/groups/${grupoAtivo.slug}`} className="mt-2 inline-block text-[14px] font-semibold text-accent">{t('groupPage')}</Link>}
                 </div>
 
                 <div className="page-wrap">
+                    {!grupoAtivo && <>
                     {/* No celular a ordenação acompanha a rolagem, logo abaixo do cabeçalho (que some ao descer e volta ao subir:
                         --site-header-offset). "Filtrar" leva de volta à busca e aos atalhos do topo. */}
                     <div className="mt-6 flex flex-col gap-3 border-y border-border/70 py-3 max-lg:contents lg:h-14 lg:flex-row lg:items-center lg:justify-between lg:py-0">
@@ -287,6 +298,8 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                             )
                         })}
                     </div>
+
+                    </>}
 
                     {letter && (
                         <div className="flex items-baseline gap-5 pt-8">
