@@ -123,17 +123,19 @@ describe('getTrendingArtists', () => {
         vi.unstubAllGlobals()
     })
 
-    it('ordena por trending_score desc (sem filtrar score 0, diferente de getStreamingArtists)', async () => {
+    it('pede a ordem por relevância ao WordPress e mantém a ordem recebida (sem filtrar, diferente de getStreamingArtists)', async () => {
         fetchMock.mockResolvedValue({
             ok: true,
             json: async () => [
-                artist(1, 'zero', { trending_score: 0 }),
-                artist(2, 'alto', { trending_score: 50 }),
+                artist(1, 'primeiro', { trending_score: 0 }),
+                artist(2, 'segundo', { trending_score: 50 }),
             ],
         })
         const result = await getTrendingArtists()
-        expect(result.map(a => a.id)).toEqual([2, 1])
-        expect(result).toHaveLength(2) // não filtra o de score 0
+        expect(fetchMock.mock.calls[0][0] as string).toContain('oc_orderby=relevance')
+        // A nota de relevância não vem na REST: a ordem é a do WordPress, e o trending_score legado não reordena.
+        expect(result.map(a => a.id)).toEqual([1, 2])
+        expect(result).toHaveLength(2)
     })
 
     it('respeita o limit default de 10', async () => {

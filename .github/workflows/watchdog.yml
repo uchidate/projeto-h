@@ -45,7 +45,8 @@ jobs:
               // parar em silencio (e o cron do GitHub chega a atrasar mais de 7 h, medido numa segunda).
               // Cada um grava algo que o site ou o Grafana le: ver docs/DADOS-AGENDADOS.md no repositorio de operacao.
               'artist-popularity.yml': 8,  // semanal  (15 6 * * 1)  popularity_score
-              'artist-access.yml': 8,      // semanal  (30 6 * * 1)  access_score (home: mais acessados)
+              'artist-relevance.yml': 2,   // diario   (55 6 * * *)  access_score + relevance_score (listagem, relacionados, mais acessados)
+              'production-relevance.yml': 2, // diario (45 6 * * *)  access_score + relevance_score das producoes
               'views-artigos.yml': 8,      // semanal  (0 7 * * 1)   views (Mais lidos, conteudo perene)
               'artist-discography.yml': 2, // diario   (45 6 * * *)  music_release
               'exporta-deploy.yml': 2,     // diario + a cada deploy (deploy.prom)

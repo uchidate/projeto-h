@@ -1,27 +1,24 @@
-name: Update Artist Access Score
+name: Update Artist Relevance
 
-# Roda em ubuntu-latest, nao no runner self-hosted. Mesmo motivo documentado em
-# trending-scores.yml e streaming-scores.yml: o socket do Docker foi removido
-# do runner self-hosted por seguranca (2026-09-09), e o script consulta o
-# Postgres do Umami via `ssh oc "docker exec ... psql"`. Sem isso o job
-# quebraria no primeiro dia, como ja aconteceu com os outros dois.
+# Roda em ubuntu-latest, não no runner self-hosted: o script consulta o Postgres
+# do Umami via `ssh oc "docker exec ... psql"` e o socket do Docker saiu do
+# runner self-hosted em 2026-09-09.
 #
-# Job barato: uma única query no Postgres do Umami (<1s medido em
-# 2026-09-22). Semanal, na mesma cadência de trending-scores e da nova
-# artist-popularity — access_score usa uma janela de 90 dias de sessões, que
-# não muda o suficiente para justificar frequência diária.
+# Substitui artist-access.yml: o script novo grava access_score (agora sem
+# robôs e somando os idiomas) e relevance_score, que ordena a listagem e os
+# relacionados. Diário, como production-relevance: quem começa a ser procurado
+# deve subir em um dia. Na segunda-feira roda depois de artist-popularity
+# (06:15), que é uma das entradas da conta.
 
 on:
   schedule:
-    - cron: '30 6 * * 1'  # Toda segunda-feira às 06:30 UTC (depois de trending e popularity)
+    - cron: '55 6 * * *'  # Todo dia às 06:55 UTC (03:55 BRT)
   workflow_dispatch:       # Permite trigger manual
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    # Job em si roda em <1s; folga generosa sem deixar um travamento real
-    # rodar o dia inteiro sem ninguém notar (mesmo padrão dos outros jobs).
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - name: Preparar operacao
@@ -42,13 +39,13 @@ jobs:
           usuario: ${{ secrets.DEPLOY_USER }}
           chave: ${{ secrets.DEPLOY_SSH_KEY }}
 
-      - name: Update artist access score
+      - name: Update artist relevance
         env:
           WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
           # Exceção de WAF da Cloudflare: sem ela a REST do WP devolve 403 ao
           # runner e o job morre na primeira coleção (issue #19).
           SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
-        run: node scripts/update-artist-access.mjs --confirm
+        run: node scripts/update-artist-relevance.mjs --confirm
 
       - name: Trigger ISR revalidation (artists)
         env:
