@@ -118,10 +118,11 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     </div>
                 )}
                 <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>
-                {temGuias && <HomeCapitulo n={proximo()} chave="aprenda" cor="#0b6b63" locale={locale} />}
-                {temGuias && <div data-bloco="home-guias" className="-mx-3.5 lg:mx-0"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
+                {/* Notícia antes do perene: as editorias vêm logo depois da capa, e os guias depois delas. */}
                 {temEditorias && <HomeCapitulo n={proximo()} chave="editoria" cor="#6d3fc0" locale={locale} />}
                 {temEditorias && <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>}
+                {temGuias && <HomeCapitulo n={proximo()} chave="aprenda" cor="#0b6b63" locale={locale} />}
+                {temGuias && <div data-bloco="home-guias" className="-mx-3.5 lg:mx-0"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
                 {/*
                   * Daqui para baixo, nada aparece no carregamento em nenhum
                   * viewport, e cada bloco leva `cv-auto` (content-visibility):

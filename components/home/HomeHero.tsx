@@ -47,7 +47,7 @@ async function HeroPost({ post, locale, primeiro = true, album }: { post: WPPost
                 </div>
             </Link>
 
-            <div className="flex min-w-0 flex-col border-b border-border bg-background px-4 py-5 sm:px-6 sm:py-6 lg:px-5">
+            <div className="flex min-w-0 flex-col border-b border-border bg-background px-4 py-3 sm:px-6 lg:px-5 lg:py-6">
                 <div className="pointer-events-none absolute inset-x-0 top-0 flex aspect-video flex-col justify-end bg-linear-to-t from-black/85 via-black/35 to-transparent px-4 pb-4 lg:px-5 lg:pb-5">
                 <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em]">
                     <span className="text-white">{primeiro ? tc('capa') : tc('emDestaque')}</span>
@@ -66,12 +66,13 @@ async function HeroPost({ post, locale, primeiro = true, album }: { post: WPPost
                     </Titulo>
                 </Link>
                 </div>
-                {excerpt && <p className="mt-3 max-w-[58ch] text-[13px] leading-5 text-muted line-clamp-2">{excerpt}</p>}
+                {/* No celular a capa é só imagem, título e data: o resumo e o botão ficam para o desktop (imagem e título já são o link). */}
+                {excerpt && <p className="mt-3 hidden max-w-[58ch] text-[13px] leading-5 text-muted line-clamp-2 lg:block">{excerpt}</p>}
                 {album && <HeroAlbum album={album} slug={post.slug} locale={locale} />}
-                <div className="mt-5 flex flex-col gap-3 border-t border-border pt-4 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
+                <div className={`flex flex-col gap-3 lg:mt-5 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:border-t lg:border-border lg:pt-4 ${album ? 'mt-3' : ''}`}>
                     <span className="min-w-0 truncate text-[11px] text-muted">{data}</span>
                     <Link {...postLink(post.slug, locale)}
-                        className="block w-full shrink-0 whitespace-nowrap bg-foreground py-3.5 text-center font-mono text-[11px] font-black uppercase tracking-widest text-background transition-colors hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent lg:inline lg:w-auto lg:border-b lg:border-accent lg:bg-transparent lg:py-0 lg:pb-0.5 lg:text-foreground lg:hover:bg-transparent lg:hover:text-accent">
+                        className="hidden shrink-0 whitespace-nowrap border-b border-accent pb-0.5 font-mono text-[11px] font-black uppercase tracking-widest text-foreground transition-colors hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent lg:inline">
                         {`${t('lerAgora')} `}<span aria-hidden="true">→</span>
                     </Link>
                 </div>

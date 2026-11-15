@@ -7,10 +7,14 @@ const TEMA_DA_COLUNA: Record<ChaveEditoria, Tema> = { kpop: 'musica', doramas: '
 
 export type PrateleirasEditorias = Partial<Record<ChaveEditoria, StoreProduct[]>>
 
-/** Dois produtos por coluna, do tema que combina com ela; coluna sem produto fica sem prateleira. */
+/** Cada coluna mostra POR_COLUNA produtos; buscam-se candidatos de sobra porque a home não repete produto entre prateleiras. */
+export const POR_COLUNA = 2
+const CANDIDATOS = 8
+
+/** Produtos do tema que combina com a coluna; coluna sem produto fica sem prateleira. */
 export async function carregarPrateleirasEditorias(): Promise<PrateleirasEditorias> {
     const chaves = Object.keys(TEMA_DA_COLUNA) as ChaveEditoria[]
-    const lidas = await Promise.allSettled(chaves.map(c => getVitrinePorTermos([], `home_editoria_${c}`, { limit: 2, temas: [TEMA_DA_COLUNA[c]] })))
+    const lidas = await Promise.allSettled(chaves.map(c => getVitrinePorTermos([], `home_editoria_${c}`, { limit: CANDIDATOS, temas: [TEMA_DA_COLUNA[c]] })))
     return Object.fromEntries(chaves.flatMap((c, i) => {
         const r = lidas[i]
         const itens = r.status === 'fulfilled' ? r.value.filter(p => p.acf.affiliate_url && p.acf.image_url && p.acf.price) : []
