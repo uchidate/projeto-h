@@ -23,11 +23,11 @@ function parseProductionType(value?: string) {
     return PRODUCTION_TYPES.find(type => type === value)
 }
 
-type OrderParam = { orderby: 'trending_score' | 'date' | 'title'; order: 'desc' | 'asc' }
+type OrderParam = { orderby: 'relevance' | 'date' | 'title'; order: 'desc' | 'asc' }
 function parseOrder(value?: string): OrderParam {
     if (value === 'recent') return { orderby: 'date', order: 'desc' }
     if (value === 'az') return { orderby: 'date', order: 'asc' }
-    return { orderby: 'trending_score', order: 'desc' }
+    return { orderby: 'relevance', order: 'desc' }
 }
 
 function buildProductionsUrl(sp: { genre?: string; platform?: string; type?: string; page?: string }, locale: Locale = DEFAULT_LOCALE) {

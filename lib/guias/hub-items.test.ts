@@ -31,12 +31,12 @@ describe('getHubItems', () => {
     })
 
     describe('kind: productions', () => {
-        it('busca produções com os filtros do hub e ordena por trending_score', async () => {
+        it('busca produções com os filtros do hub e ordena por relevância', async () => {
             vi.mocked(getProductions).mockResolvedValue({ items: [{ id: 1 }], total: 1 } as never)
             const h = hub({ kind: 'productions', filter: { genre: 'romance' } })
             const result = await getHubItems(h)
             expect(result).toEqual({ kind: 'productions', items: [{ id: 1 }], total: 1 })
-            expect(getProductions).toHaveBeenCalledWith(expect.objectContaining({ genre: 'romance', orderby: 'trending_score', order: 'desc' }))
+            expect(getProductions).toHaveBeenCalledWith(expect.objectContaining({ genre: 'romance', orderby: 'relevance', order: 'desc' }))
         })
 
         it('filtros de opts (vindos da URL) têm prioridade sobre os do hub', async () => {
