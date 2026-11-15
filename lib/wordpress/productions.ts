@@ -13,7 +13,11 @@ export type ProductionsQuery = {
     network?: string     // valor do ACF 'network' (ex: 'SBS', 'tvN') via oc_network
     type?: 'drama' | 'movie' | 'special' | 'variety'
     search?: string
-    orderby?: 'date' | 'title' | 'modified' | 'menu_order' | 'meta_value' | 'meta_value_num' | 'trending_score'
+    /**
+     * 'relevance' (padrão) = acesso real ao site + atualidade (meta relevance_score, gravado por
+     * update-production-relevance no ops). 'trending_score' = só atualidade (ano, status, nota).
+     */
+    orderby?: 'date' | 'title' | 'modified' | 'menu_order' | 'meta_value' | 'meta_value_num' | 'trending_score' | 'relevance'
     order?: 'desc' | 'asc'
     slug?: string
     year?: number
@@ -41,9 +45,9 @@ async function resolvePlatformId(platform: string): Promise<number | undefined> 
 export async function getProductions(query: ProductionsQuery = {}) {
     const {
         page = 1, perPage = 24, genre, tag, platform, network, type, search,
-        orderby = 'trending_score', order = 'desc', slug, year, maxYear, minRating, metaKey, excludeAdult = true, locale,
+        orderby = 'relevance', order = 'desc', slug, year, maxYear, minRating, metaKey, excludeAdult = true, locale,
     } = query
-    const isCustomOrder = orderby === 'trending_score'
+    const isCustomOrder = orderby === 'trending_score' || orderby === 'relevance'
 
     // WP REST API exige ID inteiro para filtro de taxonomia — resolve slug → ID
     const genreId = genre ? await resolveTermId(genre, getProductionGenres) : undefined
@@ -68,11 +72,17 @@ export async function getProductions(query: ProductionsQuery = {}) {
         oc_network: network,
         meta_key: metaKey,
         oc_exclude_adult: excludeAdult ? '1' : undefined,
-        oc_orderby: isCustomOrder ? 'trending_score' : undefined,
+        oc_orderby: isCustomOrder ? orderby : undefined,
     }
-    return wpFetchWithTotal<WPProduction>(`/wp/v2/production${buildParams(params)}`, {
+    const resultado = await wpFetchWithTotal<WPProduction>(`/wp/v2/production${buildParams(params)}`, {
         revalidate: 1800, tags: [WP_CACHE_TAGS.productions],
     })
+    // A ordem por relevância só devolve fichas que têm a nota gravada. Se a primeira página vier
+    // vazia (nota ainda não calculada no ambiente), recua para a atualidade em vez de mostrar nada.
+    if (orderby === 'relevance' && page === 1 && resultado.items.length === 0) {
+        return getProductions({ ...query, orderby: 'trending_score' })
+    }
+    return resultado
 }
 
 export async function getProductionBySlug(slug: string): Promise<WPProduction | null> {
@@ -145,7 +155,7 @@ export async function getSmartRelatedProductions({
     const [castResults, genreResults, fallbackResult] = await Promise.all([
         Promise.all(castSlugs.slice(0, 1).map(slug => getProductionsByArtist(slug, perPage))),
         genreId ? getRelatedProductions(genreId, excludeId, perPage) : Promise.resolve([]),
-        getProductions({ type, perPage: 12, orderby: 'trending_score', order: 'desc' })
+        getProductions({ type, perPage: 12, orderby: 'relevance', order: 'desc' })
             .then(result => result.items)
             .catch(() => []),
     ])

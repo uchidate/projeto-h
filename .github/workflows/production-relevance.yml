@@ -1,0 +1,59 @@
+name: Update Production Relevance
+
+# Roda em ubuntu-latest, não no runner self-hosted, pelo mesmo motivo de
+# artist-access.yml: o script consulta o Postgres do Umami via
+# `ssh oc "docker exec ... psql"` e o socket do Docker saiu do runner
+# self-hosted em 2026-09-09.
+#
+# Diário, depois do streaming-scores: a nota mistura acesso dos últimos 28 e
+# 90 dias com atualidade, e uma estreia que começa a ser procurada deve subir
+# na listagem em um dia, não em uma semana. Na segunda-feira roda depois do
+# trending-scores (06:00), que é uma das entradas da conta.
+
+on:
+  schedule:
+    - cron: '45 6 * * *'  # Todo dia às 06:45 UTC (03:45 BRT)
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Update production relevance
+        env:
+          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
+          # Exceção de WAF da Cloudflare: sem ela a REST do WP devolve 403 ao runner (issue #19).
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: node scripts/update-production-relevance.mjs --confirm
+
+      - name: Trigger ISR revalidation (productions)
+        env:
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+        run: |
+          curl -s -X POST \
+            -H "${{ vars.SONDA_HEADER }}: ${SONDA_TOKEN}" \
+            "${{ vars.SITE_URL }}/api/revalidate?secret=${REVALIDATE_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d '{"type":"production"}' \
+            -w "Revalidation: %{http_code}\n"

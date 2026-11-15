@@ -85,7 +85,7 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
             const { items, total } = await getProductions({
                 page, perPage,
                 genre, tag, platform, network, type, year,
-                orderby: 'trending_score',
+                orderby: 'relevance',
                 order: 'desc',
                 locale: opts.locale,
             })
