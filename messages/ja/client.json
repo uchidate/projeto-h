@@ -691,6 +691,8 @@
     "schemaName": "K-POPグループ"
   },
   "artistsLista": {
+    "groupMembers": "{group}のメンバー",
+    "groupPage": "グループページ →",
     "byGroup": "グループ別",
     "byGroupAria": "人気のグループ",
     "filter": "絞り込み",
