@@ -6,7 +6,8 @@ import { createPortal } from 'react-dom'
 import Link from '@/components/i18n/LocalizedLink'
 import { usePathname } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { ChevronRight, Menu, ShoppingBag, X } from 'lucide-react'
+import { BookOpen, CalendarDays, Clapperboard, Compass, Heart, HelpCircle, Landmark, Menu, Newspaper, ShoppingBag, User, Users, Utensils, X, type LucideIcon } from 'lucide-react'
+import { trackMenuOpen } from '@/lib/analytics'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { SITE_NAME } from '@/lib/constants/site'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
@@ -16,10 +17,22 @@ import { SeletorIdioma } from '@/components/i18n/SeletorIdioma'
 interface NavLink { label: string; href: string }
 
 /**
- * "Mais" do cabeçalho do celular: guarda o que não cabe nas abas (seções extras, Loja, sobre) e os
- * controles de tema, idioma e avisos, no lugar do hambúrguer. Folha que sobe de baixo: fecha ao
- * tocar fora, no X, com Esc ou ao navegar.
+ * Menu do cabeçalho do celular: o site todo em uma folha, agrupado (catálogo, leitura, explorar), mais Loja
+ * e os controles de tema, idioma e avisos. Folha que sobe de baixo: fecha ao tocar fora, no X, com Esc ou ao navegar.
+ * O grupo e o ícone de cada item saem do endereço, porque em português a lista vem do WordPress.
  */
+const ICONES: [RegExp, LucideIcon][] = [
+    [/\/productions/, Clapperboard], [/\/artists/, User], [/\/groups/, Users], [/\/blog/, Newspaper],
+    [/\/(guias|guides)/, BookOpen], [/cultura/, Landmark], [/\/(comidas|foods)/, Utensils], [/fandoms/, Heart],
+    [/\/(calendario|calendar)/, CalendarDays], [/\/quiz/, HelpCircle],
+]
+const iconeDe = (href: string): LucideIcon => ICONES.find(([padrao]) => padrao.test(href))?.[1] ?? Compass
+type Grupo = 'groupCatalog' | 'groupRead' | 'groupExplore'
+const grupoDe = (href: string): Grupo =>
+    /\/(productions|artists|groups|agencies)/.test(href) ? 'groupCatalog'
+        : /\/(blog|guias|guides)|cultura/.test(href) ? 'groupRead' : 'groupExplore'
+const GRUPOS: Grupo[] = ['groupCatalog', 'groupRead', 'groupExplore']
+
 export function MobileMais({ links, destacado = false }: { links: NavLink[]; destacado?: boolean }) {
     const [aberto, setAberto] = useState(false)
     const [montado, setMontado] = useState(false)
@@ -38,37 +51,49 @@ export function MobileMais({ links, destacado = false }: { links: NavLink[]; des
     }, [aberto])
 
     const ativo = (href: string) => (href === '/' ? pathname === '/' : pathname === href || pathname?.startsWith(`${href}/`))
-    const linha = 'flex h-[52px] items-center justify-between px-5 text-[17px] font-semibold text-foreground transition-colors hover:bg-surface'
+    const item = 'flex h-14 min-w-0 items-center gap-2.5 border border-border bg-surface px-3 text-[15px] font-semibold leading-tight text-foreground transition-colors hover:border-accent/60'
+    const rotulo = 'px-5 pb-1.5 pt-4 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted'
 
     const folha = aberto && montado ? createPortal(
-        <div className="fixed inset-0 z-9999 lg:hidden" role="dialog" aria-modal="true" aria-label={t('nav.moreSections')}>
+        // data-bloco: os toques nos itens entram na medição de recirculação (antes a folha ficava fora do bloco "menu" e era cega).
+        <div data-bloco="menu-folha" className="fixed inset-0 z-9999 lg:hidden" role="dialog" aria-modal="true" aria-label={t('nav.menu')}>
             <div className="absolute inset-0 bg-black/55" onClick={() => setAberto(false)} aria-hidden="true" />
-            <div className="absolute inset-x-0 bottom-0 flex max-h-[85vh] flex-col overflow-hidden rounded-t-2xl border-t border-border bg-background shadow-2xl">
+            <div className="absolute inset-x-0 bottom-0 flex max-h-[88vh] flex-col overflow-hidden rounded-t-2xl border-t border-border bg-background shadow-2xl">
                 <div className="flex shrink-0 items-center justify-between px-5 pb-1 pt-3">
                     <span aria-hidden className="mx-auto h-1 w-10 rounded-full bg-border-strong" />
                     <button type="button" onClick={() => setAberto(false)} aria-label={t('nav.closeMenu')} className="-mr-3 -mt-1 flex h-11 w-11 items-center justify-center text-muted hover:text-foreground">
                         <X size={20} />
                     </button>
                 </div>
-                <nav aria-label={t('nav.sections')} className="flex-1 overflow-y-auto overscroll-contain">
-                    <p className="px-5 pb-1 pt-3 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('nav.browse')}</p>
-                    <ul>
-                        {links.map(({ label, href }) => (
-                            <li key={href}>
-                                <Link href={href} aria-current={ativo(href) ? 'page' : undefined} className={`${linha} ${ativo(href) ? 'text-accent' : ''}`}>
-                                    {label}<ChevronRight size={16} className="text-muted" />
-                                </Link>
-                            </li>
-                        ))}
-                        {isDefaultLocale && (
-                            <li>
-                                <Link href="/loja" aria-current={ativo('/loja') ? 'page' : undefined} className={`${linha} ${ativo('/loja') ? 'text-accent' : ''}`}>
-                                    <span className="flex items-center gap-2.5"><ShoppingBag size={18} />{t('nav.shop')}</span>
-                                    <ChevronRight size={16} className="text-muted" />
-                                </Link>
-                            </li>
-                        )}
-                    </ul>
+                <nav aria-label={t('nav.sections')} className="flex-1 overflow-y-auto overscroll-contain pb-3">
+                    {GRUPOS.map(grupo => {
+                        const doGrupo = links.filter(link => grupoDe(link.href) === grupo)
+                        if (doGrupo.length === 0) return null
+                        return (
+                            <div key={grupo}>
+                                <p className={rotulo}>{t(`nav.${grupo}`)}</p>
+                                <ul className="grid grid-cols-2 gap-2 px-5">
+                                    {doGrupo.map(({ label, href }) => {
+                                        const Icone = iconeDe(href)
+                                        return (
+                                            <li key={href} className="min-w-0">
+                                                <Link href={href} aria-current={ativo(href) ? 'page' : undefined} className={`${item} ${ativo(href) ? 'border-accent-a11y text-accent-a11y' : ''}`}>
+                                                    <Icone size={18} className="shrink-0" aria-hidden /><span className="line-clamp-2 min-w-0">{label}</span>
+                                                </Link>
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                            </div>
+                        )
+                    })}
+                    {isDefaultLocale && (
+                        <div className="px-5 pt-4">
+                            <Link href="/loja" aria-current={ativo('/loja') ? 'page' : undefined} className="flex h-12 items-center justify-center gap-2.5 bg-foreground text-[15px] font-extrabold text-background">
+                                <ShoppingBag size={18} aria-hidden />{t('nav.shop')}
+                            </Link>
+                        </div>
+                    )}
                 </nav>
                 <div className="shrink-0 space-y-1 border-t border-border px-5 py-3">
                     <p className="pb-1 font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{t('nav.preferences')}</p>
@@ -89,13 +114,13 @@ export function MobileMais({ links, destacado = false }: { links: NavLink[]; des
         <>
             <button
                 type="button"
-                onClick={() => setAberto(true)}
+                onClick={() => { setAberto(true); trackMenuOpen() }}
                 aria-expanded={aberto}
                 aria-haspopup="dialog"
-                className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[14px] font-semibold transition-colors ${destacado ? 'border-accent-a11y bg-accent-a11y text-white' : 'border-border-strong text-foreground hover:border-accent/60'}`}
+                className={`flex min-w-0 items-center justify-center gap-1 border-b-2 px-0.5 text-[12px] tracking-[-0.01em] transition-colors min-[360px]:gap-1.5 min-[360px]:text-[13px] ${destacado ? 'border-accent-a11y font-extrabold text-accent-a11y' : 'border-transparent font-semibold text-foreground hover:text-accent'}`}
             >
-                <Menu size={15} aria-hidden />
-                {t('nav.more')}
+                <Menu size={15} aria-hidden className="shrink-0" />
+                <span className="truncate">{t('nav.menuButton')}</span>
             </button>
             {folha}
         </>

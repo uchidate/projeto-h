@@ -204,6 +204,11 @@ export function trackQuizComplete(params: { score: number; total: number; points
     })
 }
 
+// Menu do celular: abrir a folha. Os toques nos itens entram como recirculation_click do bloco "menu-folha".
+export function trackMenuOpen() {
+    enviar('menu_open', {})
+}
+
 // Hub / Guias
 export function trackHubView(params: { slug: string; kind: string; title: string }) {
     enviar('hub_view', {

@@ -190,7 +190,12 @@
     "sections": "セクション",
     "notifications": "通知",
     "searchShort": "アーティスト、グループを検索…",
-    "preferences": "設定"
+    "preferences": "設定",
+    "tabProductions": "ドラマ",
+    "menuButton": "メニュー",
+    "groupCatalog": "カタログ",
+    "groupRead": "読む",
+    "groupExplore": "探す"
   },
   "auth": {
     "login": {
