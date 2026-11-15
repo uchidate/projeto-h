@@ -190,7 +190,12 @@
     "sections": "Sections",
     "notifications": "Notifications",
     "searchShort": "Search artists, groups…",
-    "preferences": "Preferences"
+    "preferences": "Preferences",
+    "tabProductions": "Dramas",
+    "menuButton": "Menu",
+    "groupCatalog": "Catalog",
+    "groupRead": "Read",
+    "groupExplore": "Explore"
   },
   "auth": {
     "login": {

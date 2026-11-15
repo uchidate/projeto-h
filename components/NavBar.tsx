@@ -101,8 +101,6 @@ const NavBar = ({
     // O logo leva a home do idioma da pagina: em /en, a /en, nao ao portugues.
     const homeHref = isDefaultLocale ? '/' : `/${locale}`
     const [editionDate, setEditionDate] = useState('')
-    const [abasRoladas, setAbasRoladas] = useState(false)
-    const abasScrollRef = useRef<HTMLDivElement | null>(null)
 
     /* A Loja saiu da lista de navegação e virou botão próprio no cabeçalho:
        comércio e conteúdo competiam pelo mesmo tipo de slot. O filtro mantém o
@@ -202,13 +200,15 @@ const NavBar = ({
 
     const isActive = (href: string) => rotaPertenceAoItem(pathname, href, categoriaBlog)
 
-    // Abas do celular: as cinco primeiras; o resto fica em "Mais". Se a página atual é uma das extras, ela aparece
-    // como aba ativa depois das cinco, para o leitor sempre ver onde está.
-    const ABAS_FIXAS = 5
-    const abasPrimarias = contentLinks.slice(0, ABAS_FIXAS)
-    const linksExtras = contentLinks.slice(ABAS_FIXAS)
-    const extraAtiva = linksExtras.find(link => isActive(link.href))
-    const abasVisiveis = extraAtiva ? [...abasPrimarias, extraAtiva] : abasPrimarias
+    // Abas do celular: quatro seções fixas que cabem na tela, sem rolagem lateral, e o botão Menu com o site todo.
+    // Medido em 2026-11-15: com cinco pílulas roláveis, a quinta (Notícias) ficava fora da tela e teve 1 toque em 28 dias.
+    // O início não ocupa aba: o logo já leva a ele.
+    const ehInicio = (href: string) => href === '/' || href === homeHref
+    const ehProducoes = (href: string) => /\/productions\/?$/.test(href)
+    const abas = contentLinks.filter(link => !ehInicio(link.href)).slice(0, 4)
+        .map(link => ({ ...link, label: ehProducoes(link.href) ? t('nav.tabProductions') : link.label }))
+    // Página atual fora das abas (Guias, Calendário…): o botão Menu fica marcado, para o leitor ver onde está.
+    const foraDasAbas = !ehInicio(pathname ?? '/') && !abas.some(link => isActive(link.href)) && contentLinks.some(link => !ehInicio(link.href) && isActive(link.href))
 
     return (
         <>
@@ -236,33 +236,18 @@ const NavBar = ({
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center"><UserMenu /></div>
                     </div>
 
-                    <nav aria-label={t('nav.mainNav')} className="flex h-11 items-center border-b border-border">
-                        <div className="relative min-w-0 flex-1">
-                            {/* Sinaliza que há mais abas à esquerda depois que o leitor rola — sem isto, a rolagem horizontal fica escondida. */}
-                            {abasRoladas && (
-                                <span aria-hidden className="pointer-events-none absolute left-0 top-0 z-10 h-full w-7 bg-linear-to-r from-background to-transparent" />
-                            )}
-                            <div
-                                ref={abasScrollRef}
-                                onScroll={e => setAbasRoladas(e.currentTarget.scrollLeft > 4)}
-                                className="flex items-center gap-2 overflow-x-auto pl-4 pr-3 scrollbar-none"
+                    <nav aria-label={t('nav.mainNav')} className="grid h-11 grid-cols-5 border-b border-border">
+                        {abas.map(({ label, href }) => (
+                            <Link
+                                key={href}
+                                href={href}
+                                aria-current={isActive(href) ? 'page' : undefined}
+                                className={`flex min-w-0 items-center justify-center border-b-2 px-0.5 text-[12px] tracking-[-0.01em] transition-colors min-[360px]:text-[13px] ${isActive(href) ? 'border-accent-a11y font-extrabold text-accent-a11y' : 'border-transparent font-semibold text-foreground hover:text-accent'}`}
                             >
-                                {abasVisiveis.map(({ label, href }) => (
-                                    <Link
-                                        key={href}
-                                        href={href}
-                                        aria-current={isActive(href) ? 'page' : undefined}
-                                        className={`flex h-9 shrink-0 items-center rounded-full border px-3.5 text-[14px] transition-colors ${isActive(href) ? 'border-accent-a11y bg-accent-a11y font-extrabold text-white' : 'border-border-strong font-semibold text-foreground-subtle hover:border-accent/60 hover:text-foreground'}`}
-                                    >
-                                        {label}
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="relative shrink-0 pl-1 pr-3">
-                            <span aria-hidden className="pointer-events-none absolute right-full top-0 h-full w-7 bg-linear-to-r from-transparent to-background" />
-                            <MobileMais links={linksExtras} />
-                        </div>
+                                <span className="truncate">{label}</span>
+                            </Link>
+                        ))}
+                        <MobileMais links={contentLinks.filter(link => !ehInicio(link.href))} destacado={foraDasAbas} />
                     </nav>
                 </div>
 

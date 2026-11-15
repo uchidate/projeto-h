@@ -190,7 +190,12 @@
     "sections": "Seções",
     "notifications": "Avisos",
     "searchShort": "Buscar artistas, grupos…",
-    "preferences": "Preferências"
+    "preferences": "Preferências",
+    "tabProductions": "Doramas",
+    "menuButton": "Menu",
+    "groupCatalog": "Catálogo",
+    "groupRead": "Para ler",
+    "groupExplore": "Explorar"
   },
   "auth": {
     "login": {
