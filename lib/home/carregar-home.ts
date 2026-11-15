@@ -8,7 +8,8 @@ import { maisVendidos } from '@/lib/home/mais-vendidos'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { getStreamingTopShows } from '@/lib/tmdb/streaming'
 import { hojeEmBrasilia, mesesParaBuscar, montarAniversarios, type AniversariosHome } from '@/lib/home/aniversarios'
-import { carregarPrateleirasEditorias } from '@/lib/home/editorias-loja'
+import { carregarPrateleirasEditorias, POR_COLUNA, type PrateleirasEditorias } from '@/lib/home/editorias-loja'
+import { semProdutoRepetido } from '@/lib/home/produtos-unicos'
 import { extrairCapaAlbum, type CapaAlbum } from '@/lib/home/capa-album'
 import { escolherCapas } from '@/lib/home/frescor'
 import { carregarExplore } from '@/lib/home/explore'
@@ -108,11 +109,27 @@ export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comer
 
     const guiasPorTema = guiasResult.status === 'fulfilled' ? guiasResult.value : []
 
-    const temas = temasResult.status === 'fulfilled' ? temasResult.value : null
+    const temasLidos = temasResult.status === 'fulfilled' ? temasResult.value : null
 
     const explore = exploreResult.status === 'fulfilled' ? exploreResult.value : []
 
-    const prateleirasEditorias = prateleirasResult.status === 'fulfilled' ? prateleirasResult.value : {}
+    const prateleirasLidas: PrateleirasEditorias = prateleirasResult.status === 'fulfilled' ? prateleirasResult.value : {}
+
+    // Um produto por prateleira: os mais vendidos ficam como estão (o ranking é dado), e as prateleiras
+    // de cima (editorias, depois temas) pulam o que eles e as anteriores já mostram.
+    const chavesEditoria = Object.keys(prateleirasLidas) as (keyof PrateleirasEditorias)[]
+    const unicos = semProdutoRepetido([
+        { produtos: produtosMaisVendidos, limite: produtosMaisVendidos.length },
+        ...chavesEditoria.map(c => ({ produtos: prateleirasLidas[c] ?? [], limite: POR_COLUNA })),
+        { produtos: temasLidos?.gastronomia.prateleira ?? [], limite: 5 },
+        { produtos: temasLidos?.beleza.prateleira ?? [], limite: 5 },
+    ])
+    // Objetos novos: o que foi lido pode estar em cache e não é alterado.
+    const prateleirasEditorias: PrateleirasEditorias = Object.fromEntries(chavesEditoria.flatMap((c, i) => unicos[1 + i].length ? [[c, unicos[1 + i]]] : []))
+    const temas = temasLidos && {
+        gastronomia: { ...temasLidos.gastronomia, prateleira: unicos[1 + chavesEditoria.length] },
+        beleza: { ...temasLidos.beleza, prateleira: unicos[2 + chavesEditoria.length] },
+    }
 
     const passos = await carregarPassos(siteSettings.cultureGuides, locale).catch(() => [])
 

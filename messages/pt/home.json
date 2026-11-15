@@ -160,8 +160,8 @@
     "verFeed": "ver feed →"
   },
   "longreads": {
-    "titulo": "Em profundidade",
-    "tag": "Leitura longa",
+    "titulo": "Mais notícias",
+    "tag": "Recentes",
     "arquivo": "arquivo →"
   },
   "artistasEmAlta": {
@@ -225,7 +225,7 @@
     "agora": { "titulo": "Agora", "sub": "o que está acontecendo" },
     "aprenda": { "titulo": "Aprenda", "sub": "comece por aqui" },
     "editoria": { "titulo": "Por editoria", "sub": "o que mudou em cada assunto" },
-    "reportagem": { "titulo": "Reportagem", "sub": "leitura longa" },
+    "reportagem": { "titulo": "Mais notícias", "sub": "recentes" },
     "dados": { "titulo": "Dados", "sub": "populares na Coreia agora" },
     "jogue": { "titulo": "Jogue", "sub": "um minuto por dia" },
     "temas": { "titulo": "Temas", "sub": "assuntos para acompanhar" },

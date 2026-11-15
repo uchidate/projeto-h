@@ -61,10 +61,10 @@ export async function carregarTemas(locale: Locale = SOURCE_LOCALE): Promise<{ g
         getPosts({ tag: 'comida-coreana', perPage: 2, includeContent: false, ...lang }),
         getFoods({ perPage: 100, ...idioma }),
         empresasDoSetor('food_beverage'),
-        emPt ? getVitrinePorTermos([], 'home_gastronomia', { limit: 5, temas: ['culinaria'] }) : Promise.resolve([]),
+        emPt ? getVitrinePorTermos([], 'home_gastronomia', { limit: 12, temas: ['culinaria'] }) : Promise.resolve([]),
         getPosts({ category: 'k-beauty', perPage: 2, includeContent: false, ...lang }),
         empresasDoSetor('beauty'),
-        emPt ? getVitrinePorTermos([], 'home_beleza', { limit: 5, temas: ['beleza'] }) : Promise.resolve([]),
+        emPt ? getVitrinePorTermos([], 'home_beleza', { limit: 12, temas: ['beleza'] }) : Promise.resolve([]),
     ])
     const pc = vazio<Awaited<ReturnType<typeof getPosts>>>(lista)(postsComida)
     const pb = vazio<Awaited<ReturnType<typeof getPosts>>>(lista)(postsBeleza)

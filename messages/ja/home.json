@@ -180,8 +180,8 @@
     "verFeed": "フィードを見る →"
   },
   "longreads": {
-    "titulo": "じっくり読む",
-    "tag": "ロングリード",
+    "titulo": "その他のニュース",
+    "tag": "新着",
     "arquivo": "アーカイブ →"
   },
   "artistasEmAlta": {
@@ -255,8 +255,8 @@
       "sub": "各トピックの最新情報"
     },
     "reportagem": {
-      "titulo": "特集",
-      "sub": "ロングリード"
+      "titulo": "その他のニュース",
+      "sub": "新着"
     },
     "dados": {
       "titulo": "データ",

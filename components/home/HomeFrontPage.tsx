@@ -6,6 +6,7 @@ import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { HomeQuizBanner } from '@/components/home/HomeQuizBanner'
 import { ADSENSE } from '@/lib/config/ads'
 import { HomeCapitulo } from '@/components/home/HomeCapitulo'
+import { AbasCelular } from '@/components/home/AbasCelular'
 import { HomeHero } from '@/components/home/HomeHero'
 import { escolherCapas } from '@/lib/home/frescor'
 import { montarEditorias, type PostsPorEditoria } from '@/lib/home/editorias'
@@ -99,6 +100,8 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
     // Fora do português, capítulo sem conteúdo (editorias e longreads só aparecem com posts no idioma) não ganha título nem número.
     const temEditorias = soPt || editorias.length > 0
     const temLongreads = soPt || longreads.length > 0
+    const tHome = await getTranslations({ locale, namespace: 'home' })
+    const temasComConteudo = temas ? (['gastronomia', 'beleza'] as const).filter(c => temas[c].artigos.length + temas[c].pratos.length + temas[c].marcas.length > 0) : []
     let capitulo = 1
     const proximo = () => ++capitulo
 
@@ -118,10 +121,11 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     </div>
                 )}
                 <div data-bloco="home-seguindo" className="contents"><HomeSeguindo /></div>
-                {temGuias && <HomeCapitulo n={proximo()} chave="aprenda" cor="#0b6b63" locale={locale} />}
-                {temGuias && <div data-bloco="home-guias" className="-mx-3.5 lg:mx-0"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
+                {/* Notícia antes do perene: as editorias vêm logo depois da capa, e os guias depois delas. */}
                 {temEditorias && <HomeCapitulo n={proximo()} chave="editoria" cor="#6d3fc0" locale={locale} />}
                 {temEditorias && <div data-bloco="home-editorias" className="contents"><HomeEditorias editorias={editorias} prateleiras={prateleirasEditorias} locale={locale} /></div>}
+                {temGuias && <HomeCapitulo n={proximo()} chave="aprenda" cor="#0b6b63" locale={locale} />}
+                {temGuias && <div data-bloco="home-guias" className="-mx-3.5 lg:mx-0"><HomeGuias passos={cultureGuides} guias={guiasPorTema} locale={locale} /></div>}
                 {/*
                   * Daqui para baixo, nada aparece no carregamento em nenhum
                   * viewport, e cada bloco leva `cv-auto` (content-visibility):
@@ -159,9 +163,15 @@ export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, production
                     </>
                 )}
                 {temTemas && <HomeCapitulo n={proximo()} chave="temas" cor="#b4531a" locale={locale} />}
-                {temas && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href={rota('foods', undefined, locale)} bloco="home-gastronomia" locale={locale} />}
+                {/* No celular os dois temas são abas (um por vez); no desktop aparecem os dois, seguidos do Explore. */}
+                {temas && (
+                    <AbasCelular rotulo={tHome('capitulos.temas.titulo')} className="flex flex-col gap-3.5 lg:gap-5"
+                        abas={temasComConteudo.map(c => ({ chave: c, rotulo: tHome(`temas.${c}.titulo`), cor: c === 'gastronomia' ? '#b4531a' : '#0e7490' }))}>
+                        {temasComConteudo.includes('gastronomia') && <HomeTema tema={temas.gastronomia} chave="gastronomia" cor="#b4531a" href={rota('foods', undefined, locale)} bloco="home-gastronomia" locale={locale} />}
+                        {temasComConteudo.includes('beleza') && <HomeTema tema={temas.beleza} chave="beleza" cor="#0e7490" href={soPt ? '/blog?category=k-beauty' : rota('blog', undefined, locale)} bloco="home-beleza" locale={locale} />}
+                    </AbasCelular>
+                )}
                 {explore.length > 0 && <div data-bloco="home-explore" className="border border-border bg-[var(--color-home-card)]"><HomeExplore cartoes={explore} locale={locale} /></div>}
-                {temas && <HomeTema tema={temas.beleza} chave="beleza" cor="#0e7490" href={soPt ? '/blog?category=k-beauty' : rota('blog', undefined, locale)} bloco="home-beleza" locale={locale} />}
                 {aniversarios && <div data-bloco="home-esta-semana" className="contents"><HomeEstaSemana aniversarios={aniversarios} locale={locale} /></div>}
                 {soPt && <HomeCapitulo n={proximo()} chave="loja" cor="#ff246e" locale={locale} />}
                 {soPt && <div data-bloco="home-loja" className="-mx-3.5 lg:mx-0"><HomeLoja produtos={produtosMaisVendidos} locale={locale} /></div>}
