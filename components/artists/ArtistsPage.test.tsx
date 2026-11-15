@@ -109,7 +109,8 @@ describe('ArtistsPage', () => {
         vi.useRealTimers()
         const user = userEvent.setup()
         render(<ArtistsPage {...baseProps()} />)
-        await user.selectOptions(screen.getByLabelText(/filtrar por atuação/i), 'singer')
+        // A atuação se escolhe nos atalhos do topo (o seletor repetido acima da grade saiu).
+        await user.click(screen.getByRole('button', { name: /^cantores$/i }))
         expect(pushMock).toHaveBeenCalledWith(expect.stringContaining('role=singer'))
     })
 

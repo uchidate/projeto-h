@@ -237,11 +237,8 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                                 <button key={o.value} type="button" onClick={() => setSortVal(o.value)} aria-pressed={sortVal === o.value} className={aba(sortVal === o.value)}>{o.label}</button>
                             ))}
                         </div>
+                        {/* A atuação já se escolhe nos atalhos do topo; aqui fica só o que eles não cobrem. */}
                         <div className="flex gap-2">
-                            <select value={roleVal} onChange={e => setRoleVal(e.target.value)} aria-label={t('roleAria')} className={seletor}>
-                                <option value="">{t('roleAll')}</option>
-                                {ROLE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
                             <select value={affiliationVal} onChange={e => setAffiliationVal(e.target.value)} aria-label={t('affAria')} className={seletor}>
                                 <option value="">{t('affAll')}</option>
                                 <option value="group">{t('inGroup')}</option>
