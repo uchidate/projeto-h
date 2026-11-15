@@ -1,6 +1,7 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
 import type { WPGroup } from './types'
+import { aliasDeRelevancia } from './relevancia'
 
 export type GroupsQuery = {
     /** Só itens com tradução publicada neste idioma (REST `oc_locale`); traz `translations`. */
@@ -10,8 +11,13 @@ export type GroupsQuery = {
     search?: string
     type?: 'girl_group' | 'boy_group' | 'co_ed' | 'solo'
     active?: boolean
-    /** 'popularity' = relevância (meta popularity_score via oc_orderby, fallback date) */
-    orderby?: 'date' | 'title' | 'modified' | 'menu_order' | 'popularity'
+    /**
+     * 'relevance' = acesso real ao site + fama externa (meta relevance_score, gravado por
+     * update-group-relevance no ops). 'popularity' = só a fama externa (popularity_score).
+     */
+    orderby?: 'date' | 'title' | 'modified' | 'menu_order' | 'popularity' | 'relevance'
+    /** Com `locale`, 'relevance' usa a nota do idioma quando existe; isto força a nota geral. */
+    relevanciaGeral?: boolean
     order?: 'desc' | 'asc'
     slug?: string
     letter?: string
@@ -39,12 +45,13 @@ export function camposDoGrupo(locale?: string, leve?: boolean): string {
 
 export async function getGroups(query: GroupsQuery = {}) {
     const { page = 1, perPage = 24, search, type, active, orderby = 'date', order = 'desc', slug, letter, agency, agencies, debutMin, debutMax, locale, leve } = query
-    const isMetaOrder = orderby === 'popularity'
+    const isMetaOrder = orderby === 'popularity' || orderby === 'relevance'
+    const alias = orderby === 'relevance' ? aliasDeRelevancia(query.relevanciaGeral ? undefined : locale) : orderby
     const params: Record<string, string | number | boolean | undefined> = {
         // oc_orderby é aplicado no PHP (oc_meta_orderby); orderby=date fica como
         // fallback caso o filtro ainda não esteja deployado no WP.
         page, per_page: perPage, orderby: isMetaOrder ? 'date' : orderby, order, status: 'publish',
-        oc_orderby: isMetaOrder ? 'popularity' : undefined,
+        oc_orderby: isMetaOrder ? alias : undefined,
         _fields: camposDoGrupo(locale, leve),
         oc_locale: locale,
         slug: slug ?? undefined, search: search ?? undefined,
@@ -53,9 +60,16 @@ export async function getGroups(query: GroupsQuery = {}) {
         oc_agencies: agencies?.length ? agencies.join(',') : undefined,
         oc_debut_min: debutMin ?? undefined, oc_debut_max: debutMax ?? undefined,
     }
-    return wpFetchWithTotal<WPGroup>(`/wp/v2/group${buildParams(params)}`, {
+    const resultado = await wpFetchWithTotal<WPGroup>(`/wp/v2/group${buildParams(params)}`, {
         revalidate: 1800, tags: [WP_CACHE_TAGS.groups],
     })
+    // A ordem por relevância só devolve fichas com a nota gravada. Se a primeira página vier vazia
+    // (nota ainda não calculada no ambiente), a nota do idioma recua para a geral e a geral para a fama externa.
+    if (orderby === 'relevance' && page === 1 && resultado.items.length === 0) {
+        if (alias !== 'relevance') return getGroups({ ...query, relevanciaGeral: true })
+        return getGroups({ ...query, orderby: 'popularity' })
+    }
+    return resultado
 }
 
 /**
@@ -76,12 +90,15 @@ export async function getAllGroups(query: Omit<GroupsQuery, 'page' | 'perPage'> 
 }
 
 export async function getTrendingGroups(limit = 10): Promise<WPGroup[]> {
-    // Ordenação server-side via oc_meta_orderby (cpts.php) — evita baixar o
-    // catálogo inteiro só para ordenar aqui.
-    return wpBuscarOpcional<WPGroup[]>(
-        `/wp/v2/group${buildParams({ per_page: limit, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', oc_orderby: 'trending_score', order: 'desc' })}`,
+    // Ordenação server-side via oc_meta_orderby (cpts.php) — evita baixar o catálogo inteiro só para
+    // ordenar aqui. Relevância = o que o público abre + fama externa; trending_score de grupo é legado,
+    // sem recálculo, e fica só de recuo enquanto a nota não existe no ambiente.
+    const buscar = (ordem: string) => wpBuscarOpcional<WPGroup[]>(
+        `/wp/v2/group${buildParams({ per_page: limit, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', oc_orderby: ordem, order: 'desc' })}`,
         { revalidate: 300, tags: [WP_CACHE_TAGS.groups, WP_CACHE_TAGS.trendingGroups] },
     )
+    const porRelevancia = await buscar('relevance')
+    return porRelevancia.length > 0 ? porRelevancia : buscar('trending_score')
 }
 
 export async function getGroupsByIds(ids: number[]): Promise<WPGroup[]> {

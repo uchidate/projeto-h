@@ -16,6 +16,30 @@ describe('getGroups', () => {
         expect(fetchMock.mock.calls[0][0] as string).toContain('oc_agencies=4%2C5')
         vi.unstubAllGlobals()
     })
+
+    describe('ordem por relevância', () => {
+        const vazio = { ok: true, json: async () => [], headers: new Map([['X-WP-Total', '0'], ['X-WP-TotalPages', '0']]) }
+        const cheio = { ok: true, json: async () => [group(1, 'katseye')], headers: new Map([['X-WP-Total', '1'], ['X-WP-TotalPages', '1']]) }
+        let fetchMock: ReturnType<typeof vi.fn>
+        beforeEach(() => { fetchMock = vi.fn(); vi.stubGlobal('fetch', fetchMock) })
+        afterEach(() => vi.unstubAllGlobals())
+        const ordem = (i: number) => new URL(fetchMock.mock.calls[i][0] as string, 'https://wp.test').searchParams.get('oc_orderby')
+
+        it('usa a nota geral em português e a nota do idioma em inglês', async () => {
+            fetchMock.mockResolvedValue(cheio)
+            await getGroups({ orderby: 'relevance' })
+            await getGroups({ orderby: 'relevance', locale: 'en' })
+            await getGroups({ orderby: 'relevance', locale: 'es' })
+            expect([ordem(0), ordem(1), ordem(2)]).toEqual(['relevance', 'relevance_en', 'relevance'])
+        })
+
+        it('sem nota gravada, recua do idioma para a geral e da geral para a fama externa', async () => {
+            fetchMock.mockResolvedValueOnce(vazio).mockResolvedValueOnce(vazio).mockResolvedValueOnce(cheio)
+            const { items } = await getGroups({ orderby: 'relevance', locale: 'en' })
+            expect([ordem(0), ordem(1), ordem(2)]).toEqual(['relevance_en', 'relevance', 'popularity'])
+            expect(items).toHaveLength(1)
+        })
+    })
 })
 
 describe('getGroupsByIds', () => {

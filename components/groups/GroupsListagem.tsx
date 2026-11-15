@@ -97,7 +97,7 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
             letter,
             debutMin: generation ? `${generation.min}0101` : undefined,
             debutMax: generation ? `${generation.max}1231` : undefined,
-            orderby: order === 'az' ? 'title' : order === 'novos' ? 'date' : 'popularity',
+            orderby: order === 'az' ? 'title' : order === 'novos' ? 'date' : 'relevance',
             order: order === 'az' ? 'asc' : 'desc',
         }),
         emPt ? wpFetch<Record<string, number>>('/oc/v1/group-letter-counts', { revalidate: 3600 })
@@ -123,10 +123,10 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
     if (inicio) {
         const [trending, todos] = await Promise.all([
             emPt ? getTrendingGroups(6).catch(() => []) : Promise.resolve([] as WPGroup[]),
-            getAllGroups({ ...idioma, orderby: 'popularity', order: 'desc', leve: true }).catch(() => []),
+            getAllGroups({ ...idioma, orderby: 'relevance', order: 'desc', leve: true }).catch(() => []),
         ])
         emAlta = trending.length >= 6 ? trending : items.slice(0, 6)
-        // `todos` já vem por popularidade: as quatro primeiras de cada geração são as mais conhecidas.
+        // `todos` já vem por relevância: as quatro primeiras de cada geração são as mais procuradas.
         const todosNoIdioma = emPt ? todos : todos.filter(g => hasLocale(g, locale)).map(g => localizeEntity(g, locale, 'group'))
         geracoes = GENERATIONS.filter(g => g.slug !== '1').map(g => ({
             slug: g.slug, label: g.label,

@@ -35,7 +35,7 @@ const TIPO_CONFIGS: Record<string, TipoConfig> = {
         description: 'Os maiores girl groups do K-Pop — BLACKPINK, TWICE, aespa e muito mais.',
         metaDesc: 'Conheça todos os girl groups K-Pop: integrantes, estreia, fandom e curiosidades em português.',
         intro: 'Os girl groups são o coração do K-Pop. Com coreografias impecáveis, conceitos visuais únicos e fandoms apaixonados, esses grupos definiram a era moderna do pop coreano. Conheça todas as girl groups do nosso catálogo.',
-        query: { type: 'girl_group', perPage: 100, orderby: 'popularity', order: 'desc' },
+        query: { type: 'girl_group', perPage: 100, orderby: 'relevance', order: 'desc' },
     },
     'boy-groups': {
         label: 'Boy Group',
@@ -43,7 +43,7 @@ const TIPO_CONFIGS: Record<string, TipoConfig> = {
         description: 'Os maiores boy groups do K-Pop — BTS, EXO, SEVENTEEN, Stray Kids e muito mais.',
         metaDesc: 'Conheça todos os boy groups K-Pop: integrantes, estreia, fandom e curiosidades em português.',
         intro: 'Os boy groups K-Pop conquistaram o mundo com performances épicas, produções musicais inovadoras e conexão única com os fãs. De BTS a Stray Kids, conheça os grupos mais importantes do gênero.',
-        query: { type: 'boy_group', perPage: 100, orderby: 'popularity', order: 'desc' },
+        query: { type: 'boy_group', perPage: 100, orderby: 'relevance', order: 'desc' },
     },
     'grupos-mistos': {
         label: 'Grupo Misto',
@@ -51,7 +51,7 @@ const TIPO_CONFIGS: Record<string, TipoConfig> = {
         description: 'Co-ed groups do K-Pop — grupos com membros masculinos e femininos.',
         metaDesc: 'Conheça os co-ed groups do K-Pop: grupos mistos com membros masculinos e femininos.',
         intro: 'Os grupos mistos (co-ed) são uma raridade no K-Pop, mas têm uma história rica e fãs dedicados. Conheça todos os grupos com integrantes masculinos e femininos do nosso catálogo.',
-        query: { type: 'co_ed', perPage: 100, orderby: 'popularity', order: 'desc' },
+        query: { type: 'co_ed', perPage: 100, orderby: 'relevance', order: 'desc' },
     },
     'solos': {
         label: 'Artista Solo',
@@ -59,7 +59,7 @@ const TIPO_CONFIGS: Record<string, TipoConfig> = {
         description: 'Os principais artistas solo do K-Pop e K-R&B.',
         metaDesc: 'Conheça os artistas solo do K-Pop: cantores, rappers e artistas independentes da Coreia do Sul.',
         intro: 'Além dos grupos, o K-Pop tem uma cena solo vibrante. De IU a Zico, passando por artistas de R&B, hip-hop e pop, o cenário solo coreano é tão rico quanto o dos grupos. Conheça os principais nomes.',
-        query: { type: 'solo', perPage: 100, orderby: 'popularity', order: 'desc' },
+        query: { type: 'solo', perPage: 100, orderby: 'relevance', order: 'desc' },
     },
 }
 

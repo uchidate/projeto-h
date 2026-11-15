@@ -1,6 +1,7 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
 import type { WPProduction, WPTerm } from './types'
+import { aliasDeRelevancia } from './relevancia'
 
 export type ProductionsQuery = {
     /** Só itens com tradução publicada neste idioma (REST `oc_locale`); traz `translations`. */
@@ -18,6 +19,8 @@ export type ProductionsQuery = {
      * update-production-relevance no ops). 'trending_score' = só atualidade (ano, status, nota).
      */
     orderby?: 'date' | 'title' | 'modified' | 'menu_order' | 'meta_value' | 'meta_value_num' | 'trending_score' | 'relevance'
+    /** Com `locale`, 'relevance' usa a nota do idioma quando existe; isto força a nota geral. */
+    relevanciaGeral?: boolean
     order?: 'desc' | 'asc'
     slug?: string
     year?: number
@@ -48,6 +51,7 @@ export async function getProductions(query: ProductionsQuery = {}) {
         orderby = 'relevance', order = 'desc', slug, year, maxYear, minRating, metaKey, excludeAdult = true, locale,
     } = query
     const isCustomOrder = orderby === 'trending_score' || orderby === 'relevance'
+    const alias = orderby === 'relevance' ? aliasDeRelevancia(query.relevanciaGeral ? undefined : locale) : orderby
 
     // WP REST API exige ID inteiro para filtro de taxonomia — resolve slug → ID
     const genreId = genre ? await resolveTermId(genre, getProductionGenres) : undefined
@@ -72,14 +76,16 @@ export async function getProductions(query: ProductionsQuery = {}) {
         oc_network: network,
         meta_key: metaKey,
         oc_exclude_adult: excludeAdult ? '1' : undefined,
-        oc_orderby: isCustomOrder ? orderby : undefined,
+        oc_orderby: isCustomOrder ? alias : undefined,
     }
     const resultado = await wpFetchWithTotal<WPProduction>(`/wp/v2/production${buildParams(params)}`, {
         revalidate: 1800, tags: [WP_CACHE_TAGS.productions],
     })
     // A ordem por relevância só devolve fichas que têm a nota gravada. Se a primeira página vier
     // vazia (nota ainda não calculada no ambiente), recua para a atualidade em vez de mostrar nada.
+    // A nota do idioma recua primeiro para a geral.
     if (orderby === 'relevance' && page === 1 && resultado.items.length === 0) {
+        if (alias !== 'relevance') return getProductions({ ...query, relevanciaGeral: true })
         return getProductions({ ...query, orderby: 'trending_score' })
     }
     return resultado
