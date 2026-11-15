@@ -33,9 +33,11 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
     const roles = (artist.acf?.roles as string[] | undefined)?.map(r => labels.role(r, artist.acf?.gender)) ?? []
     const isTrending = showTrendingBadge && (artist.acf?.trending_score ?? 0) >= 50
 
-    // Diretório: rosto e nome, com um gancho curto sobre a foto (grupo em etiqueta e obra-chave do dossiê em destaque)
-    // para dar motivo de clicar. Só usa dados já na listagem; sem eles, o cartão volta a ser rosto e nome.
+    // Diretório: o nome é o que se lê primeiro, sobre a foto; o grupo vai em etiqueta no topo e a obra-chave do
+    // dossiê desce para uma linha discreta embaixo, como motivo de clicar. Antes a obra ocupava a foto em letra
+    // grande e o nome ficava pequeno fora dela: numa lista de artistas, lia-se uma lista de obras.
     if (variant === 'diretorio') {
+        const destaque = destaqueDe(artist)
         return (
             <Link href={`/artists/${artist.slug}`} className="group flex flex-col" data-slug={artist.slug}>
                 <div className="relative aspect-3/4 overflow-hidden bg-surface">
@@ -50,9 +52,14 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
                             </span>
                         </div>
                     )}
-                    <GanchoArtista destaque={destaqueDe(artist)} grupoNome={grupoNome} grupoNoTopo />
+                    <GanchoArtista destaque={null} grupoNome={grupoNome} grupoNoTopo />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 via-60% to-transparent px-3 pb-2.5 pt-10">
+                        <span className="line-clamp-2 block font-[family-name:var(--font-playfair)] text-[17px] font-bold leading-[1.1] text-white [text-shadow:0_1px_3px_rgba(0,0,0,.9)] sm:text-[18px]">{name}</span>
+                    </div>
                 </div>
-                <span className="mt-2.5 block truncate text-[14px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[15px]">{name}</span>
+                {destaque
+                    ? <span className="mt-2 block truncate text-[12.5px] leading-tight text-muted transition-colors group-hover:text-accent"><span aria-hidden className="mr-1.5 inline-block h-1.5 w-1.5 -translate-y-px rounded-full bg-accent" />{destaque.titulo}</span>
+                    : roles[0] && <span className="mt-2 block truncate font-mono text-[10px] uppercase tracking-[0.06em] text-muted">{roles[0]}</span>}
             </Link>
         )
     }

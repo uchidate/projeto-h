@@ -16,19 +16,20 @@ export function AniversariosSemana({ itens }: { itens: AniversarianteSemana[] })
                 </h2>
                 <Link href="/artists/birthdays" className="text-[13px] font-semibold text-accent sm:text-[14px]">{t('seeAll')}</Link>
             </div>
-            <ul className="-mx-4 mt-4 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:mt-5 sm:grid sm:grid-cols-5 sm:gap-4 sm:overflow-visible sm:px-0">
+            {/* No celular: só avatar, nome e data, sem caixa. O cartão com borda tomava o dobro da altura para a mesma informação. */}
+            <ul className="-mx-4 mt-3.5 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:mt-5 sm:grid sm:grid-cols-5 sm:gap-4 sm:overflow-visible sm:px-0">
                 {itens.map((a, i) => (
-                    <li key={a.slug} className="w-[168px] shrink-0 sm:w-auto">
+                    <li key={a.slug} className="w-[88px] shrink-0 sm:w-auto">
                         <Link href={`/artists/${a.slug}`} data-posicao={i + 1}
-                            className="flex h-full flex-col items-center gap-2.5 border border-border bg-surface px-2.5 py-4 text-center hover:border-accent/60 sm:flex-row sm:gap-3.5 sm:p-3.5 sm:text-left">
-                            <span className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-full bg-background sm:h-16 sm:w-16">
+                            className="flex h-full flex-col items-center gap-2 text-center sm:flex-row sm:gap-3.5 sm:border sm:border-border sm:bg-surface sm:p-3.5 sm:text-left sm:hover:border-accent/60">
+                            <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-surface sm:bg-background">
                                 {a.foto
                                     ? <Image src={a.foto} alt="" fill sizes="72px" className="object-cover object-top" />
                                     : <span aria-hidden className="flex h-full w-full items-center justify-center bg-accent text-[26px] font-bold text-[#0d0b0f]">{a.nome.charAt(0)}</span>}
                             </span>
-                            <span className="min-w-0">
-                                <span className="block truncate text-[14px] font-bold sm:text-[15px]">{a.nome}</span>
-                                <span className="mt-0.5 block text-[12px] font-semibold text-accent sm:text-[13px]">{a.quando}</span>
+                            <span className="min-w-0 max-w-full">
+                                <span className="line-clamp-2 block text-[12.5px] font-bold leading-tight sm:truncate sm:text-[15px]">{a.nome}</span>
+                                <span className="mt-0.5 block text-[11px] font-semibold text-accent sm:text-[13px]">{a.quando}</span>
                             </span>
                         </Link>
                     </li>

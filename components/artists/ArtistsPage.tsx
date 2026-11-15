@@ -5,7 +5,7 @@ import { LOCALE_META, DEFAULT_LOCALE } from '@/lib/i18n/config'
 import Link from '@/components/i18n/LocalizedLink'
 import { usePathname } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { Mic2, Search, X } from 'lucide-react'
+import { Mic2, Search, SlidersHorizontal, X } from 'lucide-react'
 import { useCallback, useRef, useState, useEffect } from 'react'
 import type { WPArtist } from '@/lib/wordpress/types'
 import { Pagination } from '@/components/ui/Pagination'
@@ -26,7 +26,6 @@ import { labelsFor } from '@/lib/i18n/labels'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import type { AniversarianteSemana } from '@/lib/artists/aniversarios'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
-import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
 import { QuizWidget } from '@/components/ui/QuizWidget'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { queryAtual } from '@/lib/listagem/query-atual'
@@ -53,15 +52,19 @@ interface Props {
     shopProducts?: StoreProduct[]
     /** Nome dos grupos dos artistas da página, por id (alimenta a linha "Do grupo X" do cartão). */
     grupos?: Record<number, string>
+    /** Grupos mais procurados (atalhos "Por grupo" do topo). */
+    gruposEmAlta?: { slug: string; nome: string }[]
 }
 
-export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [], grupos = {} }: Props) {
+export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [], grupos = {}, gruposEmAlta = [] }: Props) {
     const pathname = usePathname()
 
     const [searchVal, setSearchVal] = useState(search ?? '')
     const [sortVal, setSortVal] = useState(sortBy)
     const [roleVal, setRoleVal] = useState(role ?? '')
     const [affiliationVal, setAffiliationVal] = useState(affiliation ?? '')
+    // No celular a grade abre com as duas primeiras fatias (24 cartões); "Ver mais" mostra o resto da página.
+    const [gradeInteira, setGradeInteira] = useState(false)
 
     const buildUrl = useCallback((s: string, sort: string, r: string, a: string) => {
         const params = queryAtual()
@@ -215,6 +218,17 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                 </div>
             </section>
 
+            {inicio && gruposEmAlta.length >= 4 && (
+                <nav className="page-wrap pb-1 pt-1.5" aria-label={t('byGroupAria')} data-bloco="lista-por-grupo">
+                    <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 lg:mx-0 lg:px-0">
+                        <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted">{t('byGroup')}</span>
+                        {gruposEmAlta.map(g => (
+                            <Link key={g.slug} href={`/groups/${g.slug}`} className="touch-target flex h-9 shrink-0 items-center border border-border px-3 text-[13px] font-semibold text-foreground transition-colors hover:border-accent/60">{g.nome}</Link>
+                        ))}
+                    </div>
+                </nav>
+            )}
+
             {inicio && <ContinueDeOndeParou textos={{ titulo: t('continueTitle'), limpar: t('clear') }} />}
             <EmAlta artistas={emAltaArtistas} verTodos="#diretorio" grupos={grupos} />
             {inicio && ADSENSE.slots.leaderboard && (
@@ -231,17 +245,22 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                 </div>
 
                 <div className="page-wrap">
-                    <div className="mt-6 flex flex-col gap-3 border-y border-border/70 py-3 lg:h-14 lg:flex-row lg:items-center lg:justify-between lg:py-0">
-                        <div className="-mx-4 flex gap-1 overflow-x-auto px-4 lg:mx-0 lg:px-0" role="group" aria-label={t('sortAria')}>
+                    {/* No celular a ordenação acompanha a rolagem, logo abaixo do cabeçalho (que some ao descer e volta ao subir:
+                        --site-header-offset). "Filtrar" leva de volta à busca e aos atalhos do topo. */}
+                    <div className="mt-6 flex flex-col gap-3 border-y border-border/70 py-3 max-lg:contents lg:h-14 lg:flex-row lg:items-center lg:justify-between lg:py-0">
+                        <div data-bloco="lista-ordenacao" className="max-lg:sticky max-lg:z-30 max-lg:-mx-4 max-lg:mt-6 max-lg:flex max-lg:items-center max-lg:gap-2 max-lg:border-y max-lg:border-border/70 max-lg:bg-background max-lg:px-4 max-lg:py-2 max-lg:transition-[top] max-lg:duration-200 motion-reduce:transition-none lg:contents" style={{ top: 'calc(var(--site-header-h, 0px) + var(--site-header-offset, 0px))' }}>
+                        <div className="flex min-w-0 flex-1 gap-1 overflow-x-auto lg:flex-none" role="group" aria-label={t('sortAria')}>
                             {SORT_OPTIONS.map(o => (
                                 <button key={o.value} type="button" onClick={() => setSortVal(o.value)} aria-pressed={sortVal === o.value} className={aba(sortVal === o.value)}>{o.label}</button>
                             ))}
                         </div>
-                        <div className="flex gap-2">
-                            <select value={roleVal} onChange={e => setRoleVal(e.target.value)} aria-label={t('roleAria')} className={seletor}>
-                                <option value="">{t('roleAll')}</option>
-                                {ROLE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
+                            <button type="button" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); campoBusca.current?.focus({ preventScroll: true }) }}
+                                className="touch-target flex h-9 shrink-0 items-center gap-1.5 border border-border-strong px-3 text-[13px] font-semibold text-foreground lg:hidden">
+                                <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden />{t('filter')}
+                            </button>
+                        </div>
+                        {/* A atuação já se escolhe nos atalhos do topo; aqui fica só o que eles não cobrem. */}
+                        <div className="flex gap-2 max-lg:mt-3">
                             <select value={affiliationVal} onChange={e => setAffiliationVal(e.target.value)} aria-label={t('affAria')} className={seletor}>
                                 <option value="">{t('affAll')}</option>
                                 <option value="group">{t('inGroup')}</option>
@@ -250,8 +269,9 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                         </div>
                     </div>
 
-                    {/* Índice A–Z: só as letras, sem contagem */}
-                    <div className="-mx-4 mt-4 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:justify-between lg:gap-0 lg:px-0" aria-label={t('azAria')}>
+                    {/* Índice A–Z: só as letras, sem contagem. No celular aparece só na aba A–Z ou com letra escolhida;
+                        nas outras ordens era uma linha a mais antes da grade. */}
+                    <div className={`-mx-4 mt-4 gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex lg:justify-between lg:gap-0 lg:px-0 ${sortVal === 'name' || letter ? 'flex' : 'hidden'}`} aria-label={t('azAria')}>
                         {ALPHA.map(L => {
                             const count = letterCounts[L] ?? 0
                             const active = letter === L
@@ -299,9 +319,10 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                                         deslocamento += fatia.length
                                         const comAnuncio = b > 0 && anuncios < 3 && !!ADSENSE.slots.inline
                                         if (comAnuncio) anuncios++
+                                        const recolhida = b >= 2 && !gradeInteira
                                         return (
-                                            <Fragment key={`fatia-${b}`}>
-                                                {b === 2 && emPt && shopProducts.length > 0 && (
+                                            <div key={`fatia-${b}`} className={recolhida ? 'max-sm:hidden' : undefined}>
+                                                {b === 1 && emPt && shopProducts.length > 0 && (
                                                     <LojaEmLinha bloco="listagem-artistas-loja" products={shopProducts} title={t('shopTitle')} contexto="listagem:artistas:grade" className="my-7 sm:my-9" />
                                                 )}
                                                 {comAnuncio && (
@@ -315,7 +336,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                                                             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw" />
                                                     ))}
                                                 </div>
-                                            </Fragment>
+                                            </div>
                                         )
                                     })
                                 })()}
@@ -323,8 +344,15 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                         )}
                     </div>
 
+                    {!gradeInteira && grade.length > 24 && (
+                        <div className="mt-8 sm:hidden">
+                            <button type="button" onClick={() => setGradeInteira(true)} className="touch-target flex h-[52px] w-full items-center justify-center border border-accent px-8 text-[15px] font-bold text-accent hover:bg-accent/10">
+                                {t('seeMore', { count: numero(grade.length - 24) })}
+                            </button>
+                        </div>
+                    )}
                     {proximaPagina && (
-                        <div className="mt-10 flex justify-center">
+                        <div className={`mt-10 flex justify-center ${!gradeInteira && grade.length > 24 ? 'max-sm:hidden' : ''}`}>
                             <Link href={proximaPagina} className="touch-target flex h-[52px] w-full items-center justify-center border border-accent px-8 text-[15px] font-bold text-accent hover:bg-accent/10 sm:w-auto">
                                 {t('seeMore', { count: numero(perPage) })}
                             </Link>
@@ -334,9 +362,7 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                 </div>
             </section>
 
-            {inicio && emPt && shopProducts.length > 0 && (
-                <ShopRelatedSection title={t('shopTitle')} products={shopProducts} verTudoLabel={t('seeStore')} contexto="listagem:artistas" />
-            )}
+            {/* A loja aparece uma vez só, dentro da grade (depois dos 12 primeiros); a vitrine do fim da página repetia os mesmos produtos. */}
 
             {inicio && emPt && <QuizWidget category="k-pop" title={t('quizTitle')} description={t('quizText')} />}
 

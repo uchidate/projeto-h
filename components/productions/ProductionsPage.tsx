@@ -143,9 +143,10 @@ export async function ProductionsPage({ locale = DEFAULT_LOCALE,
             {inicio && generosTop.length > 0 && (
                 <section className="page-wrap pt-10" data-bloco="lista-generos">
                     <h2 className={H2}>{t('exploreByGenre')}</h2>
-                    <ul className="mt-4 grid grid-cols-2 gap-2.5 lg:grid-cols-3 lg:gap-4">
+                    {/* No celular, uma faixa deslizável: em três linhas o bloco tomava uma tela inteira antes da lista. */}
+                    <ul className="-mx-4 mt-4 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 lg:gap-4">
                         {generosTop.map(gn => (
-                            <li key={gn.slug}>
+                            <li key={gn.slug} className="w-[44%] shrink-0 sm:w-auto">
                                 <Link href={buildHref({ genre: gn.slug, page: '1' })} className="flex flex-col gap-2.5 border border-border-strong bg-surface p-2.5 transition-colors hover:border-accent/60 lg:flex-row lg:items-center lg:gap-4 lg:p-3.5">
                                     <span className="flex gap-1 lg:gap-1.5">
                                         {gn.fotos.slice(0, 3).map(p => {

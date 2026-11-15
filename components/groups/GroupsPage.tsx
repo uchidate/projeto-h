@@ -243,6 +243,8 @@ export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, total
     }
     const proximaPagina = currentPage < totalPages ? buildHref({ page: String(currentPage + 1) }) : null
     const restantes = Math.max(0, total - currentPage * 48)
+    // Na página inicial os 6 primeiros já estão em "Em alta": a grade segue dali, sem repetir.
+    const grade = inicio && emAlta.length > 0 ? groups.slice(Math.min(6, emAlta.length)) : groups
 
     const leaderboard = ADSENSE.slots.leaderboard
     const inline = ADSENSE.slots.inline
@@ -321,9 +323,10 @@ export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, total
             {inicio && geracoes.length > 0 && (
                 <section className="page-wrap pt-10" data-bloco="lista-geracoes">
                     <h2 className={H2}>{t('exploreByGeneration')}</h2>
-                    <ul className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+                    {/* No celular, uma faixa deslizável: em duas linhas o bloco tomava meia tela antes da lista. */}
+                    <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 lg:gap-4">
                         {geracoes.map(ger => (
-                            <li key={ger.slug}>
+                            <li key={ger.slug} className="w-[44%] shrink-0 sm:w-auto">
                                 <Link href={buildHref({ generation: ger.slug, page: '1' })} className="block border border-border-strong bg-surface p-3 transition-colors hover:border-accent/60 sm:p-[18px]">
                                     <span className={`${SERIF} block text-[19px] font-semibold sm:text-[24px]`}>{nomeGeracao(ger)}</span>
                                     <span className="mt-3 grid grid-cols-2 gap-1 sm:grid-cols-4 sm:gap-1.5">
@@ -405,8 +408,8 @@ export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, total
                         // Fatias de 12 (divide 2, 3, 4 e 6 colunas) com o anúncio entre elas, fora da grade, para não deixar órfãos.
                         (() => {
                             const CORTE = 12
-                            const temAnuncio = !!inline && groups.length >= CORTE * 2
-                            const blocos = temAnuncio ? [groups.slice(0, CORTE), groups.slice(CORTE)] : [groups]
+                            const temAnuncio = !!inline && grade.length >= CORTE * 2
+                            const blocos = temAnuncio ? [grade.slice(0, CORTE), grade.slice(CORTE)] : [grade]
                             let offset = 0
                             return blocos.map((bloco, b) => {
                                 const inicioBloco = offset

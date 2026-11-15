@@ -4,7 +4,7 @@ import { exigirListagemComConteudo } from '@/lib/wordpress/client'
 import { stripHtml } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import { getArtists } from '@/lib/wordpress/artists'
-import { getGroupsByIds } from '@/lib/wordpress/groups'
+import { getGroups, getGroupsByIds } from '@/lib/wordpress/groups'
 import { wpFetch } from '@/lib/wordpress/client'
 import { ArtistsPage } from '@/components/artists/ArtistsPage'
 import { aniversariosDaSemana, hojeEmSaoPaulo, mesesDaJanela } from '@/lib/artists/aniversarios'
@@ -101,6 +101,13 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
     const idsDeGrupo = [...new Set(items.flatMap(a => (a.acf?.groups as number[] | undefined) ?? []))]
     const grupos = Object.fromEntries((await getGroupsByIds(idsDeGrupo)).map(g => [g.id, stripHtml(g.title.rendered)]))
 
+    // Atalhos "Por grupo": os grupos mais procurados levam à página do grupo, onde estão os integrantes.
+    const gruposEmAlta = unfiltered && page === 1
+        ? (await getGroups({ ...idioma, orderby: 'relevance', perPage: 8, leve: true }).then(r => r.items).catch(() => []))
+            .filter(g => emPt || hasLocale(g, locale)).map(g => (emPt ? g : localizeEntity(g, locale, 'group')))
+            .map(g => ({ slug: g.slug, nome: stripHtml(g.title.rendered) }))
+        : []
+
     const shopProducts = emPt && unfiltered && page === 1
         ? ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'listagem:artistas')
         : []
@@ -123,6 +130,7 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
             aniversarios={aniversarios}
             shopProducts={shopProducts}
             grupos={grupos}
+            gruposEmAlta={gruposEmAlta}
         />
         </>
     )
