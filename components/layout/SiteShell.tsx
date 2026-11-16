@@ -62,7 +62,7 @@ const playfair = Playfair_Display({
  * consentimento, analytics e anúncios. O layout de `app/[locale]` é o único
  * root layout e só repassa o idioma — ver D2 em docs/I18N-ARQUITETURA.md.
  */
-const STICKY_LIGADO = false
+const STICKY_LIGADO = true
 
 export async function SiteShell({ locale, children }: { locale: Locale; children: React.ReactNode }) {
     const [monetization, siteSettings, messages] = await Promise.all([
@@ -278,8 +278,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
                 <AdSenseLoader />
 
                 {/* Ad sticky mobile — aparece após load + 2,5s, com botão fechar */}
-                {/* Anúncio fixo do rodapé desligado por enquanto (2026-09-26): disputava a tela com o
-                banner de consentimento. Para reativar, troque STICKY_LIGADO por true. */}
+                {/* Religado em 2026-11-16 por decisão do dono: fica ligado mesmo disputando a tela com o banner de
+                consentimento (motivo do desligamento em 2026-09-26). O banner fica por cima (z-index máximo). */}
                 {STICKY_LIGADO && ADSENSE.slots.sticky && <AdStickyBottom slot={ADSENSE.slots.sticky} />}
 
               </AdsProvider>
