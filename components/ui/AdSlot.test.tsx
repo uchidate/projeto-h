@@ -188,6 +188,27 @@ describe('AdSlot', () => {
         await waitFor(() => expect(window.adsbygoogle).toHaveLength(1))
     })
 
+    it('mediaQuery sem lazy: lê o status e remove a reserva no unfilled (regressão)', async () => {
+        // As laterais (eager + mediaQuery) nunca registravam o MutationObserver: o <ins> só existe
+        // depois de a viewport virar elegível, e o efeito não dependia disso.
+        vi.mocked(window.matchMedia).mockImplementation(() => ({
+            matches: true,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+        } as unknown as MediaQueryList))
+        const { container } = render(
+            <AdsProvider settings={settings()}>
+                <AdSlot slot="inline" mediaQuery="(min-width: 1280px)" analyticsPlacement="article_sidebar" />
+            </AdsProvider>,
+        )
+        await waitFor(() => expect(container.querySelector('ins')).toBeInTheDocument())
+        container.querySelector('ins')?.setAttribute('data-ad-status', 'unfilled')
+        await waitFor(() => expect(container).toBeEmptyDOMElement())
+        expect(window.gtag).toHaveBeenCalledWith('event', 'ad_slot_status', {
+            ad_placement: 'article_sidebar', ad_format: 'auto', ad_status: 'unfilled',
+        })
+    })
+
     it('remove toda a reserva quando o AdSense informa unfilled', async () => {
         const { container } = render(<AdsProvider settings={settings()}><AdSlot slot="inline" /></AdsProvider>)
         container.querySelector('ins')?.setAttribute('data-ad-status', 'unfilled')
