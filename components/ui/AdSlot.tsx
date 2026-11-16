@@ -189,7 +189,12 @@ export function AdSlot({
         const observer = new MutationObserver(report)
         observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] })
         return () => observer.disconnect()
-    }, [visible, slot, format, ads.slots, analyticsPlacement, onStatusChange])
+        // `viewportEligible` nas dependências pelo mesmo motivo do observer de interseção acima: com
+        // `mediaQuery` o primeiro render devolve null e o <ins> ainda não existe. Num slot eager
+        // (`visible` já nasce true) o efeito não reexecutava, o status nunca era lido e a lateral
+        // sem anúncio ficava como buraco. Medido em 2026-11-16: as laterais tinham 163 pedidos e
+        // 2 desfechos `filled`/`unfilled` em 28 dias; os slots sem `mediaQuery` têm ~87%.
+    }, [visible, viewportEligible, slot, format, ads.slots, analyticsPlacement, onStatusChange])
 
     if (!ads.enabled || automatizado || !viewportEligible || !client || !resolvedSlot) return null
     if (adStatus === 'unfilled' || adStatus === 'timeout') return null
