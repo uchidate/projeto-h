@@ -46,16 +46,6 @@ describe('AdStickyBottom', () => {
         expect(container.querySelector('ins.adsbygoogle')).toBeInTheDocument()
     })
 
-    it('publica a altura em --ad-sticky-h enquanto está no ar e remove ao fechar', () => {
-        const { container } = render(<AdsProvider settings={settings()}><AdStickyBottom slot="sticky" /></AdsProvider>)
-        expect(document.documentElement.style.getPropertyValue('--ad-sticky-h')).toBe('')
-        act(() => { vi.advanceTimersByTime(2500) })
-        // jsdom não faz layout (altura 0); o que importa é a variável existir para o banner de consentimento.
-        expect(document.documentElement.style.getPropertyValue('--ad-sticky-h')).toBe('0px')
-        act(() => { container.querySelector('button')!.click() })
-        expect(document.documentElement.style.getPropertyValue('--ad-sticky-h')).toBe('')
-    })
-
     it('não renderiza nem faz push quando ads.enabled é false', () => {
         const { container } = render(<AdsProvider settings={settings({ enabled: false })}><AdStickyBottom slot="sticky" /></AdsProvider>)
         act(() => vi.advanceTimersByTime(3000))

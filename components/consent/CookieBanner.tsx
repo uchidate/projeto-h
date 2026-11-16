@@ -92,9 +92,7 @@ export function CookieBanner() {
                 aria-modal="true"
                 aria-labelledby="consentimento-titulo"
                 aria-describedby="consentimento-texto"
-                // No celular sobe a altura da âncora fixa (--ad-sticky-h, escrita por AdStickyBottom): os dois ficam
-                // visíveis, o banner logo acima do anúncio. Sem âncora a variável não existe e o banner encosta no rodapé.
-                className="fixed inset-x-0 bottom-[var(--ad-sticky-h,0px)] z-450 p-2 sm:bottom-6 sm:p-0"
+                className="fixed inset-x-0 bottom-0 z-450 p-2 sm:bottom-6 sm:p-0"
             >
                 <div className="mx-auto max-w-xl rounded-2xl border border-border bg-surface p-3.5 shadow-2xl sm:p-7">
                     <p id="consentimento-titulo" className="text-[17px] sm:text-[20px] font-black leading-tight tracking-[-0.01em] text-foreground">
