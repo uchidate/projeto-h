@@ -160,7 +160,7 @@ describe('CookieBanner', () => {
 
     it('é um diálogo modal nomeado, sobre um fundo escurecido', () => {
         const { container } = render(<CookieBanner />)
-        const dialogo = screen.getByRole('dialog', { name: /sua escolha sobre cookies/i })
+        const dialogo = screen.getByRole('dialog', { name: /podemos usar cookies/i })
         expect(dialogo).toHaveAttribute('aria-modal', 'true')
         expect(container.querySelector('[aria-hidden="true"].fixed.inset-0')).not.toBeNull()
     })
