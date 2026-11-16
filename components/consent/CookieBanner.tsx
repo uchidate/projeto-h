@@ -96,14 +96,14 @@ export function CookieBanner() {
                 // visíveis, o banner logo acima do anúncio. Sem âncora a variável não existe e o banner encosta no rodapé.
                 className="fixed inset-x-0 bottom-[var(--ad-sticky-h,0px)] z-450 p-2 sm:bottom-6 sm:p-0"
             >
-                <div className="mx-auto max-w-xl rounded-2xl border border-border bg-surface p-4 shadow-2xl sm:p-7">
-                    <p id="consentimento-titulo" className="text-[18px] sm:text-[20px] font-black leading-tight tracking-[-0.01em] text-foreground">
+                <div className="mx-auto max-w-xl rounded-2xl border border-border bg-surface p-3.5 shadow-2xl sm:p-7">
+                    <p id="consentimento-titulo" className="text-[17px] sm:text-[20px] font-black leading-tight tracking-[-0.01em] text-foreground">
                         {t('titulo')}
                     </p>
-                    <p id="consentimento-texto" className="mt-2 text-[14px] sm:text-[15px] text-muted leading-relaxed">
+                    <p id="consentimento-texto" className="mt-1.5 text-[13px] leading-snug text-muted sm:mt-2 sm:text-[15px] sm:leading-relaxed">
                         {t.rich('texto', { link: c => <a href={href('privacy', undefined, locale)} className="text-accent underline">{c}</a> })}
                     </p>
-                    <div className="mt-5 grid grid-cols-2 gap-3">
+                    <div className="mt-3.5 grid grid-cols-2 gap-3 sm:mt-5">
                         <button
                             onClick={() => decidir('denied')}
                             className="w-full rounded-full border-2 border-border px-4 py-3 text-[15px] font-bold text-foreground transition-colors hover:bg-background"

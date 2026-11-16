@@ -449,8 +449,8 @@
     }
   },
   "cookies": {
-    "titulo": "Before you continue: your cookie choice",
-    "texto": "We use cookies to measure audience and personalize ads. If you decline, the site stays open for reading, but features that save your choices on this device, such as quiz results and the fan space, are turned off, and ads are not personalized. See our <link>privacy policy</link>.",
+    "titulo": "Can we use cookies?",
+    "texto": "They measure our audience and personalize the ads that help keep the site free. If you decline, you can still read everything, but features like the quiz and the fan space won't save your choices and ads will be generic. <link>Privacy policy</link>",
     "recusar": "Decline",
     "aceitar": "Accept"
   },

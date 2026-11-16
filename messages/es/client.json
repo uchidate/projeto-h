@@ -449,8 +449,8 @@
     }
   },
   "cookies": {
-    "titulo": "Antes de continuar: tu elección sobre las cookies",
-    "texto": "Usamos cookies para medir la audiencia y personalizar los anuncios. Si las rechazas, el sitio sigue abierto para la lectura, pero las funciones que guardan tus elecciones en este dispositivo, como los resultados del quiz y el espacio del fan, quedan desactivadas, y los anuncios no se personalizan. Consulta la <link>política de privacidad</link>.",
+    "titulo": "¿Podemos usar cookies?",
+    "texto": "Miden la audiencia y personalizan los anuncios que ayudan a mantener el sitio gratuito. Si las rechazas, puedes leer todo con normalidad, pero funciones como el quiz y el espacio del fan no guardan tus elecciones y los anuncios serán genéricos. <link>Política de privacidad</link>",
     "recusar": "Rechazar",
     "aceitar": "Aceptar"
   },
