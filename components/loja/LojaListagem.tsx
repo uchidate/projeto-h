@@ -2,6 +2,9 @@ import { intlLocale } from '@/lib/i18n/format'
 import type { Metadata } from 'next'
 import { ExternalLink, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
+import { getGroupsByIds } from '@/lib/wordpress/groups'
+import { stripHtml } from '@/lib/utils'
+import Link from '@/components/i18n/LocalizedLink'
 import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto, quedaDePreco } from '@/lib/wordpress/store'
 import { ordenarPrateleira, ordenarCategorias } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
@@ -13,6 +16,12 @@ import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 
 /** Por categoria na /loja sem filtro: os mais clicados primeiro; o resto fica em "Ver todos" (a página chegava a ~31 mil px no celular). */
 const ITENS_POR_CATEGORIA = 12
+/** No celular (2 colunas) a categoria abre com 6; os outros 6 só aparecem a partir de `sm`. */
+const ITENS_POR_CATEGORIA_CELULAR = 6
+/** Grupos na faixa "Por grupo": só quem tem pelo menos este tanto de produto, para a página de destino não ficar rala. */
+const MINIMO_POR_GRUPO = 3
+
+const precoNumero = (s: string | null) => (s ? Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.')) : NaN)
 
 export const metadataLoja: Metadata = {
     title: 'Loja K-Pop',
@@ -26,7 +35,7 @@ export const metadataLoja: Metadata = {
     twitter: { ...baseTwitter() },
 }
 
-export type SearchParams = Promise<{ categoria?: string; loja?: string; busca?: string; ofertas?: string; queda?: string }>
+export type SearchParams = Promise<{ categoria?: string; loja?: string; busca?: string; ofertas?: string; queda?: string; ordem?: string }>
 
 export async function LojaListagem({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
@@ -64,6 +73,20 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
     } else {
         filtered = ordenarPrateleira(filtered, 'loja:filtro')
     }
+    // Ordem por preço é escolha explícita de quem compra: vence a ordem do filtro. Sem preço legível vai para o fim.
+    if (sp.ordem === 'menor' || sp.ordem === 'maior') {
+        const sinal = sp.ordem === 'menor' ? 1 : -1
+        const valor = (p: (typeof filtered)[number]) => { const n = precoNumero(p.acf.price); return Number.isFinite(n) ? n * sinal : Infinity }
+        filtered = [...filtered].sort((a, b) => valor(a) - valor(b))
+    }
+
+    // Faixa "Por grupo": leva às vitrines /loja/grupo/{slug}, que já existiam sem nenhuma entrada a partir da loja.
+    const porGrupo = new Map<number, number>()
+    for (const p of products) if (p.acf.related_group) porGrupo.set(p.acf.related_group, (porGrupo.get(p.acf.related_group) ?? 0) + 1)
+    const idsDeGrupo = [...porGrupo].filter(([, n]) => n >= MINIMO_POR_GRUPO).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([id]) => id)
+    const gruposDaLoja = idsDeGrupo.length > 0
+        ? (await getGroupsByIds(idsDeGrupo).catch(() => [])).sort((a, b) => (porGrupo.get(b.id) ?? 0) - (porGrupo.get(a.id) ?? 0))
+        : []
 
     // Destaques (sempre do total, não filtrado)
     const featured = ordenarPrateleira(products.filter(p => p.acf.featured), 'loja:destaques').slice(0, 8)
@@ -89,15 +112,16 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
         return acc
     }, {})
 
-    const hasActive = sp.categoria || sp.loja || sp.busca || sp.ofertas === '1' || sp.queda === '1'
+    const hasActive = sp.categoria || sp.loja || sp.busca || sp.ofertas === '1' || sp.queda === '1' || !!sp.ordem
 
-    const setParam = (key: 'categoria' | 'loja' | 'ofertas' | 'queda', value: string) => {
+    const setParam = (key: 'categoria' | 'loja' | 'ofertas' | 'queda' | 'ordem', value: string) => {
         const ps = new URLSearchParams()
         if (key !== 'categoria' && sp.categoria) ps.set('categoria', sp.categoria)
         if (key !== 'loja' && sp.loja) ps.set('loja', sp.loja)
         if (key !== 'ofertas' && sp.ofertas === '1') ps.set('ofertas', '1')
         if (key !== 'queda' && sp.queda === '1') ps.set('queda', '1')
         if (sp.busca) ps.set('busca', sp.busca)
+        if (key !== 'ordem' && sp.ordem) ps.set('ordem', sp.ordem)
         if (value) ps.set(key, value)
         const qs = ps.toString()
         return qs ? `/loja?${qs}` : '/loja'
@@ -197,22 +221,23 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                 ))}
                         </div>
                     </div>
-                    <form className="flex flex-wrap items-end gap-2 lg:shrink-0">
+                    <form className="order-first flex items-end gap-2 lg:order-none lg:shrink-0">
                         {sp.categoria && <input type="hidden" name="categoria" value={sp.categoria} />}
                         {sp.loja && <input type="hidden" name="loja" value={sp.loja} />}
                         {sp.ofertas === '1' && <input type="hidden" name="ofertas" value="1" />}
                         {sp.queda === '1' && <input type="hidden" name="queda" value="1" />}
-                        <label className="flex min-w-[220px] flex-col gap-1 lg:min-w-70">
+                        {sp.ordem && <input type="hidden" name="ordem" value={sp.ordem} />}
+                        <label className="flex min-w-0 flex-1 flex-col gap-1 lg:min-w-70">
                             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">Busca</span>
-                            <input name="busca" type="text" defaultValue={sp.busca ?? ''} placeholder="Buscar produto…"
-                                className="h-8 border border-border bg-surface px-2.5 text-[12px] text-foreground placeholder:text-muted focus:border-foreground focus:outline-hidden" />
+                            <input name="busca" type="search" defaultValue={sp.busca ?? ''} placeholder="Buscar produto, grupo ou marca…"
+                                className="h-11 sm:h-8 border border-border bg-surface px-2.5 text-[12px] text-foreground placeholder:text-muted focus:border-foreground focus:outline-hidden" />
                         </label>
                         <button type="submit"
-                            className="h-8 bg-foreground px-3 text-[12px] font-bold text-background hover:opacity-85 transition-opacity">
-                            Aplicar
+                            className="h-11 bg-foreground px-4 text-[12px] font-bold text-background transition-opacity hover:opacity-85 sm:h-8 sm:px-3">
+                            Buscar
                         </button>
                         {hasActive && (
-                            <a href="/loja" className="flex h-8 items-center border border-border px-3 text-[12px] font-semibold text-muted transition-colors hover:border-accent/50 hover:text-accent">
+                            <a href="/loja" className="flex h-11 items-center sm:h-8 border border-border px-3 text-[12px] font-semibold text-muted transition-colors hover:border-accent/50 hover:text-accent">
                                 Limpar
                             </a>
                         )}
@@ -226,14 +251,29 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                     </div>
                 ) : (
                     <>
+                        {!hasActive && gruposDaLoja.length >= 3 && (
+                            <nav data-bloco="loja-por-grupo" aria-label="Produtos por grupo">
+                                <p className="mb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted">Por grupo</p>
+                                <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+                                    {gruposDaLoja.map(g => (
+                                        <Link key={g.id} href={`/loja/grupo/${g.slug}`}
+                                            className="flex h-11 shrink-0 items-center whitespace-nowrap border border-border-strong px-4 text-[13px] font-semibold text-foreground transition-colors hover:border-accent hover:text-accent sm:h-9">
+                                            {stripHtml(g.title.rendered)} <span className="ml-1.5 text-[11px] font-medium text-muted">{porGrupo.get(g.id)}</span>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </nav>
+                        )}
+
                         {/* Destaques — só quando não há filtro ativo */}
                         {!hasActive && featured.length > 0 && (
                             <section>
                                 <h2 className="font-[family-name:var(--font-playfair)] mb-4 text-[22px] font-semibold">
                                     Escolhas da curadoria
                                 </h2>
-                                <VitrineVista contexto="loja:destaques" produtoIds={featured.slice(0, 5).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                                    {featured.slice(0, 5).map(p => <StoreCard key={p.id} product={p} contexto="loja:destaques" link={productLinks.get(p.id)} />)}
+                                <VitrineVista contexto="loja:destaques" produtoIds={featured.slice(0, 5).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+                                    {/* 5º card só no desktop: em 2 ou 4 colunas ele sobrava sozinho na última linha. */}
+                                    {featured.slice(0, 5).map((p, i) => <div key={p.id} className={`[&>*]:h-full ${i === 4 ? 'max-lg:hidden' : ''}`}><StoreCard product={p} contexto="loja:destaques" link={productLinks.get(p.id)} /></div>)}
                                 </VitrineVista>
                             </section>
                         )}
@@ -244,7 +284,17 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                 <p className="py-16 text-center text-sm text-muted">Nenhum produto encontrado.</p>
                             ) : (
                                 <section>
-                                    <p className="mb-4 text-[12px] text-muted">{filtered.length} produto{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}</p>
+                                    <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                                        <p className="text-[12px] text-muted">{filtered.length} produto{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}</p>
+                                        <div className="flex items-center gap-2" role="group" aria-label="Ordenar por preço">
+                                            {([['', 'Relevância'], ['menor', 'Menor preço'], ['maior', 'Maior preço']] as const).map(([valor, rotulo]) => (
+                                                <a key={rotulo} href={setParam('ordem', valor)} aria-current={(sp.ordem ?? '') === valor ? 'true' : undefined}
+                                                    className={`flex h-9 items-center whitespace-nowrap border px-3 text-[12px] font-bold transition-colors ${(sp.ordem ?? '') === valor ? 'border-accent text-accent' : 'border-border-strong text-foreground-subtle hover:border-accent/50 hover:text-accent'}`}>
+                                                    {rotulo}
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
                                     <VitrineVista contexto="loja:filtro" produtoIds={filtered.slice(0, 8).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                                         {filtered.map(p => <StoreCard key={p.id} product={p} contexto="loja:filtro" link={productLinks.get(p.id)} />)}
                                     </VitrineVista>
@@ -261,11 +311,11 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
                                         <span className="text-[12px] font-semibold text-muted">{items.length} produto{items.length !== 1 ? 's' : ''}</span>
                                     </div>
                                     <VitrineVista contexto={`loja:categoria:${cat}`} produtoIds={items.slice(0, 8).map(p => p.id)} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                        {items.slice(0, ITENS_POR_CATEGORIA).map(p => <StoreCard key={p.id} product={p} contexto={`loja:categoria:${cat}`} link={productLinks.get(p.id)} />)}
+                                        {items.slice(0, ITENS_POR_CATEGORIA).map((p, i) => <div key={p.id} className={`[&>*]:h-full ${i >= ITENS_POR_CATEGORIA_CELULAR ? 'max-sm:hidden' : ''}`}><StoreCard product={p} contexto={`loja:categoria:${cat}`} link={productLinks.get(p.id)} /></div>)}
                                     </VitrineVista>
-                                    {items.length > ITENS_POR_CATEGORIA && (
+                                    {items.length > ITENS_POR_CATEGORIA_CELULAR && (
                                         <a href={setParam('categoria', cat)}
-                                            className="mt-4 flex h-11 items-center justify-center border border-border-strong text-[13px] font-bold text-foreground transition-colors hover:border-accent hover:text-accent">
+                                            className={`mt-4 h-11 ${items.length > ITENS_POR_CATEGORIA ? 'flex' : 'flex sm:hidden'} items-center justify-center border border-border-strong text-[13px] font-bold text-foreground transition-colors hover:border-accent hover:text-accent`}>
                                             Ver todos os {items.length} de {formatCategory(cat)} →
                                         </a>
                                     )}

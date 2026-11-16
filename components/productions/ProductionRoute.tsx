@@ -133,7 +133,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
     ])
     // Maior tráfego do site e sem loja até aqui. A loja só existe em português.
     const shopProducts = locale === DEFAULT_LOCALE
-        ? await getVitrineDoElenco(castItems.map(a => a.id), `producao:${slug}`, 6, 'drama', `${productionTitle} ${stripHtml(production.excerpt.rendered)}`)
+        ? await getVitrineDoElenco(castItems.map(a => a.id), `producao:${slug}`, 6, 'drama', `${productionTitle} ${stripHtml(production.excerpt.rendered)}`, foodsInProduction.map(f => stripHtml(f.title.rendered)))
         : []
 
     const genreTermMap = Object.fromEntries(allGenreTerms.map(t => [t.id, { name: nomeDoGenero(t.slug, t.name, locale), slug: t.slug }]))

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SLOT_DESCOBERTA, sortearComDescoberta, sortearPrateleira } from './store-rotacao'
+import { SLOT_DESCOBERTA, sortearComDescoberta, sortearPrateleira, variarPorPagina } from './store-rotacao'
 import type { StoreProduct } from './store'
 
 const prod = (id: number, extra: Partial<StoreProduct['acf']> = {}): StoreProduct => ({
@@ -69,5 +69,36 @@ describe('sortearComDescoberta', () => {
     it('ignora candidato que já está no pool', () => {
         const dentro = [{ ...lista[0], descoberta: true }]
         expect(sortearComDescoberta(lista, dentro, 5, new Set(), semente(4))).toEqual(sortearPrateleira(lista, 5, new Set(), semente(4)))
+    })
+})
+
+describe('variarPorPagina', () => {
+    const pool = Array.from({ length: 24 }, (_, i) => prod(i + 1, { category: ['alimenta', 'kbeauty', 'acessorios', 'outros'][i % 4] }))
+
+    it('é estável para a mesma página e muda de uma página para outra', () => {
+        const a = variarPorPagina(pool, 6, 'producao:mignon').map(p => p.id)
+        expect(variarPorPagina(pool, 6, 'producao:mignon').map(p => p.id)).toEqual(a)
+        const trios = new Set(Array.from({ length: 40 }, (_, i) => variarPorPagina(pool, 6, `producao:obra-${i}`).slice(0, 3).map(p => p.id).join(',')))
+        expect(trios.size).toBeGreaterThan(20)
+    })
+
+    it('não repete produto, respeita o teto por categoria e favorece o topo do ranking', () => {
+        const contagem = new Map<number, number>()
+        for (let i = 0; i < 300; i++) {
+            const r = variarPorPagina(pool, 6, `producao:obra-${i}`)
+            expect(new Set(r.map(p => p.id)).size).toBe(6)
+            const porCat = new Map<string, number>()
+            for (const p of r) porCat.set(p.acf.category!, (porCat.get(p.acf.category!) ?? 0) + 1)
+            expect(Math.max(...porCat.values())).toBeLessThanOrEqual(2)
+            for (const p of r) contagem.set(p.id, (contagem.get(p.id) ?? 0) + 1)
+        }
+        expect(contagem.get(1)!).toBeGreaterThan(contagem.get(24) ?? 0)
+        expect(contagem.size).toBeGreaterThan(20)
+    })
+
+    it('pool de uma categoria só ainda enche a faixa; pool pequeno volta como veio', () => {
+        const soBeleza = Array.from({ length: 10 }, (_, i) => prod(i + 1, { category: 'kbeauty' }))
+        expect(variarPorPagina(soBeleza, 6, 'x')).toHaveLength(6)
+        expect(variarPorPagina(soBeleza.slice(0, 4), 6, 'x')).toEqual(soBeleza.slice(0, 4))
     })
 })

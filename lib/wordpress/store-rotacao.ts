@@ -54,3 +54,55 @@ export function sortearComDescoberta(
     demais.splice(Math.min(SLOT_DESCOBERTA, demais.length), 0, escolhida)
     return demais
 }
+
+/** Gerador determinístico (mulberry32) a partir de um texto: a mesma página sempre sorteia igual, no servidor e em qualquer build. */
+export function aleatorioEstavel(semente: string): () => number {
+    let h = 2166136261
+    for (let i = 0; i < semente.length; i++) h = Math.imul(h ^ semente.charCodeAt(i), 16777619)
+    let a = h >>> 0
+    return () => {
+        a = (a + 0x6d2b79f5) >>> 0
+        let t = a
+        t = Math.imul(t ^ (t >>> 15), t | 1)
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    }
+}
+
+/**
+ * Escolhe `limite` produtos de um pool já ordenado, variando POR PÁGINA: o sorteio é ponderado pela posição
+ * (o melhor ranqueado aparece em mais páginas, sem ser fixo) e a semente é o contexto da página.
+ *
+ * Existe porque a vitrine de reserva cortava o topo da mesma lista para todo mundo: em 2026-11 todas as
+ * fichas de produção mostravam os mesmos três produtos, e o resto do catálogo nunca era exibido nem medido.
+ * `maxPorCategoria` evita três lámens seguidos na mesma faixa.
+ */
+export function variarPorPagina(produtos: StoreProduct[], limite: number, semente: string, maxPorCategoria = 2): StoreProduct[] {
+    if (produtos.length <= limite) return produtos
+    const aleatorio = aleatorioEstavel(semente)
+    const pool = produtos.map((p, i) => ({ p, peso: pesoNaPrateleira(p, i, new Set()) }))
+    const ordem: StoreProduct[] = []
+    while (pool.length > 0) {
+        const total = pool.reduce((s, x) => s + x.peso, 0)
+        let alvo = aleatorio() * total
+        let k = 0
+        for (; k < pool.length - 1; k++) {
+            alvo -= pool[k].peso
+            if (alvo <= 0) break
+        }
+        ordem.push(pool.splice(k, 1)[0].p)
+    }
+    const porCategoria = new Map<string, number>()
+    const escolhidos: StoreProduct[] = []
+    const sobras: StoreProduct[] = []
+    for (const p of ordem) {
+        const cat = p.acf.category ?? 'outros'
+        const usados = porCategoria.get(cat) ?? 0
+        if (usados >= maxPorCategoria) { sobras.push(p); continue }
+        porCategoria.set(cat, usados + 1)
+        escolhidos.push(p)
+        if (escolhidos.length >= limite) return escolhidos
+    }
+    // Pool de uma categoria só (ex.: tema beleza): completa com o que o teto segurou.
+    return [...escolhidos, ...sobras].slice(0, limite)
+}
