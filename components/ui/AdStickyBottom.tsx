@@ -29,6 +29,7 @@ export function AdStickyBottom({ slot }: { slot: string }) {
     const resolvedSlot = slot in ads.slots ? ads.slots[slot as AdPlacement] : slot
     const pushed = useRef(false)
     const adRef = useRef<HTMLModElement>(null)
+    const barraRef = useRef<HTMLDivElement>(null)
     const trackedStatus = useRef<string | null>(null)
     const [mobileViewport, setMobileViewport] = useState(false)
     const [visible, setVisible] = useState(false)
@@ -101,10 +102,28 @@ export function AdStickyBottom({ slot }: { slot: string }) {
         return () => observer.disconnect()
     }, [visible, dismissed])
 
-    if (!mobileViewport || !ads.enabled || !client || !resolvedSlot || dismissed || !visible || adStatus === 'unfilled' || adStatus === 'timeout') return null
+    const noAr = mobileViewport && ads.enabled && !!client && !!resolvedSlot && !dismissed && visible && adStatus !== 'unfilled' && adStatus !== 'timeout'
+
+    // Publica a altura da barra em --ad-sticky-h para o banner de consentimento se posicionar logo acima
+    // dela (CookieBanner). Some junto com a barra: fechada, sem preenchimento ou fora do celular.
+    useEffect(() => {
+        const barra = barraRef.current
+        if (!noAr || !barra) return
+        const raiz = document.documentElement
+        const medir = () => raiz.style.setProperty('--ad-sticky-h', `${Math.round(barra.getBoundingClientRect().height)}px`)
+        medir()
+        const observador = 'ResizeObserver' in window ? new ResizeObserver(medir) : null
+        observador?.observe(barra)
+        return () => {
+            observador?.disconnect()
+            raiz.style.removeProperty('--ad-sticky-h')
+        }
+    }, [noAr])
+
+    if (!noAr) return null
 
     return (
-        <div className="ad-sticky-bottom sm:hidden" role="complementary" aria-label={t('ads.label')}>
+        <div ref={barraRef} className="ad-sticky-bottom sm:hidden" role="complementary" aria-label={t('ads.label')}>
             <div className="relative w-full max-w-[320px] min-w-0">
                 <button
                     type="button"
