@@ -36,11 +36,15 @@ export async function comDescobertas(lista: StoreProduct[], contexto: string): P
     }
 }
 
-/** Vitrine geral em destaque, já ordenada por contexto. Base das faixas de loja em páginas sem produto próprio. */
-export async function getVitrineGeral(contexto: string, limit = 6, tipo?: TipoVitrine): Promise<StoreProduct[]> {
+/**
+ * Vitrine geral em destaque, já ordenada por contexto. Base das faixas de loja em páginas sem produto próprio.
+ * `semente` separa o sorteio do contexto: as fichas medem o clique como 'artista:fallback' (um contexto só,
+ * para o ranking ter volume), mas cada ficha precisa da sua parte do pool.
+ */
+export async function getVitrineGeral(contexto: string, limit = 6, tipo?: TipoVitrine, semente = contexto): Promise<StoreProduct[]> {
     // Pool maior que a faixa: cada página sorteia a sua parte (variarPorPagina), em vez de todas cortarem o mesmo topo.
     const pool = ordenarPrateleira(await getFeaturedStoreProducts(POOL_DE_RESERVA, tipo), contexto)
-    return comDescobertas(variarPorPagina(pool, limit, contexto), contexto)
+    return comDescobertas(variarPorPagina(pool, limit, semente), contexto)
 }
 
 /**

@@ -20,9 +20,9 @@ import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { GroupDetailPage } from '@/components/groups/GroupDetailPage'
 import { getHubsForGroup } from '@/lib/guias/hub-lookup'
-import { getStoreProductsByGroupId, getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { getStoreProductsByGroupId } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
-import { comDescobertas } from '@/lib/wordpress/vitrine'
+import { comDescobertas, getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { RastreioDeRolagem } from '@/components/analytics/RastreioDeRolagem'
 
 import { href } from '@/lib/i18n/routes'
@@ -134,7 +134,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
 
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio
-        ? await comDescobertas(ordenarPrateleira(await getFeaturedStoreProducts(8, 'kpop'), 'grupo:fallback'), 'grupo:fallback')
+        ? await getVitrineGeral('grupo:fallback', 8, 'kpop', `grupo:${slug}`)
         : []
     const shopProductsFicha = semProdutoProprio
         ? shopFallbackProducts

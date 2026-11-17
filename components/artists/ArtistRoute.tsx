@@ -13,9 +13,9 @@ import { buildWordPressMetadata } from '@/lib/seo/wordpress'
 import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { ArtistDetailPage } from '@/components/artists/ArtistDetailPage'
 import { getHubsForArtist } from '@/lib/guias/hub-lookup'
-import { getStoreProductsByArtistId, getStoreProductsByGroupId, getFeaturedStoreProducts } from '@/lib/wordpress/store'
+import { getStoreProductsByArtistId, getStoreProductsByGroupId } from '@/lib/wordpress/store'
 import { ordenarPrateleira } from '@/lib/wordpress/store-ranking'
-import { comDescobertas } from '@/lib/wordpress/vitrine'
+import { comDescobertas, getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { getMusicReleases } from '@/lib/wordpress/music'
 import { getArtigosDeAlbum, ligarArtigosAosAlbuns } from '@/lib/blog/albumArticles'
 import type { DiscographyAlbum } from '@/components/groups/GroupDiscography'
@@ -147,7 +147,8 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     const tipoVitrine = !connectionGroup && (primaryRole === 'actor' || primaryRole === 'host') ? 'drama' : 'kpop'
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0 && groupShopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio
-        ? await comDescobertas(ordenarPrateleira(await getFeaturedStoreProducts(8, tipoVitrine), 'artista:fallback'), 'artista:fallback')
+        // Cada ficha sorteia a sua parte do pool: antes as 436 exibições em 60 d mostravam os mesmos 8 em toda ficha (4 cliques).
+        ? await getVitrineGeral('artista:fallback', 8, tipoVitrine, `artista:${slug}`)
         : []
     const shopProductsFicha = semProdutoProprio
         ? shopFallbackProducts
