@@ -140,9 +140,9 @@ export async function BlogPage({ locale = DEFAULT_LOCALE, posts, total, totalPag
                             <p className="mt-1 text-[14px] text-muted">{t('startHereText')}</p>
                         </div>
                         {/* No celular os 4 cards empilhados passavam de 1.900 px de rolagem; viram uma faixa deslizável. */}
-                        <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 items-start gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+                        <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 items-start gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:items-stretch sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
                             {perenes.slice(0, 4).map(p => (
-                                <div key={p.id} className="flex w-[78%] shrink-0 snap-start flex-col sm:w-auto">
+                                <div key={p.id} className="flex w-[78%] shrink-0 snap-start flex-col sm:w-auto [&>a]:flex-1">
                                     <BlogGuiaCard post={p} categoryMap={categoryMap} locale={locale} />
                                 </div>
                             ))}

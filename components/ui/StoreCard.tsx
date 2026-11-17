@@ -80,9 +80,9 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                     </div>
                     <span className="mt-1 line-clamp-3 text-[14px] font-bold leading-tight text-foreground group-hover:text-accent sm:text-[15px]">{name}</span>
                     {(acf.price || acf.original_price) && (
-                        <div className="mt-1.5 flex items-baseline gap-1.5">
-                            {acf.price && <span className="text-[18px] font-black tracking-tight text-foreground">{acf.price}</span>}
-                            {acf.original_price && <span className="text-[11px] text-muted line-through">{acf.original_price}</span>}
+                        <div className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5">
+                            {acf.price && <span className="whitespace-nowrap text-[18px] font-black tracking-tight text-foreground">{acf.price}</span>}
+                            {acf.original_price && <span className="whitespace-nowrap text-[11px] text-muted line-through">{acf.original_price}</span>}
                         </div>
                     )}
                     <span className="mt-0.5 truncate text-[11px] font-medium text-muted">
@@ -179,9 +179,9 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                 {name}
             </span>
             {(acf.price || acf.original_price) && (
-                <div className="mt-1.5 flex items-baseline gap-1.5">
-                    {acf.price && <span className="text-[17px] font-black tracking-tight text-foreground sm:text-[18px]">{acf.price}</span>}
-                    {acf.original_price && <span className="text-[11px] text-muted line-through">{acf.original_price}</span>}
+                <div className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5">
+                    {acf.price && <span className="whitespace-nowrap text-[17px] font-black tracking-tight text-foreground sm:text-[18px]">{acf.price}</span>}
+                    {acf.original_price && <span className="whitespace-nowrap text-[11px] text-muted line-through">{acf.original_price}</span>}
                 </div>
             )}
             <div className="mt-auto flex min-h-[3.6rem] flex-col justify-end pt-1">
