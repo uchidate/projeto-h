@@ -50,8 +50,8 @@ export async function HomeDestaquesColuna({ posts, categoryMap, locale = DEFAULT
                         <li key={post.id} className="border-b border-border last:border-b-0">
                             <Link {...postLink(post.slug, locale)} className="group flex items-center gap-3 py-3">
                                 <span className="w-3 shrink-0 text-[17px] font-black leading-none text-accent">{i + 2}</span>
-                                <span className="relative aspect-video w-20 shrink-0 overflow-hidden bg-surface">
-                                    {imagem && <Image src={imagem.src} alt="" fill sizes="80px" className="object-cover" />}
+                                <span className="relative aspect-video w-28 shrink-0 sm:w-32 overflow-hidden bg-surface">
+                                    {imagem && <Image src={imagem.src} alt="" fill sizes="128px" className="object-cover" />}
                                 </span>
                                 <span className="min-w-0 flex-1">
                                     <span className="block text-[13px] font-extrabold leading-snug text-foreground transition-colors group-hover:text-accent line-clamp-3">{titulo}</span>

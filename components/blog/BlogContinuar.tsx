@@ -69,7 +69,7 @@ export function BlogContinuar({ atual, candidatos, verMaisHref }: Props) {
             </div>
 
             <Link href={`/blog/${destaque.slug}`} className="group grid gap-4 border border-border bg-surface transition-colors hover:border-accent/60 sm:grid-cols-[240px_minmax(0,1fr)] sm:gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
-                <div className="relative aspect-video w-full overflow-hidden bg-background sm:aspect-[4/3] sm:h-full">
+                <div className="relative aspect-video w-full overflow-hidden bg-background sm:h-fit sm:self-center">
                     {d.imagem && (
                         <Image src={d.imagem.src} alt={d.imagem.alt || d.titulo} fill sizes="(max-width: 640px) 100vw, 280px"
                             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
@@ -96,10 +96,10 @@ export function BlogContinuar({ atual, candidatos, verMaisHref }: Props) {
                         const o = dadosDe(post)
                         return (
                             <Link key={post.id} href={`/blog/${post.slug}`}
-                                className="group grid min-w-0 grid-cols-[112px_minmax(0,1fr)] gap-3">
-                                <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface">
+                                className="group grid min-w-0 grid-cols-[136px_minmax(0,1fr)] gap-3 sm:grid-cols-[152px_minmax(0,1fr)]">
+                                <div className="relative aspect-video w-full self-start overflow-hidden bg-surface">
                                     {o.imagem && (
-                                        <Image src={o.imagem.src} alt={o.imagem.alt || o.titulo} fill sizes="112px"
+                                        <Image src={o.imagem.src} alt={o.imagem.alt || o.titulo} fill sizes="152px"
                                             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                                     )}
                                 </div>

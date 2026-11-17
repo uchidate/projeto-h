@@ -29,8 +29,8 @@ function Lista({ posts, marcador, locale, tempo }: { posts: WPPost[]; marcador: 
                             </span>
                             {/* Guia sem imagem destacada: só o texto, sem quadrado vazio. */}
                             {img && (
-                                <span className="relative h-14 w-20 shrink-0 overflow-hidden bg-surface lg:h-20 lg:w-[120px]">
-                                    <Image src={img.src} alt="" fill sizes="120px" className="object-cover" />
+                                <span className="relative aspect-video w-24 shrink-0 overflow-hidden bg-surface lg:w-36">
+                                    <Image src={img.src} alt="" fill sizes="144px" className="object-cover" />
                                 </span>
                             )}
                         </Link>

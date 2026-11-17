@@ -33,7 +33,7 @@ export function BlogPostCard({ post, priority, categoryMap, locale = DEFAULT_LOC
     return (
         <Link href={`/blog/${slugPublicoDoPost(post.translations, post.slug)}`}
             className={`group flex h-full border-t border-border pt-3 transition-colors duration-300 hover:border-accent ${compactoNoCelular ? 'flex-row-reverse gap-3 sm:flex-col sm:gap-0' : 'flex-col'}`}>
-            <div className={`relative overflow-hidden bg-surface shrink-0 ${compactoNoCelular ? 'aspect-square w-[104px] self-start sm:aspect-4/3 sm:w-auto sm:self-auto' : 'aspect-4/3'}`}>
+            <div className={`relative overflow-hidden bg-surface shrink-0 ${compactoNoCelular ? 'aspect-square w-[104px] self-start sm:aspect-video sm:w-auto sm:self-auto' : 'aspect-video'}`}>
                 {image ? (
                     <Image src={image.src} alt={image.alt || title} fill priority={priority}
                         sizes={compactoNoCelular ? '(max-width: 640px) 104px, (max-width: 1024px) 50vw, 33vw' : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
