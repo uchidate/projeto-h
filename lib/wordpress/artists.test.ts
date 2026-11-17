@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { getArtists, getArtistBySlug, getArtistsByIds, getMostAccessedArtists, getPopularArtists } from './artists'
+import { getArtists, getArtistBySlug, getArtistsByIds, getPopularArtists } from './artists'
 
 function artist(id: number, slug: string) {
     return { id, slug, title: { rendered: slug } }
@@ -127,35 +127,5 @@ describe('getArtistsByIds', () => {
     it('retorna os artistas quando a API responde ok', async () => {
         fetchMock.mockResolvedValue({ ok: true, json: async () => [artist(1, 'a'), artist(2, 'b')] })
         expect(await getArtistsByIds([1, 2])).toEqual([artist(1, 'a'), artist(2, 'b')])
-    })
-})
-
-describe('getMostAccessedArtists', () => {
-    afterEach(() => vi.unstubAllGlobals())
-
-    it('ordena por acesso real quando access_score já existe', async () => {
-        const fetchMock = vi.fn().mockResolvedValue({
-            ok: true,
-            json: async () => [
-                { ...artist(1, 'jisoo'), acf: { access_score: 42 } },
-                { ...artist(2, 'lee-ji-eun'), acf: { access_score: 100 } },
-            ],
-        })
-        vi.stubGlobal('fetch', fetchMock)
-        const result = await getMostAccessedArtists(8)
-        expect(result[0].slug).toBe('lee-ji-eun')
-        expect(fetchMock.mock.calls[0][0] as string).toContain('oc_orderby=access')
-    })
-
-    it('cai para popularidade enquanto o script de acesso não rodou', async () => {
-        // access_score só existe depois de update-artist-relevance.mjs; sem o
-        // recuo a home ficaria sem o bloco até a primeira execução.
-        const fetchMock = vi.fn()
-            .mockResolvedValueOnce({ ok: true, json: async () => [{ ...artist(1, 'jisoo'), acf: {} }] })
-            .mockResolvedValueOnce({ ok: true, json: async () => [{ ...artist(2, 'rm'), acf: { popularity_score: 90 } }] })
-        vi.stubGlobal('fetch', fetchMock)
-        const result = await getMostAccessedArtists(8)
-        expect(result[0].slug).toBe('rm')
-        expect(fetchMock.mock.calls[1][0] as string).toContain('oc_orderby=popularity')
     })
 })
