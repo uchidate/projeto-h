@@ -55,7 +55,7 @@ export function BlogPostCard({ post, priority, categoryMap, locale = DEFAULT_LOC
                         {cat.name}
                     </span>
                 )}
-                <h2 className={`font-serif text-[15px] sm:text-[17px] font-medium leading-[1.08] tracking-tight text-foreground ${compactoNoCelular ? 'line-clamp-3 sm:line-clamp-2' : 'line-clamp-2'} group-hover:text-accent transition-colors flex-1`}>
+                <h2 className={`font-serif text-[15px] sm:text-[17px] font-medium leading-[1.08] tracking-tight text-foreground line-clamp-3 group-hover:text-accent transition-colors flex-1`}>
                     {title}
                 </h2>
                 {excerpt && <p className={`text-[12px] text-muted line-clamp-2 leading-relaxed ${compactoNoCelular ? 'hidden sm:block' : ''}`}>{excerpt}</p>}
