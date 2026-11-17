@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildArticleModel, type WPArticleBlock } from './articleModel'
+import { buildArticleModel, indiceEmLimiteDeSecao, type WPArticleBlock } from './articleModel'
 
 const block = (name: string, html: string, attrs = {}): WPArticleBlock => ({ name, html, attrs, innerBlocks: [] })
 
@@ -46,5 +46,32 @@ describe('crédito da capa', () => {
         const model = buildArticleModel([block('core/paragraph', '<p>Só texto.</p>')])
         expect(model.creditoCapaHtml).toBeUndefined()
         expect(model.blocks).toHaveLength(1)
+    })
+})
+
+describe('indiceEmLimiteDeSecao', () => {
+    const b = (name: string) => ({ name })
+    it('avança até o bloco que antecede um título', () => {
+        const blocos = [b('core/paragraph'), b('core/paragraph'), b('core/image'), b('hallyuhub/highlight'), b('core/paragraph'), b('core/heading')]
+        expect(indiceEmLimiteDeSecao(blocos, 1)).toBe(4)
+    })
+    it('usa o fim do texto como limite', () => {
+        expect(indiceEmLimiteDeSecao([b('core/paragraph'), b('core/paragraph')], 0)).toBe(1)
+    })
+    it('mantém o ponto desejado quando não há limite na janela', () => {
+        const blocos = Array.from({ length: 12 }, () => b('core/paragraph'))
+        expect(indiceEmLimiteDeSecao(blocos, 2)).toBe(2)
+    })
+})
+
+describe('quebra de anúncio com ilustração', () => {
+    it('não separa o parágrafo da foto que o acompanha', () => {
+        const longo = (t: string) => block('core/paragraph', `<p>${t.repeat(260)}</p>`)
+        const source = [longo('abertura '), longo('contexto '), longo('detalhe '), block('core/image', '<figure><img src="x" alt="a"/></figure>'), longo('mais '), longo('fim ')]
+        const model = buildArticleModel(source)
+        const idFoto = model.blocks[3].id
+        const idAntes = model.blocks[2].id
+        expect(model.adBreakAfter.has(idAntes)).toBe(false)
+        expect(model.adBreakAfter.has(idFoto)).toBe(false)
     })
 })

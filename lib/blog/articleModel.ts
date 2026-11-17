@@ -31,6 +31,23 @@ function slug(value: string) {
 
 const CREDITO_CAPA = /^\s*Foto da capa:/i
 
+/** Blocos que ilustram o parágrafo anterior: nada (anúncio, vitrine) entra entre eles e o texto que os introduz. */
+const ILUSTRA_O_ANTERIOR = new Set(['core/image', 'core/quote', 'core/table', 'core/embed', 'hallyuhub/highlight'])
+
+/**
+ * Ponto de inserção de módulos (loja, sugestão) em um limite de seção: o primeiro bloco, a partir de `desejado`
+ * (até 6 à frente), cujo próximo bloco é um título ou o fim. Sem limite à vista, mantém `desejado`, para não
+ * perder o módulo. Evita que a faixa de loja caia entre um parágrafo e a foto ou o destaque dele.
+ */
+export function indiceEmLimiteDeSecao(blocks: Array<{ name: string }>, desejado: number, janela = 6): number {
+    const fim = Math.min(blocks.length - 1, desejado + janela)
+    for (let i = desejado; i <= fim; i++) {
+        const proximo = blocks[i + 1]
+        if (!proximo || proximo.name === 'core/heading') return i
+    }
+    return desejado
+}
+
 export function buildArticleModel(todos: WPArticleBlock[]): ArticleModel {
     const indiceCredito = todos.findIndex(b => b.name === 'core/paragraph' && CREDITO_CAPA.test(stripHtml(b.html)))
     const creditoCapaHtml = indiceCredito >= 0 ? todos[indiceCredito].html.match(/<p[^>]*>([\s\S]*?)<\/p>/i)?.[1]?.trim() : undefined
@@ -80,6 +97,8 @@ export function buildArticleModel(todos: WPArticleBlock[]): ArticleModel {
         // O espaçamento mínimo de 1.200 caracteres continua valendo.
         if (adBreakAfter.size >= maxQuebras || index < 2 || !ARTICLE_BLOCKS.get(block.name)?.adBoundary) continue
         if (sinceLast < minTexto || total - consumed < 600 || blocks[index + 1]?.name === 'core/heading') continue
+        // Foto, tabela, citação ou destaque que o parágrafo introduz ficam junto dele.
+        if (ILUSTRA_O_ANTERIOR.has(blocks[index + 1]?.name ?? '')) continue
         adBreakAfter.add(block.id)
         sinceLast = 0
     }

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
-import type { ArticleModel } from '@/lib/blog/articleModel'
+import { indiceEmLimiteDeSecao, type ArticleModel } from '@/lib/blog/articleModel'
 import { ProdutosNoArtigo, type ProdutoDoTexto } from '@/components/blog/ProdutoNoArtigo'
 import { BLOCK_ALT_PREFIX } from '@/lib/constants/identidade.mjs'
 import type { StoreProduct } from '@/lib/wordpress/store'
@@ -36,11 +36,11 @@ function faixasDoIndice(blocks: ArticleModel['blocks']): FaixaDoIndice[] {
 /** `sugestaoMeio` entra após ~40% dos blocos, em artigo com pelo menos 8; nunca antes do 3º bloco. */
 export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaMeio, produtos, contextoProduto = 'artigo' }: { model: ArticleModel; cardGrupo?: ReactNode; sugestaoMeio?: ReactNode; lojaMeio?: ReactNode; produtos?: Map<number, StoreProduct>; contextoProduto?: string }) {
     const idMeio = sugestaoMeio && model.blocks.length >= 8
-        ? model.blocks[Math.max(2, Math.floor(model.blocks.length * 0.4))]?.id
+        ? model.blocks[indiceEmLimiteDeSecao(model.blocks, Math.max(2, Math.floor(model.blocks.length * 0.4)))]?.id
         : undefined
     // Faixa de loja em ~70% do texto (artigo com 10+ blocos): longe da sugestão de leitura (40%) e dos anúncios.
     const idLoja = lojaMeio && model.blocks.length >= 10
-        ? model.blocks[Math.max(4, Math.floor(model.blocks.length * 0.7))]?.id
+        ? model.blocks[indiceEmLimiteDeSecao(model.blocks, Math.max(4, Math.floor(model.blocks.length * 0.7)))]?.id
         : undefined
     // Logo depois da abertura (2º bloco): 49% dos leitores passam de 25% da página e só 3% chegam ao fim.
     const primeiraQuebra = cardGrupo
