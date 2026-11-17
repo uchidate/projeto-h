@@ -75,3 +75,13 @@ describe('quebra de anúncio com ilustração', () => {
         expect(model.adBreakAfter.has(idFoto)).toBe(false)
     })
 })
+
+describe('indiceEmLimiteDeSecao com seção a evitar', () => {
+    const h = (t: string) => ({ name: 'core/heading', html: `<h2>${t}</h2>` })
+    const p = () => ({ name: 'core/paragraph', html: '<p>x</p>' })
+    it('não deixa a loja logo antes de Referências', () => {
+        const blocos = [p(), p(), h('Uma seção'), p(), p(), h('Outra'), p(), p(), h('Referências')]
+        // desejado 6 → o limite à frente é antes de Referências (índice 7); recua para antes de "Outra" (índice 4)
+        expect(indiceEmLimiteDeSecao(blocos, 6, 6, /^Referências$/i)).toBe(4)
+    })
+})
