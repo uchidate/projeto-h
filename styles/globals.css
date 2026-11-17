@@ -1991,13 +1991,16 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
   display: block;
   width: 100%;
   overflow-x: auto;
-  white-space: nowrap;
   margin: 1.75rem 0;
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   border-collapse: collapse;
   font-size: 0.85rem;
 }
+/* O texto das células quebra linha: com `nowrap` a linha mais longa alargava a tabela além da tela e a rolagem horizontal
+   escondia colunas inteiras (data e local de um show sumiam no celular). Só o cabeçalho fica em uma linha. */
+.wp-article-content table td { white-space: normal; overflow-wrap: anywhere; min-width: 6rem; }
+.wp-article-content table th { white-space: nowrap; }
 .wp-article-content table thead {
   background: var(--color-surface);
 }
