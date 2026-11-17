@@ -879,12 +879,12 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                                 const rpCat = rpCats[0]
                                 return (
                                     <Link key={rp.id} href={`/blog/${rp.slug}`}
-                                        className="group grid min-w-0 grid-cols-[88px_minmax(0,1fr)] gap-4 border-b border-border py-4 lg:grid-cols-1 lg:grid-rows-[112px_auto] lg:px-5 lg:py-5 lg:first:pl-0 lg:last:pr-0 lg:not-last:border-r">
-                                        <div className="relative h-[88px] w-[88px] overflow-hidden bg-surface lg:h-28 lg:w-full">
+                                        className="group grid min-w-0 grid-cols-[136px_minmax(0,1fr)] gap-4 border-b border-border py-4 sm:grid-cols-[176px_minmax(0,1fr)] lg:grid-cols-1 lg:px-5 lg:py-5 lg:first:pl-0 lg:last:pr-0 lg:not-last:border-r">
+                                        <div className="relative aspect-video w-full self-start overflow-hidden bg-surface">
                                             {rpImg ? (
                                                 <Image src={rpImg.src} alt={rpImg.alt || rpTitle} fill
                                                     className="object-cover"
-                                                    sizes="(max-width: 1024px) 88px, 28vw" />
+                                                    sizes="(max-width: 640px) 136px, (max-width: 1024px) 176px, 28vw" />
                                             ) : (
                                                 <div className="flex h-full w-full items-end border border-border bg-surface p-3" aria-hidden="true">
                                                     <span className="font-serif text-3xl leading-none text-muted/50">{String(index + 1).padStart(2, '0')}</span>

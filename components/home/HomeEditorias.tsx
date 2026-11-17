@@ -55,8 +55,8 @@ export async function HomeEditorias({ editorias: colunas, prateleiras = {}, loca
                                     const nome = stripHtml(post.title.rendered)
                                     return (
                                         <Link key={post.id} {...postLink(post.slug, locale)} className="group flex items-start gap-3 border-t border-border py-3.5 lg:py-3">
-                                            <div className="relative hidden aspect-video w-24 shrink-0 overflow-hidden bg-surface lg:block">
-                                                {img && <Image src={img.src} alt={img.alt || nome} fill sizes="96px" className="object-cover" />}
+                                            <div className="relative hidden aspect-video w-32 shrink-0 overflow-hidden bg-surface lg:block xl:w-36">
+                                                {img && <Image src={img.src} alt={img.alt || nome} fill sizes="144px" className="object-cover" />}
                                             </div>
                                             <div className="min-w-0">
                                                 <h3 className="text-[15px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent line-clamp-3 lg:text-[13px]">{nome}</h3>
