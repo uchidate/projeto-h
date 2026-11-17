@@ -1648,18 +1648,26 @@ ins.adsbygoogle[data-ad-status^="unfill"] {
 
 .wp-article-content figcaption,
 .wp-article-content .wp-element-caption {
-  width: min(100%, 42rem);
-  margin: 0.6rem auto 0;
-  padding: 0.4rem 0.75rem;
-  border-left: 2px solid var(--color-accent);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.72rem;
+  width: 100%;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  font-size: 0.84rem;
   font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1.55;
+  line-height: 1.5;
   text-align: left;
+  color: inherit;
+  opacity: 0.78;
+}
+/* Crédito da foto/vídeo: discreto, na linha de baixo quando a legenda é longa. */
+.wp-article-content figcaption .oc-credito,
+.wp-article-content .wp-element-caption .oc-credito {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   color: var(--color-muted);
-  font-style: italic;
+  opacity: 1;
 }
 
 .wp-article-content figure + figure,
@@ -2520,6 +2528,10 @@ ins.adsbygoogle[data-ad-status^="unfill"] { display: none !important; }
   background: var(--color-surface);
 }
 .wp-article-content .oc-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
+/* Vídeo com legenda visível: o quadro 16:9 fica no miolo e a legenda vem embaixo. */
+.wp-article-content .oc-embed--legenda { aspect-ratio: auto; overflow: visible; background: none; border-radius: 0; margin: 1.5rem 0 2rem; }
+.wp-article-content .oc-embed--legenda .oc-embed__frame { aspect-ratio: 16 / 9; border-radius: 0.5rem; overflow: hidden; background: var(--color-surface); }
+.wp-article-content .oc-embed--legenda iframe { height: 100%; }
 
 .wp-article-content .oc-artist-card {
   margin: 2.5rem 0 1.5rem;
