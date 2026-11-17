@@ -9,11 +9,12 @@ import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
 import { AbasCelular } from '@/components/home/AbasCelular'
 import type { WPArtist, WPGroup, WPProduction } from '@/lib/wordpress/types'
 
+const POR_COLUNA = 5
 const ROTULO = 'font-mono text-[11px] font-black uppercase tracking-[0.12em]'
 
-type Linha = { chave: string; href: string; imagem: string | null; nome: string; sub: string; valor: number | null; texto: string }
+type Linha = { chave: string; href: string; imagem: string | null; nome: string; sub: string; texto: string }
 
-function Coluna({ titulo, verTodos, href, linhas, escala }: { titulo: string; verTodos: string; href: string; linhas: Linha[]; escala: number }) {
+function Coluna({ titulo, verTodos, href, linhas }: { titulo: string; verTodos: string; href: string; linhas: Linha[] }) {
     if (linhas.length === 0) return null
     return (
         <section aria-label={titulo} className="min-w-0 border border-border border-t-[3px] border-t-accent bg-[var(--color-home-card)] px-5 pb-2 pt-4">
@@ -33,14 +34,7 @@ function Coluna({ titulo, verTodos, href, linhas, escala }: { titulo: string; ve
                                 <span className={`block font-extrabold leading-snug text-foreground group-hover:text-accent ${i === 0 ? 'line-clamp-2 font-serif text-[17px] font-medium lg:text-[19px]' : 'truncate text-[15px]'}`}>{l.nome}</span>
                                 {l.sub && <span className={`mt-0.5 block text-[12px] leading-snug text-muted ${i === 0 ? 'line-clamp-2' : 'truncate'}`}>{l.sub}</span>}
                             </span>
-                            {l.valor !== null && (
-                                <span className="w-14 shrink-0 text-right">
-                                    <span className="block font-mono text-[13px] font-black text-accent">{l.texto}</span>
-                                    <span aria-hidden className="mt-1 block h-[3px] bg-accent/15">
-                                        <span className="block h-full bg-accent" style={{ width: `${Math.max(8, Math.min(100, (l.valor / escala) * 100))}%` }} />
-                                    </span>
-                                </span>
-                            )}
+                            {l.texto && <span className="shrink-0 font-mono text-[13px] font-black text-accent">{l.texto}</span>}
                         </Link>
                     </li>
                 ))}
@@ -60,9 +54,11 @@ function idade(nascimento: unknown, hojeIso: string | undefined) {
 }
 
 /**
- * "Populares na Coreia agora": três rankings curtos. A barra e o número de artistas e grupos são o
- * trending_score do WordPress (0–150). Produções não expõem esse campo na API, então o número é a nota
- * e a barra a nota sobre 10; a ordem delas já vem do trending_score.
+ * "Em alta agora": três rankings curtos na mesma ordem das listagens /artists, /groups e /productions
+ * (relevance_score: acesso real ao site + fama externa). A ordem vem pronta do WordPress; aqui não se
+ * reordena. Até 2026-11-17 artistas e grupos eram reordenados pelo trending_score herdado da importação,
+ * que nenhum script recalcula, e o número 0–150 aparecia ao lado sem dizer nada ao leitor.
+ * Produção mostra a nota, que é informação para o leitor e não pretende explicar a posição.
  */
 export async function HomePopulares({ artistas, grupos, producoes, hoje, locale = DEFAULT_LOCALE }: {
     artistas: WPArtist[]; grupos: WPGroup[]; producoes: WPProduction[]; hoje?: string; locale?: Locale
@@ -72,17 +68,17 @@ export async function HomePopulares({ artistas, grupos, producoes, hoje, locale 
     const labels = labelsFor(locale)
     const numero = (n: number) => formatNumber(n, { maximumFractionDigits: 1 }, locale)
 
-    const linhasArtistas: Linha[] = [...artistas].filter(a => (a.acf?.trending_score ?? 0) > 0).sort((a, b) => (b.acf?.trending_score ?? 0) - (a.acf?.trending_score ?? 0)).slice(0, 5).map(a => {
+    const linhasArtistas: Linha[] = artistas.slice(0, POR_COLUNA).map(a => {
         const acf = a.acf ?? {}
         const papel = (acf.roles as string[] | undefined)?.[0]
         const anos = idade(acf.birth_date, hoje)
         return {
             chave: `a${a.id}`, href: rota('artist', { slug: a.slug }, locale), imagem: getWPImage(a._embedded, a.featured_image_url)?.src ?? null,
             nome: stripHtml(a.title.rendered), sub: [papel ? labels.role(papel, acf.gender) : null, anos].filter(Boolean).join(' · '),
-            valor: acf.trending_score ?? null, texto: String(acf.trending_score ?? ''),
+            texto: '',
         }
     })
-    const linhasGrupos: Linha[] = [...grupos].filter(g => (g.acf?.trending_score ?? 0) > 0).sort((a, b) => (b.acf?.trending_score ?? 0) - (a.acf?.trending_score ?? 0)).slice(0, 5).map(g => {
+    const linhasGrupos: Linha[] = grupos.slice(0, POR_COLUNA).map(g => {
         const acf = g.acf ?? {}
         const tipo = acf.type ? (['girl_group', 'boy_group', 'co_ed', 'solo'].includes(acf.type) ? tt(acf.type as 'girl_group') : acf.type) : null
         const membros = Array.isArray(acf.members) && acf.members.length ? t('membros', { n: acf.members.length }) : null
@@ -90,24 +86,24 @@ export async function HomePopulares({ artistas, grupos, producoes, hoje, locale 
         return {
             chave: `g${g.id}`, href: rota('group', { slug: g.slug }, locale), imagem: getWPImage(g._embedded, g.featured_image_url)?.src ?? null,
             nome: stripHtml(g.title.rendered), sub: [tipo, membros, ano].filter(Boolean).join(' · '),
-            valor: acf.trending_score ?? null, texto: String(acf.trending_score ?? ''),
+            texto: '',
         }
     })
-    const linhasProducoes: Linha[] = producoes.slice(0, 3).map(p => {
+    const linhasProducoes: Linha[] = producoes.slice(0, POR_COLUNA).map(p => {
         const acf = p.acf ?? {}
         const nota = typeof acf.rating === 'number' && acf.rating > 0 ? acf.rating : null
         return {
             chave: `p${p.id}`, href: rota('production', { slug: p.slug }, locale), imagem: getWPImage(p._embedded, p.featured_image_url)?.src ?? null,
             nome: stripHtml(p.title.rendered), sub: [acf.network, acf.year].filter(Boolean).join(' · '),
-            valor: nota, texto: nota ? `★ ${numero(nota)}` : '',
+            texto: nota ? `★ ${numero(nota)}` : '',
         }
     })
     if (linhasArtistas.length + linhasGrupos.length + linhasProducoes.length === 0) return null
     // Coluna vazia não vira aba.
     const colunas = [
-        { chave: 'artistas', titulo: t('artistas'), href: rota('artists', undefined, locale), linhas: linhasArtistas, escala: 150 },
-        { chave: 'grupos', titulo: t('grupos'), href: rota('groups', undefined, locale), linhas: linhasGrupos, escala: 150 },
-        { chave: 'producoes', titulo: t('producoes'), href: rota('productions', undefined, locale), linhas: linhasProducoes, escala: 10 },
+        { chave: 'artistas', titulo: t('artistas'), href: rota('artists', undefined, locale), linhas: linhasArtistas },
+        { chave: 'grupos', titulo: t('grupos'), href: rota('groups', undefined, locale), linhas: linhasGrupos },
+        { chave: 'producoes', titulo: t('producoes'), href: rota('productions', undefined, locale), linhas: linhasProducoes },
     ].filter(c => c.linhas.length > 0)
     return (
         <section aria-label={t('titulo')}>
@@ -116,7 +112,7 @@ export async function HomePopulares({ artistas, grupos, producoes, hoje, locale 
                 <span className="border border-accent px-2 py-1 font-mono text-[11px] font-black uppercase leading-none tracking-[0.12em] text-accent">{t('tag')}</span>
             </div>
             <AbasCelular rotulo={t('titulo')} abas={colunas.map(c => ({ chave: c.chave, rotulo: c.titulo }))} className="grid gap-3.5 lg:grid-cols-3 lg:gap-5">
-                {colunas.map(c => <Coluna key={c.chave} titulo={c.titulo} verTodos={t('verTodos')} href={c.href} linhas={c.linhas} escala={c.escala} />)}
+                {colunas.map(c => <Coluna key={c.chave} titulo={c.titulo} verTodos={t('verTodos')} href={c.href} linhas={c.linhas} />)}
             </AbasCelular>
         </section>
     )

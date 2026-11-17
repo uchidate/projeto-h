@@ -1,6 +1,6 @@
 import { getPosts, getCategories } from '@/lib/wordpress/posts'
 import { getProductions } from '@/lib/wordpress/productions'
-import { getArtists, getMostAccessedArtists, getStreamingArtists } from '@/lib/wordpress/artists'
+import { getArtists, getStreamingArtists } from '@/lib/wordpress/artists'
 import { getFeaturedSpotlight } from '@/lib/wordpress/spotlight'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
 import { getStoreProducts } from '@/lib/wordpress/store'
@@ -36,7 +36,7 @@ export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comer
     ].filter(Boolean)
 
     // Começa já, em paralelo com o resto; sem ela o ranking de produções simplesmente não aparece.
-    const producoesEmAltaP = getProductions({ perPage: 3, orderby: 'relevance', ...(emPt ? {} : { locale }) }).then(r => (emPt ? r.items : r.items.map(p => localizeEntity(p, locale, 'production')))).catch(() => [])
+    const producoesEmAltaP = getProductions({ perPage: 5, orderby: 'relevance', ...(emPt ? {} : { locale }) }).then(r => (emPt ? r.items : r.items.map(p => localizeEntity(p, locale, 'production')))).catch(() => [])
 
     const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult, prateleirasResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
@@ -51,7 +51,8 @@ export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comer
         // Fora do português, o hero e as produções recentes saem das que têm tradução publicada; sem nenhuma, cai nas do idioma-fonte
         // (a home não pode ficar sem produção) e o texto continua no idioma de origem até a primeira ser traduzida.
         getProductions({ perPage: 6, orderby: 'date', ...(emPt ? {} : { locale }) }).then(async r => (emPt || r.items.length > 0 ? r : getProductions({ perPage: 6, orderby: 'date' }))),
-        getMostAccessedArtists(8),
+        // Mesma ordem da listagem /artists do idioma (relevance_score: acesso real + fama externa + streaming).
+        getArtists({ perPage: 5, orderby: 'relevance', ...(emPt ? {} : { locale }) }).then(r => r.items),
         getTrendingGroups(8),
         getStreamingArtists(12),
         getFeaturedSpotlight(),

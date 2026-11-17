@@ -131,31 +131,6 @@ export async function getTrendingArtists(limit = 10) {
 }
 
 /** Interesse acumulado verificável, distinto de tendência recente. */
-/**
- * Os artistas que o público do site mais abriu, por access_score —
- * sessões distintas medidas no Umami (scripts/update-artist-relevance.mjs).
- *
- * Distinto de getPopularArtists, que ordena por popularity_score: aquele vem
- * de pageviews da Wikipédia EN e mede interesse global, o que é o critério
- * certo para decidir sobre quem ainda vale escrever — e por isso ordena a fila
- * de dossiês — mas não diz nada sobre este site.
- *
- * O recuo para popularidade não é decoração: access_score só existe depois de
- * o script rodar, e a home não pode ficar vazia até lá.
- */
-export async function getMostAccessedArtists(limit = 10) {
-    const acessados = await wpBuscarOpcional<WPArtist[]>(
-        `/wp/v2/artist${buildParams({ per_page: limit, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', oc_orderby: 'access', order: 'desc' })}`,
-        { revalidate: 300, tags: [WP_CACHE_TAGS.artists, WP_CACHE_TAGS.trendingArtists] },
-    )
-    if (acessados.some(artist => (artist.acf?.access_score ?? 0) > 0)) {
-        return acessados
-            .sort((a, b) => (b.acf?.access_score ?? 0) - (a.acf?.access_score ?? 0))
-            .slice(0, limit)
-    }
-    return getPopularArtists(limit)
-}
-
 export async function getPopularArtists(limit = 10) {
     const popular = await wpBuscarOpcional<WPArtist[]>(
         `/wp/v2/artist${buildParams({ per_page: limit, status: 'publish', _fields: 'id,slug,title,featured_image_url,acf', oc_orderby: 'popularity', order: 'desc' })}`,
