@@ -21,6 +21,7 @@ import { ADSENSE } from '@/lib/config/ads'
 import { BlogReadingProgress } from '@/components/blog/BlogReadingProgress'
 import { BlogToc } from '@/components/blog/BlogToc'
 import { BlogEntityCard, type EntidadeDoCard } from '@/components/blog/BlogEntityCard'
+import { BlogPerfilPrincipal } from '@/components/blog/BlogPerfilPrincipal'
 import { RegistrarVisita } from '@/components/artists/lista/RegistrarVisita'
 import { ContentStateButton } from '@/components/features/ContentStateButton'
 import { BlogBackToTop } from '@/components/blog/BlogBackToTop'
@@ -343,6 +344,9 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
         ? <BlogEntityCard titulo={citados.every(c => c.tipo === 'producao') ? 'Produções citadas no texto' : 'Perfis citados no texto'} itens={citados} color={primaryGroupColor} />
         : null
 
+    // Protagonista do artigo: o primeiro grupo com foto, senão o primeiro artista, senão a produção. Só vale quando o texto
+    // trata de UMA pessoa ou grupo (até 2 entidades citadas); com muita gente no texto, ninguém é o protagonista.
+    const perfilPrincipal = citados.length > 0 && citados.length <= 2 ? citados[0] : null
     const relatedPreviews = buildRelatedPreviewMap(post)
     const structuredModel = post.article_blocks?.length ? buildArticleModel(post.article_blocks) : null
     const enhancedContent = structuredModel
@@ -786,7 +790,12 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                         <ShopRelatedSection bloco="artigo-loja" title="Produtos relacionados" products={shopProducts} />
 
                         {/* Sugerido para você — logo abaixo do botão SAIBA MAIS, vira sticky ao subir */}
-                        {relatedPosts[0] && (
+                        {perfilPrincipal && (
+                            <div className="mx-4 mt-6 mb-4 sm:mx-6 sm:mt-8 lg:mx-8">
+                                <BlogPerfilPrincipal entidade={perfilPrincipal} color={primaryGroupColor} />
+                            </div>
+                        )}
+                        {!perfilPrincipal && relatedPosts[0] && (
                             <div data-bloco="artigo-sugerido" className="mx-4 mt-6 mb-4 sm:mx-6 sm:mt-8 lg:mx-8">
                                 {/* Passa a LISTA, nao o primeiro: a escolha final pula o que este
                                   * visitante ja leu, e isso so o navegador sabe. */}
