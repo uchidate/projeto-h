@@ -56,7 +56,8 @@ describe('ReadingBar', () => {
         // scrollTop=400, total scrollável = scrollHeight(2000) - clientHeight(800) = 1200 → 400/1200 = 33.33%
         act(() => setScroll(400))
         const bar = container.querySelector('.bg-accent') as HTMLElement
-        expect(bar.style.width).toBe('33.33333333333333%')
+        expect(bar.style.width).toMatch(/%$/)
+        expect(parseFloat(bar.style.width)).toBeCloseTo(100 / 3, 2)
     })
 
     it('progresso nunca passa de 100%', () => {
