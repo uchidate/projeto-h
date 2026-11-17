@@ -376,6 +376,9 @@ const nextConfig = {
             // "kim joo-hun", e yoonchae-katseye contra "yoonchae jeung".
             { source: '/artists/kim-ju-hun', destination: '/artists/kim-joo-hun', permanent: true },
             { source: '/artists/yoonchae-katseye', destination: '/artists/yoonchae-jeung', permanent: true },
+            // 404 de leitor (busca 2026-11-17): IU vive na ficha lee-ji-eun; /calendar é o /calendario.
+            { source: '/artists/iu', destination: '/artists/lee-ji-eun', permanent: true },
+            { source: '/calendar', destination: '/calendario', permanent: true },
         ]
     },
     async headers() {
