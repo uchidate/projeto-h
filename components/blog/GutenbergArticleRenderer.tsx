@@ -40,7 +40,7 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
         : undefined
     // Faixa de loja em ~70% do texto (artigo com 10+ blocos): longe da sugestão de leitura (40%) e dos anúncios.
     const idLoja = lojaMeio && model.blocks.length >= 10
-        ? model.blocks[indiceEmLimiteDeSecao(model.blocks, Math.max(4, Math.floor(model.blocks.length * 0.7)))]?.id
+        ? model.blocks[indiceEmLimiteDeSecao(model.blocks, Math.max(4, Math.floor(model.blocks.length * 0.7)), 6, /^(Refer[êe]ncias|References|Referencias)$/i)]?.id
         : undefined
     // Logo depois da abertura (2º bloco): 49% dos leitores passam de 25% da página e só 3% chegam ao fim.
     const primeiraQuebra = cardGrupo

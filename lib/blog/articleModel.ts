@@ -39,12 +39,24 @@ const ILUSTRA_O_ANTERIOR = new Set(['core/image', 'core/quote', 'core/table', 'c
  * (até 6 à frente), cujo próximo bloco é um título ou o fim. Sem limite à vista, mantém `desejado`, para não
  * perder o módulo. Evita que a faixa de loja caia entre um parágrafo e a foto ou o destaque dele.
  */
-export function indiceEmLimiteDeSecao(blocks: Array<{ name: string }>, desejado: number, janela = 6): number {
-    const fim = Math.min(blocks.length - 1, desejado + janela)
-    for (let i = desejado; i <= fim; i++) {
+export function indiceEmLimiteDeSecao(
+    blocks: Array<{ name: string; html?: string }>,
+    desejado: number,
+    janela = 6,
+    /** Título de seção que não deve vir logo depois do módulo (ex.: Referências, que já antecede a loja do fim). */
+    evitarAntesDe?: RegExp,
+): number {
+    const texto = (b?: { html?: string }) => (b?.html ?? '').replace(/<[^>]+>/g, '').trim()
+    const serve = (i: number) => {
         const proximo = blocks[i + 1]
-        if (!proximo || proximo.name === 'core/heading') return i
+        if (!proximo) return !evitarAntesDe
+        if (proximo.name !== 'core/heading') return false
+        return !evitarAntesDe?.test(texto(proximo))
     }
+    const fim = Math.min(blocks.length - 1, desejado + janela)
+    for (let i = desejado; i <= fim; i++) if (serve(i)) return i
+    // Nada à frente serve: recua até o limite de seção anterior, sem passar do 3º bloco.
+    if (evitarAntesDe) for (let i = desejado - 1; i >= 2; i--) if (serve(i)) return i
     return desejado
 }
 
