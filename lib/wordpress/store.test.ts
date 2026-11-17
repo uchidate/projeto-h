@@ -76,4 +76,13 @@ describe('getFeaturedStoreProducts', () => {
         expect((await getFeaturedStoreProducts(10, 'kpop')).map(p => p.acf.category)).toEqual(['photocard', 'lightstick', 'kpop_album'])
         expect((await getFeaturedStoreProducts(10, 'drama')).map(p => p.acf.category)).toEqual(['alimenta', 'alimenta', 'alimenta'])
     })
+
+    it('drama inclui a comida nova (snacks) e o merch de dorama (kdrama), não só o valor antigo alimenta', async () => {
+        // Até 2026-11-17 a reserva das fichas de ator ignorava os 41 produtos em 'snacks' e os 5 em 'kdrama'.
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, headers: new Headers({ 'x-wp-totalpages': '1', 'x-wp-total': '4' }), json: async () => [
+            prod(11, 'snacks'), prod(12, 'kdrama'), prod(13, 'photocard'), prod(14, 'snacks'),
+        ] }))
+        const { getFeaturedStoreProducts } = await import('./store')
+        expect((await getFeaturedStoreProducts(10, 'drama')).map(p => p.id)).toEqual([11, 12, 14])
+    })
 })

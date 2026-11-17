@@ -168,7 +168,9 @@ export type TipoVitrine = 'kpop' | 'drama'
 
 const CATEGORIAS_POR_TIPO: Record<TipoVitrine, readonly string[]> = {
     kpop: ['photocard', 'lightstick', 'kpop_album', 'kbeauty', 'clothing', 'acessorios'],
-    drama: ['alimenta', 'kbeauty', 'acessorios', 'outros'],
+    // 'alimenta' é o valor antigo de comida; os cadastros novos usam 'snacks'. Sem 'snacks' e 'kdrama', a reserva
+    // das páginas de ator e de produção deixava de fora a comida nova e o merch de dorama (2026-11-17).
+    drama: ['kdrama', 'snacks', 'alimenta', 'kbeauty', 'acessorios', 'outros'],
 }
 
 /**
