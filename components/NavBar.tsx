@@ -82,6 +82,8 @@ const NavBar = ({
     logoSubtitles: string[]
 }) => {
     const navRef = useRef<HTMLElement | null>(null)
+    // Faixa de data + linha do logo (desktop): é o que sobe quando o cabeçalho recolhe.
+    const topoDesktopRef = useRef<HTMLDivElement | null>(null)
     const pathname = usePathname()
     // Lida no cliente, sem useSearchParams, para não tornar dinâmicas as páginas estáticas que têm o menu.
     // No servidor e na hidratação vale null; a navegação troca o pathname e re-renderiza.
@@ -92,6 +94,7 @@ const NavBar = ({
     )
     const [isScrolled, setIsScrolled] = useState(false)
     const [isHidden, setIsHidden] = useState(false)
+    const [recolhido, setRecolhido] = useState(false)
     const openSearch = useQuickSearch((state) => state.open)
     const t = useTranslations('client')
     // A Loja e as rotas do menu do WordPress só existem em português; fora dele
@@ -142,8 +145,16 @@ const NavBar = ({
             const isMobile = typeof window.matchMedia === 'function'
                 ? window.matchMedia('(max-width: 1023px)').matches
                 : window.innerWidth < 1024
-            if (!isMobile) { setIsHidden(false) }
-            else if (y < lastY - 2 || y <= 150) { setIsHidden(false) }
+            // Desktop: ao descer, sobem a faixa de data e o logo (120px) e fica só a barra
+            // do menu (48px); ao subir, volta tudo. Simulação de 2026-11-18 (1366×768): o
+            // cabeçalho inteiro + a barra do artigo tapavam ~31% da tela durante a leitura,
+            // e com a âncora do anúncio sobrava metade da tela para o texto.
+            if (!isMobile) {
+                setIsHidden(false)
+                if (y < lastY - 2 || y <= 160) setRecolhido(false)
+                else if (y > lastY + 2 && y > 160) setRecolhido(true)
+            }
+            else if (y < lastY - 2 || y <= 150) { setIsHidden(false); setRecolhido(false) }
             else if (y > lastY + 2 && y > 150) { setIsHidden(true) }
             lastY = y
         }
@@ -179,7 +190,9 @@ const NavBar = ({
             // deslocamento de layout. Nunca use em `top`, `height` ou `margin`:
             // animar essas propriedades recalcula layout a cada quadro, que foi
             // como as barras fixas contribuiam com um deslocamento a cada 33ms.
-            root.style.setProperty('--site-header-offset', isHidden ? `-${altura}px` : '0px')
+            // No desktop recolhido sobe só o topo (data + logo); a barra do menu fica.
+            const topo = Math.ceil(topoDesktopRef.current?.offsetHeight ?? 0)
+            root.style.setProperty('--site-header-offset', isHidden ? `-${altura}px` : recolhido && topo > 0 ? `-${topo}px` : '0px')
         }
         update()
         const ro = new ResizeObserver(update)
@@ -191,7 +204,7 @@ const NavBar = ({
             root.style.removeProperty('--site-header-h')
             root.style.removeProperty('--site-header-offset')
         }
-    }, [isHidden])
+    }, [isHidden, recolhido])
 
     const handleOpenSearch = () => {
         openSearch()
@@ -215,7 +228,7 @@ const NavBar = ({
             <nav
                 data-bloco="menu"
                 ref={navRef}
-                className={`fixed left-1/2 z-320 w-full max-w-[1440px] -translate-x-1/2 bg-background transition-[transform,box-shadow] duration-200 motion-reduce:transition-none ${isScrolled ? 'shadow-[0_1px_0_var(--color-border)]' : ''} ${isHidden ? 'max-lg:-translate-y-full' : ''}`}
+                className={`fixed left-1/2 z-320 w-full max-w-[1440px] -translate-x-1/2 bg-background transition-[transform,translate,box-shadow] duration-200 motion-reduce:transition-none lg:translate-y-(--site-header-offset) ${isScrolled ? 'shadow-[0_1px_0_var(--color-border)]' : ''} ${isHidden ? 'max-lg:-translate-y-full' : ''}`}
             >
                 {/* ── Mobile: logo, busca como campo e conta; abaixo, abas em pílulas e "Mais" ── */}
                 <div className="lg:hidden">
@@ -253,6 +266,7 @@ const NavBar = ({
 
                 {/* ── Desktop ── */}
                 <div className="hidden lg:block">
+                    <div ref={topoDesktopRef} aria-hidden={recolhido || undefined} inert={recolhido || undefined}>
                     {/* Faixa de data */}
                     <div className="navbar-dark-strip flex h-8 items-center justify-between border-b border-border px-10 font-mono text-[12px] lowercase tracking-[0.02em]">
                         <span className="text-white/80">{editionDate}</span>
@@ -293,6 +307,8 @@ const NavBar = ({
                             <NotificationBell />
                             <UserMenu />
                         </div>
+                    </div>
+
                     </div>
 
                     {/* Nav links desktop */}
