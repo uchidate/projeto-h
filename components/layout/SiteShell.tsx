@@ -63,7 +63,10 @@ const playfair = Playfair_Display({
  * consentimento, analytics e anúncios. O layout de `app/[locale]` é o único
  * root layout e só repassa o idioma — ver D2 em docs/I18N-ARQUITETURA.md.
  */
-const STICKY_LIGADO = true
+// Âncora própria desligada em 2026-11-18: a âncora automática do Google (ligada no painel do AdSense)
+// já aparece em ~65% das páginas e, em 6 de 7 vezes que a nossa aparecia, as duas ficavam juntas no
+// rodapé (page_ads, 54 páginas). Fica uma âncora só, a do Google, que tem botão de fechar.
+const STICKY_LIGADO = false
 
 export async function SiteShell({ locale, children }: { locale: Locale; children: React.ReactNode }) {
     const [monetization, siteSettings, messages] = await Promise.all([
