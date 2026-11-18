@@ -123,3 +123,19 @@ describe('slot de descoberta da vitrine', () => {
         expect(umamiTrack).toHaveBeenLastCalledWith('vitrine_view', { click_context: 'loja', product_ids: '1,2,3', discovery_ids: '3' })
     })
 })
+
+describe('marcarSessaoHumana', () => {
+    afterEach(() => { delete window.umami; window.sessionStorage.clear() })
+
+    it('marca a sessão e manda human_session uma vez por aba e por dia', async () => {
+        const { marcarSessaoHumana } = await import('./analytics')
+        const track = vi.fn()
+        const identify = vi.fn()
+        window.umami = { track, identify }
+        marcarSessaoHumana()
+        marcarSessaoHumana()
+        expect(identify).toHaveBeenCalledTimes(2)
+        expect(identify).toHaveBeenCalledWith({ humano: true })
+        expect(track.mock.calls.filter(([nome]) => nome === 'human_session')).toHaveLength(1)
+    })
+})
