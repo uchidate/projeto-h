@@ -5,7 +5,7 @@ import { ExternalLink, X } from 'lucide-react'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { calcularDesconto } from '@/lib/wordpress/store'
 import { stripHtml } from '@/lib/utils'
-import { trackProductClick } from '@/lib/analytics'
+import { trackLojaDeslizanteFechada, trackProductClick } from '@/lib/analytics'
 
 const LOJAS: Record<string, string> = { shopee: 'Shopee', amazon: 'Amazon', mercadolivre: 'Mercado Livre', magalu: 'Magalu', shein: 'Shein' }
 const CHAVE = 'hh_loja_deslizante_fechada'
@@ -65,7 +65,7 @@ export function LojaDeslizante({ product, bloco, contexto, mensagem = 'Gostou do
     if (!visivel || !product || !url) return null
     const { acf } = product
     const nome = stripHtml(product.title.rendered)
-    const fechar = () => { try { sessionStorage.setItem(CHAVE, '1') } catch { /* sem storage */ } setVisivel(false) }
+    const fechar = () => { try { sessionStorage.setItem(CHAVE, '1') } catch { /* sem storage */ } trackLojaDeslizanteFechada(bloco); setVisivel(false) }
     const desconto = calcularDesconto(acf.price, acf.original_price)
     const loja = LOJAS[acf.store ?? ''] ?? 'Loja parceira'
     return (
