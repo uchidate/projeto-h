@@ -787,8 +787,6 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                             </BlogMobileReadMore>
                         </article>
 
-                        <ShopRelatedSection bloco="artigo-loja" title="Produtos relacionados" products={shopProducts} />
-
                         {/* Sugerido para você — logo abaixo do botão SAIBA MAIS, vira sticky ao subir */}
                         {perfilPrincipal && (
                             <div className="mx-4 mt-6 mb-4 sm:mx-6 sm:mt-8 lg:mx-8">
@@ -802,6 +800,68 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                                 <BlogSuggestedNext candidatos={relatedPosts} stopAtId="blog-suggested-stop" />
                             </div>
                         )}
+
+                        {/* Fechamento logo depois do texto (2026-11-18): no fim da página, abaixo da loja, do anúncio,
+                            do autor e do quiz, só ~19% dos leitores chegavam até ele (rolagem ≥75%), embora seja o bloco
+                            de recirculação com melhor taxa de clique (~6%). Mantém o experimento por artigo (id par/ímpar). */}
+                        {moreRelatedPosts.length > 0 && fechamentoNovo && (
+                            <BlogContinuar atual={post} candidatos={moreRelatedPosts} verMaisHref={cat ? `/blog?category=${cat.slug}` : '/blog'} />
+                        )}
+                        {moreRelatedPosts.length > 0 && !fechamentoNovo && (
+                            <div data-bloco="artigo-leia-tambem" className="mt-10 border-t border-border pt-8 pb-8">
+                                <div className="mb-5 flex items-end justify-between gap-4 px-4 sm:px-6 lg:px-8">
+                                    <div className="min-w-0">
+                                        <p className="mb-1 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">Continue lendo</p>
+                                        <h2 className="min-w-0 wrap-anywhere font-serif text-[clamp(1.6rem,3vw,2.15rem)] font-semibold leading-none tracking-[-0.035em] text-foreground">Leia também<BrandDot /></h2>
+                                    </div>
+                                    <Link href={cat ? `/blog?category=${cat.slug}` : '/blog'} className="shrink-0 whitespace-nowrap font-mono text-[10px] font-black uppercase tracking-[0.12em] text-accent transition-colors hover:text-accent-strong">Ver mais →</Link>
+                                </div>
+                                <div className="grid grid-cols-1 border-t border-border px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
+                                    {moreRelatedPosts.map((rp, index) => {
+                                        const rpImg = getWPImage(rp._embedded, rp.featured_image_url)
+                                        const rpTitle = stripHtml(rp.title.rendered)
+                                        const rpExcerpt = stripHtml(rp.excerpt?.rendered ?? '').slice(0, 100)
+                                        const rpCats = getWPTerms(rp._embedded, 'category')
+                                        const rpCat = rpCats[0]
+                                        return (
+                                            <Link key={rp.id} href={`/blog/${rp.slug}`}
+                                                className="group grid min-w-0 grid-cols-[136px_minmax(0,1fr)] gap-4 border-b border-border py-4 sm:grid-cols-[176px_minmax(0,1fr)] lg:grid-cols-1 lg:px-5 lg:py-5 lg:first:pl-0 lg:last:pr-0 lg:not-last:border-r">
+                                                <div className="relative aspect-video w-full self-start overflow-hidden bg-surface">
+                                                    {rpImg ? (
+                                                        <Image src={rpImg.src} alt={rpImg.alt || rpTitle} fill
+                                                            className="object-cover"
+                                                            sizes="(max-width: 640px) 136px, (max-width: 1024px) 176px, 28vw" />
+                                                    ) : (
+                                                        <div className="flex h-full w-full items-end border border-border bg-surface p-3" aria-hidden="true">
+                                                            <span className="font-serif text-3xl leading-none text-muted/50">{String(index + 1).padStart(2, '0')}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="min-w-0 self-center lg:self-start">
+                                                    {rpCat && (
+                                                        <span className="mb-1.5 block font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">
+                                                            {rpCat.name}
+                                                        </span>
+                                                    )}
+                                                    <span className="line-clamp-3 block text-[15px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[16px]">
+                                                        {rpTitle}
+                                                    </span>
+                                                    {rpExcerpt && (
+                                                        <span className="mt-1.5 hidden text-[12px] leading-relaxed text-muted sm:line-clamp-2">
+                                                            {rpExcerpt}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </Link>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Loja do fim abaixo do fechamento: quase nenhum clique em 28 dias (os cliques de produto
+                            em artigo vêm do cartão deslizante e da prateleira dentro do texto). */}
+                        <ShopRelatedSection bloco="artigo-loja" title="Produtos relacionados" products={shopProducts} />
 
                         {ADSENSE.slots.post_suggestion && !structuredModel?.guiaDeProduto && (
                             <div className="mx-4 my-6 sm:mx-6 lg:mx-8">
@@ -865,62 +925,6 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                 <div id={author ? undefined : 'blog-suggested-stop'} className="mt-8">
                     <QuizWidget category={quizCategory} />
                 </div>
-
-                {/* Posts relacionados */}
-                {moreRelatedPosts.length > 0 && fechamentoNovo && (
-                    <BlogContinuar atual={post} candidatos={moreRelatedPosts} verMaisHref={cat ? `/blog?category=${cat.slug}` : '/blog'} />
-                )}
-                {moreRelatedPosts.length > 0 && !fechamentoNovo && (
-                    <div data-bloco="artigo-leia-tambem" className="mt-10 border-t border-border pt-8 pb-8">
-                        <div className="mb-5 flex items-end justify-between gap-4 px-4 sm:px-6 lg:px-8">
-                            <div className="min-w-0">
-                                <p className="mb-1 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">Continue lendo</p>
-                                <h2 className="min-w-0 wrap-anywhere font-serif text-[clamp(1.6rem,3vw,2.15rem)] font-semibold leading-none tracking-[-0.035em] text-foreground">Leia também<BrandDot /></h2>
-                            </div>
-                            <Link href={cat ? `/blog?category=${cat.slug}` : '/blog'} className="shrink-0 whitespace-nowrap font-mono text-[10px] font-black uppercase tracking-[0.12em] text-accent transition-colors hover:text-accent-strong">Ver mais →</Link>
-                        </div>
-                        <div className="grid grid-cols-1 border-t border-border px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
-                            {moreRelatedPosts.map((rp, index) => {
-                                const rpImg = getWPImage(rp._embedded, rp.featured_image_url)
-                                const rpTitle = stripHtml(rp.title.rendered)
-                                const rpExcerpt = stripHtml(rp.excerpt?.rendered ?? '').slice(0, 100)
-                                const rpCats = getWPTerms(rp._embedded, 'category')
-                                const rpCat = rpCats[0]
-                                return (
-                                    <Link key={rp.id} href={`/blog/${rp.slug}`}
-                                        className="group grid min-w-0 grid-cols-[136px_minmax(0,1fr)] gap-4 border-b border-border py-4 sm:grid-cols-[176px_minmax(0,1fr)] lg:grid-cols-1 lg:px-5 lg:py-5 lg:first:pl-0 lg:last:pr-0 lg:not-last:border-r">
-                                        <div className="relative aspect-video w-full self-start overflow-hidden bg-surface">
-                                            {rpImg ? (
-                                                <Image src={rpImg.src} alt={rpImg.alt || rpTitle} fill
-                                                    className="object-cover"
-                                                    sizes="(max-width: 640px) 136px, (max-width: 1024px) 176px, 28vw" />
-                                            ) : (
-                                                <div className="flex h-full w-full items-end border border-border bg-surface p-3" aria-hidden="true">
-                                                    <span className="font-serif text-3xl leading-none text-muted/50">{String(index + 1).padStart(2, '0')}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="min-w-0 self-center lg:self-start">
-                                            {rpCat && (
-                                                <span className="mb-1.5 block font-mono text-[10px] font-black uppercase tracking-[0.14em] text-accent">
-                                                    {rpCat.name}
-                                                </span>
-                                            )}
-                                            <span className="line-clamp-3 block text-[15px] font-bold leading-tight text-foreground transition-colors group-hover:text-accent sm:text-[16px]">
-                                                {rpTitle}
-                                            </span>
-                                            {rpExcerpt && (
-                                                <span className="mt-1.5 hidden text-[12px] leading-relaxed text-muted sm:line-clamp-2">
-                                                    {rpExcerpt}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </Link>
-                                )
-                            })}
-                        </div>
-                    </div>
-                )}
 
                 </div>
             </div>
