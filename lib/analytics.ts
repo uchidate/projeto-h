@@ -433,7 +433,20 @@ export function trackRecirculacao(params: { bloco: string; posicao: number; dest
  */
 export function marcarSessaoHumana() {
     chamarUmami(() => window.umami!.identify?.({ humano: true }))
+    // Evento além do dado de sessão: segmento e coorte do Umami 3.1 só filtram por coluna (página,
+    // origem, evento…), não por dado de sessão. Com `human_session`, o coorte "Humanos" é exato
+    // (2026-11-18: um critério por interação perdia 31% das sessões humanas). Uma vez por aba e por dia,
+    // para não pôr um evento a mais em cada página vista.
+    const hoje = new Date().toISOString().slice(0, 10)
+    try {
+        if (window.sessionStorage.getItem(CHAVE_EVENTO_HUMANO) === hoje) return
+        window.sessionStorage.setItem(CHAVE_EVENTO_HUMANO, hoje)
+    } catch {
+        // Sem storage, envia: um evento repetido é melhor que a sessão fora do coorte.
+    }
+    chamarUmami(() => window.umami!.track!('human_session'))
 }
+const CHAVE_EVENTO_HUMANO = 'hh-evento-humano'
 
 /**
  * Perfil técnico da sessão, para separar e investigar acesso indevido no Umami
