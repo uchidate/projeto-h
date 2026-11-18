@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { ambienteDoHost } from '@/lib/sentryAmbiente'
+import { simulacaoAtiva } from '@/lib/simulacao-anuncios'
 
 /**
  * Medição de visitantes (Umami, Clarity) só em produção.
@@ -60,7 +61,7 @@ function armazenamentoLocal(): Armazenamento | null {
 
 const semAssinatura = () => () => {}
 const noNavegador = () =>
-    medicaoPermitida(window.location.hostname) && !aparelhoSemMedicao(window.location.search, armazenamentoLocal())
+    medicaoPermitida(window.location.hostname) && !aparelhoSemMedicao(window.location.search, armazenamentoLocal()) && !simulacaoAtiva()
 /** No servidor o host não é conhecido: nada é montado, a decisão fica para o cliente. */
 const noServidor = () => false
 

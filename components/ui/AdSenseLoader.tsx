@@ -3,13 +3,19 @@
 import { useEffect } from 'react'
 import { useAds, useNaoAutomatizado } from '@/components/providers/AdsProvider'
 import { gestoConfiavel } from '@/lib/gesto-confiavel'
+import { instalarSimulacao, simulacaoAtiva } from '@/lib/simulacao-anuncios'
 
 export function AdSenseLoader() {
     const ads = useAds()
     const automatizado = useNaoAutomatizado()
 
     useEffect(() => {
-        if (!ads.enabled || !ads.client || automatizado || process.env.NODE_ENV === 'development') return
+        if (!ads.enabled || !ads.client || automatizado) return
+        // Simulação: no lugar do script do Google, blocos do tamanho típico (lib/simulacao-anuncios.ts).
+        // Vem antes da trava de desenvolvimento para funcionar também no dev local.
+        const simulacao = simulacaoAtiva()
+        if (simulacao) return instalarSimulacao(simulacao)
+        if (process.env.NODE_ENV === 'development') return
 
         // Site Kit continua como painel de conexão/relatórios, mas num site
         // headless o snippet pertence ao Next.js. Aceita um script preexistente
