@@ -120,7 +120,7 @@ export async function ProductionsPage({ locale = DEFAULT_LOCALE,
                     </ul>
                 </section>
             )}
-            {inicio && ADSENSE.slots.leaderboard && <div className="page-wrap pt-7"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="productions_leaderboard" /></div>}
+            {inicio && ADSENSE.slots.leaderboard && <div className="page-wrap pt-7 max-sm:hidden"><AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="productions_leaderboard" mediaQuery="(min-width: 640px)" /></div>}
 
             {/* ── Onde assistir ── */}
             {inicio && plataformasTop.length > 0 && (
@@ -200,8 +200,9 @@ export async function ProductionsPage({ locale = DEFAULT_LOCALE,
                                 offset += bloco.length
                                 return (
                                     <Fragment key={b}>
-                                        {b > 0 && <div className="my-6"><AdSlotInline slot={ADSENSE.slots.inline!} layout="feed" analyticsPlacement="productions_grid_1" /></div>}
-                                        <div data-bloco="listagem-producoes" className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 xl:grid-cols-6">
+                                        {/* Celular sem anúncio aqui (2026-11-18): preenchia 19–30% das vezes, e o resto era uma caixa de até 400px que aparecia e sumia vazia. */}
+                                        {b > 0 && <div className="my-6 max-sm:hidden"><AdSlotInline slot={ADSENSE.slots.inline!} layout="feed" analyticsPlacement="productions_grid_1" mediaQuery="(min-width: 640px)" /></div>}
+                                        <div data-bloco="listagem-producoes" className={`${b > 0 ? 'max-sm:mt-4 ' : ''}grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 xl:grid-cols-6`}>
                                             {bloco.map((p, i) => (
                                                 <ProductionCard key={p.id} production={p} priority={!inicio && inicioBloco + i < 2} variant="catalog" genreMap={genreMap} sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 180px" />
                                             ))}

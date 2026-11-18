@@ -241,8 +241,9 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
             {inicio && <ContinueDeOndeParou textos={{ titulo: t('continueTitle'), limpar: t('clear') }} />}
             <EmAlta artistas={emAltaArtistas} verTodos="#diretorio" grupos={grupos} />
             {inicio && ADSENSE.slots.leaderboard && (
-                <div className="page-wrap pb-8">
-                    <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="artists_apos_destaque" />
+                <div className="page-wrap pb-8 max-sm:hidden">
+                    {/* Celular sem anúncio aqui (2026-11-18): preenchia 19–30% das vezes, e o resto era uma caixa de até 400px que aparecia e sumia vazia. */}
+                    <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="topo" analyticsPlacement="artists_apos_destaque" mediaQuery="(min-width: 640px)" />
                 </div>
             )}
             {inicio && <AniversariosSemana itens={aniversarios} />}
@@ -339,11 +340,11 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
                                                     <LojaEmLinha bloco="listagem-artistas-loja" products={shopProducts} title={t('shopTitle')} contexto="listagem:artistas:grade" className="my-7 sm:my-9" />
                                                 )}
                                                 {comAnuncio && (
-                                                    <div className="my-7 sm:my-9">
-                                                        <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="artists_grid" />
+                                                    <div className="my-7 max-sm:hidden sm:my-9">
+                                                        <AdSlotInline slot={ADSENSE.slots.inline} layout="feed" analyticsPlacement="artists_grid" mediaQuery="(min-width: 640px)" />
                                                     </div>
                                                 )}
-                                                <div className={`grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-6 md:grid-cols-4 lg:grid-cols-6 ${b > 0 && !comAnuncio ? 'mt-5 sm:mt-6' : ''}`}>
+                                                <div className={`grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-6 md:grid-cols-4 lg:grid-cols-6 ${b > 0 ? (comAnuncio ? 'max-sm:mt-5' : 'mt-5 sm:mt-6') : ''}`}>
                                                     {fatia.map((a, i) => (
                                                         <ArtistCard key={a.id} artist={a} priority={base + i < 8} variant="diretorio" grupoNome={grupoDe(a, grupos)}
                                                             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw" />
