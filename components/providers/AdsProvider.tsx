@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { roboEvidente } from '@/lib/robo-evidente'
+import { simulacaoAtiva } from '@/lib/simulacao-anuncios'
 import type { ReactNode } from 'react'
 import type { MonetizationSettings } from '@/lib/wordpress/monetization'
 
@@ -45,7 +46,9 @@ export function useNaoAutomatizado(): boolean {
     const [hidratado, setHidratado] = useState(false)
     // eslint-disable-next-line react-hooks/set-state-in-effect -- gate de hidratação: precisa distinguir o 1º render (SSR-safe) do restante
     useEffect(() => setHidratado(true), [])
-    return hidratado && roboEvidente(navigator)
+    // Modo de simulação (?hh-simular-anuncios=1): o script do Google não carrega, então
+    // o simulador com Playwright pode ver os espaços sem gerar impressão nenhuma.
+    return hidratado && roboEvidente(navigator) && !simulacaoAtiva()
 }
 
 /** Desliga os anúncios de tudo o que estiver dentro (página sem conteúdo suficiente). */
