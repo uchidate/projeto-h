@@ -32,6 +32,7 @@ import { UmamiScript } from '@/components/analytics/UmamiScript'
 import { GoogleTagScript } from '@/components/analytics/GoogleTagScript'
 import { ClarityScript } from '@/components/analytics/ClarityScript'
 import { RastreioDeExperiencia } from '@/components/analytics/RastreioDeExperiencia'
+import { RastreioDeAnuncios } from '@/components/analytics/RastreioDeAnuncios'
 
 /** O rodapé traduzido listava todos os guias (100+ links, contra ~16 no português); fica só uma amostra e o resto está em Explorar > Guias. */
 const GUIAS_NO_RODAPE = 6
@@ -235,6 +236,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
             <SinalDeHumano />
             <SinalDeRobo />
                 <RastreioDeExperiencia />
+                <RastreioDeAnuncios />
 
                 {/*
                   * Umami — analytics proprio, sem cookies e sem dados pessoais.

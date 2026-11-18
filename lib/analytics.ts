@@ -295,6 +295,51 @@ export function trackAdDismissed(placement: string) {
     enviar('ad_slot_dismissed', { ad_placement: placement })
 }
 
+/**
+ * Peso de anúncio, loja e banner de consentimento numa página, com o resultado
+ * (rolagem e tempo) na mesma linha. Um por página vista, SEM amostra: é a base da
+ * comparação "com × sem" (anúncio preenchido ou não, vinheta, âncora, banner
+ * aberto), e com amostra de 10% como os `ad_slot_*` não sobra caso para comparar.
+ * Só Umami. Ver lib/experiencia-anuncios.ts.
+ */
+export function trackExperienciaAnuncios(p: {
+    proprios: number; automaticos: number; ancoraGoogle: boolean; ancoraGoogleFechada: boolean; ancoraPropria: boolean
+    alturaPct: number; primeiraTela: boolean; vinheta: boolean; bannerAberto: boolean; bannerAbertoAoSair: boolean
+    clsMedido: boolean; cls: { anuncio: number; loja: number; outro: number }; rolagemPct: number; segundos: number; tipoPagina: string
+}) {
+    const mil = (v: number) => Math.round(v * 1000)
+    umami('page_ads', {
+        ads_own: p.proprios,
+        ads_auto: p.automaticos,
+        anchor_google: p.ancoraGoogle,
+        anchor_google_closed: p.ancoraGoogleFechada,
+        anchor_own: p.ancoraPropria,
+        vignette: p.vinheta,
+        ad_height_pct: p.alturaPct,
+        ad_first_screen: p.primeiraTela,
+        consent_banner_open: p.bannerAberto,
+        consent_banner_open_at_exit: p.bannerAbertoAoSair,
+        // CLS ×1000 por culpado; sem `cls_measured` (Safari não tem layout-shift) os três são 0 e não valem.
+        cls_measured: p.clsMedido,
+        cls_ad: mil(p.cls.anuncio),
+        cls_store: mil(p.cls.loja),
+        cls_other: mil(p.cls.outro),
+        scroll_pct: p.rolagemPct,
+        seconds: p.segundos,
+        page_type: p.tipoPagina,
+    })
+}
+
+/** A vinheta do Google apareceu (no momento, para medir se a visita continua depois dela). */
+export function trackVinheta(tipoPagina: string) {
+    umami('ad_vignette', { page_type: tipoPagina })
+}
+
+/** Leitor fechou o cartão deslizante da loja (a exibição já sai como recirculation_view do bloco). */
+export function trackLojaDeslizanteFechada(bloco: string) {
+    umami('store_slide_closed', { block: bloco })
+}
+
 /* -------------------------------------------------------------------------
  * Consentimento
  *
