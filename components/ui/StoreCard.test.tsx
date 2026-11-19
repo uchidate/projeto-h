@@ -71,12 +71,15 @@ describe('StoreCard', () => {
         expect(screen.queryByText(/^\d\.\d$/)).not.toBeInTheDocument()
     })
 
-    it('mostra contagem de vendidos quando presente, senão a legenda de curadoria', () => {
+    it('mostra contagem de vendidos só quando é maior que zero, sem legenda de enchimento', () => {
         const { rerender } = render(<StoreCard product={product({ sold_count: '120' })} />)
         expect(screen.getByText('120 vendidos')).toBeInTheDocument()
 
+        rerender(<StoreCard product={product({ sold_count: '0' })} />)
+        expect(screen.queryByText(/vendidos/)).not.toBeInTheDocument()
+
         rerender(<StoreCard product={product({ sold_count: undefined })} />)
-        expect(screen.getByText('Curadoria Portal')).toBeInTheDocument()
+        expect(screen.queryByText(/vendidos|Curadoria/)).not.toBeInTheDocument()
     })
 
     it('modo compact renderiza um layout diferente (sem badge, com preço inline)', () => {
