@@ -20,6 +20,11 @@ export type ArticleModel = {
     adBreakAfter: Set<string>
     /** Guia de compra (tem bloco de produto): a página tira os anúncios de antes do texto e do fim. */
     guiaDeProduto: boolean
+    /**
+     * Celular: bloco depois do qual entra o anúncio do topo (o leaderboard), em vez de entre a capa e o
+     * texto. Mesma regra do guia de produto (depois do 2º parágrafo). Só artigos que não são guia.
+     */
+    adAberturaCelular?: string
     /** HTML interno do parágrafo "Foto da capa: …", tirado do corpo para a página mostrá-lo como legenda sob a capa. */
     creditoCapaHtml?: string
 }
@@ -90,6 +95,7 @@ export function buildArticleModel(todos: WPArticleBlock[]): ArticleModel {
     let consumed = 0
     let sinceLast = 0
     let paragrafos = 0
+    let adAberturaCelular: string | undefined
     for (let index = 0; index < blocks.length; index++) {
         const block = blocks[index]
         consumed += block.textLength
@@ -100,6 +106,16 @@ export function buildArticleModel(todos: WPArticleBlock[]): ArticleModel {
         // entre a capa e o texto). Pedido do dono em 2026-11-01.
         if (guiaDeProduto && adBreakAfter.size === 0 && paragrafos === 2 && block.name === 'core/paragraph' && blocks[index + 1]?.name !== 'core/heading') {
             adBreakAfter.add(block.id)
+            sinceLast = 0
+            continue
+        }
+        // Celular, artigo comum: o leaderboard do topo ficava entre a capa e a 1ª frase (419px em 839px de
+        // tela, 2026-11-18) — quem rolava depois da capa caía num anúncio antes de ler. Ele passa para depois
+        // do 2º parágrafo, como no guia de produto. A distância até o próximo anúncio do corpo conta daqui.
+        if (!guiaDeProduto && !adAberturaCelular && paragrafos >= 2 && block.name === 'core/paragraph'
+            && blocks[index + 1]?.name !== 'core/heading' && !ILUSTRA_O_ANTERIOR.has(blocks[index + 1]?.name ?? '')
+            && total - consumed >= 600) {
+            adAberturaCelular = block.id
             sinceLast = 0
             continue
         }
@@ -115,5 +131,5 @@ export function buildArticleModel(todos: WPArticleBlock[]): ArticleModel {
         sinceLast = 0
     }
 
-    return { version: 1, blocks, headings, adBreakAfter, guiaDeProduto, creditoCapaHtml }
+    return { version: 1, blocks, headings, adBreakAfter, guiaDeProduto, creditoCapaHtml, adAberturaCelular }
 }

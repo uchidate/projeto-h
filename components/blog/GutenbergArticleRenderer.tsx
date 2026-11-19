@@ -84,6 +84,11 @@ export function GutenbergArticleRenderer({ model, cardGrupo, sugestaoMeio, lojaM
                     {block.id === primeiraQuebra && cardGrupo}
                     {block.id === idMeio && sugestaoMeio}
                     {block.id === idLoja && <div className="not-prose my-8">{lojaMeio}</div>}
+                    {block.id === model.adAberturaCelular && ADSENSE.slots.leaderboard && (
+                        <div className="not-prose my-8 sm:hidden">
+                            <AdSlotInline slot={ADSENSE.slots.leaderboard} layout="leaderboard" analyticsPlacement="article_abertura_celular" mediaQuery="(max-width: 639px)" />
+                        </div>
+                    )}
                     {model.adBreakAfter.has(block.id) && ADSENSE.slots.inline && (
                         <div className="not-prose my-8"><AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="article_body" /></div>
                     )}

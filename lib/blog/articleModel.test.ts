@@ -28,6 +28,30 @@ describe('buildArticleModel', () => {
         expect(comum.adBreakAfter.has(comum.blocks[1].id)).toBe(false)
     })
 
+    it('celular: o anúncio do topo vai para depois do 2º parágrafo, e o 1º do corpo conta a distância dali', () => {
+        const paragrafos = Array.from({ length: 16 }, (_, index) => block('core/paragraph', `<p>${`detalhe ${index} `.repeat(120)}</p>`))
+        const comum = buildArticleModel(paragrafos)
+        expect(comum.adAberturaCelular).toBe(comum.blocks[1].id)
+        expect(comum.adBreakAfter.has(comum.blocks[1].id)).toBe(false)
+        const tamanhos = comum.blocks.map(b => b.textLength)
+        const ateAbertura = tamanhos.slice(0, 2).reduce((x, y) => x + y, 0)
+        const primeiroCorpo = comum.blocks.findIndex(b => comum.adBreakAfter.has(b.id))
+        const ateCorpo = tamanhos.slice(0, primeiroCorpo + 1).reduce((x, y) => x + y, 0)
+        expect(ateCorpo - ateAbertura).toBeGreaterThanOrEqual(1200)
+        const guia = buildArticleModel([...paragrafos, block('hallyuhub/product', '<div class="oc-product"></div>', { productId: 1 })])
+        expect(guia.adAberturaCelular).toBeUndefined()
+    })
+
+    it('celular: não abre o anúncio entre um parágrafo e o intertítulo seguinte', () => {
+        const model = buildArticleModel([
+            block('core/paragraph', `<p>${'abertura '.repeat(60)}</p>`),
+            block('core/paragraph', `<p>${'contexto '.repeat(60)}</p>`),
+            block('core/heading', '<h2>Seção</h2>'),
+            ...Array.from({ length: 8 }, (_, index) => block('core/paragraph', `<p>${`detalhe ${index} `.repeat(150)}</p>`)),
+        ])
+        expect(model.adAberturaCelular).toBe(model.blocks[3].id)
+    })
+
     it('falha explicitamente para bloco fora do contrato', () => {
         expect(() => buildArticleModel([block('plugin/desconhecido', '<div />')])).toThrow(/não suportado/)
     })
