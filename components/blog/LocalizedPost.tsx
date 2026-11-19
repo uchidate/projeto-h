@@ -16,6 +16,7 @@ import { metaDescription } from '@/lib/seo/metaDescription'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { GutenbergArticleRenderer } from '@/components/blog/GutenbergArticleRenderer'
 import { getProdutosDosBlocos } from '@/lib/blog/produtosDosBlocos'
+import { RastreioDeLeitura } from '@/components/analytics/RastreioDeLeitura'
 import type { StoreProduct } from '@/lib/wordpress/store'
 
 /**
@@ -115,6 +116,10 @@ export async function LocalizedPost({ post: postOriginal, locale }: { post: WPPo
                     )}
                 </footer>
             </article>
+            {/* Sem isto a leitura em /en e /ja nunca contava: o placar caía conforme
+                crescia o tráfego traduzido. O slug é o do original, para a leitura e
+                a recomendação somarem com a versão em português. */}
+            <RastreioDeLeitura slug={slugPt ?? post.slug} caminho={href('post', { slug: post.slug }, locale)} />
         </>
     )
 }
