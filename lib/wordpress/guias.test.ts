@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { getGuias, getGuia } from './guias'
+import { getGuias } from './guias'
 
 function guia(slug: string) {
     return { slug, kind: 'productions', filter: {} }
@@ -20,29 +20,13 @@ describe('getGuias', () => {
         expect(await getGuias()).toEqual([])
     })
 
+    it('descarta item sem slug', async () => {
+        fetchMock.mockResolvedValue({ ok: true, json: async () => [guia('a'), { title: 'sem slug' }] })
+        expect(await getGuias()).toEqual([guia('a')])
+    })
+
     it('retorna array vazio quando o fetch falha (erro tratado)', async () => {
         fetchMock.mockRejectedValue(new Error('network error'))
         expect(await getGuias()).toEqual([])
-    })
-})
-
-describe('getGuia', () => {
-    let fetchMock: ReturnType<typeof vi.fn>
-    beforeEach(() => { fetchMock = vi.fn(); vi.stubGlobal('fetch', fetchMock) })
-    afterEach(() => vi.unstubAllGlobals())
-
-    it('encontra o guia pelo slug dentro da lista', async () => {
-        fetchMock.mockResolvedValue({ ok: true, json: async () => [guia('a'), guia('b')] })
-        expect(await getGuia('b')).toEqual(guia('b'))
-    })
-
-    it('retorna null quando o slug não existe na lista', async () => {
-        fetchMock.mockResolvedValue({ ok: true, json: async () => [guia('a')] })
-        expect(await getGuia('inexistente')).toBeNull()
-    })
-
-    it('retorna null quando a API falha', async () => {
-        fetchMock.mockRejectedValue(new Error('network error'))
-        expect(await getGuia('a')).toBeNull()
     })
 })

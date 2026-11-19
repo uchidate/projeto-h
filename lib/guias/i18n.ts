@@ -51,7 +51,7 @@ export function slugPtDoGuia(slugPublico: string, locale: Locale): string | unde
 export function localizarGuia(hub: ArchiveHub, locale: Locale): ArchiveHub | null {
     const tr = traducoesDoIdioma(locale)[hub.slug]
     if (!tr) return null
-    return { ...hub, title: tr.title, shortTitle: tr.shortTitle, description: tr.description, intro: tr.intro, whatYouWillFind: tr.whatYouWillFind, faq: tr.faq, keywords: [], relatedSearches: undefined }
+    return { ...hub, title: tr.title, shortTitle: tr.shortTitle, description: tr.description, intro: tr.intro, whatYouWillFind: tr.whatYouWillFind, faq: tr.faq, keywords: [], relatedSearches: undefined, seoTitle: undefined, seoDescription: undefined }
 }
 
 const outrosIdiomas = (): Locale[] => ACTIVE_LOCALES.filter(l => l !== SOURCE_LOCALE)

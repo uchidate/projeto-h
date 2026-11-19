@@ -34,12 +34,15 @@ export async function buildGuiaMetadata({ params }: { params: Promise<{ slug: st
     const hub = await getHub(slug)
     if (!hub) return {}
     const url = `${SITE_URL}/guias/${slug}`
+    // Rank Math do CPT guia, quando preenchido; senão, o título e a descrição do guia.
+    const titulo = hub.seoTitle || hub.title
+    const descricao = hub.seoDescription || hub.description
     return {
-        title: hub.title,
-        description: hub.description,
+        title: titulo,
+        description: descricao,
         keywords: hub.keywords,
         alternates: { canonical: url, ...alternativasTraduzidas(slug) },
-        ...compartilhamento({ titulo: hub.title, descricao: hub.description, caminho: `/guias/${slug}` }),
+        ...compartilhamento({ titulo, descricao, caminho: `/guias/${slug}` }),
     }
 }
 
