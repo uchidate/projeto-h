@@ -610,12 +610,17 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
 
                         {/* Leaderboard após o bloco título–autoria–imagem: mantém alta
                             viewability sem separar a capa do título nem disputar o LCP. */}
+                        {/* No celular, quando o modelo achou o lugar depois do 2º parágrafo, o anúncio vai para lá
+                            (article_abertura_celular, ver articleModel); aqui fica só a partir de 640px. */}
                         {ADSENSE.slots.leaderboard && !structuredModel?.guiaDeProduto && (
-                            <AdSlotInline
-                                slot={ADSENSE.slots.leaderboard}
-                                layout="leaderboard"
-                                analyticsPlacement="article_leaderboard"
-                            />
+                            <div className={structuredModel?.adAberturaCelular ? 'max-sm:hidden' : undefined}>
+                                <AdSlotInline
+                                    slot={ADSENSE.slots.leaderboard}
+                                    layout="leaderboard"
+                                    analyticsPlacement="article_leaderboard"
+                                    mediaQuery={structuredModel?.adAberturaCelular ? '(min-width: 640px)' : undefined}
+                                />
+                            </div>
                         )}
 
                         {enhancedContent.headings.length > 2 && (
