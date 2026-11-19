@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import Link from '@/components/i18n/LocalizedLink'
-import { ALL_HUBS, GRUPOS_DE_GUIAS, type ArchiveHub } from '@/lib/guias'
+import { getAllHubs, getGruposDeGuias, type ArchiveHub } from '@/lib/guias'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
 import { VISITAS_POR_GUIA, porDemanda, resumoDoGuia } from '@/lib/guias/demanda'
@@ -99,8 +99,10 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
     // Em outro idioma só existe o guia traduzido; os grupos que ficam vazios somem.
     const traduzidos = new Set(slugsPtTraduzidos(locale))
     const guiaDoIdioma = (h: ArchiveHub) => emPt || traduzidos.has(h.slug)
-    const hubsDoIdioma = ALL_HUBS.filter(guiaDoIdioma)
-    const gruposDoIdioma = GRUPOS_DE_GUIAS.map(({ kind: k, grupos }) => ({
+    // Texto do WordPress por cima do código (getAllHubs/getGruposDeGuias); a estrutura é a mesma.
+    const [todos, grupos] = await Promise.all([getAllHubs(), getGruposDeGuias()])
+    const hubsDoIdioma = todos.filter(guiaDoIdioma)
+    const gruposDoIdioma = grupos.map(({ kind: k, grupos }) => ({
         kind: k,
         grupos: grupos.map(g => ({ ...g, hubs: g.hubs.filter(guiaDoIdioma) })).filter(g => g.hubs.length > 0),
     }))

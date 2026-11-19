@@ -30,4 +30,7 @@ export type ArchiveHub = {
     filter: ArchiveHubFilter
     whatYouWillFind?: string
     relatedSearches?: Array<{ label: string; href: string }>
+    /** Rank Math do CPT `guia`; sem ele, o <title> e a meta description usam title e description. */
+    seoTitle?: string
+    seoDescription?: string
 }

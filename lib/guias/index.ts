@@ -1,4 +1,4 @@
-import { getGuias as getWPGuias, getGuia as getWPGuia } from '@/lib/wordpress/guias'
+import { getGuias as getWPGuias, type GuiaTextoWP } from '@/lib/wordpress/guias'
 import { productionsGenreHubs } from './productions-genre'
 import { productionsPlatformHubs } from './productions-platform'
 import { productionsNetworkHubs } from './productions-network'
@@ -26,22 +26,55 @@ const STATIC_HUBS: ArchiveHub[] = [
     ...groupsMembersHubs,
 ]
 
-/** Retorna todos os guias — WP primeiro, fallback nos estáticos. */
-export async function getAllHubs(): Promise<ArchiveHub[]> {
-    try {
-        const wpGuias = await getWPGuias()
-        if (wpGuias.length > 0) return wpGuias
-    } catch { /* silencioso — usa fallback */ }
-    return STATIC_HUBS
+const CAMPOS_TEXTO = ['title', 'shortTitle', 'description', 'whatYouWillFind', 'seoTitle', 'seoDescription'] as const
+const CAMPOS_LISTA = ['intro', 'keywords', 'faq', 'relatedSearches'] as const
+
+/**
+ * O guia do código com o texto do WordPress por cima, campo a campo. Slug, tipo e filtro são sempre os do código;
+ * campo vazio ou com formato inesperado no WordPress mantém o do código (importação parcial não apaga nada).
+ */
+export function mesclarTexto(hub: ArchiveHub, wp?: GuiaTextoWP): ArchiveHub {
+    if (!wp) return hub
+    const out: ArchiveHub = { ...hub }
+    for (const k of CAMPOS_TEXTO) {
+        const v = wp[k]
+        if (typeof v === 'string' && v.trim()) out[k] = v.trim()
+    }
+    for (const k of CAMPOS_LISTA) {
+        const v = wp[k]
+        if (Array.isArray(v) && v.length) (out as Record<string, unknown>)[k] = v
+    }
+    return out
 }
 
-/** Retorna um guia por slug — WP primeiro, fallback estático. */
-export async function getHub(slug: string): Promise<ArchiveHub | undefined> {
+async function textosDoWP(): Promise<Record<string, GuiaTextoWP>> {
     try {
-        const wpGuia = await getWPGuia(slug)
-        if (wpGuia) return wpGuia
-    } catch { /* silencioso */ }
-    return STATIC_HUBS.find(h => h.slug === slug)
+        return Object.fromEntries((await getWPGuias()).map(g => [g.slug, g]))
+    } catch {
+        return {}
+    }
+}
+
+/** Todos os guias do código, com o texto editorial do WordPress quando houver. */
+export async function getAllHubs(): Promise<ArchiveHub[]> {
+    const textos = await textosDoWP()
+    return STATIC_HUBS.map(h => mesclarTexto(h, textos[h.slug]))
+}
+
+/** Um guia por slug (só os que existem no código), com o texto do WordPress quando houver. */
+export async function getHub(slug: string): Promise<ArchiveHub | undefined> {
+    const hub = STATIC_HUBS.find(h => h.slug === slug)
+    if (!hub) return undefined
+    return mesclarTexto(hub, (await textosDoWP())[slug])
+}
+
+/** GRUPOS_DE_GUIAS com o texto do WordPress, para o índice /guias. */
+export async function getGruposDeGuias(): Promise<typeof GRUPOS_DE_GUIAS> {
+    const textos = await textosDoWP()
+    return GRUPOS_DE_GUIAS.map(({ kind, grupos }) => ({
+        kind,
+        grupos: grupos.map(g => ({ ...g, hubs: g.hubs.map(h => mesclarTexto(h, textos[h.slug])) })),
+    }))
 }
 
 export async function getRelatedHubs(hub: ArchiveHub, limit = 6): Promise<ArchiveHub[]> {
@@ -52,7 +85,7 @@ export async function getRelatedHubs(hub: ArchiveHub, limit = 6): Promise<Archiv
     return [...mesmoTipo.filter(h => irmaos.has(h.slug)), ...mesmoTipo.filter(h => !irmaos.has(h.slug))].slice(0, limit)
 }
 
-// Manter compat com código síncrono existente (será removido após migração completa)
+// Estrutura (slug, tipo, filtro) para código síncrono, como o hub-lookup. Texto exibido vem de getAllHubs/getHub.
 export const ALL_HUBS = STATIC_HUBS
 export const HUB_BY_SLUG = Object.fromEntries(STATIC_HUBS.map(h => [h.slug, h]))
 
