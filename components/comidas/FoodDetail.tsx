@@ -62,11 +62,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
     const name = stripHtml(food.title.rendered)
     const korean = food.acf?.name_korean
-    const title = korean ? t('metaTitleKorean', { name, korean }) : t('metaTitle', { name })
+    // Rank Math primeiro (como artista, grupo e produção); sem ele, o modelo e o excerpt.
+    const title = food.meta?.rank_math_title?.trim()
+        || (korean ? t('metaTitleKorean', { name, korean }) : t('metaTitle', { name }))
     const resumo = stripHtml(food.excerpt?.rendered || food.content?.rendered || '')
-    const description = resumo
+    const description = food.meta?.rank_math_description?.trim() || (resumo
         ? metaDescriptionComida(resumo, food.acf?.main_ingredients)
-        : t('metaDescription', { name })
+        : t('metaDescription', { name }))
     const image = getWPImage(food._embedded, food.featured_image_url)
     const url = `${SITE_URL}${href('food', { slug }, locale)}`
 
