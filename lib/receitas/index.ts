@@ -1,26 +1,48 @@
-import dados from '@/data/receitas.json'
-import dadosEn from '@/data/receitas.en.json'
-import dadosJa from '@/data/receitas.ja.json'
+import { SOURCE_LOCALE } from '@/lib/i18n/config'
+import { getReceitasWP, type ReceitaWP } from '@/lib/wordpress/receitas'
 import type { Receita } from './tipos'
+import { validarReceita } from './validar'
 
-const RECEITAS = dados as Record<string, Receita>
-// Mesma estrutura, textos em inglês (traduzidos da versão em português; fontes e tempos iguais).
-const RECEITAS_EN = dadosEn as Record<string, Receita>
+const texto = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
 
-// Japonês: mesma estrutura, textos traduzidos do português (fontes e tempos iguais).
-const RECEITAS_JA = dadosJa as Record<string, Receita>
-
-function doIdioma(locale: string): Record<string, Receita> {
-    if (locale === 'en') return RECEITAS_EN
-    if (locale === 'ja') return RECEITAS_JA
-    return RECEITAS
+/**
+ * A receita no idioma, ou `null` se ela não existe nele. Português é a própria; nos outros, a tradução publicada
+ * no WordPress substitui o texto (rendimento, ingredientes, passos, dicas) e mantém porções, tempos e fontes.
+ * Tradução desatualizada (`stale`) ou com estrutura diferente do português não vale: a receita some do idioma em vez
+ * de aparecer com quantidades ou passos que não batem.
+ */
+export function receitaNoIdioma(r: ReceitaWP, locale: string): Receita | null {
+    const { slug: _slug, translations, ...base } = r
+    if (locale === SOURCE_LOCALE) return base
+    const tr = translations?.[locale]
+    if (!tr || tr.stale) return null
+    const a = tr.acf ?? {}
+    const ingredientes = (a.ingredients ?? []).map((i) => ({ item: texto(i?.item), quantidade: texto(i?.quantity) }))
+    const passos = (a.steps ?? []).map(texto)
+    const dicas = (a.tips ?? []).map(texto)
+    if (ingredientes.length !== base.ingredientes.length || passos.length !== base.passos.length || dicas.length !== (base.dicas ?? []).length) return null
+    return {
+        ...base,
+        ingredientes,
+        passos,
+        ...(base.dicas && { dicas }),
+        ...(base.rendimento && { rendimento: texto(a.yield) || base.rendimento }),
+    }
 }
 
-export function getReceita(slug: string, locale = 'pt'): Receita | null {
-    const mapa = doIdioma(locale)
-    return Object.hasOwn(mapa, slug) ? mapa[slug] : null
+/**
+ * Receitas no idioma, por slug da comida. Só entra receita que passa em `validarReceita`: o schema Recipe exige que o
+ * conteúdo visível esteja completo, e uma receita quebrada no WordPress não deve ir ao ar.
+ */
+export async function todasReceitas(locale: string = SOURCE_LOCALE): Promise<Record<string, Receita>> {
+    const out: Record<string, Receita> = {}
+    for (const r of await getReceitasWP()) {
+        const rec = receitaNoIdioma(r, locale)
+        if (rec && validarReceita(r.slug, rec).length === 0) out[r.slug] = rec
+    }
+    return out
 }
 
-export function todasReceitas(locale = 'pt'): Record<string, Receita> {
-    return doIdioma(locale)
+export async function getReceita(slug: string, locale: string = SOURCE_LOCALE): Promise<Receita | null> {
+    return (await todasReceitas(locale))[slug] ?? null
 }

@@ -87,4 +87,13 @@ describe('Recipe com modo de preparo', () => {
         expect(sem).not.toHaveProperty('recipeInstructions')
         expect(sem).not.toHaveProperty('totalTime')
     })
+
+    it('rendimento: o texto da receita quando existe, senão porções no idioma', () => {
+        const rolos = { ...preparo, rendimento: '5 rolos' }
+        expect(buildRecipeSchema({ name: 'Kimbap', url: 'https://x/k', preparo: rolos }).recipeYield).toBe('5 rolos')
+        expect(buildRecipeSchema({ name: 'Kimbap', url: 'https://x/k', preparo: rolos, locale: 'ja' }).recipeYield).toBe('5 rolos')
+        expect(buildRecipeSchema({ name: 'Kimbap', url: 'https://x/k', preparo, locale: 'ja' }).recipeYield).toBe('4人分')
+        expect(buildRecipeSchema({ name: 'Kimbap', url: 'https://x/k', preparo, locale: 'en' }).recipeYield).toBe('4 servings')
+        expect(buildRecipeSchema({ name: 'Kimbap', url: 'https://x/k', preparo, locale: 'es' }).recipeYield).toBe('4 porciones')
+    })
 })

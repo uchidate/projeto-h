@@ -3,6 +3,7 @@ import type { Receita } from '@/lib/receitas/tipos'
 const TEXTOS = {
     pt: { titulo: (n: string) => `Como preparar ${n}`, rende: 'Rende', porcoes: (n: number) => `${n} porções`, preparo: 'Preparo', cozimento: 'Cozimento', total: 'Total', ingredientes: 'Ingredientes', modo: 'Modo de preparo', dicas: 'Dicas', adaptada: 'Receita adaptada de', conferidos: ', com técnica e tempos conferidos em ', e: ' e ', fim: '. Texto redigido pela equipe.' },
     ja: { titulo: (n: string) => `${n}の作り方`, rende: '分量', porcoes: (n: number) => `${n}人分`, preparo: '下準備', cozimento: '調理', total: '合計', ingredientes: '材料', modo: '作り方', dicas: 'ポイント', adaptada: 'レシピの出典：', conferidos: '。技法と時間の確認：', e: '、', fim: '。文章は編集部が書いたものです。' },
+    es: { titulo: (n: string) => `Cómo preparar ${n}`, rende: 'Rinde', porcoes: (n: number) => `${n} porciones`, preparo: 'Preparación', cozimento: 'Cocción', total: 'Total', ingredientes: 'Ingredientes', modo: 'Elaboración', dicas: 'Consejos', adaptada: 'Receta adaptada de', conferidos: ', con técnica y tiempos verificados en ', e: ' y ', fim: '. Texto redactado por el equipo.' },
     en: { titulo: (n: string) => `How to make ${n}`, rende: 'Serves', porcoes: (n: number) => `${n} servings`, preparo: 'Prep', cozimento: 'Cook', total: 'Total', ingredientes: 'Ingredients', modo: 'Method', dicas: 'Tips', adaptada: 'Recipe adapted from', conferidos: ', with technique and timings checked against ', e: ' and ', fim: '. Text written by our team.' },
 }
 
@@ -16,7 +17,7 @@ function formatarTempo(min: number, locale = 'pt'): string {
 // Conteúdo visível que sustenta o recipeInstructions do schema: o Google
 // exige que o JSON-LD corresponda ao que o leitor vê na página.
 export function ReceitaPreparo({ nome, receita, locale = 'pt' }: { nome: string; receita: Receita; locale?: string }) {
-    const x = TEXTOS[locale === 'pt' ? 'pt' : locale === 'ja' ? 'ja' : 'en']
+    const x = TEXTOS[locale === 'pt' || locale === 'ja' || locale === 'es' ? locale : 'en']
     const total = receita.preparoMin + receita.cozimentoMin
     const [base, ...conferem] = receita.fontes
     return (

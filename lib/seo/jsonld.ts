@@ -162,14 +162,14 @@ export function buildRecipeSchema({
         ...(preparo
             ? { recipeIngredient: preparo.ingredientes.map(i => `${i.quantidade} ${i.item}`) }
             : ingredients && ingredients.length > 0 && { recipeIngredient: ingredients }),
-        // Só com receita revisada (data/receitas.json): sem ela o schema não
+        // Só com receita válida (CPT receita, ver lib/receitas): sem ela o schema não
         // declara instruções nem tempos, que não existem no CPT.
         ...(preparo && {
             recipeInstructions: preparo.passos.map((text, i) => ({ '@type': 'HowToStep', position: i + 1, text })),
             prepTime: duracaoIso(preparo.preparoMin),
             cookTime: duracaoIso(preparo.cozimentoMin),
             totalTime: duracaoIso(preparo.preparoMin + preparo.cozimentoMin),
-            recipeYield: preparo.rendimento ?? locale === 'ja' ? `${preparo.porcoes}人分` : `${preparo.porcoes} ${locale === 'en' ? 'servings' : 'porções'}`,
+            recipeYield: preparo.rendimento ?? (locale === 'ja' ? `${preparo.porcoes}人分` : `${preparo.porcoes} ${({ en: 'servings', es: 'porciones' } as Record<string, string>)[locale ?? ''] ?? 'porções'}`),
         }),
         ...(suitableForDiet && { suitableForDiet }),
         author: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
