@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation'
 import { getProductionBySlug, getSmartRelatedProductions, getProductionGenres } from '@/lib/wordpress/productions'
 import { getFoodsFeaturedInProduction } from '@/lib/wordpress/foods'
 import { getArtists } from '@/lib/wordpress/artists'
-import { getVitrineDoElenco } from '@/lib/wordpress/vitrine'
+import { getPrateleiraDaObra } from '@/lib/wordpress/vitrine'
 import { getPosts, getCategories } from '@/lib/wordpress/posts'
 import { SITE_URL, buildOgImageUrl } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
@@ -132,9 +132,10 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         getFoodsFeaturedInProduction(production.id),
     ])
     // Maior tráfego do site e sem loja até aqui. A loja só existe em português.
-    const shopProducts = locale === DEFAULT_LOCALE
-        ? await getVitrineDoElenco(castItems.map(a => a.id), `producao:${slug}`, 6, 'drama', `${productionTitle} ${stripHtml(production.excerpt.rendered)}`, foodsInProduction.map(f => stripHtml(f.title.rendered)))
-        : []
+    const prateleira = locale === DEFAULT_LOCALE
+        ? await getPrateleiraDaObra({ tituloObra: productionTitle, artistIds: castItems.map(a => a.id), comidas: foodsInProduction.map(f => stripHtml(f.title.rendered)), contexto: `producao:${slug}` })
+        : { produtos: [], motivos: {} }
+    const shopProducts = prateleira.produtos
 
     const genreTermMap = Object.fromEntries(allGenreTerms.map(t => [t.id, { name: nomeDoGenero(t.slug, t.name, locale), slug: t.slug }]))
     const genres = (production.production_genre ?? [])
@@ -167,7 +168,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={comTituloNoIdioma(related, 'production', locale)} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} foodsInProduction={foodsInProduction} />
+            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={comTituloNoIdioma(related, 'production', locale)} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} shopMotivos={prateleira.motivos} foodsInProduction={foodsInProduction} />
         </>
     )
 }

@@ -52,6 +52,8 @@ interface Props {
     groupShopProducts?: StoreProduct[]
     /** true quando shopProducts na verdade é a vitrine geral (nem artista nem grupo tinham produto próprio ainda). */
     shopFallback?: boolean
+    /** Tipo da reserva: muda o título (merch de K-pop para ídolo, mistura para ator). */
+    shopFallbackTipo?: 'drama' | 'merch'
     /** Empresas que o acervo já associa a este artista (ex.: garoto-propaganda de uma marca). */
     companyMentions?: MencaoAcervo[]
     /** Versões em outros idiomas: entram na barra da lista, na mesma linha, no desktop. */
@@ -73,6 +75,7 @@ export function ArtistDetailPage({
     shopProducts = [],
     groupShopProducts = [],
     shopFallback = false,
+    shopFallbackTipo = 'merch',
     companyMentions = [],
     idiomas,
 }: Props) {
@@ -194,7 +197,10 @@ export function ArtistDetailPage({
 
     const lojaMeio = (
         <LojaEmLinha bloco="ficha-artista-loja-meio" products={shopProducts.length > 0 ? shopProducts : groupShopProducts}
-            title={shopFallback ? 'Achados da loja' : `Para quem curte ${name}`}
+            // O título diz de onde vem o que está à vista: antes era "Para quem curte {artista}" mesmo mostrando merch do grupo.
+            title={shopFallback ? (shopFallbackTipo === 'merch' ? 'Achados de K-pop' : 'Achados da loja')
+                : shopProducts.length > 0 ? `Para quem curte ${name}`
+                : connectionGroup ? `Merch do ${stripHtml(connectionGroup.title.rendered)}` : `Para quem curte ${name}`}
             href={shopFallback ? '/loja' : `/loja/artista/${artist.slug}`}
             contexto={shopFallback ? 'artista:fallback:meio' : `artista:${artist.slug}:meio`} />
     )

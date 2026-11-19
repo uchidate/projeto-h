@@ -164,13 +164,16 @@ export async function getStoreProductsByIds(ids: number[]): Promise<StoreProduct
 }
 
 /** Tipo de página para a vitrine de reserva: o que combina com quem está lendo. */
-export type TipoVitrine = 'kpop' | 'drama'
+export type TipoVitrine = 'kpop' | 'drama' | 'merch'
 
 const CATEGORIAS_POR_TIPO: Record<TipoVitrine, readonly string[]> = {
     kpop: ['photocard', 'lightstick', 'kpop_album', 'kbeauty', 'clothing', 'acessorios'],
     // 'alimenta' é o valor antigo de comida; os cadastros novos usam 'snacks'. Sem 'snacks' e 'kdrama', a reserva
     // das páginas de ator e de produção deixava de fora a comida nova e o merch de dorama (2026-11-17).
     drama: ['kdrama', 'snacks', 'alimenta', 'kbeauty', 'acessorios', 'outros'],
+    // Reserva das fichas de ídolo e grupo sem produto próprio: só merch de K-pop. Ali o clique é photocard e álbum;
+    // os cliques em K-beauty de ficha vieram de atores (Umami, 28 dias até 2026-11-18).
+    merch: ['photocard', 'lightstick', 'kpop_album', 'clothing', 'acessorios'],
 }
 
 /**

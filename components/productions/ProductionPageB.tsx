@@ -25,6 +25,7 @@ import type { Avaliacao } from '@/lib/tmdb/avaliacao'
 import { LojaDestaque } from '@/components/ui/LojaDestaque'
 import { LojaDeslizante } from '@/components/ui/LojaDeslizante'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
+import { tituloPrateleira, type MotivoPrateleira } from '@/lib/wordpress/prateleira-obra'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import type { WPFood } from '@/lib/wordpress/types'
 import { ProductionRelated } from '@/components/productions/ProductionRelated'
@@ -46,6 +47,7 @@ interface Props {
     avaliacao?: Avaliacao | null
     episodios?: Episodio[]
     shopProducts?: StoreProduct[]
+    shopMotivos?: Record<number, MotivoPrateleira>
     foodsInProduction?: WPFood[]
 }
 
@@ -64,7 +66,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * elenco e outro depois das recomendações. O rodapé de página (`production_end_leaderboard`,
  * 27% de preenchimento) e o `production_discovery` da estrutura anterior saem.
  */
-export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [], foodsInProduction = [] }: Props) {
+export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [], shopMotivos = {}, foodsInProduction = [] }: Props) {
     const t = useTranslations('profile')
     const locale = useLocale()
     const {
@@ -123,7 +125,7 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
 
                         {/* A ficha é a página de maior tráfego e não tinha loja: faixa curta depois das relacionadas,
                             ainda antes dos episódios. */}
-                        <LojaEmLinha bloco="producao-loja-meio" products={shopProducts} title={`Para quem curte ${title}`} contexto={`producao:${production.slug}:meio`} />
+                        <LojaEmLinha bloco="producao-loja-meio" products={shopProducts} motivos={shopMotivos} title={tituloPrateleira(title, shopProducts.slice(0, 3).map(p => shopMotivos[p.id]))} contexto={`producao:${production.slug}:meio`} />
 
                         {episodios.length > 0 && (
                             <section id="episodios" className={ANCORA} data-bloco="producao-episodios">
