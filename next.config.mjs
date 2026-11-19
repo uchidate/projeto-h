@@ -379,6 +379,13 @@ const nextConfig = {
             // 404 de leitor (busca 2026-11-17): IU vive na ficha lee-ji-eun; /calendar é o /calendario.
             { source: '/artists/iu', destination: '/artists/lee-ji-eun', permanent: true },
             { source: '/calendar', destination: '/calendario', permanent: true },
+            // Os mesmos apelidos de artista em inglês e espanhol: /en/artists/iu dava 404 (busca
+            // 2026-11-18) com /en/artists/lee-ji-eun no ar. O segmento /artists é igual nos três idiomas.
+            ...[
+                ['kim-ju-hun', 'kim-joo-hun'],
+                ['yoonchae-katseye', 'yoonchae-jeung'],
+                ['iu', 'lee-ji-eun'],
+            ].map(([de, para]) => ({ source: `/:locale(en|es)/artists/${de}`, destination: `/:locale/artists/${para}`, permanent: true })),
         ]
     },
     async headers() {
