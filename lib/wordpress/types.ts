@@ -415,6 +415,8 @@ export type WPAgency = {
     milestones?: string[]       // "ANO|DESCRIÇÃO"
     achievements?: string[]
     yoast_head_json?: WPYoast
+    /** Rank Math (register_meta com show_in_rest); com tradução, localizeEntity troca pelo seo_* do idioma. */
+    meta?: WPRankMathMeta
 }
 
 // ─── Company / Empresa sul-coreana ────────────────────────────────────────────
