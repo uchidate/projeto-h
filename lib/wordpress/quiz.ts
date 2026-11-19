@@ -26,6 +26,15 @@ export interface QuizQuestion {
     relatedHref?: string | null
     relatedLabel?: string | null
     links?: { artists: number[]; groups: number[]; productions: number[] }
+    /** Traduções publicadas no WordPress (`_oc_i18n` da pergunta), por idioma. Ver lib/quiz/i18n.ts. */
+    traducoes?: Partial<Record<string, TraducaoWPDaPergunta>>
+}
+
+/** Uma tradução publicada da pergunta, no formato do campo `translations` do REST. */
+export type TraducaoWPDaPergunta = {
+    acf?: { question?: string; option_a?: string; option_b?: string; option_c?: string; option_d?: string; explanation?: string }
+    /** O português mudou depois da tradução: não usar. */
+    stale?: boolean
 }
 
 // Campos expostos via register_rest_field no nível raiz da resposta REST
@@ -38,6 +47,7 @@ interface WPQuizQuestion {
     category?: string; difficulty?: string
     related_post_url?: string; related_post_label?: string
     quiz_links?: { artists?: number[]; groups?: number[]; productions?: number[] } | null
+    translations?: Record<string, TraducaoWPDaPergunta> | null
 }
 
 const CORRECT_MAP: Record<string, number> = { a: 0, b: 1, c: 2, d: 3 }
@@ -73,10 +83,11 @@ function normalize(raw: WPQuizQuestion): QuizQuestion {
             groups: raw.quiz_links?.groups ?? [],
             productions: raw.quiz_links?.productions ?? [],
         },
+        ...(raw.translations && typeof raw.translations === 'object' && !Array.isArray(raw.translations) && { traducoes: raw.translations }),
     }
 }
 
-const FIELDS = 'id,question,option_a,option_b,option_c,option_d,correct_option,explanation,category,difficulty,subcategory,related_post_url,related_post_label,quiz_links'
+const FIELDS = 'id,question,option_a,option_b,option_c,option_d,correct_option,explanation,category,difficulty,subcategory,related_post_url,related_post_label,quiz_links,translations'
 
 export async function getQuizQuestions(opts?: {
     category?: QuizCategory
