@@ -9,6 +9,9 @@ export type { LanguageLink }
 
 const DISMISS_KEY = 'hh-language-notice-dismissed'
 
+/** Sigla curta para faixas apertadas (barra da lista no celular). Japonês fica no próprio nome, que já é curto. */
+const SIGLA: Record<string, string> = { en: 'EN', es: 'ES', ja: '日本語', pt: 'PT' }
+
 function Globo() {
     return (
         <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -24,12 +27,14 @@ function Globo() {
  * esconderia versões. Quando o navegador prefere um dos idiomas disponíveis, o
  * link vira um convite no idioma de destino, dispensável e lembrado no aparelho.
  */
-export function LanguageSwitcher({ availableIn, dismissLabel, links, embutido = false }: {
+export function LanguageSwitcher({ availableIn, dismissLabel, links, embutido = false, curto = false }: {
     availableIn: string
     dismissLabel: string
     links: LanguageLink[]
     /** Dentro de outra faixa (a barra da lista): sem `page-wrap` nem margem, para dividir a linha com ela. */
     embutido?: boolean
+    /** Siglas (EN · ES) abaixo de lg e sem a frase: para dividir a linha do celular com outros controles. */
+    curto?: boolean
 }) {
     const [preferred, setPreferred] = useState<LanguageLink | null>(null)
 
@@ -74,13 +79,20 @@ export function LanguageSwitcher({ availableIn, dismissLabel, links, embutido = 
 
     return (
         <div className={embutido ? undefined : 'page-wrap'}>
-            <nav aria-label={availableIn} className={`flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5 text-[12px] ${embutido ? '' : 'mt-3'}`}>
-                <span className="text-muted">{availableIn}</span>
-                {links.map((link) => (
-                    <a key={link.locale} href={link.href} hrefLang={link.htmlLang} lang={link.htmlLang}
-                        className="inline-flex items-center gap-1.5 border border-accent-a11y/60 bg-accent/5 px-2.5 py-1 font-bold text-accent-a11y transition-colors hover:bg-accent hover:text-[#0d0b0f]">
-                        <Globo />{link.name} →
-                    </a>
+            {/* Uma linha discreta: antes eram botões com borda que no celular quebravam em duas linhas (~70 px)
+                antes do hero. No celular o globo faz as vezes do "Também disponível em" (que segue no aria-label). */}
+            <nav aria-label={availableIn} className={`flex items-center justify-end gap-x-1 text-[12px] ${embutido ? '' : 'mt-2'}`}>
+                <span className="mr-1 inline-flex items-center gap-1.5 text-muted"><Globo /><span className={curto ? 'max-lg:sr-only' : 'max-sm:sr-only'}>{availableIn}</span></span>
+                {links.map((link, i) => (
+                    <span key={link.locale} className="inline-flex items-center">
+                        {i > 0 && <span aria-hidden className="px-1 text-muted">·</span>}
+                        <a href={link.href} hrefLang={link.htmlLang} lang={link.htmlLang} title={curto ? link.name : undefined}
+                            className="inline-flex min-h-6 items-center font-bold text-accent-a11y underline-offset-2 hover:underline">
+                            {curto
+                                ? <><span className="lg:hidden">{SIGLA[link.locale] ?? link.locale.toUpperCase()}</span><span className="max-lg:hidden">{link.name}</span></>
+                                : link.name}
+                        </a>
+                    </span>
                 ))}
             </nav>
         </div>
