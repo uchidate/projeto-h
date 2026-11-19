@@ -144,7 +144,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
     // em destaque em vez de esconder o bloco — a loja precisa aparecer em
     // toda página, não só onde já existe cobertura própria de produto.
     // Quem é de grupo ou cantor recebe itens de K-pop; ator/apresentador, comida e K-beauty de dorama.
-    const tipoVitrine = !connectionGroup && (primaryRole === 'actor' || primaryRole === 'host') ? 'drama' : 'kpop'
+    const tipoVitrine = !connectionGroup && (primaryRole === 'actor' || primaryRole === 'host') ? 'drama' : 'merch'
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0 && groupShopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio
         // Cada ficha sorteia a sua parte do pool: antes as 436 exibições em 60 d mostravam os mesmos 8 em toda ficha (4 cliques).
@@ -177,7 +177,7 @@ export async function ArtistRoute({ slug, locale }: { slug: string; locale: Loca
             relatedHubs={relatedHubs}
             shopProducts={shopProductsFicha}
             groupShopProducts={groupShopProducts}
-            shopFallback={semProdutoProprio}
+            shopFallback={semProdutoProprio} shopFallbackTipo={tipoVitrine}
             companyMentions={companyMentions}
             idiomas={{ availableIn: tSwitcher('availableIn'), dismissLabel: tSwitcher('dismiss'), links: languageLinks }}
         />

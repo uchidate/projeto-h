@@ -134,7 +134,7 @@ export async function GroupRoute({ slug, locale }: { slug: string; locale: Local
 
     const semProdutoProprio = locale === DEFAULT_LOCALE && shopProducts.length === 0
     const shopFallbackProducts = semProdutoProprio
-        ? await getVitrineGeral('grupo:fallback', 8, 'kpop', `grupo:${slug}`)
+        ? await getVitrineGeral('grupo:fallback', 8, 'merch', `grupo:${slug}`)
         : []
     const shopProductsFicha = semProdutoProprio
         ? shopFallbackProducts
