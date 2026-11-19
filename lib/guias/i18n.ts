@@ -47,11 +47,33 @@ export function slugPtDoGuia(slugPublico: string, locale: Locale): string | unde
     return Object.entries(traducoesDoIdioma(locale)).find(([, t]) => t.slug === slugPublico)?.[0]
 }
 
-/** O guia com o texto no idioma, ou `null` se não há tradução. Palavras-chave ficam vazias (as do original são em português). */
+const textoOk = (v: unknown): v is string => typeof v === 'string' && v.trim() !== ''
+
+/**
+ * O guia com o texto no idioma, ou `null` se o guia não existe no idioma (sem entrada em traducoes/<idioma>.json,
+ * que guarda o slug do idioma). A tradução publicada no WordPress (`hub.traducoes`, vinda de getHub/getAllHubs) vale
+ * por cima do JSON, campo a campo, se não estiver `stale`. Palavras-chave ficam vazias (as do original são em português).
+ */
 export function localizarGuia(hub: ArchiveHub, locale: Locale): ArchiveHub | null {
     const tr = traducoesDoIdioma(locale)[hub.slug]
     if (!tr) return null
-    return { ...hub, title: tr.title, shortTitle: tr.shortTitle, description: tr.description, intro: tr.intro, whatYouWillFind: tr.whatYouWillFind, faq: tr.faq, keywords: [], relatedSearches: undefined, seoTitle: undefined, seoDescription: undefined }
+    const base: ArchiveHub = { ...hub, title: tr.title, shortTitle: tr.shortTitle, description: tr.description, intro: tr.intro, whatYouWillFind: tr.whatYouWillFind, faq: tr.faq, keywords: [], relatedSearches: undefined, seoTitle: undefined, seoDescription: undefined, traducoes: undefined }
+    const wp = hub.traducoes?.[locale]
+    if (!wp || wp.stale) return base
+    const acf = wp.acf ?? {}
+    const intro = Array.isArray(acf.intro) ? acf.intro.filter(textoOk) : []
+    const faq = Array.isArray(acf.faq) ? acf.faq.filter((f) => textoOk(f?.question) && textoOk(f?.answer)) as ArchiveHub['faq'] : []
+    return {
+        ...base,
+        ...(textoOk(wp.title) && { title: wp.title }),
+        ...(textoOk(wp.excerpt) && { description: wp.excerpt }),
+        ...(textoOk(acf.short_title) && { shortTitle: acf.short_title }),
+        ...(intro.length && { intro }),
+        ...(textoOk(acf.what_you_will_find) && { whatYouWillFind: acf.what_you_will_find }),
+        ...(faq.length && { faq }),
+        ...(textoOk(wp.seo_title) && { seoTitle: wp.seo_title }),
+        ...(textoOk(wp.seo_description) && { seoDescription: wp.seo_description }),
+    }
 }
 
 const outrosIdiomas = (): Locale[] => ACTIVE_LOCALES.filter(l => l !== SOURCE_LOCALE)

@@ -41,8 +41,8 @@ export async function buildLocalizedGuideMetadata(slugPublico: string, locale: L
     if (!dados) return {}
     const url = `${SITE_URL}${href('guide', { slug: slugPublico }, locale)}`
     return {
-        title: dados.hub.title,
-        description: dados.hub.description,
+        title: dados.hub.seoTitle || dados.hub.title,
+        description: dados.hub.seoDescription || dados.hub.description,
         alternates: {
             canonical: url,
             languages: alternativasDoGuia(dados.slugPt) ?? {

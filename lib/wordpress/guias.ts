@@ -4,7 +4,7 @@ import { WP_CACHE_TAGS } from './cache'
 import type { ArchiveHub } from '@/lib/guias/types'
 
 /** Texto editorial de um guia no CPT `guia` (endpoint hallyuhub/v1/guias): só os campos preenchidos. */
-export type GuiaTextoWP = { slug: string } & Partial<Pick<ArchiveHub,
+export type GuiaTextoWP = { slug: string; translations?: ArchiveHub['traducoes'] } & Partial<Pick<ArchiveHub,
     'title' | 'shortTitle' | 'description' | 'intro' | 'keywords' | 'faq' | 'whatYouWillFind' | 'relatedSearches' | 'seoTitle' | 'seoDescription'>>
 
 export async function getGuias(): Promise<GuiaTextoWP[]> {

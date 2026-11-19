@@ -52,3 +52,36 @@ describe('guias traduzidos', () => {
         expect(localizarGuia({ ...hub, slug: 'guia-sem-traducao' }, 'en')).toBeNull()
     })
 })
+
+describe('localizarGuia com tradução do WordPress', () => {
+    const slug = slugsPtTraduzidos('en')[0]
+    const hub = STATIC_HUBS_PARA_TESTE.find((h) => h.slug === slug)!
+    const json = traducoesDoIdioma('en')[slug]
+
+    it('sem tradução no WordPress, usa o JSON', () => {
+        expect(localizarGuia(hub, 'en')?.title).toBe(json.title)
+    })
+
+    it('tradução publicada do WordPress vale por cima do JSON, campo a campo', () => {
+        const out = localizarGuia({ ...hub, traducoes: { en: { title: 'WP title', acf: { intro: ['WP intro'], faq: [{ question: 'Q?', answer: 'A.' }] }, seo_title: 'SEO EN' } } }, 'en')!
+        expect(out.title).toBe('WP title')
+        expect(out.intro).toEqual(['WP intro'])
+        expect(out.faq).toEqual([{ question: 'Q?', answer: 'A.' }])
+        expect(out.seoTitle).toBe('SEO EN')
+        expect(out.description).toBe(json.description)
+        expect(out.traducoes).toBeUndefined()
+    })
+
+    it('tradução velha (stale) é ignorada', () => {
+        const out = localizarGuia({ ...hub, traducoes: { en: { title: 'Velho', stale: true } } }, 'en')!
+        expect(out.title).toBe(json.title)
+    })
+
+    it('guia sem entrada no JSON do idioma não existe, mesmo com tradução no WordPress', () => {
+        expect(localizarGuia({ ...hub, slug: 'nao-existe', traducoes: { en: { title: 'X' } } }, 'en')).toBeNull()
+    })
+
+    it('o SEO em português não vaza para o idioma', () => {
+        expect(localizarGuia({ ...hub, seoTitle: 'Título PT' }, 'en')?.seoTitle).toBeUndefined()
+    })
+})

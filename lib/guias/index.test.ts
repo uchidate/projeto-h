@@ -76,3 +76,10 @@ describe('getRelatedHubs', () => {
         expect((await getRelatedHubs(target, 2)).length).toBeLessThanOrEqual(2)
     })
 })
+
+describe('mesclarTexto com traduções', () => {
+    it('leva as traduções do WordPress no guia', () => {
+        const out = mesclarTexto(base, { slug: base.slug, translations: { en: { title: 'EN' } } })
+        expect(out.traducoes?.en?.title).toBe('EN')
+    })
+})

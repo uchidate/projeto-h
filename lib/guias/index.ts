@@ -44,6 +44,7 @@ export function mesclarTexto(hub: ArchiveHub, wp?: GuiaTextoWP): ArchiveHub {
         const v = wp[k]
         if (Array.isArray(v) && v.length) (out as Record<string, unknown>)[k] = v
     }
+    if (wp.translations && typeof wp.translations === 'object' && !Array.isArray(wp.translations)) out.traducoes = wp.translations
     return out
 }
 
