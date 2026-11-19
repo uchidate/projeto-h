@@ -74,13 +74,18 @@ export function LanguageSwitcher({ availableIn, dismissLabel, links, embutido = 
 
     return (
         <div className={embutido ? undefined : 'page-wrap'}>
-            <nav aria-label={availableIn} className={`flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5 text-[12px] ${embutido ? '' : 'mt-3'}`}>
-                <span className="text-muted">{availableIn}</span>
-                {links.map((link) => (
-                    <a key={link.locale} href={link.href} hrefLang={link.htmlLang} lang={link.htmlLang}
-                        className="inline-flex items-center gap-1.5 border border-accent-a11y/60 bg-accent/5 px-2.5 py-1 font-bold text-accent-a11y transition-colors hover:bg-accent hover:text-[#0d0b0f]">
-                        <Globo />{link.name} →
-                    </a>
+            {/* Uma linha discreta: antes eram botões com borda que no celular quebravam em duas linhas (~70 px)
+                antes do hero. No celular o globo faz as vezes do "Também disponível em" (que segue no aria-label). */}
+            <nav aria-label={availableIn} className={`flex items-center justify-end gap-x-1 text-[12px] ${embutido ? '' : 'mt-2'}`}>
+                <span className="mr-1 inline-flex items-center gap-1.5 text-muted"><Globo /><span className="max-sm:sr-only">{availableIn}</span></span>
+                {links.map((link, i) => (
+                    <span key={link.locale} className="inline-flex items-center">
+                        {i > 0 && <span aria-hidden className="px-1 text-muted">·</span>}
+                        <a href={link.href} hrefLang={link.htmlLang} lang={link.htmlLang}
+                            className="inline-flex min-h-6 items-center font-bold text-accent-a11y underline-offset-2 hover:underline">
+                            {link.name}
+                        </a>
+                    </span>
                 ))}
             </nav>
         </div>
