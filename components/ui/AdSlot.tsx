@@ -63,6 +63,7 @@ export function AdSlot({
     const [visible, setVisible] = useState(!lazy)
     const [requested, setRequested] = useState(false)
     const [adStatus, setAdStatus] = useState<AdRuntimeStatus | null>(null)
+    const [recolhido, setRecolhido] = useState(false)
     const [viewportEligible, setViewportEligible] = useState(!mediaQuery)
 
     useEffect(() => {
@@ -159,7 +160,6 @@ export function AdSlot({
             const assumido = ref.current?.querySelector('ins.adsbygoogle')?.getAttribute('data-adsbygoogle-status') === 'done'
             if (assumido) return
             setAdStatus('timeout')
-            onStatusChange?.('timeout')
             trackAdStatus({
                 placement: analyticsPlacement ?? (slot in ads.slots ? slot : 'custom'),
                 format,
@@ -178,7 +178,7 @@ export function AdSlot({
             if (!status || trackedStatus.current === status) return
             trackedStatus.current = status
             setAdStatus(status)
-            onStatusChange?.(status)
+            if (status === 'filled') onStatusChange?.(status)
             trackAdStatus({
                 placement: analyticsPlacement ?? (slot in ads.slots ? slot : 'custom'),
                 format,
@@ -196,8 +196,28 @@ export function AdSlot({
         // 2 desfechos `filled`/`unfilled` em 28 dias; os slots sem `mediaQuery` têm ~87%.
     }, [visible, viewportEligible, slot, format, ads.slots, analyticsPlacement, onStatusChange])
 
+    // Espaço vazio só some ABAIXO da tela, num trecho que a pessoa ainda não alcançou. Recolher na tela
+    // movia o texto que ela lia, e recolher acima dela também (o scroll anchoring não compensou nas
+    // medições): no celular, rolando um artigo a ~800px/s com anúncios vazios, o CLS chegava a 0,83
+    // (2026-11-18, simulação `preenche=0`). Se ela já passou, a reserva fica, parada, sem anúncio.
+    useEffect(() => {
+        if (adStatus !== 'unfilled' && adStatus !== 'timeout') return
+        const alvo = ref.current
+        const recolher = () => { setRecolhido(true); onStatusChange?.(adStatus) }
+        if (!alvo || !('IntersectionObserver' in window)) { recolher(); return }
+        const abaixo = (topo: number) => topo >= window.innerHeight
+        const r = alvo.getBoundingClientRect()
+        // Sem layout (r zerado: jsdom, display none) não há o que mover.
+        if (abaixo(r.top) || (r.height === 0 && r.top === 0)) { recolher(); return }
+        const obs = new IntersectionObserver(([entrada]) => {
+            if (!entrada.isIntersecting && abaixo(entrada.boundingClientRect.top)) { obs.disconnect(); recolher() }
+        })
+        obs.observe(alvo)
+        return () => obs.disconnect()
+    }, [adStatus, onStatusChange])
+
     if (!ads.enabled || automatizado || !viewportEligible || !client || !resolvedSlot) return null
-    if (adStatus === 'unfilled' || adStatus === 'timeout') return null
+    if (recolhido) return null
 
     // Reservas de altura anti-CLS: o pior layout shift é o formato expandir
     // DEPOIS do conteúdo renderizado. 'auto' reservava só 90px, mas em
@@ -234,7 +254,7 @@ export function AdSlot({
                 <div
                     className={reserveClassName}
                     data-ad-container
-                    data-ad-state={adStatus === 'filled' ? 'filled' : 'loading'}
+                    data-ad-state={adStatus === 'filled' ? 'filled' : adStatus ? 'empty' : 'loading'}
                     aria-busy={adStatus !== 'filled'}
                 >
                     <ins
