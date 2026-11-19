@@ -6,22 +6,23 @@ import type { Metadata } from 'next'
 import { AdSlotInline } from '@/components/ui/AdSlotInline'
 import { ADSENSE } from '@/lib/config/ads'
 import Link from '@/components/i18n/LocalizedLink'
-import { getAllHubs, getGruposDeGuias, type ArchiveHub } from '@/lib/guias'
+import { getGruposDeGuias, type ArchiveHub } from '@/lib/guias'
 import { HomeGuias } from '@/components/home/HomeGuias'
 import { HubBusca, type ItemBusca } from '@/components/cultura/HubBusca'
 import { VISITAS_POR_GUIA, porDemanda, resumoDoGuia } from '@/lib/guias/demanda'
-import { alternativasDoIndice, localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
+import { getMapaDeGuias, type MapaDeGuias } from '@/lib/guias/i18n'
 import { postsTraduzidosPorSlugPt } from '@/lib/cultura/guias-traduzidos'
 import { carregarGuiasPorTema, carregarPassos } from '@/lib/home/guias'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { PageBreadcrumb as BreadcrumbSchemaLd } from '@/components/seo/PageBreadcrumb'
 
-export function buildGuiasMetadata(): Metadata {
+export async function buildGuiasMetadata(): Promise<Metadata> {
+    const mapa = await getMapaDeGuias()
     return {
         title: 'Guias de K-Drama, K-Pop e Cinema Coreano',
         description: 'Explore guias editoriais sobre produções, artistas e grupos do entretenimento coreano. Doramas por gênero, plataforma, artistas por agência e muito mais.',
-        alternates: { canonical: `${SITE_URL}/guias`, languages: alternativasDoIndice() ?? { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias` } },
+        alternates: { canonical: `${SITE_URL}/guias`, languages: mapa.alternativasDoIndice() ?? { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias` } },
         ...compartilhamento({
             titulo: 'Guias de K-Drama, K-Pop e Cinema Coreano',
             descricao: 'Doramas por gênero e plataforma, artistas por agência e muito mais.',
@@ -53,12 +54,12 @@ function Capitulo({ n, titulo, sub, cor, id }: { n: number; titulo: string; sub:
 type Rotulos = { mais: (count: number) => string; menos: string }
 
 /** Guia na lista: em outro idioma mostra o texto traduzido e leva à URL do idioma. */
-function ItemDoGuia({ hub, locale }: { hub: ArchiveHub; locale: Locale }) {
-    const exibido = localizarGuia(hub, locale) ?? hub
+function ItemDoGuia({ hub, locale, mapa }: { hub: ArchiveHub; locale: Locale; mapa: MapaDeGuias }) {
+    const exibido = mapa.localizar(hub, locale) ?? hub
     const resumo = resumoDoGuia(exibido.shortTitle, exibido.description)
     return (
         <li className="border-t border-border first:border-t-0">
-            <Link href={href('guide', { slug: slugPublicoDoGuia(hub.slug, locale) ?? hub.slug }, locale)} className="group block py-2.5">
+            <Link href={href('guide', { slug: mapa.slugPublico(hub.slug, locale) ?? hub.slug }, locale)} className="group block py-2.5">
                 <span className="block text-[14px] font-semibold leading-snug text-foreground transition-colors group-hover:text-accent">{exibido.shortTitle}</span>
                 {resumo && <span className="mt-0.5 line-clamp-1 block text-[12px] text-muted">{resumo}</span>}
             </Link>
@@ -66,7 +67,7 @@ function ItemDoGuia({ hub, locale }: { hub: ArchiveHub; locale: Locale }) {
     )
 }
 
-function GrupoDeGuias({ titulo, hubs, cor, locale, rotulos }: { titulo: string; hubs: ArchiveHub[]; cor: string; locale: Locale; rotulos: Rotulos }) {
+function GrupoDeGuias({ titulo, hubs, cor, locale, rotulos, mapa }: { titulo: string; hubs: ArchiveHub[]; cor: string; locale: Locale; rotulos: Rotulos; mapa: MapaDeGuias }) {
     const ordenados = porDemanda(hubs)
     const visiveis = ordenados.slice(0, MOSTRAR)
     const demais = ordenados.slice(MOSTRAR)
@@ -76,14 +77,14 @@ function GrupoDeGuias({ titulo, hubs, cor, locale, rotulos }: { titulo: string; 
                 {titulo}
                 <span className={`text-[10px] text-muted ${MONO}`}>{hubs.length}</span>
             </h3>
-            <ul>{visiveis.map(h => <ItemDoGuia key={h.slug} hub={h} locale={locale} />)}</ul>
+            <ul>{visiveis.map(h => <ItemDoGuia key={h.slug} hub={h} locale={locale} mapa={mapa} />)}</ul>
             {demais.length > 0 && (
                 <details className="group/mais">
                     <summary className={`cursor-pointer border-t border-border py-2.5 text-[10px] text-muted hover:text-foreground ${MONO}`}>
                         <span className="group-open/mais:hidden">{rotulos.mais(demais.length)}</span>
                         <span className="hidden group-open/mais:inline">{rotulos.menos}</span>
                     </summary>
-                    <ul>{demais.map(h => <ItemDoGuia key={h.slug} hub={h} locale={locale} />)}</ul>
+                    <ul>{demais.map(h => <ItemDoGuia key={h.slug} hub={h} locale={locale} mapa={mapa} />)}</ul>
                 </details>
             )}
         </div>
@@ -97,10 +98,11 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
     const visibleKinds = activeKind ? [activeKind] : KIND_ORDER
 
     // Em outro idioma só existe o guia traduzido; os grupos que ficam vazios somem.
-    const traduzidos = new Set(slugsPtTraduzidos(locale))
+    // Texto do WordPress por cima do código (getMapaDeGuias/getGruposDeGuias); a estrutura é a mesma.
+    const [mapa, grupos] = await Promise.all([getMapaDeGuias(), getGruposDeGuias()])
+    const todos = mapa.hubs
+    const traduzidos = new Set(mapa.traduzidos(locale))
     const guiaDoIdioma = (h: ArchiveHub) => emPt || traduzidos.has(h.slug)
-    // Texto do WordPress por cima do código (getAllHubs/getGruposDeGuias); a estrutura é a mesma.
-    const [todos, grupos] = await Promise.all([getAllHubs(), getGruposDeGuias()])
     const hubsDoIdioma = todos.filter(guiaDoIdioma)
     const gruposDoIdioma = grupos.map(({ kind: k, grupos }) => ({
         kind: k,
@@ -121,16 +123,16 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
 
     const itensBusca: ItemBusca[] = [
         ...hubsDoIdioma.map(h => {
-            const exibido = localizarGuia(h, locale) ?? h
-            return { rotulo: exibido.shortTitle, href: href('guide', { slug: slugPublicoDoGuia(h.slug, locale) ?? h.slug }, locale), tipo: rotuloDoTipo(h.kind), palavras: exibido.keywords.join(' ') }
+            const exibido = mapa.localizar(h, locale) ?? h
+            return { rotulo: exibido.shortTitle, href: href('guide', { slug: mapa.slugPublico(h.slug, locale) ?? h.slug }, locale), tipo: rotuloDoTipo(h.kind), palavras: exibido.keywords.join(' ') }
         }),
         ...guiasDeCultura.map(g => ({ rotulo: g.label, href: g.href, tipo: t('cultureTag') })),
     ]
 
     const maisLidos = porDemanda(hubsDoIdioma).filter(h => VISITAS_POR_GUIA[h.slug]).slice(0, 6)
     const sugestoes: ItemBusca[] = maisLidos.slice(0, 3).map(h => ({
-        rotulo: (localizarGuia(h, locale) ?? h).shortTitle,
-        href: href('guide', { slug: slugPublicoDoGuia(h.slug, locale) ?? h.slug }, locale),
+        rotulo: (mapa.localizar(h, locale) ?? h).shortTitle,
+        href: href('guide', { slug: mapa.slugPublico(h.slug, locale) ?? h.slug }, locale),
         tipo: rotuloDoTipo(h.kind),
     }))
     const rotulos: Rotulos = { mais: (count) => t('more', { count }), menos: t('less') }
@@ -206,9 +208,9 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
                             <section aria-label={rotuloDoTipo(k)} className="space-y-5">
                                 <Capitulo n={++n} id={k} titulo={rotuloDoTipo(k)} sub={t('chapterSub', { count: totalByKind[k], sub: t(`kindSub.${k}`) })} cor={cor} />
                                 <div className="grid gap-x-6 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
-                                    {grupos.map(g => <GrupoDeGuias key={g.id} titulo={t(`groups.${g.id as IdGrupo}`)} hubs={g.hubs} cor={cor} locale={locale} rotulos={rotulos} />)}
+                                    {grupos.map(g => <GrupoDeGuias mapa={mapa} key={g.id} titulo={t(`groups.${g.id as IdGrupo}`)} hubs={g.hubs} cor={cor} locale={locale} rotulos={rotulos} />)}
                                     {/* Grupos tem só duas colunas de guias; o espaço sobrando vira o atalho para o que mais se lê. */}
-                                    {k === 'groups' && !activeKind && maisLidos.length > 0 && <GrupoDeGuias titulo={t('mostRead')} hubs={maisLidos} cor={cor} locale={locale} rotulos={rotulos} />}
+                                    {k === 'groups' && !activeKind && maisLidos.length > 0 && <GrupoDeGuias mapa={mapa} titulo={t('mostRead')} hubs={maisLidos} cor={cor} locale={locale} rotulos={rotulos} />}
                                 </div>
                             </section>
                         </Fragment>

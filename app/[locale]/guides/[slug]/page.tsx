@@ -6,7 +6,7 @@ import { comoFallback } from '@/lib/i18n/fallback-ficha'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { GuiaPagina, buildGuiaMetadata } from '@/components/guias/GuiaPagina'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
-import { slugPtDoGuia } from '@/lib/guias/i18n'
+import { getMapaDeGuias } from '@/lib/guias/i18n'
 import { LocalizedGuide, buildLocalizedGuideMetadata } from '@/components/guias/LocalizedGuide'
 
 // Estática de propósito: ler `searchParams` aqui tornaria a rota dinâmica (`cache-control: no-store`,
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     const { locale, slug } = await params
     if (!idiomaValido(locale, { servePt: true })) return {}
     // Guia traduzido: metadata própria. Sem tradução, a página em português com o aviso, fora do índice.
-    if (locale !== DEFAULT_LOCALE && slugPtDoGuia(slug, locale)) return buildLocalizedGuideMetadata(slug, locale)
+    if (locale !== DEFAULT_LOCALE && (await getMapaDeGuias()).slugPt(slug, locale)) return buildLocalizedGuideMetadata(slug, locale)
     const metadata = await buildGuiaMetadata({ params: Promise.resolve({ slug }) })
     return locale === DEFAULT_LOCALE ? metadata : comoFallback(metadata)
 }
@@ -37,7 +37,7 @@ export default async function Page({ params }: { params: Params }) {
     const { locale, slug } = await params
     entrarNaPagina(locale, { servePt: true })
     if (locale === DEFAULT_LOCALE) return <GuiaPagina slug={slug} sp={{}} />
-    if (slugPtDoGuia(slug, locale)) return <LocalizedGuide slugPublico={slug} locale={locale} />
+    if ((await getMapaDeGuias()).slugPt(slug, locale)) return <LocalizedGuide slugPublico={slug} locale={locale} />
     return (
         <>
             <AvisoSemTraducao locale={locale} hrefOriginal={href('guide', { slug }, DEFAULT_LOCALE)} />

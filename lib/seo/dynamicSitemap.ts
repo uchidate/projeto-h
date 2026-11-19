@@ -1,5 +1,4 @@
-import { getAllHubs } from '@/lib/guias'
-import { alternativasDoGuia, alternativasDoIndice, slugPublicoDoGuia } from '@/lib/guias/i18n'
+import { getMapaDeGuias } from '@/lib/guias/i18n'
 import { SITE_URL } from '@/lib/constants/site'
 import { buildParams, wpFetchWithTotal } from '@/lib/wordpress/client'
 import { WP_CACHE_TAGS } from '@/lib/wordpress/cache'
@@ -197,20 +196,22 @@ export function alternatesDaPaginaFixa(path: string): Record<string, string> | u
 }
 
 async function fetchPages(): Promise<SitemapEntry[]> {
-    const hubs = await getAllHubs()
-    const guiasTraduzidos = hubs.flatMap((hub) =>
-        localizedSitemapLocales().flatMap((locale) => {
-            const slug = slugPublicoDoGuia(hub.slug, locale)
-            return slug ? [{ loc: `${SITE_URL}${href('guide', { slug }, locale)}`, alternates: alternativasDoGuia(hub.slug) }] : []
-        }),
+    const guias = await getMapaDeGuias()
+    const hubs = guias.hubs
+    // Só guia com tradução em dia: a desatualizada mostra o português e fica fora do índice.
+    const guiasTraduzidos = localizedSitemapLocales().flatMap((locale) =>
+        guias.traduzidos(locale).map((slugPt) => ({
+            loc: `${SITE_URL}${href('guide', { slug: guias.slugPublico(slugPt, locale)! }, locale)}`,
+            alternates: guias.alternativas(slugPt),
+        })),
     )
     return [
         ...STATIC_PAGES.map((path) => {
-            const alternates = path === 'guias' ? alternativasDoIndice() : alternatesDaPaginaFixa(path)
+            const alternates = path === 'guias' ? guias.alternativasDoIndice() : alternatesDaPaginaFixa(path)
             return { loc: path ? `${SITE_URL}/${path}` : SITE_URL, ...(alternates ? { alternates } : {}) }
         }),
         ...hubs.map((hub) => {
-            const alternates = alternativasDoGuia(hub.slug)
+            const alternates = guias.alternativas(hub.slug)
             return { loc: `${SITE_URL}/guias/${hub.slug}`, ...(alternates ? { alternates } : {}) }
         }),
         // Guias traduzidos não têm shard próprio: entram aqui, com as versões recíprocas do guia.

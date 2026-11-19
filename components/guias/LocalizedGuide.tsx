@@ -6,15 +6,15 @@ import { SITE_URL } from '@/lib/constants/site'
 import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import { href } from '@/lib/i18n/routes'
-import { getHub } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
-import { alternativasDoGuia, alternativasDoIndice, localizarGuia, slugPtDoGuia, slugPublicoDoGuia, slugsPtTraduzidos, traducoesDoIdioma } from '@/lib/guias/i18n'
+import { getMapaDeGuias } from '@/lib/guias/i18n'
 import type { WPArtist, WPGroup, WPProduction } from '@/lib/wordpress/types'
 import { EntityGrid } from '@/components/features/LocalizedCatalog'
 
 /**
- * Guia em outro idioma: o texto vem de `lib/guias/traducoes/<idioma>.json` e a grade lista só as produções com
- * página traduzida (`oc_locale`), com o mesmo filtro do guia em português. Vale para guias de produções, artistas e grupos.
+ * Guia em outro idioma: o texto e o slug vêm da tradução publicada no WordPress (lib/guias/i18n.ts) e a grade lista só
+ * as fichas com página traduzida (`oc_locale`), com o mesmo filtro do guia em português. Tradução desatualizada mostra o
+ * texto em português, fora do índice.
  */
 const POR_GUIA = 48
 
@@ -24,16 +24,16 @@ const ROTA_DA_LISTAGEM = { productions: 'productions', artists: 'artists', group
 const caminhoPt = (slugPt: string) => `/guias/${slugPt}`
 
 async function carregar(slugPublico: string, locale: Locale) {
-    const slugPt = slugPtDoGuia(slugPublico, locale)
-    if (!slugPt) return null
-    const original = await getHub(slugPt)
-    const hub = original && localizarGuia(original, locale)
-    if (!hub) return null
+    const mapa = await getMapaDeGuias()
+    const slugPt = mapa.slugPt(slugPublico, locale)
+    const original = slugPt ? mapa.hubs.find((h) => h.slug === slugPt) : undefined
+    const hub = original && mapa.localizar(original, locale)
+    if (!slugPt || !hub) return null
     const r = await getHubItems(hub, { locale, perPage: POR_GUIA })
     const tipo = TIPO_DA_FICHA[r.kind]
     const produtos = (r.items as Array<WPArtist | WPGroup | WPProduction>).filter((p) => hasLocale(p, locale)).map((p) => localizeEntity(p, locale, tipo))
     const total = r.total
-    return { slugPt, hub, produtos, total, kind: r.kind }
+    return { slugPt, hub, produtos, total, kind: r.kind, alternativas: mapa.alternativas(slugPt) }
 }
 
 export async function buildLocalizedGuideMetadata(slugPublico: string, locale: Locale): Promise<Metadata> {
@@ -45,13 +45,13 @@ export async function buildLocalizedGuideMetadata(slugPublico: string, locale: L
         description: dados.hub.seoDescription || dados.hub.description,
         alternates: {
             canonical: url,
-            languages: alternativasDoGuia(dados.slugPt) ?? {
+            languages: dados.alternativas ?? {
                 [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}${caminhoPt(dados.slugPt)}`,
                 [LOCALE_META[locale].htmlLang]: url,
                 'x-default': `${SITE_URL}${caminhoPt(dados.slugPt)}`,
             },
         },
-        robots: { index: dados.produtos.length > 0, follow: true },
+        robots: { index: dados.produtos.length > 0 && !dados.hub.desatualizado, follow: true },
     }
 }
 
@@ -60,8 +60,7 @@ export async function LocalizedGuide({ slugPublico, locale }: { slugPublico: str
     if (!dados) notFound()
     const { hub, produtos, total, kind } = dados
     const sufixo = kind === 'artists' ? 'Artists' : kind === 'groups' ? 'Groups' : ''
-    const traducoes = traducoesDoIdioma(locale)
-    const relacionados = (traducoes[dados.slugPt]?.relatedSearches ?? []).filter((r) => traducoes[r.to])
+    const relacionados = hub.relatedSearches ?? []
     return (
         <div className="page-wrap py-10 sm:py-14">
             <nav className="mb-4 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
@@ -102,8 +101,8 @@ export async function LocalizedGuide({ slugPublico, locale }: { slugPublico: str
                     <h2 id="guia-relacionados" className="mb-3 text-[22px] font-black tracking-[-0.02em]">{t('related')}</h2>
                     <ul className="flex flex-wrap gap-2">
                         {relacionados.map((r) => (
-                            <li key={r.to}>
-                                <Link href={href('guide', { slug: slugPublicoDoGuia(r.to, locale)! }, locale)} className="inline-block border border-border px-3 py-1.5 text-[13px] font-semibold hover:border-accent hover:text-accent">{r.label}</Link>
+                            <li key={r.href}>
+                                <Link href={r.href} className="inline-block border border-border px-3 py-1.5 text-[13px] font-semibold hover:border-accent hover:text-accent">{r.label}</Link>
                             </li>
                         ))}
                     </ul>
@@ -114,15 +113,15 @@ export async function LocalizedGuide({ slugPublico, locale }: { slugPublico: str
 }
 
 export async function buildLocalizedGuidesIndexMetadata(locale: Locale): Promise<Metadata> {
-    const t = await getTranslations({ locale, namespace: 'entity.guides' })
+    const [t, mapa] = await Promise.all([getTranslations({ locale, namespace: 'entity.guides' }), getMapaDeGuias()])
     const url = `${SITE_URL}${href('guides', undefined, locale)}`
     return {
         title: t('title'),
         description: t('description'),
         alternates: {
             canonical: url,
-            languages: alternativasDoIndice() ?? { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias`, [LOCALE_META[locale].htmlLang]: url, 'x-default': `${SITE_URL}/guias` },
+            languages: mapa.alternativasDoIndice() ?? { [LOCALE_META[DEFAULT_LOCALE].htmlLang]: `${SITE_URL}/guias`, [LOCALE_META[locale].htmlLang]: url, 'x-default': `${SITE_URL}/guias` },
         },
-        robots: { index: slugsPtTraduzidos(locale).length > 0, follow: true },
+        robots: { index: mapa.traduzidos(locale).length > 0, follow: true },
     }
 }

@@ -18,14 +18,14 @@ import { getVitrineGeral, getVitrineMaratona, getVitrinePorTermos } from '@/lib/
 import { getStoreProductsByArtistId, getStoreProductsByGroupId } from '@/lib/wordpress/store'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
-import { alternativasDoGuia } from '@/lib/guias/i18n'
+import { getMapaDeGuias } from '@/lib/guias/i18n'
 import { HubPageContent } from '@/components/features/HubPageContent'
 
 export type SearchParamsGuia = Record<string, string | string[] | undefined>
 
 /** Versões traduzidas do guia (hreflang): só entram idiomas com o texto do guia traduzido. */
-function alternativasTraduzidas(slug: string) {
-    const languages = alternativasDoGuia(slug)
+async function alternativasTraduzidas(slug: string) {
+    const languages = (await getMapaDeGuias()).alternativas(slug)
     return languages ? { languages } : {}
 }
 
@@ -41,7 +41,7 @@ export async function buildGuiaMetadata({ params }: { params: Promise<{ slug: st
         title: titulo,
         description: descricao,
         keywords: hub.keywords,
-        alternates: { canonical: url, ...alternativasTraduzidas(slug) },
+        alternates: { canonical: url, ...(await alternativasTraduzidas(slug)) },
         ...compartilhamento({ titulo, descricao, caminho: `/guias/${slug}` }),
     }
 }

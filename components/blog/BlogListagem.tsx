@@ -6,7 +6,6 @@ import type { WPPost } from '@/lib/wordpress/types'
 import { getPosts, getCategories, getSidebarPosts } from '@/lib/wordpress/posts'
 import { SITE_URL, baseOG, baseTwitter } from '@/lib/constants/site'
 import { BlogPage } from '@/components/blog/BlogPage'
-import { getAllHubs } from '@/lib/guias'
 import { candidatosDestaque, destaqueRecente, maisLidos, perenes as escolherPerenes } from '@/lib/blog/destaque'
 import { getFeaturedStoreProducts } from '@/lib/wordpress/store'
 import { CATEGORIAS_COM_LOJA } from '@/lib/blog/categoriaLoja'
@@ -17,7 +16,7 @@ import { idsGuiaDeCompra } from '@/lib/blog/guiasDeCompra'
 import { getTranslations } from 'next-intl/server'
 import { ACTIVE_LOCALES, DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
-import { localizarGuia, slugPublicoDoGuia } from '@/lib/guias/i18n'
+import { getMapaDeGuias } from '@/lib/guias/i18n'
 import type { WPTerm } from '@/lib/wordpress/types'
 
 /** Categorias oferecidas no filtro em inglês, na ordem em que aparecem (o rótulo vem de `home.categorias`). */
@@ -119,10 +118,10 @@ export async function BlogListagem({ searchParams, locale = DEFAULT_LOCALE }: { 
     const idsGuias = idsGuiaDeCompra(todasCategorias)
     const categories = emPt ? todasCategorias : await categoriasDoIdioma(locale, todasCategorias)
     const consulta = consultaDaLista(sp, idsGuias)
-    const [postsResult, sidebarPosts, hubs, pool] = await Promise.all([
+    const [postsResult, sidebarPosts, mapaDeGuias, pool] = await Promise.all([
         getPosts({ page, perPage: 13, category: sp.category, tag: sp.tag, search: sp.search, includeContent: false, lang, ...consulta.extra }),
         getSidebarPosts(page, 13, semFiltro && !consulta.tipo ? idsGuias : [], lang),
-        getAllHubs(),
+        getMapaDeGuias(),
         // Base do destaque, dos conteúdos-chave e de "Mais lidos": todo o acervo (até 8 chamadas de 100, em cache); os guias
         // perenes costumam ser antigos e ficariam fora de uma janela só dos recentes. Falha aqui não derruba a lista.
         semFiltro ? carregarBase(lang) : Promise.resolve([] as WPPost[]),
@@ -131,12 +130,13 @@ export async function BlogListagem({ searchParams, locale = DEFAULT_LOCALE }: { 
        destino. Reaparecem aqui, que é onde a intenção "quero descobrir o que
        ver" já está. Só a família de gênero: é a mais voltada ao leitor, contra
        as de agência/ano/canal, que servem sobretudo a busca. */
+    const hubs = mapaDeGuias.hubs
     const guias = hubs
         .filter(h => h.kind === 'productions' && h.filter.genre)
         .flatMap((h): typeof hubs => {
             if (emPt) return [h]
-            const traduzido = localizarGuia(h, locale)
-            return traduzido ? [{ ...traduzido, slug: slugPublicoDoGuia(h.slug, locale) ?? h.slug }] : []
+            const traduzido = mapaDeGuias.localizar(h, locale)
+            return traduzido && !traduzido.desatualizado ? [{ ...traduzido, slug: mapaDeGuias.slugPublico(h.slug, locale) ?? h.slug }] : []
         })
         .slice(0, 6)
     // Blog sem filtros nunca é vazio (490+ posts): lista vazia é falha

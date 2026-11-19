@@ -78,7 +78,7 @@ export const TRANSLATABLE_ACF = {
         allergens: true,
         curiosidades: true,
     },
-    // Guias (CPT guia): só o texto; o slug de cada idioma fica em lib/guias/traducoes.
+    // Guias (CPT guia): só o texto. O slug de cada idioma vai em fields.slug da tradução, fora do hash.
     guia: {
         short_title: true,
         intro: true,
