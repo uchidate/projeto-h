@@ -67,6 +67,16 @@ export async function getVitrineTematica(texto: string, contexto: string, opcoes
 }
 
 /**
+ * Comida e petisco para maratonar, sorteados por página entre os mais clicados e alternados por tipo
+ * (lámen, doce, salgadinho, tempero). Reserva das páginas de dorama: comida tem o maior clique por produto.
+ */
+export async function getVitrineMaratona(contexto: string, limit = 6): Promise<StoreProduct[]> {
+    const validos = (await getStoreProducts()).filter(p => !p.acf.is_hidden && p.acf.affiliate_url && p.acf.price && p.acf.image_url
+        && (CATEGORIAS_MARATONA as readonly string[]).includes(p.acf.category ?? ''))
+    return alternarFamilias(variarPorPagina(ordenarPrateleira(validos, contexto).slice(0, POOL_DE_RESERVA), limit * 2, contexto, limit * 2)).slice(0, limit)
+}
+
+/**
  * Prateleira da ficha de produção: o que aparece na obra (produto das comidas da ficha, produto com o
  * título da obra), depois o elenco e, para completar, comida e petisco para maratonar, sorteados por
  * página entre os mais clicados. Cada produto volta com o motivo, que vira o selo do cartão.
