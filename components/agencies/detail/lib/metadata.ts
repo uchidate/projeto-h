@@ -24,33 +24,38 @@ export async function metadataDaAgencia(slug: string, locale: Locale = DEFAULT_L
     const url = `${SITE_URL}${href('agency', { slug }, locale)}`
     const logo = getWPImage(agency._embedded, agency.featured_image_url)
     const t = await getTranslations({ locale, namespace: 'entity.agency' })
-    const fallbackTitle = t('metaTitle', { name })
+    // Título e descrição do Rank Math (gravados pelo ficha-gravar), como no grupo; sem eles, o modelo.
+    const rankTitle = agency.meta?.rank_math_title?.trim() || undefined
+    const rankDesc = agency.meta?.rank_math_description?.trim() || undefined
+    const fallbackTitle = rankTitle ?? t('metaTitle', { name })
+    const description = rankDesc || desc || t('metaDescription', { name })
     const seoImageIsLogo = sameImageAsset(agency.yoast_head_json?.og_image?.[0]?.url, logo?.src)
     // O SEO do Yoast é do português; em outro idioma vale o título/descrição traduzidos.
     const seo = locale === DEFAULT_LOCALE && agency.yoast_head_json
         ?
  {
             ...agency.yoast_head_json,
-            title: agency.yoast_head_json.title?.replace(LEGACY_AGENCY_TITLE, '') === name
+            title: rankTitle ?? (agency.yoast_head_json.title?.replace(LEGACY_AGENCY_TITLE, '') === name
                 ? fallbackTitle
-                : agency.yoast_head_json.title,
-            og_title: agency.yoast_head_json.og_title?.replace(LEGACY_AGENCY_TITLE, '') === name
+                : agency.yoast_head_json.title),
+            og_title: rankTitle ?? (agency.yoast_head_json.og_title?.replace(LEGACY_AGENCY_TITLE, '') === name
                 ? fallbackTitle
-                : agency.yoast_head_json.og_title,
+                : agency.yoast_head_json.og_title),
+            ...(rankDesc ? { description: rankDesc, og_description: rankDesc } : {}),
             // Um logo quadrado não deve bloquear a composição social 1200×630.
             og_image: seoImageIsLogo ? undefined : agency.yoast_head_json.og_image,
         }
         : undefined
     const ogImage = buildOgImageUrl({
         title: fallbackTitle,
-        subtitle: desc || t('metaDescription', { name }),
+        subtitle: description,
         image: logo?.src,
         type: 'agency',
     })
 
     return buildWordPressMetadata({
         title: fallbackTitle,
-        description: desc || t('metaDescription', { name }),
+        description,
         url,
         image: logo ? { src: logo.src, alt: `${name} — logo` } : undefined,
         ogImageOverride: ogImage,
