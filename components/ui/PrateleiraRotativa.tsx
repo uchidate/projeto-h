@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { sortearComDescoberta } from '@/lib/wordpress/store-rotacao'
+import { garantirLoja } from '@/lib/wordpress/garantir-loja'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { useVitrineVista } from '@/components/ui/VitrineVista'
 
@@ -14,6 +15,20 @@ interface Props {
     descobertas?: StoreProduct[]
     contexto: string
     quantidade?: number
+}
+
+const CHAVE_VISTOS = 'hh:loja:vistos'
+
+/** Últimos produtos mostrados a este visitante (só no navegador dele; sem rastreio nem envio). */
+function lerVistos(): number[] {
+    try {
+        const v = JSON.parse(localStorage.getItem(CHAVE_VISTOS) ?? '[]')
+        return Array.isArray(v) ? v.filter((x): x is number => typeof x === 'number').slice(0, 15) : []
+    } catch { return [] }
+}
+
+function guardarVistos(ids: number[]) {
+    try { localStorage.setItem(CHAVE_VISTOS, JSON.stringify([...new Set(ids)].slice(0, 15))) } catch { /* modo privado/sem storage */ }
 }
 
 /**
@@ -32,32 +47,6 @@ interface Props {
  * sem mismatch de hidratação); o sorteio troca depois, no efeito — roda uma
  * vez por montagem, ou seja, a cada carregamento/navegação da página.
  */
-/** Troca o último slot por um candidato da `loja` quando nenhum dos exibidos já é dela — determinístico, seguro pro primeiro render (SSR) e pro sorteio depois. */
-function garantirLoja(selecionados: StoreProduct[], produtos: StoreProduct[], loja: string): StoreProduct[] {
-    if (selecionados.some(p => p.acf.store === loja)) return selecionados
-    const candidato = produtos.find(p => p.acf.store === loja && !selecionados.includes(p))
-    if (!candidato || selecionados.length === 0) return selecionados
-    // O slot de descoberta é reservado: a troca cai no último cartão que não é dele.
-    let alvo = selecionados.length - 1
-    while (alvo > 0 && selecionados[alvo].descoberta) alvo--
-    if (selecionados[alvo].descoberta) return selecionados
-    return selecionados.map((p, i) => (i === alvo ? candidato : p))
-}
-
-const CHAVE_VISTOS = 'hh:loja:vistos'
-
-/** Últimos produtos mostrados a este visitante (só no navegador dele; sem rastreio nem envio). */
-function lerVistos(): number[] {
-    try {
-        const v = JSON.parse(localStorage.getItem(CHAVE_VISTOS) ?? '[]')
-        return Array.isArray(v) ? v.filter((x): x is number => typeof x === 'number').slice(0, 15) : []
-    } catch { return [] }
-}
-
-function guardarVistos(ids: number[]) {
-    try { localStorage.setItem(CHAVE_VISTOS, JSON.stringify([...new Set(ids)].slice(0, 15))) } catch { /* modo privado/sem storage */ }
-}
-
 export function PrateleiraRotativa({ produtos, descobertas = [], contexto, quantidade = 5 }: Props) {
     const [exibidos, setExibidos] = useState(() => garantirLoja(produtos.slice(0, quantidade), produtos, 'shopee'))
 
