@@ -23,6 +23,8 @@ export const ENTIDADES_TRADUZIVEIS = {
     agency: { shard: 'agencies', ficha: 'agency', listagem: 'agencies', publico: true },
     company: { shard: 'companies', ficha: 'company', listagem: 'companies', publico: true },
     food: { shard: 'foods', ficha: 'food', listagem: 'foods', publico: true },
+    // Guias têm sitemap, hreflang e slug por idioma próprios (lib/guias/i18n.ts): ficam fora do circuito das fichas.
+    guia: { shard: 'guides', ficha: 'guide', listagem: 'guides', publico: false },
 } as const satisfies Record<TranslatableType, { shard: string; ficha: RouteName; listagem: RouteName; publico: boolean }>
 
 export type TipoTraduzivel = keyof typeof ENTIDADES_TRADUZIVEIS
@@ -30,8 +32,11 @@ export type TipoTraduzivel = keyof typeof ENTIDADES_TRADUZIVEIS
 /** Tipos com tradução aceita no WordPress (inclui os que ainda não são públicos). */
 export const TIPOS_TRADUZIVEIS = Object.keys(ENTIDADES_TRADUZIVEIS) as TipoTraduzivel[]
 
+/** Tipos com `publico: true` (no tipo, não só em tempo de execução). */
+export type TipoPublico = { [K in TipoTraduzivel]: (typeof ENTIDADES_TRADUZIVEIS)[K]['publico'] extends true ? K : never }[TipoTraduzivel]
+
 /** Tipos cuja versão traduzida já é pública: são os que o sitemap, o IndexNow e a borda enxergam. */
-export const TIPOS_PUBLICOS = TIPOS_TRADUZIVEIS.filter((tipo) => ENTIDADES_TRADUZIVEIS[tipo].publico)
+export const TIPOS_PUBLICOS = TIPOS_TRADUZIVEIS.filter((tipo): tipo is TipoPublico => ENTIDADES_TRADUZIVEIS[tipo].publico)
 
 /** Nomes dos shards de sitemap que têm versão por idioma (`artists-en.xml`). */
 export const SHARDS_TRADUZIVEIS = TIPOS_PUBLICOS.map((tipo) => ENTIDADES_TRADUZIVEIS[tipo].shard)

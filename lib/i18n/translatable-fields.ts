@@ -78,6 +78,13 @@ export const TRANSLATABLE_ACF = {
         allergens: true,
         curiosidades: true,
     },
+    // Guias (CPT guia): só o texto; o slug de cada idioma fica em lib/guias/traducoes.
+    guia: {
+        short_title: true,
+        intro: true,
+        what_you_will_find: true,
+        faq: ['question', 'answer'],
+    },
 } as const satisfies Record<string, TranslatableSchema>
 
 export type TranslatableType = keyof typeof TRANSLATABLE_ACF
