@@ -1,6 +1,5 @@
-// Modo de preparo de uma receita do CPT food. Fica no repo (data/receitas.json)
-// porque o WordPress não tem esses campos e o Google exige que o schema
-// Recipe corresponda ao conteúdo visível na página.
+// Modo de preparo de um prato do CPT food. Mora no CPT `receita` do WordPress (mesmo slug da comida, endpoint
+// hallyuhub/v1/receitas); o Google exige que o schema Recipe corresponda ao conteúdo visível na página.
 type IngredienteReceita = { item: string; quantidade: string }
 
 type FonteReceita = { nome: string; url: string }

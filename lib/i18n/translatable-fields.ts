@@ -94,6 +94,13 @@ export const TRANSLATABLE_ACF = {
         option_d: true,
         explanation: true,
     },
+    // Receita (CPT receita, slug = slug da comida): só o texto; porções, tempos e fontes não se traduzem.
+    receita: {
+        yield: true,
+        ingredients: ['item', 'quantity'],
+        steps: true,
+        tips: true,
+    },
 } as const satisfies Record<string, TranslatableSchema>
 
 export type TranslatableType = keyof typeof TRANSLATABLE_ACF

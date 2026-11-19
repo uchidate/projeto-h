@@ -26,6 +26,7 @@ import { CATEGORIAS_COM_LOJA } from '@/lib/blog/categoriaLoja'
 import { carregarLojaDoTema } from '@/lib/blog/lojaDoTema'
 import { BlogMarcasFaixa } from '@/components/blog/BlogMarcasFaixa'
 import { receitasEmDestaque } from '@/lib/comidas/receitasEmDestaque'
+import { todasReceitas } from '@/lib/receitas'
 import { produtosIcones } from '@/lib/comidas/iconesDaLoja'
 import { ComidasDestaques } from '@/components/comidas/ComidasDestaques'
 
@@ -104,7 +105,7 @@ export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }:
     // Guias e vitrine do tema só na primeira página sem filtro: com filtro ou busca, a lista de pratos é o assunto.
     const semFiltro = page === 1 && !(sp.search || sp.category || sp.vegetarian || sp.occasion || sp.season || sp.maxSpicy || sp.region)
     const cfgLoja = CATEGORIAS_COM_LOJA['comida']
-    const [{ items: foodsBrutos, total, totalPages }, temVitrine, artigos, lojaDoTema, todosPratos] = await Promise.all([
+    const [{ items: foodsBrutos, total, totalPages }, temVitrine, artigos, lojaDoTema, todosPratos, mapaReceitas] = await Promise.all([
         getFoods({
             page,
             perPage: 48,
@@ -125,13 +126,14 @@ export async function ComidasListagem({ searchParams, locale = DEFAULT_LOCALE }:
         temRecurso('loja', locale) && semFiltro && cfgLoja ? carregarLojaDoTema(cfgLoja, 'comidas:lista') : Promise.resolve(undefined),
         // As receitas saem do acervo todo: as 48 mais novas da página podem não incluir nenhuma com modo de preparo.
         semFiltro ? getFoods({ perPage: 100, locale: emPt ? undefined : locale }).catch(() => null) : Promise.resolve(null),
+        semFiltro ? todasReceitas(locale) : Promise.resolve({}),
     ])
     // Outro idioma: só prato com ficha traduzida, já com o texto do idioma.
     const foods = emPt ? foodsBrutos : foodsBrutos.filter(f => hasLocale(f, locale)).map(f => localizeEntity(f, locale, 'food'))
     const pratosDasReceitas = todosPratos
         ? (emPt ? todosPratos.items : todosPratos.items.filter(f => hasLocale(f, locale)).map(f => localizeEntity(f, locale, 'food')))
         : []
-    const receitas = receitasEmDestaque(pratosDasReceitas, 4, locale)
+    const receitas = receitasEmDestaque(pratosDasReceitas, mapaReceitas, 4)
     const iconesDaLoja = semFiltro && lojaDoTema ? produtosIcones(lojaDoTema.todos, 8, 'comidas:destaques') : []
     if (page > Math.max(1, totalPages)) notFound()
 

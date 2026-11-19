@@ -3,7 +3,6 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { compararOrigem, hashDoTexto, type DiferencaDeOrigem } from './origem-da-traducao'
 import { ALL_HUBS } from '@/lib/guias'
-import { todasReceitas } from '@/lib/receitas'
 
 const RAIZ = process.cwd()
 const ATUALIZAR = process.env.I18N_ORIGEM_WRITE === '1'
@@ -29,16 +28,11 @@ const origemDosGuiasEm = (arquivo: string) => () => {
     const todos = origemDosGuias()
     return Object.fromEntries(slugsTraduzidos(arquivo).map(slug => [slug, todos[slug]]).filter(([, hash]) => hash))
 }
-const origemDasReceitas = () => Object.fromEntries(Object.entries(todasReceitas('pt')).map(([slug, r]) => [slug, hashDoTexto({
-    rendimento: r.rendimento ?? null, ingredientes: r.ingredientes, passos: r.passos, dicas: r.dicas ?? [],
-})]))
 
 const FONTES: Array<{ nome: string; arquivo: string; atual: () => Record<string, string>; comoRever: string }> = [
     { nome: 'guias em inglês', arquivo: 'lib/guias/traducoes/en.origem.json', atual: origemDosGuias, comoRever: 'revise o guia em lib/guias/traducoes/en.json' },
     { nome: 'guias em espanhol', arquivo: 'lib/guias/traducoes/es.origem.json', atual: origemDosGuiasEm('lib/guias/traducoes/es.json'), comoRever: 'revise o guia em lib/guias/traducoes/es.json' },
     { nome: 'guias em japonês', arquivo: 'lib/guias/traducoes/ja.origem.json', atual: origemDosGuiasEm('lib/guias/traducoes/ja.json'), comoRever: 'revise o guia em lib/guias/traducoes/ja.json' },
-    { nome: 'receitas em inglês', arquivo: 'data/receitas.en.origem.json', atual: origemDasReceitas, comoRever: 'revise a receita em data/receitas.en.json' },
-    { nome: 'receitas em japonês', arquivo: 'data/receitas.ja.origem.json', atual: origemDasReceitas, comoRever: 'revise a receita em data/receitas.ja.json' },
 ]
 
 describe.each(FONTES)('traduções desatualizadas: $nome', ({ arquivo, atual, comoRever }) => {

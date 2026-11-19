@@ -117,7 +117,7 @@ export default async function FoodPage({ params }: { params: Params }) {
         { name: name, url: foodUrl },
     ])
 
-    const receita = getReceita(slug, locale)
+    const receita = await getReceita(slug, locale)
 
     const recipeSchema = buildRecipeSchema({
         name,

@@ -27,6 +27,8 @@ export const ENTIDADES_TRADUZIVEIS = {
     guia: { shard: 'guides', ficha: 'guide', listagem: 'guides', publico: false },
     // Perguntas do quiz não têm página própria: a tradução aparece dentro de /quiz no idioma (lib/quiz/i18n.ts).
     quiz_question: { shard: 'quiz', ficha: 'quiz', listagem: 'quiz', publico: false },
+    // Receitas aparecem dentro da página da comida de mesmo slug (lib/receitas); não têm URL própria.
+    receita: { shard: 'receitas', ficha: 'food', listagem: 'foods', publico: false },
 } as const satisfies Record<TranslatableType, { shard: string; ficha: RouteName; listagem: RouteName; publico: boolean }>
 
 export type TipoTraduzivel = keyof typeof ENTIDADES_TRADUZIVEIS

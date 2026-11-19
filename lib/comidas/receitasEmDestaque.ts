@@ -1,4 +1,4 @@
-import { todasReceitas } from '@/lib/receitas'
+import type { Receita } from '@/lib/receitas/tipos'
 import { stripHtml } from '@/lib/utils'
 
 function minutosEmTexto(min: number) {
@@ -6,9 +6,8 @@ function minutosEmTexto(min: number) {
     return `${min} min`
 }
 
-/** Pratos com modo de preparo cadastrado (data/receitas.json) que existem no acervo, com foto. Tempo longo demais (marinada, molho) não vira rótulo. */
-export function receitasEmDestaque(itens: { slug: string; title: { rendered: string }; featured_image_url?: string | null }[], limite = 4, locale = 'pt') {
-    const mapa = todasReceitas(locale)
+/** Pratos com receita no idioma (`mapa`, de todasReceitas) que existem no acervo, com foto. Tempo longo demais (marinada, molho) não vira rótulo. */
+export function receitasEmDestaque(itens: { slug: string; title: { rendered: string }; featured_image_url?: string | null }[], mapa: Record<string, Receita>, limite = 4) {
     return itens
         .filter(i => i.featured_image_url && mapa[i.slug])
         .slice(0, limite)

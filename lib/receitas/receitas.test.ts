@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { validarReceita } from './validar'
-import { todasReceitas } from './index'
+import { receitaNoIdioma } from './index'
+import type { ReceitaWP } from '@/lib/wordpress/receitas'
 import type { Receita } from './tipos'
 
 const base: Receita = {
@@ -46,27 +47,38 @@ describe('validarReceita', () => {
     })
 })
 
-describe('data/receitas.json', () => {
-    // Trava de CI: nenhuma receita entra no site sem passar na validação.
-    it('todas as receitas publicadas são válidas', () => {
-        const erros = Object.entries(todasReceitas()).flatMap(([slug, r]) => validarReceita(slug, r))
-        expect(erros).toEqual([])
-    })
-})
+const doWP: ReceitaWP = {
+    ...base,
+    slug: 'kimbap',
+    dicas: ['Use arroz morno.'],
+    translations: {
+        en: { acf: { ingredients: [{ item: 'rice', quantity: '2 cups' }, { item: 'egg', quantity: '2' }, { item: 'sesame oil', quantity: '1 tbsp' }], steps: ['Cook the rice until soft.', 'Fry the eggs over medium heat.', 'Mix everything and serve right away.'], tips: ['Use warm rice.'] } },
+        ja: { stale: true, acf: { ingredients: [], steps: [], tips: [] } },
+        es: { acf: { ingredients: [{ item: 'arroz', quantity: '2 tazas' }], steps: ['Cocina el arroz.'], tips: [] } },
+    },
+}
 
-describe('data/receitas.en.json', () => {
-    it('é válida e espelha a versão em português (mesmos pratos, tempos e fontes)', () => {
-        const pt = todasReceitas('pt')
-        const en = todasReceitas('en')
-        expect(Object.keys(en).sort()).toEqual(Object.keys(pt).sort())
-        const erros = Object.entries(en).flatMap(([slug, r]) => validarReceita(slug, r))
-        expect(erros).toEqual([])
-        for (const [slug, r] of Object.entries(en)) {
-            expect(r.preparoMin, slug).toBe(pt[slug].preparoMin)
-            expect(r.cozimentoMin, slug).toBe(pt[slug].cozimentoMin)
-            expect(r.ingredientes.length, slug).toBe(pt[slug].ingredientes.length)
-            expect(r.passos.length, slug).toBe(pt[slug].passos.length)
-            expect(r.fontes, slug).toEqual(pt[slug].fontes)
-        }
+describe('receitaNoIdioma', () => {
+    it('em português devolve a receita sem slug nem traduções', () => {
+        const r = receitaNoIdioma(doWP, 'pt')!
+        expect(r).not.toHaveProperty('slug')
+        expect(r).not.toHaveProperty('translations')
+        expect(r.passos).toEqual(base.passos)
+    })
+
+    it('troca só o texto: porções, tempos e fontes ficam os do português', () => {
+        const r = receitaNoIdioma(doWP, 'en')!
+        expect(r.ingredientes[0]).toEqual({ item: 'rice', quantidade: '2 cups' })
+        expect(r.passos[2]).toBe('Mix everything and serve right away.')
+        expect(r.dicas).toEqual(['Use warm rice.'])
+        expect(r.porcoes).toBe(base.porcoes)
+        expect(r.fontes).toEqual(base.fontes)
+        expect(validarReceita('kimbap', r)).toEqual([])
+    })
+
+    it('sem tradução, desatualizada ou com estrutura diferente do português, a receita não existe no idioma', () => {
+        expect(receitaNoIdioma({ ...doWP, translations: undefined }, 'en')).toBeNull()
+        expect(receitaNoIdioma(doWP, 'ja')).toBeNull()
+        expect(receitaNoIdioma(doWP, 'es')).toBeNull()
     })
 })
