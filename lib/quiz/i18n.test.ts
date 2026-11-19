@@ -54,6 +54,30 @@ describe('perguntas do quiz traduzidas', () => {
         expect(lista[0].relatedHref).toBeNull()
     })
 
+    it('a tradução publicada no WordPress vale por cima do JSON', () => {
+        const id = Number(Object.keys(traducoes)[0])
+        const wp = { acf: { question: 'WP \\"q\\"', option_a: 'A', option_b: 'B', option_c: 'C', option_d: 'D', explanation: 'WP e' } }
+        const [p] = perguntasNoIdioma([{ ...base(id), traducoes: { en: wp } }], 'en')
+        expect(p.question).toBe('WP "q"')
+        expect(p.options).toEqual(['A', 'B', 'C', 'D'])
+        expect(p.explanation).toBe('WP e')
+        expect(p.correct).toBe(2)
+        expect(p.traducoes).toBeUndefined()
+    })
+
+    it('pergunta sem JSON mas com tradução no WordPress existe no idioma', () => {
+        const wp = { acf: { question: 'q', option_a: 'a', option_b: 'b', option_c: 'c', option_d: 'd', explanation: 'e' } }
+        expect(perguntasNoIdioma([{ ...base(1), traducoes: { ja: wp } }], 'ja').map((p) => p.id)).toEqual([1])
+        expect(perguntasNoIdioma([{ ...base(1), traducoes: { ja: wp } }], 'en')).toEqual([])
+    })
+
+    it('tradução desatualizada ou incompleta no WordPress tira a pergunta do idioma, sem cair no JSON antigo', () => {
+        const id = Number(Object.keys(traducoes)[0])
+        const stale = { stale: true, acf: { question: 'q', option_a: 'a', option_b: 'b', option_c: 'c', option_d: 'd', explanation: 'e' } }
+        expect(perguntasNoIdioma([{ ...base(id), traducoes: { en: stale } }], 'en')).toEqual([])
+        expect(perguntasNoIdioma([{ ...base(id), traducoes: { en: { acf: { question: 'q', option_a: 'a' } } } }], 'en')).toEqual([])
+    })
+
     it('em português devolve a lista sem mexer', () => {
         const lista = [base(1)]
         expect(perguntasNoIdioma(lista, 'pt')).toBe(lista)

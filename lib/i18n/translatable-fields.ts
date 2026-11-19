@@ -85,6 +85,15 @@ export const TRANSLATABLE_ACF = {
         what_you_will_find: true,
         faq: ['question', 'answer'],
     },
+    // Perguntas do quiz (CPT quiz_question): as alternativas mantêm a ordem do português, então `correct` vale em todo idioma.
+    quiz_question: {
+        question: true,
+        option_a: true,
+        option_b: true,
+        option_c: true,
+        option_d: true,
+        explanation: true,
+    },
 } as const satisfies Record<string, TranslatableSchema>
 
 export type TranslatableType = keyof typeof TRANSLATABLE_ACF

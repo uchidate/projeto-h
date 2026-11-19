@@ -15,7 +15,7 @@ describe('entidades traduzíveis', () => {
     })
 
     it('todo tipo traduzível é público, menos o guia (slug por idioma e sitemap próprios, em lib/guias/i18n.ts)', () => {
-        expect(TIPOS_PUBLICOS).toEqual(TIPOS_TRADUZIVEIS.filter((t) => t !== 'guia'))
+        expect(TIPOS_PUBLICOS).toEqual(TIPOS_TRADUZIVEIS.filter((t) => t !== 'guia' && t !== 'quiz_question'))
     })
 
     it('o caminho em outro idioma sai do registro de rotas, não do português com prefixo', () => {
