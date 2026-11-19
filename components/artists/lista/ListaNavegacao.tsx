@@ -35,35 +35,39 @@ export function ListaBarra({ slug, idiomas }: { slug: string; idiomas?: IdiomasD
     if (!v) return temIdiomas ? <LanguageSwitcher {...idiomas} /> : null
     return (
         <nav aria-label="Navegação na lista de artistas" data-bloco="ficha-lista-barra" className="border-b border-border bg-surface/60">
-            {/* No desktop, idiomas, volta à lista e vizinhos dividem uma linha só; no celular os idiomas ficam numa linha acima. */}
-            <div className="page-wrap flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-1.5 lg:h-[60px] lg:flex-nowrap lg:gap-x-6 lg:py-0">
-                <Link href={v.href} className="touch-target flex min-w-0 items-center gap-2 text-[14px] font-semibold text-foreground">
+            {/* Uma linha só também no celular (antes eram duas, ~85 px): volta à lista com o nome dela, idiomas em
+                sigla e o próximo perfil com nome e foto. Sem "4 de 3.424" e sem seta de anterior no celular: o número
+                não orienta ninguém, a seta sem nome não diz para onde leva, e voltar já é o botão do navegador.
+                No desktop segue como antes: anterior e próximo com nome e foto. */}
+            <div className="page-wrap flex items-center gap-x-3 py-1.5 lg:h-[60px] lg:gap-x-6 lg:py-0">
+                <Link href={v.href} className="touch-target flex min-w-[4.5rem] shrink items-center gap-2 text-[14px] font-semibold text-foreground">
                     <span aria-hidden className="text-muted">‹</span>
-                    <span className="lg:hidden">Lista</span><span className="hidden lg:inline">Voltar à lista</span>
-                    <span className="truncate text-[13px] font-normal text-muted lg:text-[14px]">
-                        <span className="hidden lg:inline">· {v.rotulo} </span>· {numero(v.posicao)} de {numero(v.total)}
+                    <span className="truncate lg:hidden">{v.rotulo}</span><span className="hidden lg:inline">Voltar à lista</span>
+                    <span className="hidden truncate text-[14px] font-normal text-muted lg:inline">
+                        · {v.rotulo} · {numero(v.posicao)} de {numero(v.total)}
                     </span>
                 </Link>
                 {temIdiomas && (
-                    <div className="order-first w-full lg:order-none lg:ml-auto lg:w-auto lg:min-w-0 lg:flex-1">
-                        <LanguageSwitcher {...idiomas} embutido />
+                    <div className="ml-auto shrink-0 lg:min-w-0 lg:flex-1">
+                        <LanguageSwitcher {...idiomas} embutido curto />
                     </div>
                 )}
-                <div className="flex shrink-0 gap-1.5 lg:gap-2.5">
+                <div className={`flex min-w-0 shrink-0 gap-1.5 lg:gap-2.5 ${temIdiomas ? '' : 'ml-auto'}`}>
                     {v.anterior ? (
                         <Link href={`/artists/${v.anterior.slug}`} aria-label={`Artista anterior: ${v.anterior.nome}`} data-posicao="anterior"
-                            className="touch-target flex h-11 w-11 items-center justify-center border border-border-strong text-[18px] text-foreground hover:border-accent/60 lg:w-auto lg:gap-3 lg:pl-1.5 lg:pr-4 lg:text-[14px] lg:font-semibold">
-                            <span className="hidden lg:block"><Foto item={v.anterior} tamanho={32} /></span>
-                            <span aria-hidden className="lg:text-muted">‹</span>
-                            <span className="hidden lg:inline">{v.anterior.nome}</span>
+                            className="touch-target hidden h-11 items-center border border-border-strong text-foreground hover:border-accent/60 lg:flex lg:gap-3 lg:pl-1.5 lg:pr-4 lg:text-[14px] lg:font-semibold">
+                            <Foto item={v.anterior} tamanho={32} />
+                            <span aria-hidden className="text-muted">‹</span>
+                            <span>{v.anterior.nome}</span>
                         </Link>
                     ) : null}
                     {v.proximo ? (
                         <Link href={`/artists/${v.proximo.slug}`} aria-label={`Próximo artista: ${v.proximo.nome}`} data-posicao="proximo"
-                            className="touch-target flex h-11 w-11 items-center justify-center bg-accent text-[18px] font-extrabold text-[#0d0b0f] hover:opacity-90 lg:w-auto lg:gap-3 lg:pl-4 lg:pr-1.5 lg:text-[14px]">
-                            <span className="hidden lg:inline">{v.proximo.nome}</span>
+                            className="touch-target flex h-11 max-w-[min(11rem,40vw)] items-center gap-2 bg-accent pl-3 pr-1.5 text-[13px] font-extrabold text-[#0d0b0f] hover:opacity-90 lg:max-w-none lg:gap-3 lg:pl-4 lg:text-[14px]">
+                            <span className="truncate">{v.proximo.nome}</span>
                             <span aria-hidden className="lg:font-normal">›</span>
-                            <span className="hidden lg:block"><Foto item={v.proximo} tamanho={32} /></span>
+                            <span className="shrink-0 max-lg:hidden"><Foto item={v.proximo} tamanho={32} /></span>
+                            <span className="shrink-0 lg:hidden"><Foto item={v.proximo} tamanho={28} /></span>
                         </Link>
                     ) : null}
                 </div>
