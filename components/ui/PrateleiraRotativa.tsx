@@ -48,14 +48,14 @@ function guardarVistos(ids: number[]) {
  * vez por montagem, ou seja, a cada carregamento/navegação da página.
  */
 export function PrateleiraRotativa({ produtos, descobertas = [], contexto, quantidade = 5 }: Props) {
-    const [exibidos, setExibidos] = useState(() => garantirLoja(produtos.slice(0, quantidade), produtos, 'shopee'))
+    const [exibidos, setExibidos] = useState(() => garantirLoja(produtos.slice(0, quantidade), produtos, 'shopee', 1))
 
     useEffect(() => {
         const vistos = lerVistos()
         const sorteados = sortearComDescoberta(produtos, descobertas, quantidade, new Set(vistos))
         // Regra de negócio: a prateleira sempre representa a Shopee quando ela
         // tem produto disponível pro contexto — nunca some, mesmo que o sorteio não a tenha escolhido.
-        const final = garantirLoja(sorteados, produtos, 'shopee')
+        const final = garantirLoja(sorteados, produtos, 'shopee', 1)
         guardarVistos([...final.map(p => p.id), ...vistos])
         setExibidos(final)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- sorteia uma vez por montagem (cada visualização da página), não a cada render
@@ -64,9 +64,10 @@ export function PrateleiraRotativa({ produtos, descobertas = [], contexto, quant
     const ref = useVitrineVista<HTMLDivElement>(contexto, exibidos.map(p => p.id), exibidos.filter(p => p.descoberta).map(p => p.id))
 
     return (
-        // 5 colunas no desktop (cartões ~250px, não 310px); o 5º some abaixo de lg para o celular e o tablet fecharem em 4.
-        <div ref={ref} className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
-            {exibidos.map((p, i) => <div key={p.id} className={`[&>*]:h-full ${i === 4 ? 'max-lg:hidden' : ''}`}><StoreCard product={p} contexto={contexto} /></div>)}
+        // Celular: fileira que rola para o lado (~1 cartão de altura); antes a grade 2×2 ocupava ~700 px no fim da ficha.
+        // Tablet: 4 colunas (o 5º some); desktop: 5 colunas (cartões ~250px, não 310px).
+        <div ref={ref} className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [scrollbar-width:thin] sm:grid sm:grid-cols-4 sm:overflow-visible sm:pb-0 lg:grid-cols-5">
+            {exibidos.map((p, i) => <div key={p.id} className={`w-[44%] shrink-0 snap-start sm:w-auto [&>*]:h-full ${i === 4 ? 'sm:max-lg:hidden' : ''}`}><StoreCard product={p} contexto={contexto} /></div>)}
         </div>
     )
 }

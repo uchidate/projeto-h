@@ -21,3 +21,18 @@ describe('garantirLoja', () => {
         expect(ids(garantirLoja(sel, [...sel, p(5, 'shopee')], 'shopee'))).toEqual([1, 5, 9])
     })
 })
+
+describe('garantirLoja com posição', () => {
+    it('sobe o Shopee já presente para a posição pedida', () => {
+        const sel = [p(1, 'mercadolivre'), p(2, 'mercadolivre'), p(3, 'mercadolivre'), p(4, 'shopee')]
+        expect(ids(garantirLoja(sel, sel, 'shopee', 1))).toEqual([1, 4, 2, 3])
+    })
+    it('sem Shopee na seleção, troca o cartão da posição por um de fora', () => {
+        const sel = [p(1, 'mercadolivre'), p(2, 'mercadolivre'), p(3, 'mercadolivre')]
+        expect(ids(garantirLoja(sel, [...sel, p(5, 'shopee')], 'shopee', 1))).toEqual([1, 5, 3])
+    })
+    it('Shopee já nos primeiros: não mexe', () => {
+        const sel = [p(1, 'shopee'), p(2, 'mercadolivre'), p(3, 'mercadolivre')]
+        expect(garantirLoja(sel, sel, 'shopee', 1)).toBe(sel)
+    })
+})
