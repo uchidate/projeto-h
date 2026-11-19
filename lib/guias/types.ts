@@ -33,12 +33,14 @@ export type ArchiveHub = {
     /** Rank Math do CPT `guia`; sem ele, o <title> e a meta description usam title e description. */
     seoTitle?: string
     seoDescription?: string
-    /** Traduções publicadas no WordPress (`_oc_i18n` do CPT guia), por idioma. O slug do idioma fica em lib/guias/traducoes. */
+    /** Traduções publicadas no WordPress (`_oc_i18n` do CPT guia), por idioma, com o slug da URL no idioma. Ver lib/guias/i18n.ts. */
     traducoes?: Partial<Record<string, TraducaoWPDoGuia>>
 }
 
 /** Uma tradução publicada do guia, no formato do campo `translations` do REST. */
 export type TraducaoWPDoGuia = {
+    /** Slug do guia na URL do idioma. */
+    slug?: string
     title?: string
     excerpt?: string
     seo_title?: string

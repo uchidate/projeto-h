@@ -1,87 +1,60 @@
 import { describe, expect, it } from 'vitest'
-import { ALL_HUBS as STATIC_HUBS_PARA_TESTE } from './index'
-import { localizarGuia, slugPtDoGuia, slugPublicoDoGuia, slugsPtTraduzidos, traducoesDoIdioma } from './i18n'
+import type { ArchiveHub, TraducaoWPDoGuia } from './types'
+import { montarMapaDeGuias } from './i18n'
 
-describe('guias traduzidos', () => {
-    const traduzidos = slugsPtTraduzidos('en')
-
-    it('todo guia traduzido existe no catálogo', () => {
-        for (const slug of traduzidos) {
-            const hub = STATIC_HUBS_PARA_TESTE.find((h) => h.slug === slug)
-            expect(hub, slug).toBeDefined()
-        }
-    })
-
-    it('todo guia do catálogo tem tradução em inglês', () => {
-        expect(STATIC_HUBS_PARA_TESTE.filter((h) => !traduzidos.includes(h.slug)).map((h) => h.slug)).toEqual([])
-    })
-
-    it('todo guia do catálogo tem tradução em japonês, sem português sobrando', () => {
-        const ja = traducoesDoIdioma('ja')
-        expect(STATIC_HUBS_PARA_TESTE.filter((h) => !ja[h.slug]).map((h) => h.slug)).toEqual([])
-        for (const [slug, t] of Object.entries(ja)) {
-            const texto = [t.title, t.shortTitle, t.description, ...t.intro, t.whatYouWillFind ?? '', ...t.faq.flatMap((f) => [f.question, f.answer]), ...(t.relatedSearches ?? []).map((r) => r.label)].join(' ')
-            expect(texto, slug).not.toMatch(/[ãõçáéíóúê]|\b(de|do|da|dos|das|com|para|que|uma)\b/i)
-            expect(t.faq.length, slug).toBeGreaterThan(0)
-        }
-        const slugs = Object.values(ja).map((t) => t.slug)
-        expect(new Set(slugs).size).toBe(slugs.length)
-    })
-
-    it('slug público é único e vai e volta', () => {
-        const publicos = traduzidos.map((s) => slugPublicoDoGuia(s, 'en'))
-        expect(new Set(publicos).size).toBe(traduzidos.length)
-        for (const slug of traduzidos) expect(slugPtDoGuia(slugPublicoDoGuia(slug, 'en')!, 'en')).toBe(slug)
-        expect(slugPublicoDoGuia('x', 'pt')).toBe('x')
-    })
-
-    it('guia relacionado aponta para outro guia traduzido', () => {
-        for (const [slug, tr] of Object.entries(traducoesDoIdioma('en'))) {
-            for (const r of tr.relatedSearches ?? []) {
-                expect(traduzidos, `${slug} → ${r.to}`).toContain(r.to)
-                expect(r.to).not.toBe(slug)
-            }
-        }
-    })
-
-    it('guia sem tradução devolve null; com tradução troca o texto e mantém o filtro', () => {
-        const hub = STATIC_HUBS_PARA_TESTE.find((h) => h.slug === 'doramas-romanticos')!
-        const en = localizarGuia(hub, 'en')!
-        expect(en.title).toBe('Korean Romance Dramas')
-        expect(en.filter).toEqual(hub.filter)
-        expect(localizarGuia({ ...hub, slug: 'guia-sem-traducao' }, 'en')).toBeNull()
-    })
+const tr = (slug: string, extra: Partial<TraducaoWPDoGuia> = {}): TraducaoWPDoGuia => ({
+    slug, title: `T ${slug}`, excerpt: `D ${slug}`, seo_title: `SEO ${slug}`,
+    acf: { short_title: `S ${slug}`, intro: ['I1', ''], what_you_will_find: 'W', faq: [{ question: 'Q', answer: 'A' }, { question: 'Q2' }] },
+    ...extra,
+})
+const hub = (slug: string, traducoes: ArchiveHub['traducoes'], relatedSearches?: ArchiveHub['relatedSearches']): ArchiveHub => ({
+    slug, kind: 'productions', title: `pt ${slug}`, shortTitle: `pt-s ${slug}`, description: 'pt d', intro: ['pt'], keywords: ['pt'],
+    faq: [], filter: { genre: slug }, seoTitle: 'pt seo', traducoes, relatedSearches,
 })
 
-describe('localizarGuia com tradução do WordPress', () => {
-    const slug = slugsPtTraduzidos('en')[0]
-    const hub = STATIC_HUBS_PARA_TESTE.find((h) => h.slug === slug)!
-    const json = traducoesDoIdioma('en')[slug]
+const mapa = montarMapaDeGuias([
+    hub('romance', { en: tr('romance-dramas'), ja: tr('ja-romance', { stale: true }) }, [
+        { label: 'Comédia', href: '/guias/comedia' }, { label: 'Ação', href: '/guias/acao' }, { label: 'Fora', href: '/blog/x' },
+    ]),
+    hub('comedia', { en: tr('comedy-dramas') }),
+    hub('acao', { en: { title: 'sem slug' } }),
+])
 
-    it('sem tradução no WordPress, usa o JSON', () => {
-        expect(localizarGuia(hub, 'en')?.title).toBe(json.title)
+describe('mapa dos guias por idioma', () => {
+    it('slug do idioma nos dois sentidos; em português, o próprio', () => {
+        expect(mapa.slugPublico('romance', 'en')).toBe('romance-dramas')
+        expect(mapa.slugPt('romance-dramas', 'en')).toBe('romance')
+        expect(mapa.slugPublico('romance', 'pt')).toBe('romance')
+        expect(mapa.slugPublico('acao', 'en')).toBeUndefined()
+        expect(mapa.slugPt('nao-existe', 'en')).toBeUndefined()
     })
 
-    it('tradução publicada do WordPress vale por cima do JSON, campo a campo', () => {
-        const out = localizarGuia({ ...hub, traducoes: { en: { title: 'WP title', acf: { intro: ['WP intro'], faq: [{ question: 'Q?', answer: 'A.' }] }, seo_title: 'SEO EN' } } }, 'en')!
-        expect(out.title).toBe('WP title')
-        expect(out.intro).toEqual(['WP intro'])
-        expect(out.faq).toEqual([{ question: 'Q?', answer: 'A.' }])
-        expect(out.seoTitle).toBe('SEO EN')
-        expect(out.description).toBe(json.description)
-        expect(out.traducoes).toBeUndefined()
+    it('desatualizada mantém a URL, mas fica fora dos traduzidos e do hreflang', () => {
+        expect(mapa.slugPt('ja-romance', 'ja')).toBe('romance')
+        expect(mapa.traduzidos('ja')).toEqual([])
+        expect(mapa.traduzidos('en')).toEqual(['romance', 'comedia'])
+        expect(Object.keys(mapa.alternativas('romance') ?? {})).not.toContain('ja')
+        expect(mapa.alternativas('acao')).toBeUndefined()
     })
 
-    it('tradução velha (stale) é ignorada', () => {
-        const out = localizarGuia({ ...hub, traducoes: { en: { title: 'Velho', stale: true } } }, 'en')!
-        expect(out.title).toBe(json.title)
+    it('localizar: texto e SEO do idioma, listas limpas, sem palavras-chave em português', () => {
+        const g = mapa.localizar(mapa.hubs[0], 'en')!
+        expect(g).toMatchObject({ slug: 'romance', title: 'T romance-dramas', shortTitle: 'S romance-dramas', description: 'D romance-dramas', intro: ['I1'], whatYouWillFind: 'W', seoTitle: 'SEO romance-dramas', keywords: [] })
+        expect(g.faq).toEqual([{ question: 'Q', answer: 'A' }])
+        expect(g.filter).toEqual({ genre: 'romance' })
+        expect(g.desatualizado).toBeUndefined()
     })
 
-    it('guia sem entrada no JSON do idioma não existe, mesmo com tradução no WordPress', () => {
-        expect(localizarGuia({ ...hub, slug: 'nao-existe', traducoes: { en: { title: 'X' } } }, 'en')).toBeNull()
+    it('buscas relacionadas: as do português, só destino em dia, com o título curto traduzido e a URL do idioma', () => {
+        expect(mapa.localizar(mapa.hubs[0], 'en')!.relatedSearches).toEqual([{ label: 'S comedy-dramas', href: '/en/guides/comedy-dramas' }])
     })
 
-    it('o SEO em português não vaza para o idioma', () => {
-        expect(localizarGuia({ ...hub, seoTitle: 'Título PT' }, 'en')?.seoTitle).toBeUndefined()
+    it('desatualizada mostra o português marcado; sem tradução, null', () => {
+        const g = mapa.localizar(mapa.hubs[0], 'ja')!
+        expect(g.desatualizado).toBe(true)
+        expect(g.title).toBe('pt romance')
+        expect(g.seoTitle).toBeUndefined()
+        expect(mapa.localizar(mapa.hubs[2], 'en')).toBeNull()
+        expect(mapa.localizar(mapa.hubs[0], 'pt')).toBe(mapa.hubs[0])
     })
 })

@@ -6,7 +6,7 @@ import { loadMessages } from '@/lib/i18n/messages'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { localizedFooterColumns, localizedNavigation } from '@/lib/i18n/navigation'
 import { href } from '@/lib/i18n/routes'
-import { traducoesDoIdioma } from '@/lib/guias/i18n'
+import { getMapaDeGuias } from '@/lib/guias/i18n'
 import { Outfit, Inter, Sora, Playfair_Display } from 'next/font/google'
 import '@/styles/globals.css'
 import { SITE_URL, SITE_NAME, UMAMI, CLARITY } from '@/lib/constants/site'
@@ -69,10 +69,11 @@ const playfair = Playfair_Display({
 const STICKY_LIGADO = false
 
 export async function SiteShell({ locale, children }: { locale: Locale; children: React.ReactNode }) {
-    const [monetization, siteSettings, messages] = await Promise.all([
+    const [monetization, siteSettings, messages, guias] = await Promise.all([
         getMonetizationSettings(),
         getSiteSettings(),
         loadMessages(locale),
+        locale === DEFAULT_LOCALE ? null : getMapaDeGuias(),
     ])
     const fontVars = [outfit.variable, inter.variable, sora.variable, playfair.variable].join(' ')
     // O menu do WordPress é só português e aponta para rotas sem versão
@@ -118,7 +119,11 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
     const footerColumns = locale === DEFAULT_LOCALE
         ? comLoja
         : localizedFooterColumns(locale, messages.entity.footer, navLabels,
-            Object.values(traducoesDoIdioma(locale)).slice(0, GUIAS_NO_RODAPE).map(g => ({ label: g.shortTitle, href: href('guide', { slug: g.slug }, locale) })))
+            (guias?.traduzidos(locale) ?? []).slice(0, GUIAS_NO_RODAPE).flatMap(slugPt => {
+                const hub = guias!.hubs.find(h => h.slug === slugPt)
+                const g = hub && guias!.localizar(hub, locale)
+                return g ? [{ label: g.shortTitle, href: href('guide', { slug: guias!.slugPublico(slugPt, locale)! }, locale) }] : []
+            }))
 
     return (
         <html lang={htmlLang(locale)} suppressHydrationWarning>

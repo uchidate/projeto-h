@@ -5,7 +5,7 @@ import { comoFallback } from '@/lib/i18n/fallback-ficha'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { GuiasIndice, buildGuiasMetadata } from '@/components/guias/GuiasIndice'
 import { entrarNaPagina, idiomaValido } from '@/lib/i18n/pagina'
-import { slugsPtTraduzidos } from '@/lib/guias/i18n'
+import { getMapaDeGuias } from '@/lib/guias/i18n'
 import { buildLocalizedGuidesIndexMetadata } from '@/components/guias/LocalizedGuide'
 
 // Estática de propósito: ler `searchParams` aqui tornaria a rota dinâmica
@@ -19,14 +19,14 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     const { locale } = await params
     if (!idiomaValido(locale, { servePt: true })) return {}
     if (locale === DEFAULT_LOCALE) return buildGuiasMetadata()
-    return slugsPtTraduzidos(locale).length > 0 ? buildLocalizedGuidesIndexMetadata(locale) : comoFallback(buildGuiasMetadata())
+    return (await getMapaDeGuias()).traduzidos(locale).length > 0 ? buildLocalizedGuidesIndexMetadata(locale) : comoFallback(await buildGuiasMetadata())
 }
 
 export default async function Page({ params }: { params: Params }) {
     const { locale } = await params
     entrarNaPagina(locale, { servePt: true })
     if (locale === DEFAULT_LOCALE) return <GuiasIndice />
-    if (slugsPtTraduzidos(locale).length > 0) return <GuiasIndice locale={locale} />
+    if ((await getMapaDeGuias()).traduzidos(locale).length > 0) return <GuiasIndice locale={locale} />
     return (
         <>
             <AvisoSemTraducao locale={locale} hrefOriginal={href('guides', undefined, DEFAULT_LOCALE)} />

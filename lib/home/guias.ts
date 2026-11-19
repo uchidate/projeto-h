@@ -1,4 +1,3 @@
-import { getHub } from '@/lib/guias'
 import { getHubItems } from '@/lib/guias/hub-items'
 import { getTranslations } from 'next-intl/server'
 import { getPostBySlug } from '@/lib/wordpress/posts'
@@ -6,7 +5,7 @@ import { href } from '@/lib/i18n/routes'
 import type { BestOfList } from '@/lib/wordpress/site-settings'
 import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { hasLocale } from '@/lib/i18n/entity-translation'
-import { localizarGuia, slugPublicoDoGuia, slugsPtTraduzidos } from '@/lib/guias/i18n'
+import { getMapaDeGuias } from '@/lib/guias/i18n'
 
 /** Guias por tema da faixa escura: slug do guia em /guias/{slug} e a cor do filete. */
 export const GUIAS_POR_TEMA = [
@@ -56,18 +55,19 @@ export function escolherCapas(porGuia: { slug: string; capas: string[] }[], n = 
  */
 export async function carregarGuiasPorTema(locale: Locale = SOURCE_LOCALE): Promise<GuiaDaHome[]> {
     const emPt = locale === SOURCE_LOCALE
-    const traduzidos = new Set(slugsPtTraduzidos(locale))
+    const mapa = await getMapaDeGuias()
+    const traduzidos = new Set(mapa.traduzidos(locale))
     const temas = GUIAS_POR_TEMA.filter(g => emPt || traduzidos.has(g.slug))
     const lidos = await Promise.all(temas.map(async ({ slug, cor }) => {
-        const original = await getHub(slug)
-        const hub = original && (emPt ? original : localizarGuia(original, locale))
+        const original = mapa.hubs.find(h => h.slug === slug)
+        const hub = original && mapa.localizar(original, locale)
         if (!hub || hub.kind !== 'productions') return null
         const r = await getHubItems(hub, { perPage: 8, ...(emPt ? {} : { locale }) })
         if (r.kind !== 'productions') return null
         // Transmissões de show no cinema ("Live Viewing") entram como filme, mas não são o que o guia promete.
         const itens = r.items.filter(p => emPt || hasLocale(p, locale))
         const capas = itens.filter(p => !/live viewing/i.test(p.title.rendered)).map(p => p.featured_image_url).filter((c): c is string => !!c)
-        return { slug: slugPublicoDoGuia(slug, locale) ?? slug, titulo: hub.shortTitle || hub.title, cor, total: r.total, capas }
+        return { slug: mapa.slugPublico(slug, locale) ?? slug, titulo: hub.shortTitle || hub.title, cor, total: r.total, capas }
     }))
     const guias = lidos.filter((g): g is NonNullable<typeof g> => g !== null && g.capas.length > 0)
     const capas = escolherCapas(guias)

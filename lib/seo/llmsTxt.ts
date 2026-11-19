@@ -1,7 +1,6 @@
 import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
 import { ACTIVE_LOCALES, LOCALE_META, SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href, type RouteName } from '@/lib/i18n/routes'
-import { slugsPtTraduzidos } from '@/lib/guias/i18n'
 
 /** Seções do índice para agentes: rota, nome e o que o leitor encontra ali. Só o que o site realmente publica. */
 const SECOES: Array<{ rota: RouteName; nome: string; descricao: string }> = [
@@ -23,7 +22,7 @@ const url = (rota: RouteName, locale: Locale) => `${SITE_URL}${href(rota, undefi
  * `/llms.txt` — índice em texto para agentes e buscadores de IA (llmstxt.org). Gerado do registro de rotas,
  * então idiomas e caminhos não se descolam do site. Não afirma contagens nem licenças que não estão no código.
  */
-export function buildLlmsTxt(): string {
+export function buildLlmsTxt({ temGuias = () => true }: { temGuias?: (locale: Locale) => boolean } = {}): string {
     const idiomas = ACTIVE_LOCALES.map((l) => `${LOCALE_META[l].htmlLang}${l === SOURCE_LOCALE ? ' (original)' : ''}`).join(', ')
     const linhas: string[] = [
         `# ${SITE_NAME}`,
@@ -39,7 +38,7 @@ export function buildLlmsTxt(): string {
         linhas.push(`## ${LOCALE_META[locale].htmlLang}`, '')
         for (const s of SECOES) {
             // Guias e quiz só existem nos idiomas com conteúdo traduzido.
-            if (s.rota === 'guides' && locale !== SOURCE_LOCALE && slugsPtTraduzidos(locale).length === 0) continue
+            if (s.rota === 'guides' && locale !== SOURCE_LOCALE && !temGuias(locale)) continue
             linhas.push(`- [${s.nome}](${url(s.rota, locale)}): ${s.descricao}`)
         }
         linhas.push('')

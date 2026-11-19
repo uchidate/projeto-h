@@ -18,4 +18,9 @@ describe('llms.txt', () => {
         expect(txt).toContain('/sitemap-static.xml')
         expect(txt).toContain('Treino de modelos não é permitido')
     })
+    it('omite os guias no idioma sem guia traduzido', () => {
+        const semGuias = buildLlmsTxt({ temGuias: () => false })
+        expect(semGuias).not.toMatch(/\/en\/guides\)/)
+        expect(txt).toMatch(/\/en\/guides\)/)
+    })
 })
