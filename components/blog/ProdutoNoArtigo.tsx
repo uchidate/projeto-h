@@ -35,32 +35,36 @@ function Legenda({ html }: { html?: string }) {
  */
 export function ProdutoNoArtigo({ produto, legendaHtml, contexto }: ProdutoDoTexto & { contexto: string }) {
     return (
-        <figure className="not-prose !my-8 !mx-auto !items-stretch w-full max-w-[34rem]" data-produto-no-artigo={produto.id}>
+        <div className="not-prose mx-auto my-8 w-full max-w-[34rem]" data-produto-no-artigo={produto.id}>
             <StoreCard product={produto} contexto={contexto} linha />
             <Legenda html={legendaRepeteTitulo(legendaHtml, produto.title.rendered) ? undefined : legendaHtml} />
-        </figure>
+        </div>
     )
 }
 
-// `!m-0 !items-stretch`: o estilo global de `figure` do artigo (margem de 2,15rem e centralização) vazava e empurrava o 1º cartão 40 px para baixo, deixando a prateleira com alturas desiguais.
+// `div` e não `figure`: o estilo global `.wp-article-content figure` (largura 100%, margem, centralização) e
+// `figure img` (largura automática, borda, sombra, `contain`) vazavam para o cartão. No celular cada cartão
+// ocupava a tela inteira, com a foto encolhida e um vão branco embaixo (544 px por produto).
 /**
  * Blocos de produto em sequência viram uma prateleira: lado a lado no desktop (2 ou 3 colunas, conforme a
  * quantidade) e em 2 colunas no celular, em vez de uma coluna longa de cartões de 280 px.
  */
 export function ProdutosNoArtigo({ itens, contexto }: { itens: ProdutoDoTexto[]; contexto: string }) {
     if (itens.length === 1) return <ProdutoNoArtigo {...itens[0]} contexto={contexto} />
+    // Dois cartões cabem inteiros lado a lado; de três em diante, um pedaço do próximo mostra que a faixa rola.
+    const largura = itens.length === 2 ? 'w-[calc(50%-0.375rem)]' : 'w-[44%]'
     const colunas = itens.length === 2 || itens.length === 4 ? 'md:grid-cols-2 md:max-w-[34rem]' : 'md:grid-cols-3'
-    // Celular: faixa que rola de lado (um cartão e meio à vista indica que há mais), em vez de grade que deixa um cartão sozinho na última linha.
+    // Celular: faixa que rola de lado (dois cartões e um pedaço do terceiro à vista indicam que há mais), em vez de grade que deixa um cartão sozinho na última linha.
     return (
         <div
             className={`not-prose -mx-4 my-8 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 sm:mx-auto sm:scroll-px-0 sm:px-0 md:grid md:items-stretch md:gap-4 md:overflow-visible md:pb-0 md:mx-auto ${colunas}`}
             data-produtos-no-artigo={itens.length}
         >
             {itens.map(({ produto, legendaHtml }) => (
-                <figure key={produto.id} className="!m-0 !items-stretch flex w-[62%] shrink-0 snap-start flex-col sm:w-[45%] md:w-auto md:min-w-0 [&>a]:flex-1" data-produto-no-artigo={produto.id}>
+                <div key={produto.id} className={`flex ${largura} shrink-0 snap-start flex-col sm:w-[45%] md:w-auto md:min-w-0 [&>div]:flex-1`} data-produto-no-artigo={produto.id}>
                     <StoreCard product={produto} contexto={contexto} />
                     <Legenda html={legendaHtml} />
-                </figure>
+                </div>
             ))}
         </div>
     )

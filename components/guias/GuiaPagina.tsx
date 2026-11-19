@@ -14,7 +14,7 @@ import { getArtists } from '@/lib/wordpress/artists'
 import { getAgencyById } from '@/lib/wordpress/agencies'
 import { getPosts } from '@/lib/wordpress/posts'
 import { getProductionGenres } from '@/lib/wordpress/productions'
-import { getVitrineGeral, getVitrinePorTermos } from '@/lib/wordpress/vitrine'
+import { getVitrineGeral, getVitrineMaratona, getVitrinePorTermos } from '@/lib/wordpress/vitrine'
 import { getStoreProductsByArtistId, getStoreProductsByGroupId } from '@/lib/wordpress/store'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { QuizWidget } from '@/components/ui/QuizWidget'
@@ -128,7 +128,11 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
     } else {
         shopProducts = hub.kind === 'productions' ? [] : await getVitrinePorTermos(termosDoGuia, `guia:${slug}`, { limit: 6 }).catch(() => [])
         tematica = shopProducts.length >= 3
-        if (!tematica) shopProducts = await getVitrineGeral(`guia:${slug}`, 6, tipoVitrine)
+        // Reserva: guia de dorama ganha petisco para maratonar (antes K-beauty e lámen sob "Para quem curte k-drama":
+        // 59 visitas viram a faixa em 28 dias, 0 clique); guia de K-pop, só merch de K-pop.
+        if (!tematica) shopProducts = tipoVitrine === 'drama'
+            ? await getVitrineMaratona(`guia:${slug}`, 6)
+            : await getVitrineGeral(`guia:${slug}`, 6, 'merch')
     }
     const genreMap = Object.fromEntries(genres.map(g => [g.id, { name: g.name, slug: g.slug }]))
     const perPage = 48
@@ -150,7 +154,7 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
                 artists={result.kind === 'artists' ? (demaisDoSolista ?? result.items) : undefined}
                 groups={result.kind === 'groups' ? result.items : undefined}
                 blogPosts={blogPosts}
-                lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title={tematica ? `Na loja: ${grupoGuia ? stripHtml(grupoGuia.title.rendered) : solista ? stripHtml(solista.title.rendered) : hub.shortTitle}` : tipoVitrine === 'drama' ? 'Para quem curte k-drama' : 'Para quem curte k-pop'} contexto={`guia:${slug}:meio`} />}
+                lojaMeio={<LojaEmLinha bloco="guia-loja-meio" products={shopProducts} title={tematica ? `Na loja: ${grupoGuia ? stripHtml(grupoGuia.title.rendered) : solista ? stripHtml(solista.title.rendered) : hub.shortTitle}` : tipoVitrine === 'drama' ? `Para maratonar ${hub.shortTitle.charAt(0).toLowerCase()}${hub.shortTitle.slice(1)}` : 'Achados de K-pop'} contexto={`guia:${slug}:meio`} />}
                 quiz={<QuizWidget category={tipoVitrine === 'drama' ? 'k-drama' : 'k-pop'} />}
                 destaques={destaques}
                 genreMap={genreMap}

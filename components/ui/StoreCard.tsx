@@ -1,5 +1,4 @@
 'use client'
-import { SITE_NAME } from '@/lib/constants/site'
 
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
@@ -40,6 +39,8 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
     const menorPreco = ehMenorPrecoEmDias(acf.price, acf.price_history, 30)
     const queda = quedaDePreco(acf.price, acf.price_history, 30)
     const novo = ehNovo(product.date_gmt, 14)
+    // `sold_count` chega como texto: "0" é verdadeiro e virava "0 vendidos".
+    const vendidos = Number(acf.sold_count) > 0 ? acf.sold_count : null
     // Alguns produtos antigos têm `badge` preenchido à mão com o próprio
     // percentual (ex.: "-37") — dado legado que agora duplica o desconto
     // calculado ao lado. Um badge de verdade não é só um número.
@@ -85,9 +86,7 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                             {acf.original_price && <span className="whitespace-nowrap text-[11px] text-muted line-through">{acf.original_price}</span>}
                         </div>
                     )}
-                    <span className="mt-0.5 truncate text-[11px] font-medium text-muted">
-                        {acf.sold_count ? `${acf.sold_count} vendidos` : `Curadoria ${SITE_NAME}`}
-                    </span>
+                    {vendidos ? <span className="mt-0.5 truncate text-[11px] font-medium text-muted">{vendidos} vendidos</span> : null}
                     <span className="mt-auto inline-flex w-fit items-center gap-1 bg-accent-a11y px-3 py-1.5 pt-1.5 text-[11px] font-black uppercase tracking-wide text-white">
                         Ver oferta <ExternalLink className="h-3 w-3" />
                     </span>
@@ -184,7 +183,8 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                     {acf.original_price && <span className="whitespace-nowrap text-[11px] text-muted line-through">{acf.original_price}</span>}
                 </div>
             )}
-            <div className="mt-auto flex min-h-[3.6rem] flex-col justify-end pt-1">
+            {/* Altura reservada só a partir do sm, onde a grade alinha os cartões; no celular a faixa rola de lado e o espaço vazio só alongava o cartão. */}
+            <div className="mt-auto flex flex-col justify-end pt-1 sm:min-h-[3.6rem]">
             {queda && (
                 <span className="mt-0.5 text-[11px] font-bold text-accent">
                     Caiu {queda.percentual}% (era {queda.de.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})
@@ -195,9 +195,8 @@ export function StoreCard({ product, compact = false, linha = false, contexto = 
                     Menor preço em 30 dias
                 </span>
             )}
-            <span className="mt-1 truncate text-[11px] font-medium text-muted">
-                {acf.sold_count ? `${acf.sold_count} vendidos` : `Curadoria ${SITE_NAME}`}
-            </span>
+            {/* "Curadoria HallyuHub" no lugar de vendas zeradas era só enchimento: ocupava uma linha em todo cartão. */}
+            {vendidos ? <span className="mt-1 truncate text-[11px] font-medium text-muted">{vendidos} vendidos</span> : null}
             </div>
         </a>
         {link && (

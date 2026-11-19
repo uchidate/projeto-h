@@ -39,7 +39,7 @@ export function LojaEmLinha({ products, bloco, contexto, title = 'Achados da loj
             className={`rounded-xl border border-accent/40 bg-linear-to-b from-accent/10 to-surface p-3 shadow-[0_0_28px_-12px_var(--color-accent)] sm:p-4 ${className}`}>
             <div className="mb-3">
                 <div className="flex items-center justify-between gap-3">
-                    <p className="min-w-0 truncate font-mono text-[11px] font-black uppercase tracking-[0.14em] text-accent">🛍️ {title}</p>
+                    <p className="line-clamp-2 min-w-0 font-mono text-[11px] font-black uppercase tracking-[0.14em] text-accent">🛍️ {title}</p>
                     <Link href={href} className="shrink-0 whitespace-nowrap text-[12px] font-bold text-accent hover:underline">{verTudoLabel} →</Link>
                 </div>
                 <p className="mt-1 text-[11px] leading-tight text-foreground-subtle">Links de afiliado: o HallyuHub pode receber comissão.</p>

@@ -296,11 +296,13 @@ interface Props {
     post: WPPost
     relatedPosts?: WPPost[]
     shopProducts?: StoreProduct[]
+    /** Grupo/artista de onde vem a maior parte de `shopProducts` (null: escolhidos pelo assunto do texto). */
+    origemLoja?: string | null
     /** Produtos escolhidos pelo redator dentro do texto (bloco `product`). */
     produtosNoTexto?: StoreProduct[]
 }
 
-export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProductsDaPagina = [], produtosNoTexto = [] }: Props) {
+export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProductsDaPagina = [], origemLoja = null, produtosNoTexto = [] }: Props) {
     /* Hallmark · macrostructure: Long Document · genre: editorial · theme: editorial tokens
      * audience: leitores de cultura coreana · use: leitura e descoberta · tone: editorial
      * pre-emit critique: P5 H4 E4 S5 R4 V4
@@ -382,7 +384,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
     const idsNoTexto = new Set(produtosNoTexto.map(p => p.id))
     const shopProducts = guiaDeProduto ? shopProductsDaPagina.filter(p => !idsNoTexto.has(p.id)) : shopProductsDaPagina
     const lojaMeio = shopProducts.length > 0 && !guiaDeProduto
-        ? <LojaEmLinha bloco="artigo-loja-meio" products={shopProducts} title="Achados para quem lê isso" contexto={`blog:${post.slug}:meio`} />
+        ? <LojaEmLinha bloco="artigo-loja-meio" products={shopProducts} title={origemLoja ? `Achados de ${origemLoja}` : 'Achados do assunto'} contexto={`blog:${post.slug}:meio`} />
         : null
     const deslizante = shopProducts[3] ?? shopProducts[0]
     const sugestaoMeio = meioNovo ? <BlogSugestaoMeio atual={post} candidato={candidatoMeio} /> : null
@@ -866,7 +868,9 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
 
                         {/* Loja do fim abaixo do fechamento: quase nenhum clique em 28 dias (os cliques de produto
                             em artigo vêm do cartão deslizante e da prateleira dentro do texto). */}
-                        <ShopRelatedSection bloco="artigo-loja" title="Produtos relacionados" products={shopProducts} />
+                        {/* Começa depois dos três da faixa do meio, que o leitor já viu; os três voltam no fim da fila. */}
+                        <ShopRelatedSection bloco="artigo-loja" title={origemLoja ? `Mais de ${origemLoja} na loja` : 'Mais achados do assunto'}
+                            products={guiaDeProduto ? shopProducts : [...shopProducts.slice(3), ...shopProducts.slice(0, 3)]} />
 
                         {ADSENSE.slots.post_suggestion && !structuredModel?.guiaDeProduto && (
                             <div className="mx-4 my-6 sm:mx-6 lg:mx-8">

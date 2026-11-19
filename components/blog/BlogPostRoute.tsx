@@ -17,20 +17,25 @@ import { buildPostAlternates } from '@/lib/blog/translations'
 import { getProdutosDosBlocos } from '@/lib/blog/produtosDosBlocos'
 
 
-async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostBySlug>>, categorias: string[]): Promise<StoreProduct[]> {
-    if (!post) return []
-    const groups = post.related_entities?.groups ?? []
-    const artists = post.related_entities?.artists ?? []
+/** Produtos da loja para o artigo e, quando vêm do grupo/artista citado, o nome dele (vira o título da faixa). */
+async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostBySlug>>, categorias: string[]): Promise<{ produtos: StoreProduct[]; origem: string | null }> {
+    if (!post) return { produtos: [], origem: null }
+    const groups = (post.related_entities?.groups ?? []).slice(0, 2)
+    const artists = (post.related_entities?.artists ?? []).slice(0, 2)
 
     const lists = await Promise.all([
-        ...groups.slice(0, 2).map(g => getStoreProductsByGroupId(g.id)),
-        ...artists.slice(0, 2).map(a => getStoreProductsByArtistId(a.id)),
+        ...groups.map(g => getStoreProductsByGroupId(g.id)),
+        ...artists.map(a => getStoreProductsByArtistId(a.id)),
     ])
+    const nomes = [...groups.map(g => g.name), ...artists.map(a => a.name)]
 
     const byId = new Map<number, StoreProduct>()
     for (const list of lists) for (const product of list) byId.set(product.id, product)
     const daEntidade = [...byId.values()]
-    if (daEntidade.length >= 3) return daEntidade
+    // Uma entidade só responde pela maior parte da prateleira: o título pode nomeá-la.
+    const maior = lists.reduce((m, l, i) => (l.length > (lists[m]?.length ?? 0) ? i : m), 0)
+    const origem = daEntidade.length > 0 && (lists[maior]?.length ?? 0) * 2 > daEntidade.length ? nomes[maior] ?? null : null
+    if (daEntidade.length >= 3) return { produtos: daEntidade, origem }
 
     // Pouco ou nenhum produto do grupo/artista citado (ou post sem entidade): completa pelo assunto
     // do texto, em vez de deixar o artigo sem vitrine. Só casamento real, sem vitrine genérica.
@@ -40,7 +45,8 @@ async function getShopProductsForPost(post: Awaited<ReturnType<typeof getPostByS
         excluirIds: daEntidade.map(p => p.id),
         limite: 6 - daEntidade.length,
     })
-    return [...daEntidade, ...tematicos]
+    const produtos = [...daEntidade, ...tematicos]
+    return { produtos, origem: daEntidade.length * 2 > produtos.length ? origem : null }
 }
 
 type Params = Promise<{ slug: string }>
@@ -90,7 +96,8 @@ export default async function PostPage({ params }: { params: Params }) {
     const produtosNoTexto = await getProdutosDosBlocos(post)
     const idsNoTexto = new Set(produtosNoTexto.map(p => p.id))
     // O que já aparece dentro do texto não se repete nas faixas de loja do mesmo artigo.
-    const shopProducts = (await getShopProductsForPost(post, cats.map(c => c.name))).filter(p => !idsNoTexto.has(p.id))
+    const loja = await getShopProductsForPost(post, cats.map(c => c.name))
+    const shopProducts = loja.produtos.filter(p => !idsNoTexto.has(p.id))
 
     const title = stripHtml(post.title.rendered)
     const url = `${SITE_URL}/blog/${slug}`
@@ -110,7 +117,7 @@ export default async function PostPage({ params }: { params: Params }) {
                 tempo de atencao sem tornar o artigo inteiro um Client
                 Component, o que custaria desempenho e SEO. */}
             <RastreioDeLeitura slug={slug} caminho={`/blog/${slug}`} />
-            <BlogPostPage post={post} relatedPosts={relatedPosts} shopProducts={shopProducts} produtosNoTexto={produtosNoTexto} />
+            <BlogPostPage post={post} relatedPosts={relatedPosts} shopProducts={shopProducts} origemLoja={loja.origem} produtosNoTexto={produtosNoTexto} />
         </>
     )
 }
