@@ -81,14 +81,16 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     const industry = (await rotuloDoSetorEm(company.acf?.industry, locale)) ?? t('defaultIndustry')
     // "CJ ENM (CJ ENM)": o nome coreano cadastrado às vezes repete o próprio nome.
     const showKorean = korean && !korean.toLowerCase().includes(name.toLowerCase())
-    const title = showKorean ? t('metaTitleKorean', { name, korean, industry }) : t('metaTitle', { name, industry })
+    // Rank Math primeiro (como artista, grupo e produção); sem ele, o modelo e o excerpt.
+    const title = company.meta?.rank_math_title?.trim()
+        || (showKorean ? t('metaTitleKorean', { name, korean, industry }) : t('metaTitle', { name, industry }))
     const resumo = stripHtml(company.excerpt?.rendered || company.content?.rendered || '')
     const year = company.acf?.founded_year
-    const description = resumo
+    const description = company.meta?.rank_math_description?.trim() || (resumo
         ? metaDescription(resumo)
         : year
             ? t('metaDescriptionFounded', { name, industry: industry.toLowerCase(), year })
-            : t('metaDescription', { name, industry: industry.toLowerCase() })
+            : t('metaDescription', { name, industry: industry.toLowerCase() }))
     const image = getWPImage(company._embedded, company.featured_image_url)
     const url = `${SITE_URL}${href('company', { slug }, locale)}`
 
