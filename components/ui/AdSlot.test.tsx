@@ -218,6 +218,26 @@ describe('AdSlot', () => {
         })
     })
 
+    it('espaço vazio na tela só some quando fica abaixo da tela (não move o texto que se lê)', async () => {
+        const rect = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100, bottom: 500, left: 0, right: 400, width: 400, height: 400, x: 0, y: 100, toJSON: () => ({}) } as DOMRect)
+        try {
+            const { container } = render(<AdsProvider settings={settings()}><AdSlot slot="inline" /></AdsProvider>)
+            const antes = observerInstances.length
+            container.querySelector('ins')?.setAttribute('data-ad-status', 'unfilled')
+            await waitFor(() => expect(observerInstances.length).toBeGreaterThan(antes))
+            expect(container).not.toBeEmptyDOMElement()
+            expect(container.querySelector('[data-ad-state="empty"]')).not.toBeNull()
+            // Saiu por cima (a pessoa passou por ele): fica, para não puxar o texto.
+            act(() => { const o = observerInstances[observerInstances.length - 1]; o.callback([{ isIntersecting: false, boundingClientRect: { top: -500 } } as unknown as IntersectionObserverEntry], o as unknown as IntersectionObserver) })
+            expect(container).not.toBeEmptyDOMElement()
+            // Saiu por baixo (voltou a rolar para cima): some.
+            act(() => { const o = observerInstances[observerInstances.length - 1]; o.callback([{ isIntersecting: false, boundingClientRect: { top: 2000 } } as unknown as IntersectionObserverEntry], o as unknown as IntersectionObserver) })
+            await waitFor(() => expect(container).toBeEmptyDOMElement())
+        } finally {
+            rect.mockRestore()
+        }
+    })
+
     it('remove a reserva no estado unfill-optimized usado pelo AdSense', async () => {
         const { container } = render(<AdsProvider settings={settings()}><AdSlot slot="inline" /></AdsProvider>)
         container.querySelector('ins')?.setAttribute('data-ad-status', 'unfill-optimized')
