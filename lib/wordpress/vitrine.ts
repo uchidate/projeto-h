@@ -2,6 +2,7 @@ import { getFeaturedStoreProducts, getStoreProducts, getStoreProductsByArtistId,
 import { escolherPorTemaComAderencia, type Tema } from '@/lib/wordpress/store-contexto'
 import { candidatosDescoberta, ordenarPrateleira } from '@/lib/wordpress/store-ranking'
 import { variarPorPagina } from '@/lib/wordpress/store-rotacao'
+import { alternarFamilias, CATEGORIAS_MARATONA, citaAObra, montarPrateleiraDaObra, type PrateleiraDaObra } from '@/lib/wordpress/prateleira-obra'
 
 /** Tamanho do pool de onde cada página sorteia a sua vitrine de reserva. */
 const POOL_DE_RESERVA = 24
@@ -66,24 +67,33 @@ export async function getVitrineTematica(texto: string, contexto: string, opcoes
 }
 
 /**
- * Produtos do elenco (até 4 artistas), intercalados para não encher a faixa com um só nome;
- * completa com a vitrine geral quando o elenco não tem produto. Nunca devolve vazio se a loja tem destaque.
+ * Prateleira da ficha de produção: o que aparece na obra (produto das comidas da ficha, produto com o
+ * título da obra), depois o elenco e, para completar, comida e petisco para maratonar, sorteados por
+ * página entre os mais clicados. Cada produto volta com o motivo, que vira o selo do cartão.
  */
-export async function getVitrineDoElenco(artistIds: number[], contexto: string, limit = 6, tipo: TipoVitrine = 'drama', texto = '', comidas: string[] = []): Promise<StoreProduct[]> {
-    const porArtista = await Promise.all(artistIds.slice(0, 4).map(id => getStoreProductsByArtistId(id)))
-    const intercalados: StoreProduct[] = []
-    for (let i = 0; intercalados.length < limit && porArtista.some(l => i < l.length); i++) {
-        for (const lista of porArtista) if (i < lista.length) intercalados.push(lista[i])
+export async function getPrateleiraDaObra(
+    entrada: { tituloObra: string; artistIds: number[]; comidas: string[]; contexto: string; limit?: number },
+): Promise<PrateleiraDaObra> {
+    const { tituloObra, artistIds, comidas, contexto, limit = 6 } = entrada
+    const [catalogo, porArtista, daComida] = await Promise.all([
+        getStoreProducts(),
+        Promise.all(artistIds.slice(0, 4).map(id => getStoreProductsByArtistId(id))),
+        comidas.length > 0 ? getVitrinePorTermos(comidas, contexto, { limit: 3 }) : Promise.resolve([]),
+    ])
+    const validos = catalogo.filter(p => !p.acf.is_hidden && p.acf.affiliate_url && p.acf.price && p.acf.image_url)
+    const comTitulo = ordenarPrateleira(validos.filter(p => citaAObra(p, tituloObra)), contexto)
+    const elenco: StoreProduct[] = []
+    for (let i = 0; porArtista.some(l => i < l.length); i++) {
+        for (const lista of porArtista) if (i < lista.length) elenco.push(lista[i])
     }
-    // Comida que aparece na obra (bloco "Comidas de …"): o produto dela entra logo depois do elenco.
-    // Comida é a categoria mais clicada do site (Umami, 60 dias até 2026-11-16), inclusive em produção.
-    const daObra = comidas.length > 0 ? await getVitrinePorTermos(comidas, contexto, { limit: 3 }) : []
-    const unicos = [...new Map([...intercalados, ...daObra].map(p => [p.id, p])).values()]
-    if (unicos.length >= 3) return comDescobertas(ordenarPrateleira(unicos, contexto).slice(0, limit), contexto)
-    // Sem produto do elenco: tenta casar pelo assunto da obra antes da vitrine geral.
-    const geral = texto ? await getVitrineTematica(texto, contexto, { limit, tipo, temas: [tipo === 'drama' ? 'drama' : 'musica'] }) : await getVitrineGeral(contexto, limit, tipo)
-    const completo = [...new Map([...unicos, ...geral.filter(p => !p.descoberta)].map(p => [p.id, p])).values()].slice(0, limit)
-    return comDescobertas(completo, contexto)
+    const petiscos = ordenarPrateleira(validos.filter(p => (CATEGORIAS_MARATONA as readonly string[]).includes(p.acf.category ?? '')), contexto)
+    return montarPrateleiraDaObra({
+        naObra: [...daComida, ...comTitulo],
+        elenco: ordenarPrateleira(elenco, contexto),
+        // Pool dos mais clicados, sorteado por ficha: senão toda série mostra os mesmos três lámens.
+        // Depois alterna lámen, doce, salgadinho e tempero (as categorias da loja não separam).
+        maratona: alternarFamilias(variarPorPagina(petiscos.slice(0, POOL_DE_RESERVA), limit * 2, contexto, limit * 2)),
+    }, limit)
 }
 
 /**
