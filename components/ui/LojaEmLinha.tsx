@@ -6,6 +6,7 @@ import { calcularDesconto } from '@/lib/wordpress/store'
 import { stripHtml } from '@/lib/utils'
 import { LojaClique } from '@/components/ui/LojaClique'
 import { VitrineVista } from '@/components/ui/VitrineVista'
+import { garantirLoja } from '@/lib/wordpress/garantir-loja'
 import { ROTULO_MOTIVO, type MotivoPrateleira } from '@/lib/wordpress/prateleira-obra'
 
 interface Props {
@@ -29,7 +30,9 @@ interface Props {
  * Some quando não há produto com link de afiliado.
  */
 export function LojaEmLinha({ products, bloco, contexto, title = 'Achados da loja', href = '/loja', verTudoLabel = 'Ver loja', className = '', motivos }: Props) {
-    const itens = products.filter(p => p.acf.affiliate_url).slice(0, 3)
+    const comLink = products.filter(p => p.acf.affiliate_url)
+    // Sempre um cartão da Shopee quando o contexto tem: o clique dela vale 7 dias de compras (ver garantirLoja).
+    const itens = garantirLoja(comLink.slice(0, 3), comLink, 'shopee')
     if (itens.length === 0) return null
     return (
         <aside data-bloco={bloco} aria-label={title}
