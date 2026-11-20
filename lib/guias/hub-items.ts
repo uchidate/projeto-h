@@ -92,14 +92,18 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
             return { kind: 'productions', items, total }
         }
 
+        // Em outro idioma, o WordPress filtra as fichas traduzidas (`oc_locale`, que combina com agência, papel, tipo e
+        // estreia) e devolve `translations`. Sem isso a página filtrava depois, sem o campo, e a grade saía sempre vazia.
+        const { locale } = opts
+
         if (hub.kind === 'artists') {
             if (f.artistSlug) {
                 // Guia de um artista: ele primeiro; depois, se houver grupo, os demais integrantes.
                 const [{ items: principal }, memberIds] = await Promise.all([
-                    getArtists({ slug: f.artistSlug, perPage: 1 }),
+                    getArtists({ slug: f.artistSlug, perPage: 1, comTraducoes: !!locale }),
                     f.groupSlug ? getGroupMemberIds(f.groupSlug) : Promise.resolve([] as number[]),
                 ])
-                const membros = memberIds.length ? await getArtistsByIds(memberIds) : []
+                const membros = memberIds.length ? await getArtistsByIds(memberIds, { comTraducoes: !!locale }) : []
                 const items = [...principal, ...membros.filter(m => m.slug !== f.artistSlug)]
                 return { kind: 'artists', items, total: items.length }
             }
@@ -107,23 +111,23 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
             if (f.groupSlug) {
                 const memberIds = await getGroupMemberIds(f.groupSlug)
                 if (!memberIds.length) return { kind: 'artists', items: [], total: 0 }
-                const items = await getArtistsByIds(memberIds)
+                const items = await getArtistsByIds(memberIds, { comTraducoes: !!locale })
                 return { kind: 'artists', items, total: items.length }
             }
 
             if (f.agencyName) {
                 const agencyId = await findAgencyId(f.agencyName)
                 if (!agencyId) return { kind: 'artists', items: [], total: 0 }
-                const { items, total } = await getArtists({ page, agency: agencyId, perPage, orderby: 'title', order: 'asc' })
+                const { items, total } = await getArtists({ page, agency: agencyId, perPage, orderby: 'title', order: 'asc', locale })
                 return { kind: 'artists', items, total }
             }
 
             if (f.role) {
-                const { items, total } = await getArtists({ page, role: f.role, gender: f.gender, perPage, orderby: 'title', order: 'asc' })
+                const { items, total } = await getArtists({ page, role: f.role, gender: f.gender, perPage, orderby: 'title', order: 'asc', locale })
                 return { kind: 'artists', items, total }
             }
 
-            const { items, total } = await getArtists({ page, perPage, orderby: 'title', order: 'asc' })
+            const { items, total } = await getArtists({ page, perPage, orderby: 'title', order: 'asc', locale })
             return { kind: 'artists', items, total }
         }
 
@@ -137,6 +141,7 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
                     type: f.role as 'girl_group' | 'boy_group' | 'co_ed' | 'solo' | undefined,
                     debutMin: f.debutYearMin ? `${f.debutYearMin}0101` : undefined,
                     debutMax: f.debutYearMax ? `${f.debutYearMax}1231` : undefined,
+                    locale,
                 })
                 return { kind: 'groups', items, total }
             }
@@ -144,16 +149,16 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
             if (f.agencyName) {
                 const agencyId = await findAgencyId(f.agencyName)
                 if (!agencyId) return { kind: 'groups', items: [], total: 0 }
-                const { items, total } = await getGroups({ page, agency: agencyId, perPage, orderby: 'title', order: 'asc' })
+                const { items, total } = await getGroups({ page, agency: agencyId, perPage, orderby: 'title', order: 'asc', locale })
                 return { kind: 'groups', items, total }
             }
 
             if (f.role) {
-                const { items, total } = await getGroups({ page, type: f.role as 'girl_group' | 'boy_group' | 'co_ed' | 'solo', perPage, orderby: 'title', order: 'asc' })
+                const { items, total } = await getGroups({ page, type: f.role as 'girl_group' | 'boy_group' | 'co_ed' | 'solo', perPage, orderby: 'title', order: 'asc', locale })
                 return { kind: 'groups', items, total }
             }
 
-            const { items, total } = await getGroups({ page, perPage, orderby: 'title', order: 'asc' })
+            const { items, total } = await getGroups({ page, perPage, orderby: 'title', order: 'asc', locale })
             return { kind: 'groups', items, total }
         }
     } catch { /* silencioso */ }

@@ -58,7 +58,7 @@ describe('getHubItems', () => {
             fetchMock.mockResolvedValue({ ok: true, json: async () => [{ acf: { members: [1, 2, 3] } }] })
             vi.mocked(getArtistsByIds).mockResolvedValue([{ id: 1 }, { id: 2 }, { id: 3 }] as never)
             const result = await getHubItems(hub({ kind: 'artists', filter: { groupSlug: 'bts' } }))
-            expect(getArtistsByIds).toHaveBeenCalledWith([1, 2, 3])
+            expect(getArtistsByIds).toHaveBeenCalledWith([1, 2, 3], { comTraducoes: false })
             expect(result).toEqual({ kind: 'artists', items: [{ id: 1 }, { id: 2 }, { id: 3 }], total: 3 })
         })
 
@@ -109,6 +109,29 @@ describe('getHubItems', () => {
             vi.mocked(getGroups).mockResolvedValue({ items: [], total: 0 } as never)
             await getHubItems(hub({ kind: 'groups', filter: { role: 'girl_group' } }))
             expect(getGroups).toHaveBeenCalledWith(expect.objectContaining({ type: 'girl_group' }))
+        })
+    })
+
+    // Regressão: em outro idioma a busca não pedia `translations` nem filtrava por idioma, a página descartava todas
+    // as fichas e 63 guias de artistas e grupos em inglês saíam vazios e com noindex.
+    describe('em outro idioma', () => {
+        it('artistas e grupos filtram pelo idioma no WordPress', async () => {
+            fetchMock.mockResolvedValue({ ok: true, json: async () => [{ id: 55, title: { rendered: 'HYBE' } }] })
+            vi.mocked(getArtists).mockResolvedValue({ items: [], total: 0 } as never)
+            vi.mocked(getGroups).mockResolvedValue({ items: [], total: 0 } as never)
+            await getHubItems(hub({ kind: 'artists', filter: { agencyName: 'HYBE' } }), { locale: 'en' })
+            await getHubItems(hub({ kind: 'artists', filter: { role: 'model', gender: 'female' } }), { locale: 'en' })
+            await getHubItems(hub({ kind: 'groups', filter: { debutYearMin: 2018 } }), { locale: 'ja' })
+            await getHubItems(hub({ kind: 'groups', filter: { role: 'girl_group' } }), { locale: 'es' })
+            expect(vi.mocked(getArtists).mock.calls.map(([q]) => q?.locale)).toEqual(['en', 'en'])
+            expect(vi.mocked(getGroups).mock.calls.map(([q]) => q?.locale)).toEqual(['ja', 'es'])
+        })
+
+        it('integrantes de um grupo vêm com as traduções', async () => {
+            fetchMock.mockResolvedValue({ ok: true, json: async () => [{ acf: { members: [1, 2] } }] })
+            vi.mocked(getArtistsByIds).mockResolvedValue([] as never)
+            await getHubItems(hub({ kind: 'artists', filter: { groupSlug: 'bts' } }), { locale: 'en' })
+            expect(getArtistsByIds).toHaveBeenCalledWith([1, 2], { comTraducoes: true })
         })
     })
 
