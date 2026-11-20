@@ -9,6 +9,8 @@ import { CollapsibleProse } from '@/components/profiles/CollapsibleProse'
 import { highlightProse } from '@/lib/profiles/highlightProse'
 import { formatDate, getWPImage, stripHtml } from '@/lib/utils'
 import { intlLocale } from '@/lib/i18n/format'
+import { localizePlace } from '@/lib/i18n/place'
+import type { Locale } from '@/lib/i18n/config'
 import type { WPAgency, WPArtist, WPGroup, WPPost, WPProduction } from '@/lib/wordpress/types'
 import type { ArtistProfileModel } from '@/lib/profiles/artistProfile'
 import { MapaConexoes, type NoMapa } from '@/components/artists/MapaConexoes'
@@ -167,7 +169,11 @@ export function ArtistFichaC({
     ].filter(Boolean) as { id: string; tipo: 'listen' | 'watch' | 'read' | 'understand'; detalhe?: string }[]
 
     const idade = model.age
-    const cidade = acf.birth_place ? String(acf.birth_place).split(',')[0] : ''
+    // Lugar traduzido (o TMDB manda em inglês). "Cidade" só quando há cidade de fato: com só o país
+    // ("South Korea"), a ficha mostrava "Cidade South Korea" (Han Jae-in, 2026-11-20).
+    const partesLugar = (localizePlace(acf.birth_place ? String(acf.birth_place) : null, locale as Locale) ?? '').split(',').map(p => p.trim()).filter(Boolean)
+    const lugarCurto = partesLugar[0] ?? ''
+    const cidade = partesLugar.length > 1 ? partesLugar[0] : ''
     const fatos: [string, string][] = ([
         acf.birth_date ? [t('born'), formatDate(acf.birth_date, intlLocale(locale))] : null,
         cidade ? [t('city'), cidade] : null,
@@ -215,7 +221,7 @@ export function ArtistFichaC({
                     <div className="col-span-2 sm:col-span-1 sm:self-start xl:col-start-2">
                         {careerStatement && <p className={`${SERIF} max-w-[760px] text-[20px] leading-[1.2] sm:text-[28px]`}>{careerStatement}</p>}
                         <p className="mt-4 flex flex-wrap gap-x-7 gap-y-1 text-[14px] text-foreground-subtle sm:mt-5 sm:text-[15px]">
-                            {idade != null && <span><b className="text-foreground">{t('ageYears', { count: idade })}</b>{cidade ? ` · ${cidade}` : ''}</span>}
+                            {idade != null && <span><b className="text-foreground">{t('ageYears', { count: idade })}</b>{lugarCurto ? ` · ${lugarCurto}` : ''}</span>}
                             {acf.debut_date && <span>{t('debutLabel')} <b className="text-foreground">{String(acf.debut_date).slice(0, 4)}</b></span>}
                             {nomeGrupo && <span>{t('groupFact')} <b className="text-foreground">{nomeGrupo}</b></span>}
                         </p>
