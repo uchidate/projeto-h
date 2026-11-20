@@ -18,6 +18,9 @@ if (process.env.NODE_ENV === 'production' && process.env.IDENTIDADE_PERMITE_PADR
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Dev em worktree (~/hh-work/wt-pub): o node_modules é symlink para fora da raiz e o Turbopack o recusa.
+    // HH_TURBOPACK_ROOT=$HOME amplia a raiz só quando definido; build de produção não usa.
+    ...(process.env.HH_TURBOPACK_ROOT ? { turbopack: { root: process.env.HH_TURBOPACK_ROOT } } : {}),
     output: 'standalone',
     // Proteção de descompasso de versão. Página aberta no build antigo que
     // navega depois de um deploy mandava o estado do roteador no formato velho

@@ -30,6 +30,7 @@ import { fichaMagra } from '@/lib/artists/fichaMagra'
 import { buildArtistProfileEntries } from '@/components/profiles/ArtistProfileBlocks'
 import { ProfileProseStyles } from '@/components/profiles/ProfileProseStyles'
 import { LojaDestaque } from '@/components/ui/LojaDestaque'
+import { LojaLateral } from '@/components/ui/LojaLateral'
 import { LojaDeslizante } from '@/components/ui/LojaDeslizante'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { ShopRelatedSection } from '@/components/ui/ShopRelatedSection'
@@ -208,14 +209,15 @@ export function ArtistDetailPage({
     const poolLoja = shopProducts.length > 0 ? shopProducts : groupShopProducts
     const destaqueA = poolLoja[3] ?? poolLoja[0]
     const destaqueB = poolLoja[4] ?? poolLoja[1]
-    const lojaLateral = destaqueA ? (
-        <>
-            <LojaDestaque tamanho="grande" product={destaqueA} bloco="ficha-artista-loja-lateral" contexto={`artista:${artist.slug}:lateral`}
-                title={shopFallback ? 'Achado da loja' : `Para quem curte ${name}`} />
-            {destaqueB && destaqueB.id !== destaqueA.id && (
-                <LojaDestaque tamanho="grande" product={destaqueB} bloco="ficha-artista-loja-lateral-2" contexto={`artista:${artist.slug}:lateral2`} title="Mais da loja" />
-            )}
-        </>
+    // Uma caixa só, com até 3 produtos em linha. Os contextos lateral/lateral2 continuam iguais aos dos
+    // dois cartões grandes de antes, para o ranking de cliques seguir comparável.
+    const destaqueC = poolLoja[6]
+    const itensLateral = ([[destaqueA, 'lateral'], [destaqueB, 'lateral2'], [destaqueC, 'lateral3']] as const)
+        .flatMap(([product, sufixo]) => (product ? [{ product, contexto: `artista:${artist.slug}:${sufixo}` }] : []))
+        .filter((x, i, arr) => arr.findIndex((y) => y.product.id === x.product.id) === i)
+    const lojaLateral = itensLateral.length > 0 ? (
+        <LojaLateral bloco="ficha-artista-loja-lateral" itens={itensLateral}
+            title={shopFallback ? 'Achados da loja' : `Para quem curte ${name}`} />
     ) : null
 
     const destaquePremios = poolLoja[5] ?? poolLoja[2]
