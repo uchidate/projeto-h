@@ -27,7 +27,8 @@ function nameToGradient(name: string): string {
 }
 
 export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw, 20vw', aspectRatio = 'aspect-3/4', showRole = true, variant = 'default', showTrendingBadge = true, grupoNome }: Props) {
-    const labels = labelsFor(useLocale())
+    const locale = useLocale()
+    const labels = labelsFor(locale)
     const image = getWPImage(artist._embedded, artist.featured_image_url)
     const name = stripHtml(artist.title.rendered)
     const roles = (artist.acf?.roles as string[] | undefined)?.map(r => labels.role(r, artist.acf?.gender)) ?? []
@@ -37,7 +38,7 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
     // dossiê desce para uma linha discreta embaixo, como motivo de clicar. Antes a obra ocupava a foto em letra
     // grande e o nome ficava pequeno fora dela: numa lista de artistas, lia-se uma lista de obras.
     if (variant === 'diretorio') {
-        const destaque = destaqueDe(artist)
+        const destaque = destaqueDe(artist, locale)
         return (
             <Link href={`/artists/${artist.slug}`} className="group flex flex-col" data-slug={artist.slug}>
                 <div className="relative aspect-3/4 overflow-hidden bg-surface">

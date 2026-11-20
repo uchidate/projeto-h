@@ -9,10 +9,20 @@ export type Destaque = { titulo: string; tipo: 'producao' | 'musica' | 'obra' }
  * Destaque do cartão: o campo `card_destaque` (com o tipo certo) e, na falta dele, a obra-chave do dossiê,
  * sem o parêntese final ("Flower (2023)" -> "Flower") e sem rótulo, já que ela não informa o tipo.
  */
-export function destaqueDe(artist: WPArtist): Destaque | null {
+export function destaqueDe(artist: WPArtist, locale: string = 'pt'): Destaque | null {
+    const semParentese = (s: unknown) => String(s ?? '').replace(/\s*\([^)]*\)?\s*$/, '').trim()
     const direto = String(artist.acf?.card_destaque ?? '').trim()
-    if (direto) return { titulo: direto, tipo: artist.acf?.card_destaque_tipo === 'musica' ? 'musica' : artist.acf?.card_destaque_tipo === 'producao' ? 'producao' : 'obra' }
-    const obra = String(artist.acf?.essencia_obra_chave ?? '').replace(/\s*\([^)]*\)?\s*$/, '').trim()
+    const tipo = artist.acf?.card_destaque_tipo === 'musica' ? 'musica' : artist.acf?.card_destaque_tipo === 'producao' ? 'producao' : 'obra'
+    if (locale !== 'pt') {
+        // `card_destaque` guarda o título da obra em português ("Tudo Bem Não Ser Normal" em /en e /es,
+        // detector de vazamento, 2026-11-20). Música não muda de idioma; obra só com a obra-chave traduzida.
+        if (direto && tipo === 'musica') return { titulo: direto, tipo }
+        const tr = artist.translations?.[locale as keyof typeof artist.translations]
+        const obra = tr && !tr.stale ? semParentese(tr.acf?.essencia_obra_chave) : ''
+        return obra ? { titulo: obra, tipo: 'obra' } : null
+    }
+    if (direto) return { titulo: direto, tipo }
+    const obra = semParentese(artist.acf?.essencia_obra_chave)
     return obra ? { titulo: obra, tipo: 'obra' } : null
 }
 

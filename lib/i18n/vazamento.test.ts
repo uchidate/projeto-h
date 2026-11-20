@@ -59,3 +59,17 @@ describe('regressoes', () => {
         ])
     })
 })
+
+describe('espanhol e japonês', () => {
+    it('em /es, frase espanhola com "que", "para", "como" e "está" não conta', () => {
+        expect(pareceEmPortugues('La película que está disponible para ver como estreno', 'es')).toBe(false)
+        expect(pareceEmPortugues('Todo sobre el grupo, entre otros', 'es')).toBe(false)
+    })
+    it('em /es, português vazado conta', () => {
+        expect(pareceEmPortugues('Veja também os artistas do grupo', 'es')).toBe(true)
+        expect(pareceEmPortugues('Você ainda não respondeu', 'es')).toBe(true)
+    })
+    it('em /ja, o quiz que caía no português (#483) conta', () => {
+        expect(linhasEmPortugues('<h2>Qual é o nome do fandom do BTS?</h2><p>BTSのファンダム名は？</p>', 'ja')).toEqual(['Qual é o nome do fandom do BTS?'])
+    })
+})
