@@ -1,5 +1,5 @@
 /**
- * Detector de português vazado nas páginas em inglês.
+ * Detector de português vazado nas páginas em inglês, espanhol e japonês.
  *
  * O resto de português em /en foi achado até aqui à mão (curl + olho): blocos de
  * ficha, títulos de quiz, rótulos de componente. Isto automatiza a pergunta "quantas linhas de
@@ -21,6 +21,16 @@ const PALAVRAS_PT = new Set([
     'é', 'na', 'qual', 'quais', 'minha', 'meu', 'toque', 'salvo', 'ver', 'tudo', 'nome', 'ano', 'anos',
 ])
 
+// Espanhol divide com o português "que", "para", "como", "por", "está"…: em /es só contam as palavras
+// que não existem em espanhol. O quiz em japonês caía no português (#483) e o detector só olhava /en.
+const SO_PORTUGUES = new Set([
+    'do', 'da', 'dos', 'das', 'não', 'você', 'são', 'também', 'uma', 'em', 'ao', 'aos', 'até', 'pelo', 'pela',
+    'ainda', 'foi', 'ele', 'ela', 'nas', 'com', 'tudo', 'nome', 'qual', 'quais', 'é', 'quando', 'onde', 'seu',
+    'sua', 'seus', 'suas', 'os', 'minha', 'meu', 'mais', 'ver', 'anos', 'ano',
+])
+
+export type Idioma = 'en' | 'es' | 'ja'
+
 const ENTIDADES: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#x27;': "'", '&#39;': "'", '&nbsp;': ' ' }
 
 function decodificar(texto: string): string {
@@ -35,16 +45,17 @@ export function extrairTextos(html: string): string[] {
         .filter(t => t.length >= 4)
 }
 
-export function pareceEmPortugues(linha: string): boolean {
+export function pareceEmPortugues(linha: string, idioma: Idioma = 'en'): boolean {
     if (/[ãõ]/i.test(linha)) return true
-    const palavras = linha.toLowerCase().match(/[a-zçáàâãéêíóôõúü]+/g) ?? []
-    const achadas = new Set(palavras.filter(p => PALAVRAS_PT.has(p)))
+    const palavras = linha.toLowerCase().match(/[a-zçáàâãéêíóôõúüñ]+/g) ?? []
+    const lista = idioma === 'es' ? SO_PORTUGUES : PALAVRAS_PT
+    const achadas = new Set(palavras.filter(p => lista.has(p)))
     return achadas.size >= 2
 }
 
 /** As linhas suspeitas (únicas, na ordem em que aparecem). */
-export function linhasEmPortugues(html: string): string[] {
-    return [...new Set(extrairTextos(html).filter(pareceEmPortugues))]
+export function linhasEmPortugues(html: string, idioma: Idioma = 'en'): string[] {
+    return [...new Set(extrairTextos(html).filter(l => pareceEmPortugues(l, idioma)))]
 }
 
 export type ResultadoDaPagina = { caminho: string; linhas: string[] }

@@ -10,7 +10,8 @@ const SERIF = 'font-[family-name:var(--font-playfair)]'
 
 /** Os seis primeiros da ordem "Em alta", com número de posição no rosto. */
 export function EmAlta({ artistas, verTodos, grupos = {} }: { artistas: WPArtist[]; verTodos: string; grupos?: Record<number, string> }) {
-    const labels = labelsFor(useLocale())
+    const locale = useLocale()
+    const labels = labelsFor(locale)
     const t = useTranslations('client.artistsLista')
     if (artistas.length === 0) return null
     return (
@@ -25,7 +26,7 @@ export function EmAlta({ artistas, verTodos, grupos = {} }: { artistas: WPArtist
                     const nome = stripHtml(a.title.rendered)
                     const papel = (a.acf?.roles as string[] | undefined)?.map(r => labels.role(r, a.acf?.gender))[0]
                     const grupo = grupoDe(a, grupos)
-                    const destaque = destaqueDe(a)
+                    const destaque = destaqueDe(a, locale)
                     return (
                         <li key={a.id} className="w-[150px] shrink-0 sm:w-auto">
                             <Link href={`/artists/${a.slug}`} data-posicao={i + 1} className="group block">
