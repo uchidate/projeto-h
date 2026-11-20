@@ -149,7 +149,7 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
         const idsPorGrupo = new Map(items.map(g => [g.id, (g.acf?.members ?? []).slice(0, 6)]))
         const todosIds = [...new Set([...idsPorGrupo.values()].flat())]
         const lotes = Array.from({ length: Math.ceil(todosIds.length / 100) }, (_, i) => todosIds.slice(i * 100, i * 100 + 100))
-        const artistas = (await Promise.all(lotes.map(getArtistsByIds))).flat()
+        const artistas = (await Promise.all(lotes.map((lote) => getArtistsByIds(lote)))).flat()
         const porId = new Map(artistas.map(a => [a.id, a]))
         for (const g of items) {
             const ex = new Set(parseFormerMembers(g.former_member_slugs, g.slug).map(e => e.slug))

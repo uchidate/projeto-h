@@ -58,11 +58,13 @@ export async function getArtists(query: ArtistsQuery = {}) {
     return resultado
 }
 
-export async function getArtistsByIds(ids: number[]): Promise<WPArtist[]> {
+/** Com `comTraducoes`, traz `translations` (necessário para saber em que idiomas cada ficha existe). */
+export async function getArtistsByIds(ids: number[], { comTraducoes = false }: { comTraducoes?: boolean } = {}): Promise<WPArtist[]> {
     if (!ids.length) return []
     try {
+        const campos = comTraducoes ? 'id,slug,title,date,featured_image_url,acf,translations' : 'id,slug,title,date,featured_image_url,acf'
         return await wpBuscarOpcional<WPArtist[]>(
-            `/wp/v2/artist${buildParams({ include: ids.join(','), per_page: ids.length, status: 'publish', _fields: 'id,slug,title,date,featured_image_url,acf', orderby: 'include' })}`,
+            `/wp/v2/artist${buildParams({ include: ids.join(','), per_page: ids.length, status: 'publish', _fields: campos, orderby: 'include' })}`,
             { revalidate: 1800, tags: [WP_CACHE_TAGS.artists] },
         )
     } catch { return [] }
