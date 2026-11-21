@@ -7,9 +7,10 @@ describe('camposDoGrupo', () => {
         expect(camposDoGrupo(undefined)).not.toContain('translations')
     })
 
-    it('leve pede só a estreia e, com idioma, título e stale daquele idioma', () => {
+    it('leve pede só a estreia, as notícias recentes e, com idioma, título e stale daquele idioma', () => {
         const campos = camposDoGrupo('ja', true).split(',')
         expect(campos).toContain('acf.debut_date')
+        expect(campos).toContain('acf.noticias_14d')
         expect(campos).toContain('translations.ja.title')
         expect(campos).toContain('translations.ja.stale')
         expect(campos).not.toContain('acf')
@@ -17,6 +18,6 @@ describe('camposDoGrupo', () => {
     })
 
     it('leve sem idioma não pede tradução', () => {
-        expect(camposDoGrupo(undefined, true)).toBe('id,slug,title,date,featured_image_url,acf.debut_date')
+        expect(camposDoGrupo(undefined, true)).toBe('id,slug,title,date,featured_image_url,acf.debut_date,acf.noticias_14d')
     })
 })

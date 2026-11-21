@@ -38,10 +38,10 @@ export function grupoDe(artist: WPArtist, grupos: Record<number, string>): strin
  * acima da obra (cartão do "Em alta", onde o topo é do número da posição).
  * Só usa dados já presentes na listagem; sem eles não desenha nada.
  */
-export function GanchoArtista({ destaque, grupoNome, grupoNoTopo = false }: { destaque: Destaque | null; grupoNome?: string; grupoNoTopo?: boolean }) {
+export function GanchoArtista({ destaque, grupoNome, grupoNoTopo = false, reservaDireita = false }: { destaque: Destaque | null; grupoNome?: string; grupoNoTopo?: boolean; reservaDireita?: boolean }) {
     const t = useTranslations('client.artistCard')
     const etiqueta = grupoNome && (
-        <span className={`${grupoNoTopo ? 'absolute left-2 top-2 max-w-[calc(100%-1rem)]' : 'mb-2 block w-fit max-w-full'} truncate bg-accent px-2 py-1 font-mono text-[10px] font-black uppercase tracking-[0.08em] text-[#0d0b0f] shadow-md`}>
+        <span className={`${grupoNoTopo ? `absolute left-2 top-2 ${reservaDireita ? 'max-w-[calc(100%-6rem)]' : 'max-w-[calc(100%-1rem)]'}` : 'mb-2 block w-fit max-w-full'} truncate bg-accent px-2 py-1 font-mono text-[10px] font-black uppercase tracking-[0.08em] text-[#0d0b0f] shadow-md`}>
             ♪ {grupoNome}
         </span>
     )
