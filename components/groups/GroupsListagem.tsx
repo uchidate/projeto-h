@@ -20,6 +20,7 @@ import { DEFAULT_LOCALE, LOCALE_META, type Locale } from '@/lib/i18n/config'
 import { href } from '@/lib/i18n/routes'
 import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import type { WPGroup } from '@/lib/wordpress/types'
+import { maisNoticiadas } from '@/lib/constants/em-alta'
 
 export type SearchParams = Promise<{ search?: string; page?: string; type?: string; active?: string; letter?: string; generation?: string; order?: string }>
 
@@ -122,10 +123,12 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
     const hoje = hojeEmSaoPaulo()
     if (inicio) {
         const todos = await getAllGroups({ ...idioma, orderby: 'relevance', order: 'desc', leve: true }).catch(() => [] as WPGroup[])
-        // Os seis primeiros da própria lista (mesma ordem de relevância): a grade segue dali, sem repetir.
-        emAlta = items.slice(0, 6)
         // `todos` já vem por relevância: as quatro primeiras de cada geração são as mais procuradas.
         const todosNoIdioma = emPt ? todos : todos.filter(g => hasLocale(g, locale)).map(g => localizeEntity(g, locale, 'group'))
+        // "Em alta" = mais matérias nos últimos 14 dias na coleta de notícias (noticias_14d, mínimo do selo).
+        // Até 2026-11-21 eram os seis primeiros por relevância, que é a ordem da grade, não o que o título diz.
+        // Sem grupo acima do mínimo, a faixa não aparece.
+        emAlta = maisNoticiadas(todosNoIdioma, 6)
         geracoes = GENERATIONS.filter(g => g.slug !== '1').map(g => ({
             slug: g.slug, label: g.label,
             fotos: todosNoIdioma.filter(x => getGeneration(getYear(x.acf?.debut_date))?.slug === g.slug && x.featured_image_url).slice(0, 4),

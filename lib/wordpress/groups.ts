@@ -37,7 +37,8 @@ export type GroupsQuery = {
 /** Campos pedidos ao REST. `translations.<idioma>.x` limita a tradução ao idioma da página. */
 export function camposDoGrupo(locale?: string, leve?: boolean): string {
     if (leve) {
-        const base = 'id,slug,title,date,featured_image_url,acf.debut_date'
+        // acf.noticias_14d: selo "Em alta" e a faixa "Em alta" de /groups (lib/constants/em-alta.ts).
+        const base = 'id,slug,title,date,featured_image_url,acf.debut_date,acf.noticias_14d'
         return locale ? `${base},translations.${locale}.title,translations.${locale}.stale` : base
     }
     return locale ? 'id,slug,title,date,featured_image_url,acf,former_member_slugs,translations' : 'id,slug,title,date,featured_image_url,acf,former_member_slugs'

@@ -244,8 +244,9 @@ export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, total
     }
     const proximaPagina = currentPage < totalPages ? buildHref({ page: String(currentPage + 1) }) : null
     const restantes = Math.max(0, total - currentPage * 48)
-    // Na página inicial os 6 primeiros já estão em "Em alta": a grade segue dali, sem repetir.
-    const grade = inicio && emAlta.length > 0 ? groups.slice(Math.min(6, emAlta.length)) : groups
+    // Na página inicial quem já está em "Em alta" não se repete na grade.
+    const idsEmAlta = new Set(inicio ? emAlta.map(g => g.id) : [])
+    const grade = groups.filter(g => !idsEmAlta.has(g.id))
 
     const leaderboard = ADSENSE.slots.leaderboard
     const inline = ADSENSE.slots.inline

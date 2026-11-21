@@ -7,6 +7,8 @@ import { getWPImage, stripHtml } from '@/lib/utils'
 import { GanchoArtista, destaqueDe } from '@/components/artists/lista/GanchoArtista'
 import { estaEmAlta } from '@/lib/constants/em-alta'
 
+const EM_ALTA_ROTULO = { pt: 'em alta', en: 'trending', es: 'en tendencia', ja: '話題' } as const
+
 interface Props {
     artist: WPArtist
     priority?: boolean
@@ -54,7 +56,12 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
                             </span>
                         </div>
                     )}
-                    <GanchoArtista destaque={null} grupoNome={grupoNome} grupoNoTopo />
+                    <GanchoArtista destaque={null} grupoNome={grupoNome} grupoNoTopo reservaDireita={isTrending} />
+                    {isTrending && (
+                        <span className="absolute right-2 top-2 bg-accent-a11y px-1.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
+                            {EM_ALTA_ROTULO[locale as keyof typeof EM_ALTA_ROTULO] ?? EM_ALTA_ROTULO.pt}
+                        </span>
+                    )}
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 via-60% to-transparent px-3 pb-2.5 pt-10">
                         <span className="line-clamp-2 block font-[family-name:var(--font-playfair)] text-[17px] font-bold leading-[1.1] text-white [text-shadow:0_1px_3px_rgba(0,0,0,.9)] sm:text-[18px]">{name}</span>
                     </div>
