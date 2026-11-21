@@ -1,0 +1,128 @@
+name: 📊 Notas do acervo
+# Recalcula, numa sequência só, as notas que ordenam o site (listagens, vitrines, home, "Em alta",
+# "Mais lidos"). Cada passo é um script do repositório de operação; o porquê de cada nota está em
+# ops/servidor/agenda.json.
+#
+# Por que um workflow e não nove (2026-11-21): o agendador do GitHub atrasava cada um de 7 a 9 h,
+# de forma independente. Rodavam entre 10h e 14h de Brasília, no pico de acesso, e a relevância
+# (que usa popularidade e streaming) podia rodar antes delas. Aqui a ordem é garantida e há um
+# atraso só.
+#
+# Ordem: insumos primeiro (streaming, atualidade, em alta, popularidade), depois as relevâncias que
+# os combinam, por fim as visualizações; a revalidação do cache vai uma vez por tipo, no fim.
+# Um passo que falha não impede os seguintes (`!cancelled()`): a relevância ainda vale com o
+# insumo da véspera. O job termina como falha e o watchdog avisa.
+#
+# Semanais (segunda ou `semanais: true` no disparo manual): popularidade (Wikipédia, ~5 min) e
+# visualizações dos artigos (janela de 90 dias; diário não mudaria nada).
+#
+# Roda em ubuntu-latest, não no runner self-hosted: os scripts usam `docker exec` por SSH
+# (lib/wp.mjs) e o socket do Docker saiu do runner self-hosted em 2026-09-09.
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # 03:00 em Brasília (o GitHub costuma atrasar horas)
+  workflow_dispatch:
+    inputs:
+      semanais:
+        description: 'Rodar também os passos semanais (popularidade e visualizações)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: notas-do-acervo
+  cancel-in-progress: false
+
+jobs:
+  notas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
+      # Exceção de WAF da Cloudflare: sem ela a REST do WP devolve 403 ao runner (issue #19).
+      SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar operacao
+        uses: ./.github/actions/preparar-operacao
+        with:
+          mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
+          repositorio: ${{ vars.OPS_REPOSITORY }}
+          chave: ${{ secrets.OPS_DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Semanais hoje?
+        id: dia
+        run: |
+          if [ "$(date -u +%u)" = "1" ] || [ "${{ github.event.inputs.semanais }}" = "true" ]; then
+            echo "semanais=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "semanais=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── Insumos ──────────────────────────────────────────────────────────────
+      - name: Streaming (streaming_score dos artistas)
+        if: ${{ !cancelled() }}
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: node scripts/update-artist-streaming-scores.mjs --confirm
+
+      - name: Atualidade das produções (trending_score)
+        if: ${{ !cancelled() }}
+        run: node scripts/update-trending-scores.mjs --confirm
+
+      - name: Em alta (trending_score de artista e grupo, por notícia)
+        if: ${{ !cancelled() }}
+        run: node scripts/update-em-alta.mjs --confirm
+
+      - name: Popularidade de artistas (Wikipédia, semanal)
+        if: ${{ !cancelled() && steps.dia.outputs.semanais == 'true' }}
+        run: node scripts/update-artist-popularity.mjs --top=500 --confirm
+
+      - name: Popularidade de grupos (Wikipédia, semanal)
+        if: ${{ !cancelled() && steps.dia.outputs.semanais == 'true' }}
+        run: node scripts/update-group-popularity.mjs --confirm
+
+      # ── Relevância (combina os insumos acima com o acesso medido no Umami) ───
+      - name: Relevância de artistas
+        if: ${{ !cancelled() }}
+        run: node scripts/update-artist-relevance.mjs --confirm
+
+      - name: Relevância de grupos
+        if: ${{ !cancelled() }}
+        run: node scripts/update-group-relevance.mjs --confirm
+
+      - name: Relevância de produções
+        if: ${{ !cancelled() }}
+        run: node scripts/update-production-relevance.mjs --confirm
+
+      - name: Visualizações dos artigos (semanal)
+        if: ${{ !cancelled() && steps.dia.outputs.semanais == 'true' }}
+        run: node scripts/update-post-views.mjs --confirm
+
+      # ── Cache ────────────────────────────────────────────────────────────────
+      - name: Revalidar o cache (uma vez por tipo)
+        if: ${{ !cancelled() }}
+        env:
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+        run: |
+          tipos="artist group production"
+          [ "${{ steps.dia.outputs.semanais }}" = "true" ] && tipos="$tipos post"
+          for t in $tipos; do
+            curl -s -X POST \
+              -H "${{ vars.SONDA_HEADER }}: ${SONDA_TOKEN}" \
+              "${{ vars.SITE_URL }}/api/revalidate?secret=${REVALIDATE_SECRET}" \
+              -H "Content-Type: application/json" \
+              -d "{\"type\":\"$t\"}" \
+              -w "revalidate $t: %{http_code}\n"
+          done

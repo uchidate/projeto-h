@@ -38,18 +38,10 @@ jobs:
             // Folga de 1 dia sobre a periodicidade real, para um atraso
             // pontual do agendador do GitHub nao virar issue.
             const limites = {
-              'streaming-scores.yml': 2,   // diario   (0 5 * * *)
-              'trending-scores.yml': 8,    // semanal  (0 6 * * 1)
-              // validate-wp-data saiu em 2026-11-02: o job `acervo` do observatorio (servidor) o substitui.
-              // Ate 2026-11-02 so os tres primeiros eram vigiados; os outros workflows de dados podiam
-              // parar em silencio (e o cron do GitHub chega a atrasar mais de 7 h, medido numa segunda).
-              // Cada um grava algo que o site ou o Grafana le: ver docs/DADOS-AGENDADOS.md no repositorio de operacao.
-              'artist-popularity.yml': 8,  // semanal  (15 6 * * 1)  popularity_score
-              'artist-relevance.yml': 2,   // diario   (55 6 * * *)  access_score + relevance_score (listagem, relacionados, mais acessados)
-              'group-popularity.yml': 8,   // semanal  (30 6 * * 1)  popularity_score dos grupos (Wikipédia)
-              'group-relevance.yml': 2,    // diario   (5 7 * * *)   relevance_score dos grupos (listagem, hubs, em alta)
-              'production-relevance.yml': 2, // diario (45 6 * * *)  access_score + relevance_score das producoes
-              'views-artigos.yml': 8,      // semanal  (0 7 * * 1)   views (Mais lidos, conteudo perene)
+              // As notas do acervo (streaming, atualidade, em alta, popularidade, relevâncias,
+              // visualizações) rodam desde 2026-11-21 num workflow só, em sequência: um limite cobre todas.
+              // Cada passo grava algo que o site lê: ver ops/servidor/agenda.json no repositório de operação.
+              'notas.yml': 2,              // diario   (0 6 * * *); semanais às segundas no mesmo run
               'artist-discography.yml': 2, // diario   (45 6 * * *)  music_release
               'exporta-deploy.yml': 2,     // diario + a cada deploy (deploy.prom)
               'performance.yml': 8,        // semanal  (Lighthouse CI)

@@ -21,6 +21,7 @@ import { SITE_URL, SITE_NAME } from '@/lib/constants/site'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { GENERATIONS, getGeneration } from '@/lib/constants/generations'
 import { temRecurso } from '@/lib/i18n/recursos'
+import { estaEmAlta } from '@/lib/constants/em-alta'
 
 const TEXTOS_CARTAO = {
     pt: { ended: 'encerrado', hot: 'em alta', since: (y: number | string) => `desde ${y}` },
@@ -83,7 +84,7 @@ export function GroupCard({ group, priority, locale = DEFAULT_LOCALE }: { group:
                         {txt.ended}
                     </span>
                 )}
-                {!isInactive && (acf.trending_score ?? 0) >= 7 && (
+                {!isInactive && estaEmAlta(acf.noticias_14d) && (
                     <span className="absolute left-1.5 top-1.5 bg-accent-a11y px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white sm:left-2 sm:top-2 sm:text-[10px]">
                         {txt.hot}
                     </span>
