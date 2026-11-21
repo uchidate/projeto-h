@@ -81,7 +81,7 @@ jobs:
         if: ${{ !cancelled() }}
         run: node scripts/update-trending-scores.mjs --confirm
 
-      - name: Em alta (trending_score de artista e grupo, por notícia)
+      - name: Em alta (noticias_14d de artista e grupo, selo do site)
         if: ${{ !cancelled() }}
         run: node scripts/update-em-alta.mjs --confirm
 
