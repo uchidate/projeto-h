@@ -193,6 +193,8 @@ export type WPArtist = {
         spotify?: string
         gender?: 'male' | 'female' | null
         trending_score?: number
+        /** Matérias sobre a ficha nos últimos 14 dias (coleta de notícias); selo "Em alta". Não ordena nada. */
+        noticias_14d?: number
         popularity_score?: number
         /** Acesso real ao site (sessões no Umami), 0–100. Distinto de
          *  popularity_score, que mede interesse global pela Wikipédia. */
@@ -289,6 +291,8 @@ export type WPGroup = {
         website?: string
         curiosidades?: string[]
         trending_score?: number
+        /** Matérias sobre a ficha nos últimos 14 dias (coleta de notícias); selo "Em alta". Não ordena nada. */
+        noticias_14d?: number
         story_chapters?: Array<{
             period: string
             title: string

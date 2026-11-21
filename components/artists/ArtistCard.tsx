@@ -5,6 +5,7 @@ import Link from '@/components/i18n/LocalizedLink'
 import type { WPArtist } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
 import { GanchoArtista, destaqueDe } from '@/components/artists/lista/GanchoArtista'
+import { estaEmAlta } from '@/lib/constants/em-alta'
 
 interface Props {
     artist: WPArtist
@@ -32,7 +33,7 @@ export function ArtistCard({ artist, priority, sizes = '(max-width: 640px) 33vw,
     const image = getWPImage(artist._embedded, artist.featured_image_url)
     const name = stripHtml(artist.title.rendered)
     const roles = (artist.acf?.roles as string[] | undefined)?.map(r => labels.role(r, artist.acf?.gender)) ?? []
-    const isTrending = showTrendingBadge && (artist.acf?.trending_score ?? 0) >= 50
+    const isTrending = showTrendingBadge && estaEmAlta(artist.acf?.noticias_14d)
 
     // Diretório: o nome é o que se lê primeiro, sobre a foto; o grupo vai em etiqueta no topo e a obra-chave do
     // dossiê desce para uma linha discreta embaixo, como motivo de clicar. Antes a obra ocupava a foto em letra
