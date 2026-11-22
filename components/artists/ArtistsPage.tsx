@@ -56,9 +56,11 @@ interface Props {
     gruposEmAlta?: { slug: string; nome: string }[]
     /** Grupo escolhido em "Por grupo" (?group=slug): a lista mostra só os integrantes. */
     grupoAtivo?: { slug: string; nome: string }
+    /** Faixa "Em alta agora": os mais noticiados em 14 dias (maisNoticiadas), calculados no servidor. */
+    emAlta?: WPArtist[]
 }
 
-export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [], grupos = {}, gruposEmAlta = [], grupoAtivo }: Props) {
+export function ArtistsPage({ artists, total, totalPages, currentPage, search, role, affiliation, letter, sortBy = 'trending', letterCounts, perPage = 48, aniversarios = [], shopProducts = [], grupos = {}, gruposEmAlta = [], grupoAtivo, emAlta = [] }: Props) {
     const pathname = usePathname()
 
     const [searchVal, setSearchVal] = useState(search ?? '')
@@ -142,8 +144,10 @@ export function ArtistsPage({ artists, total, totalPages, currentPage, search, r
     // Página inicial sem filtro: é onde entram as faixas de descoberta. Com busca, filtro ou letra, o leitor já sabe o que quer.
     const semRecorte = !searchVal && !roleVal && !affiliationVal && !letter && !grupoAtivo
     const inicio = currentPage === 1 && semRecorte
-    const emAltaArtistas = inicio && sortBy === 'trending' ? artists.slice(0, 6) : []
-    const grade = emAltaArtistas.length > 0 ? artists.slice(emAltaArtistas.length) : artists
+    const emAltaArtistas = inicio && sortBy === 'trending' ? emAlta : []
+    // Quem está na faixa não se repete na grade logo abaixo.
+    const naFaixa = new Set(emAltaArtistas.map(a => a.id))
+    const grade = naFaixa.size > 0 ? artists.filter(a => !naFaixa.has(a.id)) : artists
 
     const rotulo = [SORT_OPTIONS.find(o => o.value === sortBy)?.label ?? t('sort.trending'), ROLE_OPTIONS.find(o => o.value === role)?.label, affiliation === 'group' ? t('inGroup') : affiliation === 'solo' ? t('solo') : undefined, letter ? t('letterLabel', { letter }) : undefined, search ? `“${search}”` : undefined].filter(Boolean).join(' · ')
     const consultaAtual = new URLSearchParams()
