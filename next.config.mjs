@@ -215,6 +215,13 @@ const nextConfig = {
             { source: '/blog/boynextdoor-abre-primeira-turne-mundial-com-shows-em-seul', destination: '/blog/boynextdoor-esgota-pre-venda-e-abre-primeira-turne-mundial-em-seul', permanent: true },
             { source: '/blog/mr-kim-com-so-ji-sub-bate-recorde-de-audiencia-e-lidera-o-netflix-global', destination: '/blog/chief-kim-com-so-ji-sub-bate-recorde-de-audiencia-e-chega-ao-top-10-em-73-paises', permanent: true },
             { source: '/blog/nct-127-firma-parceria-com-sm-apos-recontrato-de-todos-os-membros', destination: '/blog/todos-os-sete-integrantes-do-nct-127-renovam-contrato-com-a-sm-entertainment', permanent: true },
+            // Perfis do tripleS com o slug de outro nome, herdado da importação (2026-11-22): o título e o
+            // texto já falavam da integrante certa; as versões em inglês já tinham o slug certo.
+            { source: '/blog/lee-nak-young-triples', destination: '/blog/kim-na-kyoung-triples', permanent: true },
+            { source: '/blog/lee-so-hyun-triples-artigo', destination: '/blog/park-so-hyun-triples', permanent: true },
+            { source: '/blog/hwang-joo-bin-triples', destination: '/blog/joobin-triples', permanent: true },
+            { source: '/blog/lee-seo-yeon-triples-artigo', destination: '/blog/yoon-seo-yeon-triples', permanent: true },
+            { source: '/blog/kim-hye-rin-triples-artigo', destination: '/blog/jeong-hye-rin-triples', permanent: true },
             // Posts do blog reescritos em 2026-10 (i18n D5-a): o slug antigo afirmava
             // fato que o texto corrigido não sustenta (nome errado, 'queda', 'sold-out'...).
             // O slug novo reflete o título atual; o antigo continua indexado.
