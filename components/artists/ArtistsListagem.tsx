@@ -17,6 +17,8 @@ import { href } from '@/lib/i18n/routes'
 import { hasLocale, localizeEntity } from '@/lib/i18n/entity-translation'
 import { TEXTOS_ANIVERSARIO_PT, type TextosAniversario } from '@/lib/artists/aniversarios'
 import { metadataDeListagem, paginaDe, paginaInvalida, urlDaListagem } from '@/lib/listagem'
+import { maisNoticiadas } from '@/lib/constants/em-alta'
+import type { WPArtist } from '@/lib/wordpress/types'
 
 export type SearchParams = Promise<{ search?: string; page?: string; role?: string; affiliation?: string; letter?: string; sortBy?: string; group?: string }>
 
@@ -103,8 +105,20 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
         aniversarios = aniversariosDaSemana(porMes.flat().filter(a => emPt || hasLocale(a, locale)).map(a => (emPt ? a : localizeEntity(a, locale, 'artist'))), hoje, 7, 5, textos)
     }
 
+    // Faixa "Em alta agora": mais matérias nos últimos 14 dias (noticias_14d, mínimo do selo), como em /groups.
+    // Até 2026-11-21 eram os seis primeiros por relevância, que é a ordem da grade, não o que o título diz.
+    // O coletor de notícias busca os ~120 artistas mais relevantes (ARTIST_NEWS_MAX_ARTISTS no ops), então só
+    // eles têm o campo: duas páginas de 60 por relevância cobrem o universo. Sem ninguém acima do mínimo, a faixa some.
+    let emAlta: WPArtist[] = []
+    if (unfiltered && page === 1 && sortBy === 'trending') {
+        const paginas = await Promise.all([1, 2].map(p => getArtists({ ...idioma, orderby: 'relevance', order: 'desc', perPage: 60, page: p })
+            .then(r => r.items).catch(() => [] as WPArtist[])))
+        const pool = paginas.flat()
+        emAlta = maisNoticiadas(emPt ? pool : pool.filter(a => hasLocale(a, locale)).map(a => localizeEntity(a, locale, 'artist')), 6)
+    }
+
     // Nome do grupo de cada artista para o cartão ("Do grupo BLACKPINK"). Falha do WP só tira essa linha.
-    const idsDeGrupo = [...new Set(items.flatMap(a => (a.acf?.groups as number[] | undefined) ?? []))]
+    const idsDeGrupo = [...new Set([...items, ...emAlta].flatMap(a => (a.acf?.groups as number[] | undefined) ?? []))]
     const grupos = Object.fromEntries((await getGroupsByIds(idsDeGrupo)).map(g => [g.id, stripHtml(g.title.rendered)]))
 
     // Atalhos "Por grupo": os grupos mais procurados levam à página do grupo, onde estão os integrantes.
@@ -137,6 +151,7 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
             shopProducts={shopProducts}
             grupos={grupos}
             gruposEmAlta={gruposEmAlta}
+            emAlta={emAlta}
             grupoAtivo={grupoFiltro ? { slug: grupoFiltro.slug, nome: stripHtml(grupoFiltro.title.rendered) } : undefined}
         />
         </>
