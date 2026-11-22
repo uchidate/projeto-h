@@ -51,7 +51,8 @@ export function indiceEmLimiteDeSecao(
     /** Título de seção que não deve vir logo depois do módulo (ex.: Referências, que já antecede a loja do fim). */
     evitarAntesDe?: RegExp,
 ): number {
-    const texto = (b?: { html?: string }) => (b?.html ?? '').replace(/<[^>]+>/g, '').trim()
+    // Só para comparar com `evitarAntesDe`; o `[<>]` final fecha o resto de tag malformada (CodeQL #57).
+    const texto = (b?: { html?: string }) => (b?.html ?? '').replace(/<[^>]+>/g, '').replace(/[<>]/g, '').trim()
     const serve = (i: number) => {
         const proximo = blocks[i + 1]
         if (!proximo) return !evitarAntesDe
