@@ -222,6 +222,12 @@ const nextConfig = {
             { source: '/blog/hwang-joo-bin-triples', destination: '/blog/joobin-triples', permanent: true },
             { source: '/blog/lee-seo-yeon-triples-artigo', destination: '/blog/yoon-seo-yeon-triples', permanent: true },
             { source: '/blog/kim-hye-rin-triples-artigo', destination: '/blog/jeong-hye-rin-triples', permanent: true },
+            // A versão em inglês usa o slug do PT (/en/blog/<slug-pt>), então o endereço antigo em inglês também muda.
+            { source: '/en/blog/lee-nak-young-triples', destination: '/en/blog/kim-na-kyoung-triples', permanent: true },
+            { source: '/en/blog/lee-so-hyun-triples-artigo', destination: '/en/blog/park-so-hyun-triples', permanent: true },
+            { source: '/en/blog/hwang-joo-bin-triples', destination: '/en/blog/joobin-triples', permanent: true },
+            { source: '/en/blog/lee-seo-yeon-triples-artigo', destination: '/en/blog/yoon-seo-yeon-triples', permanent: true },
+            { source: '/en/blog/kim-hye-rin-triples-artigo', destination: '/en/blog/jeong-hye-rin-triples', permanent: true },
             // Posts do blog reescritos em 2026-10 (i18n D5-a): o slug antigo afirmava
             // fato que o texto corrigido não sustenta (nome errado, 'queda', 'sold-out'...).
             // O slug novo reflete o título atual; o antigo continua indexado.
