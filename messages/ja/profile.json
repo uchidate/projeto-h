@@ -112,7 +112,7 @@
       "genreQ": "{title}のジャンルは？",
       "genreA": "{title}は{genres}に分類されています。",
       "castQ": "{title}のキャストは？",
-      "castA": "このページには{title}の{count, plural, other {キャスト#人}}が掲載されており、関連プロフィールがある場合はそちらにもリンクしています。"
+      "castA": "{title}のキャストは{count, plural, other {#人}}です。このページの一覧から各プロフィールをご覧いただけます。"
     }
   },
   "blocks": {
@@ -329,7 +329,7 @@
     "groupLinkIntro": "グループのプロフィールは、{name}を個人として読み解くうえで鍵となるレパートリー、メンバー、エラをつなぎます。",
     "readingsAbout": "{name}についての読みもの",
     "moreReadings": "さらに読む →",
-    "colophonNote": "{name}のプロフィールにある日付付きの記述は、掲載元の一次情報にリンクしています：{outlets}。",
+    "colophonNote": "参考資料：{outlets}。",
     "org": {
       "title": "運営体制",
       "conglomerate": "企業グループ",
