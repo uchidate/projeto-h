@@ -112,7 +112,7 @@
       "genreQ": "What genre is {title}?",
       "genreA": "{title} is classified as {genres}.",
       "castQ": "Who is in the cast of {title}?",
-      "castA": "This page lists {count, plural, one {# cast member} other {# cast members}} for {title}, with related profiles when available."
+      "castA": "The cast of {title} has {count, plural, one {# name} other {# names}}, listed on this page with links to available profiles."
     }
   },
   "blocks": {
@@ -329,7 +329,7 @@
     "groupLinkIntro": "The group profile connects the repertoire, members and eras that shape how {name} is read individually.",
     "readingsAbout": "Reading about {name}",
     "moreReadings": "more reading →",
-    "colophonNote": "Dated claims in {name}'s profile point to the primary source where they appear: {outlets}.",
+    "colophonNote": "Sources consulted: {outlets}.",
     "org": {
       "title": "Management structure",
       "conglomerate": "Conglomerate",

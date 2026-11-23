@@ -112,7 +112,7 @@
       "genreQ": "Qual é o gênero de {title}?",
       "genreA": "{title} está classificado como {genres}.",
       "castQ": "Quem está no elenco de {title}?",
-      "castA": "A página lista {count, plural, one {# nome no elenco} other {# nomes no elenco}} de {title}, com perfis relacionados quando cadastrados."
+      "castA": "O elenco de {title} reúne {count, plural, one {# nome} other {# nomes}}, listados nesta página com link para os perfis disponíveis."
     }
   },
   "blocks": {
@@ -329,7 +329,7 @@
     "groupLinkIntro": "Ver o perfil do grupo ajuda a conectar repertório, integrantes e fases que moldam a leitura individual de {name}.",
     "readingsAbout": "Leituras sobre {name}",
     "moreReadings": "mais leituras →",
-    "colophonNote": "As afirmações datadas neste perfil de {name} remetem à fonte primária no ponto em que aparecem: {outlets}.",
+    "colophonNote": "Fontes consultadas: {outlets}.",
     "org": {
       "title": "Estrutura de gestão",
       "conglomerate": "Conglomerado",
