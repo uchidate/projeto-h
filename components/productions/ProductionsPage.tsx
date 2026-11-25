@@ -75,8 +75,8 @@ export async function ProductionsPage({ locale = DEFAULT_LOCALE,
         const qs = params.toString()
         return `/productions${qs ? `?${qs}` : ''}`
     }
-    // Na página inicial os 6 primeiros já estão em "Em alta": a grade segue dali, sem repetir.
-    const grade = inicio && emAlta.length > 0 ? productions.slice(6) : productions
+    // Na página inicial os 16 primeiros já estão em "Em alta": a grade segue dali, sem repetir.
+    const grade = inicio && emAlta.length > 0 ? productions.slice(16) : productions
     const proximaPagina = currentPage < totalPages ? buildHref({ page: String(currentPage + 1) }) : null
     const restantes = Math.max(0, total - currentPage * 24)
 
@@ -111,10 +111,10 @@ export async function ProductionsPage({ locale = DEFAULT_LOCALE,
             {inicio && emAlta.length > 0 && (
                 <section className="page-wrap pt-8" data-bloco="lista-em-alta">
                     <h2 className={H2}>{t('trending')}</h2>
-                    <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-6 lg:gap-4">
-                        {emAlta.slice(0, 6).map((p, i) => (
-                            <li key={p.id} className="w-[140px] shrink-0 sm:w-auto" data-posicao={i + 1}>
-                                <ProductionCard production={p} priority={i < 3} variant="catalog" genreMap={genreMap} sizes="(max-width: 640px) 140px, (max-width: 1024px) 33vw, 16vw" />
+                    <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0 lg:grid-cols-8 lg:gap-4">
+                        {emAlta.slice(0, 16).map((p, i) => (
+                            <li key={p.id} className="w-[110px] shrink-0 sm:w-auto" data-posicao={i + 1}>
+                                <ProductionCard production={p} priority={i < 3} genreMap={genreMap} sizes="(max-width: 640px) 110px, (max-width: 1024px) 25vw, 12vw" />
                             </li>
                         ))}
                     </ul>
