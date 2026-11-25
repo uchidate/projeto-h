@@ -109,12 +109,14 @@ export async function ArtistsListagem({ searchParams, locale = DEFAULT_LOCALE }:
     // Até 2026-11-21 eram os seis primeiros por relevância, que é a ordem da grade, não o que o título diz.
     // O coletor de notícias busca os ~120 artistas mais relevantes (ARTIST_NEWS_MAX_ARTISTS no ops), então só
     // eles têm o campo: duas páginas de 60 por relevância cobrem o universo. Sem ninguém acima do mínimo, a faixa some.
+    // 16 cards compactos (2 fileiras de 8 no desktop); eram 6 até 2026-11-25.
+    const EM_ALTA_QTD = 16
     let emAlta: WPArtist[] = []
     if (unfiltered && page === 1 && sortBy === 'trending') {
         const paginas = await Promise.all([1, 2].map(p => getArtists({ ...idioma, orderby: 'relevance', order: 'desc', perPage: 60, page: p })
             .then(r => r.items).catch(() => [] as WPArtist[])))
         const pool = paginas.flat()
-        emAlta = maisNoticiadas(emPt ? pool : pool.filter(a => hasLocale(a, locale)).map(a => localizeEntity(a, locale, 'artist')), 6)
+        emAlta = maisNoticiadas(emPt ? pool : pool.filter(a => hasLocale(a, locale)).map(a => localizeEntity(a, locale, 'artist')), EM_ALTA_QTD)
     }
 
     // Nome do grupo de cada artista para o cartão ("Do grupo BLACKPINK"). Falha do WP só tira essa linha.
