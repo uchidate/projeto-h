@@ -295,21 +295,20 @@ export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, total
             {inicio && emAlta.length > 0 && (
                 <section className="page-wrap pt-8" data-bloco="lista-em-alta">
                     <h2 className={H2}>{t('trending')}</h2>
-                    <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-6 lg:gap-4">
-                        {emAlta.slice(0, 6).map((g, i) => {
+                    <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0 lg:grid-cols-8 lg:gap-4">
+                        {emAlta.slice(0, 16).map((g, i) => {
                             const foto = getWPImage(g._embedded, g.featured_image_url)
                             const nome = stripHtml(g.title.rendered)
                             const acf = g.acf ?? {}
                             const meta = [acf.type ? (tipos[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
                             return (
-                                <li key={g.id} className="w-[150px] shrink-0 sm:w-auto">
+                                <li key={g.id} className="w-[110px] shrink-0 sm:w-auto">
                                     <Link href={`/groups/${g.slug}`} data-posicao={i + 1} className="group block">
                                         <span className="relative block aspect-3/4 overflow-hidden bg-surface">
-                                            {foto && <Image src={foto.src} alt={foto.alt || nome} fill priority={i < 3} sizes="(max-width: 640px) 150px, (max-width: 1024px) 33vw, 16vw" className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" />}
+                                            {foto && <Image src={foto.src} alt={foto.alt || nome} fill priority={i < 3} sizes="(max-width: 640px) 110px, (max-width: 1024px) 25vw, 12vw" className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" />}
                                         </span>
                                         <span className="mt-2.5 flex items-baseline justify-between gap-2">
-                                            <span className="truncate text-[15px] font-extrabold sm:text-[16px]">{nome}</span>
-                                            {acf.name_hangul && <span className="hidden shrink-0 text-[11px] text-muted xl:inline">{acf.name_hangul}</span>}
+                                            <span className="truncate text-[13px] font-extrabold sm:text-[14px]">{nome}</span>
                                         </span>
                                         {meta && <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.08em] text-accent">{meta}</span>}
                                     </Link>

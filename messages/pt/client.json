@@ -658,7 +658,7 @@
     "genLong": "{n}ª geração",
     "genShort": "{n}ª gen.",
     "onlyActive": "Só ativos",
-    "trending": "Em alta",
+    "trending": "Em alta agora no site",
     "exploreByGeneration": "Explore por geração",
     "seeGeneration": "Ver a geração →",
     "debutedIn": "Debutaram em {month}",
@@ -766,7 +766,7 @@
       "special": "Especiais",
       "variety": "Variety"
     },
-    "trending": "Em alta",
+    "trending": "Em alta agora no site",
     "whereToWatch": "Onde assistir",
     "seeTitles": "Ver títulos →",
     "exploreByGenre": "Explore por gênero",

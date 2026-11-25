@@ -128,7 +128,7 @@ export async function GroupsListagem({ searchParams, locale = DEFAULT_LOCALE }: 
         // "Em alta" = mais matérias nos últimos 14 dias na coleta de notícias (noticias_14d, mínimo do selo).
         // Até 2026-11-21 eram os seis primeiros por relevância, que é a ordem da grade, não o que o título diz.
         // Sem grupo acima do mínimo, a faixa não aparece.
-        emAlta = maisNoticiadas(todosNoIdioma, 6)
+        emAlta = maisNoticiadas(todosNoIdioma, 16)
         geracoes = GENERATIONS.filter(g => g.slug !== '1').map(g => ({
             slug: g.slug, label: g.label,
             fotos: todosNoIdioma.filter(x => getGeneration(getYear(x.acf?.debut_date))?.slug === g.slug && x.featured_image_url).slice(0, 4),
