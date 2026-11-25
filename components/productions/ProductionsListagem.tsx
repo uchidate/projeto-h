@@ -109,7 +109,7 @@ export async function ProductionsListagem({ searchParams, locale = DEFAULT_LOCAL
         const topGeneros = [...genres].sort((a, b) => b.count - a.count).slice(0, 6)
         const fotos = await Promise.all(topGeneros.map(g => getProductions({ ...idioma, genre: g.slug, perPage: 12, excludeAdult: true }).then(r => (emPt ? r.items : r.items.filter(p => hasLocale(p, locale)).map(p => localizeEntity(p, locale, 'production')))).catch(() => [])))
         // Cada pôster aparece uma vez só nas faixas de gênero (e nunca os que já estão em "Em alta"), senão Drama e Comédia mostram os mesmos.
-        const usados = new Set(productionsResult.items.slice(0, 6).map(p => p.id))
+        const usados = new Set(productionsResult.items.slice(0, 16).map(p => p.id))
         generosTop = topGeneros.map((g, i) => {
             const escolhidos = fotos[i].filter(p => !usados.has(p.id)).slice(0, 3)
             escolhidos.forEach(p => usados.add(p.id))
@@ -133,7 +133,7 @@ export async function ProductionsListagem({ searchParams, locale = DEFAULT_LOCAL
             currentType={type}
             currentOrder={sp.order ?? 'trending'}
             search={sp.search}
-            emAlta={inicio ? productionsResult.items.slice(0, 6) : []}
+            emAlta={inicio ? productionsResult.items.slice(0, 16) : []}
             plataformasTop={plataformasTop}
             generosTop={generosTop}
             shopProducts={shopProducts}
