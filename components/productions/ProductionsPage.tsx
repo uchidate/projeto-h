@@ -113,8 +113,10 @@ export async function ProductionsPage({ locale = DEFAULT_LOCALE,
                     <h2 className={H2}>{t('trending')}</h2>
                     <ul className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0 lg:grid-cols-8 lg:gap-4">
                         {emAlta.slice(0, 16).map((p, i) => (
-                            <li key={p.id} className="w-[110px] shrink-0 sm:w-auto" data-posicao={i + 1}>
+                            <li key={p.id} className="relative w-[110px] shrink-0 sm:w-auto" data-posicao={i + 1}>
                                 <ProductionCard production={p} priority={i < 3} genreMap={genreMap} sizes="(max-width: 640px) 110px, (max-width: 1024px) 25vw, 12vw" />
+                                <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 aspect-2/3 bg-linear-to-b from-black/45 via-transparent via-25% to-transparent" />
+                                <span aria-hidden className={`pointer-events-none absolute left-2 top-1 ${SERIF} text-[34px] font-bold leading-none text-transparent sm:left-2.5 sm:text-[40px]`} style={{ WebkitTextStroke: '1.2px rgba(255,255,255,.95)', filter: 'drop-shadow(0 1px 4px rgba(0,0,0,.7))' }}>{String(i + 1).padStart(2, '0')}</span>
                             </li>
                         ))}
                     </ul>
