@@ -90,7 +90,7 @@
     "knip": "^6.47.0",
     "lint-staged": "^17.6.1",
     "postcss": "^8.5.33",
-    "semantic-release": "^25.0.9",
+    "semantic-release": "^26.0.1",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
