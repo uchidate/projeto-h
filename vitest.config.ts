@@ -34,17 +34,17 @@ export default defineConfig({
             reporter: ['text', 'html', 'json-summary'],
             include: ['lib/**', 'components/**', 'app/api/**'],
             exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.d.ts'],
-            // Pisos medidos em 2026-11-27 (total 62,8% linhas / 48,8% ramos / 56,8% funções;
-            // components/ 50,8 / 36,9 / 44,1, depois dos testes das listagens e do
-            // BlogPostPage; lib/ quase todo acima de 70%). Cada piso fica ~5 pontos abaixo do
+            // Pisos medidos em 2026-11-27 (total 65,9% linhas / 54,1% ramos / 60,3% funções;
+            // components/ 55,9 / 44,6 / 49,6, depois dos testes das listagens, fichas de
+            // artista e grupo, agências e Cultura 101; lib/ quase todo acima de 70%). Cada piso fica ~5 pontos abaixo do
             // medido: trava regressão sem bloquear PR por código legado ainda sem teste. Só
             // vale quando a cobertura roda (`npm run test:coverage`, que o CI usa). Ao subir
             // a cobertura de uma pasta, suba o piso junto — nunca baixe.
             thresholds: {
-                lines: 58,
-                branches: 44,
-                functions: 52,
-                'components/**': { lines: 45, branches: 31, functions: 39 },
+                lines: 60,
+                branches: 49,
+                functions: 55,
+                'components/**': { lines: 50, branches: 39, functions: 44 },
                 'lib/wordpress/**': { lines: 72, branches: 72, functions: 62 },
                 'lib/i18n/**': { lines: 65, branches: 69, functions: 74 },
                 'lib/seo/**': { lines: 75, branches: 71, functions: 78 },
@@ -52,6 +52,9 @@ export default defineConfig({
                 'lib/guias/**': { lines: 86, branches: 74, functions: 87 },
                 'lib/search/**': { lines: 85, branches: 77, functions: 81 },
                 'lib/profiles/**': { lines: 95, branches: 81, functions: 91 },
+                'lib/home/**': { lines: 86, branches: 60, functions: 70 },
+                'lib/agencies/**': { lines: 69, branches: 64, functions: 81 },
+                'lib/artists/**': { lines: 81, branches: 80, functions: 76 },
             },
         },
     },
