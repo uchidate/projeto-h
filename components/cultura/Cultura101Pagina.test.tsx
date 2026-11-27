@@ -89,7 +89,8 @@ const secao = (c: HTMLElement, aria: string) => c.querySelector(`section[aria-la
 
 beforeEach(() => {
     vi.useFakeTimers({ toFake: ['Date'] })
-    vi.setSystemTime(new Date(2027, 0, 10)) // 10/01/2027
+    // Meio do dia em UTC: é o mesmo dia em Brasília em qualquer fuso do computador que roda o teste.
+    vi.setSystemTime(new Date('2027-01-10T15:00:00Z'))
     slots.inline = 'in'
     configurar()
 })
@@ -234,11 +235,11 @@ describe('Cultura101Pagina: festas', () => {
     })
 
     it('no dia diz "today" e no dia anterior "tomorrow"', async () => {
-        vi.setSystemTime(new Date(2027, 1, 6))
+        vi.setSystemTime(new Date('2027-02-06T15:00:00Z'))
         const a = await montar()
         expect(secao(a.container, 'festivalsAria')!.querySelector('li')!.textContent).toContain('tomorrow')
         a.unmount()
-        vi.setSystemTime(new Date(2027, 1, 7))
+        vi.setSystemTime(new Date('2027-02-07T15:00:00Z'))
         const b = await montar()
         expect(secao(b.container, 'festivalsAria')!.querySelector('li')!.textContent).toContain('today')
     })
