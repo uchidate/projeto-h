@@ -26,6 +26,16 @@ on:
       # Mudanca so em workflow/action nao muda o site: o PR ja passa pelo staging
       # e pelo ensaio do deploy. Para deployar mesmo assim: workflow_dispatch.
       - '.github/**'
+      # Teste não vai ao ar: o PR já roda a suíte, e cada deploy custa CPU do servidor
+      # (em 2026-11-27, 28 dos 61 disparos não mudavam o site). Um merge que misture
+      # teste e código continua publicando.
+      - '**/*.test.ts'
+      - '**/*.test.tsx'
+      - 'e2e/**'
+      - 'tests/**'
+      - 'vitest.config.ts'
+      - 'vitest.setup.ts'
+      - 'playwright.config.ts'
   workflow_dispatch:
 
 # cancel-in-progress FALSE, ao contrario do staging.
@@ -346,8 +356,9 @@ jobs:
     # ubuntu-latest, e nao o runner proprio: o de deploy roda Ubuntu 20.04 Focal,
     # que o Playwright nao suporta. Ver o comentario longo em staging.yml.
     #
-    # `needs: publicar` sem `if: always()` preserva o comportamento anterior
-    # dos `if: success()`: se o deploy falhar, a fumaca nao roda.
+    # Precisa do always(): nos pushes o job `gates` fica skipped, e o success()
+    # implicito olha a cadeia inteira, o que pulava a fumaca em todo deploy. A
+    # checagem do resultado mantem a regra: se o deploy falhar, ela nao roda.
     #
     # No staging a fumaca e portao; aqui e alarme — nem toda mudanca passa
     # pelo staging (branches do Dependabot nao publicam ambiente), entao um
@@ -355,6 +366,7 @@ jobs:
     # O blue/green ja promoveu quando isto roda: falhar aqui nao impede o
     # deploy, avisa em um minuto. Rollback e `docker` no servidor, nao um novo
     # ciclo de CI.
+    if: ${{ always() && needs.publicar.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
