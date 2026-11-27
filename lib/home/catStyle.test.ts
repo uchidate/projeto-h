@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { homeCatStyle, homeCatName, nameToGradient } from './catStyle'
+import { homeCatStyle, homeCatName } from './catStyle'
 import type { WPPost } from '@/lib/wordpress/types'
 
 function post(overrides: Partial<WPPost> = {}): WPPost {
@@ -103,19 +103,5 @@ describe('--home-cat-* em globals.css — contraste WCAG AA (4.5:1)', () => {
         const color = extractVar(block, `home-cat-${slug}`)
         const bg = extractVar(block, 'color-bg')
         expect(contrast(color, blend(color, 0.125, bg))).toBeGreaterThanOrEqual(4.5)
-    })
-})
-
-describe('nameToGradient', () => {
-    it('é determinístico pro mesmo nome', () => {
-        expect(nameToGradient('BTS')).toBe(nameToGradient('BTS'))
-    })
-
-    it('gera gradientes diferentes pra nomes diferentes', () => {
-        expect(nameToGradient('BTS')).not.toBe(nameToGradient('BLACKPINK'))
-    })
-
-    it('retorna uma string de linear-gradient válida', () => {
-        expect(nameToGradient('aespa')).toMatch(/^linear-gradient\(135deg, hsl\(\d+,55%,16%\) 0%, hsl\(\d+,45%,10%\) 100%\)$/)
     })
 })
