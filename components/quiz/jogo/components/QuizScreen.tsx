@@ -83,22 +83,30 @@ export function QuizScreen({ questions, difficulty, onFinish }: {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- o avanço automático começa quando a resposta é revelada; incluir as funções de navegação reiniciaria a contagem a cada render
     }, [revealed])
 
-    // Keyboard shortcuts
+    // Atalhos de teclado. O ouvinte é um só e chama sempre a versão do último render: uma versão guardada
+    // leria o relógio do começo da pergunta e daria o bônus de tempo cheio a quem responde pelo teclado.
+    const teclaRef = useRef<(e: KeyboardEvent) => void>(() => {})
     useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if ((e.target as Element)?.tagName?.match(/^(INPUT|TEXTAREA|SELECT)$/)) return
+        teclaRef.current = (e) => {
+            // Com o aviso de cookies na frente, ou em atalho do navegador (Cmd+C, Ctrl+F...), não há resposta.
+            if (pausado || e.metaKey || e.ctrlKey || e.altKey) return
+            const alvo = e.target as Element | null
+            if (alvo?.tagName?.match(/^(INPUT|TEXTAREA|SELECT)$/)) return
             if (revealed) {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNext() }
+                // Em link ou botão focado, Enter e Espaço são dele.
+                if ((e.key === 'Enter' || e.key === ' ') && !alvo?.closest?.('a, button')) { e.preventDefault(); handleNext() }
             } else {
                 const map: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 }
                 const idx = map[e.key.toLowerCase()]
                 if (idx !== undefined && idx < (q?.options.length ?? 0)) handleAnswer(idx)
             }
         }
-        window.addEventListener('keydown', handler)
-        return () => window.removeEventListener('keydown', handler)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- o atalho só precisa reagir à pergunta atual e ao estado revelado; handleAnswer/handleNext mudam a cada render e recriariam o listener sem necessidade
-    }, [revealed, q])
+    })
+    useEffect(() => {
+        const ouvir = (e: KeyboardEvent) => teclaRef.current(e)
+        window.addEventListener('keydown', ouvir)
+        return () => window.removeEventListener('keydown', ouvir)
+    }, [])
 
     function clearAutoAdvance() {
         if (autoRef.current) clearTimeout(autoRef.current)
