@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl'
 import { SITE_NAME } from '@/lib/constants/site'
+import { dataComFuso } from '@/lib/blog/tempoRelativo'
 import { ExternalLink } from 'lucide-react'
 import { FactGrid } from '@/components/blocks/FactGrid'
 import type { AgencyView } from '@/components/agencies/detail/lib/carregarAgencia'
@@ -22,7 +23,7 @@ export function AgencySummary({ view }: { view: AgencyView }) {
                     {updatedAtLabel && (
                         <>
                             <span aria-hidden="true" className="text-border">·</span>
-                            <span>{t('summary.updatedOn')} <time dateTime={agency.modified}>{updatedAtLabel}</time></span>
+                            <span>{t('summary.updatedOn')} <time dateTime={dataComFuso(agency.modified)}>{updatedAtLabel}</time></span>
                         </>
                     )}
                     {acf.website && (
