@@ -1,0 +1,164 @@
+name: Montar a imagem
+description: >-
+  Monta a imagem do site no runner, reaproveitando as respostas do WordPress de
+  execucoes anteriores. Requer checkout e conexao SSH com o servidor.
+
+# Usada pelo ensaio e pela producao: o que o ensaio mede e o que vai ao ar.
+
+inputs:
+  wordpress-url:
+    description: URL da API do WordPress
+    required: true
+  sonda-header:
+    description: Nome do cabecalho que libera a API para o build
+    required: true
+  sonda-token:
+    description: Valor do cabecalho
+    required: true
+  marcas:
+    description: Tags da imagem, uma por linha
+    required: true
+  rotulos:
+    description: Rotulos da imagem (chave=valor), um por linha
+    required: false
+    default: ''
+  sentry-token:
+    description: Token de upload dos source maps. Com a organizacao, liga o envio
+    required: false
+    default: ''
+  sentry-org:
+    description: Organizacao no Sentry
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    # Um pedido so, antes do build: se o cabecalho nao liberar a API, para aqui
+    # em vez de disparar centenas de consultas recusadas.
+    - name: Conferir acesso ao WordPress
+      shell: bash
+      env:
+        WORDPRESS_API_URL: ${{ inputs.wordpress-url }}
+        SONDA_HEADER: ${{ inputs.sonda-header }}
+        SONDA_TOKEN: ${{ inputs.sonda-token }}
+      run: |
+        set -euo pipefail
+        [ -n "$SONDA_HEADER" ] && [ -n "$SONDA_TOKEN" ] || { echo "::error::cabeçalho ou token da sonda ausente"; exit 1; }
+        codigo="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 60 -H "${SONDA_HEADER}: ${SONDA_TOKEN}" "${WORDPRESS_API_URL}/wp/v2/types")"
+        echo "resposta da API do WordPress: ${codigo}"
+        [ "$codigo" = "200" ] || { echo "::error::o cabeçalho da sonda não liberou a API (${codigo})"; exit 1; }
+
+    # So as respostas do WordPress (`.next/cache/fetch-cache`), que sao conteudo
+    # publico. O resto do `.next/cache` fica de fora: o cache de compilacao pode
+    # guardar valores de identidade, e o cache de um repositorio publico e legivel
+    # por PRs.
+    - name: Restaurar cache das consultas
+      uses: actions/cache@v6
+      with:
+        path: ${{ runner.temp }}/cache-fetch
+        key: build-fetch-${{ github.run_id }}-${{ github.run_attempt }}
+        restore-keys: build-fetch-
+
+    # O Dockerfile guarda o `.next/cache` num cache mount do BuildKit, que nasce
+    # vazio num runner novo. Um build auxiliar poe o conteudo salvo dentro dele.
+    # Vai em tar para preservar a data de cada resposta, que define a validade.
+    - name: Carregar cache no Docker
+      shell: bash
+      run: |
+        set -euo pipefail
+        pasta="$RUNNER_TEMP/cache-fetch"
+        if [ ! -f "$pasta/fetch.tar" ]; then
+          echo "sem cache salvo: o build começa do zero"
+          echo "RESPOSTAS_SALVAS=0" >> "$GITHUB_ENV"
+          exit 0
+        fi
+        echo "RESPOSTAS_SALVAS=$(tar -tf "$pasta/fetch.tar" | grep -vc '/$')" >> "$GITHUB_ENV"
+        printf '%s\n' \
+          'FROM node:24-alpine' \
+          'COPY fetch.tar /semente.tar' \
+          'RUN --mount=type=cache,target=/app/.next/cache mkdir -p /app/.next/cache/fetch-cache && tar -xf /semente.tar -C /app/.next/cache/fetch-cache' \
+          > "$RUNNER_TEMP/carregar.Dockerfile"
+        DOCKER_BUILDKIT=1 docker build -f "$RUNNER_TEMP/carregar.Dockerfile" "$pasta"
+
+    - name: Montar a imagem
+      shell: bash
+      env:
+        WORDPRESS_API_URL: ${{ inputs.wordpress-url }}
+        SONDA_HEADER: ${{ inputs.sonda-header }}
+        SONDA_TOKEN: ${{ inputs.sonda-token }}
+        MARCAS: ${{ inputs.marcas }}
+        ROTULOS: ${{ inputs.rotulos }}
+        SENTRY_AUTH_TOKEN: ${{ inputs.sentry-token }}
+        SENTRY_ORG: ${{ inputs.sentry-org }}
+      run: |
+        set -euo pipefail
+        # O contexto sai do HEAD, como no servidor: arquivos locais do job (a
+        # copia privada de operacao, por exemplo) nao entram na imagem.
+        contexto="$(mktemp -d "$RUNNER_TEMP/contexto.XXXXXX")"
+        git archive HEAD | tar -x -C "$contexto"
+
+        identidade="$(ssh -o BatchMode=yes oc 'cat /data/hallyuhub/identidade.env')"
+        args=(--build-arg "WORDPRESS_API_URL=${WORDPRESS_API_URL}" --build-arg "NEXT_PUBLIC_SENTRY_RELEASE=${GITHUB_SHA}")
+        lidos=0
+        # Le linha a linha, sem `source`: o arquivo e dado, nao script. O log e
+        # publico, entao cada valor e mascarado antes de qualquer uso.
+        while IFS='=' read -r nome valor || [ -n "$nome" ]; do
+          case "$nome" in NEXT_PUBLIC_*) ;; *) continue ;; esac
+          valor="${valor%$'\r'}"
+          valor="${valor#[\"\']}"
+          valor="${valor%[\"\']}"
+          if [ "${#valor}" -ge 4 ]; then echo "::add-mask::${valor}"; fi
+          args+=(--build-arg "${nome}=${valor}")
+          lidos=$((lidos + 1))
+        done <<< "$identidade"
+        echo "valores de identidade lidos: ${lidos}"
+        [ "$lidos" -gt 0 ] || { echo "::error::nenhum valor de identidade lido"; exit 1; }
+
+        while IFS= read -r marca; do
+          if [ -n "$marca" ]; then args+=(-t "$marca"); fi
+        done <<< "$MARCAS"
+        while IFS= read -r rotulo; do
+          if [ -n "$rotulo" ]; then args+=(--label "$rotulo"); fi
+        done <<< "$ROTULOS"
+
+        # O token entra como secret do BuildKit, fora das camadas (ver Dockerfile).
+        if [ -n "$SENTRY_AUTH_TOKEN" ] && [ -n "$SENTRY_ORG" ]; then
+          args+=(--build-arg "SENTRY_ORG=${SENTRY_ORG}" --secret id=sentry_auth_token,env=SENTRY_AUTH_TOKEN)
+          echo "source maps: com envio ao Sentry"
+        else
+          echo "source maps: sem envio ao Sentry (faltam token ou organização)"
+        fi
+
+        inicio="$(date +%s)"
+        echo "INICIO_BUILD=${inicio}" >> "$GITHUB_ENV"
+        DOCKER_BUILDKIT=1 docker build --progress=plain "${args[@]}" \
+          --build-arg "BUILD_PROBE_HEADER=${SONDA_HEADER}" \
+          --secret id=build_probe_token,env=SONDA_TOKEN \
+          "$contexto" 2>&1 | tee "$RUNNER_TEMP/build.log"
+        echo "SEGUNDOS_BUILD=$(( $(date +%s) - inicio ))" >> "$GITHUB_ENV"
+
+    # Tira o cache de dentro do BuildKit. `RODADA` invalida a camada, para a copia
+    # nao ser reaproveitada de um passo anterior.
+    - name: Retirar cache do Docker
+      shell: bash
+      run: |
+        set -euo pipefail
+        pasta="$RUNNER_TEMP/cache-fetch"
+        vazio="$RUNNER_TEMP/contexto-vazio"
+        mkdir -p "$pasta" "$vazio"
+        printf '%s\n' \
+          'FROM node:24-alpine AS copia' \
+          'ARG RODADA' \
+          'RUN --mount=type=cache,target=/app/.next/cache mkdir /saida && tar -cf /saida/fetch.tar -C /app/.next/cache/fetch-cache .' \
+          'FROM scratch' \
+          'COPY --from=copia /saida/fetch.tar /fetch.tar' \
+          > "$RUNNER_TEMP/retirar.Dockerfile"
+        DOCKER_BUILDKIT=1 docker build -f "$RUNNER_TEMP/retirar.Dockerfile" \
+          --build-arg "RODADA=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+          --output "type=local,dest=${pasta}" "$vazio"
+        # Resposta com data posterior ao inicio do build veio do WordPress agora.
+        conferir="$(mktemp -d "$RUNNER_TEMP/conferir.XXXXXX")"
+        tar -xf "$pasta/fetch.tar" -C "$conferir"
+        echo "RESPOSTAS_TOTAL=$(find "$conferir" -type f | wc -l)" >> "$GITHUB_ENV"
+        echo "RESPOSTAS_NOVAS=$(find "$conferir" -type f -newermt "@${INICIO_BUILD}" | wc -l)" >> "$GITHUB_ENV"

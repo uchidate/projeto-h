@@ -132,6 +132,8 @@ jobs:
           mascaras: ${{ secrets.IDENTIDADE_MASCARAS }}
           repositorio: ${{ vars.OPS_REPOSITORY }}
           chave: ${{ secrets.OPS_DEPLOY_KEY }}
+          # O passo "Decidir onde montar a imagem" le a data do ultimo PHP.
+          profundidade: '200'
       - name: Exigir historico linear na main
         if: github.event_name == 'push'
         run: |
@@ -240,6 +242,83 @@ jobs:
             echo "reuso=nao" >> "$GITHUB_OUTPUT"
           fi
 
+      # Montar a imagem aqui tira o `docker build` do servidor, que em 2026-11-27
+      # teve a CPU limitada pelo provedor. Tudo abaixo e opcional: se qualquer
+      # passo falhar, o script de deploy constroi no servidor, como antes.
+      # Para desligar sem PR: variavel BUILD_NO_SERVIDOR=sim.
+      - name: Decidir onde montar a imagem
+        id: local_build
+        if: steps.imagem_final.outputs.reuso != 'sim' && runner.environment == 'github-hosted' && vars.BUILD_NO_SERVIDOR != 'sim'
+        continue-on-error: true
+        env:
+          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+          TEM_SENTRY: ${{ secrets.SENTRY_AUTH_TOKEN != '' && secrets.SENTRY_ORG != '' }}
+        run: |
+          set -euo pipefail
+          arvore="$(git rev-parse 'HEAD^{tree}')"
+          servidor() { echo "ℹ️  $1: build no servidor"; exit 0; }
+          # O build do servidor envia source maps ao Sentry. Sem os dois segredos,
+          # montar aqui publicaria erros ilegiveis no Sentry.
+          [ "$TEM_SENTRY" = "true" ] || servidor "faltam os segredos SENTRY_AUTH_TOKEN e SENTRY_ORG"
+          if ssh -o BatchMode=yes oc "docker image inspect ${IMAGE_REPO}:conteudo-${arvore} >/dev/null 2>&1"; then
+            servidor "o servidor ja tem imagem deste conteudo"
+          fi
+          criada="$(ssh -o BatchMode=yes oc docker image inspect "${IMAGE_REPO}:latest" --format '{{.Created}}')"
+          criada="$(date -d "$criada" +%s)"
+          # O script de deploy sincroniza o PHP do WordPress ANTES do build, e o
+          # build consulta o WordPress. PHP ainda nao publicado exige essa ordem.
+          # A folga de 30 min cobre o tempo entre o sync e a imagem anterior.
+          php="$(git -C .operacao log -1 --format=%ct -- wordpress wp-plugins)"
+          [ -n "$php" ] || servidor "data do PHP desconhecida"
+          if [ "$php" -gt "$(( criada - 1800 ))" ]; then
+            servidor "PHP do WordPress mudou desde o ultimo deploy"
+          fi
+          # O nome do rotulo de conteudo e copiado da imagem no ar.
+          rotulo="$(ssh -o BatchMode=yes oc "docker image inspect ${IMAGE_REPO}:latest --format '{{range \$k, \$v := .Config.Labels}}{{println \$k}}{{end}}'" | grep -E '\.arvore$' | head -1)"
+          [ -n "$rotulo" ] || servidor "rotulo de conteudo nao encontrado"
+          {
+            echo "github=sim"
+            echo "arvore=${arvore}"
+            echo "rotulo=${rotulo}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Montar a imagem no GitHub
+        id: montagem
+        if: steps.local_build.outputs.github == 'sim'
+        continue-on-error: true
+        timeout-minutes: 15
+        uses: ./.github/actions/montar-imagem
+        with:
+          wordpress-url: ${{ vars.WORDPRESS_API_URL }}
+          sonda-header: ${{ vars.SONDA_HEADER }}
+          sonda-token: ${{ secrets.SONDA_TOKEN }}
+          sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          sentry-org: ${{ secrets.SENTRY_ORG }}
+          marcas: |
+            ${{ vars.IMAGE_REPO }}:${{ github.sha }}
+            ${{ vars.IMAGE_REPO }}:conteudo-${{ steps.local_build.outputs.arvore }}
+          rotulos: |
+            ${{ steps.local_build.outputs.rotulo }}=${{ steps.local_build.outputs.arvore }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      # `docker load` so cria as tags depois de receber a imagem inteira: um envio
+      # interrompido nao deixa imagem pela metade com o nome do commit.
+      - name: Enviar a imagem ao servidor
+        id: envio
+        if: steps.montagem.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 8
+        env:
+          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+          ARVORE: ${{ steps.local_build.outputs.arvore }}
+        run: |
+          set -euo pipefail
+          docker save "${IMAGE_REPO}:${GITHUB_SHA}" "${IMAGE_REPO}:conteudo-${ARVORE}" | ssh -o BatchMode=yes oc 'docker load'
+
+      - name: Avisar queda para o build no servidor
+        if: steps.local_build.outcome == 'failure' || steps.montagem.outcome == 'failure' || steps.envio.outcome == 'failure'
+        run: echo "::warning::a imagem não saiu do GitHub; o deploy constrói no servidor"
+
       # O deploy recusa working tree suja (a imagem sai do HEAD) mas nao diz QUAIS
       # arquivos: em 2026-09-30 duas execucoes caíram so com "working tree sujo".
       # Este passo tira os residuos conhecidos de jobs anteriores no mesmo runner
@@ -308,7 +387,9 @@ jobs:
       - name: Resumo
         if: always()
         run: |
-          if [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
+          if [ "${{ steps.envio.outcome }}" = "success" ]; then
+            tempo_build="${SEGUNDOS_BUILD:-0}"
+          elif [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
             tempo_build=0
           else
             tempo_build="${{ steps.deploy.outputs.duracao_segundos || '0' }}"
@@ -322,7 +403,10 @@ jobs:
             echo "- tempo total: \`${{ steps.metricas.outputs.total_segundos || '0' }}s\`"
             echo "- tempo build (aprox.): \`${tempo_build}s\`"
             echo "- origem do artefato: \`${{ steps.deploy.outputs.origem_artefato || 'desconhecida' }}\`"
-            if [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
+            if [ "${{ steps.envio.outcome }}" = "success" ]; then
+              echo "- artefato: construido no GitHub e carregado no servidor"
+              echo "- respostas do WordPress buscadas no build: \`${RESPOSTAS_NOVAS:-?}\` de \`${RESPOSTAS_TOTAL:-?}\`"
+            elif [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
               echo "- taxa de reaproveitamento: \`100%\`"
               echo "- artefato: promovido do staging (build pulado)"
             else

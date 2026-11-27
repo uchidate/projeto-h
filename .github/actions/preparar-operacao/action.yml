@@ -28,6 +28,10 @@ inputs:
       Serve para ensaiar uma mudanca de scripts de deploy ANTES do merge.
     required: false
     default: ''
+  profundidade:
+    description: Quantos commits da operacao baixar (producao le a data do PHP)
+    required: false
+    default: '1'
 
 runs:
   using: composite
@@ -54,6 +58,7 @@ runs:
         ssh-key: ${{ inputs.chave }}
         ref: ${{ inputs.ref }}
         path: .operacao
+        fetch-depth: ${{ inputs.profundidade }}
         persist-credentials: false
 
     - name: Expor scripts, plugins e dados
