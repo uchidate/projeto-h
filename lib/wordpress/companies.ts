@@ -1,4 +1,5 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
+import { buscarEmLotes } from './em-lotes'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
 import { stripHtml, slugify } from '@/lib/utils'
 import type { WPCompany, CompanyIndustry } from './types'
@@ -52,16 +53,16 @@ export async function getCompanyBySlug(slug: string): Promise<WPCompany | null> 
 export async function getCompaniesByIds(ids: number[]): Promise<WPCompany[]> {
     if (!ids.length) return []
     try {
-        return await wpBuscarOpcional<WPCompany[]>(
+        return await buscarEmLotes(ids, lote => wpBuscarOpcional<WPCompany[]>(
             `/wp/v2/company${buildParams({
-                include: ids.join(','),
-                per_page: ids.length,
+                include: lote.join(','),
+                per_page: lote.length,
                 status: 'publish',
                 _fields: 'id,slug,title,featured_image_url,acf',
                 orderby: 'include',
             })}`,
             { revalidate: 1800, tags: [WP_CACHE_TAGS.companies] },
-        )
+        ))
     } catch { return [] }
 }
 

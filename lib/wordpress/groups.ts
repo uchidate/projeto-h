@@ -1,4 +1,5 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
+import { buscarEmLotes } from './em-lotes'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
 import type { WPGroup } from './types'
 import { aliasDeRelevancia } from './relevancia'
@@ -105,10 +106,10 @@ export async function getTrendingGroups(limit = 10): Promise<WPGroup[]> {
 export async function getGroupsByIds(ids: number[]): Promise<WPGroup[]> {
     if (!ids.length) return []
     try {
-        return await wpBuscarOpcional<WPGroup[]>(
-            `/wp/v2/group${buildParams({ include: ids.join(','), per_page: ids.length, status: 'publish', _fields: 'id,slug,title,date,featured_image_url,acf', orderby: 'include' })}`,
+        return await buscarEmLotes(ids, lote => wpBuscarOpcional<WPGroup[]>(
+            `/wp/v2/group${buildParams({ include: lote.join(','), per_page: lote.length, status: 'publish', _fields: 'id,slug,title,date,featured_image_url,acf', orderby: 'include' })}`,
             { revalidate: 1800, tags: [WP_CACHE_TAGS.groups] },
-        )
+        ))
     } catch { return [] }
 }
 
