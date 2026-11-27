@@ -34,10 +34,23 @@ export default defineConfig({
             reporter: ['text', 'html', 'json-summary'],
             include: ['lib/**', 'components/**', 'app/api/**'],
             exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.d.ts'],
-            // Sem threshold global ainda — a maior parte de components/ e app/api/
-            // não tinha nenhum teste antes de 2026-07-06. Thresholds por arquivo
-            // (abaixo) travam só o que já está coberto, pra não regredir, sem
-            // bloquear PRs por causa de código legado ainda não testado.
+            // Pisos medidos em 2026-11-27 (linha de base: total 57,2% linhas / 43% ramos /
+            // 51,6% funções; components/ 41,8%, lib/ quase todo acima de 70%). Cada piso fica
+            // ~5 pontos abaixo do medido: trava regressão sem bloquear PR por código legado
+            // ainda sem teste. Só vale quando a cobertura roda (`npm run test:coverage`, que
+            // o CI usa). Ao subir a cobertura de uma pasta, suba o piso junto — nunca baixe.
+            thresholds: {
+                lines: 52,
+                branches: 38,
+                functions: 46,
+                'lib/wordpress/**': { lines: 72, branches: 72, functions: 62 },
+                'lib/i18n/**': { lines: 65, branches: 69, functions: 74 },
+                'lib/seo/**': { lines: 75, branches: 71, functions: 78 },
+                'lib/blog/**': { lines: 77, branches: 74, functions: 81 },
+                'lib/guias/**': { lines: 86, branches: 74, functions: 87 },
+                'lib/search/**': { lines: 85, branches: 77, functions: 81 },
+                'lib/profiles/**': { lines: 95, branches: 81, functions: 91 },
+            },
         },
     },
 })

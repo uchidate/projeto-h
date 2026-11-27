@@ -64,8 +64,9 @@ jobs:
         run: npm run type-check
       - name: Fronteiras entre camadas
         run: npm run quality:boundaries
-      - name: Testes
-        run: npm test
+      # Mesmos testes, agora com cobertura: os pisos de vitest.config.ts só valem com ela ligada.
+      - name: Testes e cobertura mínima
+        run: npm run test:coverage -- --coverage.reporter=text-summary
 
   secrets:
     name: 🔐 Segredos
