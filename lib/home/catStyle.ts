@@ -37,10 +37,3 @@ export function homeCatName(post: WPPost, categoryMap?: Record<number, { name: s
     const cat = resolveCategory(post, categoryMap)
     return cat?.name ?? fallback
 }
-
-export function nameToGradient(name: string): string {
-    let h = 0
-    for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h)
-    const hue = Math.abs(h) % 360
-    return `linear-gradient(135deg, hsl(${hue},55%,16%) 0%, hsl(${(hue + 40) % 360},45%,10%) 100%)`
-}
