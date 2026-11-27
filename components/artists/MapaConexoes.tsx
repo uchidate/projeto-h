@@ -4,7 +4,10 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import { usePathname, useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 import { trackRecirculacao } from '@/lib/analytics'
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
+import { localizarCaminho } from '@/lib/i18n/localizar-caminho'
 import type { NoMapa } from '@/lib/mapa/tipos'
 
 export type { NoMapa }
@@ -52,6 +55,7 @@ const TIPO_DO_NO: Record<NoMapa['tipo'], 'artist' | 'group' | 'production'> = { 
 export function MapaConexoes({ centro: centroInicial, nos: nosIniciais, accent, ariaLabel, textos }: Props) {
     const pathname = usePathname()
     const router = useRouter()
+    const locale = useLocale() as Locale
     const [estado, setEstado] = useState({ centro: centroInicial, nos: nosIniciais })
     const [historico, setHistorico] = useState<typeof estado[]>([])
     const [carregando, setCarregando] = useState(false)
@@ -64,20 +68,23 @@ export function MapaConexoes({ centro: centroInicial, nos: nosIniciais, accent, 
 
     async function recentrar(e: React.MouseEvent, n: NoMapa, posicao: number) {
         // Com modificador (nova aba) ou sem JS, o link segue normal.
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
         e.preventDefault()
+        // Um segundo clique durante a busca empilharia o mesmo centro duas vezes no "voltar".
+        if (carregando) return
         trackRecirculacao({ bloco: 'mapa-conexoes', posicao, destino: n.href, origem: pathname })
         const slug = n.href.split('/').pop() ?? ''
         setCarregando(true)
         try {
-            const r = await fetch(`/api/conexoes?tipo=${TIPO_DO_NO[n.tipo]}&slug=${encodeURIComponent(slug)}`)
+            const idioma = locale === DEFAULT_LOCALE ? '' : `&idioma=${locale}`
+            const r = await fetch(`/api/conexoes?tipo=${TIPO_DO_NO[n.tipo]}&slug=${encodeURIComponent(slug)}${idioma}`)
             if (!r.ok) throw new Error(String(r.status))
             const d = (await r.json()) as { centro: CentroMapa; nos: NoMapa[] }
             if (d.nos.length < 2) throw new Error('vazio')
             setHistorico(h => [...h, estado])
             setEstado({ centro: d.centro, nos: d.nos })
         } catch {
-            router.push(n.href)
+            router.push(localizarCaminho(n.href, locale))
         } finally {
             setCarregando(false)
         }
@@ -130,7 +137,7 @@ export function MapaConexoes({ centro: centroInicial, nos: nosIniciais, accent, 
             </nav>
             {historico.length > 0 && (
                 <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-[13px]">
-                    <button type="button" onClick={() => { const h = historico[historico.length - 1]; setEstado(h); setHistorico(historico.slice(0, -1)) }}
+                    <button type="button" disabled={carregando} onClick={() => { const h = historico[historico.length - 1]; setEstado(h); setHistorico(historico.slice(0, -1)) }}
                         className="touch-target border border-border px-4 py-2 font-semibold text-muted hover:border-accent hover:text-accent">
                         {textos.voltar}
                     </button>
