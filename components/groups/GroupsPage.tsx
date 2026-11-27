@@ -171,12 +171,17 @@ export function fandomValido(valor: unknown): string | undefined {
     return nome && nome.length <= 28 && !/^(n\/?a|-|—|desconhecido|unknown|nenhum)$/i.test(nome) ? nome : undefined
 }
 
+/** Linha de meta dos cards de diretório e do "em alta": tipo traduzido · ano de estreia. */
+function metaTipoAno(acf: NonNullable<WPGroup['acf']>, tipos: Record<string, string>): string {
+    return [acf.type ? (tipos[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
+}
+
 /** Card de diretório: foto quadrada, nome e uma linha de meta (tipo · ano). */
 function GroupTile({ group, priority, integrantes, tipos, textos }: { group: WPGroup; priority?: boolean; integrantes?: { nome: string; foto: string }[]; tipos: Record<string, string>; textos: { fandom: string; ended: string } }) {
     const image = getWPImage(group._embedded, group.featured_image_url)
     const name = stripHtml(group.title.rendered)
     const acf = group.acf ?? {}
-    const meta = [acf.type ? (tipos[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
+    const meta = metaTipoAno(acf, tipos)
     const membros = acf.members?.length ?? 0
     const fandom = fandomValido(acf.fandom_name)
     return (
@@ -300,7 +305,7 @@ export async function GroupsPage({ locale = DEFAULT_LOCALE, groups, total, total
                             const foto = getWPImage(g._embedded, g.featured_image_url)
                             const nome = stripHtml(g.title.rendered)
                             const acf = g.acf ?? {}
-                            const meta = [acf.type ? (tipos[acf.type] ?? acf.type) : '', getYear(acf.debut_date)].filter(Boolean).join(' · ')
+                            const meta = metaTipoAno(acf, tipos)
                             return (
                                 <li key={g.id} className="w-[110px] shrink-0 sm:w-auto">
                                     <Link href={`/groups/${g.slug}`} data-posicao={i + 1} className="group block">
