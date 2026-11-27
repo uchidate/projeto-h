@@ -45,11 +45,10 @@ export function PlayerDock({ titulo, pausado, capa, rotulo, numero, total, posic
     const t = useTranslations('client.playerDock')
     const audio = useRef<HTMLAudioElement>(null)
     const url = useRef<string | null>(null)
-    const estado = useRef({ pausado, onAlternar, onBuscar })
-    const ajustando = useRef(0)
+    const estado = useRef({ pausado, posicao, onAlternar, onBuscar })
     const segundos = Math.ceil(duracao / 1000)
 
-    useEffect(() => { estado.current = { pausado, onAlternar, onBuscar } })
+    useEffect(() => { estado.current = { pausado, posicao, onAlternar, onBuscar } })
 
     useEffect(() => {
         document.documentElement.dataset.playerDock = 'on'
@@ -62,7 +61,6 @@ export function PlayerDock({ titulo, pausado, capa, rotulo, numero, total, posic
         if (!el || segundos <= 0) return
         if (url.current) URL.revokeObjectURL(url.current)
         url.current = URL.createObjectURL(wavSilencioso(segundos + 1))
-        ajustando.current++
         el.src = url.current
         el.load()
         return () => { if (url.current) { URL.revokeObjectURL(url.current); url.current = null } }
@@ -72,18 +70,22 @@ export function PlayerDock({ titulo, pausado, capa, rotulo, numero, total, posic
     useEffect(() => {
         const el = audio.current
         if (!el || !el.src) return
-        if (Math.abs(el.currentTime - posicao / 1000) > 1.5) { ajustando.current++; el.currentTime = posicao / 1000 }
-        if (pausado && !el.paused) { ajustando.current++; el.pause() }
-        if (!pausado && el.paused) { ajustando.current++; el.play().catch(() => {}) }
+        if (Math.abs(el.currentTime - posicao / 1000) > 1.5) el.currentTime = posicao / 1000
+        if (pausado && !el.paused) el.pause()
+        if (!pausado && el.paused) el.play().catch(() => {})
     }, [posicao, pausado, segundos])
 
     // Nativo → Spotify (o que o fã faz nos controles do navegador).
     useEffect(() => {
         const el = audio.current
         if (!el) return
-        const aoTocar = () => { if (ajustando.current > 0) { ajustando.current--; return } if (estado.current.pausado) estado.current.onAlternar() }
-        const aoPausar = () => { if (ajustando.current > 0) { ajustando.current--; return } if (!estado.current.pausado) estado.current.onAlternar() }
-        const aoBuscar = () => { if (ajustando.current > 0) { ajustando.current--; return } estado.current.onBuscar(el.currentTime) }
+        // O eco do espelho se reconhece pelo estado, que já bate com o do Spotify. Contar os
+        // eventos esperados não serve: autoplay recusado e troca de fonte não disparam todos, e a
+        // sobra engolia o toque seguinte do leitor.
+        const aoTocar = () => { if (estado.current.pausado) estado.current.onAlternar() }
+        // Fonte recém-trocada (readyState 0) e fim do silêncio não são o leitor pausando.
+        const aoPausar = () => { if (el.readyState > 0 && !el.ended && !estado.current.pausado) estado.current.onAlternar() }
+        const aoBuscar = () => { if (Math.abs(el.currentTime - estado.current.posicao / 1000) > 1.5) estado.current.onBuscar(el.currentTime) }
         el.addEventListener('play', aoTocar)
         el.addEventListener('pause', aoPausar)
         el.addEventListener('seeked', aoBuscar)
