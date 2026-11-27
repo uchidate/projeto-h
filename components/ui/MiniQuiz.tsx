@@ -66,10 +66,13 @@ export function MiniQuiz({ items, entityName, quizHref, tone = quizCategoryTone(
         observer.observe(el)
 
         function handler(e: KeyboardEvent) {
-            if (!visivel) return
-            if ((e.target as Element)?.tagName?.match(/^(INPUT|TEXTAREA|SELECT)$/)) return
+            // Atalho do navegador (Cmd+C, Ctrl+F, Cmd+A...) não é resposta do quiz.
+            if (!visivel || e.metaKey || e.ctrlKey || e.altKey) return
+            const alvo = e.target as Element | null
+            if (alvo?.tagName?.match(/^(INPUT|TEXTAREA|SELECT)$/)) return
             if (picked !== null) {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setI(v => v + 1); setPicked(null) }
+                // Em link ou botão focado, Enter e Espaço são dele.
+                if ((e.key === 'Enter' || e.key === ' ') && !alvo?.closest?.('a, button')) { e.preventDefault(); setI(v => v + 1); setPicked(null) }
                 return
             }
             const letra: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 }
