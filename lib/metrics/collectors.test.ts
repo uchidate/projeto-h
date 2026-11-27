@@ -29,6 +29,12 @@ describe('coletarCms', () => {
     })
     afterEach(() => { vi.unstubAllGlobals() })
 
+    it('sonda o WordPress sem baixar o índice inteiro da API', async () => {
+        fetchMock.mockResolvedValue(respostaWp(null, true))
+        await coletarCms()
+        expect(fetchMock).toHaveBeenCalledWith(expect.stringMatching(/\?_fields=namespaces$/), expect.anything())
+    })
+
     it('marca cms_up=1 quando o WordPress responde', async () => {
         fetchMock.mockResolvedValue(respostaWp(null, true))
         await coletarCms()
