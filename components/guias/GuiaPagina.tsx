@@ -46,6 +46,9 @@ export async function buildGuiaMetadata({ params }: { params: Promise<{ slug: st
     }
 }
 
+/** Palavras genéricas ficam fora da busca da vitrine: "doramas" e "coreanos" casariam caneca e macarrão em qualquer guia de produção. */
+const PALAVRAS_GENERICAS = /\b(doramas?|k-?dramas?|kdramas?|coreanas?|coreanos?|filmes?|series?|séries?|guia|artistas?|grupos?|kpop|k-pop|melhores|famosos?|famosas?)\b/gi
+
 /** Um de cada lista por vez (o grupo e cada integrante aparecem cedo), sem repetir produto, no máximo 6. */
 function intercalarProdutos<T extends { id: number }>(listas: T[][]): T[] {
     const intercalados = Array.from({ length: Math.max(0, ...listas.map(l => l.length)) }, (_, i) => listas.map(l => l[i]).filter(Boolean)).flat()
@@ -112,10 +115,8 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
         : []
     // Vitrine pelo assunto do guia (palavras do título, das palavras-chave e dos grupos da agência no nome do produto).
     // Sem casamento, cai na vitrine geral do tipo.
-    // Palavras genéricas ficam fora: "doramas" e "coreanos" casariam caneca e macarrão em qualquer guia de produção.
-    const GENERICAS = /\b(doramas?|k-?dramas?|kdramas?|coreanas?|coreanos?|filmes?|series?|séries?|guia|artistas?|grupos?|kpop|k-pop|melhores|famosos?|famosas?)\b/gi
     const termosDoGuia = [hub.title, hub.shortTitle, ...hub.keywords, ...gruposDaAgencia.map(g => g.title.rendered)]
-        .map(t => t.replace(GENERICAS, ' ').replace(/\s+/g, ' ').trim()).filter(t => t.length > 2)
+        .map(t => t.replace(PALAVRAS_GENERICAS, ' ').replace(/\s+/g, ' ').trim()).filter(t => t.length > 2)
     // Guia de produção fica com a vitrine geral de drama: o casamento por palavra só acerta nomes próprios (artista, grupo),
     // e no gênero trazia caneca e kit facial por coincidência de termo.
     let shopProducts: Awaited<ReturnType<typeof getVitrineGeral>> = []
