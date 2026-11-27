@@ -5,8 +5,9 @@ import Image from 'next/image'
 import { getGroupsByIds } from '@/lib/wordpress/groups'
 import { stripHtml } from '@/lib/utils'
 import Link from '@/components/i18n/LocalizedLink'
-import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto, quedaDePreco, parsePrecoBR } from '@/lib/wordpress/store'
+import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto } from '@/lib/wordpress/store'
 import { ordenarPrateleira, ordenarCategorias } from '@/lib/wordpress/store-ranking'
+import { contarOfertasEQuedas, filtrarLoja, montarHref, type ChaveFiltroLoja, type ParamsLoja } from '@/lib/wordpress/store-filtro'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { getProductLinksMap } from '@/lib/wordpress/productLinks'
 import { LojaClique } from '@/components/ui/LojaClique'
@@ -33,7 +34,7 @@ export const metadataLoja: Metadata = {
     twitter: { ...baseTwitter() },
 }
 
-export type SearchParams = Promise<{ categoria?: string; loja?: string; busca?: string; ofertas?: string; queda?: string; ordem?: string }>
+export type SearchParams = Promise<ParamsLoja>
 
 export async function LojaListagem({ searchParams }: { searchParams: SearchParams }) {
     const sp = await searchParams
@@ -42,41 +43,11 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
     // Filtrar ocultos
     const products = allProducts.filter(p => !p.acf.is_hidden)
 
-    // Desconto real por produto (mesma conta do StoreCard) — usado no filtro e na ordenação de Ofertas
-    const descontos = new Map(products.map(p => [p.id, calcularDesconto(p.acf.price, p.acf.original_price)]))
-    const totalOfertas = products.filter(p => (descontos.get(p.id) ?? null) !== null).length
+    // Totais dos botões "Ofertas" (desconto real, mesma conta do StoreCard) e "Baixou de preço" (histórico diário)
+    const { totalOfertas, totalQuedas } = contarOfertasEQuedas(products)
 
-    // Queda real de preço (histórico diário): produto cujo preço atual está abaixo do maior dos últimos 30 dias
-    const quedas = new Map(products.map(p => [p.id, quedaDePreco(p.acf.price, p.acf.price_history)]))
-    const totalQuedas = products.filter(p => quedas.get(p.id) !== null).length
-
-    // Filtros do cliente
-    let filtered = products
-    if (sp.categoria) filtered = filtered.filter(p => p.acf.category === sp.categoria)
-    if (sp.loja) filtered = filtered.filter(p => p.acf.store === sp.loja)
-    if (sp.busca) {
-        const q = sp.busca.toLowerCase()
-        filtered = filtered.filter(p =>
-            p.title.rendered.toLowerCase().includes(q)
-        )
-    }
-    if (sp.queda === '1') {
-        filtered = filtered
-            .filter(p => quedas.get(p.id) != null)
-            .sort((a, b) => (quedas.get(b.id)?.percentual ?? 0) - (quedas.get(a.id)?.percentual ?? 0))
-    } else if (sp.ofertas === '1') {
-        filtered = filtered
-            .filter(p => (descontos.get(p.id) ?? null) !== null)
-            .sort((a, b) => (descontos.get(b.id) ?? 0) - (descontos.get(a.id) ?? 0))
-    } else {
-        filtered = ordenarPrateleira(filtered, 'loja:filtro')
-    }
-    // Ordem por preço é escolha explícita de quem compra: vence a ordem do filtro. Sem preço legível vai para o fim.
-    if (sp.ordem === 'menor' || sp.ordem === 'maior') {
-        const sinal = sp.ordem === 'menor' ? 1 : -1
-        const valor = (p: (typeof filtered)[number]) => { const n = parsePrecoBR(p.acf.price); return Number.isFinite(n) ? n * sinal : Infinity }
-        filtered = [...filtered].sort((a, b) => valor(a) - valor(b))
-    }
+    // Filtros e ordem escolhidos por quem navega
+    const filtered = filtrarLoja(products, sp)
 
     // Faixa "Por grupo": leva às vitrines /loja/grupo/{slug}, que já existiam sem nenhuma entrada a partir da loja.
     const porGrupo = new Map<number, number>()
@@ -112,18 +83,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
 
     const hasActive = sp.categoria || sp.loja || sp.busca || sp.ofertas === '1' || sp.queda === '1' || !!sp.ordem
 
-    const setParam = (key: 'categoria' | 'loja' | 'ofertas' | 'queda' | 'ordem', value: string) => {
-        const ps = new URLSearchParams()
-        if (key !== 'categoria' && sp.categoria) ps.set('categoria', sp.categoria)
-        if (key !== 'loja' && sp.loja) ps.set('loja', sp.loja)
-        if (key !== 'ofertas' && sp.ofertas === '1') ps.set('ofertas', '1')
-        if (key !== 'queda' && sp.queda === '1') ps.set('queda', '1')
-        if (sp.busca) ps.set('busca', sp.busca)
-        if (key !== 'ordem' && sp.ordem) ps.set('ordem', sp.ordem)
-        if (value) ps.set(key, value)
-        const qs = ps.toString()
-        return qs ? `/loja?${qs}` : '/loja'
-    }
+    const setParam = (key: ChaveFiltroLoja, value: string) => montarHref(sp, key, value)
 
     return (
         <>
