@@ -3,7 +3,7 @@
 
 import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { href } from '@/lib/i18n/routes'
@@ -45,6 +45,9 @@ function useTorcidasEscolhidas() {
     const { data: session, status } = useSession()
     const [idsEscolhidos, setIdsEscolhidos] = useState<number[]>([])
     const [pronto, setPronto] = useState(false)
+    // Avisos que chegam enquanto a conta é consultada (a fusão dos favoritos
+    // anônimos logo após o login): a resposta pode ser anterior a eles.
+    const avisados = useRef(new Map<number, boolean>())
 
     useEffect(() => {
         if (status === 'loading') return
@@ -54,10 +57,13 @@ function useTorcidasEscolhidas() {
             return
         }
         let vivo = true
+        avisados.current.clear()
         getUserContentStates(null)
             .then(res => {
                 if (!vivo) return
-                setIdsEscolhidos(res.states.filter(s => s.objectType === 'group' && s.state === 'following').map(s => s.objectId))
+                const ids = new Set(res.states.filter(s => s.objectType === 'group' && s.state === 'following').map(s => s.objectId))
+                avisados.current.forEach((segue, id) => { if (segue) ids.add(id); else ids.delete(id) })
+                setIdsEscolhidos([...ids])
             })
             .catch(() => {})
             .finally(() => { if (vivo) setPronto(true) })
@@ -69,6 +75,9 @@ function useTorcidasEscolhidas() {
         function aoMudar(event: Event) {
             const detail = (event as CustomEvent<{ objectId: number; objectType: string; state: string; removeState?: string }>).detail
             if (!detail || detail.objectType !== 'group') return
+            if (detail.state === 'following' || detail.removeState === 'following') {
+                avisados.current.set(detail.objectId, detail.state === 'following')
+            }
             if (detail.state === 'following') {
                 setIdsEscolhidos(prev => prev.includes(detail.objectId) ? prev : [...prev, detail.objectId])
             } else if (detail.removeState === 'following') {

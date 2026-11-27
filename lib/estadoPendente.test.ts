@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { alternarPendente, estaPendente, lerPendentes, limparPendentes } from './estadoPendente'
+import { alternarPendente, estaPendente, lerPendentes, removerPendente } from './estadoPendente'
 
 describe('estadoPendente', () => {
     beforeEach(() => {
@@ -37,6 +37,14 @@ describe('estadoPendente', () => {
         vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('bloqueado') })
         expect(lerPendentes()).toEqual([])
         expect(() => alternarPendente('artist', 3, 'following')).not.toThrow()
-        expect(() => limparPendentes()).not.toThrow()
+        expect(() => removerPendente('artist', 3, 'following')).not.toThrow()
+    })
+
+    it('remove só o item pedido', () => {
+        alternarPendente('post', 7, 'saved')
+        alternarPendente('post', 8, 'saved')
+        removerPendente('post', 7, 'saved')
+        removerPendente('post', 99, 'saved')
+        expect(lerPendentes()).toEqual([{ objectType: 'post', objectId: 8, state: 'saved' }])
     })
 })

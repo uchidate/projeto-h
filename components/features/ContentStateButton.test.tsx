@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useSession } from 'next-auth/react'
 import { getContentState, setContentState } from '@/lib/wordpress/userApi'
@@ -140,6 +140,26 @@ describe('ContentStateButton', () => {
         window.dispatchEvent(new CustomEvent('oc-content-state:changed', {
             detail: { objectId: 1, objectType: 'artist', state: 'following' },
         }))
+
+        expect(await screen.findByRole('button', { name: /seguindo/i })).toHaveAttribute('aria-pressed', 'true')
+    })
+
+    // Logo após o login a consulta à conta corre junto com a fusão dos
+    // favoritos anônimos, e pode responder com o estado de antes dela.
+    it('não deixa uma consulta atrasada desfazer o aviso que chegou antes dela', async () => {
+        mockedUseSession.mockReturnValue({
+            data: { user: { id: '1' } }, status: 'authenticated',
+        } as unknown as ReturnType<typeof useSession>)
+        let responder: (v: Awaited<ReturnType<typeof getContentState>>) => void = () => {}
+        mockedGetContentState.mockImplementation(() => new Promise(resolve => { responder = resolve }))
+
+        render(<ContentStateButton objectId={1} objectType="artist" state="following" activeLabel="Seguindo" />)
+        act(() => {
+            window.dispatchEvent(new CustomEvent('oc-content-state:changed', {
+                detail: { objectId: 1, objectType: 'artist', state: 'following' },
+            }))
+        })
+        await act(async () => { responder({ objectId: 1, objectType: 'artist', state: '' }) })
 
         expect(await screen.findByRole('button', { name: /seguindo/i })).toHaveAttribute('aria-pressed', 'true')
     })

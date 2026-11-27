@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 const sessao = vi.hoisted(() => ({ data: null as { user: { name: string } } | null, status: 'unauthenticated' as 'authenticated' | 'unauthenticated' }))
@@ -56,6 +56,23 @@ describe('EspacoDoFa', () => {
             countsByState: { favorite: 0, following: 1, saved: 0, read: 0 },
         })
         render(<EspacoDoFa cartoes={cartoes} />)
+        expect(await screen.findByText('ARMY', { selector: 'p' })).toBeInTheDocument()
+    })
+
+    it('mantém o grupo avisado enquanto a conta ainda respondia sem ele', async () => {
+        sessao.data = { user: { name: 'Ana' } }
+        sessao.status = 'authenticated'
+        let responder: (v: Awaited<ReturnType<typeof userApi.getUserContentStates>>) => void = () => {}
+        userApi.getUserContentStates.mockImplementationOnce(() => new Promise(resolve => { responder = resolve }))
+        render(<EspacoDoFa cartoes={cartoes} />)
+        act(() => {
+            window.dispatchEvent(new CustomEvent('oc-content-state:changed', {
+                detail: { objectId: 47, objectType: 'group', state: 'following' },
+            }))
+        })
+        await act(async () => {
+            responder({ states: [], counts: { production: 0, artist: 0, group: 0, post: 0 }, countsByState: { favorite: 0, following: 0, saved: 0, read: 0 } })
+        })
         expect(await screen.findByText('ARMY', { selector: 'p' })).toBeInTheDocument()
     })
 

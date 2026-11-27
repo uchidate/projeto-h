@@ -11,7 +11,7 @@
 
 import { useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
-import { lerPendentes, limparPendentes } from '@/lib/estadoPendente'
+import { lerPendentes, removerPendente } from '@/lib/estadoPendente'
 import { setContentState } from '@/lib/wordpress/userApi'
 
 export function SincronizaPendentes() {
@@ -20,6 +20,15 @@ export function SincronizaPendentes() {
     // revalidação do next-auth (que reemite o objeto de sessão) dispararia a
     // fusão de novo e reenviaria tudo.
     const jaRodou = useRef(false)
+    // Só a saída do componente interrompe a fusão. Cancelar na limpeza do efeito
+    // abaixo parava tudo no meio quando a sessão era revalidada (voltar à aba já
+    // basta), e a trava acima impedia retomar.
+    const montado = useRef(false)
+
+    useEffect(() => {
+        montado.current = true
+        return () => { montado.current = false }
+    }, [])
 
     useEffect(() => {
         if (status !== 'authenticated' || !session?.user || jaRodou.current) return
@@ -27,36 +36,26 @@ export function SincronizaPendentes() {
         if (pendentes.length === 0) return
         jaRodou.current = true
 
-        let cancelado = false
         void (async () => {
             // Em série, de propósito: são no máximo algumas dezenas de itens, e
             // dispará-los em paralelo contra o WordPress no primeiro segundo
             // pós-login é o tipo de rajada que o throttle da própria API trata
             // como abuso.
-            const sobraram = []
             for (const p of pendentes) {
-                if (cancelado) return
+                if (!montado.current) return
                 const ok = await setContentState(null, p.objectType, p.objectId, p.state)
                     .then(() => true)
                     .catch(() => false)
-                if (!ok) sobraram.push(p)
+                // Só sai do navegador o que a conta confirmou, um a um: fechar a
+                // aba ou falhar a rede não perde favorito.
+                if (!ok) continue
+                removerPendente(p.objectType, p.objectId, p.state)
+                // Botões já na tela consultaram a conta antes desta gravação.
+                window.dispatchEvent(new CustomEvent('oc-content-state:changed', {
+                    detail: { objectId: p.objectId, objectType: p.objectType, state: p.state },
+                }))
             }
-            if (cancelado) return
-
-            // Só limpa o que foi de fato gravado. Limpar tudo no final trocaria
-            // uma falha de rede pela perda silenciosa dos favoritos — o
-            // resultado que este componente existe para evitar.
-            limparPendentes()
-            if (sobraram.length > 0) {
-                try {
-                    window.localStorage.setItem('hh-estado-pendente-v1', JSON.stringify(sobraram))
-                } catch { /* sem storage: a próxima visita começa limpa */ }
-                return
-            }
-            window.dispatchEvent(new CustomEvent('oc-content-state:sincronizado'))
         })()
-
-        return () => { cancelado = true }
     }, [status, session])
 
     return null
