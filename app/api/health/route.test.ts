@@ -28,7 +28,8 @@ describe('GET /api/health', () => {
         const json = await res.json()
         expect(json).toEqual({ ok: true, wordpress: 'up', latencyMs: expect.any(Number), commit: expect.any(String) })
         expect(res.headers.get('Cache-Control')).toBe('no-store, max-age=0')
-        expect(fetchMock).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
+        // Só o campo usado: o índice inteiro da API pesa centenas de KB.
+        expect(fetchMock).toHaveBeenCalledWith(expect.stringMatching(/\?_fields=namespaces$/), expect.objectContaining({
             cache: 'no-store',
             headers: { Accept: 'application/json' },
             signal: expect.any(AbortSignal),

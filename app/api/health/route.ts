@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { WP_API_URL } from '@/lib/wordpress/config'
+import { WP_SONDA_URL } from '@/lib/wordpress/config'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,7 +17,7 @@ type WordPressHealth = {
 async function checkWordPress(): Promise<WordPressHealth> {
     const startedAt = Date.now()
     try {
-        const res = await fetch(WP_API_URL, {
+        const res = await fetch(WP_SONDA_URL, {
             cache: 'no-store',
             headers: { Accept: 'application/json' },
             signal: AbortSignal.timeout(3000),

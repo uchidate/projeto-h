@@ -32,6 +32,15 @@ export function urlDaApiValida(valor: string | undefined): string {
 
 export const WP_API_URL = urlDaApiValida(process.env.WORDPRESS_API_URL)
 
+/**
+ * Endereço para saber se o WordPress responde.
+ *
+ * O índice completo da API tem 455 KB e era baixado a cada verificação de saúde e a cada coleta de
+ * métricas (cerca de 14 vezes por minuto em 2026-11-27). Com `_fields=namespaces` a resposta fica
+ * em poucas centenas de bytes e continua provando que a REST API está de pé.
+ */
+export const WP_SONDA_URL = `${WP_API_URL}?_fields=namespaces`
+
 export const IS_BUILD =
     process.env.NEXT_PHASE === 'phase-production-build' && !process.env.WORDPRESS_API_URL
 

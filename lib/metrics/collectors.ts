@@ -17,7 +17,7 @@
  * "o acervo está vazio", que é uma afirmação falsa e alarmante. A ausência da
  * série, somada a `collector_success 0`, diz a verdade: não sabemos agora.
  */
-import { WP_API_URL } from '@/lib/wordpress/config'
+import { WP_API_URL, WP_SONDA_URL } from '@/lib/wordpress/config'
 import { metricas } from './registry'
 
 /** Tipos de conteúdo do WordPress que compõem o inventário editorial. */
@@ -152,7 +152,7 @@ export async function coletarCms(): Promise<void> {
     const inicio = Date.now()
     let ok = false
     try {
-        const res = await fetch(WP_API_URL, {
+        const res = await fetch(WP_SONDA_URL, {
             cache: 'no-store',
             headers: { Accept: 'application/json' },
             signal: AbortSignal.timeout(TIMEOUT_SONDAGEM_MS),
