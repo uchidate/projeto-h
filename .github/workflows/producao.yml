@@ -256,7 +256,13 @@ jobs:
         run: |
           set -euo pipefail
           arvore="$(git rev-parse 'HEAD^{tree}')"
-          servidor() { echo "ℹ️  $1: build no servidor"; exit 0; }
+          servidor() {
+            echo "ℹ️  $1: build no servidor"
+            echo "motivo=$1" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+          # Carga antes de qualquer build, para o resumo.
+          echo "CARGA_ANTES=$(ssh -o BatchMode=yes -o ConnectTimeout=10 oc 'cut -d" " -f1 /proc/loadavg' || true)" >> "$GITHUB_ENV"
           # O build do servidor envia source maps ao Sentry. Sem os dois segredos,
           # montar aqui publicaria erros ilegiveis no Sentry.
           [ "$TEM_SENTRY" = "true" ] || servidor "faltam os segredos SENTRY_AUTH_TOKEN e SENTRY_ORG"
@@ -313,7 +319,9 @@ jobs:
           ARVORE: ${{ steps.local_build.outputs.arvore }}
         run: |
           set -euo pipefail
+          inicio="$(date +%s)"
           docker save "${IMAGE_REPO}:${GITHUB_SHA}" "${IMAGE_REPO}:conteudo-${ARVORE}" | ssh -o BatchMode=yes oc 'docker load'
+          echo "SEGUNDOS_ENVIO=$(( $(date +%s) - inicio ))" >> "$GITHUB_ENV"
 
       - name: Avisar queda para o build no servidor
         if: steps.local_build.outcome == 'failure' || steps.montagem.outcome == 'failure' || steps.envio.outcome == 'failure'
@@ -386,6 +394,9 @@ jobs:
 
       - name: Resumo
         if: always()
+        env:
+          MOTIVO_SERVIDOR: ${{ steps.local_build.outputs.motivo }}
+          BUILD_NO_SERVIDOR: ${{ vars.BUILD_NO_SERVIDOR }}
         run: |
           if [ "${{ steps.envio.outcome }}" = "success" ]; then
             tempo_build="${SEGUNDOS_BUILD:-0}"
@@ -402,17 +413,35 @@ jobs:
             echo "- fila: \`${{ steps.metricas.outputs.fila_segundos || '0' }}s\`"
             echo "- tempo total: \`${{ steps.metricas.outputs.total_segundos || '0' }}s\`"
             echo "- tempo build (aprox.): \`${tempo_build}s\`"
-            echo "- origem do artefato: \`${{ steps.deploy.outputs.origem_artefato || 'desconhecida' }}\`"
             if [ "${{ steps.envio.outcome }}" = "success" ]; then
+              # O script de deploy so ve uma imagem pronta e a chama de promovida.
+              echo "- origem do artefato: \`github\`"
               echo "- artefato: construido no GitHub e carregado no servidor"
-              echo "- respostas do WordPress buscadas no build: \`${RESPOSTAS_NOVAS:-?}\` de \`${RESPOSTAS_TOTAL:-?}\`"
-            elif [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
-              echo "- taxa de reaproveitamento: \`100%\`"
-              echo "- artefato: promovido do staging (build pulado)"
+              echo "- envio ao servidor: \`${SEGUNDOS_ENVIO:-?}s\`"
+              echo "- respostas do WordPress: \`${RESPOSTAS_SALVAS:-?}\` salvas antes; \`${RESPOSTAS_NOVAS:-?}\` buscadas neste build; \`${RESPOSTAS_TOTAL:-?}\` guardadas agora"
+              erros="$(grep -cE 'WordPress API (error|unavailable|returned invalid)' "$RUNNER_TEMP/build.log" || true)"
+              repeticoes="$(grep -cE 'tentativa [0-9]+/[0-9]+, repetindo' "$RUNNER_TEMP/build.log" || true)"
+              echo "- erros do WordPress no build: \`${erros:-?}\`; repetições de consulta: \`${repeticoes:-?}\`"
             else
-              echo "- taxa de reaproveitamento: \`0%\`"
-              echo "- artefato: construido agora — o SHA mudou na integracao"
+              echo "- origem do artefato: \`${{ steps.deploy.outputs.origem_artefato || 'desconhecida' }}\`"
+              motivo="${MOTIVO_SERVIDOR}"
+              [ "${BUILD_NO_SERVIDOR}" = "sim" ] && motivo="variável BUILD_NO_SERVIDOR=sim"
+              [ "${{ steps.montagem.outcome }}" = "failure" ] && motivo="a montagem no GitHub falhou"
+              [ "${{ steps.envio.outcome }}" = "failure" ] && motivo="o envio da imagem falhou"
+              [ "${{ steps.local_build.outcome }}" = "failure" ] && motivo="a decisão de onde montar falhou"
+              if [ -n "$motivo" ]; then echo "- por que não saiu do GitHub: ${motivo}"; fi
             fi
+            if [ "${{ steps.envio.outcome }}" != "success" ]; then
+              if [ "${{ steps.imagem_final.outputs.reuso }}" = "sim" ]; then
+                echo "- taxa de reaproveitamento: \`100%\`"
+                echo "- artefato: promovido do staging (build pulado)"
+              else
+                echo "- taxa de reaproveitamento: \`0%\`"
+                echo "- artefato: construido agora — o SHA mudou na integracao"
+              fi
+            fi
+            carga="$(ssh -o BatchMode=yes -o ConnectTimeout=10 oc 'cut -d" " -f1 /proc/loadavg' 2>/dev/null || true)"
+            echo "- carga do servidor (1 min): antes \`${CARGA_ANTES:-?}\`; no fim \`${carga:-?}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       # Aviso de falha no canal unico (ntfy), pelo mesmo `ssh oc` do deploy.
