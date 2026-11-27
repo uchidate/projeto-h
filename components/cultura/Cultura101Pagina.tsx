@@ -21,6 +21,7 @@ import { href } from '@/lib/i18n/routes'
 import trilhasData from '@/lib/cultura/trilhas.json'
 import { postsTraduzidosPorSlugPt } from '@/lib/cultura/guias-traduzidos'
 import { slugPublicoDoPost } from '@/lib/blog/translations'
+import { proximasFestas } from '@/lib/cultura/festas'
 
 /** Metadados da página no idioma; o canonical e o hreflang usam a URL de cada idioma. */
 export async function buildCulturaMetadata(locale: Locale = DEFAULT_LOCALE): Promise<Metadata> {
@@ -59,31 +60,6 @@ function agruparGuias(guias: Guia[]) {
     const resto = guias.filter(g => !usados.has(slug(g)))
     if (resto.length > 0) trilhas.push({ id: 'more', cor: '#6d3fc0', guias: resto })
     return { inicio, trilhas: trilhas.filter(t => t.guias.length > 0) }
-}
-
-type NotaFesta = 'lunarNewYear' | 'firstFullMoon' | 'march1' | 'dano' | 'liberation' | 'harvest' | 'hangeulDay'
-
-const FESTAS: { nome: string; hangul: string; data: string; nota: NotaFesta; guia?: string }[] = [
-    { nome: 'Seollal', hangul: '설날', data: '2027-02-07', nota: 'lunarNewYear', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
-    { nome: 'Daeboreum', hangul: '정월대보름', data: '2027-02-21', nota: 'firstFullMoon' },
-    { nome: 'Samiljeol', hangul: '삼일절', data: '2027-03-01', nota: 'march1' },
-    { nome: 'Dano', hangul: '단오', data: '2027-06-09', nota: 'dano' },
-    { nome: 'Gwangbokjeol', hangul: '광복절', data: '2027-08-15', nota: 'liberation' },
-    { nome: 'Chuseok', hangul: '추석', data: '2027-09-15', nota: 'harvest', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
-    { nome: 'Hangeul-nal', hangul: '한글날', data: '2027-10-09', nota: 'hangeulDay', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
-    { nome: 'Seollal', hangul: '설날', data: '2028-01-26', nota: 'lunarNewYear', guia: '/blog/chuseok-seollal-festas-tradicionais-coreanas-explicadas' },
-    { nome: 'Samiljeol', hangul: '삼일절', data: '2028-03-01', nota: 'march1' },
-    { nome: 'Gwangbokjeol', hangul: '광복절', data: '2028-08-15', nota: 'liberation' },
-    { nome: 'Hangeul-nal', hangul: '한글날', data: '2028-10-09', nota: 'hangeulDay', guia: '/blog/hangeul-guia-basico-fas-brasileiros' },
-]
-
-/** Datas lunares de 2027 (Seollal, Daeboreum, Dano, Chuseok) conferidas no calendário oficial e o Seollal de 2028 em duas fontes; as demais de 2028 são datas fixas. Chuseok, Daeboreum e Dano de 2028 ficam de fora até haver fonte. Ao esgotar a lista, o bloco some até ser atualizada. */
-function proximasFestas(agora = new Date()) {
-    const hoje = Date.UTC(agora.getFullYear(), agora.getMonth(), agora.getDate())
-    return FESTAS
-        .map(f => ({ ...f, dias: Math.round((Date.parse(f.data) - hoje) / 86_400_000) }))
-        .filter(f => f.dias >= 0)
-        .slice(0, 4)
 }
 
 const formatoData = (data: number, locale: Locale) => formatDate(data, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }, locale)
