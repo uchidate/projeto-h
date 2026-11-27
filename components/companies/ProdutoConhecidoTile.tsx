@@ -43,7 +43,9 @@ export function ProdutoConhecidoTile({ name, image, emoji, ofertas, contexto }: 
         if (!aberto) return
         const atualizarPos = () => {
             const r = btnRef.current?.getBoundingClientRect()
-            if (r) setPos({ top: r.bottom + 8, left: r.left + r.width / 2 })
+            // 128 = metade dos 240px do popover + 8 de folga: sem o limite, o primeiro e o
+            // último item da tira abriam parte das opções para fora da tela no celular.
+            if (r) setPos({ top: r.bottom + 8, left: Math.max(128, Math.min(r.left + r.width / 2, window.innerWidth - 128)) })
         }
         atualizarPos()
         const fechar = (e: MouseEvent) => {
