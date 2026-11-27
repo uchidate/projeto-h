@@ -10,6 +10,7 @@ import { Eye, EyeOff, LogIn } from 'lucide-react'
 import { BotaoGoogle } from '@/components/auth/BotaoGoogle'
 import { trackLogin } from '@/lib/analytics'
 import { href } from '@/lib/i18n/routes'
+import { destinoSeguro } from '@/lib/destinoSeguro'
 import type { Locale } from '@/lib/i18n/config'
 
 export function LoginForm({ googleAtivo = false }: { googleAtivo?: boolean }) {
@@ -39,7 +40,7 @@ export function LoginForm({ googleAtivo = false }: { googleAtivo?: boolean }) {
             setError(t('error'))
         } else {
             trackLogin('senha')
-            router.push(callbackUrl)
+            router.push(destinoSeguro(callbackUrl, '/dashboard', window.location.origin))
             router.refresh()
         }
     }

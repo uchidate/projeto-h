@@ -174,7 +174,9 @@ export async function registerUser(data: { name: string; email: string; password
         body: JSON.stringify(data),
         cache: 'no-store',
     })
-    const json = await res.json()
-    if (!res.ok) throw new Error(json.message ?? 'Erro ao criar conta')
+    // Gateway fora do ar responde HTML. Mensagem vazia = quem chama usa o
+    // próprio texto genérico, no idioma da página.
+    const json = await res.json().catch(() => null)
+    if (!res.ok || !json) throw new Error(json?.message ?? '')
     return json as { token: string; userId: number; name: string; email: string; avatar: string }
 }
