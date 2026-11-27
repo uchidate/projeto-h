@@ -32,8 +32,6 @@ import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
 import { StoreCard } from '@/components/ui/StoreCard'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import { BlogContinuar } from '@/components/blog/BlogContinuar'
-import { BlogSugestaoMeio } from '@/components/blog/BlogSugestaoMeio'
-import { tituloQuaseIgual } from '@/lib/blog/tituloQuaseIgual'
 import { BlogTextShare } from '@/components/blog/BlogTextShare'
 import { BlogMobileReadMore } from '@/components/blog/BlogMobileReadMore'
 import { BlogDaysUntil } from '@/components/blog/BlogDaysUntil'
@@ -368,16 +366,9 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
     const quizCategory: QuizCategory = quizCategoryFromBlog(cat?.slug)
     // O primeiro item já aparece como sugestão individual logo após a leitura.
     // Evitar repeti-lo mantém o encerramento editorial útil e menos mecânico.
-    // Teste de sugestão no meio do texto: metade dos artigos, independente da paridade
-    // dos outros testes (id/2 par). O restante é o controle, que segue só com o fechamento.
-    // O candidato do meio sai da lista do fechamento para não se repetir.
-    const tituloAtual = stripHtml(post.title.rendered)
-    // Pula gêmeos do artigo atual: o ranking de relacionados os põe no topo por compartilharem entidade.
-    const candidatoMeio = relatedPosts.slice(1).find(c => !tituloQuaseIgual(tituloAtual, stripHtml(c.title.rendered)))
-    // Sugestão do meio desligada em 2026-11-01: 0 cliques em 318 vistas (Umami, 28 dias, humanos); o card de
-    // perfis citados, que leva a uma ficha, teve 4% e agora sobe para logo depois da abertura.
-    const meioNovo = false && candidatoMeio !== undefined
-    const moreRelatedPosts = relatedPosts.slice(1, 6).filter(c => !meioNovo || c.id !== candidatoMeio?.id).slice(0, 4)
+    // A sugestão no meio do texto saiu em 2026-11-01: 0 cliques em 318 vistas (Umami, 28 dias, humanos); o card de
+    // perfis citados, que leva a uma ficha, teve 4% e sobe para logo depois da abertura.
+    const moreRelatedPosts = relatedPosts.slice(1, 5)
     // Guia de produto: o próprio texto é a vitrine. A faixa "Achados" no meio sai, e a vitrine do fim não repete
     // o que o guia já mostrou (pedido do dono, 2026-11-01: módulos parecidos demais depois do texto).
     const guiaDeProduto = post.article_blocks?.some(b => b.name.endsWith('/product')) === true
@@ -387,7 +378,6 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
         ? <LojaEmLinha bloco="artigo-loja-meio" products={shopProducts} title={origemLoja ? `Achados de ${origemLoja}` : 'Achados do assunto'} contexto={`blog:${post.slug}:meio`} />
         : null
     const deslizante = shopProducts[3] ?? shopProducts[0]
-    const sugestaoMeio = meioNovo ? <BlogSugestaoMeio atual={post} candidato={candidatoMeio} /> : null
     // Experimento: metade dos artigos (id par) recebe o fechamento novo, a outra metade
     // mantém o "Leia também". Por artigo e não por visitante: sem cookie e sem risco de
     // hidratação divergente numa página ISR. Cada bloco tem `data-bloco` próprio, então
@@ -645,7 +635,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                             <BlogMobileReadMore semTrava slug={post.slug}>
                                 {structuredModel ? (
                                     <>
-                                        <GutenbergArticleRenderer model={structuredModel} cardGrupo={cardGrupo} sugestaoMeio={sugestaoMeio} lojaMeio={lojaMeio} produtos={new Map(produtosNoTexto.map(p => [p.id, p]))} contextoProduto={`artigo:${post.slug}:produto`} />
+                                        <GutenbergArticleRenderer model={structuredModel} cardGrupo={cardGrupo} lojaMeio={lojaMeio} produtos={new Map(produtosNoTexto.map(p => [p.id, p]))} contextoProduto={`artigo:${post.slug}:produto`} />
                                     </>
                                 ) : (
                                     <>
@@ -653,7 +643,6 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                                         {contentSegments.map((segment, i) => (
                                             <div key={i}>
                                                 {i === 0 && cardGrupo}
-                                                {i === Math.max(1, Math.ceil(contentSegments.length * 0.4)) && contentSegments.length >= 3 && sugestaoMeio}
                                                 {i === Math.max(2, Math.ceil(contentSegments.length * 0.75)) && contentSegments.length >= 4 && lojaMeio && <div className="my-8">{lojaMeio}</div>}
                                                 {i > 0 && ADSENSE.slots.inline && <div className="my-8"><AdSlotInline slot={ADSENSE.slots.inline} layout="content" analyticsPlacement="article_body" /></div>}
                                                 <div className="prose dark:prose-invert max-w-none sm:[&_p]:text-justify" dangerouslySetInnerHTML={{ __html: segment }} />
