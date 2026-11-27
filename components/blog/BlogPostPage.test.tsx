@@ -135,7 +135,7 @@ describe('BlogPostPage — conteúdo', () => {
     it('link solto do Spotify vira embed', () => {
         const html = `<p>${LONGO}</p><p><a href="https://open.spotify.com/album/ABC123?si=x">Ouvir</a></p>`
         const iframe = pagina(post(html)).querySelector('.oc-spotify-embed iframe')
-        expect(iframe?.getAttribute('src')).toBe('https://open.spotify.com/embed/album/ABC123?si=x?utm_source=generator&theme=0')
+        expect(iframe?.getAttribute('src')).toBe('https://open.spotify.com/embed/album/ABC123?utm_source=generator&theme=0')
     })
 })
 
