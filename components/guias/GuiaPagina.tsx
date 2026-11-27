@@ -46,6 +46,12 @@ export async function buildGuiaMetadata({ params }: { params: Promise<{ slug: st
     }
 }
 
+/** Um de cada lista por vez (o grupo e cada integrante aparecem cedo), sem repetir produto, no máximo 6. */
+function intercalarProdutos<T extends { id: number }>(listas: T[][]): T[] {
+    const intercalados = Array.from({ length: Math.max(0, ...listas.map(l => l.length)) }, (_, i) => listas.map(l => l[i]).filter(Boolean)).flat()
+    return [...new Map(intercalados.map(p => [p.id, p])).values()].slice(0, 6)
+}
+
 /** Chaves de query que mudam o conteúdo do guia (filtros e paginação). */
 export const CHAVES_FILTRO_GUIA = ['page', 'genre', 'platform', 'network', 'type', 'year'] as const
 
@@ -118,15 +124,13 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
         // Guia de um grupo: produtos do grupo e de integrantes; sem eles, a faixa some em vez de mostrar outro grupo.
         const integrantes = result.kind === 'artists' ? result.items.slice(0, 4) : []
         const listas = await Promise.all([getStoreProductsByGroupId(grupoGuia.id), ...integrantes.map(a => getStoreProductsByArtistId(a.id))].map(p => p.catch(() => [])))
-        const intercalados = Array.from({ length: Math.max(0, ...listas.map(l => l.length)) }, (_, i) => listas.map(l => l[i]).filter(Boolean)).flat()
-        shopProducts = [...new Map(intercalados.map(p => [p.id, p])).values()].slice(0, 6)
+        shopProducts = intercalarProdutos(listas)
         tematica = true
     } else if (solista) {
         // Guia de um artista: só produto do próprio artista e do grupo; sem eles, a faixa some em vez de mostrar outro grupo.
         const nomes = [solista, ...(demaisDoSolista ?? []).slice(0, 3)]
         const listas = await Promise.all(nomes.map(a => getStoreProductsByArtistId(a.id).catch(() => [])))
-        const intercalados = Array.from({ length: Math.max(0, ...listas.map(l => l.length)) }, (_, i) => listas.map(l => l[i]).filter(Boolean)).flat()
-        shopProducts = [...new Map(intercalados.map(p => [p.id, p])).values()].slice(0, 6)
+        shopProducts = intercalarProdutos(listas)
         tematica = true
     } else {
         shopProducts = hub.kind === 'productions' ? [] : await getVitrinePorTermos(termosDoGuia, `guia:${slug}`, { limit: 6 }).catch(() => [])
