@@ -435,9 +435,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      # Só este job usa o Node 26: o semantic-release 26 exige >=26.13. O site, o build
+      # e os testes seguem na versão do .nvmrc.
       - uses: actions/setup-node@v7
         with:
-          node-version-file: .nvmrc
+          node-version: ^26.13.0
           cache: npm
       # --ignore-scripts: o `prepare` do husky não tem o que fazer no CI.
       - run: npm ci --ignore-scripts --no-audit --no-fund
