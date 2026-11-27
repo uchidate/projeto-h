@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { getGroupsByIds } from '@/lib/wordpress/groups'
 import { stripHtml } from '@/lib/utils'
 import Link from '@/components/i18n/LocalizedLink'
-import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto, quedaDePreco } from '@/lib/wordpress/store'
+import { getStoreProducts, STORE_LABELS, CATEGORY_LABELS, formatCategory, calcularDesconto, quedaDePreco, parsePrecoBR } from '@/lib/wordpress/store'
 import { ordenarPrateleira, ordenarCategorias } from '@/lib/wordpress/store-ranking'
 import { StoreCard } from '@/components/ui/StoreCard'
 import { getProductLinksMap } from '@/lib/wordpress/productLinks'
@@ -20,8 +20,6 @@ const ITENS_POR_CATEGORIA = 12
 const ITENS_POR_CATEGORIA_CELULAR = 6
 /** Grupos na faixa "Por grupo": só quem tem pelo menos este tanto de produto, para a página de destino não ficar rala. */
 const MINIMO_POR_GRUPO = 3
-
-const precoNumero = (s: string | null) => (s ? Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.')) : NaN)
 
 export const metadataLoja: Metadata = {
     title: 'Loja K-Pop',
@@ -76,7 +74,7 @@ export async function LojaListagem({ searchParams }: { searchParams: SearchParam
     // Ordem por preço é escolha explícita de quem compra: vence a ordem do filtro. Sem preço legível vai para o fim.
     if (sp.ordem === 'menor' || sp.ordem === 'maior') {
         const sinal = sp.ordem === 'menor' ? 1 : -1
-        const valor = (p: (typeof filtered)[number]) => { const n = precoNumero(p.acf.price); return Number.isFinite(n) ? n * sinal : Infinity }
+        const valor = (p: (typeof filtered)[number]) => { const n = parsePrecoBR(p.acf.price); return Number.isFinite(n) ? n * sinal : Infinity }
         filtered = [...filtered].sort((a, b) => valor(a) - valor(b))
     }
 
