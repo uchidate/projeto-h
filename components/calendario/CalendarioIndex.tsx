@@ -72,6 +72,7 @@ export default async function CalendarioPage({ locale = DEFAULT_LOCALE }: { loca
         if (!raw || artist.acf?.death_date) continue // falecido não gera aniversário
         try {
             const d = parseAcfDate(raw)
+            if (Number.isNaN(d.getTime())) continue // data ilegível não vira evento
             const birthMonth = d.getMonth() + 1
             const birthDay = d.getDate()
 
@@ -111,6 +112,7 @@ export default async function CalendarioPage({ locale = DEFAULT_LOCALE }: { loca
         if (!raw) continue
         try {
             const d = parseAcfDate(raw)
+            if (Number.isNaN(d.getTime())) continue // data ilegível não vira evento
             const debutMonth = d.getMonth() + 1
             const debutDay = d.getDate()
 
