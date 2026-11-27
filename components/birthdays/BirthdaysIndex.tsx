@@ -81,8 +81,9 @@ export default async function BirthdaysPage({ searchParams, locale = DEFAULT_LOC
             let birthDate: Date
             try { birthDate = parseAcfDate(a.acf!.birth_date!) }
             catch { return [] }
-            const day = birthDate.getUTCDate()
-            const birthYear = birthDate.getUTCFullYear()
+            // `parseAcfDate` devolve a data no fuso local: ler em UTC recuava o dia (e o ano, em 1º de janeiro) com o servidor à frente de UTC.
+            const day = birthDate.getDate()
+            const birthYear = birthDate.getFullYear()
             const age = birthYear > 1900 ? currentYear - birthYear : null
             const item: BirthdayArtist = {
                 id: a.id,
@@ -177,7 +178,7 @@ export default async function BirthdaysPage({ searchParams, locale = DEFAULT_LOC
                     <div className="space-y-8">
                         {Array.from(byDay.entries()).map(([day, dayArtists], indice) => {
                             const isCurrentMonth = currentMonth === (now.getMonth() + 1)
-                            const isToday = isCurrentMonth && day === now.getUTCDate()
+                            const isToday = isCurrentMonth && day === now.getDate()
                             return (
                                 <Fragment key={day}>
                                 {/* A cada 6 dias: ~9.000px de rolagem no celular sem anúncio nenhum até 2026-09-17.
