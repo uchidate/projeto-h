@@ -11,6 +11,7 @@ import { registerUser } from '@/lib/wordpress/userApi'
 import { BotaoGoogle } from '@/components/auth/BotaoGoogle'
 import { trackCadastro, trackLogin } from '@/lib/analytics'
 import { href } from '@/lib/i18n/routes'
+import { destinoSeguro } from '@/lib/destinoSeguro'
 import type { Locale } from '@/lib/i18n/config'
 
 export function CadastroForm({ googleAtivo = false }: { googleAtivo?: boolean }) {
@@ -41,17 +42,21 @@ export function CadastroForm({ googleAtivo = false }: { googleAtivo?: boolean })
                 username: form.email,
                 password: form.password,
                 redirect: false,
-            })
+            // Falha de rede aqui não pode virar "erro ao criar conta": quem
+            // tentasse de novo ouviria que o e-mail já existe.
+            }).catch(() => ({ error: 'rede' }))
             if (res?.error) {
                 setError(t('createdSignIn'))
                 router.push(loginHref)
             } else {
                 trackLogin('senha')
-                router.push(callbackUrl)
+                router.push(destinoSeguro(callbackUrl, '/dashboard', window.location.origin))
                 router.refresh()
             }
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : t('genericError'))
+            // TypeError é o fetch sem rede: a mensagem do navegador não diz nada.
+            const doServidor = err instanceof Error && !(err instanceof TypeError) ? err.message : ''
+            setError(doServidor || t('genericError'))
         } finally {
             setLoading(false)
         }

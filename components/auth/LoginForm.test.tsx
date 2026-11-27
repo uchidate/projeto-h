@@ -61,6 +61,20 @@ describe('LoginForm', () => {
         expect(refreshMock).toHaveBeenCalled()
     })
 
+    it('não segue um callbackUrl para outro site', async () => {
+        // @ts-expect-error mock parcial suficiente pro teste
+        mockedSignIn.mockResolvedValue({ error: null })
+        searchParamsValue = 'callbackUrl=%2F%2Foutro.com'
+        const user = userEvent.setup()
+        render(<LoginForm />)
+
+        await user.type(screen.getByLabelText(/e-mail ou usuário/i), 'user@x.com')
+        await user.type(screen.getByLabelText('Senha'), 'senha123')
+        await user.click(screen.getByRole('button', { name: 'Entrar' }))
+
+        expect(pushMock).toHaveBeenCalledWith('/dashboard')
+    })
+
     it('login com erro mostra mensagem e não redireciona', async () => {
         // @ts-expect-error mock parcial suficiente pro teste
         mockedSignIn.mockResolvedValue({ error: 'CredentialsSignin' })

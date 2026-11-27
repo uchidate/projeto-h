@@ -76,8 +76,13 @@ describe('registerUser', () => {
         await expect(registerUser({ name: 'X', email: 'x@x.com', password: '123' })).rejects.toThrow('E-mail já cadastrado')
     })
 
-    it('usa mensagem de erro genérica quando a API não retorna message', async () => {
-        fetchMock.mockResolvedValue({ ok: false, json: async () => ({}) })
-        await expect(registerUser({ name: 'X', email: 'x@x.com', password: '123' })).rejects.toThrow('Erro ao criar conta')
+    // Mensagem vazia: o formulário escreve o texto genérico no idioma da página.
+    it.each([
+        ['sem message', { ok: false, json: async () => ({}) }],
+        ['resposta que não é JSON', { ok: false, json: async () => { throw new SyntaxError('Unexpected token <') } }],
+        ['sucesso sem JSON', { ok: true, json: async () => { throw new SyntaxError('Unexpected token <') } }],
+    ])('lança erro sem mensagem: %s', async (_caso, resposta) => {
+        fetchMock.mockResolvedValue(resposta)
+        await expect(registerUser({ name: 'X', email: 'x@x.com', password: '123' })).rejects.toHaveProperty('message', '')
     })
 })
