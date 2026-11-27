@@ -39,6 +39,9 @@ function draw(ctx: CanvasRenderingContext2D, props: ShareCardProps) {
 
     ctx.fillStyle = '#f0f0f4'
     ctx.font = '700 96px Georgia, serif'
+    // A quebra é só nos espaços: palavra mais larga que a área (japonês não tem espaço) pede fonte menor.
+    const maiorPalavra = Math.max(...title.split(' ').map(p => ctx.measureText(p).width))
+    if (maiorPalavra > WIDTH - 112) ctx.font = `700 ${Math.floor(96 * (WIDTH - 112) / maiorPalavra)}px Georgia, serif`
     wrapText(ctx, title, 56, 730, WIDTH - 112, 96)
 
     ctx.fillStyle = '#c8c8d4'
