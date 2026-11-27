@@ -16,6 +16,7 @@ import { metaDescription } from '@/lib/seo/metaDescription'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { GutenbergArticleRenderer } from '@/components/blog/GutenbergArticleRenderer'
 import { getProdutosDosBlocos } from '@/lib/blog/produtosDosBlocos'
+import { dataComFuso, instanteDoPost } from '@/lib/blog/tempoRelativo'
 import { RastreioDeLeitura } from '@/components/analytics/RastreioDeLeitura'
 import type { StoreProduct } from '@/lib/wordpress/store'
 
@@ -44,7 +45,7 @@ export function buildLocalizedPostMetadata(post: WPPost, locale: Locale): Metada
         description: descricao,
         url: canonical,
         image,
-        article: { publishedTime: post.date, modifiedTime: post.modified },
+        article: { publishedTime: dataComFuso(post.date), modifiedTime: dataComFuso(post.modified) },
         ogImageOverride: buildOgImageUrl({ title: titulo, subtitle: descricao, image: image?.src, type: 'post' }),
         languages,
         ogLocale: LOCALE_META[locale].ogLocale,
@@ -72,7 +73,7 @@ export async function LocalizedPost({ post: postOriginal, locale }: { post: WPPo
     const imagem = getWPImage(post._embedded, post.featured_image_url, titulo)
     const { canonical } = buildPostAlternates(post.translations, locale, post.slug)
     const slugPt = post.translations?.[DEFAULT_LOCALE]
-    const data = new Intl.DateTimeFormat(LOCALE_META[locale].intl, { dateStyle: 'long', timeZone: 'America/Sao_Paulo' }).format(new Date(post.date))
+    const data = new Intl.DateTimeFormat(LOCALE_META[locale].intl, { dateStyle: 'long', timeZone: 'America/Sao_Paulo' }).format(instanteDoPost(post.date))
 
     return (
         <>
@@ -86,8 +87,8 @@ export async function LocalizedPost({ post: postOriginal, locale }: { post: WPPo
                 headline: titulo,
                 description: descricao,
                 url: canonical,
-                datePublished: post.date,
-                dateModified: post.modified,
+                datePublished: dataComFuso(post.date),
+                dateModified: dataComFuso(post.modified),
                 image: imagem?.src ? [imagem.src] : undefined,
                 author: { type: 'Organization', name: SITE_NAME, url: `${SITE_URL}${href('about', undefined, locale)}` },
                 publisher: { name: SITE_NAME, url: SITE_URL },

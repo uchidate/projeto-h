@@ -9,6 +9,7 @@ import type { QuizCategory } from '@/lib/wordpress/quiz'
 import { quizCategoryFromBlog } from '@/lib/quiz/categoryMeta'
 import type { WPPost } from '@/lib/wordpress/types'
 import { formatDateTime, getWPImage, getWPTerms, stripHtml, readingTime } from '@/lib/utils'
+import { dataComFuso } from '@/lib/blog/tempoRelativo'
 import { catStyleTema as catStyle } from '@/lib/blog/catStyle'
 import { SITE_URL, SITE_NAME, buildOgImageUrl } from '@/lib/constants/site'
 import { splitContentForAd, splitContentForAds } from '@/lib/utils/injectAd'
@@ -431,8 +432,8 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                     headline: title,
                     description: metaDescription(summary),
                     url: postUrl,
-                    datePublished: post.date,
-                    dateModified: post.modified,
+                    datePublished: dataComFuso(post.date),
+                    dateModified: dataComFuso(post.modified),
                     image: image?.src
                         ? [image.src, buildOgImageUrl({ title, subtitle: metaDescription(summary), image: image.src, type: 'post' })]
                         : undefined,
@@ -452,7 +453,7 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                         id,
                         name: title,
                         description: metaDescription(summary),
-                        uploadDate: post.date,
+                        uploadDate: dataComFuso(post.date),
                     })}
                 />
             ))}
@@ -495,11 +496,11 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                 )}
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted border-t border-border pt-2">
                     {author && <span className="font-semibold text-foreground">{author.name}</span>}
-                    <time dateTime={post.date} className="flex items-center gap-1">
+                    <time dateTime={dataComFuso(post.date)} className="flex items-center gap-1">
                         <Calendar size={10} /> {formatDateTime(post.date)}
                     </time>
                     {wasUpdated && (
-                        <time dateTime={post.modified} className="flex items-center gap-1">
+                        <time dateTime={dataComFuso(post.modified)} className="flex items-center gap-1">
                             Atualizado em {formatDateTime(post.modified)}
                         </time>
                     )}
@@ -557,11 +558,11 @@ export function BlogPostPage({ post, relatedPosts = [], shopProducts: shopProduc
                                         {author.name}
                                     </span>
                                 )}
-                                <time dateTime={post.date} className="flex items-center gap-1.5">
+                                <time dateTime={dataComFuso(post.date)} className="flex items-center gap-1.5">
                                     <Calendar size={12} /> {formatDateTime(post.date)}
                                 </time>
                                 {wasUpdated && (
-                                    <time dateTime={post.modified} className="flex items-center gap-1.5">
+                                    <time dateTime={dataComFuso(post.modified)} className="flex items-center gap-1.5">
                                         Atualizado em {formatDateTime(post.modified)}
                                     </time>
                                 )}

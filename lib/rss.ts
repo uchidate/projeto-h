@@ -1,6 +1,7 @@
 import { htmlLang } from '@/lib/i18n/format'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/constants/site'
 import { stripHtml, getWPImage } from '@/lib/utils'
+import { instanteDoPost } from '@/lib/blog/tempoRelativo'
 import type { WPPost } from '@/lib/wordpress/types'
 
 type FeedOptions = {
@@ -15,7 +16,7 @@ export function buildPostsRss(posts: WPPost[], options: FeedOptions) {
         const excerpt = stripHtml(post.excerpt.rendered).slice(0, 300)
         const image = getWPImage(post._embedded, post.featured_image_url)
         const url = `${SITE_URL}/blog/${post.slug}`
-        const pubDate = new Date(post.date).toUTCString()
+        const pubDate = instanteDoPost(post.date).toUTCString()
         const cats: Array<{ name: string }> = (post._embedded?.['wp:term']?.[0] ?? []) as Array<{ name: string }>
 
         const media = image

@@ -87,7 +87,7 @@ const slotsMutaveis = () => ADSENSE.slots as { inline: string | undefined }
 const comida = (extra: Obj = {}, acf: Obj = {}) => ({
     id: 10, slug: 'bibimbap', title: { rendered: 'Bibimbap' }, excerpt: { rendered: '<p>Arroz misto.</p>' },
     content: { rendered: '<p>Texto longo.</p>' }, featured_image_url: 'https://img.test/bibimbap.jpg',
-    date: '2026-01-01', modified: '2026-02-02', acf, ...extra,
+    date: '2026-01-01T10:00:00', modified: '2026-02-02T11:00:00', acf, ...extra,
 })
 const params = (locale?: 'en' | 'pt', slug = 'bibimbap') => Promise.resolve({ slug, locale })
 const params2 = (locale?: 'en') => (locale ? params(locale) : params())
@@ -269,7 +269,7 @@ describe('FoodPage: conteúdo', () => {
         expect(vi.mocked(buildRecipeSchema).mock.calls[0][0]).toMatchObject({
             name: 'Bibimbap', nameKorean: '비빔밥', description: 'Arroz misto.', url: 'https://site.test/en/food/bibimbap',
             category: 'cat:rice', region: 'Seul', ingredients: ['Arroz'], keywords: ['Bibimbap'], isVegan: true,
-            datePublished: '2026-01-01', dateModified: '2026-02-02', locale: 'en',
+            datePublished: '2026-01-01T10:00:00-03:00', dateModified: '2026-02-02T11:00:00-03:00', locale: 'en',
         })
     })
 

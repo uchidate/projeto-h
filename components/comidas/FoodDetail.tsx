@@ -27,6 +27,7 @@ import { ProfileSection } from '@/components/profiles/ProfileSection'
 import { getVitrineVinculada, buildVitrineMatcher } from '@/lib/wordpress/vitrine'
 import { getPostsQueCitam } from '@/lib/wordpress/posts'
 import { getReceita } from '@/lib/receitas'
+import { dataComFuso } from '@/lib/blog/tempoRelativo'
 import { temRecurso } from '@/lib/i18n/recursos'
 import { ReceitaPreparo } from '@/components/food/ReceitaPreparo'
 import { getMencoesNoAcervo } from '@/lib/wordpress/mentions'
@@ -131,8 +132,8 @@ export default async function FoodPage({ params }: { params: Params }) {
         keywords: acf.curiosidades?.length ? [name] : undefined,
         isVegetarian: acf.is_vegetarian,
         isVegan: acf.is_vegan,
-        datePublished: food.date,
-        dateModified: food.modified,
+        datePublished: dataComFuso(food.date),
+        dateModified: dataComFuso(food.modified),
         preparo: receita,
         locale,
     })
