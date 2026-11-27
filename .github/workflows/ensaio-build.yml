@@ -1,8 +1,8 @@
 name: 🧪 Ensaio de build no GitHub
 
-# Monta a imagem do site num runner do GitHub e mede o resultado, para decidir se o
-# `docker build` pode sair do servidor de produção. NÃO publica: a imagem não é
-# enviada a registro nenhum nem ao servidor, e some com o runner.
+# Monta a imagem do site num runner do GitHub, envia ao servidor com uma tag
+# descartável, compara com a que está no ar e remove. NÃO publica: nenhum
+# container passa a usar a imagem.
 #
 # O build consulta o WordPress de produção, como o build de verdade. Rodar só quando
 # for medir.
@@ -10,6 +10,8 @@ on:
   pull_request:
     paths:
       - '.github/workflows/ensaio-build.yml'
+      - '.github/actions/montar-imagem/**'
+      - '.github/ensaio/**'
       - 'lib/imagem/**'
   workflow_dispatch:
 
@@ -24,11 +26,10 @@ jobs:
   construir:
     name: Montar a imagem
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
 
-      # Só para ler a identidade do site, que não é versionada.
       - name: Conectar ao servidor
         uses: ./.github/actions/conectar-servidor
         with:
@@ -36,122 +37,47 @@ jobs:
           usuario: ${{ secrets.DEPLOY_USER }}
           chave: ${{ secrets.DEPLOY_SSH_KEY }}
 
-      # Um pedido só, antes do build: se o cabeçalho não liberar a API, para aqui
-      # em vez de disparar centenas de consultas recusadas.
-      - name: Conferir acesso ao WordPress
-        env:
-          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
-          SONDA_HEADER: ${{ vars.SONDA_HEADER }}
-          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
-        run: |
-          set -euo pipefail
-          [ -n "$SONDA_HEADER" ] && [ -n "$SONDA_TOKEN" ] || { echo "::error::cabeçalho ou token da sonda ausente"; exit 1; }
-          codigo="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 60 -H "${SONDA_HEADER}: ${SONDA_TOKEN}" "${WORDPRESS_API_URL}/wp/v2/types")"
-          echo "resposta da API do WordPress: ${codigo}"
-          [ "$codigo" = "200" ] || { echo "::error::o cabeçalho da sonda não liberou a API (${codigo})"; exit 1; }
-
-      # Só as respostas do WordPress (`.next/cache/fetch-cache`), que são conteúdo
-      # público. O resto do `.next/cache` fica de fora: o cache de compilação pode
-      # guardar valores de identidade, e o cache de um repositório público é legível
-      # por PRs.
-      - name: Restaurar cache das consultas
-        uses: actions/cache@v6
-        with:
-          path: ${{ runner.temp }}/cache-fetch
-          key: ensaio-fetch-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: ensaio-fetch-
-
-      # O Dockerfile guarda o `.next/cache` num cache mount do BuildKit, que nasce
-      # vazio num runner novo. Um build auxiliar põe o conteúdo salvo dentro dele.
-      # Vai em tar para preservar a data de cada resposta, que define a validade.
-      - name: Carregar cache no Docker
-        run: |
-          set -euo pipefail
-          pasta="$RUNNER_TEMP/cache-fetch"
-          if [ ! -f "$pasta/fetch.tar" ]; then
-            echo "sem cache salvo: o build começa do zero"
-            echo "RESPOSTAS_SALVAS=0" >> "$GITHUB_ENV"
-            exit 0
-          fi
-          echo "RESPOSTAS_SALVAS=$(tar -tf "$pasta/fetch.tar" | grep -vc '/$')" >> "$GITHUB_ENV"
-          printf '%s\n' \
-            'FROM node:24-alpine' \
-            'COPY fetch.tar /semente.tar' \
-            'RUN --mount=type=cache,target=/app/.next/cache mkdir -p /app/.next/cache/fetch-cache && tar -xf /semente.tar -C /app/.next/cache/fetch-cache' \
-            > "$RUNNER_TEMP/carregar.Dockerfile"
-          DOCKER_BUILDKIT=1 docker build -f "$RUNNER_TEMP/carregar.Dockerfile" "$pasta"
-
       - name: Montar a imagem
-        env:
-          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
-          SONDA_HEADER: ${{ vars.SONDA_HEADER }}
-          SONDA_TOKEN: ${{ secrets.SONDA_TOKEN }}
-        run: |
-          set -euo pipefail
-          identidade="$(ssh -o BatchMode=yes oc 'cat /data/hallyuhub/identidade.env')"
-          args=(--build-arg "WORDPRESS_API_URL=${WORDPRESS_API_URL}" --build-arg "NEXT_PUBLIC_SENTRY_RELEASE=${GITHUB_SHA}")
-          # Lê linha a linha, sem `source`: o arquivo é dado, não script. O log é
-          # público, então cada valor é mascarado antes de qualquer uso.
-          while IFS='=' read -r nome valor || [ -n "$nome" ]; do
-            case "$nome" in NEXT_PUBLIC_*) ;; *) continue ;; esac
-            valor="${valor%$'\r'}"
-            valor="${valor#[\"\']}"
-            valor="${valor%[\"\']}"
-            if [ "${#valor}" -ge 4 ]; then echo "::add-mask::${valor}"; fi
-            args+=(--build-arg "${nome}=${valor}")
-          done <<< "$identidade"
-          echo "valores de identidade lidos: $(( (${#args[@]} - 4) / 2 ))"
-
-          inicio="$(date +%s)"
-          echo "INICIO_BUILD=${inicio}" >> "$GITHUB_ENV"
-          DOCKER_BUILDKIT=1 docker build --progress=plain "${args[@]}" \
-            --build-arg "BUILD_PROBE_HEADER=${SONDA_HEADER}" \
-            --secret id=build_probe_token,env=SONDA_TOKEN \
-            -t ensaio:local . 2>&1 | tee "$RUNNER_TEMP/build.log"
-          echo "SEGUNDOS_BUILD=$(( $(date +%s) - inicio ))" >> "$GITHUB_ENV"
-
-      # Tira o cache de dentro do BuildKit. `RODADA` invalida a camada, para a cópia
-      # não ser reaproveitada de um passo anterior.
-      - name: Retirar cache do Docker
-        run: |
-          set -euo pipefail
-          pasta="$RUNNER_TEMP/cache-fetch"
-          vazio="$RUNNER_TEMP/contexto-vazio"
-          mkdir -p "$pasta" "$vazio"
-          printf '%s\n' \
-            'FROM node:24-alpine AS copia' \
-            'ARG RODADA' \
-            'RUN --mount=type=cache,target=/app/.next/cache mkdir /saida && tar -cf /saida/fetch.tar -C /app/.next/cache/fetch-cache .' \
-            'FROM scratch' \
-            'COPY --from=copia /saida/fetch.tar /fetch.tar' \
-            > "$RUNNER_TEMP/retirar.Dockerfile"
-          DOCKER_BUILDKIT=1 docker build -f "$RUNNER_TEMP/retirar.Dockerfile" \
-            --build-arg "RODADA=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
-            --output "type=local,dest=${pasta}" "$vazio"
-          # Resposta com data posterior ao início do build veio do WordPress agora.
-          mkdir -p "$RUNNER_TEMP/conferir"
-          tar -xf "$pasta/fetch.tar" -C "$RUNNER_TEMP/conferir"
-          echo "RESPOSTAS_TOTAL=$(find "$RUNNER_TEMP/conferir" -type f | wc -l)" >> "$GITHUB_ENV"
-          echo "RESPOSTAS_NOVAS=$(find "$RUNNER_TEMP/conferir" -type f -newermt "@${INICIO_BUILD}" | wc -l)" >> "$GITHUB_ENV"
+        uses: ./.github/actions/montar-imagem
+        with:
+          wordpress-url: ${{ vars.WORDPRESS_API_URL }}
+          sonda-header: ${{ vars.SONDA_HEADER }}
+          sonda-token: ${{ secrets.SONDA_TOKEN }}
+          marcas: ensaio-medida:${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Medir
         run: |
           set -euo pipefail
           log="$RUNNER_TEMP/build.log"
           conta() { grep -cE "$1" "$log" || true; }
-          bytes="$(docker image inspect ensaio:local --format '{{.Size}}')"
-          inicio="$(date +%s)"
-          comprimido="$(docker save ensaio:local | gzip -1 | wc -c)"
-          compactar="$(( $(date +%s) - inicio ))"
           {
             echo "### Ensaio de build"
             echo ""
             echo "- build: \`${SEGUNDOS_BUILD}s\`"
             echo "- início do build (UTC): \`$(date -u -d "@${INICIO_BUILD}" +%H:%M:%S)\`"
             echo "- respostas do WordPress: \`${RESPOSTAS_SALVAS}\` salvas antes; \`${RESPOSTAS_NOVAS}\` buscadas neste build; \`${RESPOSTAS_TOTAL}\` guardadas agora"
-            echo "- imagem: \`$(( bytes / 1048576 )) MB\`; compactada para envio: \`$(( comprimido / 1048576 )) MB\` em \`${compactar}s\`"
             echo "- erros do WordPress no build: \`$(conta 'WordPress API (error|unavailable|returned invalid)')\`"
             echo "- repetições de consulta: \`$(conta 'tentativa [0-9]+/[0-9]+, repetindo')\`"
             echo "- respostas 403/429/503 no log: \`$(conta '(error|status|HTTP)[^0-9]{0,12}(403|429|503)')\`"
             echo "- páginas geradas: \`$(grep -oE 'Generating static pages[^(]*\([0-9]+/[0-9]+\)' "$log" | tail -1 | grep -oE '[0-9]+/[0-9]+' || echo '?')\`"
           } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # A imagem entra no servidor com uma tag que o deploy não conhece e sai no
+      # fim do passo, mesmo se a comparação falhar.
+      - name: Enviar ao servidor, comparar e remover
+        env:
+          IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+          MARCA: ensaio-medida:${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          trap 'ssh -o BatchMode=yes oc "docker image rm ${MARCA}" >/dev/null 2>&1 || echo "::warning::a imagem de ensaio ficou no servidor: ${MARCA}"' EXIT
+          carga() { ssh -o BatchMode=yes oc 'cut -d" " -f1-3 /proc/loadavg'; }
+          echo "carga antes do envio: $(carga)"
+          echo "envio: início (UTC) $(date -u +%H:%M:%S)"
+          inicio="$(date +%s)"
+          docker save "$MARCA" | ssh -o BatchMode=yes oc 'docker load'
+          segundos="$(( $(date +%s) - inicio ))"
+          echo "envio: fim (UTC) $(date -u +%H:%M:%S)"
+          echo "carga depois do envio: $(carga)"
+          echo "- envio e carga no servidor: \`${segundos}s\`" | tee -a "$GITHUB_STEP_SUMMARY"
+          ssh -o BatchMode=yes oc "bash -s -- ${MARCA} ${IMAGE_REPO}:latest" < .github/ensaio/comparar-imagens.sh | tee -a "$GITHUB_STEP_SUMMARY"
