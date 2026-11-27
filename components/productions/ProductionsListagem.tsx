@@ -26,7 +26,7 @@ function parseProductionType(value?: string) {
 type OrderParam = { orderby: 'relevance' | 'date' | 'title'; order: 'desc' | 'asc' }
 function parseOrder(value?: string): OrderParam {
     if (value === 'recent') return { orderby: 'date', order: 'desc' }
-    if (value === 'az') return { orderby: 'date', order: 'asc' }
+    if (value === 'az') return { orderby: 'title', order: 'asc' }
     return { orderby: 'relevance', order: 'desc' }
 }
 
