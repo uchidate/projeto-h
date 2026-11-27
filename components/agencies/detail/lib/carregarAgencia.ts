@@ -9,7 +9,7 @@ import { getArtists } from '@/lib/wordpress/artists'
 import { getGroups } from '@/lib/wordpress/groups'
 import { getPosts } from '@/lib/wordpress/posts'
 import { SITE_URL } from '@/lib/constants/site'
-import { getWPImage, stripHtml, getYear } from '@/lib/utils'
+import { getWPImage, stripHtml } from '@/lib/utils'
 import { buildBreadcrumbSchema } from '@/lib/seo/jsonld'
 import { type FactItem } from '@/components/blocks/FactGrid'
 import { type EntityFAQItem } from '@/components/seo/EntityFAQ'
@@ -126,7 +126,9 @@ export async function carregarAgencia(slug: string, locale: Locale = DEFAULT_LOC
             .filter(g => { const y = g.acf?.debut_date ? parseInt(g.acf.debut_date.slice(0, 4)) : null; return y !== null && y >= gen.from && y <= gen.to })
             .sort((a, b) => (a.acf?.debut_date ?? '').localeCompare(b.acf?.debut_date ?? '')),
     })).filter(g => g.items.length > 0)
-    const groupsWithoutGeneration = remainingActiveGroups.filter(group => !getYear(group.acf?.debut_date))
+    // Tudo que não caiu em geração (sem data, data ilegível ou estreia antes de 1990) não pode sumir do catálogo.
+    const comGeracao = new Set(groupsByGen.flatMap(gen => gen.items.map(group => group.id)))
+    const groupsWithoutGeneration = remainingActiveGroups.filter(group => !comGeracao.has(group.id))
 
     const topArtist = [...allArtists].sort((a, b) => (b.acf?.trending_score ?? 0) - (a.acf?.trending_score ?? 0))[0]
     const editorialLens = acf.organization_kind === 'conglomerate'
