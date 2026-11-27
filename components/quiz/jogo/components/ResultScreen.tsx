@@ -114,11 +114,16 @@ export function ResultScreen({ questions, answers, points, timeHistory, maxTime,
         }).catch(() => null)
         const file = blob ? new File([blob], 'quiz-hallyuhub.png', { type: 'image/png' }) : null
 
-        if (file && navigator.canShare?.({ files: [file] })) {
-            try { await navigator.share({ title: t('res.compartilharTitulo'), text: shareText, url, files: [file] }); return } catch { /* fallback */ }
+        // Fechar a janela de compartilhamento é desistência: não abre de novo, não baixa nem copia nada.
+        const compartilhou = async (dados: ShareData) => {
+            try { await navigator.share(dados); return true } catch (erro) { return (erro as Error)?.name === 'AbortError' }
         }
-        if (navigator.share) {
-            try { await navigator.share({ title: t('res.compartilharTitulo'), text: shareText, url }); return } catch { /* fallback */ }
+        const dados = { title: t('res.compartilharTitulo'), text: shareText, url }
+        if (file && navigator.canShare?.({ files: [file] })) {
+            if (await compartilhou({ ...dados, files: [file] })) return
+        }
+        if (typeof navigator.share === 'function') {
+            if (await compartilhou(dados)) return
         }
         if (file) {
             const a = document.createElement('a')
