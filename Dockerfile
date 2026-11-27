@@ -101,6 +101,11 @@ ENV NEXT_PUBLIC_ADMIN_EMAILS=$NEXT_PUBLIC_ADMIN_EMAILS
 ARG NEXT_PUBLIC_ADSENSE_CLIENT=""
 ENV NEXT_PUBLIC_ADSENSE_CLIENT=$NEXT_PUBLIC_ADSENSE_CLIENT
 
+# Build fora do servidor (ensaio no GitHub Actions): nome do cabeçalho que faz o
+# WordPress aceitar as consultas. O token vem como secret `build_probe_token` e é
+# lido por lib/imagem/sonda-wordpress.cjs. Sem os dois, nada muda.
+ARG BUILD_PROBE_HEADER=""
+
 # Cache do Next.js entre builds — só recompila arquivos que mudaram
 # Source maps do Sentry: o token entra como SECRET do BuildKit (fica fora das
 # camadas e do `docker history`) e só existe durante este RUN. Sem o arquivo no
@@ -109,7 +114,10 @@ ENV NEXT_PUBLIC_ADSENSE_CLIENT=$NEXT_PUBLIC_ADSENSE_CLIENT
 RUN --mount=type=cache,id=site-node-modules,target=/app/node_modules,sharing=locked \
     --mount=type=cache,target=/app/.next/cache \
     --mount=type=secret,id=sentry_auth_token \
-    SENTRY_AUTH_TOKEN="$(cat /run/secrets/sentry_auth_token 2>/dev/null || true)" npm run build
+    --mount=type=secret,id=build_probe_token \
+    SENTRY_AUTH_TOKEN="$(cat /run/secrets/sentry_auth_token 2>/dev/null || true)" \
+    BUILD_PROBE_TOKEN_FILE=/run/secrets/build_probe_token \
+    NODE_OPTIONS="--require /app/lib/imagem/sonda-wordpress.cjs" npm run build
 
 # ── runner ────────────────────────────────────────────────────────────────────
 FROM base AS runner
