@@ -1,7 +1,29 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ehMenorPrecoEmDias, quedaDePreco } from './store'
+import { calcularDesconto, ehMenorPrecoEmDias, parsePrecoBR, quedaDePreco } from './store'
 
 const dia = (n: number, preco: string) => ({ date: new Date(Date.UTC(2026, 9, 20) - n * 86400000).toISOString().slice(0, 10), price: preco })
+
+describe('parsePrecoBR', () => {
+    it.each([
+        ['R$ 1.234,56', 1234.56],
+        ['R$ 89,90', 89.9],
+        ['49', 49],
+        ['R$ 1.000', 1000],
+    ])('%s vira %d', (texto, esperado) => {
+        expect(parsePrecoBR(texto)).toBe(esperado)
+    })
+
+    it('vazio, nulo e texto sem número dão NaN', () => {
+        expect(parsePrecoBR('')).toBeNaN()
+        expect(parsePrecoBR(null)).toBeNaN()
+        expect(parsePrecoBR(undefined)).toBeNaN()
+        expect(parsePrecoBR('sob consulta')).toBeNaN()
+    })
+
+    it('preço sem dígitos não gera desconto de 100%', () => {
+        expect(calcularDesconto('sob consulta', 'R$ 100,00')).toBeNull()
+    })
+})
 
 describe('preço no histórico', () => {
     beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date(Date.UTC(2026, 9, 20, 12))) })

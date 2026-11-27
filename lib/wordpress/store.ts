@@ -28,17 +28,20 @@ export type StoreProduct = {
     }
 }
 
+/** Preço em texto brasileiro ("R$ 1.234,56") para número; NaN quando vazio ou ilegível. */
+export function parsePrecoBR(s: string | null | undefined): number {
+    if (!s || !/\d/.test(s)) return NaN // "sob consulta" não é preço zero
+    return Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'))
+}
+
 /** Calcula o desconto real a partir dos dois preços já gravados — nunca inventa percentual. */
 export function calcularDesconto(price?: string | null, originalPrice?: string | null): number | null {
     if (!price || !originalPrice) return null
-    const parse = (s: string) => Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'))
-    const atual = parse(price)
-    const original = parse(originalPrice)
+    const atual = parsePrecoBR(price)
+    const original = parsePrecoBR(originalPrice)
     if (!Number.isFinite(atual) || !Number.isFinite(original) || original <= atual) return null
     return Math.round(((original - atual) / original) * 100)
 }
-
-const parsePrecoBR = (s: string) => Number(s.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'))
 
 /**
  * Queda real de preço: o maior valor registrado na janela contra o atual. Só existe quando o
