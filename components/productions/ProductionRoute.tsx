@@ -116,9 +116,10 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         getAvaliacao(production.acf?.tmdb_id, production.acf?.type),
     ])
     const [castItems, related, { items: relatedPosts }, categories, allGenreTerms, foodsInProduction] = await Promise.all([
-        castSlugs.length > 0
-            ? getArtists({ slug: castSlugs.join(','), perPage: castSlugs.length }).then(r => r.items)
-            : Promise.resolve([]),
+        // O WordPress recusa per_page acima de 100: elenco grande vai em lotes.
+        Promise.all(Array.from({ length: Math.ceil(castSlugs.length / 100) }, (_, i) => castSlugs.slice(i * 100, (i + 1) * 100))
+            .map(lote => getArtists({ slug: lote.join(','), perPage: lote.length }).then(r => r.items)))
+            .then(lotes => lotes.flat()),
         getSmartRelatedProductions({
             excludeId: production.id,
             genreId: (production.production_genre ?? [])[0],
