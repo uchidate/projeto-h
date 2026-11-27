@@ -47,7 +47,7 @@ export default defineConfig({
                 'components/**': { lines: 63, branches: 53, functions: 56 },
                 'lib/wordpress/**': { lines: 72, branches: 73, functions: 64 },
                 'lib/i18n/**': { lines: 65, branches: 69, functions: 74 },
-                'lib/seo/**': { lines: 75, branches: 71, functions: 78 },
+                'lib/seo/**': { lines: 93, branches: 86, functions: 95 },
                 'lib/blog/**': { lines: 77, branches: 74, functions: 81 },
                 'lib/guias/**': { lines: 86, branches: 74, functions: 87 },
                 'lib/search/**': { lines: 85, branches: 77, functions: 81 },

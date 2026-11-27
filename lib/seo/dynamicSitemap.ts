@@ -302,7 +302,11 @@ export async function shardsComTraducao(): Promise<Partial<Record<Locale, readon
             )
             return total > 0 ? shard : null
         }))
-        return [locale, tem.filter((shard): shard is (typeof LOCALIZED_SHARDS)[number] => shard !== null)] as const
+        const comFichas = tem.filter((shard): shard is (typeof LOCALIZED_SHARDS)[number] => shard !== null)
+        // A home do idioma mora no primeiro shard (ver getLocalizedSitemapEntries): ele entra no índice
+        // sempre que algum tipo tem tradução, mesmo sem ficha própria.
+        const comHome = comFichas.length > 0 && comFichas[0] !== LOCALIZED_SHARDS[0] ? [LOCALIZED_SHARDS[0], ...comFichas] : comFichas
+        return [locale, comHome] as const
     }))
     return Object.fromEntries(pares)
 }
