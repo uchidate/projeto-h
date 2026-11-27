@@ -118,8 +118,10 @@ export async function GuiasIndice({ kind, locale = DEFAULT_LOCALE }: { kind?: st
         ? [null, []]
         : await Promise.all([lista(getSiteSettings, null), lista(() => carregarGuiasPorTema(locale), [])])
     const passosPt = settings?.cultureGuides ?? []
-    const guiasDeCultura = emPt ? passosPt : await carregarPassos(passosPt, locale).catch(() => [])
-    const totalCultura = emPt ? passosPt.length : (await postsTraduzidosPorSlugPt(locale, passosPt.map(g => g.href.replace('/blog/', '')))).size
+    // Sem passos (filtro por tipo ou WP fora) não há o que traduzir: evita duas buscas com lista vazia.
+    const semTraducaoPendente = emPt || passosPt.length === 0
+    const guiasDeCultura = semTraducaoPendente ? passosPt : await carregarPassos(passosPt, locale).catch(() => [])
+    const totalCultura = semTraducaoPendente ? passosPt.length : (await postsTraduzidosPorSlugPt(locale, passosPt.map(g => g.href.replace('/blog/', '')))).size
 
     const itensBusca: ItemBusca[] = [
         ...hubsDoIdioma.map(h => {
