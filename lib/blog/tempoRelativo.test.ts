@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { instanteDoPost, tempoRelativoPt } from './tempoRelativo'
+import { dataComFuso, instanteDoPost, tempoRelativoPt } from './tempoRelativo'
 
 // 19:06 em São Paulo = 22:06 UTC
 const post = '2026-11-03T19:06:31'
@@ -11,6 +11,17 @@ describe('instanteDoPost', () => {
     })
     it('respeita um fuso explícito', () => {
         expect(instanteDoPost('2026-11-03T22:06:31Z').toISOString()).toBe('2026-11-03T22:06:31.000Z')
+    })
+})
+
+describe('dataComFuso', () => {
+    it('acrescenta o fuso de São Paulo à data com hora', () => {
+        expect(dataComFuso(post)).toBe('2026-11-03T19:06:31-03:00')
+    })
+    it('não mexe no que já tem fuso, no que é só dia nem no vazio', () => {
+        for (const data of ['2026-11-03T22:06:31Z', '2026-11-03T19:06:31+09:00', '2026-11-03', '']) {
+            expect(dataComFuso(data)).toBe(data)
+        }
     })
 })
 

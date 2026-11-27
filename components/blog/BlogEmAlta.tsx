@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from '@/components/i18n/LocalizedLink'
 import type { WPPost } from '@/lib/wordpress/types'
 import { getWPImage, stripHtml } from '@/lib/utils'
-import { tempoRelativo, type TextosTempo } from '@/lib/blog/tempoRelativo'
+import { dataComFuso, tempoRelativo, type TextosTempo } from '@/lib/blog/tempoRelativo'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { slugPublicoDoPost } from '@/lib/blog/translations'
 import { BlogAbas } from '@/components/blog/BlogAbas'
@@ -24,7 +24,7 @@ function Lista({ posts, marcador, locale, tempo }: { posts: WPPost[]; marcador: 
                             <span className="min-w-0 flex-1">
                                 <span className="block text-[14px] font-bold leading-snug text-foreground transition-colors group-hover:text-accent lg:text-[17px]">{titulo}</span>
                                 {marcador === 'data' && (
-                                    <time dateTime={p.date} className="mt-1 block font-mono text-[10px] uppercase tracking-[0.1em] text-muted">{tempoRelativo(p.date, locale, tempo)}</time>
+                                    <time dateTime={dataComFuso(p.date)}className="mt-1 block font-mono text-[10px] uppercase tracking-[0.1em] text-muted">{tempoRelativo(p.date, locale, tempo)}</time>
                                 )}
                             </span>
                             {/* Guia sem imagem destacada: só o texto, sem quadrado vazio. */}

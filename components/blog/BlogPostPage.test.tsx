@@ -65,6 +65,15 @@ describe('BlogPostPage — JSON-LD', () => {
         expect(jsonld(pagina(noticia))[0]).toContain('NewsArticle')
     })
 
+    it('datas no JSON-LD e nas tags <time> levam o fuso de São Paulo; a data visível não muda', () => {
+        const c = pagina(post(`<p>${LONGO}</p>`, { date: '2026-11-26T23:17:15', modified: '2026-11-28T00:30:00' }))
+        expect(jsonld(c)[0]).toContain('"datePublished":"2026-11-26T23:17:15-03:00"')
+        expect(jsonld(c)[0]).toContain('"dateModified":"2026-11-28T00:30:00-03:00"')
+        const tempos = Array.from(c.querySelectorAll('time'))
+        expect(new Set(tempos.map(t => t.getAttribute('dateTime')))).toEqual(new Set(['2026-11-26T23:17:15-03:00', '2026-11-28T00:30:00-03:00']))
+        expect(tempos[0].textContent).toMatch(/26 de novembro de 2026.*23:17/)
+    })
+
     it('autor "Redação" vira organização; autor com nome vira pessoa', () => {
         const comAutor = (name: string) => post(`<p>${LONGO}</p>`, { _embedded: { author: [{ name }] } })
         expect(jsonld(pagina(comAutor('Redação HallyuHub')))[0]).toContain('Organization')

@@ -6,10 +6,15 @@ const HORA = 60 * MIN
 
 /**
  * A REST do WordPress devolve `date` no horário do site (São Paulo, UTC-3 o ano todo desde 2019),
- * sem indicar o fuso. Lida como veio, o servidor (UTC) erraria 3 horas.
+ * sem indicar o fuso. Lida como veio, o servidor (UTC) erraria 3 horas, e quem consome o
+ * HTML (buscador, leitor de feed) presumiria outro. Data só com dia ou já com fuso não muda.
  */
+export function dataComFuso(date: string): string {
+    return /T[\d:.]+$/.test(date) ? `${date}-03:00` : date
+}
+
 export function instanteDoPost(date: string): Date {
-    return new Date(/(Z|[+-]\d{2}:?\d{2})$/.test(date) ? date : `${date}-03:00`)
+    return new Date(dataComFuso(date))
 }
 
 /**

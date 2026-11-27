@@ -102,8 +102,8 @@ describe('generateMetadata', () => {
         const m = await generateMetadata({ params: params('artigo') })
         expect(m.alternates?.canonical).toMatch(/\/blog\/artigo$/)
         const og = m.openGraph as { type?: string; publishedTime?: string; modifiedTime?: string }
-        expect(og.publishedTime).toBe('2026-11-20T10:00:00')
-        expect(og.modifiedTime).toBe('2026-11-21T12:00:00')
+        expect(og.publishedTime).toBe('2026-11-20T10:00:00-03:00')
+        expect(og.modifiedTime).toBe('2026-11-21T12:00:00-03:00')
     })
 })
 

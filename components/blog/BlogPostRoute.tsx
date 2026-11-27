@@ -15,6 +15,7 @@ import { WpEditSetter } from '@/components/ui/WpEditContext'
 import { metaDescription } from '@/lib/seo/metaDescription'
 import { buildPostAlternates } from '@/lib/blog/translations'
 import { getProdutosDosBlocos } from '@/lib/blog/produtosDosBlocos'
+import { dataComFuso } from '@/lib/blog/tempoRelativo'
 
 
 /** Produtos da loja para o artigo e, quando vêm do grupo/artista citado, o nome dele (vira o título da faixa). */
@@ -78,8 +79,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
         url,
         image,
         article: {
-            publishedTime: post.date,
-            modifiedTime: post.modified,
+            publishedTime: dataComFuso(post.date),
+            modifiedTime: dataComFuso(post.modified),
         },
         ogImageOverride: buildOgImageUrl({ title, subtitle: description, image: image?.src, type: 'post' }),
         languages: buildPostAlternates(post.translations, 'pt', slug).languages,
