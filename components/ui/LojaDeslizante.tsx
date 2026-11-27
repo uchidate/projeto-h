@@ -58,7 +58,10 @@ export function LojaDeslizante({ product, bloco, contexto, mensagem = 'Gostou do
         verificar()
         window.addEventListener('scroll', agendar, { passive: true })
         window.addEventListener('resize', agendar)
-        return () => { window.removeEventListener('scroll', agendar); window.removeEventListener('resize', agendar); if (quadro) cancelAnimationFrame(quadro) }
+        // O anúncio também pode preencher com o leitor parado, sem rolagem para avisar.
+        const observador = new MutationObserver(agendar)
+        observador.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-ad-status', 'style'] })
+        return () => { observador.disconnect(); window.removeEventListener('scroll', agendar); window.removeEventListener('resize', agendar); if (quadro) cancelAnimationFrame(quadro) }
     }, [visivel])
 
     const url = product?.acf.affiliate_url
