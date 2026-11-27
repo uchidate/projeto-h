@@ -119,7 +119,8 @@ export async function getVitrinePorTermos(termos: string[], contexto: string, op
 
 /**
  * Vitrine de ficha (comida/empresa): prioriza `linked_products` (vínculo explícito, curado à mão)
- * e só cai no matching textual (`getVitrinePorTermos`) quando a ficha não tem nenhum produto vinculado.
+ * e só cai no matching textual (`getVitrinePorTermos`) quando nenhum vinculado pode ser exibido. Vinculado
+ * sem link não vira cartão, então não pode ocupar vaga nem contar como produto.
  */
 export async function getVitrineVinculada(
     linkedProductIds: number[] | undefined,
@@ -127,7 +128,7 @@ export async function getVitrineVinculada(
     contexto: string,
     opcoes: { limit?: number; temas?: Tema[] } = {},
 ): Promise<StoreProduct[]> {
-    const vinculados = await getStoreProductsByIds(linkedProductIds ?? [])
+    const vinculados = (await getStoreProductsByIds(linkedProductIds ?? [])).filter(p => p.acf.affiliate_url)
     if (vinculados.length > 0) return ordenarPrateleira(vinculados, contexto).slice(0, opcoes.limit ?? 3)
     return getVitrinePorTermos(termos, contexto, opcoes)
 }
