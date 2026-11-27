@@ -4,6 +4,7 @@ import { getPosts } from '@/lib/wordpress/posts'
 import type { WPPost } from '@/lib/wordpress/types'
 import { DEFAULT_LOCALE, SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href as rota } from '@/lib/i18n/routes'
+import { instanteDoPost } from '@/lib/blog/tempoRelativo'
 
 export type UnidadeExplore = 'artigos' | 'fichas'
 export type ChaveExplore = 'kpop' | 'cultura' | 'gastronomia' | 'kbeauty' | 'guias' | 'kdrama' | 'kfilm' | 'reality' | 'webtoons' | 'agencias'
@@ -70,7 +71,7 @@ export async function carregarExplore(locale: Locale = SOURCE_LOCALE): Promise<C
         const base = { chave: t.chave, cor: t.cor, href: destino(t, locale), hangul: t.hangul, unidade: t.unidade }
         const posts = t.feed ? await getPosts({ ...t.feed, perPage: 1, includeContent: false, ...lang }) : null
         const ultimo = posts?.items[0] ?? null
-        const novo = ultimo ? Date.now() - new Date(ultimo.date.endsWith('Z') ? ultimo.date : `${ultimo.date}Z`).getTime() < 2 * 86_400_000 : false
+        const novo = ultimo ? Date.now() - instanteDoPost(ultimo.date).getTime() < 2 * 86_400_000 : false
         if (t.chave === 'gastronomia') return { ...base, total: (await getFoods({ perPage: 1, ...idioma })).total, ultimo, novo }
         if (t.chave === 'agencias') return { ...base, total: (await getAgencies({ perPage: 1, ...idioma })).total, ultimo: null, novo: false }
         return { ...base, total: posts?.total ?? 0, ultimo, novo }

@@ -9,12 +9,13 @@ import { useLocale, useTranslations } from 'next-intl'
 import { href } from '@/lib/i18n/routes'
 import type { Seguindo } from '@/lib/home/seguindo'
 import { intlLocale } from '@/lib/i18n/format'
+import { instanteDoPost } from '@/lib/blog/tempoRelativo'
 import type { Locale } from '@/lib/i18n/config'
 
 const MONO = 'font-mono text-[11px] font-bold uppercase tracking-[0.12em]'
 
 function quando(iso: string, hoje: string, ontem: string, locale: Locale) {
-    const dia = new Date(iso.endsWith('Z') || /[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`)
+    const dia = instanteDoPost(iso)
     const f = (d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(d)
     const agora = new Date()
     if (f(dia) === f(agora)) return hoje

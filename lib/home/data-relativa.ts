@@ -1,4 +1,5 @@
 import type { Locale } from '@/lib/i18n/config'
+import { instanteDoPost } from '@/lib/blog/tempoRelativo'
 
 const DIA_MS = 86_400_000
 /** `Record<Locale, …>`: idioma novo sem estas palavras não compila. */
@@ -16,7 +17,7 @@ function diaEmBrasilia(d: Date) {
 
 /** "hoje", "ontem" ou "20/10" (em inglês, "Oct 20"): a data curta que a vitrine usa nas listas. */
 export function dataRelativa(iso: string, locale: Locale, agora = new Date()): string {
-    const publicado = new Date(iso.length === 10 ? `${iso}T12:00:00-03:00` : iso.endsWith('Z') || /[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`)
+    const publicado = instanteDoPost(iso.length === 10 ? `${iso}T12:00:00` : iso)
     const dia = diaEmBrasilia(publicado)
     const palavras = PALAVRAS[locale]
     if (dia === diaEmBrasilia(agora)) return palavras.hoje

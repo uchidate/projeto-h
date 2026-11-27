@@ -5,6 +5,7 @@ import { postLink } from '@/components/home/postLink'
 import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n/config'
 import { href as rota } from '@/lib/i18n/routes'
 import { formatNumber } from '@/lib/i18n/format'
+import { instanteDoPost } from '@/lib/blog/tempoRelativo'
 import type { CartaoExplore } from '@/lib/home/explore'
 import { getWPImage, stripHtml } from '@/lib/utils'
 
@@ -12,7 +13,7 @@ const MONO = 'font-mono text-[10px] font-bold uppercase tracking-[0.12em]'
 
 /** "24 OUT": dia e mês curtos do último texto, como na vitrine do mockup. */
 function diaCurto(iso: string, locale: Locale) {
-    return new Intl.DateTimeFormat(locale, { day: '2-digit', month: 'short', timeZone: 'America/Sao_Paulo' }).format(new Date(iso.endsWith('Z') || /[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`)).replace('.', '')
+    return new Intl.DateTimeFormat(locale, { day: '2-digit', month: 'short', timeZone: 'America/Sao_Paulo' }).format(instanteDoPost(iso)).replace('.', '')
 }
 
 /** Dez assuntos do site, cada um com o total e a matéria mais recente. */
