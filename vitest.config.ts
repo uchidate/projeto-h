@@ -34,16 +34,17 @@ export default defineConfig({
             reporter: ['text', 'html', 'json-summary'],
             include: ['lib/**', 'components/**', 'app/api/**'],
             exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.d.ts'],
-            // Pisos medidos em 2026-11-27 (linha de base: total 57,2% linhas / 43% ramos /
-            // 51,6% funções; components/ 41,8%, lib/ quase todo acima de 70%). Cada piso fica
-            // ~5 pontos abaixo do medido: trava regressão sem bloquear PR por código legado
-            // ainda sem teste. Só vale quando a cobertura roda (`npm run test:coverage`, que
-            // o CI usa). Ao subir a cobertura de uma pasta, suba o piso junto — nunca baixe.
+            // Pisos medidos em 2026-11-27 (total 62,8% linhas / 48,8% ramos / 56,8% funções;
+            // components/ 50,8 / 36,9 / 44,1, depois dos testes das listagens e do
+            // BlogPostPage; lib/ quase todo acima de 70%). Cada piso fica ~5 pontos abaixo do
+            // medido: trava regressão sem bloquear PR por código legado ainda sem teste. Só
+            // vale quando a cobertura roda (`npm run test:coverage`, que o CI usa). Ao subir
+            // a cobertura de uma pasta, suba o piso junto — nunca baixe.
             thresholds: {
-                lines: 55,
-                branches: 41,
-                functions: 49,
-                'components/**': { lines: 40, branches: 26, functions: 33 },
+                lines: 58,
+                branches: 44,
+                functions: 52,
+                'components/**': { lines: 45, branches: 31, functions: 39 },
                 'lib/wordpress/**': { lines: 72, branches: 72, functions: 62 },
                 'lib/i18n/**': { lines: 65, branches: 69, functions: 74 },
                 'lib/seo/**': { lines: 75, branches: 71, functions: 78 },
