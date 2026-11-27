@@ -38,12 +38,15 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId, 
         const certa = norm(q.options[q.correct] ?? '')
         return certa.length >= 3 && (certa === nome || certa.includes(nome) || nome.includes(certa))
     }
+    // Compara o fim do endereço inteiro: "/artists/jin" não é "/artists/jin-young".
+    const ehEstaPagina = (endereco?: string | null) =>
+        path != null && (endereco?.split(/[?#]/)[0].replace(/\/$/, '').endsWith(path) ?? false)
     // "Direta": a pergunta fala da própria entidade (relatedHref apontando pra
     // esta página, ou vínculo explícito no admin do quiz). "Indireta" (só pra
     // agência): pergunta sobre QUALQUER artista/grupo do roster, não sobre a
     // agência em si — menos familiar ao que a página está mostrando.
     const direta = (q: (typeof allQuestions)[number]) =>
-        q.relatedHref?.includes(path!) || (entityId != null && q.links?.[chave].includes(entityId))
+        ehEstaPagina(q.relatedHref) || (entityId != null && (q.links?.[chave].includes(entityId) ?? false))
     const indiretaAgencia = (q: (typeof allQuestions)[number]) =>
         (groupIds?.some(id => q.links?.groups.includes(id)) ?? false) || (artistIds?.some(id => q.links?.artists.includes(id)) ?? false)
 
@@ -90,7 +93,7 @@ export async function QuizFacts({ entitySlug, entityType, entityName, entityId, 
                 items={facts.map(({ id, question, options, correct, explanation, relatedHref, relatedLabel }) => ({
                     id, question, options, correct, explanation,
                     // Sem link pra própria página: a ficha que já está aberta não é "saiba mais".
-                    relatedHref: relatedHref && relatedHref !== path ? relatedHref : undefined,
+                    relatedHref: relatedHref && !ehEstaPagina(relatedHref) ? relatedHref : undefined,
                     relatedLabel: relatedLabel ?? undefined,
                 }))}
                 entityName={entityName} quizHref={quizHref} tone={tone}
