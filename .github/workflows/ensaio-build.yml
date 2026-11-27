@@ -43,6 +43,8 @@ jobs:
           wordpress-url: ${{ vars.WORDPRESS_API_URL }}
           sonda-header: ${{ vars.SONDA_HEADER }}
           sonda-token: ${{ secrets.SONDA_TOKEN }}
+          sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          sentry-org: ${{ secrets.SENTRY_ORG }}
           marcas: ensaio-medida:${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Medir
@@ -59,6 +61,7 @@ jobs:
             echo "- erros do WordPress no build: \`$(conta 'WordPress API (error|unavailable|returned invalid)')\`"
             echo "- repetições de consulta: \`$(conta 'tentativa [0-9]+/[0-9]+, repetindo')\`"
             echo "- respostas 403/429/503 no log: \`$(conta '(error|status|HTTP)[^0-9]{0,12}(403|429|503)')\`"
+            echo "- linhas com falha do Sentry no log: \`$(conta '\[@?sentry[^]]*\].*([Ee]rror|401|403)|sentry-cli.*[Ee]rror')\`"
             echo "- páginas geradas: \`$(grep -oE 'Generating static pages[^(]*\([0-9]+/[0-9]+\)' "$log" | tail -1 | grep -oE '[0-9]+/[0-9]+' || echo '?')\`"
           } | tee -a "$GITHUB_STEP_SUMMARY"
 

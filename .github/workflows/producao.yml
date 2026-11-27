@@ -252,10 +252,14 @@ jobs:
         continue-on-error: true
         env:
           IMAGE_REPO: ${{ vars.IMAGE_REPO }}
+          TEM_SENTRY: ${{ secrets.SENTRY_AUTH_TOKEN != '' && secrets.SENTRY_ORG != '' }}
         run: |
           set -euo pipefail
           arvore="$(git rev-parse 'HEAD^{tree}')"
           servidor() { echo "ℹ️  $1: build no servidor"; exit 0; }
+          # O build do servidor envia source maps ao Sentry. Sem os dois segredos,
+          # montar aqui publicaria erros ilegiveis no Sentry.
+          [ "$TEM_SENTRY" = "true" ] || servidor "faltam os segredos SENTRY_AUTH_TOKEN e SENTRY_ORG"
           if ssh -o BatchMode=yes oc "docker image inspect ${IMAGE_REPO}:conteudo-${arvore} >/dev/null 2>&1"; then
             servidor "o servidor ja tem imagem deste conteudo"
           fi
@@ -288,6 +292,8 @@ jobs:
           wordpress-url: ${{ vars.WORDPRESS_API_URL }}
           sonda-header: ${{ vars.SONDA_HEADER }}
           sonda-token: ${{ secrets.SONDA_TOKEN }}
+          sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          sentry-org: ${{ secrets.SENTRY_ORG }}
           marcas: |
             ${{ vars.IMAGE_REPO }}:${{ github.sha }}
             ${{ vars.IMAGE_REPO }}:conteudo-${{ steps.local_build.outputs.arvore }}

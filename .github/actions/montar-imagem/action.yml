@@ -22,6 +22,14 @@ inputs:
     description: Rotulos da imagem (chave=valor), um por linha
     required: false
     default: ''
+  sentry-token:
+    description: Token de upload dos source maps. Com a organizacao, liga o envio
+    required: false
+    default: ''
+  sentry-org:
+    description: Organizacao no Sentry
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -81,6 +89,8 @@ runs:
         SONDA_TOKEN: ${{ inputs.sonda-token }}
         MARCAS: ${{ inputs.marcas }}
         ROTULOS: ${{ inputs.rotulos }}
+        SENTRY_AUTH_TOKEN: ${{ inputs.sentry-token }}
+        SENTRY_ORG: ${{ inputs.sentry-org }}
       run: |
         set -euo pipefail
         # O contexto sai do HEAD, como no servidor: arquivos locais do job (a
@@ -111,6 +121,14 @@ runs:
         while IFS= read -r rotulo; do
           if [ -n "$rotulo" ]; then args+=(--label "$rotulo"); fi
         done <<< "$ROTULOS"
+
+        # O token entra como secret do BuildKit, fora das camadas (ver Dockerfile).
+        if [ -n "$SENTRY_AUTH_TOKEN" ] && [ -n "$SENTRY_ORG" ]; then
+          args+=(--build-arg "SENTRY_ORG=${SENTRY_ORG}" --secret id=sentry_auth_token,env=SENTRY_AUTH_TOKEN)
+          echo "source maps: com envio ao Sentry"
+        else
+          echo "source maps: sem envio ao Sentry (faltam token ou organização)"
+        fi
 
         inicio="$(date +%s)"
         echo "INICIO_BUILD=${inicio}" >> "$GITHUB_ENV"
