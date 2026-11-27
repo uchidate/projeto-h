@@ -306,7 +306,7 @@ export default async function FoodPage({ params }: { params: Params }) {
                     )}
 
                     {/* Ocasiões e estações */}
-                    {(acf.occasion?.length || acf.season?.length) && (
+                    {!!(acf.occasion?.length || acf.season?.length) && (
                         <div className="rounded-xl border border-border bg-surface/40 p-5 space-y-4">
                             {acf.occasion && acf.occasion.length > 0 && (
                                 <div>
