@@ -1,4 +1,5 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
+import { buscarEmLotes } from './em-lotes'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
 import type { WPArtist } from './types'
 import { aliasDeRelevancia } from './relevancia'
@@ -63,10 +64,10 @@ export async function getArtistsByIds(ids: number[], { comTraducoes = false }: {
     if (!ids.length) return []
     try {
         const campos = comTraducoes ? 'id,slug,title,date,featured_image_url,acf,translations' : 'id,slug,title,date,featured_image_url,acf'
-        return await wpBuscarOpcional<WPArtist[]>(
-            `/wp/v2/artist${buildParams({ include: ids.join(','), per_page: ids.length, status: 'publish', _fields: campos, orderby: 'include' })}`,
+        return await buscarEmLotes(ids, lote => wpBuscarOpcional<WPArtist[]>(
+            `/wp/v2/artist${buildParams({ include: lote.join(','), per_page: lote.length, status: 'publish', _fields: campos, orderby: 'include' })}`,
             { revalidate: 1800, tags: [WP_CACHE_TAGS.artists] },
-        )
+        ))
     } catch { return [] }
 }
 

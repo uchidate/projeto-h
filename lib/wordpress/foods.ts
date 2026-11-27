@@ -1,4 +1,5 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
+import { buscarEmLotes } from './em-lotes'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
 import type { WPFood, FoodCategory } from './types'
 
@@ -59,16 +60,16 @@ export async function getFoodBySlug(slug: string): Promise<WPFood | null> {
 export async function getFoodsByIds(ids: number[]): Promise<WPFood[]> {
     if (!ids.length) return []
     try {
-        return await wpBuscarOpcional<WPFood[]>(
+        return await buscarEmLotes(ids, lote => wpBuscarOpcional<WPFood[]>(
             `/wp/v2/food${buildParams({
-                include: ids.join(','),
-                per_page: ids.length,
+                include: lote.join(','),
+                per_page: lote.length,
                 status: 'publish',
                 _fields: 'id,slug,title,featured_image_url,acf',
                 orderby: 'include',
             })}`,
             { revalidate: 1800, tags: [WP_CACHE_TAGS.foods] },
-        )
+        ))
     } catch { return [] }
 }
 

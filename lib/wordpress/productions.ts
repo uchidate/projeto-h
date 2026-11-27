@@ -1,4 +1,5 @@
 import { wpBuscarOpcional, wpFetchWithTotal, buildParams, wpFetchPorSlug } from './client'
+import { buscarEmLotes } from './em-lotes'
 import { getWPItemTag, WP_CACHE_TAGS } from './cache'
 import type { WPProduction, WPTerm } from './types'
 import { aliasDeRelevancia } from './relevancia'
@@ -104,10 +105,10 @@ export async function getProductionBySlug(slug: string): Promise<WPProduction | 
 export async function getProductionsByIds(ids: number[]): Promise<WPProduction[]> {
     if (!ids.length) return []
     try {
-        return await wpBuscarOpcional<WPProduction[]>(
-            `/wp/v2/production${buildParams({ include: ids.join(','), per_page: ids.length, status: 'publish', _fields: 'id,slug,title,date,featured_image_url,acf,production_genre', orderby: 'include' })}`,
+        return await buscarEmLotes(ids, lote => wpBuscarOpcional<WPProduction[]>(
+            `/wp/v2/production${buildParams({ include: lote.join(','), per_page: lote.length, status: 'publish', _fields: 'id,slug,title,date,featured_image_url,acf,production_genre', orderby: 'include' })}`,
             { revalidate: 1800, tags: [WP_CACHE_TAGS.productions] },
-        )
+        ))
     } catch { return [] }
 }
 
