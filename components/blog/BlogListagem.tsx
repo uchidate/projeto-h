@@ -53,8 +53,15 @@ export type SearchParams = Promise<{ category?: string; tag?: string; page?: str
  * merch, comida) ficam de fora e têm aba própria (`?tipo=guias`). Com categoria, tag ou busca o
  * leitor pediu um recorte, e nada é retirado.
  */
-function consultaDaLista(sp: { category?: string; tag?: string; search?: string; tipo?: string }, idsGuias: number[]) {
-    const semFiltro = !sp.category && !sp.tag && !sp.search
+type Recorte = { category?: string; tag?: string; search?: string }
+
+/** Sem categoria, tag nem busca: a listagem geral, a única que tem destaque, vitrine e blocos de descoberta. */
+function semRecorte(sp: Recorte): boolean {
+    return !sp.category && !sp.tag && !sp.search
+}
+
+function consultaDaLista(sp: Recorte & { tipo?: string }, idsGuias: number[]) {
+    const semFiltro = semRecorte(sp)
     if (semFiltro && sp.tipo === 'guias') return { tipo: 'guias' as const, extra: { categoryIds: idsGuias } }
     if (semFiltro) return { tipo: undefined, extra: { categoriesExclude: idsGuias } }
     // Busca por texto: por data, "Round 6" trazia um protetor solar em primeiro; a relevância põe o guia da série à frente.
@@ -81,7 +88,7 @@ export async function metadataBlogListagem({ searchParams, locale = DEFAULT_LOCA
     const shouldNoIndex = Boolean(sp.search || sp.tag || sp.order || consulta.tipo) || paginaInvalida(page, totalPages)
 
     // hreflang só na primeira página sem filtro, e só para idiomas com ao menos um artigo traduzido (a versão vazia não deve ser apontada).
-    const semFiltro = page === 1 && !sp.category && !sp.tag && !sp.search && !sp.order && !consulta.tipo
+    const semFiltro = page === 1 && semRecorte(sp) && !sp.order && !consulta.tipo
     let languages: Record<string, string> | undefined
     if (semFiltro) {
         const outros = ACTIVE_LOCALES.filter((l) => l !== DEFAULT_LOCALE)
@@ -111,7 +118,7 @@ export async function BlogListagem({ searchParams, locale = DEFAULT_LOCALE }: { 
     const emPt = locale === DEFAULT_LOCALE
     const lang = emPt ? undefined : locale
 
-    const semFiltro = !sp.category && !sp.tag && !sp.search
+    const semFiltro = semRecorte(sp)
     // Ordem por leitura usa o campo `views`, que só o original em português acumula.
     const order = emPt && sp.order === 'lidos' ? 'lidos' : undefined
     const todasCategorias = await getCategories()
@@ -142,8 +149,7 @@ export async function BlogListagem({ searchParams, locale = DEFAULT_LOCALE }: { 
     // Blog sem filtros nunca é vazio (490+ posts): lista vazia é falha
     // transitória do WP — lançar preserva o snapshot ISR anterior em vez de
     // cachear a listagem em branco (mesmo guard de /productions).
-    const unfiltered = !sp.category && !sp.tag && !sp.search
-    if (emPt && unfiltered && page === 1 && postsResult.items.length === 0) {
+    if (emPt && semFiltro && page === 1 && postsResult.items.length === 0) {
         throw new Error('Listagem do blog retornou vazia — WP indisponível durante a regeneração')
     }
     if (paginaInvalida(page, postsResult.totalPages)) notFound()
