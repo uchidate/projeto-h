@@ -16,6 +16,31 @@ import { href } from '@/lib/i18n/routes'
 import { buildAlternatesAtivos } from '@/lib/i18n/alternates'
 
 
+const JANELA_DIAS = 90
+
+/**
+ * Próxima ocorrência anual de uma data (aniversário ou estreia), a partir de `hoje` (meia-noite local).
+ * Devolve null para data ilegível ou além da janela de 90 dias.
+ */
+function proximaOcorrencia(origem: Date, hoje: Date) {
+    if (Number.isNaN(origem.getTime())) return null
+    const month = origem.getMonth() + 1
+    const day = origem.getDate()
+
+    let year = hoje.getFullYear()
+    let data = new Date(year, month - 1, day)
+    if (data < hoje) {
+        year += 1
+        data = new Date(year, month - 1, day)
+    }
+
+    const daysUntil = Math.round((data.getTime() - hoje.getTime()) / 86400000)
+    if (daysUntil > JANELA_DIAS) return null
+
+    const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    return { year, month, day, date, daysUntil }
+}
+
 /** O calendário existe em português e inglês. */
 
 export async function generateMetadata({ locale = DEFAULT_LOCALE }: { locale?: Locale } = {}): Promise<Metadata> {
@@ -37,7 +62,6 @@ export default async function CalendarioPage({ locale = DEFAULT_LOCALE }: { loca
     const now = new Date()
     now.setHours(0, 0, 0, 0)
     const todayStr = now.toISOString().slice(0, 10)
-    const currentYear = now.getFullYear()
     const currentMonth = now.getMonth() + 1
 
     // Busca artistas dos 3 meses: mês atual + próximos 2
@@ -72,29 +96,15 @@ export default async function CalendarioPage({ locale = DEFAULT_LOCALE }: { loca
         if (!raw || artist.acf?.death_date) continue // falecido não gera aniversário
         try {
             const d = parseAcfDate(raw)
-            const birthMonth = d.getMonth() + 1
-            const birthDay = d.getDate()
+            const prox = proximaOcorrencia(d, now)
+            if (!prox) continue
 
-            // Próxima ocorrência deste aniversário
-            let eventYear = currentYear
-            let eventDate = new Date(currentYear, birthMonth - 1, birthDay)
-            eventDate.setHours(0, 0, 0, 0)
-            if (eventDate < now) {
-                eventYear = currentYear + 1
-                eventDate = new Date(currentYear + 1, birthMonth - 1, birthDay)
-                eventDate.setHours(0, 0, 0, 0)
-            }
-
-            const daysUntil = Math.round((eventDate.getTime() - now.getTime()) / 86400000)
-            if (daysUntil > 90) continue
-
-            const age = eventYear - d.getFullYear()
-            const dateStr = `${eventYear}-${String(birthMonth).padStart(2, '0')}-${String(birthDay).padStart(2, '0')}`
+            const age = prox.year - d.getFullYear()
 
             events.push({
                 id: artist.id,
-                day: birthDay, month: birthMonth, year: eventYear,
-                date: dateStr, daysUntil,
+                day: prox.day, month: prox.month, year: prox.year,
+                date: prox.date, daysUntil: prox.daysUntil,
                 type: 'birthday',
                 name: stripHtml(artist.title.rendered),
                 slug: artist.slug,
@@ -111,28 +121,15 @@ export default async function CalendarioPage({ locale = DEFAULT_LOCALE }: { loca
         if (!raw) continue
         try {
             const d = parseAcfDate(raw)
-            const debutMonth = d.getMonth() + 1
-            const debutDay = d.getDate()
+            const prox = proximaOcorrencia(d, now)
+            if (!prox) continue
 
-            let eventYear = currentYear
-            let eventDate = new Date(currentYear, debutMonth - 1, debutDay)
-            eventDate.setHours(0, 0, 0, 0)
-            if (eventDate < now) {
-                eventYear = currentYear + 1
-                eventDate = new Date(currentYear + 1, debutMonth - 1, debutDay)
-                eventDate.setHours(0, 0, 0, 0)
-            }
-
-            const daysUntil = Math.round((eventDate.getTime() - now.getTime()) / 86400000)
-            if (daysUntil > 90) continue
-
-            const years = eventYear - d.getFullYear()
-            const dateStr = `${eventYear}-${String(debutMonth).padStart(2, '0')}-${String(debutDay).padStart(2, '0')}`
+            const years = prox.year - d.getFullYear()
 
             events.push({
                 id: group.id,
-                day: debutDay, month: debutMonth, year: eventYear,
-                date: dateStr, daysUntil,
+                day: prox.day, month: prox.month, year: prox.year,
+                date: prox.date, daysUntil: prox.daysUntil,
                 type: 'debut',
                 name: stripHtml(group.title.rendered),
                 slug: group.slug,
