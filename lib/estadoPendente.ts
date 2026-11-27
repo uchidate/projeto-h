@@ -76,10 +76,8 @@ export function alternarPendente(objectType: ContentObjectType, objectId: number
     return !jaTinha
 }
 
-export function limparPendentes() {
-    try {
-        window.localStorage.removeItem(CHAVE)
-    } catch {
-        /* nada a fazer: sem storage não havia o que limpar */
-    }
+/** Tira um item já gravado na conta, sem tocar nos demais. */
+export function removerPendente(objectType: ContentObjectType, objectId: number, state: Exclude<ContentState, ''>) {
+    const alvo = chaveDe({ objectType, objectId, state })
+    gravar(lerPendentes().filter(e => chaveDe(e) !== alvo))
 }

@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl'
 /* eslint-disable react-hooks/set-state-in-effect -- remote state hydrates after the session resolves */
 
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import Link from '@/components/i18n/LocalizedLink'
 import { BellPlus, BookmarkPlus, CheckCircle2, Heart, LogIn } from 'lucide-react'
 import { useSession } from 'next-auth/react'
@@ -45,6 +45,7 @@ export function ContentStateButton({
     const [notice, setNotice] = useState('')
     const [isPending, startTransition] = useTransition()
     const active = currentState === state
+    const mudancas = useRef(0)
 
     useEffect(() => {
         if (status === 'loading') return
@@ -56,8 +57,10 @@ export function ContentStateButton({
             setReady(true)
             return
         }
+        const antes = mudancas.current
         getContentState(null, objectType, objectId, state)
-            .then(res => setCurrentState(res.state))
+            // Se um aviso chegou durante a consulta, a resposta já está velha.
+            .then(res => { if (mudancas.current === antes) setCurrentState(res.state) })
             .catch(() => null)
             .finally(() => setReady(true))
     }, [status, session, objectType, objectId, state])
@@ -72,13 +75,13 @@ export function ContentStateButton({
             }>).detail
             if (!detail || detail.objectId !== objectId || detail.objectType !== objectType) return
 
+            const excluidoPeloOutro = objectType === 'post'
+                && ((state === 'saved' && detail.state === 'read') || (state === 'read' && detail.state === 'saved'))
             if (detail.state === state) {
+                mudancas.current += 1
                 setCurrentState(state)
-            } else if (detail.removeState === state) {
-                setCurrentState('')
-            } else if (objectType === 'post' && state === 'saved' && detail.state === 'read') {
-                setCurrentState('')
-            } else if (objectType === 'post' && state === 'read' && detail.state === 'saved') {
+            } else if (detail.removeState === state || excluidoPeloOutro) {
+                mudancas.current += 1
                 setCurrentState('')
             }
         }
