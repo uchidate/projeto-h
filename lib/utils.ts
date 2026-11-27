@@ -166,7 +166,16 @@ export function getYear(date?: string | Date): number | null {
     return Number.isNaN(parsed.getTime()) ? null : parsed.getFullYear()
 }
 
-export function getAge(date?: string | Date, today = new Date()): number | null {
+/**
+ * O dia que está valendo no Brasil, à meia-noite do fuso local (o mesmo formato de `parseAcfDate`,
+ * para comparar dia com dia). Num servidor em UTC, `new Date()` já está em amanhã das 21h à meia-noite.
+ */
+export function hojeEmSaoPaulo(agora = new Date()): Date {
+    const [ano, mes, dia] = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(agora).split('-').map(Number)
+    return new Date(ano, mes - 1, dia)
+}
+
+export function getAge(date?: string | Date, today = hojeEmSaoPaulo()): number | null {
     if (!date) return null
     const birthDate = parseAcfDate(date)
     if (Number.isNaN(birthDate.getTime()) || birthDate > today) return null

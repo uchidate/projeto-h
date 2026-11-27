@@ -4,7 +4,7 @@ import { getArtists } from '@/lib/wordpress/artists'
 import { getGroups } from '@/lib/wordpress/groups'
 import { CalendarPage } from '@/components/features/CalendarPage'
 import { compartilhamento } from '@/lib/constants/site'
-import { parseAcfDate, stripHtml, getWPImage } from '@/lib/utils'
+import { parseAcfDate, stripHtml, getWPImage, hojeEmSaoPaulo } from '@/lib/utils'
 import type { CalendarEvent } from '@/lib/calendario/tipos'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
 import { LojaEmLinha } from '@/components/ui/LojaEmLinha'
@@ -59,10 +59,9 @@ export async function generateMetadata({ locale = DEFAULT_LOCALE }: { locale?: L
 
 export default async function CalendarioPage({ locale = DEFAULT_LOCALE }: { locale?: Locale } = {}) {
     const t = await getTranslations({ locale, namespace: 'client.calendar' })
-    const now = new Date()
-    now.setHours(0, 0, 0, 0)
-    const todayStr = now.toISOString().slice(0, 10)
+    const now = hojeEmSaoPaulo()
     const currentMonth = now.getMonth() + 1
+    const todayStr = `${now.getFullYear()}-${String(currentMonth).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 
     // Busca artistas dos 3 meses: mês atual + próximos 2
     const months = [0, 1, 2].map(offset => {

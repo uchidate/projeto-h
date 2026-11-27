@@ -6,7 +6,7 @@ import { SOURCE_LOCALE, type Locale } from '@/lib/i18n/config'
 import { buildSocialEntries } from '@/lib/artists/socials'
 import { getZodiac } from '@/lib/artists/zodiac'
 import { splitContentForAd } from '@/lib/utils/injectAd'
-import { extractYoutubeId, formatDate, getAge, parseAcfDate, stripHtml } from '@/lib/utils'
+import { extractYoutubeId, formatDate, getAge, hojeEmSaoPaulo, parseAcfDate, stripHtml } from '@/lib/utils'
 import { parseArtistAwards, parseArtistMilestones } from './structuredFields'
 
 /** Linha de idade do hero: anos de vida para quem morreu, idade para quem está vivo. */
@@ -20,7 +20,7 @@ function buildHeroAgeMeta(
     return null
 }
 
-export function buildArtistProfileModel(artist: WPArtist, today = new Date(), locale: Locale = SOURCE_LOCALE) {
+export function buildArtistProfileModel(artist: WPArtist, today = hojeEmSaoPaulo(), locale: Locale = SOURCE_LOCALE) {
     const labels = labelsFor(locale)
     const dateLocale = intlLocale(locale)
     const name = stripHtml(artist.title.rendered) || artist.slug
