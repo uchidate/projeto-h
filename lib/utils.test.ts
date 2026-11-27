@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import {
+    hojeEmSaoPaulo,
     parseAcfDate,
     toIsoDateString,
     formatDate,
@@ -62,6 +63,24 @@ describe('getYear', () => {
 
     it('returns null for missing input', () => {
         expect(getYear(undefined)).toBeNull()
+    })
+})
+
+describe('hojeEmSaoPaulo', () => {
+    const dia = (d: Date) => [d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours()]
+
+    it('só vira o dia à meia-noite de Brasília', () => {
+        expect(dia(hojeEmSaoPaulo(new Date('2027-01-01T02:59:59Z')))).toEqual([2026, 12, 31, 0])
+        expect(dia(hojeEmSaoPaulo(new Date('2027-01-01T03:00:00Z')))).toEqual([2027, 1, 1, 0])
+    })
+
+    it('a idade só muda quando o aniversário chega no Brasil', () => {
+        vi.useFakeTimers({ toFake: ['Date'] })
+        vi.setSystemTime(new Date('2026-10-13T01:00:00Z')) // 12/10 às 22h em Brasília
+        expect(getAge('19951013')).toBe(30)
+        vi.setSystemTime(new Date('2026-10-13T03:00:00Z'))
+        expect(getAge('19951013')).toBe(31)
+        vi.useRealTimers()
     })
 })
 

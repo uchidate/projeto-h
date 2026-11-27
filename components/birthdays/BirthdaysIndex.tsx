@@ -12,7 +12,7 @@ import Link from '@/components/i18n/LocalizedLink'
 import { Cake } from 'lucide-react'
 import { getArtists } from '@/lib/wordpress/artists'
 import { SITE_URL } from '@/lib/constants/site'
-import { getWPImage, stripHtml, parseAcfDate } from '@/lib/utils'
+import { getWPImage, stripHtml, parseAcfDate, hojeEmSaoPaulo } from '@/lib/utils'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { PageBreadcrumb } from '@/components/seo/PageBreadcrumb'
 import { getVitrineGeral } from '@/lib/wordpress/vitrine'
@@ -34,7 +34,7 @@ type SearchParams = Promise<{ month?: string }>
 export async function metadataDaPagina({ searchParams, locale = DEFAULT_LOCALE }: { searchParams: SearchParams; locale?: Locale }): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'client.birthdaysPage' })
     const sp = await searchParams
-    const month = Math.min(12, Math.max(1, parseInt(sp.month ?? '0', 10) || new Date().getMonth() + 1))
+    const month = Math.min(12, Math.max(1, parseInt(sp.month ?? '0', 10) || hojeEmSaoPaulo().getMonth() + 1))
     const monthName = nomesDosMeses(locale)[month - 1]
     return metadataDaRota({
         locale, rota: 'birthdays',
@@ -62,7 +62,7 @@ export default async function BirthdaysPage({ searchParams, locale = DEFAULT_LOC
     const quiz = temRecurso('quiz', locale)
     const MONTH_NAMES = nomesDosMeses(locale)
     const sp = await searchParams
-    const now = new Date()
+    const now = hojeEmSaoPaulo()
     const currentMonth = Math.min(12, Math.max(1, parseInt(sp.month ?? '0', 10) || now.getMonth() + 1))
     const currentYear = now.getFullYear()
     const monthName = MONTH_NAMES[currentMonth - 1]

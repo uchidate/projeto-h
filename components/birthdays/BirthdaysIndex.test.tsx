@@ -101,6 +101,27 @@ describe('BirthdaysIndex — mês', () => {
     })
 })
 
+describe('BirthdaysIndex — hoje no horário de Brasília', () => {
+    // 30/11 às 23h em Brasília; num servidor em UTC já é 1º/12.
+    beforeEach(() => {
+        process.env.TZ = 'UTC'
+        vi.setSystemTime(new Date('2026-12-01T02:00:00Z'))
+    })
+
+    it('mantém o mês e destaca o aniversariante do dia', async () => {
+        m.getArtists.mockResolvedValue({ items: [artista('1999-11-30')] })
+        const { container } = await montar()
+        expect(m.getArtists).toHaveBeenCalledWith(expect.objectContaining({ birthMonth: 11 }))
+        expect(container.textContent).toContain('today')
+        expect(container.textContent).toContain('age~{"age":27}')
+    })
+
+    it('os metadados também ficam no mês de Brasília', async () => {
+        const meta = await metadataDaPagina({ searchParams: Promise.resolve({}) }) as unknown as { titulo: string }
+        expect(meta.titulo).toBe('title~{"month":"Novembro"}')
+    })
+})
+
 describe('BirthdaysIndex — quem entra', () => {
     it('ignora sem data, falecido e data impossível de ler', async () => {
         m.getArtists.mockResolvedValue({

@@ -100,10 +100,20 @@ describe('CalendarioPage: busca', () => {
         expect(vi.mocked(getGroups).mock.calls.map(c => (c[0] as { page: number }).page)).toEqual([1, 2])
     })
 
-    it('passa a data de hoje (meia-noite local, em ISO) ao calendário', async () => {
+    it('passa a data de hoje ao calendário', async () => {
         await montar()
-        const esperado = new Date(2026, 10, 27).toISOString().slice(0, 10)
-        expect(captura.todayStr).toBe(esperado)
+        expect(captura.todayStr).toBe('2026-11-27')
+    })
+
+    it('num servidor em UTC, às 23h de Brasília ainda é o mesmo dia', async () => {
+        vi.stubEnv('TZ', 'UTC')
+        vi.setSystemTime(new Date('2026-12-01T02:00:00Z'))
+        configurar({ 11: [artista(1, 'Ana', '1995-11-30')] })
+        await montar()
+        expect(captura.todayStr).toBe('2026-11-30')
+        expect(eventos().map(e => [e.name, e.daysUntil])).toEqual([['Ana', 0]])
+        expect(vi.mocked(getArtists).mock.calls.map(c => (c[0] as { birthMonth: number }).birthMonth)).toEqual([11, 12, 1])
+        vi.unstubAllEnvs()
     })
 })
 

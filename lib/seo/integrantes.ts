@@ -9,7 +9,7 @@
  * Só dado que a ficha já tem (nome, hangul, nascimento, posições). Sem dado,
  * o campo fica nulo e a tabela mostra um traço: nada é inferido.
  */
-import { getAge, parseAcfDate, stripHtml } from '@/lib/utils'
+import { getAge, hojeEmSaoPaulo, parseAcfDate, stripHtml } from '@/lib/utils'
 import type { MemberSummary } from '@/lib/artists/memberSummary'
 
 export interface LinhaIntegrante {
@@ -33,7 +33,7 @@ function isoValido(data?: string): string | null {
 export function linhasIntegrantes(
     membros: MemberSummary[],
     posicoes: Record<string, string[] | undefined> = {},
-    hoje: Date = new Date(),
+    hoje: Date = hojeEmSaoPaulo(),
     /** Rótulo da posição no idioma da página; sem ele a posição vai com o código (`leader`). */
     rotuloDaPosicao: (posicao: string) => string = posicao => posicao,
 ): LinhaIntegrante[] {

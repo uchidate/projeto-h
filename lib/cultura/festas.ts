@@ -1,3 +1,4 @@
+import { hojeEmSaoPaulo } from '@/lib/utils'
 import festasData from './festas.json'
 
 export type NotaFesta = 'lunarNewYear' | 'firstFullMoon' | 'march1' | 'dano' | 'liberation' | 'harvest' | 'hangeulDay'
@@ -11,7 +12,7 @@ export const FESTAS = festasData.festas as Festa[]
 export const MESES_DE_FOLGA = 6
 
 /** Próximas festas a partir de hoje, com os dias que faltam. Lista esgotada devolve vazio (o bloco some). */
-export function proximasFestas(agora = new Date(), limite = 4) {
+export function proximasFestas(agora = hojeEmSaoPaulo(), limite = 4) {
     const hoje = Date.UTC(agora.getFullYear(), agora.getMonth(), agora.getDate())
     return FESTAS
         .map(f => ({ ...f, dias: Math.round((Date.parse(f.data) - hoje) / 86_400_000) }))
