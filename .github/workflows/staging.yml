@@ -1,66 +1,18 @@
 name: 🧪 Staging
 
-# Todo push que nao seja na main vai para o staging, automaticamente.
+# Staging sob demanda:
 #
-# Por que automatico e nao sob demanda: o staging anterior morreu exatamente
-# por depender de acao humana. Ele era mantido pelo deploy.yml; quando o deploy
-# virou script manual em 2026-07-11, ninguem mais o atualizava e ele apodreceu
-# ate virar alerta vermelho permanente, descoberto so em 2026-09-09. Ambiente
-# que depende de alguem lembrar de atualizar nao sobrevive.
+#   gh workflow run staging.yml --ref <branch>
+#
+# (ou Actions → Staging → Run workflow). Publicava a cada push ate 2026-11-27,
+# quando a Hostinger limitou a CPU do VPS: o build roda no mesmo servidor do
+# site, e uma sequencia de pushes empilhava builds. Mudanca de risco (layout,
+# rota, dependencia, Dockerfile) continua pedindo staging antes do merge.
 on:
-  push:
-    branches-ignore:
-      - main
-      # Branch do Dependabot nao publica staging.
-      #
-      # Existe UM staging. Um bump de dependencia tomaria o ambiente de quem
-      # esta trabalhando, e o Dependabot abre varias branches por semana. Alem
-      # disso o valor seria baixo: o que um bump precisa e dos gates, e esses o
-      # quality.yml ja aplica no pull request.
-      #
-      # Em 2026-09-10 um bump de @vitest/coverage-v8 para 5.0.0 — que exige
-      # vitest 5 enquanto o projeto esta no 4 — derrubou o deploy de staging
-      # com conflito de peer dependency, ruido que nao dizia nada sobre o
-      # ambiente.
-      - 'dependabot/**'
-    # Publica staging so quando muda algo que afeta runtime/deploy.
-    paths:
-      - 'app/**'
-      - 'components/**'
-      - 'lib/**'
-      - 'hooks/**'
-      - 'public/**'
-      - 'styles/**'
-      - 'messages/**'
-      - 'wordpress/assets/**'
-      - '.github/actions/**'
-      - '.github/workflows/staging.yml'
-      - 'Dockerfile'
-      - '.dockerignore'
-      - 'next.config.mjs'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.nvmrc'
-      - 'tsconfig.json'
-      - 'tailwind.config.ts'
-      - 'postcss.config.js'
-      - 'proxy.ts'
-      - 'tokens.css'
-      - 'global.d.ts'
-      - 'instrumentation.ts'
-      - 'instrumentation-client.ts'
-      - 'sentry.edge.config.ts'
-      - 'sentry.server.config.ts'
-      # Teste e documento nao mudam o que o staging serve: sem isto, um push so
-      # de teste gastava ~9 min de build + fumaca num unico runner em fila. Num
-      # push com teste E codigo o filtro ainda dispara (basta um caminho casar).
-      - '!**/*.test.ts'
-      - '!**/*.test.tsx'
-      - '!**/*.md'
+  workflow_dispatch:
 
 # Grupo GLOBAL, nao por branch: existe UM staging. Duas branches publicando ao
 # mesmo tempo disputariam o mesmo container e o resultado seria indeterminado.
-# cancel-in-progress porque o ultimo push e o que interessa.
 concurrency:
   # Grupo global, sem a chave por ref: existe UM staging, e dois branches
   # promovendo ao mesmo tempo disputariam o mesmo container. Serializar e
