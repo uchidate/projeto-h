@@ -251,15 +251,7 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                     <>
                         {big4.length > 0 && type !== 'mid' && (
                             <section>
-                                <div className="flex items-center gap-3 mb-5 border-b border-foreground pb-3">
-                                    <div className="h-7 w-1 shrink-0 bg-accent" />
-                                    <div>
-                                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">As maiores</p>
-                                        <h2 className="text-lg font-black tracking-[-0.03em] flex items-center gap-2">
-                                            Big 4 <Star size={14} className="text-accent" fill="currentColor" />
-                                        </h2>
-                                    </div>
-                                </div>
+                                <CabecalhoSecao forte kicker="As maiores" titulo={<>Big 4 <Star size={14} className="text-accent" fill="currentColor" /></>} />
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                     {big4.map(agency => (
                                         <AgencyCard
@@ -280,33 +272,9 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
 
                         {rest.length > 0 && (
                             <section>
-                                {big4.length > 0 && type !== 'mid' && (
-                                    <div className="flex items-center gap-3 mb-5 border-b border-foreground/10 pb-3">
-                                        <div className="h-7 w-1 shrink-0 bg-foreground/20" />
-                                        <div>
-                                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Além das Big 4</p>
-                                            <h2 className="text-lg font-black tracking-[-0.03em]">Outras agências</h2>
-                                        </div>
-                                    </div>
-                                )}
-                                {type === 'mid' && (
-                                    <div className="flex items-center gap-3 mb-5 border-b border-foreground/10 pb-3">
-                                        <div className="h-7 w-1 shrink-0 bg-foreground/20" />
-                                        <div>
-                                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Mid & Independentes</p>
-                                            <h2 className="text-lg font-black tracking-[-0.03em]">{rest.length} agências</h2>
-                                        </div>
-                                    </div>
-                                )}
-                                {type === 'subsidiary' && (
-                                    <div className="flex items-center gap-3 mb-5 border-b border-foreground/10 pb-3">
-                                        <div className="h-7 w-1 shrink-0 bg-foreground/20" />
-                                        <div>
-                                            <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">Selos e empresas vinculadas</p>
-                                            <h2 className="text-lg font-black tracking-[-0.03em]">{rest.length} subsidiárias</h2>
-                                        </div>
-                                    </div>
-                                )}
+                                {big4.length > 0 && type !== 'mid' && <CabecalhoSecao kicker="Além das Big 4" titulo="Outras agências" />}
+                                {type === 'mid' && <CabecalhoSecao kicker="Mid & Independentes" titulo={`${rest.length} agências`} />}
+                                {type === 'subsidiary' && <CabecalhoSecao kicker="Selos e empresas vinculadas" titulo={`${rest.length} subsidiárias`} />}
                                 {/* Grade cortada em duas, com anúncio entre elas.
                                     Medido em 2026-09-17: esta página tem 23.000px de rolagem
                                     no celular e não tinha anúncio nenhum. Cortar a grade (em
@@ -341,13 +309,23 @@ export default async function AgenciesPage({ searchParams }: { searchParams: Sea
                                 })()}
                             </section>
                         )}
-
-                        {/* Big 4 only, no rest */}
-                        {type === 'big4' && rest.length === 0 && big4.length > 0 && null}
                     </>
                 )}
             </div>
         </>
+    )
+}
+
+/** Cabeçalho de seção: faixa lateral, kicker em mono e título. `forte` é o da seção principal (Big 4). */
+function CabecalhoSecao({ kicker, titulo, forte = false }: { kicker: string; titulo: React.ReactNode; forte?: boolean }) {
+    return (
+        <div className={`flex items-center gap-3 mb-5 border-b pb-3 ${forte ? 'border-foreground' : 'border-foreground/10'}`}>
+            <div className={`h-7 w-1 shrink-0 ${forte ? 'bg-accent' : 'bg-foreground/20'}`} />
+            <div>
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.14em] text-muted">{kicker}</p>
+                <h2 className={`text-lg font-black tracking-[-0.03em]${forte ? ' flex items-center gap-2' : ''}`}>{titulo}</h2>
+            </div>
+        </div>
     )
 }
 
