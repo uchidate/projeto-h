@@ -1,0 +1,79 @@
+name: 🧪 Ensaio de build no GitHub
+
+# Monta a imagem do site num runner do GitHub e mede o resultado, para decidir se o
+# `docker build` pode sair do servidor de produção. NÃO publica: a imagem não é
+# enviada a registro nenhum nem ao servidor, e some com o runner.
+#
+# O build consulta o WordPress de produção, como o build de verdade. Rodar só quando
+# for medir.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ensaio-build.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ensaio-build
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  construir:
+    name: Montar a imagem
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      # Só para ler a identidade do site, que não é versionada.
+      - name: Conectar ao servidor
+        uses: ./.github/actions/conectar-servidor
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          usuario: ${{ secrets.DEPLOY_USER }}
+          chave: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Montar a imagem
+        env:
+          WORDPRESS_API_URL: ${{ vars.WORDPRESS_API_URL }}
+        run: |
+          set -euo pipefail
+          identidade="$(ssh -o BatchMode=yes oc 'cat /data/hallyuhub/identidade.env')"
+          args=(--build-arg "WORDPRESS_API_URL=${WORDPRESS_API_URL}" --build-arg "NEXT_PUBLIC_SENTRY_RELEASE=${GITHUB_SHA}")
+          # Lê linha a linha, sem `source`: o arquivo é dado, não script. O log é
+          # público, então cada valor é mascarado antes de qualquer uso.
+          while IFS='=' read -r nome valor || [ -n "$nome" ]; do
+            case "$nome" in NEXT_PUBLIC_*) ;; *) continue ;; esac
+            valor="${valor%$'\r'}"
+            valor="${valor#[\"\']}"
+            valor="${valor%[\"\']}"
+            if [ "${#valor}" -ge 4 ]; then echo "::add-mask::${valor}"; fi
+            args+=(--build-arg "${nome}=${valor}")
+          done <<< "$identidade"
+          echo "valores de identidade lidos: $(( (${#args[@]} - 4) / 2 ))"
+
+          inicio="$(date +%s)"
+          DOCKER_BUILDKIT=1 docker build --progress=plain "${args[@]}" -t ensaio:local . 2>&1 | tee "$RUNNER_TEMP/build.log"
+          echo "SEGUNDOS_BUILD=$(( $(date +%s) - inicio ))" >> "$GITHUB_ENV"
+
+      - name: Medir
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/build.log"
+          conta() { grep -cE "$1" "$log" || true; }
+          bytes="$(docker image inspect ensaio:local --format '{{.Size}}')"
+          inicio="$(date +%s)"
+          comprimido="$(docker save ensaio:local | gzip -1 | wc -c)"
+          compactar="$(( $(date +%s) - inicio ))"
+          {
+            echo "### Ensaio de build"
+            echo ""
+            echo "- build: \`${SEGUNDOS_BUILD}s\` (sem cache)"
+            echo "- imagem: \`$(( bytes / 1048576 )) MB\`; compactada para envio: \`$(( comprimido / 1048576 )) MB\` em \`${compactar}s\`"
+            echo "- erros do WordPress no build: \`$(conta 'WordPress API (error|unavailable|returned invalid)')\`"
+            echo "- repetições de consulta: \`$(conta 'tentativa [0-9]+/[0-9]+, repetindo')\`"
+            echo "- respostas 403/429/503 no log: \`$(conta '(error|status|HTTP)[^0-9]{0,12}(403|429|503)')\`"
+            echo "- páginas geradas: \`$(grep -oE 'Generating static pages[^(]*\([0-9]+/[0-9]+\)' "$log" | tail -1 | grep -oE '[0-9]+/[0-9]+' || echo '?')\`"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
