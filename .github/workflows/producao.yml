@@ -360,9 +360,27 @@ jobs:
         run: |
           set -euo pipefail
           inicio="$(date +%s)"
-          bash scripts/deploy-manual.sh --skip-gates
+          # Cópia da saída para o passo "Conferir snapshot do VPS". Substituição de
+          # processo, e não pipe: o código de saída continua sendo o do script.
+          bash scripts/deploy-manual.sh --skip-gates > >(tee "$RUNNER_TEMP/deploy.log") 2>&1
           fim="$(date +%s)"
           echo "duracao_segundos=$((fim-inicio))" >> "$GITHUB_OUTPUT"
+
+      # Quando a API da Hostinger recusa o snapshot, o script segue o deploy e so
+      # deixa um aviso no meio do log: em 2026-11-28 um HTTP 403 passou sem ninguem
+      # saber que nao havia ponto de retorno novo.
+      - name: Conferir snapshot do VPS
+        id: snapshot
+        if: always() && steps.deploy.outcome != 'skipped'
+        run: |
+          log="$RUNNER_TEMP/deploy.log"
+          estado='sem informação'
+          if grep -qE 'snapshot do VPS (falhou|indisponivel)' "$log" 2>/dev/null; then
+            estado='falhou'
+          elif grep -q 'snapshot solicitado' "$log" 2>/dev/null; then
+            estado='solicitado'
+          fi
+          echo "estado=${estado}" >> "$GITHUB_OUTPUT"
 
       - name: Coletar métricas do job
         if: always()
@@ -442,7 +460,17 @@ jobs:
             fi
             carga="$(ssh -o BatchMode=yes -o ConnectTimeout=10 oc 'cut -d" " -f1 /proc/loadavg' 2>/dev/null || true)"
             echo "- carga do servidor (1 min): antes \`${CARGA_ANTES:-?}\`; no fim \`${carga:-?}\`"
+            echo "- snapshot do VPS antes do deploy: \`${{ steps.snapshot.outputs.estado || 'sem informação' }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Avisar deploy sem snapshot no ntfy
+        if: always() && steps.snapshot.outputs.estado == 'falhou'
+        continue-on-error: true
+        env:
+          URL_EXECUCAO: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          printf 'O snapshot do VPS falhou e o deploy seguiu sem ponto de retorno novo.\nVeja o passo de deploy na execucao e os snapshots no painel da Hostinger.\n' \
+            | ssh oc "/usr/local/bin/ntfy-envia.sh infra 'Deploy sem snapshot do VPS' default 'warning' 'view, Abrir execucao, ${URL_EXECUCAO}'"
 
       # Aviso de falha no canal unico (ntfy), pelo mesmo `ssh oc` do deploy.
       #
