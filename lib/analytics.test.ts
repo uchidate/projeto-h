@@ -139,3 +139,74 @@ describe('marcarSessaoHumana', () => {
         expect(track.mock.calls.filter(([nome]) => nome === 'human_session')).toHaveLength(1)
     })
 })
+
+describe('fila de eventos antes do Umami carregar', () => {
+    beforeEach(() => { vi.useFakeTimers(); vi.resetModules(); delete window.umami; window.gtag = vi.fn() })
+    afterEach(() => { vi.useRealTimers(); delete window.umami; delete window.gtag; delete window.dataLayer })
+
+    it('entrega o evento quando o script chega, mesmo que um envio da fila falhe', async () => {
+        const { trackMenuOpen, trackBlogSaibaMais } = await import('./analytics')
+        trackMenuOpen()
+        trackBlogSaibaMais()
+        const track = vi.fn<(nome?: string, dados?: Record<string, unknown>) => void>().mockImplementationOnce(() => { throw new Error('falhou') })
+        vi.advanceTimersByTime(250)
+        expect(track).not.toHaveBeenCalled()
+        window.umami = { track }
+        vi.advanceTimersByTime(250)
+        expect(track.mock.calls).toEqual([['menu_open', {}], ['blog_saiba_mais', { content_slug: '' }]])
+        expect(vi.getTimerCount()).toBe(0)
+    })
+
+    it('desiste depois de 10 segundos e descarta o que estava na fila', async () => {
+        const { trackMenuOpen, trackTema } = await import('./analytics')
+        trackMenuOpen()
+        vi.advanceTimersByTime(10_000)
+        expect(vi.getTimerCount()).toBe(0)
+        const track = vi.fn()
+        window.umami = { track }
+        trackTema('light')
+        expect(track.mock.calls).toEqual([['theme_change', { theme: 'light' }]])
+    })
+
+    it('sem gtag, guarda o evento no dataLayer para o Google ler depois', async () => {
+        delete window.gtag
+        const { trackTema } = await import('./analytics')
+        trackTema('dark')
+        expect(window.dataLayer).toEqual([['event', 'theme_change', { theme: 'dark' }]])
+    })
+})
+
+describe('eventos de anúncio', () => {
+    const gtag = vi.fn<(...args: unknown[]) => void>()
+    const track = vi.fn<(nome?: string, dados?: Record<string, unknown>) => void>()
+    beforeEach(() => { gtag.mockClear(); track.mockClear(); window.gtag = gtag; window.umami = { track }; sessionStorage.clear() })
+    afterEach(() => { delete window.gtag; delete window.umami; vi.restoreAllMocks() })
+
+    it('fora da amostra vai só para o Google', async () => {
+        const { trackAdRequest } = await import('./analytics')
+        vi.spyOn(Math, 'random').mockReturnValue(0.5)
+        trackAdRequest({ placement: 'topo', format: 'auto', queueDelayMs: -3 })
+        expect(gtag).toHaveBeenCalledWith('event', 'ad_slot_request', { ad_placement: 'topo', ad_format: 'auto', ad_queue_delay_ms: 0 })
+        expect(track).not.toHaveBeenCalled()
+    })
+
+    it('a sessão sorteada leva pedido e resultado juntos ao Umami', async () => {
+        const { trackAdRequest, trackAdStatus } = await import('./analytics')
+        const sorteio = vi.spyOn(Math, 'random').mockReturnValue(0.05)
+        trackAdRequest({ placement: 'topo', format: 'auto', queueDelayMs: 12.6 })
+        trackAdStatus({ placement: 'topo', format: 'auto', status: 'filled' })
+        expect(track.mock.calls.map(c => c[0])).toEqual(['ad_slot_request', 'ad_slot_status'])
+        expect(sorteio).toHaveBeenCalledTimes(1)
+    })
+
+    it('o resumo da página vai só ao Umami, com CLS multiplicado por mil', async () => {
+        const { trackExperienciaAnuncios } = await import('./analytics')
+        trackExperienciaAnuncios({
+            proprios: 2, automaticos: 1, ancoraGoogle: true, ancoraGoogleFechada: false, ancoraPropria: false,
+            alturaPct: 18, primeiraTela: true, vinheta: false, bannerAberto: true, bannerAbertoAoSair: false,
+            clsMedido: true, cls: { anuncio: 0.0456, loja: 0.002, outro: 0 }, rolagemPct: 60, segundos: 40, tipoPagina: 'artigo',
+        })
+        expect(track).toHaveBeenCalledWith('page_ads', expect.objectContaining({ cls_ad: 46, cls_store: 2, cls_other: 0, page_type: 'artigo' }))
+        expect(gtag).not.toHaveBeenCalled()
+    })
+})
