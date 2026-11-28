@@ -1,12 +1,10 @@
 import { getPosts, getCategories } from '@/lib/wordpress/posts'
 import { getProductions } from '@/lib/wordpress/productions'
-import { getArtists, getStreamingArtists } from '@/lib/wordpress/artists'
-import { getFeaturedSpotlight } from '@/lib/wordpress/spotlight'
+import { getArtists } from '@/lib/wordpress/artists'
 import { getTrendingGroups } from '@/lib/wordpress/groups'
 import { getStoreProducts } from '@/lib/wordpress/store'
 import { maisVendidos } from '@/lib/home/mais-vendidos'
 import { getSiteSettings } from '@/lib/wordpress/site-settings'
-import { getStreamingTopShows } from '@/lib/tmdb/streaming'
 import { hojeEmBrasilia, mesesParaBuscar, montarAniversarios, type AniversariosHome } from '@/lib/home/aniversarios'
 import { carregarPrateleirasEditorias, POR_COLUNA, type PrateleirasEditorias } from '@/lib/home/editorias-loja'
 import { semProdutoRepetido } from '@/lib/home/produtos-unicos'
@@ -22,7 +20,7 @@ import { COLUNAS_EDITORIAS, type PostsPorEditoria } from '@/lib/home/editorias'
 
 /**
  * Dados da `HomeFrontPage`, comuns à home em português e às de outros idiomas.
- * `comercio: false` pula o que só existe no Brasil (loja e streaming do TMDB-BR):
+ * `comercio: false` pula o que só existe no Brasil (a loja):
  * os blocos correspondentes também somem fora do português.
  */
 export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comercio: boolean; locale?: Locale }) {
@@ -38,7 +36,7 @@ export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comer
     // Começa já, em paralelo com o resto; sem ela o ranking de produções simplesmente não aparece.
     const producoesEmAltaP = getProductions({ perPage: 5, orderby: 'relevance', ...(emPt ? {} : { locale }) }).then(r => (emPt ? r.items : r.items.map(p => localizeEntity(p, locale, 'production')))).catch(() => [])
 
-    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, streamingArtists, featuredSpotlightResult, streamingShows, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult, prateleirasResult] = await Promise.allSettled([
+    const [postsResult, curatedPostsResult, editoriasResult, productionsResult, trendingArtists, trendingGroupsResult, categoriesResult, maisVendidosResult, aniversariosResult, guiasResult, temasResult, exploreResult, prateleirasResult] = await Promise.allSettled([
         // A composição acima da dobra usa no máximo 19 posts (carrossel de até 4 + 6
         // destaques + 4 longreads + 8 recentes). Buscar 24 transferia cinco
         // registros completos do WordPress/RSC sem qualquer uso visual.
@@ -54,9 +52,6 @@ export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comer
         // Mesma ordem da listagem /artists do idioma (relevance_score: acesso real + fama externa + streaming).
         getArtists({ perPage: 5, orderby: 'relevance', ...(emPt ? {} : { locale }) }).then(r => r.items),
         getTrendingGroups(8),
-        getStreamingArtists(12),
-        getFeaturedSpotlight(),
-        comercio ? getStreamingTopShows() : Promise.resolve({}),
         getCategories(),
         comercio ? getStoreProducts().then(todos => maisVendidos(todos)) : Promise.resolve([]),
         // A busca é por mês de nascimento, ordenada por popularidade.
@@ -94,12 +89,7 @@ export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comer
     }
     const productions = productionsResult.status === 'fulfilled' ? productionsResult.value.items : []
     const artists = trendingArtists.status === 'fulfilled' ? trendingArtists.value : []
-    const featuredSpotlight = featuredSpotlightResult.status === 'fulfilled' ? featuredSpotlightResult.value : null
-    const spotlightArtists = streamingArtists.status === 'fulfilled' && streamingArtists.value.length >= 4
-        ? streamingArtists.value
-        : artists  // fallback para trending se streaming_score ainda não populado
     const trendingGroupsList = trendingGroupsResult.status === 'fulfilled' ? trendingGroupsResult.value : []
-    const streamingByPlatform = streamingShows.status === 'fulfilled' ? streamingShows.value : {}
     const categories = categoriesResult.status === 'fulfilled' ? categoriesResult.value : []
     // O WordPress guarda o nome da categoria em português; fora dele o rótulo vem das mensagens (slug → nome).
     const rotulos = emPt ? null : (await getTranslations({ locale, namespace: 'home.categorias' })) as unknown as { has(chave: string): boolean; raw(chave: string): unknown }
@@ -134,5 +124,5 @@ export async function carregarHome({ comercio, locale = SOURCE_LOCALE }: { comer
 
     const passos = await carregarPassos(siteSettings.cultureGuides, locale).catch(() => [])
 
-    return { siteSettings, passos, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum, producoesEmAlta: await producoesEmAltaP, hoje }
+    return { siteSettings, passos, posts, productions, artists, trendingGroupsList, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum, producoesEmAlta: await producoesEmAltaP, hoje }
 }
