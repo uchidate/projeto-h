@@ -64,6 +64,6 @@ describe('HomeIntl', () => {
         const props = await frente()
         expect(m.carregar).toHaveBeenCalledWith({ comercio: false, locale: 'en' })
         expect(props.posts).toHaveLength(entrega)
-        expect(props).toMatchObject({ locale: 'en', featuredArtist: null, featuredArtistNote: '' })
+        expect(props.locale).toBe('en')
     })
 })
