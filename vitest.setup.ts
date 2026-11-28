@@ -11,6 +11,16 @@ import { cleanup } from '@testing-library/react'
 // quebrar os testes .test.ts em ambiente 'node' (sem DOM).
 if (typeof document !== 'undefined') {
     afterEach(() => cleanup())
+
+    // jsdom não troca de página nem rola a janela: só imprime "Not implemented",
+    // ruído que esconde aviso de verdade. O ouvinte fica em `window`, o último a
+    // receber o clique, então o componente testado já tratou o evento. Âncora da
+    // própria página (#secao) o jsdom implementa e passa direto.
+    window.addEventListener('click', evento => {
+        const link = (evento.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null
+        if (link && link.href.split('#')[0] !== document.URL.split('#')[0]) evento.preventDefault()
+    })
+    window.scrollTo = () => {}
 }
 
 // jsdom não implementa ResizeObserver — polyfill mínimo pra componentes que
