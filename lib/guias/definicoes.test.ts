@@ -14,15 +14,12 @@ describe('definições dos guias', () => {
         expect(slugs.filter(s => !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(s))).toEqual([])
     })
 
-    // Pares conhecidos (28/11/2026), à espera de decisão; ao resolver, apagar a exceção:
-    // - os dois guias de boy groups têm o mesmo título e a mesma lista, e ambos são indexados;
-    // - "idols que atuam em doramas" usa o mesmo filtro de "idols famosos", sem exigir atuação.
-    // Qualquer repetição nova reprova.
-    it('não surge outro par de guias com o mesmo título ou a mesma lista', () => {
-        expect(repetidos(ALL_HUBS.map(h => h.title))).toEqual(['Boy groups de K-Pop'])
+    // Dois guias iguais disputam a mesma busca no Google.
+    it('nenhum par de guias tem o mesmo título ou a mesma lista', () => {
+        expect(repetidos(ALL_HUBS.map(h => h.title))).toEqual([])
         const listas = ALL_HUBS.filter(h => Object.keys(h.filter).length > 0)
             .map(h => `${h.kind} ${JSON.stringify(Object.entries(h.filter).sort())}`)
-        expect(repetidos(listas).sort()).toEqual(['artists [["role","idol"]]', 'groups [["role","boy_group"]]'])
+        expect(repetidos(listas)).toEqual([])
     })
 
     it('todo guia tem o texto mínimo', () => {

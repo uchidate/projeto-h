@@ -10,6 +10,7 @@ import {
     PRODUCTION_NETWORK_MAP,
     ARTIST_FILTER_MAP,
     GROUP_TYPE_MAP,
+    temAlgumPapel,
 } from './hub-maps'
 
 export type {
@@ -51,6 +52,17 @@ async function getGroupMemberIds(groupSlug: string): Promise<number[]> {
         )
         return (groups[0]?.acf?.members as number[] | undefined) ?? []
     } catch { return [] }
+}
+
+/** Todas as fichas do papel, filtradas pelo segundo papel: a API não combina os dois, então a paginação é feita depois. */
+async function getArtistsComPapeis(role: string, alsoRoles: string[], locale?: string): Promise<WPArtist[]> {
+    const todos: WPArtist[] = []
+    for (let page = 1; ; page++) {
+        const { items, total } = await getArtists({ page, role, perPage: 100, orderby: 'title', order: 'asc', locale })
+        todos.push(...items)
+        if (!items.length || page * 100 >= total) break
+    }
+    return todos.filter(a => temAlgumPapel(a.acf?.roles as string[] | undefined, alsoRoles))
 }
 
 export type HubItemsOptions = {
@@ -120,6 +132,11 @@ export async function getHubItems(hub: ArchiveHub, opts: HubItemsOptions = {}): 
                 if (!agencyId) return { kind: 'artists', items: [], total: 0 }
                 const { items, total } = await getArtists({ page, agency: agencyId, perPage, orderby: 'title', order: 'asc', locale })
                 return { kind: 'artists', items, total }
+            }
+
+            if (f.role && f.alsoRoles) {
+                const todos = await getArtistsComPapeis(f.role, f.alsoRoles, locale)
+                return { kind: 'artists', items: todos.slice((page - 1) * perPage, page * perPage), total: todos.length }
             }
 
             if (f.role) {

@@ -5,6 +5,7 @@ import { stripHtml } from '@/lib/utils'
 import { SITE_URL, compartilhamento } from '@/lib/constants/site'
 import { getAllHubs, getHub, getRelatedHubs, rotuloDoGuia } from '@/lib/guias'
 import { findAgencyId, getHubItems } from '@/lib/guias/hub-items'
+import { temAlgumPapel } from '@/lib/guias/hub-maps'
 import { getGroups } from '@/lib/wordpress/groups'
 import { GruposDaAgencia } from '@/components/guias/GruposDaAgencia'
 import { SolistaDestaque } from '@/components/guias/SolistaDestaque'
@@ -111,7 +112,9 @@ export async function GuiaPagina({ slug, sp }: { slug: string; sp: SearchParamsG
     // Guia por categoria (cantoras, atores, idols): os 12 de maior peso abrem a página, antes da lista alfabética.
     const f = hub.filter
     const destaquesDaCategoria = hub.kind === 'artists' && f.role && !f.agencyName && !f.groupSlug && !f.artistSlug && semFiltro
-        ? (await getArtists({ role: f.role, gender: f.gender, perPage: 12, orderby: 'popularity', order: 'desc' }).catch(() => ({ items: [] }))).items
+        ? (await getArtists({ role: f.role, gender: f.gender, perPage: f.alsoRoles ? 100 : 12, orderby: 'popularity', order: 'desc' }).catch(() => ({ items: [] }))).items
+            .filter(a => temAlgumPapel(a.acf?.roles as string[] | undefined, f.alsoRoles))
+            .slice(0, 12)
         : []
     // Vitrine pelo assunto do guia (palavras do título, das palavras-chave e dos grupos da agência no nome do produto).
     // Sem casamento, cai na vitrine geral do tipo.

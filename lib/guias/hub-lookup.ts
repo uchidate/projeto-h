@@ -6,6 +6,7 @@ import {
     ARTIST_FILTER_MAP,
     GROUP_TYPE_MAP,
 } from './hub-items'
+import { temAlgumPapel } from './hub-maps'
 import type { ArchiveHub } from './types'
 import type { WPProduction, WPArtist, WPGroup } from '@/lib/wordpress/types'
 
@@ -85,6 +86,7 @@ export function getHubsForArtist(artist: WPArtist): ArchiveHub[] {
     for (const [hubSlug, filter] of Object.entries(ARTIST_FILTER_MAP)) {
         if (filter.role && !roles.includes(filter.role)) continue
         if (filter.gender && filter.gender !== gender) continue
+        if (!temAlgumPapel(roles, filter.alsoRoles)) continue
         hubSlugs.push(hubSlug)
     }
 
