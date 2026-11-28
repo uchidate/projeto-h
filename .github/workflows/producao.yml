@@ -560,8 +560,8 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      # Só este job usa o Node 26: o semantic-release 26 exige >=26.13. O site, o build
-      # e os testes seguem na versão do .nvmrc.
+      # Faixa explícita porque o semantic-release 26 exige >=26.13, e o `26` do .nvmrc
+      # aceitaria um 26 mais antigo já guardado no runner.
       - uses: actions/setup-node@v7
         with:
           node-version: ^26.13.0

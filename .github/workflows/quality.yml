@@ -96,7 +96,7 @@ jobs:
         run: |
           if ! npm ci --dry-run --ignore-scripts --no-audit --no-fund > "$RUNNER_TEMP/lockfile.log" 2>&1; then
             grep -E "Missing:|EUSAGE|npm error" "$RUNNER_TEMP/lockfile.log" | head -10
-            echo "::error::package-lock.json nao instala em Linux. Regere dentro do Linux: docker run --rm -v \$PWD:/app -w /app node:24 npm install --package-lock-only"
+            echo "::error::package-lock.json nao instala em Linux. Regere dentro do Linux: docker run --rm -v \$PWD:/app -w /app node:26 npm install --package-lock-only"
             exit 1
           fi
       # Runner persistente: a action baixa o binario sempre para

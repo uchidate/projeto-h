@@ -75,7 +75,7 @@ runs:
         fi
         echo "RESPOSTAS_SALVAS=$(tar -tf "$pasta/fetch.tar" | grep -vc '/$')" >> "$GITHUB_ENV"
         printf '%s\n' \
-          'FROM node:24-alpine' \
+          'FROM node:26-alpine' \
           'COPY fetch.tar /semente.tar' \
           'RUN --mount=type=cache,target=/app/.next/cache mkdir -p /app/.next/cache/fetch-cache && tar -xf /semente.tar -C /app/.next/cache/fetch-cache' \
           > "$RUNNER_TEMP/carregar.Dockerfile"
@@ -148,7 +148,7 @@ runs:
         vazio="$RUNNER_TEMP/contexto-vazio"
         mkdir -p "$pasta" "$vazio"
         printf '%s\n' \
-          'FROM node:24-alpine AS copia' \
+          'FROM node:26-alpine AS copia' \
           'ARG RODADA' \
           'RUN --mount=type=cache,target=/app/.next/cache mkdir /saida && tar -cf /saida/fetch.tar -C /app/.next/cache/fetch-cache .' \
           'FROM scratch' \
