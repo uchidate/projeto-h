@@ -18,7 +18,7 @@ function contrast(hex1: string, hex2: string): number {
 
 // Regressão do fix de 2026-07-06: netflix/disney/prime/apple falhavam contraste
 // em pelo menos um dos dois usos (badge sólido c/ texto branco, ou texto sobre
-// fundo escuro translúcido em components/home/HomeStreamingTop.tsx). Uma única
+// fundo escuro translúcido em o ranking de streaming). Uma única
 // hex não atendia os dois casos ao mesmo tempo — por isso os dois campos.
 const DARK_BADGE_BG = '#210b0f'
 

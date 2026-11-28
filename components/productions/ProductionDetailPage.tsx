@@ -18,15 +18,16 @@ import type { MotivoPrateleira } from '@/lib/wordpress/prateleira-obra'
 import type { Avaliacao } from '@/lib/tmdb/avaliacao'
 import { buildProductionProfileModel } from '@/lib/profiles/productionProfile'
 import type { WPFood } from '@/lib/wordpress/types'
+import type { ShowsByPlatform } from '@/lib/tmdb/streaming'
 
-interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null; avaliacao?: Avaliacao | null; episodios?: Episodio[]; shopProducts?: StoreProduct[]; shopMotivos?: Record<number, MotivoPrateleira>; foodsInProduction?: WPFood[] }
+interface Props { production: WPProduction; cast?: WPArtist[]; related?: WPProduction[]; relatedPosts?: WPPost[]; relatedHubs?: ArchiveHub[]; categoryMap?: Record<number, { name: string; slug: string }>; disponibilidade?: Disponibilidade | null; avaliacao?: Avaliacao | null; episodios?: Episodio[]; shopProducts?: StoreProduct[]; shopMotivos?: Record<number, MotivoPrateleira>; foodsInProduction?: WPFood[]; emAlta?: ShowsByPlatform }
 
 export function ProductionDetailPage(props: Props) {
     const pagina = <ProductionDetailPageConteudo {...props} />
     return producaoMagra(props.production) ? <SemAnuncios>{pagina}</SemAnuncios> : pagina
 }
 
-function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [], shopMotivos = {}, foodsInProduction = [] }: Props) {
+function ProductionDetailPageConteudo({ production, cast = [], related = [], relatedPosts = [], relatedHubs = [], categoryMap, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [], shopMotivos = {}, foodsInProduction = [], emAlta = {} }: Props) {
     const t = useTranslations('profile')
     const tEntity = useTranslations('entity')
     const locale = useLocale()
@@ -110,7 +111,7 @@ function ProductionDetailPageConteudo({ production, cast = [], related = [], rel
             {jsonLd}
             {readingBar}
             <ProductionPageB production={production} model={model} productionUrl={productionUrl} cast={cast} related={related}
-                relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} shopProducts={shopProducts} shopMotivos={shopMotivos} foodsInProduction={foodsInProduction} />
+                relatedPosts={relatedPosts} relatedHubs={relatedHubs} categoryMap={categoryMap} faqItems={faqItems} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} shopProducts={shopProducts} shopMotivos={shopMotivos} foodsInProduction={foodsInProduction} emAlta={emAlta} />
         </>
     )
 }

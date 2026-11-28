@@ -32,6 +32,9 @@ import { ProductionRelated } from '@/components/productions/ProductionRelated'
 import { ProductionBlogGrid } from '@/components/productions/ProductionBlogGrid'
 import { ProductionSidebar, FichaLinhas } from '@/components/productions/ProductionSidebar'
 import { QuizFacts } from '@/components/ui/QuizFacts'
+import { EmAltaNoStreaming } from '@/components/productions/EmAltaNoStreaming'
+import { AtribuicaoJustWatch } from '@/components/productions/AtribuicaoJustWatch'
+import type { ShowsByPlatform } from '@/lib/tmdb/streaming'
 
 interface Props {
     production: WPProduction
@@ -49,6 +52,7 @@ interface Props {
     shopProducts?: StoreProduct[]
     shopMotivos?: Record<number, MotivoPrateleira>
     foodsInProduction?: WPFood[]
+    emAlta?: ShowsByPlatform
 }
 
 const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
@@ -66,7 +70,7 @@ const ANCORA = 'scroll-mt-(--scroll-anchor-offset,134px)'
  * elenco e outro depois das recomendações. O rodapé de página (`production_end_leaderboard`,
  * 27% de preenchimento) e o `production_discovery` da estrutura anterior saem.
  */
-export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [], shopMotivos = {}, foodsInProduction = [] }: Props) {
+export function ProductionPageB({ production, model, productionUrl, cast, related, relatedPosts, relatedHubs, categoryMap, faqItems, disponibilidade = null, avaliacao = null, episodios = [], shopProducts = [], shopMotivos = {}, foodsInProduction = [], emAlta = {} }: Props) {
     const t = useTranslations('profile')
     const locale = useLocale()
     const {
@@ -126,6 +130,8 @@ export function ProductionPageB({ production, model, productionUrl, cast, relate
                         {/* A ficha é a página de maior tráfego e não tinha loja: faixa curta depois das relacionadas,
                             ainda antes dos episódios. */}
                         <LojaEmLinha bloco="producao-loja-meio" products={shopProducts} motivos={shopMotivos} title={tituloPrateleira(title, shopProducts.slice(0, 3).map(p => shopMotivos[p.id]))} contexto={`producao:${production.slug}:meio`} />
+
+                        <EmAltaNoStreaming porPlataforma={emAlta} credito={<AtribuicaoJustWatch />} />
 
                         {episodios.length > 0 && (
                             <section id="episodios" className={ANCORA} data-bloco="producao-episodios">

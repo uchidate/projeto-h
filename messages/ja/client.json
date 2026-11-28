@@ -242,12 +242,6 @@
       "signInAria": "アカウントにログイン"
     }
   },
-  "home": {
-    "streaming": {
-      "titulo": "配信TOP10",
-      "mostrarRanking": "{plataforma}のランキングを表示"
-    }
-  },
   "artistCard": {
     "producao": "作品",
     "musica": "音楽"

@@ -242,12 +242,6 @@
       "signInAria": "Entrar en tu cuenta"
     }
   },
-  "home": {
-    "streaming": {
-      "titulo": "Top 10 en las plataformas de streaming",
-      "mostrarRanking": "Mostrar el ranking de {plataforma}"
-    }
-  },
   "artistCard": {
     "producao": "Producción",
     "musica": "Música"

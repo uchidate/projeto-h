@@ -4,9 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const m = vi.hoisted(() => ({
     producao: vi.fn(), relacionadas: vi.fn(), generos: vi.fn(), comidas: vi.fn(), artistas: vi.fn(),
     prateleira: vi.fn(), posts: vi.fn(), categorias: vi.fn(), cenas: vi.fn(), disponibilidade: vi.fn(),
-    idiomas: vi.fn(),
+    idiomas: vi.fn(), streaming: vi.fn(),
     Detalhe: () => null, Migalhas: () => null, Aviso: () => null, Idiomas: () => null,
 }))
+
+vi.mock('@/lib/tmdb/streaming', async (original) => ({ ...await original<typeof import('@/lib/tmdb/streaming')>(), getStreamingTopShows: m.streaming }))
 
 vi.mock('@/lib/wordpress/productions', () => ({ getProductionBySlug: m.producao, getSmartRelatedProductions: m.relacionadas, getProductionGenres: m.generos }))
 vi.mock('next-intl/server', () => ({ getTranslations: async () => (chave: string) => chave }))
@@ -65,6 +67,7 @@ beforeEach(() => {
     m.cenas.mockResolvedValue([])
     m.disponibilidade.mockResolvedValue({ onde: 'tmdb' })
     m.idiomas.mockResolvedValue([])
+    m.streaming.mockResolvedValue({})
 })
 
 describe('ProductionRoute', () => {
@@ -134,6 +137,21 @@ describe('ProductionRoute', () => {
         expect(detalhe.shopProducts).toEqual([])
         expect(detalhe.relatedPosts).toEqual([])
         expect(m.prateleira).not.toHaveBeenCalled()
+    })
+
+    it('o bloco de streaming sai sem a própria obra e sem o que já é recomendado', async () => {
+        m.relacionadas.mockResolvedValue([{ id: 3, slug: 'parecida', title: { rendered: 'P' } }])
+        m.streaming.mockResolvedValue({ netflix_br: ['obra', 'parecida', 'a', 'b', 'c'].map(s => ({ tmdbId: s, title: s, productionSlug: s })) })
+        const { detalhe } = await renderizar()
+        expect(detalhe.emAlta.netflix_br.map((s: any) => s.productionSlug)).toEqual(['a', 'b', 'c'])
+    })
+
+    it('falha no streaming não derruba a ficha, e fora do português nem se consulta', async () => {
+        m.streaming.mockRejectedValue(new Error('fora do ar'))
+        expect((await renderizar()).detalhe.emAlta).toEqual({})
+        m.streaming.mockClear()
+        expect((await renderizar('en')).detalhe.emAlta).toEqual({})
+        expect(m.streaming).not.toHaveBeenCalled()
     })
 
     it('a trilha de navegação usa o primeiro gênero conhecido', async () => {
