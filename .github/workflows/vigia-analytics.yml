@@ -64,7 +64,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: node_modules
-          key: modulos-node24-noble-${{ hashFiles('package-lock.json') }}
+          key: modulos-node26-noble-${{ hashFiles('package-lock.json') }}
 
       - name: Instalar dependencias
         if: steps.cache-modulos.outputs.cache-hit != 'true'
