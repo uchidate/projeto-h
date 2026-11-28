@@ -80,14 +80,19 @@ export async function findCompanyByName(name: string): Promise<{ slug: string; n
 }
 
 /**
- * Todas as empresas com o mesmo `chaebol_group` (texto livre, sem taxonomia) —
- * fetch único de até 100 e filtro no cliente, mesmo truque de findCompanyByName
- * já que a REST API não tem query param pra esse campo.
+ * O acervo inteiro de empresas, para filtrar `chaebol_group` (texto livre, sem
+ * taxonomia nem query param na REST API) no cliente. Percorre todas as páginas:
+ * parando na primeira, com 118 fichas, Samsung Electronics e Hyundai Motor
+ * sumiam do grupo e `/empresas/grupo/hyundai-group` respondia 404.
  */
 export async function getAllCompaniesRaw(): Promise<WPCompany[]> {
     try {
-        const { items } = await getCompanies({ perPage: 100 })
-        return items
+        const primeira = await getCompanies({ perPage: 100 })
+        const todas = [...primeira.items]
+        for (let page = 2; page <= primeira.totalPages; page++) {
+            todas.push(...(await getCompanies({ perPage: 100, page })).items)
+        }
+        return todas
     } catch { return [] }
 }
 
