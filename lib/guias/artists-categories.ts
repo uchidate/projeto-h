@@ -104,7 +104,7 @@ export const artistsCategoriesHubs: ArchiveHub[] = [
     {
         slug: 'idols-que-atuam-em-doramas',
         kind: 'artists',
-        filter: { role: 'idol' },
+        filter: { role: 'idol', alsoRoles: ['actor', 'actress'] },
         title: 'Idols que atuam em doramas',
         shortTitle: 'Idols atores',
         description: 'Lista de idols do K-Pop que também aparecem em doramas, filmes e séries coreanas, com perfis e filmografia em português.',

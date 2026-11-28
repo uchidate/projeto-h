@@ -9,6 +9,8 @@ export type ArchiveHubFilter = {
     year?: number
     role?: string        // 'singer' | 'actor' | 'idol' | 'model' | 'girl_group' | 'boy_group'
     gender?: 'male' | 'female'
+    /** Artistas: além de `role`, a ficha precisa ter ao menos um destes papéis. A API só filtra um papel; o resto é feito aqui. */
+    alsoRoles?: string[]
     groupSlug?: string
     /** Guia de um artista: slug do perfil. O artista abre a página e os demais (do grupo, se houver) vêm depois. */
     artistSlug?: string

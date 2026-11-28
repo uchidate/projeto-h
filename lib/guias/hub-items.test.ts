@@ -91,6 +91,27 @@ describe('getHubItems', () => {
         })
     })
 
+    describe('segundo papel exigido', () => {
+        const ficha = (id: number, ...roles: string[]) => ({ id, acf: { roles } })
+        const guia = hub({ kind: 'artists', filter: { role: 'idol', alsoRoles: ['actor', 'actress'] } })
+
+        it('lê todas as páginas, fica só com quem tem um dos papéis e pagina depois do filtro', async () => {
+            vi.mocked(getArtists).mockImplementation((async (q?: { page?: number }) => ({
+                total: 101,
+                items: q?.page === 1 ? [ficha(1, 'idol'), ficha(2, 'idol', 'actor')] : [ficha(3, 'idol', 'actress')],
+            })) as never)
+            const primeira = await getHubItems(guia, { perPage: 1 })
+            const segunda = await getHubItems(guia, { perPage: 1, page: 2 })
+            expect(primeira).toEqual({ kind: 'artists', items: [ficha(2, 'idol', 'actor')], total: 2 })
+            expect(segunda.items).toEqual([ficha(3, 'idol', 'actress')])
+        })
+
+        it('sem ninguém com o segundo papel, a lista fica vazia', async () => {
+            vi.mocked(getArtists).mockResolvedValue({ items: [ficha(1, 'idol')], total: 1 } as never)
+            expect(await getHubItems(guia)).toEqual({ kind: 'artists', items: [], total: 0 })
+        })
+    })
+
     describe('kind: groups', () => {
         it('sem filtro especial, lista grupos ordenados por título', async () => {
             vi.mocked(getGroups).mockResolvedValue({ items: [{ id: 1 }], total: 1 } as never)

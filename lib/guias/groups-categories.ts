@@ -75,20 +75,6 @@ export const groupsCategoriesHubs: ArchiveHub[] = [
             { question: 'Quais grupos definiram o K-Pop nos anos 2000?', answer: 'TVXQ, Super Junior, Girls\' Generation (SNSD), Wonder Girls, SHINee, 2NE1 e Big Bang são os grupos mais icônicos que emergiram nos anos 2000.' },
         ],
     },
-    {
-        slug: 'grupos-kpop-boy-groups-famosos',
-        kind: 'groups',
-        filter: { role: 'boy_group' },
-        title: 'Boy groups de K-Pop',
-        shortTitle: 'Boy groups de K-Pop',
-        description: 'Boy groups de K-Pop com integrantes, discografia e carreira: BTS, EXO, BIGBANG, Stray Kids, ATEEZ, TXT e outros.',
-        intro: [
-            'O catálogo reúne boy groups de várias gerações, de BIGBANG (2006) e EXO (2012) a BTS (2013), Stray Kids e ATEEZ (2018) e TXT (2019).',
-            `Este guia reúne os grupos masculinos mais reconhecidos da ${SITE_NAME}.`,
-        ],
-        keywords: ['boy groups kpop famosos', 'grupos masculinos kpop', 'bts exo bigbang', 'melhores boy groups kpop'],
-        faq: [
-            { question: 'Que boy groups estão no catálogo?', answer: 'Entre outros, Super Junior (2005), BIGBANG (2006), EXO (2012), BTS (2013), MONSTA X (2015), NCT (2016), Stray Kids e ATEEZ (2018) e TXT (2019). A lista da página mostra os demais.' },
-        ],
-    },
+    // grupos-kpop-boy-groups-famosos removido em 28/11/2026: mesmo título e mesma lista de
+    // grupos-masculinos-kpop. Consolidado por 301 em next.config.mjs.
 ]

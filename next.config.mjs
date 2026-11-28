@@ -195,6 +195,12 @@ const nextConfig = {
             { source: '/guias/grupos-4a-geracao-kpop', destination: '/blog/melhores-grupos-kpop-4a-geracao', permanent: true },
             // O guia de sobrevivência usava o mesmo filtro do de thriller (mesma lista de 428 itens) e foi tirado do índice (2026-10-25).
             { source: '/guias/doramas-sobrevivencia-coreanos', destination: '/guias/doramas-thriller-coreanos', permanent: true },
+            // Dois guias de boy groups com o mesmo título e a mesma lista (28/11/2026). Ficou o de mais
+            // impressões no Search Console (1405 × 224 em 28 dias); vale para os endereços traduzidos.
+            { source: '/guias/grupos-kpop-boy-groups-famosos', destination: '/guias/grupos-masculinos-kpop', permanent: true },
+            { source: '/en/guides/famous-k-pop-boy-groups', destination: '/en/guides/k-pop-boy-groups', permanent: true },
+            { source: '/es/guides/boy-groups-famosos-de-kpop', destination: '/es/guides/boy-groups-de-kpop', permanent: true },
+            { source: '/ja/guides/famous-k-pop-boy-groups', destination: '/ja/guides/k-pop-boy-groups', permanent: true },
             // Guia duplicado consolidado em 2026-11-02: os dois textos respondiam "lámen de caldo
             // ou molho seco". O guia de compra (29444) ficou e recebeu a seção sobre picância; o outro
             // não tinha impressões em 90 dias.

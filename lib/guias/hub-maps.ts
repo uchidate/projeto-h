@@ -39,7 +39,11 @@ export const PRODUCTION_NETWORK_MAP: Record<string, string> = {
     'doramas-ena': 'ENA',
 }
 
-export type ArtistFilter = { role?: string; gender?: 'male' | 'female' }
+export type ArtistFilter = { role?: string; gender?: 'male' | 'female'; alsoRoles?: string[] }
+
+/** Sem exigência, qualquer ficha serve; com ela, basta um dos papéis. */
+export const temAlgumPapel = (roles: string[] | undefined, exigidos: string[] | undefined) =>
+    !exigidos?.length || exigidos.some(p => roles?.includes(p))
 export const ARTIST_FILTER_MAP: Record<string, ArtistFilter> = {
     'cantoras-kpop':              { role: 'singer', gender: 'female' },
     'cantores-kpop':              { role: 'singer', gender: 'male' },
@@ -49,7 +53,7 @@ export const ARTIST_FILTER_MAP: Record<string, ArtistFilter> = {
     'modelos-coreanas':           { role: 'model', gender: 'female' },
     'modelos-coreanos':           { role: 'model', gender: 'male' },
     'artistas-solo-kpop':         { role: 'singer' },
-    'idols-que-atuam-em-doramas': { role: 'idol' },
+    'idols-que-atuam-em-doramas': { role: 'idol', alsoRoles: ['actor', 'actress'] },
 }
 
 export type GroupType = 'girl_group' | 'boy_group' | 'co_ed' | 'solo'
