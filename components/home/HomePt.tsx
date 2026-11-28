@@ -42,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-    const { siteSettings, posts, productions, artists, featuredSpotlight, spotlightArtists, trendingGroupsList, streamingByPlatform, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum, producoesEmAlta, hoje } = await carregarHome({ comercio: true })
+    const { siteSettings, posts, productions, artists, trendingGroupsList, categoryMap, produtosMaisVendidos, postsEditorias, aniversarios, guiasPorTema, temas, explore, prateleirasEditorias, capasAlbum, producoesEmAlta, hoje } = await carregarHome({ comercio: true })
 
     // Sem posts a home não é "home vazia", é home quebrada: wpFetch devolve []
     // quando o WordPress falha, e o resultado sairia com HTTP 200. Em 2026-08-06
@@ -72,14 +72,10 @@ export default async function HomePage() {
                 posts={posts}
                 productions={productions}
                 artists={artists}
-                spotlightArtists={spotlightArtists}
-                featuredArtist={featuredSpotlight?.artist ?? null}
-                featuredArtistNote={featuredSpotlight?.note ?? ''}
                 trendingGroups={trendingGroupsList}
                 homeSettings={siteSettings.home}
                 cultureGuides={siteSettings.cultureGuides}
                 pergunta={<Suspense fallback={null}><PerguntaDoDiaServer /></Suspense>}
-                streamingByPlatform={streamingByPlatform}
                 categoryMap={categoryMap}
                 produtosMaisVendidos={produtosMaisVendidos}
                 postsEditorias={postsEditorias}

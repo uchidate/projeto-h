@@ -31,7 +31,6 @@ import type { GuiaDaHome } from '@/lib/home/guias'
 import type { AniversariosHome } from '@/lib/home/aniversarios'
 import type { StoreProduct } from '@/lib/wordpress/store'
 import type { BestOfList, HomeSettings } from '@/lib/wordpress/site-settings'
-import type { ShowsByPlatform } from '@/lib/tmdb/streaming'
 
 /* Hallmark · pre-emit critique: P4 H5 E4 S5 R5 V4
  * genre: editorial · macrostructure: Split Studio · theme: editorial tokens
@@ -42,15 +41,11 @@ type Props = {
     posts: WPPost[]
     productions: WPProduction[]
     artists: WPArtist[]
-    spotlightArtists?: WPArtist[]
-    featuredArtist?: WPArtist | null
-    featuredArtistNote?: string
     trendingGroups?: WPGroup[]
     homeSettings: HomeSettings
     cultureGuides?: BestOfList[]
     // Pergunta do dia (streamada em Suspense pela página): entra depois dos populares, junto do quiz.
     pergunta?: ReactNode
-    streamingByPlatform: ShowsByPlatform
     categoryMap?: Record<number, { name: string; slug: string }>
     produtosMaisVendidos?: StoreProduct[]
     postsEditorias?: PostsPorEditoria
@@ -68,7 +63,7 @@ type Props = {
 export async function HomeFrontPage({ locale = DEFAULT_LOCALE, posts, productions, artists, trendingGroups = [], homeSettings, cultureGuides = [], pergunta, categoryMap, produtosMaisVendidos = [], postsEditorias = {}, aniversarios, guiasPorTema = [], temas = null, explore = [], prateleirasEditorias = {}, capasAlbum = {}, producoesEmAlta = [], hoje }: Props) {
     const t = await getTranslations({ locale, namespace: 'home.pagina' })
     // Blocos que só existem em português (conteúdo e comércio brasileiros): hubs editoriais
-    // do WP, loja (BRL/afiliado), streaming do Brasil e quiz. Ver docs/I18N-V2.md.
+    // do WP, loja (BRL/afiliado) e quiz. Ver docs/I18N-V2.md.
     const soPt = locale === DEFAULT_LOCALE
     // Fora do português o painel de temas só entra se houver alguma ficha ou artigo traduzido (senão o capítulo ficaria sozinho).
     // Fora do português a faixa de guias só entra com guias traduzidos; os capítulos seguem em sequência.

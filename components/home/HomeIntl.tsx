@@ -47,7 +47,7 @@ export async function generateMetadataHomeIntl(locale: Locale): Promise<Metadata
 
 /**
  * Home de um idioma além do português: a mesma `HomeFrontPage` da home PT, com a
- * interface traduzida e sem os blocos só-PT (loja, streaming BR).
+ * interface traduzida e sem os blocos só-PT (a loja).
  * Só aparecem artigos com tradução publicada (mínimo de 3, senão a seção some); nada além da home em si.
  */
 export async function HomeIntl({ locale }: { locale: Locale }) {
@@ -67,12 +67,8 @@ export async function HomeIntl({ locale }: { locale: Locale }) {
                 posts={posts}
                 productions={dados.productions}
                 artists={dados.artists}
-                spotlightArtists={dados.spotlightArtists}
-                featuredArtist={dados.featuredSpotlight?.artist ?? null}
-                featuredArtistNote={dados.featuredSpotlight?.note ?? ''}
                 trendingGroups={dados.trendingGroupsList}
                 homeSettings={dados.siteSettings.home}
-                streamingByPlatform={dados.streamingByPlatform}
                 categoryMap={dados.categoryMap}
                 cultureGuides={dados.passos}
                 postsEditorias={dados.postsEditorias}
