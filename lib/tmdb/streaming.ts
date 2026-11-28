@@ -1,4 +1,5 @@
 import { WP_API_URL } from '@/lib/wordpress/config'
+import { stripHtml } from '@/lib/utils'
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY
 const TMDB_BASE = 'https://api.themoviedb.org/3'
@@ -38,10 +39,17 @@ interface TMDBShow {
     original_language?: string
 }
 
+// A ficha de produção se regenera a cada 6 h. O Next adota o menor prazo entre as
+// consultas da página: um valor menor aqui multiplicaria a regeneração das fichas.
+const PRAZO_CACHE = 21600
+// Bloco acessório: serviço lento não pode segurar a renderização da ficha.
+const TEMPO_LIMITE_MS = 4000
+
 async function tmdbFetch<T>(path: string): Promise<T> {
     const sep = path.includes('?') ? '&' : '?'
     const res = await fetch(`${TMDB_BASE}${path}${sep}api_key=${TMDB_API_KEY}`, {
-        next: { revalidate: 7200 },
+        next: { revalidate: PRAZO_CACHE },
+        signal: AbortSignal.timeout(TEMPO_LIMITE_MS),
     })
     if (!res.ok) throw new Error(`TMDB ${path} → ${res.status}`)
     return res.json() as Promise<T>
@@ -75,6 +83,9 @@ async function fetchPlatform(source: string): Promise<StreamingEntry[]> {
             include_adult: 'false',
             with_watch_providers: String(cfg.providerId),
             watch_region: 'BR',
+            language: 'pt-BR',
+            // Animação e infantil lideram a popularidade e não são o que o leitor da ficha procura.
+            without_genres: '16,10762',
         })
         const data = await tmdbFetch<{ results: TMDBShow[] }>(`/discover/tv?${params}`)
         return data.results
@@ -86,7 +97,7 @@ async function fetchPlatform(source: string): Promise<StreamingEntry[]> {
     }
 }
 
-async function resolveProductionSlugs(shows: StreamingEntry[]): Promise<Map<string, string>> {
+async function resolveProductionSlugs(shows: StreamingEntry[]): Promise<Map<string, { slug: string; titulo: string }>> {
     const tmdbIds = [...new Set(shows.map(s => s.tmdbId))]
     if (!tmdbIds.length) return new Map()
     try {
@@ -95,13 +106,14 @@ async function resolveProductionSlugs(shows: StreamingEntry[]): Promise<Map<stri
         url.searchParams.set('oc_tmdb_ids', tmdbIds.join(','))
         url.searchParams.set('per_page', String(tmdbIds.length))
         url.searchParams.set('status', 'publish')
-        url.searchParams.set('_fields', 'slug,acf')
-        const res = await fetch(url.toString(), { next: { revalidate: 600 } })
+        url.searchParams.set('_fields', 'slug,acf,title')
+        const res = await fetch(url.toString(), { next: { revalidate: PRAZO_CACHE }, signal: AbortSignal.timeout(TEMPO_LIMITE_MS) })
         if (!res.ok) return new Map()
-        const productions: Array<{ slug: string; acf: { tmdb_id?: number } }> = await res.json()
-        const map = new Map<string, string>()
+        const productions: Array<{ slug: string; title?: { rendered?: string }; acf: { tmdb_id?: number; type?: string } }> = await res.json()
+        const map = new Map<string, { slug: string; titulo: string }>()
         for (const p of productions) {
-            if (p.acf?.tmdb_id) map.set(String(p.acf.tmdb_id), p.slug)
+            // No TMDB, filme e série numeram à parte: o mesmo número num filme é outra obra.
+            if (p.acf?.tmdb_id && p.acf.type !== 'movie') map.set(String(p.acf.tmdb_id), { slug: p.slug, titulo: stripHtml(p.title?.rendered ?? '') })
         }
         return map
     } catch {
@@ -126,7 +138,10 @@ export async function getStreamingTopShows(): Promise<ShowsByPlatform> {
     const slugMap = await resolveProductionSlugs(allShows)
     for (const [source, shows] of Object.entries(out)) {
         for (const show of shows) {
-            show.productionSlug = slugMap.get(show.tmdbId) ?? null
+            const ficha = slugMap.get(show.tmdbId)
+            show.productionSlug = ficha?.slug ?? null
+            // O nome que vale é o da ficha, o mesmo que a pessoa vai ver ao clicar.
+            if (ficha?.titulo) show.title = ficha.titulo
         }
         // Mapa vazio = consulta ao WP falhou (ou nada bate): mantem a lista como
         // veio em vez de esvaziar a home por causa de uma falha de rede.
@@ -140,6 +155,23 @@ export async function getStreamingTopShows(): Promise<ShowsByPlatform> {
             continue
         }
         out[source] = comFicha.slice(0, TAMANHO_DO_TOP).map((show, i) => ({ ...show, rank: i + 1 }))
+    }
+    return out
+}
+
+// Menos que isso não forma uma fileira que valha a aba.
+const MINIMO_POR_PLATAFORMA = 3
+
+/**
+ * Recorte do ranking para a ficha de produção: só o que leva a outra ficha, sem a
+ * própria obra nem o que a página já recomenda.
+ */
+export function emAltaPara(porPlataforma: ShowsByPlatform, jaNaPagina: readonly string[]): ShowsByPlatform {
+    const fora = new Set(jaNaPagina)
+    const out: ShowsByPlatform = {}
+    for (const [plataforma, shows] of Object.entries(porPlataforma)) {
+        const uteis = shows.filter(show => show.productionSlug && !fora.has(show.productionSlug))
+        if (uteis.length >= MINIMO_POR_PLATAFORMA) out[plataforma] = uteis.slice(0, TAMANHO_DO_TOP)
     }
     return out
 }

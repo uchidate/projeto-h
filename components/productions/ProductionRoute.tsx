@@ -32,6 +32,8 @@ import { buildLanguageLinks } from '@/lib/i18n/language-links'
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
 import { AvisoSemTraducao } from '@/components/i18n/AvisoSemTraducao'
 import { DEFAULT_LOCALE, LOCALE_META } from '@/lib/i18n/config'
+import { temRecurso } from '@/lib/i18n/recursos'
+import { emAltaPara, getStreamingTopShows, type ShowsByPlatform } from '@/lib/tmdb/streaming'
 import { metaDescription } from '@/lib/seo/metaDescription'
 
 /**
@@ -115,7 +117,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         getEpisodios(production.acf?.tmdb_id, production.acf?.type, locale),
         getAvaliacao(production.acf?.tmdb_id, production.acf?.type),
     ])
-    const [castItems, related, { items: relatedPosts }, categories, allGenreTerms, foodsInProduction] = await Promise.all([
+    const [castItems, related, { items: relatedPosts }, categories, allGenreTerms, foodsInProduction, streaming] = await Promise.all([
         // O WordPress recusa per_page acima de 100: elenco grande vai em lotes.
         Promise.all(Array.from({ length: Math.ceil(castSlugs.length / 100) }, (_, i) => castSlugs.slice(i * 100, (i + 1) * 100))
             .map(lote => getArtists({ slug: lote.join(','), perPage: lote.length }).then(r => r.items)))
@@ -131,6 +133,10 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         getCategories(),
         getProductionGenres(),
         getFoodsFeaturedInProduction(production.id),
+        // Catálogo do Brasil; se a consulta falhar, a ficha sai sem o bloco.
+        temRecurso('streamingBrasil', locale)
+            ? getStreamingTopShows().catch((): ShowsByPlatform => ({}))
+            : Promise.resolve<ShowsByPlatform>({}),
     ])
     // Maior tráfego do site e sem loja até aqui. A loja só existe em português.
     const prateleira = locale === DEFAULT_LOCALE
@@ -150,6 +156,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
         .filter((artist): artist is NonNullable<typeof artist> => artist !== undefined)
 
     const relatedHubs = getHubsForProduction(production)
+    const emAlta = emAltaPara(streaming, [production.slug, ...related.map(r => r.slug)])
 
     const title = stripHtml(production.title.rendered)
     const url = `${SITE_URL}${href('production', { slug }, locale)}`
@@ -169,7 +176,7 @@ export async function ProductionRoute({ slug, locale }: { slug: string; locale: 
             {languageLinks.length > 0 && <LanguageSwitcher availableIn={tSwitcher('availableIn')} dismissLabel={tSwitcher('dismiss')} links={languageLinks} />}
             <RastreioDeRolagem caminho={href('production', { slug }, locale)} />
             <JsonLd data={breadcrumbSchema} />
-            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={comTituloNoIdioma(related, 'production', locale)} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} shopMotivos={prateleira.motivos} foodsInProduction={foodsInProduction} />
+            <ProductionDetailPage production={production} disponibilidade={disponibilidade} avaliacao={avaliacao} episodios={episodios} cast={cast} related={comTituloNoIdioma(related, 'production', locale)} relatedPosts={locale === DEFAULT_LOCALE ? relatedPosts : []} relatedHubs={relatedHubs} categoryMap={categoryMap} shopProducts={shopProducts} shopMotivos={prateleira.motivos} foodsInProduction={foodsInProduction} emAlta={emAlta} />
         </>
     )
 }
